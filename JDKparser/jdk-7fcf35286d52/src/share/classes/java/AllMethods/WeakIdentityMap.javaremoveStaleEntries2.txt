@@ -1,0 +1,33 @@
+private void removeStaleEntries() {
+    Object ref = this.queue.poll();
+    if (ref != null) {
+        synchronized (NULL) {
+            do {
+                @SuppressWarnings("unchecked")
+                Entry<T> entry = (Entry<T>) ref;
+                int index = getIndex(this.table, entry.hash);
+                Entry<T> prev = this.table[index];
+                Entry<T> current = prev;
+                while (current != null) {
+                    Entry<T> next = current.next;
+                    if (current == entry) {
+                        if (prev == entry) {
+                            this.table[index] = next;
+                        } else {
+                            prev.next = next;
+                        }
+                        // Help GC
+                        entry.value = null;
+                        // Help GC
+                        entry.next = null;
+                        this.size--;
+                        break;
+                    }
+                    prev = current;
+                    current = next;
+                }
+                ref = this.queue.poll();
+            } while (ref != null);
+        }
+    }
+}

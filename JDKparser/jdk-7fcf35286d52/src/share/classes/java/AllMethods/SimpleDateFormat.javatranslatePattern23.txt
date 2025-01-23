@@ -1,0 +1,39 @@
+/**
+ * Translates a pattern, mapping each character in the from string to the
+ * corresponding character in the to string.
+ *
+ * @exception IllegalArgumentException if the given pattern is invalid
+ */
+private String translatePattern(String pattern, String from, String to) {
+    StringBuilder result = new StringBuilder();
+    boolean inQuote = false;
+    for (int i = 0; i < pattern.length(); ++i) {
+        char c = pattern.charAt(i);
+        if (inQuote) {
+            if (c == '\'') {
+                inQuote = false;
+            }
+        } else {
+            if (c == '\'') {
+                inQuote = true;
+            } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                int ci = from.indexOf(c);
+                if (ci >= 0) {
+                    // patternChars is longer than localPatternChars due
+                    // to serialization compatibility. The pattern letters
+                    // unsupported by localPatternChars pass through.
+                    if (ci < to.length()) {
+                        c = to.charAt(ci);
+                    }
+                } else {
+                    throw new IllegalArgumentException("Illegal pattern " + " character '" + c + "'");
+                }
+            }
+        }
+        result.append(c);
+    }
+    if (inQuote) {
+        throw new IllegalArgumentException("Unfinished quote in pattern");
+    }
+    return result.toString();
+}

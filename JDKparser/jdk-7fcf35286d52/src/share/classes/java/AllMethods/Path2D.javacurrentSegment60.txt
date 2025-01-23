@@ -1,0 +1,8 @@
+public int currentSegment(double[] coords) {
+    int type = path.pointTypes[typeIdx];
+    int numCoords = curvecoords[type];
+    if (numCoords > 0) {
+        affine.transform(doubleCoords, pointIdx, coords, 0, numCoords / 2);
+    }
+    return type;
+}

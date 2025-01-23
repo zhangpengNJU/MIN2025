@@ -1,0 +1,10 @@
+/**
+ * Returns the shape previously set with applyCompoundShape().
+ * If the component is LW or no shape was applied yet,
+ * the method returns the normal shape.
+ */
+private Region getAppliedShape() {
+    checkTreeLock();
+    // XXX: if we allow LW components to have a shape, this must be changed
+    return (this.compoundShape == null || isLightweight()) ? getNormalShape() : this.compoundShape;
+}

@@ -1,0 +1,61 @@
+/**
+ * Returns the hostname for this address.
+ *
+ * <p>If there is a security manager, this method first
+ * calls its {@code checkConnect} method
+ * with the hostname and {@code -1}
+ * as its arguments to see if the calling code is allowed to know
+ * the hostname for this IP address, i.e., to connect to the host.
+ * If the operation is not allowed, it will return
+ * the textual representation of the IP address.
+ *
+ * @return  the host name for this IP address, or if the operation
+ *    is not allowed by the security check, the textual
+ *    representation of the IP address.
+ *
+ * @param check make security check if true
+ *
+ * @see SecurityManager#checkConnect
+ */
+private static String getHostFromNameService(InetAddress addr, boolean check) {
+    String host = null;
+    for (NameService nameService : nameServices) {
+        try {
+            // first lookup the hostname
+            host = nameService.getHostByAddr(addr.getAddress());
+            /* check to see if calling code is allowed to know
+                 * the hostname for this IP address, ie, connect to the host
+                 */
+            if (check) {
+                SecurityManager sec = System.getSecurityManager();
+                if (sec != null) {
+                    sec.checkConnect(host, -1);
+                }
+            }
+            /* now get all the IP addresses for this hostname,
+                 * and make sure one of them matches the original IP
+                 * address. We do this to try and prevent spoofing.
+                 */
+            InetAddress[] arr = InetAddress.getAllByName0(host, check);
+            boolean ok = false;
+            if (arr != null) {
+                for (int i = 0; !ok && i < arr.length; i++) {
+                    ok = addr.equals(arr[i]);
+                }
+            }
+            // XXX: if it looks a spoof just return the address?
+            if (!ok) {
+                host = addr.getHostAddress();
+                return host;
+            }
+            break;
+        } catch (SecurityException e) {
+            host = addr.getHostAddress();
+            break;
+        } catch (UnknownHostException e) {
+            host = addr.getHostAddress();
+        // let next provider resolve the hostname
+        }
+    }
+    return host;
+}

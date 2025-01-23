@@ -1,0 +1,16 @@
+/**
+ * Returns the type of <code>KeyEvent</code> which corresponds to
+ * this <code>AWTKeyStroke</code>.
+ *
+ * @return <code>KeyEvent.KEY_PRESSED</code>,
+ *         <code>KeyEvent.KEY_TYPED</code>,
+ *         or <code>KeyEvent.KEY_RELEASED</code>
+ * @see java.awt.event.KeyEvent
+ */
+public final int getKeyEventType() {
+    if (keyCode == KeyEvent.VK_UNDEFINED) {
+        return KeyEvent.KEY_TYPED;
+    } else {
+        return (onKeyRelease) ? KeyEvent.KEY_RELEASED : KeyEvent.KEY_PRESSED;
+    }
+}

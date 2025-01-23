@@ -1,0 +1,15 @@
+private void printString(Object arg, Locale l) throws IOException {
+    if (arg instanceof Formattable) {
+        Formatter fmt = Formatter.this;
+        if (fmt.locale() != l)
+            fmt = new Formatter(fmt.out(), l);
+        ((Formattable) arg).formatTo(fmt, f.valueOf(), width, precision);
+    } else {
+        if (f.contains(Flags.ALTERNATE))
+            failMismatch(Flags.ALTERNATE, 's');
+        if (arg == null)
+            print("null");
+        else
+            print(arg.toString());
+    }
+}

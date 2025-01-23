@@ -1,0 +1,22 @@
+/**
+ * Saves this queue to a stream (that is, serializes it).
+ *
+ * For compatibility with previous version of this class, elements
+ * are first copied to a java.util.PriorityQueue, which is then
+ * serialized.
+ *
+ * @param s the stream
+ * @throws java.io.IOException if an I/O error occurs
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    lock.lock();
+    try {
+        // avoid zero capacity argument
+        q = new PriorityQueue<E>(Math.max(size, 1), comparator);
+        q.addAll(this);
+        s.defaultWriteObject();
+    } finally {
+        q = null;
+        lock.unlock();
+    }
+}

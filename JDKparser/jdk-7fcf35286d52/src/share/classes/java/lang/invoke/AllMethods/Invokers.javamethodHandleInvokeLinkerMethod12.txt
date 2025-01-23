@@ -1,0 +1,21 @@
+static MemberName methodHandleInvokeLinkerMethod(String name, MethodType mtype, Object[] appendixResult) {
+    int which;
+    switch(name) {
+        case "invokeExact":
+            which = MethodTypeForm.LF_EX_LINKER;
+            break;
+        case "invoke":
+            which = MethodTypeForm.LF_GEN_LINKER;
+            break;
+        default:
+            throw new InternalError("not invoker: " + name);
+    }
+    LambdaForm lform;
+    if (mtype.parameterSlotCount() <= MethodType.MAX_MH_ARITY - MH_LINKER_ARG_APPENDED) {
+        lform = invokeHandleForm(mtype, false, which);
+        appendixResult[0] = mtype;
+    } else {
+        lform = invokeHandleForm(mtype, true, which);
+    }
+    return lform.vmentry;
+}

@@ -1,0 +1,31 @@
+/**
+ * Binds the channel's socket to a local address.
+ *
+ * <p> This method is used to establish an association between the socket and
+ * a local address. Once an association is established then the socket remains
+ * bound until the channel is closed. If the {@code local} parameter has the
+ * value {@code null} then the socket will be bound to an address that is
+ * assigned automatically.
+ *
+ * @param   local
+ *          The address to bind the socket, or {@code null} to bind the socket
+ *          to an automatically assigned socket address
+ *
+ * @return  This channel
+ *
+ * @throws  AlreadyBoundException
+ *          If the socket is already bound
+ * @throws  UnsupportedAddressTypeException
+ *          If the type of the given address is not supported
+ * @throws  ClosedChannelException
+ *          If the channel is closed
+ * @throws  IOException
+ *          If some other I/O error occurs
+ * @throws  SecurityException
+ *          If a security manager is installed and it denies an unspecified
+ *          permission. An implementation of this interface should specify
+ *          any required permissions.
+ *
+ * @see #getLocalAddress
+ */
+NetworkChannel bind(SocketAddress local) throws IOException;

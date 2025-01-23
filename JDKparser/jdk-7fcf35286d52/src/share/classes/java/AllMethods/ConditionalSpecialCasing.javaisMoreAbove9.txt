@@ -1,0 +1,25 @@
+/**
+ * Implements the "More_Above" condition
+ *
+ * Specification: C is followed by one or more characters of combining
+ * class 230 (ABOVE) in the combining character sequence.
+ *
+ * Regular Expression:
+ *   After C: [{cc!=0}]*[{cc==230}]
+ */
+private static boolean isMoreAbove(String src, int index) {
+    int ch;
+    int cc;
+    int len = src.length();
+    // Look for a following ABOVE combining class character
+    for (int i = index + Character.charCount(src.codePointAt(index)); i < len; i += Character.charCount(ch)) {
+        ch = src.codePointAt(i);
+        cc = Normalizer.getCombiningClass(ch);
+        if (cc == COMBINING_CLASS_ABOVE) {
+            return true;
+        } else if (cc == 0) {
+            return false;
+        }
+    }
+    return false;
+}

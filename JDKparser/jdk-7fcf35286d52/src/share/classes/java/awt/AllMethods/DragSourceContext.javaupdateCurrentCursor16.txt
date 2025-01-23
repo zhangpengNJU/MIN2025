@@ -1,0 +1,47 @@
+/**
+ * If the default drag cursor behavior is active, this method
+ * sets the default drag cursor for the specified actions
+ * supported by the drag source, the drop target action,
+ * and status, otherwise this method does nothing.
+ *
+ * @param sourceAct the actions supported by the drag source
+ * @param targetAct the drop target action
+ * @param status one of the fields <code>DEFAULT</code>,
+ *               <code>ENTER</code>, <code>OVER</code>,
+ *               <code>CHANGED</code>
+ */
+protected synchronized void updateCurrentCursor(int sourceAct, int targetAct, int status) {
+    // if the cursor has been previously set then don't do any defaults
+    // processing.
+    if (useCustomCursor) {
+        return;
+    }
+    // do defaults processing
+    Cursor c = null;
+    switch(status) {
+        default:
+            targetAct = DnDConstants.ACTION_NONE;
+        case ENTER:
+        case OVER:
+        case CHANGED:
+            int ra = sourceAct & targetAct;
+            if (ra == DnDConstants.ACTION_NONE) {
+                // no drop possible
+                if ((sourceAct & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK)
+                    c = DragSource.DefaultLinkNoDrop;
+                else if ((sourceAct & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE)
+                    c = DragSource.DefaultMoveNoDrop;
+                else
+                    c = DragSource.DefaultCopyNoDrop;
+            } else {
+                // drop possible
+                if ((ra & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK)
+                    c = DragSource.DefaultLinkDrop;
+                else if ((ra & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE)
+                    c = DragSource.DefaultMoveDrop;
+                else
+                    c = DragSource.DefaultCopyDrop;
+            }
+    }
+    setCursorImpl(c);
+}

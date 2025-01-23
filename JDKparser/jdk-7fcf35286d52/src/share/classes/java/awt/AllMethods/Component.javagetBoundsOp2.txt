@@ -1,0 +1,8 @@
+/**
+ * Should only be used in subclass getBounds to check that part of bounds
+ * is actualy changing
+ */
+int getBoundsOp() {
+    assert Thread.holdsLock(getTreeLock());
+    return boundsOp;
+}

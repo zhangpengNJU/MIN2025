@@ -1,0 +1,39 @@
+/**
+ * Sets the key pair (public key and private key) for this signer.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "setSignerKeyPair"}
+ * as its argument to see if it's ok to set the key pair.
+ *
+ * @param pair an initialized key pair.
+ *
+ * @exception InvalidParameterException if the key pair is not
+ * properly initialized.
+ * @exception KeyException if the key pair cannot be set for any
+ * other reason.
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * setting the key pair.
+ *
+ * @see SecurityManager#checkSecurityAccess
+ */
+public final void setKeyPair(KeyPair pair) throws InvalidParameterException, KeyException {
+    check("setSignerKeyPair");
+    final PublicKey pub = pair.getPublic();
+    PrivateKey priv = pair.getPrivate();
+    if (pub == null || priv == null) {
+        throw new InvalidParameterException();
+    }
+    try {
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+            public Void run() throws KeyManagementException {
+                setPublicKey(pub);
+                return null;
+            }
+        });
+    } catch (PrivilegedActionException pae) {
+        throw (KeyManagementException) pae.getException();
+    }
+    privateKey = priv;
+}

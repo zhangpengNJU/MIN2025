@@ -1,0 +1,6 @@
+/**
+ * Check if MemberName is a call to a method named {@code name} in class {@code declaredClass}.
+ */
+private boolean memberRefersTo(MemberName member, Class<?> declaringClass, String name) {
+    return member != null && member.getDeclaringClass() == declaringClass && member.getName().equals(name);
+}

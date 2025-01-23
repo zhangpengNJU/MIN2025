@@ -1,0 +1,17 @@
+/**
+ * Obtains an instance of {@code ChronoPeriodImpl} from a temporal amount.
+ *
+ * @param amount  the temporal amount to convert, not null
+ * @return the period, not null
+ */
+private ChronoPeriodImpl validateAmount(TemporalAmount amount) {
+    Objects.requireNonNull(amount, "amount");
+    if (amount instanceof ChronoPeriodImpl == false) {
+        throw new DateTimeException("Unable to obtain ChronoPeriod from TemporalAmount: " + amount.getClass());
+    }
+    ChronoPeriodImpl period = (ChronoPeriodImpl) amount;
+    if (chrono.equals(period.getChronology()) == false) {
+        throw new ClassCastException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + period.getChronology().getId());
+    }
+    return period;
+}

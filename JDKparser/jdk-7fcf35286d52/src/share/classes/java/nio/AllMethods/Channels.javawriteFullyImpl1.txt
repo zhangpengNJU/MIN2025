@@ -1,0 +1,11 @@
+/**
+ * Write all remaining bytes in buffer to the given channel.
+ * If the channel is selectable then it must be configured blocking.
+ */
+private static void writeFullyImpl(WritableByteChannel ch, ByteBuffer bb) throws IOException {
+    while (bb.remaining() > 0) {
+        int n = ch.write(bb);
+        if (n <= 0)
+            throw new RuntimeException("no bytes written");
+    }
+}

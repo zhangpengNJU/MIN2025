@@ -1,0 +1,32 @@
+/**
+ * Requests that the browser or applet viewer show the Web page
+ * indicated by the <code>url</code> argument. The
+ * <code>target</code> argument indicates in which HTML frame the
+ * document is to be displayed.
+ * The target argument is interpreted as follows:
+ *
+ * <center><table border="3" summary="Target arguments and their descriptions">
+ * <tr><th>Target Argument</th><th>Description</th></tr>
+ * <tr><td><code>"_self"</code>  <td>Show in the window and frame that
+ *                                   contain the applet.</tr>
+ * <tr><td><code>"_parent"</code><td>Show in the applet's parent frame. If
+ *                                   the applet's frame has no parent frame,
+ *                                   acts the same as "_self".</tr>
+ * <tr><td><code>"_top"</code>   <td>Show in the top-level frame of the applet's
+ *                                   window. If the applet's frame is the
+ *                                   top-level frame, acts the same as "_self".</tr>
+ * <tr><td><code>"_blank"</code> <td>Show in a new, unnamed
+ *                                   top-level window.</tr>
+ * <tr><td><i>name</i><td>Show in the frame or window named <i>name</i>. If
+ *                        a target named <i>name</i> does not already exist, a
+ *                        new top-level window with the specified name is created,
+ *                        and the document is shown there.</tr>
+ * </table> </center>
+ * <p>
+ * An applet viewer or browser is free to ignore <code>showDocument</code>.
+ *
+ * @param   url   an absolute URL giving the location of the document.
+ * @param   target   a <code>String</code> indicating where to display
+ *                   the page.
+ */
+public void showDocument(URL url, String target);

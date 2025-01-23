@@ -1,0 +1,27 @@
+/**
+ * Export the activatable remote object to the RMI runtime to make
+ * the object available to receive incoming calls. The object is
+ * exported on an anonymous port, if <code>port</code> is zero. <p>
+ *
+ * During activation, this <code>exportObject</code> method should
+ * be invoked explicitly by an "activatable" object, that does not
+ * extend the <code>Activatable</code> class. There is no need for objects
+ * that do extend the <code>Activatable</code> class to invoke this
+ * method directly because the object is exported during construction.
+ *
+ * @return the stub for the activatable remote object
+ * @param obj the remote object implementation
+ * @param id the object's  activation identifier
+ * @param port the port on which the object is exported (an anonymous
+ * port is used if port=0)
+ * @param csf the client-side socket factory for making calls to the
+ * remote object
+ * @param ssf the server-side socket factory for receiving remote calls
+ * @exception RemoteException if object export fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static Remote exportObject(Remote obj, ActivationID id, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    return exportObject(obj, new ActivatableServerRef(id, port, csf, ssf));
+}

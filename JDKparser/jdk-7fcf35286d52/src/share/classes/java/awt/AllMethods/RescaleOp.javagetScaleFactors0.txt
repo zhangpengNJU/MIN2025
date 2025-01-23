@@ -1,0 +1,15 @@
+/**
+ * Returns the scale factors in the given array. The array is also
+ * returned for convenience.  If scaleFactors is null, a new array
+ * will be allocated.
+ * @param scaleFactors the array to contain the scale factors of
+ *        this <code>RescaleOp</code>
+ * @return the scale factors of this <code>RescaleOp</code>.
+ */
+final public float[] getScaleFactors(float[] scaleFactors) {
+    if (scaleFactors == null) {
+        return (float[]) this.scaleFactors.clone();
+    }
+    System.arraycopy(this.scaleFactors, 0, scaleFactors, 0, Math.min(this.scaleFactors.length, scaleFactors.length));
+    return scaleFactors;
+}

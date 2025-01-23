@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ *
+ * @throws NullPointerException if any of the arguments are null
+ */
+public boolean replace(K key, V oldValue, V newValue) {
+    if (key == null || oldValue == null || newValue == null)
+        throw new NullPointerException();
+    return replaceNode(key, newValue, oldValue) != null;
+}

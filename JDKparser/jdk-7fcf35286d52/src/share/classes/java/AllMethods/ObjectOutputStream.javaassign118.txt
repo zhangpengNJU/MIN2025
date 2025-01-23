@@ -1,0 +1,10 @@
+/**
+ * Enters mapping from object to replacement object.
+ */
+void assign(Object obj, Object rep) {
+    int index = htab.assign(obj);
+    while (index >= reps.length) {
+        grow();
+    }
+    reps[index] = rep;
+}

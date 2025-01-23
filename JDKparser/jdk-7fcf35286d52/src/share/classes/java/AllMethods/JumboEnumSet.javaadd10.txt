@@ -1,0 +1,20 @@
+// Modification Operations
+/**
+ * Adds the specified element to this set if it is not already present.
+ *
+ * @param e element to be added to this set
+ * @return <tt>true</tt> if the set changed as a result of the call
+ *
+ * @throws NullPointerException if <tt>e</tt> is null
+ */
+public boolean add(E e) {
+    typeCheck(e);
+    int eOrdinal = e.ordinal();
+    int eWordNum = eOrdinal >>> 6;
+    long oldElements = elements[eWordNum];
+    elements[eWordNum] |= (1L << eOrdinal);
+    boolean result = (elements[eWordNum] != oldElements);
+    if (result)
+        size++;
+    return result;
+}

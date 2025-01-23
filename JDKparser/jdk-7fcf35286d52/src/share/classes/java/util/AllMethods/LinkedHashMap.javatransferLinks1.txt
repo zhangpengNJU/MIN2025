@@ -1,0 +1,13 @@
+// apply src's links to dst
+private void transferLinks(LinkedHashMap.Entry<K, V> src, LinkedHashMap.Entry<K, V> dst) {
+    LinkedHashMap.Entry<K, V> b = dst.before = src.before;
+    LinkedHashMap.Entry<K, V> a = dst.after = src.after;
+    if (b == null)
+        head = dst;
+    else
+        b.after = dst;
+    if (a == null)
+        tail = dst;
+    else
+        a.before = dst;
+}

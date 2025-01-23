@@ -1,0 +1,9 @@
+/**
+ * Throws exception, if any, associated with the given status.
+ */
+private void reportException(int s) {
+    if (s == CANCELLED)
+        throw new CancellationException();
+    if (s == EXCEPTIONAL)
+        rethrow(getThrowableException());
+}

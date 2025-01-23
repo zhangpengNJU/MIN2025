@@ -1,0 +1,13 @@
+public E set(int index, E element) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        rangeCheck(index);
+        checkForComodification();
+        E x = l.set(index + offset, element);
+        expectedArray = l.getArray();
+        return x;
+    } finally {
+        lock.unlock();
+    }
+}

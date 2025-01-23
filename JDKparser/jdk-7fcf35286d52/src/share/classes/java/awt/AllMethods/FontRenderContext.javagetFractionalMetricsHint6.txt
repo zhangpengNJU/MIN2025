@@ -1,0 +1,19 @@
+/**
+ * Return the text fractional metrics rendering mode hint used in this
+ * <code>FontRenderContext</code>.
+ * This will be one of the text fractional metrics rendering hint values
+ * defined in {@link java.awt.RenderingHints java.awt.RenderingHints}.
+ * @return the text fractional metrics rendering mode hint used in this
+ * <code>FontRenderContext</code>.
+ * @since 1.6
+ */
+public Object getFractionalMetricsHint() {
+    if (defaulting) {
+        if (usesFractionalMetrics()) {
+            return VALUE_FRACTIONALMETRICS_ON;
+        } else {
+            return VALUE_FRACTIONALMETRICS_OFF;
+        }
+    }
+    return fmHintValue;
+}

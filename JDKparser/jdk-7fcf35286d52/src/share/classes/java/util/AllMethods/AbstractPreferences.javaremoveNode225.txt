@@ -1,0 +1,26 @@
+/*
+     * Called with locks on all nodes on path from parent of "removal root"
+     * to this (including the former but excluding the latter).
+     */
+private void removeNode2() throws BackingStoreException {
+    synchronized (lock) {
+        if (removed)
+            throw new IllegalStateException("Node already removed.");
+        // Ensure that all children are cached
+        String[] kidNames = childrenNamesSpi();
+        for (int i = 0; i < kidNames.length; i++) if (!kidCache.containsKey(kidNames[i]))
+            kidCache.put(kidNames[i], childSpi(kidNames[i]));
+        // Recursively remove all cached children
+        for (Iterator<AbstractPreferences> i = kidCache.values().iterator(); i.hasNext(); ) {
+            try {
+                i.next().removeNode2();
+                i.remove();
+            } catch (BackingStoreException x) {
+            }
+        }
+        // Now we have no descendants - it's time to die!
+        removeNodeSpi();
+        removed = true;
+        parent.enqueueNodeRemovedEvent(this);
+    }
+}

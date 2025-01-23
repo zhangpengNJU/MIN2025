@@ -1,0 +1,21 @@
+/**
+ * Gets the text for the specified field, locale and style
+ * for the purpose of formatting.
+ * <p>
+ * The text associated with the value is returned.
+ * The null return value should be used if there is no applicable text, or
+ * if the text would be a numeric representation of the value.
+ *
+ * @param field  the field to get text for, not null
+ * @param value  the field value to get text for, not null
+ * @param style  the style to get text for, not null
+ * @param locale  the locale to get text for, not null
+ * @return the text for the field value, null if no text found
+ */
+public String getText(TemporalField field, long value, TextStyle style, Locale locale) {
+    Object store = findStore(field, locale);
+    if (store instanceof LocaleStore) {
+        return ((LocaleStore) store).getText(value, style);
+    }
+    return null;
+}

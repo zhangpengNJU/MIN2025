@@ -1,0 +1,13 @@
+/**
+ * Return the actual type under which this method or constructor must be invoked.
+ *  For non-static methods or constructors, this is the type with a leading parameter,
+ *  a reference to declaring class.  For static methods, it is the same as the declared type.
+ */
+public MethodType getInvocationType() {
+    MethodType itype = getMethodOrFieldType();
+    if (isConstructor() && getReferenceKind() == REF_newInvokeSpecial)
+        return itype.changeReturnType(clazz);
+    if (!isStatic())
+        return itype.insertParameterTypes(0, clazz);
+    return itype;
+}

@@ -1,0 +1,39 @@
+// Add new per logger handlers.
+// We need to raise privilege here. All our decisions will
+// be made based on the logging configuration, which can
+// only be modified by trusted code.
+private void loadLoggerHandlers(final Logger logger, final String name, final String handlersPropertyName) {
+    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+        @Override
+        public Object run() {
+            String[] names = parseClassNames(handlersPropertyName);
+            for (int i = 0; i < names.length; i++) {
+                String word = names[i];
+                try {
+                    Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(word);
+                    Handler hdl = (Handler) clz.newInstance();
+                    // Check if there is a property defining the
+                    // this handler's level.
+                    String levs = getProperty(word + ".level");
+                    if (levs != null) {
+                        Level l = Level.findLevel(levs);
+                        if (l != null) {
+                            hdl.setLevel(l);
+                        } else {
+                            // Probably a bad level. Drop through.
+                            System.err.println("Can't set level for " + word);
+                        }
+                    }
+                    // Add this Handler to the logger
+                    logger.addHandler(hdl);
+                } catch (Exception ex) {
+                    System.err.println("Can't load log handler \"" + word + "\"");
+                    System.err.println("" + ex);
+                    ex.printStackTrace();
+                }
+            }
+            return null;
+        }
+    });
+}

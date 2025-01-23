@@ -1,0 +1,19 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code JapaneseEra} from a date.
+ *
+ * @param date  the date, not null
+ * @return the Era singleton, never null
+ */
+static JapaneseEra from(LocalDate date) {
+    if (date.isBefore(MEIJI_6_ISODATE)) {
+        throw new DateTimeException("JapaneseDate before Meiji 6 are not supported");
+    }
+    for (int i = KNOWN_ERAS.length - 1; i > 0; i--) {
+        JapaneseEra era = KNOWN_ERAS[i];
+        if (date.compareTo(era.since) >= 0) {
+            return era;
+        }
+    }
+    return null;
+}

@@ -1,0 +1,28 @@
+private static double bisectRootWithHint(double[] eqn, double x0, double xe, double hint) {
+    double delta1 = Math.min(abs(hint - x0) / 64, 0.0625);
+    double delta2 = Math.min(abs(hint - xe) / 64, 0.0625);
+    double x02 = hint - delta1;
+    double xe2 = hint + delta2;
+    double fx02 = solveEqn(eqn, 3, x02);
+    double fxe2 = solveEqn(eqn, 3, xe2);
+    while (oppositeSigns(fx02, fxe2)) {
+        if (x02 >= xe2) {
+            return x02;
+        }
+        x0 = x02;
+        xe = xe2;
+        delta1 /= 64;
+        delta2 /= 64;
+        x02 = hint - delta1;
+        xe2 = hint + delta2;
+        fx02 = solveEqn(eqn, 3, x02);
+        fxe2 = solveEqn(eqn, 3, xe2);
+    }
+    if (fx02 == 0) {
+        return x02;
+    }
+    if (fxe2 == 0) {
+        return xe2;
+    }
+    return bisectRoot(eqn, x0, xe);
+}

@@ -1,0 +1,6 @@
+public V next() {
+    if (!hasNext())
+        throw new NoSuchElementException();
+    lastReturnedIndex = index++;
+    return unmaskNull(vals[lastReturnedIndex]);
+}

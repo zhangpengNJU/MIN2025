@@ -1,0 +1,15 @@
+/**
+ * Writes given string to stream, using standard or long UTF format
+ * depending on string length.
+ */
+private void writeString(String str, boolean unshared) throws IOException {
+    handles.assign(unshared ? null : str);
+    long utflen = bout.getUTFLength(str);
+    if (utflen <= 0xFFFF) {
+        bout.writeByte(TC_STRING);
+        bout.writeUTF(str, utflen);
+    } else {
+        bout.writeByte(TC_LONGSTRING);
+        bout.writeLongUTF(str, utflen);
+    }
+}

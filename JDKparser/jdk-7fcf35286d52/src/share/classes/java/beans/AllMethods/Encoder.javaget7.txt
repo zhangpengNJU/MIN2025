@@ -1,0 +1,19 @@
+/**
+ * Returns a tentative value for <code>oldInstance</code> in
+ * the environment created by this stream. A persistence
+ * delegate can use its <code>mutatesTo</code> method to
+ * determine whether this value may be initialized to
+ * form the equivalent object at the output or whether
+ * a new object must be instantiated afresh. If the
+ * stream has not yet seen this value, null is returned.
+ *
+ * @param  oldInstance The instance to be looked up.
+ * @return The object, null if the object has not been seen before.
+ */
+public Object get(Object oldInstance) {
+    if (oldInstance == null || oldInstance == this || oldInstance.getClass() == String.class) {
+        return oldInstance;
+    }
+    Expression exp = bindings.get(oldInstance);
+    return getValue(exp);
+}

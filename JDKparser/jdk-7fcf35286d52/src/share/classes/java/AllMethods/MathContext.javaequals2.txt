@@ -1,0 +1,18 @@
+/**
+ * Compares this {@code MathContext} with the specified
+ * {@code Object} for equality.
+ *
+ * @param  x {@code Object} to which this {@code MathContext} is to
+ *         be compared.
+ * @return {@code true} if and only if the specified {@code Object} is
+ *         a {@code MathContext} object which has exactly the same
+ *         settings as this object
+ */
+public boolean equals(Object x) {
+    MathContext mc;
+    if (!(x instanceof MathContext))
+        return false;
+    mc = (MathContext) x;
+    return mc.precision == this.precision && // no need for .equals()
+    mc.roundingMode == this.roundingMode;
+}

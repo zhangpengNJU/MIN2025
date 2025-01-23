@@ -1,0 +1,19 @@
+// initialize the system scope
+private static void initializeSystemScope() {
+    String classname = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+        public String run() {
+            return Security.getProperty("system.scope");
+        }
+    });
+    if (classname == null) {
+        return;
+    } else {
+        try {
+            Class.forName(classname);
+        } catch (ClassNotFoundException e) {
+            System.err.println("unable to establish a system scope from " + classname);
+            e.printStackTrace();
+        }
+    }
+}

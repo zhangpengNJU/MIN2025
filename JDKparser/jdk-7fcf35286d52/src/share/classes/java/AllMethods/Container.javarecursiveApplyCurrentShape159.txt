@@ -1,0 +1,24 @@
+final void recursiveApplyCurrentShape(int fromZorder, int toZorder) {
+    checkTreeLock();
+    if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+        mixingLog.fine("this = " + this + "; fromZ=" + fromZorder + "; toZ=" + toZorder);
+    }
+    if (fromZorder == -1) {
+        return;
+    }
+    // An invalid container with not-null layout should be ignored
+    // by the mixing code, the container will be validated later
+    // and the mixing code will be executed later.
+    if (getLayout() != null && !isValid()) {
+        return;
+    }
+    for (int index = fromZorder; index <= toZorder; index++) {
+        Component comp = getComponent(index);
+        if (!comp.isLightweight()) {
+            comp.applyCurrentShape();
+        }
+        if (comp instanceof Container && ((Container) comp).hasHeavyweightDescendants()) {
+            ((Container) comp).recursiveApplyCurrentShape();
+        }
+    }
+}

@@ -1,0 +1,24 @@
+// If we implement equals() we must also implement hashCode
+public int hashCode() {
+    int hash = 0;
+    hash = width;
+    hash <<= 8;
+    hash ^= height;
+    hash <<= 8;
+    hash ^= numBands;
+    hash <<= 8;
+    hash ^= dataType;
+    hash <<= 8;
+    hash ^= pixelBitStride;
+    hash <<= 8;
+    hash ^= bitMask;
+    hash <<= 8;
+    hash ^= pixelsPerDataElement;
+    hash <<= 8;
+    hash ^= dataElementSize;
+    hash <<= 8;
+    hash ^= dataBitOffset;
+    hash <<= 8;
+    hash ^= scanlineStride;
+    return hash;
+}

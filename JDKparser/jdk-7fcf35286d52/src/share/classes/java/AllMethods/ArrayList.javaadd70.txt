@@ -1,0 +1,12 @@
+public void add(E e) {
+    checkForComodification();
+    try {
+        int i = cursor;
+        SubList.this.add(i, e);
+        cursor = i + 1;
+        lastRet = -1;
+        expectedModCount = ArrayList.this.modCount;
+    } catch (IndexOutOfBoundsException ex) {
+        throw new ConcurrentModificationException();
+    }
+}

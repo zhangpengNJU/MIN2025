@@ -1,0 +1,34 @@
+/**
+ * Sets head of queue, and checks if successor may be waiting
+ * in shared mode, if so propagating if either propagate > 0 or
+ * PROPAGATE status was set.
+ *
+ * @param node the node
+ * @param propagate the return value from a tryAcquireShared
+ */
+private void setHeadAndPropagate(Node node, int propagate) {
+    // Record old head for check below
+    Node h = head;
+    setHead(node);
+    /*
+         * Try to signal next queued node if:
+         *   Propagation was indicated by caller,
+         *     or was recorded (as h.waitStatus either before
+         *     or after setHead) by a previous operation
+         *     (note: this uses sign-check of waitStatus because
+         *      PROPAGATE status may transition to SIGNAL.)
+         * and
+         *   The next node is waiting in shared mode,
+         *     or we don't know, because it appears null
+         *
+         * The conservatism in both of these checks may cause
+         * unnecessary wake-ups, but only when there are multiple
+         * racing acquires/releases, so most need signals now or soon
+         * anyway.
+         */
+    if (propagate > 0 || h == null || h.waitStatus < 0 || (h = head) == null || h.waitStatus < 0) {
+        Node s = node.next;
+        if (s == null || s.isShared())
+            doReleaseShared();
+    }
+}

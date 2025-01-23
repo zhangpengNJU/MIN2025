@@ -1,0 +1,30 @@
+/**
+ * Specialized variant of findPredecessor to get predecessor of last
+ * valid node.  Needed when removing the last entry.  It is possible
+ * that all successors of returned node will have been deleted upon
+ * return, in which case this method can be retried.
+ * @return likely predecessor of last node
+ */
+private Node<K, V> findPredecessorOfLast() {
+    for (; ; ) {
+        for (Index<K, V> q = head; ; ) {
+            Index<K, V> d, r;
+            if ((r = q.right) != null) {
+                if (r.indexesDeletedNode()) {
+                    q.unlink(r);
+                    // must restart
+                    break;
+                }
+                // proceed as far across as possible without overshooting
+                if (r.node.next != null) {
+                    q = r;
+                    continue;
+                }
+            }
+            if ((d = q.down) != null)
+                q = d;
+            else
+                return q.node;
+        }
+    }
+}

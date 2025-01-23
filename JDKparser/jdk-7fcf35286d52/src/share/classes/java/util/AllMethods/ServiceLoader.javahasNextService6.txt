@@ -1,0 +1,24 @@
+private boolean hasNextService() {
+    if (nextName != null) {
+        return true;
+    }
+    if (configs == null) {
+        try {
+            String fullName = PREFIX + service.getName();
+            if (loader == null)
+                configs = ClassLoader.getSystemResources(fullName);
+            else
+                configs = loader.getResources(fullName);
+        } catch (IOException x) {
+            fail(service, "Error locating configuration files", x);
+        }
+    }
+    while ((pending == null) || !pending.hasNext()) {
+        if (!configs.hasMoreElements()) {
+            return false;
+        }
+        pending = parse(service, configs.nextElement());
+    }
+    nextName = pending.next();
+    return true;
+}

@@ -1,0 +1,12 @@
+/**
+ * Resizes the heap array.  Call only when holding lock.
+ */
+private void grow() {
+    int oldCapacity = queue.length;
+    // grow 50%
+    int newCapacity = oldCapacity + (oldCapacity >> 1);
+    if (// overflow
+    newCapacity < 0)
+        newCapacity = Integer.MAX_VALUE;
+    queue = Arrays.copyOf(queue, newCapacity);
+}

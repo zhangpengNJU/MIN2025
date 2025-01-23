@@ -1,0 +1,24 @@
+/**
+ * Sets the attributes for the range from offset to the next run break
+ * (typically the end of the text) to the ones specified in attrs.
+ * This is only meant to be called from the constructor!
+ */
+private void setAttributes(Map<Attribute, Object> attrs, int offset) {
+    if (runCount == 0) {
+        createRunAttributeDataVectors();
+    }
+    int index = ensureRunBreak(offset, false);
+    int size;
+    if (attrs != null && (size = attrs.size()) > 0) {
+        Vector<Attribute> runAttrs = new Vector<>(size);
+        Vector<Object> runValues = new Vector<>(size);
+        Iterator<Map.Entry<Attribute, Object>> iterator = attrs.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Attribute, Object> entry = iterator.next();
+            runAttrs.add(entry.getKey());
+            runValues.add(entry.getValue());
+        }
+        runAttributes[index] = runAttrs;
+        runAttributeValues[index] = runValues;
+    }
+}

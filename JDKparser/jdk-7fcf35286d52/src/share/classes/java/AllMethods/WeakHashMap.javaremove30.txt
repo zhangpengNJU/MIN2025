@@ -1,0 +1,10 @@
+public void remove() {
+    if (lastReturned == null)
+        throw new IllegalStateException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    WeakHashMap.this.remove(currentKey);
+    expectedModCount = modCount;
+    lastReturned = null;
+    currentKey = null;
+}

@@ -1,0 +1,10 @@
+// Op-specific abstract methods, implemented by the operation class
+/**
+ * Returns whether this operation is stateful or not.  If it is stateful,
+ * then the method
+ * {@link #opEvaluateParallel(PipelineHelper, java.util.Spliterator, java.util.function.IntFunction)}
+ * must be overridden.
+ *
+ * @return {@code true} if this operation is stateful
+ */
+abstract boolean opIsStateful();

@@ -1,0 +1,40 @@
+/*
+     * Reads GZIP member trailer and returns true if the eos
+     * reached, false if there are more (concatenated gzip
+     * data set)
+     */
+private boolean readTrailer() throws IOException {
+    InputStream in = this.in;
+    int n = inf.getRemaining();
+    if (n > 0) {
+        in = new SequenceInputStream(new ByteArrayInputStream(buf, len - n, n), new FilterInputStream(in) {
+
+            public void close() throws IOException {
+            }
+        });
+    }
+    // Uses left-to-right evaluation order
+    if ((readUInt(in) != crc.getValue()) || // rfc1952; ISIZE is the input size modulo 2^32
+    (readUInt(in) != (inf.getBytesWritten() & 0xffffffffL)))
+        throw new ZipException("Corrupt GZIP trailer");
+    // If there are more bytes available in "in" or
+    // the leftover in the "inf" is > 26 bytes:
+    // this.trailer(8) + next.header.min(10) + next.trailer(8)
+    // try concatenated case
+    if (this.in.available() > 0 || n > 26) {
+        // this.trailer
+        int m = 8;
+        try {
+            // next.header
+            m += readHeader(in);
+        } catch (IOException ze) {
+            // ignore any malformed, do nothing
+            return true;
+        }
+        inf.reset();
+        if (n > m)
+            inf.setInput(buf, len - n + m, n - m);
+        return false;
+    }
+    return true;
+}

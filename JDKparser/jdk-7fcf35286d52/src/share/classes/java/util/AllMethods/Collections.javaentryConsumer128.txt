@@ -1,0 +1,3 @@
+static <K, V> Consumer<Map.Entry<K, V>> entryConsumer(Consumer<? super Entry<K, V>> action) {
+    return e -> action.accept(new UnmodifiableEntry<>(e));
+}

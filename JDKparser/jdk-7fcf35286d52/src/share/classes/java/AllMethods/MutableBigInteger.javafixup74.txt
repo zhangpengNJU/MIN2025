@@ -1,0 +1,34 @@
+/**
+ * The Fixup Algorithm
+ * Calculates X such that X = C * 2^(-k) (mod P)
+ * Assumes C<P and P is odd.
+ */
+static MutableBigInteger fixup(MutableBigInteger c, MutableBigInteger p, int k) {
+    MutableBigInteger temp = new MutableBigInteger();
+    // Set r to the multiplicative inverse of p mod 2^32
+    int r = -inverseMod32(p.value[p.offset + p.intLen - 1]);
+    for (int i = 0, numWords = k >> 5; i < numWords; i++) {
+        // V = R * c (mod 2^j)
+        int v = r * c.value[c.offset + c.intLen - 1];
+        // c = c + (v * p)
+        p.mul(v, temp);
+        c.add(temp);
+        // c = c / 2^j
+        c.intLen--;
+    }
+    int numBits = k & 0x1f;
+    if (numBits != 0) {
+        // V = R * c (mod 2^j)
+        int v = r * c.value[c.offset + c.intLen - 1];
+        v &= ((1 << numBits) - 1);
+        // c = c + (v * p)
+        p.mul(v, temp);
+        c.add(temp);
+        // c = c / 2^j
+        c.rightShift(numBits);
+    }
+    // In theory, c may be greater than p at this point (Very rare!)
+    if (c.compare(p) >= 0)
+        c = c.divide(p, new MutableBigInteger());
+    return c;
+}

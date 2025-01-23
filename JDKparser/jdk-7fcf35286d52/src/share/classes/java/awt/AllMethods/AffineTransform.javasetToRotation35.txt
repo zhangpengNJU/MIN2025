@@ -1,0 +1,45 @@
+/**
+ * Sets this transform to a rotation transformation.
+ * The matrix representing this transform becomes:
+ * <pre>
+ *          [   cos(theta)    -sin(theta)    0   ]
+ *          [   sin(theta)     cos(theta)    0   ]
+ *          [       0              0         1   ]
+ * </pre>
+ * Rotating by a positive angle theta rotates points on the positive
+ * X axis toward the positive Y axis.
+ * Note also the discussion of
+ * <a href="#quadrantapproximation">Handling 90-Degree Rotations</a>
+ * above.
+ * @param theta the angle of rotation measured in radians
+ * @since 1.2
+ */
+public void setToRotation(double theta) {
+    double sin = Math.sin(theta);
+    double cos;
+    if (sin == 1.0 || sin == -1.0) {
+        cos = 0.0;
+        state = APPLY_SHEAR;
+        type = TYPE_QUADRANT_ROTATION;
+    } else {
+        cos = Math.cos(theta);
+        if (cos == -1.0) {
+            sin = 0.0;
+            state = APPLY_SCALE;
+            type = TYPE_QUADRANT_ROTATION;
+        } else if (cos == 1.0) {
+            sin = 0.0;
+            state = APPLY_IDENTITY;
+            type = TYPE_IDENTITY;
+        } else {
+            state = APPLY_SHEAR | APPLY_SCALE;
+            type = TYPE_GENERAL_ROTATION;
+        }
+    }
+    m00 = cos;
+    m10 = sin;
+    m01 = -sin;
+    m11 = cos;
+    m02 = 0.0;
+    m12 = 0.0;
+}

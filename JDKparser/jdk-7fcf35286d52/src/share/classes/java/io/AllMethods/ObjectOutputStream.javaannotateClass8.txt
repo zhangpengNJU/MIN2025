@@ -1,0 +1,18 @@
+/**
+ * Subclasses may implement this method to allow class data to be stored in
+ * the stream. By default this method does nothing.  The corresponding
+ * method in ObjectInputStream is resolveClass.  This method is called
+ * exactly once for each unique class in the stream.  The class name and
+ * signature will have already been written to the stream.  This method may
+ * make free use of the ObjectOutputStream to save any representation of
+ * the class it deems suitable (for example, the bytes of the class file).
+ * The resolveClass method in the corresponding subclass of
+ * ObjectInputStream must read and use any data or objects written by
+ * annotateClass.
+ *
+ * @param   cl the class to annotate custom data for
+ * @throws  IOException Any exception thrown by the underlying
+ *          OutputStream.
+ */
+protected void annotateClass(Class<?> cl) throws IOException {
+}

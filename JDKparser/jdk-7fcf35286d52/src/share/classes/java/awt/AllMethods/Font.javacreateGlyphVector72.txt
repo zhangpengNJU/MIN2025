@@ -1,0 +1,17 @@
+/**
+ * Creates a {@link java.awt.font.GlyphVector GlyphVector} by
+ * mapping the specified characters to glyphs one-to-one based on the
+ * Unicode cmap in this <code>Font</code>.  This method does no other
+ * processing besides the mapping of glyphs to characters.  This
+ * means that this method is not useful for some scripts, such
+ * as Arabic, Hebrew, Thai, and Indic, that require reordering,
+ * shaping, or ligature substitution.
+ * @param frc the specified <code>FontRenderContext</code>
+ * @param ci the specified <code>CharacterIterator</code>
+ * @return a new <code>GlyphVector</code> created with the
+ * specified <code>CharacterIterator</code> and the specified
+ * <code>FontRenderContext</code>.
+ */
+public GlyphVector createGlyphVector(FontRenderContext frc, CharacterIterator ci) {
+    return (GlyphVector) new StandardGlyphVector(this, ci, frc);
+}

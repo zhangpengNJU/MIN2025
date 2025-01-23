@@ -1,0 +1,10 @@
+/**
+ * Returns whether or not the pixel is valid.
+ * @param pixel the specified pixel value
+ * @return <code>true</code> if <code>pixel</code>
+ * is valid; <code>false</code> otherwise.
+ * @since 1.3
+ */
+public boolean isValid(int pixel) {
+    return ((pixel >= 0 && pixel < map_size) && (validBits == null || validBits.testBit(pixel)));
+}

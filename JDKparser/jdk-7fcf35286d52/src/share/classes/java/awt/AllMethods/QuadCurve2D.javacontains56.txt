@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y, double w, double h) {
+    if (w <= 0 || h <= 0) {
+        return false;
+    }
+    // Assertion: Quadratic curves closed by connecting their
+    // endpoints are always convex.
+    return (contains(x, y) && contains(x + w, y) && contains(x + w, y + h) && contains(x, y + h));
+}

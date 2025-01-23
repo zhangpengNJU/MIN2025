@@ -1,0 +1,58 @@
+/**
+ * Reinitialize the logging properties and reread the logging configuration
+ * from the given stream, which should be in java.util.Properties format.
+ * A PropertyChangeEvent will be fired after the properties are read.
+ * <p>
+ * Any log level definitions in the new configuration file will be
+ * applied using Logger.setLevel(), if the target Logger exists.
+ *
+ * @param ins       stream to read properties from
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have LoggingPermission("control").
+ * @exception  IOException if there are problems reading from the stream.
+ */
+public void readConfiguration(InputStream ins) throws IOException, SecurityException {
+    checkPermission();
+    reset();
+    // Load the properties
+    props.load(ins);
+    // Instantiate new configuration objects.
+    String[] names = parseClassNames("config");
+    for (int i = 0; i < names.length; i++) {
+        String word = names[i];
+        try {
+            Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(word);
+            clz.newInstance();
+        } catch (Exception ex) {
+            System.err.println("Can't load config class \"" + word + "\"");
+            System.err.println("" + ex);
+        // ex.printStackTrace();
+        }
+    }
+    // Set levels on any pre-existing loggers, based on the new properties.
+    setLevelsOnExistingLoggers();
+    // Notify any interested parties that our properties have changed.
+    // We first take a copy of the listener map so that we aren't holding any
+    // locks when calling the listeners.
+    Map<Object, Integer> listeners = null;
+    synchronized (listenerMap) {
+        if (!listenerMap.isEmpty())
+            listeners = new HashMap<>(listenerMap);
+    }
+    if (listeners != null) {
+        assert Beans.isBeansPresent();
+        Object ev = Beans.newPropertyChangeEvent(LogManager.class, null, null, null);
+        for (Map.Entry<Object, Integer> entry : listeners.entrySet()) {
+            Object listener = entry.getKey();
+            int count = entry.getValue().intValue();
+            for (int i = 0; i < count; i++) {
+                Beans.invokePropertyChange(listener, ev);
+            }
+        }
+    }
+    // Note that we need to reinitialize global handles when
+    // they are first referenced.
+    synchronized (this) {
+        initializedGlobalHandlers = false;
+    }
+}

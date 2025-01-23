@@ -1,0 +1,13 @@
+/**
+ * Prints a double-precision floating-point number and then terminates the
+ * line.  This method behaves as though it invokes <code>{@link
+ * #print(double)}</code> and then <code>{@link #println()}</code>.
+ *
+ * @param x the <code>double</code> value to be printed
+ */
+public void println(double x) {
+    synchronized (lock) {
+        print(x);
+        println();
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns the current value, consisting of the {@code prefix}, the values
+ * added so far separated by the {@code delimiter}, and the {@code suffix},
+ * unless no elements have been added in which case, the
+ * {@code prefix + suffix} or the {@code emptyValue} characters are returned
+ *
+ * @return the string representation of this {@code StringJoiner}
+ */
+@Override
+public String toString() {
+    if (value == null) {
+        return emptyValue;
+    } else {
+        if (suffix.equals("")) {
+            return value.toString();
+        } else {
+            int initialLength = value.length();
+            String result = value.append(suffix).toString();
+            // reset value to pre-append initialLength
+            value.setLength(initialLength);
+            return result;
+        }
+    }
+}

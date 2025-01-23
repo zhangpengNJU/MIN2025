@@ -1,0 +1,16 @@
+/*
+     * Writes GZIP member header.
+     */
+private void writeHeader() throws IOException {
+    out.write(new byte[] { // Magic number (short)
+    (byte) GZIP_MAGIC, // Magic number (short)
+    (byte) (GZIP_MAGIC >> 8), // Compression method (CM)
+    Deflater.DEFLATED, // Flags (FLG)
+    0, // Modification time MTIME (int)
+    0, // Modification time MTIME (int)
+    0, // Modification time MTIME (int)
+    0, // Modification time MTIME (int)
+    0, // Extra flags (XFLG)
+    0, // Operating system (OS)
+    0 });
+}

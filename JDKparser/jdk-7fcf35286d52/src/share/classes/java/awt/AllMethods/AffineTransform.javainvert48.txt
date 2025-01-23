@@ -1,0 +1,136 @@
+/**
+ * Sets this transform to the inverse of itself.
+ * The inverse transform Tx' of this transform Tx
+ * maps coordinates transformed by Tx back
+ * to their original coordinates.
+ * In other words, Tx'(Tx(p)) = p = Tx(Tx'(p)).
+ * <p>
+ * If this transform maps all coordinates onto a point or a line
+ * then it will not have an inverse, since coordinates that do
+ * not lie on the destination point or line will not have an inverse
+ * mapping.
+ * The <code>getDeterminant</code> method can be used to determine if this
+ * transform has no inverse, in which case an exception will be
+ * thrown if the <code>invert</code> method is called.
+ * @see #getDeterminant
+ * @exception NoninvertibleTransformException
+ * if the matrix cannot be inverted.
+ * @since 1.6
+ */
+public void invert() throws NoninvertibleTransformException {
+    double M00, M01, M02;
+    double M10, M11, M12;
+    double det;
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            M00 = m00;
+            M01 = m01;
+            M02 = m02;
+            M10 = m10;
+            M11 = m11;
+            M12 = m12;
+            det = M00 * M11 - M01 * M10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            m00 = M11 / det;
+            m10 = -M10 / det;
+            m01 = -M01 / det;
+            m11 = M00 / det;
+            m02 = (M01 * M12 - M11 * M02) / det;
+            m12 = (M10 * M02 - M00 * M12) / det;
+            break;
+        case (APPLY_SHEAR | APPLY_SCALE):
+            M00 = m00;
+            M01 = m01;
+            M10 = m10;
+            M11 = m11;
+            det = M00 * M11 - M01 * M10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            m00 = M11 / det;
+            m10 = -M10 / det;
+            m01 = -M01 / det;
+            m11 = M00 / det;
+            // m02 = 0.0;
+            // m12 = 0.0;
+            break;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            M01 = m01;
+            M02 = m02;
+            M10 = m10;
+            M12 = m12;
+            if (M01 == 0.0 || M10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            // m00 = 0.0;
+            m10 = 1.0 / M01;
+            m01 = 1.0 / M10;
+            // m11 = 0.0;
+            m02 = -M12 / M10;
+            m12 = -M02 / M01;
+            break;
+        case (APPLY_SHEAR):
+            M01 = m01;
+            M10 = m10;
+            if (M01 == 0.0 || M10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            // m00 = 0.0;
+            m10 = 1.0 / M01;
+            m01 = 1.0 / M10;
+            // m11 = 0.0;
+            // m02 = 0.0;
+            // m12 = 0.0;
+            break;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            M00 = m00;
+            M02 = m02;
+            M11 = m11;
+            M12 = m12;
+            if (M00 == 0.0 || M11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            m00 = 1.0 / M00;
+            // m10 = 0.0;
+            // m01 = 0.0;
+            m11 = 1.0 / M11;
+            m02 = -M02 / M00;
+            m12 = -M12 / M11;
+            break;
+        case (APPLY_SCALE):
+            M00 = m00;
+            M11 = m11;
+            if (M00 == 0.0 || M11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            m00 = 1.0 / M00;
+            // m10 = 0.0;
+            // m01 = 0.0;
+            m11 = 1.0 / M11;
+            // m02 = 0.0;
+            // m12 = 0.0;
+            break;
+        case (APPLY_TRANSLATE):
+            // m00 = 1.0;
+            // m10 = 0.0;
+            // m01 = 0.0;
+            // m11 = 1.0;
+            m02 = -m02;
+            m12 = -m12;
+            break;
+        case (APPLY_IDENTITY):
+            // m00 = 1.0;
+            // m10 = 0.0;
+            // m01 = 0.0;
+            // m11 = 1.0;
+            // m02 = 0.0;
+            // m12 = 0.0;
+            break;
+    }
+}

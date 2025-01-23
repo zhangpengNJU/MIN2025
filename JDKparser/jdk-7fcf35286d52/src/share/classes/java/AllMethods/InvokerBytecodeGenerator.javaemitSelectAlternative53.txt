@@ -1,0 +1,45 @@
+/**
+ * Emit bytecode for the selectAlternative idiom.
+ *
+ * The pattern looks like (Cf. MethodHandleImpl.makeGuardWithTest):
+ * <blockquote><pre>{@code
+ *   Lambda(a0:L,a1:I)=>{
+ *     t2:I=foo.test(a1:I);
+ *     t3:L=MethodHandleImpl.selectAlternative(t2:I,(MethodHandle(int)int),(MethodHandle(int)int));
+ *     t4:I=MethodHandle.invokeBasic(t3:L,a1:I);t4:I}
+ * }</pre></blockquote>
+ */
+private Name emitSelectAlternative(Name selectAlternativeName, Name invokeBasicName) {
+    assert isStaticallyInvocable(invokeBasicName);
+    Name receiver = (Name) invokeBasicName.arguments[0];
+    Label L_fallback = new Label();
+    Label L_done = new Label();
+    // load test result
+    emitPushArgument(selectAlternativeName, 0);
+    // if_icmpne L_fallback
+    mv.visitJumpInsn(Opcodes.IFEQ, L_fallback);
+    // invoke selectAlternativeName.arguments[1]
+    Class<?>[] preForkClasses = localClasses.clone();
+    // get 2nd argument of selectAlternative
+    emitPushArgument(selectAlternativeName, 1);
+    // store the MH in the receiver slot
+    emitAstoreInsn(receiver.index());
+    emitStaticInvoke(invokeBasicName);
+    // goto L_done
+    mv.visitJumpInsn(Opcodes.GOTO, L_done);
+    // L_fallback:
+    mv.visitLabel(L_fallback);
+    // invoke selectAlternativeName.arguments[2]
+    System.arraycopy(preForkClasses, 0, localClasses, 0, preForkClasses.length);
+    // get 3rd argument of selectAlternative
+    emitPushArgument(selectAlternativeName, 2);
+    // store the MH in the receiver slot
+    emitAstoreInsn(receiver.index());
+    emitStaticInvoke(invokeBasicName);
+    // L_done:
+    mv.visitLabel(L_done);
+    // for now do not bother to merge typestate; just reset to the dominator state
+    System.arraycopy(preForkClasses, 0, localClasses, 0, preForkClasses.length);
+    // return what's on stack
+    return invokeBasicName;
+}

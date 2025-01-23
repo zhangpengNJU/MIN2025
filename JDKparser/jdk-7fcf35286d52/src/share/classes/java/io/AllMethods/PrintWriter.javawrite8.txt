@@ -1,0 +1,18 @@
+/**
+ * Writes A Portion of an array of characters.
+ * @param buf Array of characters
+ * @param off Offset from which to start writing characters
+ * @param len Number of characters to write
+ */
+public void write(char[] buf, int off, int len) {
+    try {
+        synchronized (lock) {
+            ensureOpen();
+            out.write(buf, off, len);
+        }
+    } catch (InterruptedIOException x) {
+        Thread.currentThread().interrupt();
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

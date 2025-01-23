@@ -1,0 +1,6 @@
+@Override
+public Spliterator.OfLong trySplit() {
+    long size = estimateSize();
+    return size <= 1 ? null : // Left split always has a half-open range
+    new RangeLongSpliterator(from, from = from + splitPoint(size), 0);
+}

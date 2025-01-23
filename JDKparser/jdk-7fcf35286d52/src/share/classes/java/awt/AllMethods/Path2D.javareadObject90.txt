@@ -1,0 +1,100 @@
+final void readObject(java.io.ObjectInputStream s, boolean storedbl) throws java.lang.ClassNotFoundException, java.io.IOException {
+    s.defaultReadObject();
+    // The subclass calls this method with the storage type that
+    // they want us to use (storedbl) so we ignore the storage
+    // method hint from the stream.
+    s.readByte();
+    int nT = s.readInt();
+    int nC = s.readInt();
+    try {
+        setWindingRule(s.readByte());
+    } catch (IllegalArgumentException iae) {
+        throw new java.io.InvalidObjectException(iae.getMessage());
+    }
+    // Accept the size from the stream only if it is less than INIT_SIZE
+    // otherwise the size will be based on the real data in the stream
+    pointTypes = new byte[(nT < 0 || nT > INIT_SIZE) ? INIT_SIZE : nT];
+    final int initX2 = INIT_SIZE * 2;
+    if (nC < 0 || nC > initX2) {
+        nC = initX2;
+    }
+    if (storedbl) {
+        ((Path2D.Double) this).doubleCoords = new double[nC];
+    } else {
+        ((Path2D.Float) this).floatCoords = new float[nC];
+    }
+    PATHDONE: for (int i = 0; nT < 0 || i < nT; i++) {
+        boolean isdbl;
+        int npoints;
+        byte segtype;
+        byte serialtype = s.readByte();
+        switch(serialtype) {
+            case SERIAL_SEG_FLT_MOVETO:
+                isdbl = false;
+                npoints = 1;
+                segtype = SEG_MOVETO;
+                break;
+            case SERIAL_SEG_FLT_LINETO:
+                isdbl = false;
+                npoints = 1;
+                segtype = SEG_LINETO;
+                break;
+            case SERIAL_SEG_FLT_QUADTO:
+                isdbl = false;
+                npoints = 2;
+                segtype = SEG_QUADTO;
+                break;
+            case SERIAL_SEG_FLT_CUBICTO:
+                isdbl = false;
+                npoints = 3;
+                segtype = SEG_CUBICTO;
+                break;
+            case SERIAL_SEG_DBL_MOVETO:
+                isdbl = true;
+                npoints = 1;
+                segtype = SEG_MOVETO;
+                break;
+            case SERIAL_SEG_DBL_LINETO:
+                isdbl = true;
+                npoints = 1;
+                segtype = SEG_LINETO;
+                break;
+            case SERIAL_SEG_DBL_QUADTO:
+                isdbl = true;
+                npoints = 2;
+                segtype = SEG_QUADTO;
+                break;
+            case SERIAL_SEG_DBL_CUBICTO:
+                isdbl = true;
+                npoints = 3;
+                segtype = SEG_CUBICTO;
+                break;
+            case SERIAL_SEG_CLOSE:
+                isdbl = false;
+                npoints = 0;
+                segtype = SEG_CLOSE;
+                break;
+            case SERIAL_PATH_END:
+                if (nT < 0) {
+                    break PATHDONE;
+                }
+                throw new StreamCorruptedException("unexpected PATH_END");
+            default:
+                throw new StreamCorruptedException("unrecognized path type");
+        }
+        needRoom(segtype != SEG_MOVETO, npoints * 2);
+        if (isdbl) {
+            while (--npoints >= 0) {
+                append(s.readDouble(), s.readDouble());
+            }
+        } else {
+            while (--npoints >= 0) {
+                append(s.readFloat(), s.readFloat());
+            }
+        }
+        pointTypes[numTypes++] = segtype;
+    }
+    if (nT >= 0 && s.readByte() != SERIAL_PATH_END) {
+        throw new StreamCorruptedException("missing PATH_END");
+    }
+}

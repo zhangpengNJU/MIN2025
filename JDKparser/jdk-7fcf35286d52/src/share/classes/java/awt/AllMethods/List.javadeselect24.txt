@@ -1,0 +1,30 @@
+/**
+ * Deselects the item at the specified index.
+ * <p>
+ * Note that passing out of range parameters is invalid,
+ * and will result in unspecified behavior.
+ * <p>
+ * If the item at the specified index is not selected,
+ * then the operation is ignored.
+ * @param        index the position of the item to deselect
+ * @see          #select
+ * @see          #getSelectedItem
+ * @see          #isIndexSelected
+ */
+public synchronized void deselect(int index) {
+    ListPeer peer = (ListPeer) this.peer;
+    if (peer != null) {
+        if (isMultipleMode() || (getSelectedIndex() == index)) {
+            peer.deselect(index);
+        }
+    }
+    for (int i = 0; i < selected.length; i++) {
+        if (selected[i] == index) {
+            int[] newsel = new int[selected.length - 1];
+            System.arraycopy(selected, 0, newsel, 0, i);
+            System.arraycopy(selected, i + 1, newsel, i, selected.length - (i + 1));
+            selected = newsel;
+            return;
+        }
+    }
+}

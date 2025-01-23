@@ -1,0 +1,6 @@
+/**
+ * Completes with a non-exceptional result, unless already completed.
+ */
+final boolean completeValue(T t) {
+    return UNSAFE.compareAndSwapObject(this, RESULT, null, (t == null) ? NIL : t);
+}

@@ -1,0 +1,7 @@
+private int adjustScale(int scl, long exp) {
+    long adjustedScale = scl - exp;
+    if (adjustedScale > Integer.MAX_VALUE || adjustedScale < Integer.MIN_VALUE)
+        throw new NumberFormatException("Scale out of range.");
+    scl = (int) adjustedScale;
+    return scl;
+}

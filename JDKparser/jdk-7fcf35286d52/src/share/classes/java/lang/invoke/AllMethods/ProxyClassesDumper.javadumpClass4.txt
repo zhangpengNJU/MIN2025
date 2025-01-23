@@ -1,0 +1,17 @@
+public void dumpClass(String className, final byte[] classBytes) {
+    Path file;
+    try {
+        file = dumpDir.resolve(encodeForFilename(className) + ".class");
+    } catch (InvalidPathException ex) {
+        PlatformLogger.getLogger(ProxyClassesDumper.class.getName()).warning("Invalid path for class " + className);
+        return;
+    }
+    try {
+        Path dir = file.getParent();
+        Files.createDirectories(dir);
+        Files.write(file, classBytes);
+    } catch (Exception ignore) {
+        PlatformLogger.getLogger(ProxyClassesDumper.class.getName()).warning("Exception writing to path at " + file.toString());
+    // simply don't care if this operation failed
+    }
+}

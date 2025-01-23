@@ -1,0 +1,19 @@
+/* The FRC hints don't affect the value of the italic angle but
+     * we need to pass them in to look up a strike.
+     * If we can pass in ones already being used it can prevent an extra
+     * strike from being allocated. Note that since italic angle is
+     * a property of the font, the font transform is needed not the
+     * device transform. Finally, this is private but the only caller of this
+     * in the JDK - and the only likely caller - is in this same class.
+     */
+private float getItalicAngle(FontRenderContext frc) {
+    Object aa, fm;
+    if (frc == null) {
+        aa = RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
+        fm = RenderingHints.VALUE_FRACTIONALMETRICS_OFF;
+    } else {
+        aa = frc.getAntiAliasingHint();
+        fm = frc.getFractionalMetricsHint();
+    }
+    return getFont2D().getItalicAngle(this, identityTx, aa, fm);
+}

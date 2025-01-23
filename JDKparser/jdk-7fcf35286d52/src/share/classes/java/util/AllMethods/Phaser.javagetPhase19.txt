@@ -1,0 +1,12 @@
+/**
+ * Returns the current phase number. The maximum phase number is
+ * {@code Integer.MAX_VALUE}, after which it restarts at
+ * zero. Upon termination, the phase number is negative,
+ * in which case the prevailing phase prior to termination
+ * may be obtained via {@code getPhase() + Integer.MIN_VALUE}.
+ *
+ * @return the phase number, or a negative value if terminated
+ */
+public final int getPhase() {
+    return (int) (root.state >>> PHASE_SHIFT);
+}

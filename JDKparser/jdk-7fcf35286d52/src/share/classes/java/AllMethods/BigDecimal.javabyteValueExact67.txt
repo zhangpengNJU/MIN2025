@@ -1,0 +1,20 @@
+/**
+ * Converts this {@code BigDecimal} to a {@code byte}, checking
+ * for lost information.  If this {@code BigDecimal} has a
+ * nonzero fractional part or is out of the possible range for a
+ * {@code byte} result then an {@code ArithmeticException} is
+ * thrown.
+ *
+ * @return this {@code BigDecimal} converted to a {@code byte}.
+ * @throws ArithmeticException if {@code this} has a nonzero
+ *         fractional part, or will not fit in a {@code byte}.
+ * @since  1.5
+ */
+public byte byteValueExact() {
+    long num;
+    // will check decimal part
+    num = this.longValueExact();
+    if ((byte) num != num)
+        throw new java.lang.ArithmeticException("Overflow");
+    return (byte) num;
+}

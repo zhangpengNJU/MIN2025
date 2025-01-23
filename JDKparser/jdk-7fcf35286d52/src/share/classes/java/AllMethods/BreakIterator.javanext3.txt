@@ -1,0 +1,20 @@
+/**
+ * Returns the nth boundary from the current boundary. If either
+ * the first or last text boundary has been reached, it returns
+ * <code>BreakIterator.DONE</code> and the current position is set to either
+ * the first or last text boundary depending on which one is reached. Otherwise,
+ * the iterator's current position is set to the new boundary.
+ * For example, if the iterator's current position is the mth text boundary
+ * and three more boundaries exist from the current boundary to the last text
+ * boundary, the next(2) call will return m + 2. The new text position is set
+ * to the (m + 2)th text boundary. A next(4) call would return
+ * <code>BreakIterator.DONE</code> and the last text boundary would become the
+ * new text position.
+ * @param n which boundary to return.  A value of 0
+ * does nothing.  Negative values move to previous boundaries
+ * and positive values move to later boundaries.
+ * @return The character index of the nth boundary from the current position
+ * or <code>BreakIterator.DONE</code> if either first or last text boundary
+ * has been reached.
+ */
+public abstract int next(int n);

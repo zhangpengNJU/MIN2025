@@ -1,0 +1,8 @@
+@SuppressWarnings("unchecked")
+private LinkedList<E> superClone() {
+    try {
+        return (LinkedList<E>) super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+}

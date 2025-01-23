@@ -1,0 +1,20 @@
+/**
+ * Add a new Font/GraphicAttribute run with the given object at the
+ * given index.
+ */
+private void addFont(Object f, int index) {
+    if (fonts != null) {
+        fontStarts = addToVector(f, index, fonts, fontStarts);
+    } else if (font == null) {
+        font = f;
+    } else {
+        if (!font.equals(f)) {
+            fonts = new Vector<Object>(INITIAL_SIZE);
+            fonts.addElement(font);
+            fonts.addElement(f);
+            fontStarts = new int[INITIAL_SIZE];
+            fontStarts[0] = 0;
+            fontStarts[1] = index;
+        }
+    }
+}

@@ -1,0 +1,47 @@
+public Map<String, List<String>> get(URI uri, Map<String, List<String>> requestHeaders) throws IOException {
+    // pre-condition check
+    if (uri == null || requestHeaders == null) {
+        throw new IllegalArgumentException("Argument is null");
+    }
+    Map<String, List<String>> cookieMap = new java.util.HashMap<String, List<String>>();
+    // if there's no default CookieStore, no way for us to get any cookie
+    if (cookieJar == null)
+        return Collections.unmodifiableMap(cookieMap);
+    boolean secureLink = "https".equalsIgnoreCase(uri.getScheme());
+    List<HttpCookie> cookies = new java.util.ArrayList<HttpCookie>();
+    String path = uri.getPath();
+    if (path == null || path.isEmpty()) {
+        path = "/";
+    }
+    for (HttpCookie cookie : cookieJar.get(uri)) {
+        // apply path-matches rule (RFC 2965 sec. 3.3.4)
+        // and check for the possible "secure" tag (i.e. don't send
+        // 'secure' cookies over unsecure links)
+        if (pathMatches(path, cookie.getPath()) && (secureLink || !cookie.getSecure())) {
+            // Enforce httponly attribute
+            if (cookie.isHttpOnly()) {
+                String s = uri.getScheme();
+                if (!"http".equalsIgnoreCase(s) && !"https".equalsIgnoreCase(s)) {
+                    continue;
+                }
+            }
+            // Let's check the authorize port list if it exists
+            String ports = cookie.getPortlist();
+            if (ports != null && !ports.isEmpty()) {
+                int port = uri.getPort();
+                if (port == -1) {
+                    port = "https".equals(uri.getScheme()) ? 443 : 80;
+                }
+                if (isInPortList(ports, port)) {
+                    cookies.add(cookie);
+                }
+            } else {
+                cookies.add(cookie);
+            }
+        }
+    }
+    // apply sort rule (RFC 2965 sec. 3.3.4)
+    List<String> cookieHeader = sortByPath(cookies);
+    cookieMap.put("Cookie", cookieHeader);
+    return Collections.unmodifiableMap(cookieMap);
+}

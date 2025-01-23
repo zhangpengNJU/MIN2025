@@ -1,0 +1,24 @@
+/**
+ * Removes a certificate from this identity.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "removeIdentityCertificate"}
+ * as its argument to see if it's ok to remove a certificate.
+ *
+ * @param certificate the certificate to be removed.
+ *
+ * @exception KeyManagementException if the certificate is
+ * missing, or if another exception occurs.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * removing a certificate.
+ *
+ * @see SecurityManager#checkSecurityAccess
+ */
+public void removeCertificate(Certificate certificate) throws KeyManagementException {
+    check("removeIdentityCertificate");
+    if (certificates != null) {
+        certificates.removeElement(certificate);
+    }
+}

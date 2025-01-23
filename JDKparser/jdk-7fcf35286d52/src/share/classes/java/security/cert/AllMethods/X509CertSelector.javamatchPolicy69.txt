@@ -1,0 +1,59 @@
+/* match on policy OIDs */
+private boolean matchPolicy(X509Certificate xcert) {
+    if (policy == null) {
+        return true;
+    }
+    try {
+        CertificatePoliciesExtension ext = (CertificatePoliciesExtension) getExtensionObject(xcert, CERT_POLICIES_ID);
+        if (ext == null) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "no certificate policy extension");
+            }
+            return false;
+        }
+        List<PolicyInformation> policies = ext.get(CertificatePoliciesExtension.POLICIES);
+        /*
+             * Convert the Vector of PolicyInformation to a Vector
+             * of CertificatePolicyIds for easier comparison.
+             */
+        List<CertificatePolicyId> policyIDs = new ArrayList<CertificatePolicyId>(policies.size());
+        for (PolicyInformation info : policies) {
+            policyIDs.add(info.getPolicyIdentifier());
+        }
+        if (policy != null) {
+            boolean foundOne = false;
+            /*
+                 * if the user passes in an empty policy Set, then
+                 * we just want to make sure that the candidate certificate
+                 * has some policy OID in its CertPoliciesExtension
+                 */
+            if (policy.getCertPolicyIds().isEmpty()) {
+                if (policyIDs.isEmpty()) {
+                    if (debug != null) {
+                        debug.println("X509CertSelector.match: " + "cert failed policyAny criterion");
+                    }
+                    return false;
+                }
+            } else {
+                for (CertificatePolicyId id : policy.getCertPolicyIds()) {
+                    if (policyIDs.contains(id)) {
+                        foundOne = true;
+                        break;
+                    }
+                }
+                if (!foundOne) {
+                    if (debug != null) {
+                        debug.println("X509CertSelector.match: " + "cert failed policyAny criterion");
+                    }
+                    return false;
+                }
+            }
+        }
+    } catch (IOException ex) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "IOException in certificate policy ID check");
+        }
+        return false;
+    }
+    return true;
+}

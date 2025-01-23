@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the Chronology using a
+ * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(1);     // identifies a Chronology
+ *  out.writeUTF(getId());
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+@Override
+Object writeReplace() {
+    return super.writeReplace();
+}

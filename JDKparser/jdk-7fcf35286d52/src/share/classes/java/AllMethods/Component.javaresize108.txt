@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setSize(int, int)</code>.
+ */
+@Deprecated
+public void resize(int width, int height) {
+    synchronized (getTreeLock()) {
+        setBoundsOp(ComponentPeer.SET_SIZE);
+        setBounds(x, y, width, height);
+    }
+}

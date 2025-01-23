@@ -1,0 +1,9 @@
+@Override
+public boolean replace(K key, V oldValue, V newValue) {
+    Entry<K, V> p = getEntry(key);
+    if (p != null && Objects.equals(oldValue, p.value)) {
+        p.value = newValue;
+        return true;
+    }
+    return false;
+}

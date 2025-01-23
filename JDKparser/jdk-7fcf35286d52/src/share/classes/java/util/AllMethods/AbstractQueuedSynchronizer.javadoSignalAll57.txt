@@ -1,0 +1,13 @@
+/**
+ * Removes and transfers all nodes.
+ * @param first (non-null) the first node on condition queue
+ */
+private void doSignalAll(Node first) {
+    lastWaiter = firstWaiter = null;
+    do {
+        Node next = first.nextWaiter;
+        first.nextWaiter = null;
+        transferForSignal(first);
+        first = next;
+    } while (first != null);
+}

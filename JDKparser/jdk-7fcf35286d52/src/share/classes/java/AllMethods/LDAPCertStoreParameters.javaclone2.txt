@@ -1,0 +1,19 @@
+/**
+ * Returns a copy of this object. Changes to the copy will not affect
+ * the original and vice versa.
+ * <p>
+ * Note: this method currently performs a shallow copy of the object
+ * (simply calls {@code Object.clone()}). This may be changed in a
+ * future revision to perform a deep copy if new parameters are added
+ * that should not be shared.
+ *
+ * @return the copy
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        /* Cannot happen */
+        throw new InternalError(e.toString(), e);
+    }
+}

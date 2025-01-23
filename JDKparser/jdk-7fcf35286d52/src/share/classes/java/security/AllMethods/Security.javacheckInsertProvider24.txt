@@ -1,0 +1,16 @@
+private static void checkInsertProvider(String name) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        try {
+            security.checkSecurityAccess("insertProvider");
+        } catch (SecurityException se1) {
+            try {
+                security.checkSecurityAccess("insertProvider." + name);
+            } catch (SecurityException se2) {
+                // throw first exception, but add second to suppressed
+                se1.addSuppressed(se2);
+                throw se1;
+            }
+        }
+    }
+}

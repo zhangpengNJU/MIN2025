@@ -1,0 +1,9 @@
+/**
+ * A hash code for this duration.
+ *
+ * @return a suitable hash code
+ */
+@Override
+public int hashCode() {
+    return ((int) (seconds ^ (seconds >>> 32))) + (51 * nanos);
+}

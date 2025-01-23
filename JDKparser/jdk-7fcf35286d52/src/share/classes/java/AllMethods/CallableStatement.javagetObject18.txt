@@ -1,0 +1,22 @@
+/**
+ * Returns an object representing the value of OUT parameter
+ * <code>parameterIndex</code> and uses <code>map</code> for the custom
+ * mapping of the parameter value.
+ * <p>
+ * This method returns a Java object whose type corresponds to the
+ * JDBC type that was registered for this parameter using the method
+ * <code>registerOutParameter</code>.  By registering the target
+ * JDBC type as <code>java.sql.Types.OTHER</code>, this method can
+ * be used to read database-specific abstract data types.
+ * @param parameterIndex the first parameter is 1, the second is 2, and so on
+ * @param map the mapping from SQL type names to Java classes
+ * @return a <code>java.lang.Object</code> holding the OUT parameter value
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #setObject
+ * @since 1.2
+ */
+Object getObject(int parameterIndex, java.util.Map<String, Class<?>> map) throws SQLException;

@@ -1,0 +1,19 @@
+/**
+ * Tests whether an action is supported on the current platform.
+ *
+ * <p>Even when the platform supports an action, a file or URI may
+ * not have a registered application for the action.  For example,
+ * most of the platforms support the {@link Desktop.Action#OPEN}
+ * action.  But for a specific file, there may not be an
+ * application registered to open it.  In this case, {@link
+ * #isSupported} may return {@code true}, but the corresponding
+ * action method will throw an {@link IOException}.
+ *
+ * @param action the specified {@link Action}
+ * @return <code>true</code> if the specified action is supported on
+ *         the current platform; <code>false</code> otherwise
+ * @see Desktop.Action
+ */
+public boolean isSupported(Action action) {
+    return peer.isSupported(action);
+}

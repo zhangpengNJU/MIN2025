@@ -1,0 +1,7 @@
+MethodType methodType() {
+    if (resolvedHandle != null)
+        return resolvedHandle.type();
+    else
+        // only for certain internal LFs during bootstrapping
+        return member.getInvocationType();
+}

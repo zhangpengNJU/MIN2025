@@ -1,0 +1,7 @@
+public void setConnectionResetPending() {
+    synchronized (resetLock) {
+        if (resetState == CONNECTION_NOT_RESET) {
+            resetState = CONNECTION_RESET_PENDING;
+        }
+    }
+}

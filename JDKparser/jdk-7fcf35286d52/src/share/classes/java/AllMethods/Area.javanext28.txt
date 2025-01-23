@@ -1,0 +1,16 @@
+public void next() {
+    if (prevcurve != null) {
+        prevcurve = null;
+    } else {
+        prevcurve = thiscurve;
+        index++;
+        if (index < curves.size()) {
+            thiscurve = (Curve) curves.get(index);
+            if (thiscurve.getOrder() != 0 && prevcurve.getX1() == thiscurve.getX0() && prevcurve.getY1() == thiscurve.getY0()) {
+                prevcurve = null;
+            }
+        } else {
+            thiscurve = null;
+        }
+    }
+}

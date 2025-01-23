@@ -1,0 +1,9 @@
+private static Name[] buildNames(Name[] formals, Name[] temps, Name result) {
+    int arity = formals.length;
+    int length = arity + temps.length + (result == null ? 0 : 1);
+    Name[] names = Arrays.copyOf(formals, length);
+    System.arraycopy(temps, 0, names, arity, temps.length);
+    if (result != null)
+        names[length - 1] = result;
+    return names;
+}

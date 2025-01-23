@@ -1,0 +1,49 @@
+/**
+ * Opens or creates a file in this directory, returning a seekable byte
+ * channel to access the file.
+ *
+ * <p> This method works in exactly the manner specified by the {@link
+ * Files#newByteChannel Files.newByteChannel} method for the
+ * case that the {@code path} parameter is an {@link Path#isAbsolute absolute}
+ * path. When the parameter is a relative path then the file to open or
+ * create is relative to this open directory. In addition to the options
+ * defined by the {@code Files.newByteChannel} method, the {@link
+ * LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} option may be used to
+ * ensure that this method fails if the file is a symbolic link.
+ *
+ * <p> The channel, once created, is not dependent upon the directory stream
+ * used to create it. Closing this directory stream has no effect upon the
+ * channel.
+ *
+ * @param   path
+ *          the path of the file to open open or create
+ * @param   options
+ *          options specifying how the file is opened
+ * @param   attrs
+ *          an optional list of attributes to set atomically when creating
+ *          the file
+ *
+ * @return  the seekable byte channel
+ *
+ * @throws  ClosedDirectoryStreamException
+ *          if the directory stream is closed
+ * @throws  IllegalArgumentException
+ *          if the set contains an invalid combination of options
+ * @throws  UnsupportedOperationException
+ *          if an unsupported open option is specified or the array contains
+ *          attributes that cannot be set atomically when creating the file
+ * @throws  FileAlreadyExistsException
+ *          if a file of that name already exists and the {@link
+ *          StandardOpenOption#CREATE_NEW CREATE_NEW} option is specified
+ *          <i>(optional specific exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkRead(String) checkRead}
+ *          method is invoked to check read access to the path if the file
+ *          is opened for reading. The {@link SecurityManager#checkWrite(String)
+ *          checkWrite} method is invoked to check write access to the path
+ *          if the file is opened for writing.
+ */
+SeekableByteChannel newByteChannel(T path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException;

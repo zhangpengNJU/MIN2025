@@ -1,0 +1,6 @@
+@Override
+public long estimateSize() {
+    return (splSpineIndex == lastSpineIndex) ? (long) lastSpineElementFence - splElementIndex : // # of elements prior to end -
+    priorElementCount[lastSpineIndex] + lastSpineElementFence - // # of elements prior to current
+    priorElementCount[splSpineIndex] - splElementIndex;
+}

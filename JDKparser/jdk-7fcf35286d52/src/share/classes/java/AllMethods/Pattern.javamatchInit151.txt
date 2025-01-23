@@ -1,0 +1,15 @@
+boolean matchInit(Matcher matcher, int i, CharSequence seq) {
+    int save = matcher.locals[countIndex];
+    boolean ret = false;
+    if (0 < cmin) {
+        matcher.locals[countIndex] = 1;
+        ret = body.match(matcher, i, seq);
+    } else if (next.match(matcher, i, seq)) {
+        ret = true;
+    } else if (0 < cmax) {
+        matcher.locals[countIndex] = 1;
+        ret = body.match(matcher, i, seq);
+    }
+    matcher.locals[countIndex] = save;
+    return ret;
+}

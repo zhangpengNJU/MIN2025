@@ -1,0 +1,19 @@
+/**
+ * Obtains an instance of {@code LocalTime} from a nanos-of-day value.
+ * <p>
+ * This returns a {@code LocalTime} with the specified nanosecond-of-day.
+ *
+ * @param nanoOfDay  the nano of day, from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}
+ * @return the local time, not null
+ * @throws DateTimeException if the nanos of day value is invalid
+ */
+public static LocalTime ofNanoOfDay(long nanoOfDay) {
+    NANO_OF_DAY.checkValidValue(nanoOfDay);
+    int hours = (int) (nanoOfDay / NANOS_PER_HOUR);
+    nanoOfDay -= hours * NANOS_PER_HOUR;
+    int minutes = (int) (nanoOfDay / NANOS_PER_MINUTE);
+    nanoOfDay -= minutes * NANOS_PER_MINUTE;
+    int seconds = (int) (nanoOfDay / NANOS_PER_SECOND);
+    nanoOfDay -= seconds * NANOS_PER_SECOND;
+    return create(hours, minutes, seconds, (int) nanoOfDay);
+}

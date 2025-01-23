@@ -1,0 +1,17 @@
+/**
+ * Calls <code>dragExit</code> on the
+ * <code>DragSourceListener</code>s registered with this
+ * <code>DragSourceContext</code> and with the associated
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceEvent</code>.
+ *
+ * @param dse the <code>DragSourceEvent</code>
+ */
+public void dragExit(DragSourceEvent dse) {
+    DragSourceListener dsl = listener;
+    if (dsl != null) {
+        dsl.dragExit(dse);
+    }
+    getDragSource().processDragExit(dse);
+    updateCurrentCursor(DnDConstants.ACTION_NONE, DnDConstants.ACTION_NONE, DEFAULT);
+}

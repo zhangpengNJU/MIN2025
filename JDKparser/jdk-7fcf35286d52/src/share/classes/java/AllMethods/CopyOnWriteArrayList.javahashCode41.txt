@@ -1,0 +1,17 @@
+/**
+ * Returns the hash code value for this list.
+ *
+ * <p>This implementation uses the definition in {@link List#hashCode}.
+ *
+ * @return the hash code value for this list
+ */
+public int hashCode() {
+    int hashCode = 1;
+    Object[] elements = getArray();
+    int len = elements.length;
+    for (int i = 0; i < len; ++i) {
+        Object obj = elements[i];
+        hashCode = 31 * hashCode + (obj == null ? 0 : obj.hashCode());
+    }
+    return hashCode;
+}

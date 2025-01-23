@@ -1,0 +1,42 @@
+/**
+ * Fills the input buffer, taking the mark into account if it is valid.
+ */
+private void fill() throws IOException {
+    int dst;
+    if (markedChar <= UNMARKED) {
+        /* No mark */
+        dst = 0;
+    } else {
+        /* Marked */
+        int delta = nextChar - markedChar;
+        if (delta >= readAheadLimit) {
+            /* Gone past read-ahead limit: Invalidate mark */
+            markedChar = INVALIDATED;
+            readAheadLimit = 0;
+            dst = 0;
+        } else {
+            if (readAheadLimit <= cb.length) {
+                /* Shuffle in the current buffer */
+                System.arraycopy(cb, markedChar, cb, 0, delta);
+                markedChar = 0;
+                dst = delta;
+            } else {
+                /* Reallocate buffer to accommodate read-ahead limit */
+                char[] ncb = new char[readAheadLimit];
+                System.arraycopy(cb, markedChar, ncb, 0, delta);
+                cb = ncb;
+                markedChar = 0;
+                dst = delta;
+            }
+            nextChar = nChars = delta;
+        }
+    }
+    int n;
+    do {
+        n = in.read(cb, dst, cb.length - dst);
+    } while (n == 0);
+    if (n > 0) {
+        nChars = dst + n;
+        nextChar = dst;
+    }
+}

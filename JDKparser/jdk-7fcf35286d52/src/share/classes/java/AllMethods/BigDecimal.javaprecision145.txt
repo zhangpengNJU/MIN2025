@@ -1,0 +1,15 @@
+/*
+     * returns precision of 128-bit value
+     */
+private static int precision(long hi, long lo) {
+    if (hi == 0) {
+        if (lo >= 0) {
+            return longDigitLength(lo);
+        }
+        return (unsignedLongCompareEq(lo, LONGLONG_TEN_POWERS_TABLE[0][1])) ? 20 : 19;
+    // 0x8AC7230489E80000L  = unsigned 2^19
+    }
+    int r = ((128 - Long.numberOfLeadingZeros(hi) + 1) * 1233) >>> 12;
+    int idx = r - 19;
+    return (idx >= LONGLONG_TEN_POWERS_TABLE.length || longLongCompareMagnitude(hi, lo, LONGLONG_TEN_POWERS_TABLE[idx][0], LONGLONG_TEN_POWERS_TABLE[idx][1])) ? r : r + 1;
+}

@@ -1,0 +1,4 @@
+public double get(String name, double val) throws IOException {
+    int off = getFieldOffset(name, Double.TYPE);
+    return (off >= 0) ? Bits.getDouble(primVals, off) : val;
+}

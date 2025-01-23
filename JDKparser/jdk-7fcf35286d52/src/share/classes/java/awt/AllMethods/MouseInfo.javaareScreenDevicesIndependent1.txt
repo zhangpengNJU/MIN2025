@@ -1,0 +1,9 @@
+private static boolean areScreenDevicesIndependent(GraphicsDevice[] gds) {
+    for (int i = 0; i < gds.length; i++) {
+        Rectangle bounds = gds[i].getDefaultConfiguration().getBounds();
+        if (bounds.x != 0 || bounds.y != 0) {
+            return false;
+        }
+    }
+    return true;
+}

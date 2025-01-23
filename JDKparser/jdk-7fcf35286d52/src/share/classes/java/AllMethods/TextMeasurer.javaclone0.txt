@@ -1,0 +1,12 @@
+protected Object clone() {
+    TextMeasurer other;
+    try {
+        other = (TextMeasurer) super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new Error();
+    }
+    if (fComponents != null) {
+        other.fComponents = fComponents.clone();
+    }
+    return other;
+}

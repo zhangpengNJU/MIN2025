@@ -1,0 +1,9 @@
+static void setMostRecentFocusOwner(Component component) {
+    Component window = component;
+    while (window != null && !(window instanceof Window)) {
+        window = window.parent;
+    }
+    if (window != null) {
+        setMostRecentFocusOwner((Window) window, component);
+    }
+}

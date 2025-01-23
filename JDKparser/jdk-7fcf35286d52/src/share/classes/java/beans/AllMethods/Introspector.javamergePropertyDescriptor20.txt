@@ -1,0 +1,8 @@
+// Handle regular ipd merge
+private IndexedPropertyDescriptor mergePropertyDescriptor(IndexedPropertyDescriptor ipd1, IndexedPropertyDescriptor ipd2) {
+    if (ipd1.getClass0().isAssignableFrom(ipd2.getClass0())) {
+        return new IndexedPropertyDescriptor(ipd1, ipd2);
+    } else {
+        return new IndexedPropertyDescriptor(ipd2, ipd1);
+    }
+}

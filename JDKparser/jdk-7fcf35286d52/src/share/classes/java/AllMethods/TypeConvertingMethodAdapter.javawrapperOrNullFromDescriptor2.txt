@@ -1,0 +1,16 @@
+private Wrapper wrapperOrNullFromDescriptor(String desc) {
+    if (!desc.startsWith(WRAPPER_PREFIX)) {
+        // Not a class type (array or method), so not a boxed type
+        // or not in the right package
+        return null;
+    }
+    // Pare it down to the simple class name
+    String cname = desc.substring(WRAPPER_PREFIX.length(), desc.length() - 1);
+    // Hash to a Wrapper
+    Wrapper w = FROM_WRAPPER_NAME[hashWrapperName(cname)];
+    if (w == null || w.wrapperSimpleName().equals(cname)) {
+        return w;
+    } else {
+        return null;
+    }
+}

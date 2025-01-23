@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------
+private ChronoLocalDateTimeImpl<D> plusWithOverflow(D newDate, long hours, long minutes, long seconds, long nanos) {
+    // 9223372036854775808 long, 2147483648 int
+    if ((hours | minutes | seconds | nanos) == 0) {
+        return with(newDate, time);
+    }
+    long totDays = // max/24*60*60*1B
+    nanos / NANOS_PER_DAY + // max/24*60*60
+    seconds / SECONDS_PER_DAY + // max/24*60
+    minutes / MINUTES_PER_DAY + // max/24
+    hours / HOURS_PER_DAY;
+    long totNanos = // max  86400000000000
+    nanos % NANOS_PER_DAY + // max  86400000000000
+    (seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND + // max  86400000000000
+    (minutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE + // max  86400000000000
+    (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;
+    // max  86400000000000
+    long curNoD = time.toNanoOfDay();
+    // total 432000000000000
+    totNanos = totNanos + curNoD;
+    totDays += Math.floorDiv(totNanos, NANOS_PER_DAY);
+    long newNoD = Math.floorMod(totNanos, NANOS_PER_DAY);
+    LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
+    return with(newDate.plus(totDays, ChronoUnit.DAYS), newTime);
+}

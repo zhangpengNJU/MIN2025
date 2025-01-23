@@ -1,0 +1,40 @@
+/*
+     * Returns a {@code BigDecimal} created from {@code BigInteger} value with
+     * given scale rounded according to the MathContext settings
+     */
+private static BigDecimal doRound(BigInteger intVal, int scale, MathContext mc) {
+    int mcp = mc.precision;
+    int prec = 0;
+    if (mcp > 0) {
+        long compactVal = compactValFor(intVal);
+        int mode = mc.roundingMode.oldMode;
+        int drop;
+        if (compactVal == INFLATED) {
+            prec = bigDigitLength(intVal);
+            drop = prec - mcp;
+            while (drop > 0) {
+                scale = checkScaleNonZero((long) scale - drop);
+                intVal = divideAndRoundByTenPow(intVal, drop, mode);
+                compactVal = compactValFor(intVal);
+                if (compactVal != INFLATED) {
+                    break;
+                }
+                prec = bigDigitLength(intVal);
+                drop = prec - mcp;
+            }
+        }
+        if (compactVal != INFLATED) {
+            prec = longDigitLength(compactVal);
+            // drop can't be more than 18
+            drop = prec - mcp;
+            while (drop > 0) {
+                scale = checkScaleNonZero((long) scale - drop);
+                compactVal = divideAndRound(compactVal, LONG_TEN_POWERS_TABLE[drop], mc.roundingMode.oldMode);
+                prec = longDigitLength(compactVal);
+                drop = prec - mcp;
+            }
+            return valueOf(compactVal, scale, prec);
+        }
+    }
+    return new BigDecimal(intVal, INFLATED, scale, prec);
+}

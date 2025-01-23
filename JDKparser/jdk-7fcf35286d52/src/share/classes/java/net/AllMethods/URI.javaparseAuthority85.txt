@@ -1,0 +1,66 @@
+// authority     = server | reg_name
+// 
+// Ambiguity: An authority that is a registry name rather than a server
+// might have a prefix that parses as a server.  We use the fact that
+// the authority component is always followed by '/' or the end of the
+// input string to resolve this: If the complete authority did not
+// parse as a server then we try to parse it as a registry name.
+// 
+private int parseAuthority(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q = p;
+    URISyntaxException ex = null;
+    boolean serverChars;
+    boolean regChars;
+    if (scan(p, n, "", "]") > p) {
+        // contains a literal IPv6 address, therefore % is allowed
+        serverChars = (scan(p, n, L_SERVER_PERCENT, H_SERVER_PERCENT) == n);
+    } else {
+        serverChars = (scan(p, n, L_SERVER, H_SERVER) == n);
+    }
+    regChars = (scan(p, n, L_REG_NAME, H_REG_NAME) == n);
+    if (regChars && !serverChars) {
+        // Must be a registry-based authority
+        authority = substring(p, n);
+        return n;
+    }
+    if (serverChars) {
+        // Might be (probably is) a server-based authority, so attempt
+        // to parse it as such.  If the attempt fails, try to treat it
+        // as a registry-based authority.
+        try {
+            q = parseServer(p, n);
+            if (q < n)
+                failExpecting("end of authority", q);
+            authority = substring(p, n);
+        } catch (URISyntaxException x) {
+            // Undo results of failed parse
+            userInfo = null;
+            host = null;
+            port = -1;
+            if (requireServerAuthority) {
+                // If we're insisting upon a server-based authority,
+                // then just re-throw the exception
+                throw x;
+            } else {
+                // Save the exception in case it doesn't parse as a
+                // registry either
+                ex = x;
+                q = p;
+            }
+        }
+    }
+    if (q < n) {
+        if (regChars) {
+            // Registry-based authority
+            authority = substring(p, n);
+        } else if (ex != null) {
+            // Re-throw exception; it was probably due to
+            // a malformed IPv6 address
+            throw ex;
+        } else {
+            fail("Illegal character in authority", q);
+        }
+    }
+    return n;
+}

@@ -1,0 +1,12 @@
+private static String getInternalName(Class<?> c) {
+    if (c == Object.class)
+        return OBJ;
+    else if (c == Object[].class)
+        return OBJARY;
+    else if (c == Class.class)
+        return CLS;
+    else if (c == MethodHandle.class)
+        return MH;
+    assert (VerifyAccess.isTypeVisible(c, Object.class)) : c.getName();
+    return c.getName().replace('.', '/');
+}

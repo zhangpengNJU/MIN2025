@@ -1,0 +1,34 @@
+final <R, S> boolean biApply(CompletableFuture<R> a, CompletableFuture<S> b, BiFunction<? super R, ? super S, ? extends T> f, BiApply<R, S, T> c) {
+    Object r, s;
+    Throwable x;
+    if (a == null || (r = a.result) == null || b == null || (s = b.result) == null || f == null)
+        return false;
+    tryComplete: if (result == null) {
+        if (r instanceof AltResult) {
+            if ((x = ((AltResult) r).ex) != null) {
+                completeThrowable(x, r);
+                break tryComplete;
+            }
+            r = null;
+        }
+        if (s instanceof AltResult) {
+            if ((x = ((AltResult) s).ex) != null) {
+                completeThrowable(x, s);
+                break tryComplete;
+            }
+            s = null;
+        }
+        try {
+            if (c != null && !c.claim())
+                return false;
+            @SuppressWarnings("unchecked")
+            R rr = (R) r;
+            @SuppressWarnings("unchecked")
+            S ss = (S) s;
+            completeValue(f.apply(rr, ss));
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

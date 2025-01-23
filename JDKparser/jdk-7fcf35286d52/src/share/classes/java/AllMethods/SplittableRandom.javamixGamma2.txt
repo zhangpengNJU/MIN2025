@@ -1,0 +1,13 @@
+/**
+ * Returns the gamma value to use for a new split instance.
+ */
+private static long mixGamma(long z) {
+    // MurmurHash3 mix constants
+    z = (z ^ (z >>> 33)) * 0xff51afd7ed558ccdL;
+    z = (z ^ (z >>> 33)) * 0xc4ceb9fe1a85ec53L;
+    // force to be odd
+    z = (z ^ (z >>> 33)) | 1L;
+    // ensure enough transitions
+    int n = Long.bitCount(z ^ (z >>> 1));
+    return (n < 24) ? z ^ 0xaaaaaaaaaaaaaaaaL : z;
+}

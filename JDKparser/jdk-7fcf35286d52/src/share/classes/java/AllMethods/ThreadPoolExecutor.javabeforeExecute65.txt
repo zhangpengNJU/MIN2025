@@ -1,0 +1,17 @@
+/* Extension hooks */
+/**
+ * Method invoked prior to executing the given Runnable in the
+ * given thread.  This method is invoked by thread {@code t} that
+ * will execute task {@code r}, and may be used to re-initialize
+ * ThreadLocals, or to perform logging.
+ *
+ * <p>This implementation does nothing, but may be customized in
+ * subclasses. Note: To properly nest multiple overridings, subclasses
+ * should generally invoke {@code super.beforeExecute} at the end of
+ * this method.
+ *
+ * @param t the thread that will run task {@code r}
+ * @param r the task that will be executed
+ */
+protected void beforeExecute(Thread t, Runnable r) {
+}

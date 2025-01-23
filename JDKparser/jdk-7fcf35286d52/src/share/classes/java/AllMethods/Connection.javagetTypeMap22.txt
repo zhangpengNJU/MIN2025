@@ -1,0 +1,26 @@
+/**
+ * Retrieves the <code>Map</code> object associated with this
+ * <code>Connection</code> object.
+ * Unless the application has added an entry, the type map returned
+ * will be empty.
+ * <p>
+ * You must invoke <code>setTypeMap</code> after making changes to the
+ * <code>Map</code> object returned from
+ *  <code>getTypeMap</code> as a JDBC driver may create an internal
+ * copy of the <code>Map</code> object passed to <code>setTypeMap</code>:
+ *
+ * <pre>
+ *      Map&lt;String,Class&lt;?&gt;&gt; myMap = con.getTypeMap();
+ *      myMap.put("mySchemaName.ATHLETES", Athletes.class);
+ *      con.setTypeMap(myMap);
+ * </pre>
+ * @return the <code>java.util.Map</code> object associated
+ *         with this <code>Connection</code> object
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ * @see #setTypeMap
+ */
+java.util.Map<String, Class<?>> getTypeMap() throws SQLException;

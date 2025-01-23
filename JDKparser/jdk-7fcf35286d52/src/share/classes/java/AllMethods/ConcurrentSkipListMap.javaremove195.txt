@@ -1,0 +1,7 @@
+public void remove() {
+    Node<K, V> l = lastReturned;
+    if (l == null)
+        throw new IllegalStateException();
+    m.remove(l.key);
+    lastReturned = null;
+}

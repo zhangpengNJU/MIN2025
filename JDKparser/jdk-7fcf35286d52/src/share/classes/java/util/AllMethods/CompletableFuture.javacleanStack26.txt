@@ -1,0 +1,24 @@
+/**
+ * Traverses stack and unlinks dead Completions.
+ */
+final void cleanStack() {
+    for (Completion p = null, q = stack; q != null; ) {
+        Completion s = q.next;
+        if (q.isLive()) {
+            p = q;
+            q = s;
+        } else if (p == null) {
+            casStack(q, s);
+            q = stack;
+        } else {
+            p.next = s;
+            if (p.isLive())
+                q = s;
+            else {
+                // restart
+                p = null;
+                q = stack;
+            }
+        }
+    }
+}

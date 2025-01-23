@@ -1,0 +1,18 @@
+/**
+ * Closes the stream and releases any system resources associated
+ * with it. Closing a previously closed stream has no effect.
+ *
+ * @see #checkError()
+ */
+public void close() {
+    try {
+        synchronized (lock) {
+            if (out == null)
+                return;
+            out.close();
+            out = null;
+        }
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

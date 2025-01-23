@@ -1,0 +1,3 @@
+private static AccessControlContext getAccessControlContextFrom(Object src) {
+    return src instanceof Component ? ((Component) src).getAccessControlContext() : src instanceof MenuComponent ? ((MenuComponent) src).getAccessControlContext() : src instanceof TrayIcon ? ((TrayIcon) src).getAccessControlContext() : null;
+}

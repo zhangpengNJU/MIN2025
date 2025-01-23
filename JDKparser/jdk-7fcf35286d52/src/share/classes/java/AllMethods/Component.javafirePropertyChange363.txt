@@ -1,0 +1,17 @@
+/**
+ * Reports a bound property change.
+ *
+ * @param propertyName the programmatic name of the property
+ *          that was changed
+ * @param oldValue the old value of the property (as a char)
+ * @param newValue the new value of the property (as a char)
+ * @see #firePropertyChange(java.lang.String, java.lang.Object,
+ *          java.lang.Object)
+ * @since 1.5
+ */
+public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+    if (changeSupport == null || oldValue == newValue) {
+        return;
+    }
+    firePropertyChange(propertyName, new Character(oldValue), new Character(newValue));
+}

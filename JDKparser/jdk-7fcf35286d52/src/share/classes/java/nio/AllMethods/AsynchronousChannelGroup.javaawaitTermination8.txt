@@ -1,0 +1,18 @@
+/**
+ * Awaits termination of the group.
+ *
+ * <p> This method blocks until the group has terminated, or the timeout
+ * occurs, or the current thread is interrupted, whichever happens first.
+ *
+ * @param   timeout
+ *          The maximum time to wait, or zero or less to not wait
+ * @param   unit
+ *          The time unit of the timeout argument
+ *
+ * @return  {@code true} if the group has terminated; {@code false} if the
+ *          timeout elapsed before termination
+ *
+ * @throws  InterruptedException
+ *          If interrupted while waiting
+ */
+public abstract boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;

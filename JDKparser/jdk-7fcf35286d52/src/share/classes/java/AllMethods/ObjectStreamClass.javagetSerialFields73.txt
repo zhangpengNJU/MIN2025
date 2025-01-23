@@ -1,0 +1,19 @@
+/**
+ * Returns ObjectStreamField array describing the serializable fields of
+ * the given class.  Serializable fields backed by an actual field of the
+ * class are represented by ObjectStreamFields with corresponding non-null
+ * Field objects.  Throws InvalidClassException if the (explicitly
+ * declared) serializable fields are invalid.
+ */
+private static ObjectStreamField[] getSerialFields(Class<?> cl) throws InvalidClassException {
+    ObjectStreamField[] fields;
+    if (Serializable.class.isAssignableFrom(cl) && !Externalizable.class.isAssignableFrom(cl) && !Proxy.isProxyClass(cl) && !cl.isInterface()) {
+        if ((fields = getDeclaredSerialFields(cl)) == null) {
+            fields = getDefaultSerialFields(cl);
+        }
+        Arrays.sort(fields);
+    } else {
+        fields = NO_FIELDS;
+    }
+    return fields;
+}

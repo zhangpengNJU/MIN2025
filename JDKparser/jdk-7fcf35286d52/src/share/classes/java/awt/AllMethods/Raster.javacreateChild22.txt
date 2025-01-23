@@ -1,0 +1,80 @@
+/**
+ * Returns a new Raster which shares all or part of this Raster's
+ * DataBuffer.  The new Raster will possess a reference to the
+ * current Raster, accessible through its getParent() method.
+ *
+ * <p> The parentX, parentY, width and height parameters
+ * form a Rectangle in this Raster's coordinate space,
+ * indicating the area of pixels to be shared.  An error will
+ * be thrown if this Rectangle is not contained with the bounds
+ * of the current Raster.
+ *
+ * <p> The new Raster may additionally be translated to a
+ * different coordinate system for the plane than that used by the current
+ * Raster.  The childMinX and childMinY parameters give the new
+ * (x, y) coordinate of the upper-left pixel of the returned
+ * Raster; the coordinate (childMinX, childMinY) in the new Raster
+ * will map to the same pixel as the coordinate (parentX, parentY)
+ * in the current Raster.
+ *
+ * <p> The new Raster may be defined to contain only a subset of
+ * the bands of the current Raster, possibly reordered, by means
+ * of the bandList parameter.  If bandList is null, it is taken to
+ * include all of the bands of the current Raster in their current
+ * order.
+ *
+ * <p> To create a new Raster that contains a subregion of the current
+ * Raster, but shares its coordinate system and bands,
+ * this method should be called with childMinX equal to parentX,
+ * childMinY equal to parentY, and bandList equal to null.
+ *
+ * @param parentX The X coordinate of the upper-left corner
+ *        in this Raster's coordinates
+ * @param parentY The Y coordinate of the upper-left corner
+ *        in this Raster's coordinates
+ * @param width      Width of the region starting at (parentX, parentY)
+ * @param height     Height of the region starting at (parentX, parentY).
+ * @param childMinX The X coordinate of the upper-left corner
+ *                   of the returned Raster
+ * @param childMinY The Y coordinate of the upper-left corner
+ *                   of the returned Raster
+ * @param bandList   Array of band indices, or null to use all bands
+ * @return a new <code>Raster</code>.
+ * @exception RasterFormatException if the specified subregion is outside
+ *                               of the raster bounds.
+ * @throws RasterFormatException if <code>width</code> or
+ *         <code>height</code>
+ *         is less than or equal to zero, or computing any of
+ *         <code>parentX + width</code>, <code>parentY + height</code>,
+ *         <code>childMinX + width</code>, or
+ *         <code>childMinY + height</code> results in integer
+ *         overflow
+ */
+public Raster createChild(int parentX, int parentY, int width, int height, int childMinX, int childMinY, int[] bandList) {
+    if (parentX < this.minX) {
+        throw new RasterFormatException("parentX lies outside raster");
+    }
+    if (parentY < this.minY) {
+        throw new RasterFormatException("parentY lies outside raster");
+    }
+    if ((parentX + width < parentX) || (parentX + width > this.width + this.minX)) {
+        throw new RasterFormatException("(parentX + width) is outside raster");
+    }
+    if ((parentY + height < parentY) || (parentY + height > this.height + this.minY)) {
+        throw new RasterFormatException("(parentY + height) is outside raster");
+    }
+    SampleModel subSampleModel;
+    // Note: the SampleModel for the child Raster should have the same
+    // width and height as that for the parent, since it represents
+    // the physical layout of the pixel data.  The child Raster's width
+    // and height represent a "virtual" view of the pixel data, so
+    // they may be different than those of the SampleModel.
+    if (bandList == null) {
+        subSampleModel = sampleModel;
+    } else {
+        subSampleModel = sampleModel.createSubsetSampleModel(bandList);
+    }
+    int deltaX = childMinX - parentX;
+    int deltaY = childMinY - parentY;
+    return new Raster(subSampleModel, getDataBuffer(), new Rectangle(childMinX, childMinY, width, height), new Point(sampleModelTranslateX + deltaX, sampleModelTranslateY + deltaY), this);
+}

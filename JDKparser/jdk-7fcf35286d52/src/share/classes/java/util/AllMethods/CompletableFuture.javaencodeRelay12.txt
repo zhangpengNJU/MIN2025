@@ -1,0 +1,8 @@
+/**
+ * Returns the encoding of a copied outcome; if exceptional,
+ * rewraps as a CompletionException, else returns argument.
+ */
+static Object encodeRelay(Object r) {
+    Throwable x;
+    return (((r instanceof AltResult) && (x = ((AltResult) r).ex) != null && !(x instanceof CompletionException)) ? new AltResult(new CompletionException(x)) : r);
+}

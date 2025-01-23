@@ -1,0 +1,12 @@
+/**
+ * Selects all the text in this text component.
+ * @see        java.awt.TextComponent#select
+ */
+public synchronized void selectAll() {
+    this.selectionStart = 0;
+    this.selectionEnd = getText().length();
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        peer.select(selectionStart, selectionEnd);
+    }
+}

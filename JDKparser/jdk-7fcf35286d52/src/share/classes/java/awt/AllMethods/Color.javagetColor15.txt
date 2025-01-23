@@ -1,0 +1,28 @@
+/**
+ * Finds a color in the system properties.
+ * <p>
+ * The first argument is treated as the name of a system property to
+ * be obtained. The string value of this property is then interpreted
+ * as an integer which is then converted to a <code>Color</code>
+ * object.
+ * <p>
+ * If the specified property is not found or cannot be parsed as
+ * an integer then the <code>Color</code> specified by the second
+ * argument is returned instead.
+ * @param    nm the name of the color property
+ * @param    v    the default <code>Color</code>
+ * @return   the <code>Color</code> converted from the system
+ *          property, or the specified <code>Color</code>.
+ * @see      java.lang.System#getProperty(java.lang.String)
+ * @see      java.lang.Integer#getInteger(java.lang.String)
+ * @see      java.awt.Color#Color(int)
+ * @since    JDK1.0
+ */
+public static Color getColor(String nm, Color v) {
+    Integer intval = Integer.getInteger(nm);
+    if (intval == null) {
+        return v;
+    }
+    int i = intval.intValue();
+    return new Color((i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF);
+}

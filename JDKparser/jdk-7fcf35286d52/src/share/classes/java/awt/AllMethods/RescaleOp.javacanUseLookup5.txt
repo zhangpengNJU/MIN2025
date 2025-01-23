@@ -1,0 +1,57 @@
+/**
+ * Determines if the rescale can be performed as a lookup.
+ * The dst must be a byte or short type.
+ * The src must be less than 16 bits.
+ * All source band sizes must be the same and all dst band sizes
+ * must be the same.
+ */
+private boolean canUseLookup(Raster src, Raster dst) {
+    // 
+    // Check that the src datatype is either a BYTE or SHORT
+    // 
+    int datatype = src.getDataBuffer().getDataType();
+    if (datatype != DataBuffer.TYPE_BYTE && datatype != DataBuffer.TYPE_USHORT) {
+        return false;
+    }
+    // 
+    // Check dst sample sizes. All must be 8 or 16 bits.
+    // 
+    SampleModel dstSM = dst.getSampleModel();
+    dstNbits = dstSM.getSampleSize(0);
+    if (!(dstNbits == 8 || dstNbits == 16)) {
+        return false;
+    }
+    for (int i = 1; i < src.getNumBands(); i++) {
+        int bandSize = dstSM.getSampleSize(i);
+        if (bandSize != dstNbits) {
+            return false;
+        }
+    }
+    // 
+    // Check src sample sizes. All must be the same size
+    // 
+    SampleModel srcSM = src.getSampleModel();
+    srcNbits = srcSM.getSampleSize(0);
+    if (srcNbits > 16) {
+        return false;
+    }
+    for (int i = 1; i < src.getNumBands(); i++) {
+        int bandSize = srcSM.getSampleSize(i);
+        if (bandSize != srcNbits) {
+            return false;
+        }
+    }
+    if (dstSM instanceof ComponentSampleModel) {
+        ComponentSampleModel dsm = (ComponentSampleModel) dstSM;
+        if (dsm.getPixelStride() != dst.getNumBands()) {
+            return false;
+        }
+    }
+    if (srcSM instanceof ComponentSampleModel) {
+        ComponentSampleModel csm = (ComponentSampleModel) srcSM;
+        if (csm.getPixelStride() != src.getNumBands()) {
+            return false;
+        }
+    }
+    return true;
+}

@@ -1,0 +1,14 @@
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    if (getClass().getClassLoader() != null) {
+        throw new SecurityException("invalid address type");
+    }
+    GetField gf = s.readFields();
+    String host = (String) gf.get("hostName", null);
+    int address = gf.get("address", 0);
+    int family = gf.get("family", 0);
+    if (family != IPv4 && family != IPv6) {
+        throw new InvalidObjectException("invalid address family type: " + family);
+    }
+    InetAddressHolder h = new InetAddressHolder(host, address, family);
+    UNSAFE.putObject(this, FIELDS_OFFSET, h);
+}

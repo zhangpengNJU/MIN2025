@@ -1,0 +1,115 @@
+// ==== Begin fast-path formating logic for double =========================
+/* Fast-path formatting will be used for format(double ...) methods iff a
+     * number of conditions are met (see checkAndSetFastPathStatus()):
+     * - Only if instance properties meet the right predefined conditions.
+     * - The abs value of the double to format is <= Integer.MAX_VALUE.
+     *
+     * The basic approach is to split the binary to decimal conversion of a
+     * double value into two phases:
+     * * The conversion of the integer portion of the double.
+     * * The conversion of the fractional portion of the double
+     *   (limited to two or three digits).
+     *
+     * The isolation and conversion of the integer portion of the double is
+     * straightforward. The conversion of the fraction is more subtle and relies
+     * on some rounding properties of double to the decimal precisions in
+     * question.  Using the terminology of BigDecimal, this fast-path algorithm
+     * is applied when a double value has a magnitude less than Integer.MAX_VALUE
+     * and rounding is to nearest even and the destination format has two or
+     * three digits of *scale* (digits after the decimal point).
+     *
+     * Under a rounding to nearest even policy, the returned result is a digit
+     * string of a number in the (in this case decimal) destination format
+     * closest to the exact numerical value of the (in this case binary) input
+     * value.  If two destination format numbers are equally distant, the one
+     * with the last digit even is returned.  To compute such a correctly rounded
+     * value, some information about digits beyond the smallest returned digit
+     * position needs to be consulted.
+     *
+     * In general, a guard digit, a round digit, and a sticky *bit* are needed
+     * beyond the returned digit position.  If the discarded portion of the input
+     * is sufficiently large, the returned digit string is incremented.  In round
+     * to nearest even, this threshold to increment occurs near the half-way
+     * point between digits.  The sticky bit records if there are any remaining
+     * trailing digits of the exact input value in the new format; the sticky bit
+     * is consulted only in close to half-way rounding cases.
+     *
+     * Given the computation of the digit and bit values, rounding is then
+     * reduced to a table lookup problem.  For decimal, the even/odd cases look
+     * like this:
+     *
+     * Last   Round   Sticky
+     * 6      5       0      => 6   // exactly halfway, return even digit.
+     * 6      5       1      => 7   // a little bit more than halfway, round up.
+     * 7      5       0      => 8   // exactly halfway, round up to even.
+     * 7      5       1      => 8   // a little bit more than halfway, round up.
+     * With analogous entries for other even and odd last-returned digits.
+     *
+     * However, decimal negative powers of 5 smaller than 0.5 are *not* exactly
+     * representable as binary fraction.  In particular, 0.005 (the round limit
+     * for a two-digit scale) and 0.0005 (the round limit for a three-digit
+     * scale) are not representable. Therefore, for input values near these cases
+     * the sticky bit is known to be set which reduces the rounding logic to:
+     *
+     * Last   Round   Sticky
+     * 6      5       1      => 7   // a little bit more than halfway, round up.
+     * 7      5       1      => 8   // a little bit more than halfway, round up.
+     *
+     * In other words, if the round digit is 5, the sticky bit is known to be
+     * set.  If the round digit is something other than 5, the sticky bit is not
+     * relevant.  Therefore, some of the logic about whether or not to increment
+     * the destination *decimal* value can occur based on tests of *binary*
+     * computations of the binary input number.
+     */
+/**
+ * Check validity of using fast-path for this instance. If fast-path is valid
+ * for this instance, sets fast-path state as true and initializes fast-path
+ * utility fields as needed.
+ *
+ * This method is supposed to be called rarely, otherwise that will break the
+ * fast-path performance. That means avoiding frequent changes of the
+ * properties of the instance, since for most properties, each time a change
+ * happens, a call to this method is needed at the next format call.
+ *
+ * FAST-PATH RULES:
+ *  Similar to the default DecimalFormat instantiation case.
+ *  More precisely:
+ *  - HALF_EVEN rounding mode,
+ *  - isGroupingUsed() is true,
+ *  - groupingSize of 3,
+ *  - multiplier is 1,
+ *  - Decimal separator not mandatory,
+ *  - No use of exponential notation,
+ *  - minimumIntegerDigits is exactly 1 and maximumIntegerDigits at least 10
+ *  - For number of fractional digits, the exact values found in the default case:
+ *     Currency : min = max = 2.
+ *     Decimal  : min = 0. max = 3.
+ */
+private boolean checkAndSetFastPathStatus() {
+    boolean fastPathWasOn = isFastPath;
+    if ((roundingMode == RoundingMode.HALF_EVEN) && (isGroupingUsed()) && (groupingSize == 3) && (multiplier == 1) && (!decimalSeparatorAlwaysShown) && (!useExponentialNotation)) {
+        // The fast-path algorithm is semi-hardcoded against
+        // minimumIntegerDigits and maximumIntegerDigits.
+        isFastPath = ((minimumIntegerDigits == 1) && (maximumIntegerDigits >= 10));
+        // The fast-path algorithm is hardcoded against
+        // minimumFractionDigits and maximumFractionDigits.
+        if (isFastPath) {
+            if (isCurrencyFormat) {
+                if ((minimumFractionDigits != 2) || (maximumFractionDigits != 2))
+                    isFastPath = false;
+            } else if ((minimumFractionDigits != 0) || (maximumFractionDigits != 3))
+                isFastPath = false;
+        }
+    } else
+        isFastPath = false;
+    resetFastPathData(fastPathWasOn);
+    fastPathCheckNeeded = false;
+    /*
+         * Returns true after successfully checking the fast path condition and
+         * setting the fast path data. The return value is used by the
+         * fastFormat() method to decide whether to call the resetFastPathData
+         * method to reinitialize fast path data or is it already initialized
+         * in this method.
+         */
+    return true;
+}

@@ -1,0 +1,22 @@
+/**
+ * Add a VetoableChangeListener for a specific property.  The listener
+ * will be invoked only when a call on fireVetoableChange names that
+ * specific property.
+ * The same listener object may be added more than once.  For each
+ * property,  the listener will be invoked the number of times it was added
+ * for that property.
+ * If <code>propertyName</code> or <code>listener</code> is null, no
+ * exception is thrown and no action is taken.
+ *
+ * @param propertyName  The name of the property to listen on.
+ * @param listener  The VetoableChangeListener to be added
+ */
+public void addVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
+    if (listener == null || propertyName == null) {
+        return;
+    }
+    listener = this.map.extract(listener);
+    if (listener != null) {
+        this.map.add(propertyName, listener);
+    }
+}

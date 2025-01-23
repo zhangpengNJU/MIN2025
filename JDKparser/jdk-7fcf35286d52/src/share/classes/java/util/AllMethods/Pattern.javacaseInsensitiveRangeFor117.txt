@@ -1,0 +1,22 @@
+/**
+ * Returns node for matching characters within an explicit value
+ * range in a case insensitive manner.
+ */
+private CharProperty caseInsensitiveRangeFor(final int lower, final int upper) {
+    if (has(UNICODE_CASE))
+        return new CharProperty() {
+
+            boolean isSatisfiedBy(int ch) {
+                if (inRange(lower, ch, upper))
+                    return true;
+                int up = Character.toUpperCase(ch);
+                return inRange(lower, up, upper) || inRange(lower, Character.toLowerCase(up), upper);
+            }
+        };
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return inRange(lower, ch, upper) || ASCII.isAscii(ch) && (inRange(lower, ASCII.toUpper(ch), upper) || inRange(lower, ASCII.toLower(ch), upper));
+        }
+    };
+}

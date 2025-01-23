@@ -1,0 +1,51 @@
+/**
+ * Specifies the modal exclusion type for this window. If a window is modal
+ * excluded, it is not blocked by some modal dialogs. See {@link
+ * java.awt.Dialog.ModalExclusionType Dialog.ModalExclusionType} for
+ * possible modal exclusion types.
+ * <p>
+ * If the given type is not supported, {@code NO_EXCLUDE} is used.
+ * <p>
+ * Note: changing the modal exclusion type for a visible window may have no
+ * effect until it is hidden and then shown again.
+ *
+ * @param exclusionType the modal exclusion type for this window; a {@code null}
+ *     value is equivalent to {@link Dialog.ModalExclusionType#NO_EXCLUDE
+ *     NO_EXCLUDE}
+ * @throws SecurityException if the calling thread does not have permission
+ *     to set the modal exclusion property to the window with the given
+ *     {@code exclusionType}
+ * @see java.awt.Dialog.ModalExclusionType
+ * @see java.awt.Window#getModalExclusionType
+ * @see java.awt.Toolkit#isModalExclusionTypeSupported
+ *
+ * @since 1.6
+ */
+public void setModalExclusionType(Dialog.ModalExclusionType exclusionType) {
+    if (exclusionType == null) {
+        exclusionType = Dialog.ModalExclusionType.NO_EXCLUDE;
+    }
+    if (!Toolkit.getDefaultToolkit().isModalExclusionTypeSupported(exclusionType)) {
+        exclusionType = Dialog.ModalExclusionType.NO_EXCLUDE;
+    }
+    if (modalExclusionType == exclusionType) {
+        return;
+    }
+    if (exclusionType == Dialog.ModalExclusionType.TOOLKIT_EXCLUDE) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SecurityConstants.AWT.TOOLKIT_MODALITY_PERMISSION);
+        }
+    }
+    modalExclusionType = exclusionType;
+// if we want on-fly changes, we need to uncomment the lines below
+// and override the method in Dialog to use modalShow() instead
+// of updateChildrenBlocking()
+/*
+        if (isModalBlocked()) {
+            modalBlocker.unblockWindow(this);
+        }
+        Dialog.checkShouldBeBlocked(this);
+        updateChildrenBlocking();
+ */
+}

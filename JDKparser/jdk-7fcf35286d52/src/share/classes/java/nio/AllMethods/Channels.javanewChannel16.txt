@@ -1,0 +1,20 @@
+// -- Channels from streams --
+/**
+ * Constructs a channel that reads bytes from the given stream.
+ *
+ * <p> The resulting channel will not be buffered; it will simply redirect
+ * its I/O operations to the given stream.  Closing the channel will in
+ * turn cause the stream to be closed.  </p>
+ *
+ * @param  in
+ *         The stream from which bytes are to be read
+ *
+ * @return  A new readable byte channel
+ */
+public static ReadableByteChannel newChannel(final InputStream in) {
+    checkNotNull(in, "in");
+    if (in instanceof FileInputStream && FileInputStream.class.equals(in.getClass())) {
+        return ((FileInputStream) in).getChannel();
+    }
+    return new ReadableByteChannelImpl(in);
+}

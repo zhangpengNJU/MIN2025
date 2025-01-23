@@ -1,0 +1,26 @@
+/**
+ * Checks that the certificate is currently valid. It is if
+ * the current date and time are within the validity period given in the
+ * certificate.
+ * <p>
+ * The validity period consists of two date/time values:
+ * the first and last dates (and times) on which the certificate
+ * is valid. It is defined in
+ * ASN.1 as:
+ * <pre>
+ * validity             Validity
+ *
+ * Validity ::= SEQUENCE {
+ *     notBefore      CertificateValidityDate,
+ *     notAfter       CertificateValidityDate }
+ *
+ * CertificateValidityDate ::= CHOICE {
+ *     utcTime        UTCTime,
+ *     generalTime    GeneralizedTime }
+ * </pre>
+ *
+ * @exception CertificateExpiredException if the certificate has expired.
+ * @exception CertificateNotYetValidException if the certificate is not
+ * yet valid.
+ */
+public abstract void checkValidity() throws CertificateExpiredException, CertificateNotYetValidException;

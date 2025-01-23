@@ -1,0 +1,44 @@
+/**
+ * Sets the active Window. Only a Frame or a Dialog can be the active
+ * Window. The native windowing system may denote the active Window or its
+ * children with special decorations, such as a highlighted title bar. The
+ * active Window is always either the focused Window, or the first Frame or
+ * Dialog that is an owner of the focused Window.
+ * <p>
+ * This method does not actually change the active Window as far as the
+ * native windowing system is concerned. It merely stores the value to be
+ * subsequently returned by <code>getActiveWindow()</code>. Use
+ * <code>Component.requestFocus()</code> or
+ * <code>Component.requestFocusInWindow()</code>to change the active
+ * Window, subject to platform limitations.
+ *
+ * @param activeWindow the active Window
+ * @see #getActiveWindow
+ * @see #getGlobalActiveWindow
+ * @see Component#requestFocus()
+ * @see Component#requestFocusInWindow()
+ * @throws SecurityException if this KeyboardFocusManager is not the
+ *         current KeyboardFocusManager for the calling thread's context
+ *         and if the calling thread does not have "replaceKeyboardFocusManager"
+ *         permission
+ * @beaninfo
+ *       bound: true
+ */
+protected void setGlobalActiveWindow(Window activeWindow) throws SecurityException {
+    Window oldActiveWindow;
+    synchronized (KeyboardFocusManager.class) {
+        checkKFMSecurity();
+        oldActiveWindow = getActiveWindow();
+        if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+            focusLog.finer("Setting global active window to " + activeWindow + ", old active " + oldActiveWindow);
+        }
+        try {
+            fireVetoableChange("activeWindow", oldActiveWindow, activeWindow);
+        } catch (PropertyVetoException e) {
+            // rejected
+            return;
+        }
+        KeyboardFocusManager.activeWindow = activeWindow;
+    }
+    firePropertyChange("activeWindow", oldActiveWindow, activeWindow);
+}

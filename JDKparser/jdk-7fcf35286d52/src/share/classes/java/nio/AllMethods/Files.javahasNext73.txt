@@ -1,0 +1,8 @@
+@Override
+public boolean hasNext() {
+    try {
+        return delegate.hasNext();
+    } catch (DirectoryIteratorException e) {
+        throw new UncheckedIOException(e.getCause());
+    }
+}

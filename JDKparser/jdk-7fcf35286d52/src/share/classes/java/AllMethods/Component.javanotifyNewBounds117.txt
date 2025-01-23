@@ -1,0 +1,23 @@
+@SuppressWarnings("deprecation")
+private void notifyNewBounds(boolean resized, boolean moved) {
+    if (componentListener != null || (eventMask & AWTEvent.COMPONENT_EVENT_MASK) != 0 || Toolkit.enabledOnToolkit(AWTEvent.COMPONENT_EVENT_MASK)) {
+        if (resized) {
+            ComponentEvent e = new ComponentEvent(this, ComponentEvent.COMPONENT_RESIZED);
+            Toolkit.getEventQueue().postEvent(e);
+        }
+        if (moved) {
+            ComponentEvent e = new ComponentEvent(this, ComponentEvent.COMPONENT_MOVED);
+            Toolkit.getEventQueue().postEvent(e);
+        }
+    } else {
+        if (this instanceof Container && ((Container) this).countComponents() > 0) {
+            boolean enabledOnToolkit = Toolkit.enabledOnToolkit(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK);
+            if (resized) {
+                ((Container) this).createChildHierarchyEvents(HierarchyEvent.ANCESTOR_RESIZED, 0, enabledOnToolkit);
+            }
+            if (moved) {
+                ((Container) this).createChildHierarchyEvents(HierarchyEvent.ANCESTOR_MOVED, 0, enabledOnToolkit);
+            }
+        }
+    }
+}

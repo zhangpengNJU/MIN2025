@@ -1,0 +1,22 @@
+/**
+ * Gets the instance of <code>MenuItem</code> associated
+ * with the specified <code>MenuShortcut</code> object,
+ * or <code>null</code> if none of the menu items being managed
+ * by this menu bar is associated with the specified menu
+ * shortcut.
+ * @param        s the specified menu shortcut.
+ * @see          java.awt.MenuItem
+ * @see          java.awt.MenuShortcut
+ * @since        JDK1.1
+ */
+public MenuItem getShortcutMenuItem(MenuShortcut s) {
+    int nmenus = getMenuCount();
+    for (int i = 0; i < nmenus; i++) {
+        MenuItem mi = getMenu(i).getShortcutMenuItem(s);
+        if (mi != null) {
+            return mi;
+        }
+    }
+    // MenuShortcut wasn't found
+    return null;
+}

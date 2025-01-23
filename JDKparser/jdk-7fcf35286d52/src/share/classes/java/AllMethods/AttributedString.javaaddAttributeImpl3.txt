@@ -1,0 +1,10 @@
+private synchronized void addAttributeImpl(Attribute attribute, Object value, int beginIndex, int endIndex) {
+    // make sure we have run attribute data vectors
+    if (runCount == 0) {
+        createRunAttributeDataVectors();
+    }
+    // break up runs if necessary
+    int beginRunIndex = ensureRunBreak(beginIndex);
+    int endRunIndex = ensureRunBreak(endIndex);
+    addAttributeRunData(attribute, value, beginRunIndex, endRunIndex);
+}

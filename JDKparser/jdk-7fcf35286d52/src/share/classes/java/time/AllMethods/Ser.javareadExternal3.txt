@@ -1,0 +1,24 @@
+// -----------------------------------------------------------------------
+/**
+ * Implements the {@code Externalizable} interface to read the object.
+ * @serialData
+ * The streamed type and parameters defined by the type's {@code writeReplace}
+ * method are read and passed to the corresponding static factory for the type
+ * to create a new instance.  That instance is returned as the de-serialized
+ * {@code Ser} object.
+ *
+ * <ul>
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneRules">ZoneRules</a>
+ * - {@code ZoneRules.of(standardTransitions, standardOffsets, savingsInstantTransitions, wallOffsets, lastRules);}
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransition">ZoneOffsetTransition</a>
+ * - {@code ZoneOffsetTransition of(LocalDateTime.ofEpochSecond(epochSecond), offsetBefore, offsetAfter);}
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransitionRule">ZoneOffsetTransitionRule</a>
+ * - {@code ZoneOffsetTransitionRule.of(month, dom, dow, time, timeEndOfDay, timeDefinition, standardOffset, offsetBefore, offsetAfter);}
+ * </ul>
+ * @param in  the data to read, not null
+ */
+@Override
+public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    type = in.readByte();
+    object = readInternal(type, in);
+}

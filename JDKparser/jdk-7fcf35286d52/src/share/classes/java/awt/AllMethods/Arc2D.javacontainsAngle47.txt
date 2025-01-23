@@ -1,0 +1,28 @@
+/**
+ * Determines whether or not the specified angle is within the
+ * angular extents of the arc.
+ *
+ * @param angle The angle to test.
+ *
+ * @return <CODE>true</CODE> if the arc contains the angle,
+ * <CODE>false</CODE> if the arc doesn't contain the angle.
+ * @since 1.2
+ */
+public boolean containsAngle(double angle) {
+    double angExt = getAngleExtent();
+    boolean backwards = (angExt < 0.0);
+    if (backwards) {
+        angExt = -angExt;
+    }
+    if (angExt >= 360.0) {
+        return true;
+    }
+    angle = normalizeDegrees(angle) - normalizeDegrees(getAngleStart());
+    if (backwards) {
+        angle = -angle;
+    }
+    if (angle < 0.0) {
+        angle += 360.0;
+    }
+    return (angle >= 0.0) && (angle < angExt);
+}

@@ -1,0 +1,15 @@
+/**
+ * Specifies the number of copies the application should render for jobs
+ * using these attributes. Not specifying this attribute is equivalent to
+ * specifying <code>1</code>.
+ *
+ * @param   copies an integer greater than 0
+ * @throws  IllegalArgumentException if <code>copies</code> is less than
+ *      or equal to 0
+ */
+public void setCopies(int copies) {
+    if (copies <= 0) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "copies");
+    }
+    this.copies = copies;
+}

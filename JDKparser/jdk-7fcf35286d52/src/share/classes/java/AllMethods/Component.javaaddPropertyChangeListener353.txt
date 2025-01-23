@@ -1,0 +1,45 @@
+/**
+ * Adds a PropertyChangeListener to the listener list. The listener is
+ * registered for all bound properties of this class, including the
+ * following:
+ * <ul>
+ *    <li>this Component's font ("font")</li>
+ *    <li>this Component's background color ("background")</li>
+ *    <li>this Component's foreground color ("foreground")</li>
+ *    <li>this Component's focusability ("focusable")</li>
+ *    <li>this Component's focus traversal keys enabled state
+ *        ("focusTraversalKeysEnabled")</li>
+ *    <li>this Component's Set of FORWARD_TRAVERSAL_KEYS
+ *        ("forwardFocusTraversalKeys")</li>
+ *    <li>this Component's Set of BACKWARD_TRAVERSAL_KEYS
+ *        ("backwardFocusTraversalKeys")</li>
+ *    <li>this Component's Set of UP_CYCLE_TRAVERSAL_KEYS
+ *        ("upCycleFocusTraversalKeys")</li>
+ *    <li>this Component's preferred size ("preferredSize")</li>
+ *    <li>this Component's minimum size ("minimumSize")</li>
+ *    <li>this Component's maximum size ("maximumSize")</li>
+ *    <li>this Component's name ("name")</li>
+ * </ul>
+ * Note that if this <code>Component</code> is inheriting a bound property, then no
+ * event will be fired in response to a change in the inherited property.
+ * <p>
+ * If <code>listener</code> is <code>null</code>,
+ * no exception is thrown and no action is performed.
+ *
+ * @param    listener  the property change listener to be added
+ *
+ * @see #removePropertyChangeListener
+ * @see #getPropertyChangeListeners
+ * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    synchronized (getObjectLock()) {
+        if (listener == null) {
+            return;
+        }
+        if (changeSupport == null) {
+            changeSupport = new PropertyChangeSupport(this);
+        }
+        changeSupport.addPropertyChangeListener(listener);
+    }
+}

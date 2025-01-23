@@ -1,0 +1,13 @@
+/**
+ * Sets the label for this menu item to the specified label.
+ * @param     label   the new label, or <code>null</code> for no label.
+ * @see       java.awt.MenuItem#getLabel
+ * @since     JDK1.0
+ */
+public synchronized void setLabel(String label) {
+    this.label = label;
+    MenuItemPeer peer = (MenuItemPeer) this.peer;
+    if (peer != null) {
+        peer.setLabel(label);
+    }
+}

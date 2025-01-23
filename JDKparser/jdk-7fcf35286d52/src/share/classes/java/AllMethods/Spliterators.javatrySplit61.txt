@@ -1,0 +1,5 @@
+@Override
+public OfDouble trySplit() {
+    int lo = index, mid = (lo + fence) >>> 1;
+    return (lo >= mid) ? null : new DoubleArraySpliterator(array, lo, index = mid, characteristics);
+}

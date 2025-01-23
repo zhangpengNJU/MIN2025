@@ -1,0 +1,25 @@
+Object interpretWithArgumentsTracing(Object... argumentValues) throws Throwable {
+    traceInterpreter("[ interpretWithArguments", this, argumentValues);
+    if (invocationCounter < COMPILE_THRESHOLD) {
+        // benign race
+        int ctr = invocationCounter++;
+        traceInterpreter("| invocationCounter", ctr);
+        if (invocationCounter >= COMPILE_THRESHOLD) {
+            compileToBytecode();
+        }
+    }
+    Object rval;
+    try {
+        assert (arityCheck(argumentValues));
+        Object[] values = Arrays.copyOf(argumentValues, names.length);
+        for (int i = argumentValues.length; i < values.length; i++) {
+            values[i] = interpretName(names[i], values);
+        }
+        rval = (result < 0) ? null : values[result];
+    } catch (Throwable ex) {
+        traceInterpreter("] throw =>", ex);
+        throw ex;
+    }
+    traceInterpreter("] return =>", rval);
+    return rval;
+}

@@ -1,0 +1,102 @@
+/**
+ * Returns a {@code BigDecimal} whose value is
+ * <tt>(this<sup>n</sup>)</tt>.  The current implementation uses
+ * the core algorithm defined in ANSI standard X3.274-1996 with
+ * rounding according to the context settings.  In general, the
+ * returned numerical value is within two ulps of the exact
+ * numerical value for the chosen precision.  Note that future
+ * releases may use a different algorithm with a decreased
+ * allowable error bound and increased allowable exponent range.
+ *
+ * <p>The X3.274-1996 algorithm is:
+ *
+ * <ul>
+ * <li> An {@code ArithmeticException} exception is thrown if
+ *  <ul>
+ *    <li>{@code abs(n) > 999999999}
+ *    <li>{@code mc.precision == 0} and {@code n < 0}
+ *    <li>{@code mc.precision > 0} and {@code n} has more than
+ *    {@code mc.precision} decimal digits
+ *  </ul>
+ *
+ * <li> if {@code n} is zero, {@link #ONE} is returned even if
+ * {@code this} is zero, otherwise
+ * <ul>
+ *   <li> if {@code n} is positive, the result is calculated via
+ *   the repeated squaring technique into a single accumulator.
+ *   The individual multiplications with the accumulator use the
+ *   same math context settings as in {@code mc} except for a
+ *   precision increased to {@code mc.precision + elength + 1}
+ *   where {@code elength} is the number of decimal digits in
+ *   {@code n}.
+ *
+ *   <li> if {@code n} is negative, the result is calculated as if
+ *   {@code n} were positive; this value is then divided into one
+ *   using the working precision specified above.
+ *
+ *   <li> The final value from either the positive or negative case
+ *   is then rounded to the destination precision.
+ *   </ul>
+ * </ul>
+ *
+ * @param  n power to raise this {@code BigDecimal} to.
+ * @param  mc the context to use.
+ * @return <tt>this<sup>n</sup></tt> using the ANSI standard X3.274-1996
+ *         algorithm
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}, or {@code n} is out
+ *         of range.
+ * @since  1.5
+ */
+public BigDecimal pow(int n, MathContext mc) {
+    if (mc.precision == 0)
+        return pow(n);
+    if (n < -999999999 || n > 999999999)
+        throw new ArithmeticException("Invalid operation");
+    if (n == 0)
+        // x**0 == 1 in X3.274
+        return ONE;
+    BigDecimal lhs = this;
+    // working settings
+    MathContext workmc = mc;
+    // magnitude of n
+    int mag = Math.abs(n);
+    if (mc.precision > 0) {
+        // length of n in digits
+        int elength = longDigitLength(mag);
+        if (// X3.274 rule
+        elength > mc.precision)
+            throw new ArithmeticException("Invalid operation");
+        workmc = new MathContext(mc.precision + elength + 1, mc.roundingMode);
+    }
+    // ready to carry out power calculation...
+    // accumulator
+    BigDecimal acc = ONE;
+    // set once we've seen a 1-bit
+    boolean seenbit = false;
+    for (int i = 1; ; i++) {
+        // for each bit [top bit ignored]
+        // shift left 1 bit
+        mag += mag;
+        if (mag < 0) {
+            // top bit is set
+            // OK, we're off
+            seenbit = true;
+            // acc=acc*x
+            acc = acc.multiply(lhs, workmc);
+        }
+        if (i == 31)
+            // that was the last bit
+            break;
+        if (seenbit)
+            // acc=acc*acc [square]
+            acc = acc.multiply(acc, workmc);
+    // else (!seenbit) no point in squaring ONE
+    }
+    // if negative n, calculate the reciprocal using working precision
+    if (// [hence mc.precision>0]
+    n < 0)
+        acc = ONE.divide(acc, workmc);
+    // round to final precision and strip zeros
+    return doRound(acc, mc);
+}

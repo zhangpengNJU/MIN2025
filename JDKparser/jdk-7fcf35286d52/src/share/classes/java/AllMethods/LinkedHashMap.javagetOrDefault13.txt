@@ -1,0 +1,11 @@
+/**
+ * {@inheritDoc}
+ */
+public V getOrDefault(Object key, V defaultValue) {
+    Node<K, V> e;
+    if ((e = getNode(hash(key), key)) == null)
+        return defaultValue;
+    if (accessOrder)
+        afterNodeAccess(e);
+    return e.value;
+}

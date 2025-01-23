@@ -1,0 +1,15 @@
+@Override
+long getValue(DateTimePrintContext context, long value) {
+    long absValue = Math.abs(value);
+    int baseValue = this.baseValue;
+    if (baseDate != null) {
+        Chronology chrono = Chronology.from(context.getTemporal());
+        baseValue = chrono.date(baseDate).get(field);
+    }
+    if (value >= baseValue && value < baseValue + EXCEED_POINTS[minWidth]) {
+        // Use the reduced value if it fits in minWidth
+        return absValue % EXCEED_POINTS[minWidth];
+    }
+    // Otherwise truncate to fit in maxWidth
+    return absValue % EXCEED_POINTS[maxWidth];
+}

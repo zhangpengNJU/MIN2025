@@ -1,0 +1,8 @@
+// Handle regular pd merge
+private PropertyDescriptor mergePropertyDescriptor(PropertyDescriptor pd1, PropertyDescriptor pd2) {
+    if (pd1.getClass0().isAssignableFrom(pd2.getClass0())) {
+        return new PropertyDescriptor(pd1, pd2);
+    } else {
+        return new PropertyDescriptor(pd2, pd1);
+    }
+}

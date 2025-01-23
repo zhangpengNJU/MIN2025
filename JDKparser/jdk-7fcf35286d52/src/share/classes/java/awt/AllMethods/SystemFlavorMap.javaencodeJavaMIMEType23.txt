@@ -1,0 +1,22 @@
+/**
+ * Encodes a MIME type for use as a <code>String</code> native. The format
+ * of an encoded representation of a MIME type is implementation-dependent.
+ * The only restrictions are:
+ * <ul>
+ * <li>The encoded representation is <code>null</code> if and only if the
+ * MIME type <code>String</code> is <code>null</code>.</li>
+ * <li>The encoded representations for two non-<code>null</code> MIME type
+ * <code>String</code>s are equal if and only if these <code>String</code>s
+ * are equal according to <code>String.equals(Object)</code>.</li>
+ * </ul>
+ * <p>
+ * The reference implementation of this method returns the specified MIME
+ * type <code>String</code> prefixed with <code>JAVA_DATAFLAVOR:</code>.
+ *
+ * @param mimeType the MIME type to encode
+ * @return the encoded <code>String</code>, or <code>null</code> if
+ *         mimeType is <code>null</code>
+ */
+public static String encodeJavaMIMEType(String mimeType) {
+    return (mimeType != null) ? JavaMIME + mimeType : null;
+}

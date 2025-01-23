@@ -1,0 +1,10 @@
+@Override
+public V replace(K key, V value) {
+    Entry<K, V> p = getEntry(key);
+    if (p != null) {
+        V oldValue = p.value;
+        p.value = value;
+        return oldValue;
+    }
+    return null;
+}

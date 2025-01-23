@@ -1,0 +1,68 @@
+/**
+ * Returns an <code>AffineTransform</code> object representing the
+ * inverse transformation.
+ * The inverse transform Tx' of this transform Tx
+ * maps coordinates transformed by Tx back
+ * to their original coordinates.
+ * In other words, Tx'(Tx(p)) = p = Tx(Tx'(p)).
+ * <p>
+ * If this transform maps all coordinates onto a point or a line
+ * then it will not have an inverse, since coordinates that do
+ * not lie on the destination point or line will not have an inverse
+ * mapping.
+ * The <code>getDeterminant</code> method can be used to determine if this
+ * transform has no inverse, in which case an exception will be
+ * thrown if the <code>createInverse</code> method is called.
+ * @return a new <code>AffineTransform</code> object representing the
+ * inverse transformation.
+ * @see #getDeterminant
+ * @exception NoninvertibleTransformException
+ * if the matrix cannot be inverted.
+ * @since 1.2
+ */
+public AffineTransform createInverse() throws NoninvertibleTransformException {
+    double det;
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return null;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            det = m00 * m11 - m01 * m10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            return new AffineTransform(m11 / det, -m10 / det, -m01 / det, m00 / det, (m01 * m12 - m11 * m02) / det, (m10 * m02 - m00 * m12) / det, (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE));
+        case (APPLY_SHEAR | APPLY_SCALE):
+            det = m00 * m11 - m01 * m10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            return new AffineTransform(m11 / det, -m10 / det, -m01 / det, m00 / det, 0.0, 0.0, (APPLY_SHEAR | APPLY_SCALE));
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            if (m01 == 0.0 || m10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            return new AffineTransform(0.0, 1.0 / m01, 1.0 / m10, 0.0, -m12 / m10, -m02 / m01, (APPLY_SHEAR | APPLY_TRANSLATE));
+        case (APPLY_SHEAR):
+            if (m01 == 0.0 || m10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            return new AffineTransform(0.0, 1.0 / m01, 1.0 / m10, 0.0, 0.0, 0.0, (APPLY_SHEAR));
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            if (m00 == 0.0 || m11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            return new AffineTransform(1.0 / m00, 0.0, 0.0, 1.0 / m11, -m02 / m00, -m12 / m11, (APPLY_SCALE | APPLY_TRANSLATE));
+        case (APPLY_SCALE):
+            if (m00 == 0.0 || m11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            return new AffineTransform(1.0 / m00, 0.0, 0.0, 1.0 / m11, 0.0, 0.0, (APPLY_SCALE));
+        case (APPLY_TRANSLATE):
+            return new AffineTransform(1.0, 0.0, 0.0, 1.0, -m02, -m12, (APPLY_TRANSLATE));
+        case (APPLY_IDENTITY):
+            return new AffineTransform();
+    }
+/* NOTREACHED */
+}

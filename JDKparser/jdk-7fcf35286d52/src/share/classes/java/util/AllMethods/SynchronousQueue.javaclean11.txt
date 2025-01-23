@@ -1,0 +1,33 @@
+/**
+ * Unlinks s from the stack.
+ */
+void clean(SNode s) {
+    // forget item
+    s.item = null;
+    // forget thread
+    s.waiter = null;
+    /*
+             * At worst we may need to traverse entire stack to unlink
+             * s. If there are multiple concurrent calls to clean, we
+             * might not see s if another thread has already removed
+             * it. But we can stop when we see any node known to
+             * follow s. We use s.next unless it too is cancelled, in
+             * which case we try the node one past. We don't check any
+             * further because we don't want to doubly traverse just to
+             * find sentinel.
+             */
+    SNode past = s.next;
+    if (past != null && past.isCancelled())
+        past = past.next;
+    // Absorb cancelled nodes at head
+    SNode p;
+    while ((p = head) != null && p != past && p.isCancelled()) casHead(p, p.next);
+    // Unsplice embedded nodes
+    while (p != null && p != past) {
+        SNode n = p.next;
+        if (n != null && n.isCancelled())
+            p.casNext(n, n.next);
+        else
+            p = n;
+    }
+}

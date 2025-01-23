@@ -1,0 +1,12 @@
+public boolean remove(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    Object value = entry.getValue();
+    Entry<K, V> p = getEntry(entry.getKey());
+    if (p != null && valEquals(p.getValue(), value)) {
+        deleteEntry(p);
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,4 @@
+private void emitStoreInsn(BasicType type, int index) {
+    int opcode = storeInsnOpcode(type);
+    mv.visitVarInsn(opcode, localsMap[index]);
+}

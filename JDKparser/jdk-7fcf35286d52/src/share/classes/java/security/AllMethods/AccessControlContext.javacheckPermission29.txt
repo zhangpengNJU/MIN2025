@@ -1,0 +1,54 @@
+/*
+     * Check the domains associated with the limited privilege scope.
+     */
+private void checkPermission2(Permission perm) {
+    if (!isLimited) {
+        return;
+    }
+    /*
+         * Check the doPrivileged() context parameter, if present.
+         */
+    if (privilegedContext != null) {
+        privilegedContext.checkPermission2(perm);
+    }
+    /*
+         * Ignore the limited permissions and parent fields of a wrapper
+         * context since they were already carried down into the unwrapped
+         * context.
+         */
+    if (isWrapped) {
+        return;
+    }
+    /*
+         * Try to match any limited privilege scope.
+         */
+    if (permissions != null) {
+        Class<?> permClass = perm.getClass();
+        for (int i = 0; i < permissions.length; i++) {
+            Permission limit = permissions[i];
+            if (limit.getClass().equals(permClass) && limit.implies(perm)) {
+                return;
+            }
+        }
+    }
+    /*
+         * Check the limited privilege scope up the call stack or the inherited
+         * parent thread call stack of this ACC.
+         */
+    if (parent != null) {
+        /*
+             * As an optimization, if the parent context is the inherited call
+             * stack context from a parent thread then checking the protection
+             * domains of the parent context is redundant since they have
+             * already been merged into the child thread's context by
+             * optimize(). When parent is set to an inherited context this
+             * context was not directly created by a limited scope
+             * doPrivileged() and it does not have its own limited permissions.
+             */
+        if (permissions == null) {
+            parent.checkPermission2(perm);
+        } else {
+            parent.checkPermission(perm);
+        }
+    }
+}

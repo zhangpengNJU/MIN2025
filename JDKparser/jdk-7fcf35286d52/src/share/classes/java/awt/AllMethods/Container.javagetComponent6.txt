@@ -1,0 +1,21 @@
+/**
+ * Gets the nth component in this container.
+ * <p>
+ * Note: This method should be called under AWT tree lock.
+ *
+ * @param      n   the index of the component to get.
+ * @return     the n<sup>th</sup> component in this container.
+ * @exception  ArrayIndexOutOfBoundsException
+ *                 if the n<sup>th</sup> value does not exist.
+ * @see Component#getTreeLock()
+ */
+public Component getComponent(int n) {
+    // This method is not synchronized under AWT tree lock.
+    // Instead, the calling code is responsible for the
+    // synchronization. See 6784816 for details.
+    try {
+        return component.get(n);
+    } catch (IndexOutOfBoundsException z) {
+        throw new ArrayIndexOutOfBoundsException("No such child: " + n);
+    }
+}

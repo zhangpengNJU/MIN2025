@@ -1,0 +1,21 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R> R query(TemporalQuery<R> query) {
+    if (query == TemporalQueries.zoneId()) {
+        return (R) zone;
+    } else if (query == TemporalQueries.chronology()) {
+        return (R) chrono;
+    } else if (query == TemporalQueries.localDate()) {
+        return (R) (date != null ? LocalDate.from(date) : null);
+    } else if (query == TemporalQueries.localTime()) {
+        return (R) time;
+    } else if (query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+        return query.queryFrom(this);
+    } else if (query == TemporalQueries.precision()) {
+        // not a complete date/time
+        return null;
+    }
+    // inline TemporalAccessor.super.query(query) as an optimization
+    // non-JDK classes are not permitted to make this optimization
+    return query.queryFrom(this);
+}

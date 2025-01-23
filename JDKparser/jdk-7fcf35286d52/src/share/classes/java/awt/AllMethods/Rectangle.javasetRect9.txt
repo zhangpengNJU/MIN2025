@@ -1,0 +1,45 @@
+/**
+ * Sets the bounds of this {@code Rectangle} to the integer bounds
+ * which encompass the specified {@code x}, {@code y}, {@code width},
+ * and {@code height}.
+ * If the parameters specify a {@code Rectangle} that exceeds the
+ * maximum range of integers, the result will be the best
+ * representation of the specified {@code Rectangle} intersected
+ * with the maximum integer bounds.
+ * @param x the X coordinate of the upper-left corner of
+ *                  the specified rectangle
+ * @param y the Y coordinate of the upper-left corner of
+ *                  the specified rectangle
+ * @param width the width of the specified rectangle
+ * @param height the new height of the specified rectangle
+ */
+public void setRect(double x, double y, double width, double height) {
+    int newx, newy, neww, newh;
+    if (x > 2.0 * Integer.MAX_VALUE) {
+        // Too far in positive X direction to represent...
+        // We cannot even reach the left side of the specified
+        // rectangle even with both x & width set to MAX_VALUE.
+        // The intersection with the "maximal integer rectangle"
+        // is non-existant so we should use a width < 0.
+        // REMIND: Should we try to determine a more "meaningful"
+        // adjusted value for neww than just "-1"?
+        newx = Integer.MAX_VALUE;
+        neww = -1;
+    } else {
+        newx = clip(x, false);
+        if (width >= 0)
+            width += x - newx;
+        neww = clip(width, width >= 0);
+    }
+    if (y > 2.0 * Integer.MAX_VALUE) {
+        // Too far in positive Y direction to represent...
+        newy = Integer.MAX_VALUE;
+        newh = -1;
+    } else {
+        newy = clip(y, false);
+        if (height >= 0)
+            height += y - newy;
+        newh = clip(height, height >= 0);
+    }
+    reshape(newx, newy, neww, newh);
+}

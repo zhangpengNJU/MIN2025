@@ -1,0 +1,9 @@
+private static void checkReplaceKFMPermission() throws SecurityException {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        if (replaceKeyboardFocusManagerPermission == null) {
+            replaceKeyboardFocusManagerPermission = new AWTPermission("replaceKeyboardFocusManager");
+        }
+        security.checkPermission(replaceKeyboardFocusManagerPermission);
+    }
+}

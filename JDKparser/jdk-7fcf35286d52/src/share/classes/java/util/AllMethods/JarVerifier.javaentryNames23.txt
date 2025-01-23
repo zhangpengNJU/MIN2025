@@ -1,0 +1,55 @@
+public synchronized Enumeration<String> entryNames(JarFile jar, final CodeSource[] cs) {
+    final Map<String, CodeSigner[]> map = signerMap();
+    final Iterator<Map.Entry<String, CodeSigner[]>> itor = map.entrySet().iterator();
+    boolean matchUnsigned = false;
+    /*
+         * Grab a single copy of the CodeSigner arrays. Check
+         * to see if we can optimize CodeSigner equality test.
+         */
+    List<CodeSigner[]> req = new ArrayList<>(cs.length);
+    for (int i = 0; i < cs.length; i++) {
+        CodeSigner[] match = findMatchingSigners(cs[i]);
+        if (match != null) {
+            if (match.length > 0) {
+                req.add(match);
+            } else {
+                matchUnsigned = true;
+            }
+        } else {
+            matchUnsigned = true;
+        }
+    }
+    final List<CodeSigner[]> signersReq = req;
+    final Enumeration<String> enum2 = (matchUnsigned) ? unsignedEntryNames(jar) : emptyEnumeration;
+    return new Enumeration<String>() {
+
+        String name;
+
+        public boolean hasMoreElements() {
+            if (name != null) {
+                return true;
+            }
+            while (itor.hasNext()) {
+                Map.Entry<String, CodeSigner[]> e = itor.next();
+                if (signersReq.contains(e.getValue())) {
+                    name = e.getKey();
+                    return true;
+                }
+            }
+            while (enum2.hasMoreElements()) {
+                name = enum2.nextElement();
+                return true;
+            }
+            return false;
+        }
+
+        public String nextElement() {
+            if (hasMoreElements()) {
+                String value = name;
+                name = null;
+                return value;
+            }
+            throw new NoSuchElementException();
+        }
+    };
+}

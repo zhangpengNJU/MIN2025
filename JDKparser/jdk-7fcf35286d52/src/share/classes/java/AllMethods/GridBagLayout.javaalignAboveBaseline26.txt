@@ -1,0 +1,30 @@
+/**
+ * Positions the specified component above the baseline. That is
+ * the bottom edge of the component will be aligned along the baseline.
+ * If the row does not have a baseline, this centers the component.
+ */
+private void alignAboveBaseline(GridBagConstraints cons, Rectangle r, int cellY, int cellHeight) {
+    if (layoutInfo.hasBaseline(cons.tempY)) {
+        // Baseline for the row
+        int maxY;
+        if (layoutInfo.hasConstantDescent(cons.tempY)) {
+            // Prefer descent
+            maxY = cellY + cellHeight - layoutInfo.maxDescent[cons.tempY];
+        } else {
+            // Prefer ascent
+            maxY = cellY + layoutInfo.maxAscent[cons.tempY];
+        }
+        if (cons.isVerticallyResizable()) {
+            // Component is resizable. Top edge is offset by top
+            // inset, bottom edge on baseline.
+            r.y = cellY + cons.insets.top;
+            r.height = maxY - r.y;
+        } else {
+            // Not resizable.
+            r.height = cons.minHeight + cons.ipady;
+            r.y = maxY - r.height;
+        }
+    } else {
+        centerVertically(cons, r, cellHeight);
+    }
+}

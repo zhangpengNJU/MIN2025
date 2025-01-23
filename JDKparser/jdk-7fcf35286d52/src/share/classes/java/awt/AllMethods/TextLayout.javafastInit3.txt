@@ -1,0 +1,23 @@
+/*
+     * the fast init generates a single glyph set.  This requires:
+     * all one style
+     * all renderable by one font (ie no embedded graphics)
+     * all on one baseline
+     */
+private void fastInit(char[] chars, Font font, Map<? extends Attribute, ?> attrs, FontRenderContext frc) {
+    // Object vf = attrs.get(TextAttribute.ORIENTATION);
+    // isVerticalLine = TextAttribute.ORIENTATION_VERTICAL.equals(vf);
+    isVerticalLine = false;
+    LineMetrics lm = font.getLineMetrics(chars, 0, chars.length, frc);
+    CoreMetrics cm = CoreMetrics.get(lm);
+    byte glyphBaseline = (byte) cm.baselineIndex;
+    if (attrs == null) {
+        baseline = glyphBaseline;
+        baselineOffsets = cm.baselineOffsets;
+        justifyRatio = 1.0f;
+    } else {
+        paragraphInit(glyphBaseline, cm, attrs, chars);
+    }
+    characterCount = chars.length;
+    textLine = TextLine.fastCreateTextLine(frc, chars, font, cm, attrs);
+}

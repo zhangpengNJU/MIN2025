@@ -1,0 +1,47 @@
+public ListIterator<E> listIterator(final int index) {
+    return new ListIterator<E>() {
+
+        private final ListIterator<? extends E> i = list.listIterator(index);
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        public E next() {
+            return i.next();
+        }
+
+        public boolean hasPrevious() {
+            return i.hasPrevious();
+        }
+
+        public E previous() {
+            return i.previous();
+        }
+
+        public int nextIndex() {
+            return i.nextIndex();
+        }
+
+        public int previousIndex() {
+            return i.previousIndex();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void set(E e) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void add(E e) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            i.forEachRemaining(action);
+        }
+    };
+}

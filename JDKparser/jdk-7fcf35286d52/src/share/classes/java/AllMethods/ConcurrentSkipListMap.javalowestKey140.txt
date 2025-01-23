@@ -1,0 +1,11 @@
+/**
+ * Returns lowest absolute key (ignoring directonality).
+ */
+K lowestKey() {
+    Comparator<? super K> cmp = m.comparator;
+    ConcurrentSkipListMap.Node<K, V> n = loNode(cmp);
+    if (isBeforeEnd(n, cmp))
+        return n.key;
+    else
+        throw new NoSuchElementException();
+}

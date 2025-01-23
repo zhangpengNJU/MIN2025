@@ -1,0 +1,18 @@
+@SuppressWarnings("unchecked")
+public void putAll(Map<? extends K, ? extends V> t) {
+    // Satisfy the following goals:
+    // - good diagnostics in case of type mismatch
+    // - all-or-nothing semantics
+    // - protection from malicious t
+    // - correct behavior if t is a concurrent map
+    Object[] entries = t.entrySet().toArray();
+    List<Map.Entry<K, V>> checked = new ArrayList<>(entries.length);
+    for (Object o : entries) {
+        Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+        Object k = e.getKey();
+        Object v = e.getValue();
+        typeCheck(k, v);
+        checked.add(new AbstractMap.SimpleImmutableEntry<>((K) k, (V) v));
+    }
+    for (Map.Entry<K, V> e : checked) m.put(e.getKey(), e.getValue());
+}

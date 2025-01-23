@@ -1,0 +1,8 @@
+@Override
+public void copyInto(T[] array, int offset) {
+    Objects.requireNonNull(array);
+    left.copyInto(array, offset);
+    // Cast to int is safe since it is the callers responsibility to
+    // ensure that there is sufficient room in the array
+    right.copyInto(array, offset + (int) left.count());
+}

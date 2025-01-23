@@ -1,0 +1,29 @@
+/**
+ *  Increment of the last order based on the comparison level.
+ */
+private final int increment(int aStrength, int lastValue) {
+    switch(aStrength) {
+        case Collator.PRIMARY:
+            // increment priamry order  and mask off secondary and tertiary difference
+            lastValue += PRIMARYORDERINCREMENT;
+            lastValue &= RBCollationTables.PRIMARYORDERMASK;
+            isOverIgnore = true;
+            break;
+        case Collator.SECONDARY:
+            // increment secondary order and mask off tertiary difference
+            lastValue += SECONDARYORDERINCREMENT;
+            lastValue &= RBCollationTables.SECONDARYDIFFERENCEONLY;
+            // record max # of ignorable chars with secondary difference
+            if (!isOverIgnore)
+                maxSecOrder++;
+            break;
+        case Collator.TERTIARY:
+            // increment tertiary order
+            lastValue += TERTIARYORDERINCREMENT;
+            // record max # of ignorable chars with tertiary difference
+            if (!isOverIgnore)
+                maxTerOrder++;
+            break;
+    }
+    return lastValue;
+}

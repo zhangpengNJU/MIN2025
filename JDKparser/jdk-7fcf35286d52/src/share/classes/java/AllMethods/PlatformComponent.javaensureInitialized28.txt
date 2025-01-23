@@ -1,0 +1,10 @@
+private static synchronized void ensureInitialized() {
+    if (enumMap == null) {
+        enumMap = new HashMap<>();
+        for (PlatformComponent pc : PlatformComponent.values()) {
+            // Use String as the key rather than Class<?> to avoid
+            // causing unnecessary class loading of management interface
+            enumMap.put(pc.getMXBeanInterfaceName(), pc);
+        }
+    }
+}

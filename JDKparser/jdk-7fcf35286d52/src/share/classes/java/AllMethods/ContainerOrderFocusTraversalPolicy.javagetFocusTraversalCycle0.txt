@@ -1,0 +1,21 @@
+/*
+     * We suppose to use getFocusTraversalCycle & getComponentIndex methods in order
+     * to divide the policy into two parts:
+     * 1) Making the focus traversal cycle.
+     * 2) Traversing the cycle.
+     * The 1st point assumes producing a list of components representing the focus
+     * traversal cycle. The two methods mentioned above should implement this logic.
+     * The 2nd point assumes implementing the common concepts of operating on the
+     * cycle: traversing back and forth, retrieving the initial/default/first/last
+     * component. These concepts are described in the AWT Focus Spec and they are
+     * applied to the FocusTraversalPolicy in general.
+     * Thus, a descendant of this policy may wish to not reimplement the logic of
+     * the 2nd point but just override the implementation of the 1st one.
+     * A striking example of such a descendant is the javax.swing.SortingFocusTraversalPolicy.
+     */
+/*protected*/
+private List<Component> getFocusTraversalCycle(Container aContainer) {
+    List<Component> cycle = new ArrayList<Component>();
+    enumerateCycle(aContainer, cycle);
+    return cycle;
+}

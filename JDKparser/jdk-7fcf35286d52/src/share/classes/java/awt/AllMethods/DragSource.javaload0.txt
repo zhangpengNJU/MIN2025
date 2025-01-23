@@ -1,0 +1,14 @@
+/*
+     * load a system default cursor
+     */
+private static Cursor load(String name) {
+    if (GraphicsEnvironment.isHeadless()) {
+        return null;
+    }
+    try {
+        return (Cursor) Toolkit.getDefaultToolkit().getDesktopProperty(name);
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new RuntimeException("failed to load system cursor: " + name + " : " + e.getMessage());
+    }
+}

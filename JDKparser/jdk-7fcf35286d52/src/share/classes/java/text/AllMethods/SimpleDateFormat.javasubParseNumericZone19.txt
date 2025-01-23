@@ -1,0 +1,67 @@
+/**
+ * Parses numeric forms of time zone offset, such as "hh:mm", and
+ * sets calb to the parsed value.
+ *
+ * @param text  the text to be parsed
+ * @param start the character position to start parsing
+ * @param sign  1: positive; -1: negative
+ * @param count 0: 'Z' or "GMT+hh:mm" parsing; 1 - 3: the number of 'X's
+ * @param colon true - colon required between hh and mm; false - no colon required
+ * @param calb  a CalendarBuilder in which the parsed value is stored
+ * @return updated parsed position, or its negative value to indicate a parsing error
+ */
+private int subParseNumericZone(String text, int start, int sign, int count, boolean colon, CalendarBuilder calb) {
+    int index = start;
+    parse: try {
+        char c = text.charAt(index++);
+        // Parse hh
+        int hours;
+        if (!isDigit(c)) {
+            break parse;
+        }
+        hours = c - '0';
+        c = text.charAt(index++);
+        if (isDigit(c)) {
+            hours = hours * 10 + (c - '0');
+        } else {
+            // If no colon in RFC 822 or 'X' (ISO), two digits are
+            // required.
+            if (count > 0 || !colon) {
+                break parse;
+            }
+            --index;
+        }
+        if (hours > 23) {
+            break parse;
+        }
+        int minutes = 0;
+        if (count != 1) {
+            // Proceed with parsing mm
+            c = text.charAt(index++);
+            if (colon) {
+                if (c != ':') {
+                    break parse;
+                }
+                c = text.charAt(index++);
+            }
+            if (!isDigit(c)) {
+                break parse;
+            }
+            minutes = c - '0';
+            c = text.charAt(index++);
+            if (!isDigit(c)) {
+                break parse;
+            }
+            minutes = minutes * 10 + (c - '0');
+            if (minutes > 59) {
+                break parse;
+            }
+        }
+        minutes += hours * 60;
+        calb.set(Calendar.ZONE_OFFSET, minutes * MILLIS_PER_MINUTE * sign).set(Calendar.DST_OFFSET, 0);
+        return index;
+    } catch (IndexOutOfBoundsException e) {
+    }
+    // -(index - 1)
+    return 1 - index;
+}

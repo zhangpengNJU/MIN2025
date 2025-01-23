@@ -1,0 +1,37 @@
+/**
+ * Creates and returns the GraphicsEnvironment, according to the
+ * system property 'java.awt.graphicsenv'.
+ *
+ * @return the graphics environment
+ */
+private static GraphicsEnvironment createGE() {
+    GraphicsEnvironment ge;
+    String nm = AccessController.doPrivileged(new GetPropertyAction("java.awt.graphicsenv", null));
+    try {
+        // long t0 = System.currentTimeMillis();
+        Class<GraphicsEnvironment> geCls;
+        try {
+            // First we try if the bootclassloader finds the requested
+            // class. This way we can avoid to run in a privileged block.
+            geCls = (Class<GraphicsEnvironment>) Class.forName(nm);
+        } catch (ClassNotFoundException ex) {
+            // If the bootclassloader fails, we try again with the
+            // application classloader.
+            ClassLoader cl = ClassLoader.getSystemClassLoader();
+            geCls = (Class<GraphicsEnvironment>) Class.forName(nm, true, cl);
+        }
+        ge = geCls.newInstance();
+        // long t1 = System.currentTimeMillis();
+        // System.out.println("GE creation took " + (t1-t0)+ "ms.");
+        if (isHeadless()) {
+            ge = new HeadlessGraphicsEnvironment(ge);
+        }
+    } catch (ClassNotFoundException e) {
+        throw new Error("Could not find class: " + nm);
+    } catch (InstantiationException e) {
+        throw new Error("Could not instantiate Graphics Environment: " + nm);
+    } catch (IllegalAccessException e) {
+        throw new Error("Could not access Graphics Environment: " + nm);
+    }
+    return ge;
+}

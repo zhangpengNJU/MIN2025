@@ -1,0 +1,9 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoZonedDateTime<D> plus(long amountToAdd, TemporalUnit unit) {
+    if (unit instanceof ChronoUnit) {
+        return with(dateTime.plus(amountToAdd, unit));
+    }
+    // / TODO: Generics replacement Risk!
+    return ChronoZonedDateTimeImpl.ensureValid(getChronology(), unit.addTo(this, amountToAdd));
+}

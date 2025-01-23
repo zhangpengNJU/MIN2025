@@ -1,0 +1,33 @@
+/**
+ * Checks that the component comp can be added to this container
+ * Checks :  index in bounds of container's size,
+ * comp is not one of this container's parents,
+ * and comp is not a window.
+ * Comp and container must be on the same GraphicsDevice.
+ * if comp is container, all sub-components must be on
+ * same GraphicsDevice.
+ *
+ * @since 1.5
+ */
+private void checkAdding(Component comp, int index) {
+    checkTreeLock();
+    GraphicsConfiguration thisGC = getGraphicsConfiguration();
+    if (index > component.size() || index < 0) {
+        throw new IllegalArgumentException("illegal component position");
+    }
+    if (comp.parent == this) {
+        if (index == component.size()) {
+            throw new IllegalArgumentException("illegal component position " + index + " should be less then " + component.size());
+        }
+    }
+    checkAddToSelf(comp);
+    checkNotAWindow(comp);
+    Window thisTopLevel = getContainingWindow();
+    Window compTopLevel = comp.getContainingWindow();
+    if (thisTopLevel != compTopLevel) {
+        throw new IllegalArgumentException("component and container should be in the same top-level window");
+    }
+    if (thisGC != null) {
+        comp.checkGD(thisGC.getDevice().getIDstring());
+    }
+}

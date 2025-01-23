@@ -1,0 +1,16 @@
+/**
+ * Returns the bounds of the specified <code>String</code> in the
+ * specified <code>Graphics</code> context.  The bounds is used
+ * to layout the <code>String</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.FontMetrics class notes}).
+ * @param str the specified <code>String</code>
+ * @param context the specified <code>Graphics</code> context
+ * @return a {@link Rectangle2D} that is the bounding box of the
+ * specified <code>String</code> in the specified
+ * <code>Graphics</code> context.
+ * @see java.awt.Font#getStringBounds(String, FontRenderContext)
+ */
+public Rectangle2D getStringBounds(String str, Graphics context) {
+    return font.getStringBounds(str, myFRC(context));
+}

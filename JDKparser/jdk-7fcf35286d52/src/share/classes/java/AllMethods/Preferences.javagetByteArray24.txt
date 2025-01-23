@@ -1,0 +1,38 @@
+/**
+ * Returns the byte array value represented by the string associated with
+ * the specified key in this preference node.  Valid strings are
+ * <i>Base64</i> encoded binary data, as defined in <a
+ * href=http://www.ietf.org/rfc/rfc2045.txt>RFC 2045</a>, Section 6.8,
+ * with one minor change: the string must consist solely of characters
+ * from the <i>Base64 Alphabet</i>; no newline characters or
+ * extraneous characters are permitted.  This method is intended for use
+ * in conjunction with {@link #putByteArray}.
+ *
+ * <p>Returns the specified default if there is no value
+ * associated with the key, the backing store is inaccessible, or if the
+ * associated value is not a valid Base64 encoded byte array
+ * (as defined above).
+ *
+ * <p>If the implementation supports <i>stored defaults</i> and such a
+ * default exists and is accessible, it is used in preference to the
+ * specified default, unless the stored default is not a valid Base64
+ * encoded byte array (as defined above), in which case the
+ * specified default is used.
+ *
+ * @param key key whose associated value is to be returned as a byte array.
+ * @param def the value to be returned in the event that this
+ *        preference node has no value associated with <tt>key</tt>
+ *        or the associated value cannot be interpreted as a byte array,
+ *        or the backing store is inaccessible.
+ * @return the byte array value represented by the string associated with
+ *         <tt>key</tt> in this preference node, or <tt>def</tt> if the
+ *         associated value does not exist or cannot be interpreted as
+ *         a byte array.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.  (A
+ *         <tt>null</tt> value for <tt>def</tt> <i>is</i> permitted.)
+ * @see #get(String,String)
+ * @see #putByteArray(String,byte[])
+ */
+public abstract byte[] getByteArray(String key, byte[] def);

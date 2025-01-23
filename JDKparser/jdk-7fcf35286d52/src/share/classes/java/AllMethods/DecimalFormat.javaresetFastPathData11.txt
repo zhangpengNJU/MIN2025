@@ -1,0 +1,45 @@
+private void resetFastPathData(boolean fastPathWasOn) {
+    // Since some instance properties may have changed while still falling
+    // in the fast-path case, we need to reinitialize fastPathData anyway.
+    if (isFastPath) {
+        // We need to instantiate fastPathData if not already done.
+        if (fastPathData == null) {
+            fastPathData = new FastPathData();
+        }
+        // Sets up the locale specific constants used when formatting.
+        // '0' is our default representation of zero.
+        fastPathData.zeroDelta = symbols.getZeroDigit() - '0';
+        fastPathData.groupingChar = symbols.getGroupingSeparator();
+        // Sets up fractional constants related to currency/decimal pattern.
+        fastPathData.fractionalMaxIntBound = (isCurrencyFormat) ? 99 : 999;
+        fastPathData.fractionalScaleFactor = (isCurrencyFormat) ? 100.0d : 1000.0d;
+        // Records the need for adding prefix or suffix
+        fastPathData.positiveAffixesRequired = (positivePrefix.length() != 0) || (positiveSuffix.length() != 0);
+        fastPathData.negativeAffixesRequired = (negativePrefix.length() != 0) || (negativeSuffix.length() != 0);
+        // Creates a cached char container for result, with max possible size.
+        int maxNbIntegralDigits = 10;
+        int maxNbGroups = 3;
+        int containerSize = Math.max(positivePrefix.length(), negativePrefix.length()) + maxNbIntegralDigits + maxNbGroups + 1 + maximumFractionDigits + Math.max(positiveSuffix.length(), negativeSuffix.length());
+        fastPathData.fastPathContainer = new char[containerSize];
+        // Sets up prefix and suffix char arrays constants.
+        fastPathData.charsPositiveSuffix = positiveSuffix.toCharArray();
+        fastPathData.charsNegativeSuffix = negativeSuffix.toCharArray();
+        fastPathData.charsPositivePrefix = positivePrefix.toCharArray();
+        fastPathData.charsNegativePrefix = negativePrefix.toCharArray();
+        // Sets up fixed index positions for integral and fractional digits.
+        // Sets up decimal point in cached result container.
+        int longestPrefixLength = Math.max(positivePrefix.length(), negativePrefix.length());
+        int decimalPointIndex = maxNbIntegralDigits + maxNbGroups + longestPrefixLength;
+        fastPathData.integralLastIndex = decimalPointIndex - 1;
+        fastPathData.fractionalFirstIndex = decimalPointIndex + 1;
+        fastPathData.fastPathContainer[decimalPointIndex] = isCurrencyFormat ? symbols.getMonetaryDecimalSeparator() : symbols.getDecimalSeparator();
+    } else if (fastPathWasOn) {
+        // Previous state was fast-path and is no more.
+        // Resets cached array constants.
+        fastPathData.fastPathContainer = null;
+        fastPathData.charsPositiveSuffix = null;
+        fastPathData.charsNegativeSuffix = null;
+        fastPathData.charsPositivePrefix = null;
+        fastPathData.charsNegativePrefix = null;
+    }
+}

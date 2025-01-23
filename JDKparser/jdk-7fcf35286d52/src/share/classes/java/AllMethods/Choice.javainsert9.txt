@@ -1,0 +1,30 @@
+/**
+ * Inserts the item into this choice at the specified position.
+ * Existing items at an index greater than or equal to
+ * <code>index</code> are shifted up by one to accommodate
+ * the new item.  If <code>index</code> is greater than or
+ * equal to the number of items in this choice,
+ * <code>item</code> is added to the end of this choice.
+ * <p>
+ * If the item is the first one being added to the choice,
+ * then the item becomes selected.  Otherwise, if the
+ * selected item was one of the items shifted, the first
+ * item in the choice becomes the selected item.  If the
+ * selected item was no among those shifted, it remains
+ * the selected item.
+ * @param item the non-<code>null</code> item to be inserted
+ * @param index the position at which the item should be inserted
+ * @exception IllegalArgumentException if index is less than 0
+ */
+public void insert(String item, int index) {
+    synchronized (this) {
+        if (index < 0) {
+            throw new IllegalArgumentException("index less than zero.");
+        }
+        /* if the index greater than item count, add item to the end */
+        index = Math.min(index, pItems.size());
+        insertNoInvalidate(item, index);
+    }
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

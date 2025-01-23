@@ -1,0 +1,29 @@
+/**
+ * Sets the background color of this component.
+ * <p>
+ * The background color affects each component differently and the
+ * parts of the component that are affected by the background color
+ * may differ between operating systems.
+ *
+ * @param c the color to become this component's color;
+ *          if this parameter is <code>null</code>, then this
+ *          component will inherit the background color of its parent
+ * @see #getBackground
+ * @since JDK1.0
+ * @beaninfo
+ *       bound: true
+ */
+public void setBackground(Color c) {
+    Color oldColor = background;
+    ComponentPeer peer = this.peer;
+    background = c;
+    if (peer != null) {
+        c = getBackground();
+        if (c != null) {
+            peer.setBackground(c);
+        }
+    }
+    // This is a bound property, so report the change to
+    // any registered listeners.  (Cheap if there are none.)
+    firePropertyChange("background", oldColor, c);
+}

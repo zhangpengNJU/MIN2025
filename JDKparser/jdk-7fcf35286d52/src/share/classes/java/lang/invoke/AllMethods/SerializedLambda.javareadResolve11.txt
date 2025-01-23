@@ -1,0 +1,22 @@
+private Object readResolve() throws ReflectiveOperationException {
+    try {
+        Method deserialize = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+
+            @Override
+            public Method run() throws Exception {
+                Method m = capturingClass.getDeclaredMethod("$deserializeLambda$", SerializedLambda.class);
+                m.setAccessible(true);
+                return m;
+            }
+        });
+        return deserialize.invoke(null, this);
+    } catch (PrivilegedActionException e) {
+        Exception cause = e.getException();
+        if (cause instanceof ReflectiveOperationException)
+            throw (ReflectiveOperationException) cause;
+        else if (cause instanceof RuntimeException)
+            throw (RuntimeException) cause;
+        else
+            throw new RuntimeException("Exception in SerializedLambda.readResolve", e);
+    }
+}

@@ -1,0 +1,12 @@
+private Socket privilegedDoTunnel(final String urlString, final int timeout) throws IOException {
+    try {
+        return java.security.AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Socket>() {
+
+            public Socket run() throws IOException {
+                return doTunnel(urlString, timeout);
+            }
+        });
+    } catch (java.security.PrivilegedActionException pae) {
+        throw (IOException) pae.getException();
+    }
+}

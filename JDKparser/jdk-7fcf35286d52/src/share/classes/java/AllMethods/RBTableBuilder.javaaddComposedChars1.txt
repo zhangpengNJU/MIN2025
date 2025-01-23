@@ -1,0 +1,74 @@
+/**
+ * Add expanding entries for pre-composed unicode characters so that this
+ * collator can be used reasonably well with decomposition turned off.
+ */
+private void addComposedChars() throws ParseException {
+    // Iterate through all of the pre-composed characters in Unicode
+    ComposedCharIter iter = new ComposedCharIter();
+    int c;
+    while ((c = iter.next()) != ComposedCharIter.DONE) {
+        if (getCharOrder(c) == RBCollationTables.UNMAPPED) {
+            // 
+            // We don't already have an ordering for this pre-composed character.
+            // 
+            // First, see if the decomposed string is already in our
+            // tables as a single contracting-string ordering.
+            // If so, just map the precomposed character to that order.
+            // 
+            // TODO: What we should really be doing here is trying to find the
+            // longest initial substring of the decomposition that is present
+            // in the tables as a contracting character sequence, and find its
+            // ordering.  Then do this recursively with the remaining chars
+            // so that we build a list of orderings, and add that list to
+            // the expansion table.
+            // That would be more correct but also significantly slower, so
+            // I'm not totally sure it's worth doing.
+            // 
+            String s = iter.decomposition();
+            // sherman/Note: if this is 1 character decomposed string, the
+            // only thing need to do is to check if this decomposed character
+            // has an entry in our order table, this order is not necessary
+            // to be a contraction order, if it does have one, add an entry
+            // for the precomposed character by using the same order, the
+            // previous impl unnecessarily adds a single character expansion
+            // entry.
+            if (s.length() == 1) {
+                int order = getCharOrder(s.charAt(0));
+                if (order != RBCollationTables.UNMAPPED) {
+                    addOrder(c, order);
+                }
+                continue;
+            } else if (s.length() == 2) {
+                char ch0 = s.charAt(0);
+                if (Character.isHighSurrogate(ch0)) {
+                    int order = getCharOrder(s.codePointAt(0));
+                    if (order != RBCollationTables.UNMAPPED) {
+                        addOrder(c, order);
+                    }
+                    continue;
+                }
+            }
+            int contractOrder = getContractOrder(s);
+            if (contractOrder != RBCollationTables.UNMAPPED) {
+                addOrder(c, contractOrder);
+            } else {
+                // 
+                // We don't have a contracting ordering for the entire string
+                // that results from the decomposition, but if we have orders
+                // for each individual character, we can add an expanding
+                // table entry for the pre-composed character
+                // 
+                boolean allThere = true;
+                for (int i = 0; i < s.length(); i++) {
+                    if (getCharOrder(s.charAt(i)) == RBCollationTables.UNMAPPED) {
+                        allThere = false;
+                        break;
+                    }
+                }
+                if (allThere) {
+                    addExpandOrder(c, s, RBCollationTables.UNMAPPED);
+                }
+            }
+        }
+    }
+}

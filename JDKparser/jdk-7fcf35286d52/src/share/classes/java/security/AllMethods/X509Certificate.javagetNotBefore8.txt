@@ -1,0 +1,20 @@
+/**
+ * Gets the {@code notBefore} date from the validity period of
+ * the certificate.
+ * The relevant ASN.1 definitions are:
+ * <pre>
+ * validity             Validity
+ *
+ * Validity ::= SEQUENCE {
+ *     notBefore      CertificateValidityDate,
+ *     notAfter       CertificateValidityDate }
+ *
+ * CertificateValidityDate ::= CHOICE {
+ *     utcTime        UTCTime,
+ *     generalTime    GeneralizedTime }
+ * </pre>
+ *
+ * @return the start date of the validity period.
+ * @see #checkValidity
+ */
+public abstract Date getNotBefore();

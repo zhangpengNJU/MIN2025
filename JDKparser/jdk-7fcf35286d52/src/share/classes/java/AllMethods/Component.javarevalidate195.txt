@@ -1,0 +1,34 @@
+void revalidate(boolean checkSize) {
+    validatedContents = false;
+    if (checkSize && (getWidth() != width || getHeight() != height)) {
+        // component has been resized; recreate the backbuffers
+        try {
+            createBuffers(numBuffers, caps);
+        } catch (AWTException e) {
+        // shouldn't be possible
+        }
+        validatedContents = true;
+    }
+    // get the buffers from the peer every time since they
+    // might have been replaced in response to a display change event
+    updateInternalBuffers();
+    // now validate the backbuffer
+    if (drawVBuffer != null) {
+        GraphicsConfiguration gc = getGraphicsConfiguration_NoClientCode();
+        int returnCode = drawVBuffer.validate(gc);
+        if (returnCode == VolatileImage.IMAGE_INCOMPATIBLE) {
+            try {
+                createBuffers(numBuffers, caps);
+            } catch (AWTException e) {
+            // shouldn't be possible
+            }
+            if (drawVBuffer != null) {
+                // backbuffers were recreated, so validate again
+                drawVBuffer.validate(gc);
+            }
+            validatedContents = true;
+        } else if (returnCode == VolatileImage.IMAGE_RESTORED) {
+            validatedContents = true;
+        }
+    }
+}

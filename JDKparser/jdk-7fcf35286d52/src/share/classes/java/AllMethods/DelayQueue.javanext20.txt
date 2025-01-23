@@ -1,0 +1,7 @@
+@SuppressWarnings("unchecked")
+public E next() {
+    if (cursor >= array.length)
+        throw new NoSuchElementException();
+    lastRet = cursor;
+    return (E) array[cursor++];
+}

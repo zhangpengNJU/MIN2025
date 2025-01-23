@@ -1,0 +1,29 @@
+private void init(GraphicsConfiguration gc) {
+    GraphicsEnvironment.checkHeadless();
+    syncLWRequests = systemSyncLWRequests;
+    weakThis = new WeakReference<Window>(this);
+    addToWindowList();
+    setWarningString();
+    this.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    this.visible = false;
+    gc = initGC(gc);
+    if (gc.getDevice().getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
+        throw new IllegalArgumentException("not a screen device");
+    }
+    setLayout(new BorderLayout());
+    /* offset the initial location with the original of the screen */
+    /* and any insets                                              */
+    Rectangle screenBounds = gc.getBounds();
+    Insets screenInsets = getToolkit().getScreenInsets(gc);
+    int x = getX() + screenBounds.x + screenInsets.left;
+    int y = getY() + screenBounds.y + screenInsets.top;
+    if (x != this.x || y != this.y) {
+        setLocation(x, y);
+        /* reset after setLocation */
+        setLocationByPlatform(locationByPlatformProp);
+    }
+    modalExclusionType = Dialog.ModalExclusionType.NO_EXCLUDE;
+    disposerRecord = new WindowDisposerRecord(appContext, this);
+    sun.java2d.Disposer.addRecord(anchor, disposerRecord);
+    SunToolkit.checkAndSetPolicy(this);
+}

@@ -1,0 +1,13 @@
+public void run() {
+    // in case of recursive call to run()
+    if (running)
+        return;
+    final JavaLangAccess jla = SharedSecrets.getJavaLangAccess();
+    running = true;
+    for (; ; ) {
+        Finalizer f = (Finalizer) queue.poll();
+        if (f == null)
+            break;
+        f.runFinalizer(jla);
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns <tt>true</tt> if this map maps one or more keys to the
+ * specified value.
+ *
+ * @param value the value whose presence in this map is to be tested
+ * @return <tt>true</tt> if this map maps one or more keys to this value
+ */
+public boolean containsValue(Object value) {
+    value = maskNull(value);
+    for (Object val : vals) if (value.equals(val))
+        return true;
+    return false;
+}

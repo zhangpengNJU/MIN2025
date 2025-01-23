@@ -1,0 +1,63 @@
+/**
+ * Returns the logical ranges of text corresponding to a visual selection.
+ * @param firstEndpoint an endpoint of the visual range
+ * @param secondEndpoint the other endpoint of the visual range.
+ * This endpoint can be less than <code>firstEndpoint</code>.
+ * @return an array of integers representing start/limit pairs for the
+ * selected ranges.
+ * @see #getVisualHighlightShape(TextHitInfo, TextHitInfo, Rectangle2D)
+ */
+public int[] getLogicalRangesForVisualSelection(TextHitInfo firstEndpoint, TextHitInfo secondEndpoint) {
+    ensureCache();
+    checkTextHit(firstEndpoint);
+    checkTextHit(secondEndpoint);
+    // !!! probably want to optimize for all LTR text
+    boolean[] included = new boolean[characterCount];
+    int startIndex = hitToCaret(firstEndpoint);
+    int limitIndex = hitToCaret(secondEndpoint);
+    if (startIndex > limitIndex) {
+        int t = startIndex;
+        startIndex = limitIndex;
+        limitIndex = t;
+    }
+    /*
+         * now we have the visual indexes of the glyphs at the start and limit
+         * of the selection range walk through runs marking characters that
+         * were included in the visual range there is probably a more efficient
+         * way to do this, but this ought to work, so hey
+         */
+    if (startIndex < limitIndex) {
+        int visIndex = startIndex;
+        while (visIndex < limitIndex) {
+            included[textLine.visualToLogical(visIndex)] = true;
+            ++visIndex;
+        }
+    }
+    /*
+         * count how many runs we have, ought to be one or two, but perhaps
+         * things are especially weird
+         */
+    int count = 0;
+    boolean inrun = false;
+    for (int i = 0; i < characterCount; i++) {
+        if (included[i] != inrun) {
+            inrun = !inrun;
+            if (inrun) {
+                count++;
+            }
+        }
+    }
+    int[] ranges = new int[count * 2];
+    count = 0;
+    inrun = false;
+    for (int i = 0; i < characterCount; i++) {
+        if (included[i] != inrun) {
+            ranges[count++] = i;
+            inrun = !inrun;
+        }
+    }
+    if (inrun) {
+        ranges[count++] = characterCount;
+    }
+    return ranges;
+}

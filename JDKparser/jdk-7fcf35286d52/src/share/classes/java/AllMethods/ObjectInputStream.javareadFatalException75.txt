@@ -1,0 +1,12 @@
+/**
+ * Reads in and returns IOException that caused serialization to abort.
+ * All stream state is discarded prior to reading in fatal exception.  Sets
+ * passHandle to fatal exception's handle.
+ */
+private IOException readFatalException() throws IOException {
+    if (bin.readByte() != TC_EXCEPTION) {
+        throw new InternalError();
+    }
+    clear();
+    return (IOException) readObject0(Object.class, false);
+}

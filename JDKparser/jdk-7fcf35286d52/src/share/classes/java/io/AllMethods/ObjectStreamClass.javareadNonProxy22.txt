@@ -1,0 +1,40 @@
+/**
+ * Reads non-proxy class descriptor information from given input stream.
+ * The resulting class descriptor is not fully functional; it can only be
+ * used as input to the ObjectInputStream.resolveClass() and
+ * ObjectStreamClass.initNonProxy() methods.
+ */
+void readNonProxy(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    name = in.readUTF();
+    suid = Long.valueOf(in.readLong());
+    isProxy = false;
+    byte flags = in.readByte();
+    hasWriteObjectData = ((flags & ObjectStreamConstants.SC_WRITE_METHOD) != 0);
+    hasBlockExternalData = ((flags & ObjectStreamConstants.SC_BLOCK_DATA) != 0);
+    externalizable = ((flags & ObjectStreamConstants.SC_EXTERNALIZABLE) != 0);
+    boolean sflag = ((flags & ObjectStreamConstants.SC_SERIALIZABLE) != 0);
+    if (externalizable && sflag) {
+        throw new InvalidClassException(name, "serializable and externalizable flags conflict");
+    }
+    serializable = externalizable || sflag;
+    isEnum = ((flags & ObjectStreamConstants.SC_ENUM) != 0);
+    if (isEnum && suid.longValue() != 0L) {
+        throw new InvalidClassException(name, "enum descriptor has non-zero serialVersionUID: " + suid);
+    }
+    int numFields = in.readShort();
+    if (isEnum && numFields != 0) {
+        throw new InvalidClassException(name, "enum descriptor has non-zero field count: " + numFields);
+    }
+    fields = (numFields > 0) ? new ObjectStreamField[numFields] : NO_FIELDS;
+    for (int i = 0; i < numFields; i++) {
+        char tcode = (char) in.readByte();
+        String fname = in.readUTF();
+        String signature = ((tcode == 'L') || (tcode == '[')) ? in.readTypeString() : new String(new char[] { tcode });
+        try {
+            fields[i] = new ObjectStreamField(fname, signature, false);
+        } catch (RuntimeException e) {
+            throw (IOException) new InvalidClassException(name, "invalid descriptor for field " + fname).initCause(e);
+        }
+    }
+    computeFieldOffsets();
+}

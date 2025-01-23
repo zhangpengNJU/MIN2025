@@ -1,0 +1,15 @@
+private boolean isFrameStateSupported(int state) {
+    if (!getToolkit().isFrameStateSupported(state)) {
+        // * Toolkit.isFrameStateSupported returns always false
+        // on compound state even if all parts are supported;
+        // * if part of state is not supported, state is not supported;
+        // * MAXIMIZED_BOTH is not a compound state.
+        if (((state & ICONIFIED) != 0) && !getToolkit().isFrameStateSupported(ICONIFIED)) {
+            return false;
+        } else {
+            state &= ~ICONIFIED;
+        }
+        return getToolkit().isFrameStateSupported(state);
+    }
+    return true;
+}

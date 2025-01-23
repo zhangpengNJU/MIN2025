@@ -1,0 +1,16 @@
+/**
+ * Return the index of the first character with a different baseline from the
+ * character at start, or limit if all characters between start and limit have
+ * the same baseline.
+ */
+private static int sameBaselineUpTo(Font font, char[] text, int start, int limit) {
+    // current implementation doesn't support multiple baselines
+    return limit;
+/*
+        byte bl = font.getBaselineFor(text[start++]);
+        while (start < limit && font.getBaselineFor(text[start]) == bl) {
+            ++start;
+        }
+        return start;
+        */
+}

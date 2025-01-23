@@ -1,0 +1,40 @@
+/**
+ * Sets the bits from the specified {@code fromIndex} (inclusive) to the
+ * specified {@code toIndex} (exclusive) to {@code false}.
+ *
+ * @param  fromIndex index of the first bit to be cleared
+ * @param  toIndex index after the last bit to be cleared
+ * @throws IndexOutOfBoundsException if {@code fromIndex} is negative,
+ *         or {@code toIndex} is negative, or {@code fromIndex} is
+ *         larger than {@code toIndex}
+ * @since  1.4
+ */
+public void clear(int fromIndex, int toIndex) {
+    checkRange(fromIndex, toIndex);
+    if (fromIndex == toIndex)
+        return;
+    int startWordIndex = wordIndex(fromIndex);
+    if (startWordIndex >= wordsInUse)
+        return;
+    int endWordIndex = wordIndex(toIndex - 1);
+    if (endWordIndex >= wordsInUse) {
+        toIndex = length();
+        endWordIndex = wordsInUse - 1;
+    }
+    long firstWordMask = WORD_MASK << fromIndex;
+    long lastWordMask = WORD_MASK >>> -toIndex;
+    if (startWordIndex == endWordIndex) {
+        // Case 1: One word
+        words[startWordIndex] &= ~(firstWordMask & lastWordMask);
+    } else {
+        // Case 2: Multiple words
+        // Handle first word
+        words[startWordIndex] &= ~firstWordMask;
+        // Handle intermediate words, if any
+        for (int i = startWordIndex + 1; i < endWordIndex; i++) words[i] = 0;
+        // Handle last word
+        words[endWordIndex] &= ~lastWordMask;
+    }
+    recalculateWordsInUse();
+    checkInvariants();
+}

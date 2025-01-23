@@ -1,0 +1,12 @@
+@Override
+public String toString() {
+    StringBuilder buf = new StringBuilder();
+    if (printerParsers != null) {
+        buf.append(optional ? "[" : "(");
+        for (DateTimePrinterParser pp : printerParsers) {
+            buf.append(pp);
+        }
+        buf.append(optional ? "]" : ")");
+    }
+    return buf.toString();
+}

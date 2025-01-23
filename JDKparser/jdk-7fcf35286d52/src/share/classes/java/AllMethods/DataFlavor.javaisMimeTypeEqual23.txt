@@ -1,0 +1,25 @@
+/**
+ * Returns whether the string representation of the MIME type passed in
+ * is equivalent to the MIME type of this <code>DataFlavor</code>.
+ * Parameters are not included in the comparison.
+ *
+ * @param mimeType the string representation of the MIME type
+ * @return true if the string representation of the MIME type passed in is
+ *         equivalent to the MIME type of this <code>DataFlavor</code>;
+ *         false otherwise
+ * @throws NullPointerException if mimeType is <code>null</code>
+ */
+public boolean isMimeTypeEqual(String mimeType) {
+    // JCK Test DataFlavor0117: if 'mimeType' is null, throw NPE
+    if (mimeType == null) {
+        throw new NullPointerException("mimeType");
+    }
+    if (this.mimeType == null) {
+        return false;
+    }
+    try {
+        return this.mimeType.match(new MimeType(mimeType));
+    } catch (MimeTypeParseException mtpe) {
+        return false;
+    }
+}

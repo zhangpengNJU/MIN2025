@@ -1,0 +1,8 @@
+@Override
+public String toString() {
+    String str = toLocalDateTime().toString() + getOffset().toString();
+    if (getOffset() != getZone()) {
+        str += '[' + getZone().toString() + ']';
+    }
+    return str;
+}

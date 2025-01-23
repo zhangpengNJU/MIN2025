@@ -1,0 +1,68 @@
+/**
+ * Connects this channel's socket.
+ *
+ * <p> If this channel is in non-blocking mode then an invocation of this
+ * method initiates a non-blocking connection operation.  If the connection
+ * is established immediately, as can happen with a local connection, then
+ * this method returns <tt>true</tt>.  Otherwise this method returns
+ * <tt>false</tt> and the connection operation must later be completed by
+ * invoking the {@link #finishConnect finishConnect} method.
+ *
+ * <p> If this channel is in blocking mode then an invocation of this
+ * method will block until the connection is established or an I/O error
+ * occurs.
+ *
+ * <p> This method performs exactly the same security checks as the {@link
+ * java.net.Socket} class.  That is, if a security manager has been
+ * installed then this method verifies that its {@link
+ * java.lang.SecurityManager#checkConnect checkConnect} method permits
+ * connecting to the address and port number of the given remote endpoint.
+ *
+ * <p> This method may be invoked at any time.  If a read or write
+ * operation upon this channel is invoked while an invocation of this
+ * method is in progress then that operation will first block until this
+ * invocation is complete.  If a connection attempt is initiated but fails,
+ * that is, if an invocation of this method throws a checked exception,
+ * then the channel will be closed.  </p>
+ *
+ * @param  remote
+ *         The remote address to which this channel is to be connected
+ *
+ * @return  <tt>true</tt> if a connection was established,
+ *          <tt>false</tt> if this channel is in non-blocking mode
+ *          and the connection operation is in progress
+ *
+ * @throws  AlreadyConnectedException
+ *          If this channel is already connected
+ *
+ * @throws  ConnectionPendingException
+ *          If a non-blocking connection operation is already in progress
+ *          on this channel
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the connect operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the connect operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  UnresolvedAddressException
+ *          If the given remote address is not fully resolved
+ *
+ * @throws  UnsupportedAddressTypeException
+ *          If the type of the given remote address is not supported
+ *
+ * @throws  SecurityException
+ *          If a security manager has been installed
+ *          and it does not permit access to the given remote endpoint
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract boolean connect(SocketAddress remote) throws IOException;

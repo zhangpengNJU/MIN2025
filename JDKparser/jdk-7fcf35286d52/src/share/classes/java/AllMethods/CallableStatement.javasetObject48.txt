@@ -1,0 +1,36 @@
+/**
+ * Sets the value of the designated parameter with the given object.
+ *
+ * <p>The given Java object will be converted to the given targetSqlType
+ * before being sent to the database.
+ *
+ * If the object has a custom mapping (is of a class implementing the
+ * interface <code>SQLData</code>),
+ * the JDBC driver should call the method <code>SQLData.writeSQL</code> to write it
+ * to the SQL data stream.
+ * If, on the other hand, the object is of a class implementing
+ * <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,  <code>NClob</code>,
+ *  <code>Struct</code>, <code>java.net.URL</code>,
+ * or <code>Array</code>, the driver should pass it to the database as a
+ * value of the corresponding SQL type.
+ * <P>
+ * Note that this method may be used to pass datatabase-
+ * specific abstract data types.
+ *
+ * @param parameterName the name of the parameter
+ * @param x the object containing the input parameter value
+ * @param targetSqlType the SQL type (as defined in java.sql.Types) to be
+ * sent to the database. The scale argument may further qualify this type.
+ * @param scale for java.sql.Types.DECIMAL or java.sql.Types.NUMERIC types,
+ *          this is the number of digits after the decimal point.  For all other
+ *          types, this value will be ignored.
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if
+ * the JDBC driver does not support the specified targetSqlType
+ * @see Types
+ * @see #getObject
+ * @since 1.4
+ */
+void setObject(String parameterName, Object x, int targetSqlType, int scale) throws SQLException;

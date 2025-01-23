@@ -1,0 +1,7 @@
+static ChronoPeriodImpl readExternal(DataInput in) throws IOException {
+    Chronology chrono = Chronology.of(in.readUTF());
+    int years = in.readInt();
+    int months = in.readInt();
+    int days = in.readInt();
+    return new ChronoPeriodImpl(chrono, years, months, days);
+}

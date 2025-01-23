@@ -1,0 +1,21 @@
+/**
+ * Removes a PropertyChangeListener from the listener list. This method
+ * should be used to remove the PropertyChangeListeners that were
+ * registered for all bound properties of this class.
+ * <p>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param listener the PropertyChangeListener to be removed
+ * @see #addPropertyChangeListener
+ * @see #getPropertyChangeListeners
+ * @see #removePropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ */
+public void removePropertyChangeListener(PropertyChangeListener listener) {
+    if (listener != null) {
+        synchronized (this) {
+            if (changeSupport != null) {
+                changeSupport.removePropertyChangeListener(listener);
+            }
+        }
+    }
+}

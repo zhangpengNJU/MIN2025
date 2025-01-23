@@ -1,0 +1,7 @@
+/**
+ * Tries to cas nt as new tail.
+ */
+void advanceTail(QNode t, QNode nt) {
+    if (tail == t)
+        UNSAFE.compareAndSwapObject(this, tailOffset, t, nt);
+}

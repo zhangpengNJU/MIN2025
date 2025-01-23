@@ -1,0 +1,25 @@
+/**
+ * Sorts the specified array into ascending numerical order.
+ *
+ * @implNote The sorting algorithm is a parallel sort-merge that breaks the
+ * array into sub-arrays that are themselves sorted and then merged. When
+ * the sub-array length reaches a minimum granularity, the sub-array is
+ * sorted using the appropriate {@link Arrays#sort(short[]) Arrays.sort}
+ * method. If the length of the specified array is less than the minimum
+ * granularity, then it is sorted using the appropriate {@link
+ * Arrays#sort(short[]) Arrays.sort} method. The algorithm requires a
+ * working space no greater than the size of the original array. The
+ * {@link ForkJoinPool#commonPool() ForkJoin common pool} is used to
+ * execute any parallel tasks.
+ *
+ * @param a the array to be sorted
+ *
+ * @since 1.8
+ */
+public static void parallelSort(short[] a) {
+    int n = a.length, p, g;
+    if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
+    else
+        new ArraysParallelSortHelpers.FJShort.Sorter(null, a, new short[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+}

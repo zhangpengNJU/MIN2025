@@ -1,0 +1,19 @@
+/**
+ * Check if i-th name is a start of GuardWithCatch idiom.
+ */
+private boolean isGuardWithCatch(int pos) {
+    // GuardWithCatch idiom:
+    // t_{n}:L=MethodHandle.invokeBasic(...)
+    // t_{n+1}:L=MethodHandleImpl.guardWithCatch(*, *, *, t_{n});
+    // t_{n+2}:?=MethodHandle.invokeBasic(t_{n+1})
+    if (pos + 2 >= lambdaForm.names.length)
+        return false;
+    Name name0 = lambdaForm.names[pos];
+    Name name1 = lambdaForm.names[pos + 1];
+    Name name2 = lambdaForm.names[pos + 2];
+    return nameRefersTo(name1, MethodHandleImpl.class, "guardWithCatch") && isInvokeBasic(name0) && isInvokeBasic(name2) && // t_{n+1}:L=MethodHandleImpl.guardWithCatch(*, *, *, t_{n});
+    name1.lastUseIndex(name0) == 3 && // t_{n} is local: used only in t_{n+1}
+    lambdaForm.lastUseIndex(name0) == pos + 1 && // t_{n+2}:?=MethodHandle.invokeBasic(t_{n+1})
+    name2.lastUseIndex(name1) == 1 && // t_{n+1} is local: used only in t_{n+2}
+    lambdaForm.lastUseIndex(name1) == pos + 2;
+}

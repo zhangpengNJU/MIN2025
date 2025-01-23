@@ -1,0 +1,19 @@
+/**
+ * Returns a copy of this date with the specified number of weeks subtracted.
+ * <p>
+ * This subtracts the specified period in weeks to the date.
+ * In some cases, subtracting weeks can cause the resulting date to become invalid.
+ * If this occurs, then other fields will be adjusted to ensure that the result is valid.
+ * <p>
+ * The default implementation uses {@link #plusWeeks(long)}.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param weeksToSubtract  the weeks to subtract, may be negative
+ * @return a date based on this one with the weeks subtracted, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+@SuppressWarnings("unchecked")
+D minusWeeks(long weeksToSubtract) {
+    return (weeksToSubtract == Long.MIN_VALUE ? ((ChronoLocalDateImpl<D>) plusWeeks(Long.MAX_VALUE)).plusWeeks(1) : plusWeeks(-weeksToSubtract));
+}

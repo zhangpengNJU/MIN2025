@@ -1,0 +1,16 @@
+/**
+ * Reads the state from the stream.
+ *
+ * @param in  the input stream, not null
+ * @return the created object, not null
+ * @throws IOException if an error occurs
+ */
+static ZoneOffsetTransition readExternal(DataInput in) throws IOException {
+    long epochSecond = Ser.readEpochSec(in);
+    ZoneOffset before = Ser.readOffset(in);
+    ZoneOffset after = Ser.readOffset(in);
+    if (before.equals(after)) {
+        throw new IllegalArgumentException("Offsets must not be equal");
+    }
+    return new ZoneOffsetTransition(epochSecond, before, after);
+}

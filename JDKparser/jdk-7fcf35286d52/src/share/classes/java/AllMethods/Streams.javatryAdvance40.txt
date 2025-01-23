@@ -1,0 +1,13 @@
+@Override
+public boolean tryAdvance(T_CONS action) {
+    boolean hasNext;
+    if (beforeSplit) {
+        hasNext = aSpliterator.tryAdvance(action);
+        if (!hasNext) {
+            beforeSplit = false;
+            hasNext = bSpliterator.tryAdvance(action);
+        }
+    } else
+        hasNext = bSpliterator.tryAdvance(action);
+    return hasNext;
+}

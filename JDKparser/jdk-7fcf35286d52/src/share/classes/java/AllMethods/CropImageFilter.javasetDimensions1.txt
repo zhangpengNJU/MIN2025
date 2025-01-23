@@ -1,0 +1,15 @@
+/**
+ * Override the source image's dimensions and pass the dimensions
+ * of the rectangular cropped region to the ImageConsumer.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose
+ * pixels are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ImageConsumer
+ */
+public void setDimensions(int w, int h) {
+    consumer.setDimensions(cropW, cropH);
+}

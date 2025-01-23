@@ -1,0 +1,18 @@
+/**
+ * Returns a {@link Callable} object that, when
+ * called, runs the given privileged exception action and returns
+ * its result.
+ * @param action the privileged exception action to run
+ * @return a callable object
+ * @throws NullPointerException if action null
+ */
+public static Callable<Object> callable(final PrivilegedExceptionAction<?> action) {
+    if (action == null)
+        throw new NullPointerException();
+    return new Callable<Object>() {
+
+        public Object call() throws Exception {
+            return action.run();
+        }
+    };
+}

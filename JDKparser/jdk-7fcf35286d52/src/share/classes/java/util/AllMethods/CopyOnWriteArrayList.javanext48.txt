@@ -1,0 +1,6 @@
+@SuppressWarnings("unchecked")
+public E next() {
+    if (!hasNext())
+        throw new NoSuchElementException();
+    return (E) snapshot[cursor++];
+}

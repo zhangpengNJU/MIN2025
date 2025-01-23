@@ -1,0 +1,21 @@
+/**
+ * Package-private routine (exposed to java.lang.Class via
+ * ReflectAccess) which returns a copy of this Constructor. The copy's
+ * "root" field points to this Constructor.
+ */
+Constructor<T> copy() {
+    // This routine enables sharing of ConstructorAccessor objects
+    // among Constructor objects which refer to the same underlying
+    // method in the VM. (All of this contortion is only necessary
+    // because of the "accessibility" bit in AccessibleObject,
+    // which implicitly requires that new java.lang.reflect
+    // objects be fabricated for each reflective call on Class
+    // objects.)
+    if (this.root != null)
+        throw new IllegalArgumentException("Can not copy a non-root Constructor");
+    Constructor<T> res = new Constructor<>(clazz, parameterTypes, exceptionTypes, modifiers, slot, signature, annotations, parameterAnnotations);
+    res.root = this;
+    // Might as well eagerly propagate this if already present
+    res.constructorAccessor = constructorAccessor;
+    return res;
+}

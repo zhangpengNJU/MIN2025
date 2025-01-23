@@ -1,0 +1,20 @@
+/**
+ * Creates a concrete, platform dependent, subclass of the abstract
+ * DragGestureRecognizer class requested, and associates it with the
+ * DragSource, Component and DragGestureListener specified.
+ *
+ * subclasses should override this to provide their own implementation
+ *
+ * @param abstractRecognizerClass The abstract class of the required recognizer
+ * @param ds                      The DragSource
+ * @param c                       The Component target for the DragGestureRecognizer
+ * @param srcActions              The actions permitted for the gesture
+ * @param dgl                     The DragGestureListener
+ *
+ * @return the new object or null.  Always returns null if
+ * GraphicsEnvironment.isHeadless() returns true.
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+public <T extends DragGestureRecognizer> T createDragGestureRecognizer(Class<T> abstractRecognizerClass, DragSource ds, Component c, int srcActions, DragGestureListener dgl) {
+    return null;
+}

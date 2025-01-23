@@ -1,0 +1,30 @@
+/**
+ * Returns the elements of this enum class or null if this
+ * Class object does not represent an enum type;
+ * identical to getEnumConstants except that the result is
+ * uncloned, cached, and shared by all callers.
+ */
+T[] getEnumConstantsShared() {
+    if (enumConstants == null) {
+        if (!isEnum())
+            return null;
+        try {
+            final Method values = getMethod("values");
+            java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+
+                public Void run() {
+                    values.setAccessible(true);
+                    return null;
+                }
+            });
+            @SuppressWarnings("unchecked")
+            T[] temporaryConstants = (T[]) values.invoke(null);
+            enumConstants = temporaryConstants;
+        }// These can happen when users concoct enum-like classes
+        // that don't comply with the enum spec.
+         catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException ex) {
+            return null;
+        }
+    }
+    return enumConstants;
+}

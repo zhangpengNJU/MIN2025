@@ -1,0 +1,6 @@
+// Returns true if m1 is more specific than m2
+static boolean hasMoreSpecificClass(Method m1, Method m2) {
+    Class<?> m1Class = m1.getDeclaringClass();
+    Class<?> m2Class = m2.getDeclaringClass();
+    return m1Class != m2Class && m2Class.isAssignableFrom(m1Class);
+}

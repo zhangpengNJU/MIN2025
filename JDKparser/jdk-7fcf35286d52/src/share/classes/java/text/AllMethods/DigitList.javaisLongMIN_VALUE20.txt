@@ -1,0 +1,14 @@
+/**
+ * Returns true if this DigitList represents Long.MIN_VALUE;
+ * false, otherwise.  This is required so that getLong() works.
+ */
+private boolean isLongMIN_VALUE() {
+    if (decimalAt != count || count != MAX_COUNT) {
+        return false;
+    }
+    for (int i = 0; i < count; ++i) {
+        if (digits[i] != LONG_MIN_REP[i])
+            return false;
+    }
+    return true;
+}

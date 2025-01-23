@@ -1,0 +1,9 @@
+private static LinkedHashSet<Provider> getProvidersNotUsingCache(String serviceName, String algName, String attrName, String filterValue, Provider[] allProviders) {
+    LinkedHashSet<Provider> candidates = new LinkedHashSet<>(5);
+    for (int i = 0; i < allProviders.length; i++) {
+        if (isCriterionSatisfied(allProviders[i], serviceName, algName, attrName, filterValue)) {
+            candidates.add(allProviders[i]);
+        }
+    }
+    return candidates;
+}

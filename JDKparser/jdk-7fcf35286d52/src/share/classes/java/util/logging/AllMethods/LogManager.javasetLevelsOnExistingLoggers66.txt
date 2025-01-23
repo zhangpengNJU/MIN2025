@@ -1,0 +1,26 @@
+// Private method to be called when the configuration has
+// changed to apply any level settings to any pre-existing loggers.
+synchronized private void setLevelsOnExistingLoggers() {
+    Enumeration<?> enum_ = props.propertyNames();
+    while (enum_.hasMoreElements()) {
+        String key = (String) enum_.nextElement();
+        if (!key.endsWith(".level")) {
+            // Not a level definition.
+            continue;
+        }
+        int ix = key.length() - 6;
+        String name = key.substring(0, ix);
+        Level level = getLevelProperty(key, null);
+        if (level == null) {
+            System.err.println("Bad level value for property: " + key);
+            continue;
+        }
+        for (LoggerContext cx : contexts()) {
+            Logger l = cx.findLogger(name);
+            if (l == null) {
+                continue;
+            }
+            l.setLevel(level);
+        }
+    }
+}

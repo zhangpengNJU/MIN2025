@@ -1,0 +1,21 @@
+/**
+ * Adds a permission to the FilePermissionCollection. The key for the hash is
+ * permission.path.
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception IllegalArgumentException - if the permission is not a
+ *                                       FilePermission
+ *
+ * @exception SecurityException - if this FilePermissionCollection object
+ *                                has been marked readonly
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof FilePermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+    synchronized (this) {
+        perms.add(permission);
+    }
+}

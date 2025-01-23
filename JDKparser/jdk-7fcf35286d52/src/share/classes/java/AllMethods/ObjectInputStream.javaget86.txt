@@ -1,0 +1,4 @@
+public int get(String name, int val) throws IOException {
+    int off = getFieldOffset(name, Integer.TYPE);
+    return (off >= 0) ? Bits.getInt(primVals, off) : val;
+}

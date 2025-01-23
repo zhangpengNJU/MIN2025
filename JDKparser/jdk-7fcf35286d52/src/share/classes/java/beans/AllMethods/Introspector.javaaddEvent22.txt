@@ -1,0 +1,13 @@
+private void addEvent(EventSetDescriptor esd) {
+    String key = esd.getName();
+    if (esd.getName().equals("propertyChange")) {
+        propertyChangeSource = true;
+    }
+    EventSetDescriptor old = events.get(key);
+    if (old == null) {
+        events.put(key, esd);
+        return;
+    }
+    EventSetDescriptor composite = new EventSetDescriptor(old, esd);
+    events.put(key, composite);
+}

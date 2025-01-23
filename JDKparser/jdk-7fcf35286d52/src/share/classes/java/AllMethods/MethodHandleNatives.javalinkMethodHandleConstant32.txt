@@ -1,0 +1,32 @@
+/**
+ * The JVM is resolving a CONSTANT_MethodHandle CP entry.  And it wants our help.
+ * It will make an up-call to this method.  (Do not change the name or signature.)
+ * The type argument is a Class for field requests and a MethodType for non-fields.
+ * <p>
+ * Recent versions of the JVM may also pass a resolved MemberName for the type.
+ * In that case, the name is ignored and may be null.
+ */
+static MethodHandle linkMethodHandleConstant(Class<?> callerClass, int refKind, Class<?> defc, String name, Object type) {
+    try {
+        Lookup lookup = IMPL_LOOKUP.in(callerClass);
+        assert (refKindIsValid(refKind));
+        return lookup.linkMethodHandleConstant((byte) refKind, defc, name, type);
+    } catch (IllegalAccessException ex) {
+        Throwable cause = ex.getCause();
+        if (cause instanceof AbstractMethodError) {
+            throw (AbstractMethodError) cause;
+        } else {
+            Error err = new IllegalAccessError(ex.getMessage());
+            throw initCauseFrom(err, ex);
+        }
+    } catch (NoSuchMethodException ex) {
+        Error err = new NoSuchMethodError(ex.getMessage());
+        throw initCauseFrom(err, ex);
+    } catch (NoSuchFieldException ex) {
+        Error err = new NoSuchFieldError(ex.getMessage());
+        throw initCauseFrom(err, ex);
+    } catch (ReflectiveOperationException ex) {
+        Error err = new IncompatibleClassChangeError();
+        throw initCauseFrom(err, ex);
+    }
+}

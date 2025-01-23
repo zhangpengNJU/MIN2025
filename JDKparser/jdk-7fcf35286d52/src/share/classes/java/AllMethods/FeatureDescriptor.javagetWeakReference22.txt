@@ -1,0 +1,10 @@
+/**
+ * Creates a new weak reference that refers to the given object.
+ *
+ * @return a new weak reference or <code>null</code> if object is <code>null</code>
+ *
+ * @see WeakReference
+ */
+static <T> Reference<T> getWeakReference(T object) {
+    return (object != null) ? new WeakReference<>(object) : null;
+}

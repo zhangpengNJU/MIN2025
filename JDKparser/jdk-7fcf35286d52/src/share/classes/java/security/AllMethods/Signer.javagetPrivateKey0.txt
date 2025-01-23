@@ -1,0 +1,20 @@
+/**
+ * Returns this signer's private key.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "getSignerPrivateKey"}
+ * as its argument to see if it's ok to return the private key.
+ *
+ * @return this signer's private key, or null if the private key has
+ * not yet been set.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * returning the private key.
+ *
+ * @see SecurityManager#checkSecurityAccess
+ */
+public PrivateKey getPrivateKey() {
+    check("getSignerPrivateKey");
+    return privateKey;
+}

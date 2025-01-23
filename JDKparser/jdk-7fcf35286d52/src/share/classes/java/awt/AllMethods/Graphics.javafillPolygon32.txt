@@ -1,0 +1,21 @@
+/**
+ * Fills a closed polygon defined by
+ * arrays of <i>x</i> and <i>y</i> coordinates.
+ * <p>
+ * This method draws the polygon defined by <code>nPoint</code> line
+ * segments, where the first <code>nPoint&nbsp;-&nbsp;1</code>
+ * line segments are line segments from
+ * <code>(xPoints[i&nbsp;-&nbsp;1],&nbsp;yPoints[i&nbsp;-&nbsp;1])</code>
+ * to <code>(xPoints[i],&nbsp;yPoints[i])</code>, for
+ * 1&nbsp;&le;&nbsp;<i>i</i>&nbsp;&le;&nbsp;<code>nPoints</code>.
+ * The figure is automatically closed by drawing a line connecting
+ * the final point to the first point, if those points are different.
+ * <p>
+ * The area inside the polygon is defined using an
+ * even-odd fill rule, also known as the alternating rule.
+ * @param        xPoints   a an array of <code>x</code> coordinates.
+ * @param        yPoints   a an array of <code>y</code> coordinates.
+ * @param        nPoints   a the total number of points.
+ * @see          java.awt.Graphics#drawPolygon(int[], int[], int)
+ */
+public abstract void fillPolygon(int[] xPoints, int[] yPoints, int nPoints);

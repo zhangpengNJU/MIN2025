@@ -1,0 +1,14 @@
+// Invoked in the VM class linking code.
+static long findNative(ClassLoader loader, String name) {
+    Vector<NativeLibrary> libs = loader != null ? loader.nativeLibraries : systemNativeLibraries;
+    synchronized (libs) {
+        int size = libs.size();
+        for (int i = 0; i < size; i++) {
+            NativeLibrary lib = libs.elementAt(i);
+            long entry = lib.find(name);
+            if (entry != 0)
+                return entry;
+        }
+    }
+    return 0;
+}

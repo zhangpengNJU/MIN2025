@@ -1,0 +1,51 @@
+/**
+ * Disables or enables decorations for this frame.
+ * <p>
+ * This method can only be called while the frame is not displayable. To
+ * make this frame decorated, it must be opaque and have the default shape,
+ * otherwise the {@code IllegalComponentStateException} will be thrown.
+ * Refer to {@link Window#setShape}, {@link Window#setOpacity} and {@link
+ * Window#setBackground} for details
+ *
+ * @param  undecorated {@code true} if no frame decorations are to be
+ *         enabled; {@code false} if frame decorations are to be enabled
+ *
+ * @throws IllegalComponentStateException if the frame is displayable
+ * @throws IllegalComponentStateException if {@code undecorated} is
+ *      {@code false}, and this frame does not have the default shape
+ * @throws IllegalComponentStateException if {@code undecorated} is
+ *      {@code false}, and this frame opacity is less than {@code 1.0f}
+ * @throws IllegalComponentStateException if {@code undecorated} is
+ *      {@code false}, and the alpha value of this frame background
+ *      color is less than {@code 1.0f}
+ *
+ * @see    #isUndecorated
+ * @see    Component#isDisplayable
+ * @see    Window#getShape
+ * @see    Window#getOpacity
+ * @see    Window#getBackground
+ * @see    javax.swing.JFrame#setDefaultLookAndFeelDecorated(boolean)
+ *
+ * @since 1.4
+ */
+public void setUndecorated(boolean undecorated) {
+    /* Make sure we don't run in the middle of peer creation.*/
+    synchronized (getTreeLock()) {
+        if (isDisplayable()) {
+            throw new IllegalComponentStateException("The frame is displayable.");
+        }
+        if (!undecorated) {
+            if (getOpacity() < 1.0f) {
+                throw new IllegalComponentStateException("The frame is not opaque");
+            }
+            if (getShape() != null) {
+                throw new IllegalComponentStateException("The frame does not have a default shape");
+            }
+            Color bg = getBackground();
+            if ((bg != null) && (bg.getAlpha() < 255)) {
+                throw new IllegalComponentStateException("The frame background color is not opaque");
+            }
+        }
+        this.undecorated = undecorated;
+    }
+}

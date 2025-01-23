@@ -1,0 +1,11 @@
+/**
+ * If wheel scrolling is enabled, we return true for MouseWheelEvents
+ * @since 1.4
+ */
+protected boolean eventTypeEnabled(int type) {
+    if (type == MouseEvent.MOUSE_WHEEL && isWheelScrollingEnabled()) {
+        return true;
+    } else {
+        return super.eventTypeEnabled(type);
+    }
+}

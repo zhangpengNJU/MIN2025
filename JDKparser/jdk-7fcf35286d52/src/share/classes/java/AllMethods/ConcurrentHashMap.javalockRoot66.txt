@@ -1,0 +1,8 @@
+/**
+ * Acquires write lock for tree restructuring.
+ */
+private final void lockRoot() {
+    if (!U.compareAndSwapInt(this, LOCKSTATE, 0, WRITER))
+        // offload to separate method
+        contendedLock();
+}

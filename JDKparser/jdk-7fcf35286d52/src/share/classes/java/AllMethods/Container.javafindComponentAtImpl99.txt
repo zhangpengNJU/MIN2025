@@ -1,0 +1,30 @@
+final Component findComponentAtImpl(int x, int y, boolean ignoreEnabled) {
+    // checkTreeLock(); commented for a performance reason
+    if (!(contains(x, y) && visible && (ignoreEnabled || enabled))) {
+        return null;
+    }
+    Component lightweight = null;
+    // Optimized version of two passes:
+    // see comment in sun.awt.SunGraphicsCallback
+    for (final Component comp : component) {
+        final int x1 = x - comp.x;
+        final int y1 = y - comp.y;
+        if (!comp.contains(x1, y1)) {
+            // fast path
+            continue;
+        }
+        if (!comp.isLightweight()) {
+            final Component child = getChildAt(comp, x1, y1, ignoreEnabled);
+            if (child != null) {
+                // return heavyweight component as soon as possible
+                return child;
+            }
+        } else {
+            if (lightweight == null) {
+                // save and return later the first lightweight component
+                lightweight = getChildAt(comp, x1, y1, ignoreEnabled);
+            }
+        }
+    }
+    return lightweight != null ? lightweight : this;
+}

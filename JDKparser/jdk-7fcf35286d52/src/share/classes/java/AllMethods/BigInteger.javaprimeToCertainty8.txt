@@ -1,0 +1,40 @@
+/**
+ * Returns {@code true} if this BigInteger is probably prime,
+ * {@code false} if it's definitely composite.
+ *
+ * This method assumes bitLength > 2.
+ *
+ * @param  certainty a measure of the uncertainty that the caller is
+ *         willing to tolerate: if the call returns {@code true}
+ *         the probability that this BigInteger is prime exceeds
+ *         {@code (1 - 1/2<sup>certainty</sup>)}.  The execution time of
+ *         this method is proportional to the value of this parameter.
+ * @return {@code true} if this BigInteger is probably prime,
+ *         {@code false} if it's definitely composite.
+ */
+boolean primeToCertainty(int certainty, Random random) {
+    int rounds = 0;
+    int n = (Math.min(certainty, Integer.MAX_VALUE - 1) + 1) / 2;
+    // The relationship between the certainty and the number of rounds
+    // we perform is given in the draft standard ANSI X9.80, "PRIME
+    // NUMBER GENERATION, PRIMALITY TESTING, AND PRIMALITY CERTIFICATES".
+    int sizeInBits = this.bitLength();
+    if (sizeInBits < 100) {
+        rounds = 50;
+        rounds = n < rounds ? n : rounds;
+        return passesMillerRabin(rounds, random);
+    }
+    if (sizeInBits < 256) {
+        rounds = 27;
+    } else if (sizeInBits < 512) {
+        rounds = 15;
+    } else if (sizeInBits < 768) {
+        rounds = 8;
+    } else if (sizeInBits < 1024) {
+        rounds = 4;
+    } else {
+        rounds = 2;
+    }
+    rounds = n < rounds ? n : rounds;
+    return passesMillerRabin(rounds, random) && passesLucasLehmer();
+}

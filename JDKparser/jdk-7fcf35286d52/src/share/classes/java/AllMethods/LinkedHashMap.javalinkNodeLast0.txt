@@ -1,0 +1,12 @@
+// internal utilities
+// link at the end of list
+private void linkNodeLast(LinkedHashMap.Entry<K, V> p) {
+    LinkedHashMap.Entry<K, V> last = tail;
+    tail = p;
+    if (last == null)
+        head = p;
+    else {
+        p.before = last;
+        last.after = p;
+    }
+}

@@ -1,0 +1,41 @@
+// [//authority]<path>[?<query>]
+// 
+// DEVIATION from RFC2396: We allow an empty authority component as
+// long as it's followed by a non-empty path, query component, or
+// fragment component.  This is so that URIs such as "file:///foo/bar"
+// will parse.  This seems to be the intent of RFC2396, though the
+// grammar does not permit it.  If the authority is empty then the
+// userInfo, host, and port components are undefined.
+// 
+// DEVIATION from RFC2396: We allow empty relative paths.  This seems
+// to be the intent of RFC2396, but the grammar does not permit it.
+// The primary consequence of this deviation is that "#f" parses as a
+// relative URI with an empty path.
+// 
+private int parseHierarchical(int start, int n) throws URISyntaxException {
+    int p = start;
+    if (at(p, n, '/') && at(p + 1, n, '/')) {
+        p += 2;
+        int q = scan(p, n, "", "/?#");
+        if (q > p) {
+            p = parseAuthority(p, q);
+        } else if (q < n) {
+        // DEVIATION: Allow empty authority prior to non-empty
+        // path, query component or fragment identifier
+        } else
+            failExpecting("authority", p);
+    }
+    // DEVIATION: May be empty
+    int q = scan(p, n, "", "?#");
+    checkChars(p, q, L_PATH, H_PATH, "path");
+    path = substring(p, q);
+    p = q;
+    if (at(p, n, '?')) {
+        p++;
+        q = scan(p, n, "", "#");
+        checkChars(p, q, L_URIC, H_URIC, "query");
+        query = substring(p, q);
+        p = q;
+    }
+    return p;
+}

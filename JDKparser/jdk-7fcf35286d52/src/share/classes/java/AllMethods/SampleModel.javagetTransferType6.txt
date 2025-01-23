@@ -1,0 +1,21 @@
+/**
+ * Returns the TransferType used to transfer pixels via the
+ *  getDataElements and setDataElements methods.  When pixels
+ *  are transferred via these methods, they may be transferred in a
+ *  packed or unpacked format, depending on the implementation of the
+ *  SampleModel.  Using these methods, pixels are transferred as an
+ *  array of getNumDataElements() elements of a primitive type given
+ *  by getTransferType().  The TransferType may or may not be the same
+ *  as the storage DataType.  The TransferType will be one of the types
+ *  defined in DataBuffer.
+ *  @return the transfer type.
+ *  @see #getDataElements(int, int, Object, DataBuffer)
+ *  @see #getDataElements(int, int, int, int, Object, DataBuffer)
+ *  @see #setDataElements(int, int, Object, DataBuffer)
+ *  @see #setDataElements(int, int, int, int, Object, DataBuffer)
+ *  @see #getNumDataElements
+ *  @see java.awt.image.DataBuffer
+ */
+public int getTransferType() {
+    return dataType;
+}

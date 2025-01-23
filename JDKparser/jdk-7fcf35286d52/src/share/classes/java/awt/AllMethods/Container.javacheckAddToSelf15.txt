@@ -1,0 +1,13 @@
+/**
+ * Checks that the component
+ * isn't supposed to be added into itself.
+ */
+private void checkAddToSelf(Component comp) {
+    if (comp instanceof Container) {
+        for (Container cn = this; cn != null; cn = cn.parent) {
+            if (cn == comp) {
+                throw new IllegalArgumentException("adding container's parent to itself");
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+/**
+ * Returns the length of the specified month in the specified
+ * Gregorian year. The year number must be normalized.
+ *
+ * @see GregorianCalendar#isLeapYear(int)
+ */
+private int monthLength(int month, int gregorianYear) {
+    return CalendarUtils.isGregorianLeapYear(gregorianYear) ? GregorianCalendar.LEAP_MONTH_LENGTH[month] : GregorianCalendar.MONTH_LENGTH[month];
+}

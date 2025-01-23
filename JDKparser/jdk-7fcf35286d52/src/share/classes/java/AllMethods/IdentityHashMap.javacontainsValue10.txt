@@ -1,0 +1,15 @@
+/**
+ * Tests whether the specified object reference is a value in this identity
+ * hash map.
+ *
+ * @param value value whose presence in this map is to be tested
+ * @return <tt>true</tt> if this map maps one or more keys to the
+ *         specified object reference
+ * @see     #containsKey(Object)
+ */
+public boolean containsValue(Object value) {
+    Object[] tab = table;
+    for (int i = 1; i < tab.length; i += 2) if (tab[i] == value && tab[i - 1] != null)
+        return true;
+    return false;
+}

@@ -1,0 +1,26 @@
+// If both URIs are hierarchical, their scheme and authority components are
+// identical, and the base path is a prefix of the child's path, then
+// return a relative URI that, when resolved against the base, yields the
+// child; otherwise, return the child.
+// 
+private static URI relativize(URI base, URI child) {
+    // check if child if opaque first so that NPE is thrown
+    // if child is null.
+    if (child.isOpaque() || base.isOpaque())
+        return child;
+    if (!equalIgnoringCase(base.scheme, child.scheme) || !equal(base.authority, child.authority))
+        return child;
+    String bp = normalize(base.path);
+    String cp = normalize(child.path);
+    if (!bp.equals(cp)) {
+        if (!bp.endsWith("/"))
+            bp = bp + "/";
+        if (!cp.startsWith(bp))
+            return child;
+    }
+    URI v = new URI();
+    v.path = cp.substring(bp.length());
+    v.query = child.query;
+    v.fragment = child.fragment;
+    return v;
+}

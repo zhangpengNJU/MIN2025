@@ -1,0 +1,15 @@
+/**
+ * Returns the chronology name of the given chrono in the given locale
+ * if available, or the chronology Id otherwise. The regular ResourceBundle
+ * search path is used for looking up the chronology name.
+ *
+ * @param chrono  the chronology, not null
+ * @param locale  the locale, not null
+ * @return the chronology name of chrono in locale, or the id if no name is available
+ * @throws NullPointerException if chrono or locale is null
+ */
+private String getChronologyName(Chronology chrono, Locale locale) {
+    String key = "calendarname." + chrono.getCalendarType();
+    String name = DateTimeTextProvider.getLocalizedResource(key, locale);
+    return name != null ? name : chrono.getId();
+}

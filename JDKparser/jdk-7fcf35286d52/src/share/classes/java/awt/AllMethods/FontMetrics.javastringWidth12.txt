@@ -1,0 +1,23 @@
+/**
+ * Returns the total advance width for showing the specified
+ * <code>String</code> in this <code>Font</code>.  The advance
+ * is the distance from the leftmost point to the rightmost point
+ * on the string's baseline.
+ * <p>
+ * Note that the advance of a <code>String</code> is
+ * not necessarily the sum of the advances of its characters.
+ * @param str the <code>String</code> to be measured
+ * @return    the advance width of the specified <code>String</code>
+ *                  in the <code>Font</code> described by this
+ *                  <code>FontMetrics</code>.
+ * @throws NullPointerException if str is null.
+ * @see       #bytesWidth(byte[], int, int)
+ * @see       #charsWidth(char[], int, int)
+ * @see       #getStringBounds(String, Graphics)
+ */
+public int stringWidth(String str) {
+    int len = str.length();
+    char[] data = new char[len];
+    str.getChars(0, len, data, 0);
+    return charsWidth(data, 0, len);
+}

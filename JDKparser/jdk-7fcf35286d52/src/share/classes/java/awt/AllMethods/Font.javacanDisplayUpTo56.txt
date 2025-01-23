@@ -1,0 +1,39 @@
+/**
+ * Indicates whether or not this <code>Font</code> can display the
+ * text specified by the <code>iter</code> starting at
+ * <code>start</code> and ending at <code>limit</code>.
+ *
+ * @param iter  a {@link CharacterIterator} object
+ * @param start the specified starting offset into the specified
+ *              <code>CharacterIterator</code>.
+ * @param limit the specified ending offset into the specified
+ *              <code>CharacterIterator</code>.
+ * @return an offset into <code>iter</code> that points
+ *          to the first character in <code>iter</code> that this
+ *          <code>Font</code> cannot display; or <code>-1</code> if
+ *          this <code>Font</code> can display all characters in
+ *          <code>iter</code>.
+ * @since 1.2
+ */
+public int canDisplayUpTo(CharacterIterator iter, int start, int limit) {
+    Font2D font2d = getFont2D();
+    char c = iter.setIndex(start);
+    for (int i = start; i < limit; i++, c = iter.next()) {
+        if (font2d.canDisplay(c)) {
+            continue;
+        }
+        if (!Character.isHighSurrogate(c)) {
+            return i;
+        }
+        char c2 = iter.next();
+        // c2 could be CharacterIterator.DONE which is not a low surrogate.
+        if (!Character.isLowSurrogate(c2)) {
+            return i;
+        }
+        if (!font2d.canDisplay(Character.toCodePoint(c, c2))) {
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}

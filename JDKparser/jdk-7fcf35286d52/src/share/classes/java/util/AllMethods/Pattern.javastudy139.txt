@@ -1,0 +1,25 @@
+boolean study(TreeInfo info) {
+    int minL = info.minLength;
+    int maxL = info.maxLength;
+    boolean maxV = info.maxValid;
+    // arbitrary large enough num
+    int minL2 = Integer.MAX_VALUE;
+    int maxL2 = -1;
+    for (int n = 0; n < size; n++) {
+        info.reset();
+        if (atoms[n] != null)
+            atoms[n].study(info);
+        minL2 = Math.min(minL2, info.minLength);
+        maxL2 = Math.max(maxL2, info.maxLength);
+        maxV = (maxV & info.maxValid);
+    }
+    minL += minL2;
+    maxL += maxL2;
+    info.reset();
+    conn.next.study(info);
+    info.minLength += minL;
+    info.maxLength += maxL;
+    info.maxValid &= maxV;
+    info.deterministic = false;
+    return false;
+}

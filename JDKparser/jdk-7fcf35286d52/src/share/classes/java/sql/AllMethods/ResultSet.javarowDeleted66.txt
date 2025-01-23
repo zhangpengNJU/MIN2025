@@ -1,0 +1,19 @@
+/**
+ * Retrieves whether a row has been deleted.  A deleted row may leave
+ * a visible "hole" in a result set.  This method can be used to
+ * detect holes in a result set.  The value returned depends on whether
+ * or not this <code>ResultSet</code> object can detect deletions.
+ * <p>
+ * <strong>Note:</strong> Support for the <code>rowDeleted</code> method is optional with a result set
+ * concurrency of <code>CONCUR_READ_ONLY</code>
+ * @return <code>true</code> if the current row is detected to
+ * have been deleted by the owner or another; <code>false</code> otherwise
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed result set
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ *
+ * @see DatabaseMetaData#deletesAreDetected
+ * @since 1.2
+ */
+boolean rowDeleted() throws SQLException;

@@ -1,0 +1,22 @@
+/**
+ * Unblocks the execution of the thread blocked by the {@link
+ * #enter} method and exits the secondary loop.
+ * <p>
+ * This method resumes the thread that called the {@link #enter}
+ * method and exits the secondary loop that was created when
+ * the {@link #enter} method was invoked.
+ * <p>
+ * Note that if any other secondary loop is started while this
+ * loop is running, the blocked thread will not resume execution
+ * until the nested loop is terminated.
+ * <p>
+ * If this secondary loop has not been started with the {@link
+ * #enter} method, or this secondary loop has already finished
+ * with the {@link #exit} method, this method returns {@code
+ * false}, otherwise {@code true} is returned.
+ *
+ * @return {@code true} if this loop was previously started and
+ *         has not yet been finished with the {@link #exit} method,
+ *         {@code false} otherwise
+ */
+public boolean exit();

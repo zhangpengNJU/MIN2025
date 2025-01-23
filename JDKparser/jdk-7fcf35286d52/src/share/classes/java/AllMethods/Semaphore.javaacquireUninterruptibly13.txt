@@ -1,0 +1,27 @@
+/**
+ * Acquires the given number of permits from this semaphore,
+ * blocking until all are available.
+ *
+ * <p>Acquires the given number of permits, if they are available,
+ * and returns immediately, reducing the number of available permits
+ * by the given amount.
+ *
+ * <p>If insufficient permits are available then the current thread becomes
+ * disabled for thread scheduling purposes and lies dormant until
+ * some other thread invokes one of the {@link #release() release}
+ * methods for this semaphore, the current thread is next to be assigned
+ * permits and the number of available permits satisfies this request.
+ *
+ * <p>If the current thread is {@linkplain Thread#interrupt interrupted}
+ * while waiting for permits then it will continue to wait and its
+ * position in the queue is not affected.  When the thread does return
+ * from this method its interrupt status will be set.
+ *
+ * @param permits the number of permits to acquire
+ * @throws IllegalArgumentException if {@code permits} is negative
+ */
+public void acquireUninterruptibly(int permits) {
+    if (permits < 0)
+        throw new IllegalArgumentException();
+    sync.acquireShared(permits);
+}

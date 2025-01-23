@@ -1,0 +1,18 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains a {@code Duration} representing a number of milliseconds.
+ * <p>
+ * The seconds and nanoseconds are extracted from the specified milliseconds.
+ *
+ * @param millis  the number of milliseconds, positive or negative
+ * @return a {@code Duration}, not null
+ */
+public static Duration ofMillis(long millis) {
+    long secs = millis / 1000;
+    int mos = (int) (millis % 1000);
+    if (mos < 0) {
+        mos += 1000;
+        secs--;
+    }
+    return create(secs, mos * 1000_000);
+}

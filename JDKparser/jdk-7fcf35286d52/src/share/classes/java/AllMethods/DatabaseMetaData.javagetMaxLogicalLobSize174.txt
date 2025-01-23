@@ -1,0 +1,15 @@
+// --------------------------JDBC 4.2 -----------------------------
+/**
+ *  Retrieves the maximum number of bytes this database allows for
+ *  the logical size for a {@code LOB}.
+ * <p>
+ *  The default implementation will return {@code 0}
+ *
+ *  @return the maximum number of bytes allowed; a result of zero
+ *  means that there is no limit or the limit is not known
+ *  @exception SQLException if a database access error occurs
+ *  @since 1.8
+ */
+default long getMaxLogicalLobSize() throws SQLException {
+    return 0;
+}

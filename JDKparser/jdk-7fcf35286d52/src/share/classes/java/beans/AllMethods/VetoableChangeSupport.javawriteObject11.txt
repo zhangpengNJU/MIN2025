@@ -1,0 +1,38 @@
+/**
+ * @serialData Null terminated list of <code>VetoableChangeListeners</code>.
+ * <p>
+ * At serialization time we skip non-serializable listeners and
+ * only serialize the serializable listeners.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    Hashtable<String, VetoableChangeSupport> children = null;
+    VetoableChangeListener[] listeners = null;
+    synchronized (this.map) {
+        for (Entry<String, VetoableChangeListener[]> entry : this.map.getEntries()) {
+            String property = entry.getKey();
+            if (property == null) {
+                listeners = entry.getValue();
+            } else {
+                if (children == null) {
+                    children = new Hashtable<>();
+                }
+                VetoableChangeSupport vcs = new VetoableChangeSupport(this.source);
+                vcs.map.set(null, entry.getValue());
+                children.put(property, vcs);
+            }
+        }
+    }
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("children", children);
+    fields.put("source", this.source);
+    fields.put("vetoableChangeSupportSerializedDataVersion", 2);
+    s.writeFields();
+    if (listeners != null) {
+        for (VetoableChangeListener l : listeners) {
+            if (l instanceof Serializable) {
+                s.writeObject(l);
+            }
+        }
+    }
+    s.writeObject(null);
+}

@@ -1,0 +1,10 @@
+public AudioClip getAudioClip(URL url) {
+    // We don't currently support audio clips in the Beans.instantiate
+    // applet context, unless by some luck there exists a URL content
+    // class that can generate an AudioClip from the audio URL.
+    try {
+        return (AudioClip) url.getContent();
+    } catch (Exception ex) {
+        return null;
+    }
+}

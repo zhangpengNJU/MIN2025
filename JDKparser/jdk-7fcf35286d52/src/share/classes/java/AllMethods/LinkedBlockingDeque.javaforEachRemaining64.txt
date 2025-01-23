@@ -1,0 +1,28 @@
+public void forEachRemaining(Consumer<? super E> action) {
+    if (action == null)
+        throw new NullPointerException();
+    final LinkedBlockingDeque<E> q = this.queue;
+    final ReentrantLock lock = q.lock;
+    if (!exhausted) {
+        exhausted = true;
+        Node<E> p = current;
+        do {
+            E e = null;
+            lock.lock();
+            try {
+                if (p == null)
+                    p = q.first;
+                while (p != null) {
+                    e = p.item;
+                    p = p.next;
+                    if (e != null)
+                        break;
+                }
+            } finally {
+                lock.unlock();
+            }
+            if (e != null)
+                action.accept(e);
+        } while (p != null);
+    }
+}

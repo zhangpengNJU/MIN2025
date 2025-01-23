@@ -1,0 +1,195 @@
+/**
+ * Populates the property descriptor table by merging the
+ * lists of Property descriptors.
+ */
+private void processPropertyDescriptors() {
+    if (properties == null) {
+        properties = new TreeMap<>();
+    }
+    List<PropertyDescriptor> list;
+    PropertyDescriptor pd, gpd, spd;
+    IndexedPropertyDescriptor ipd, igpd, ispd;
+    Iterator<List<PropertyDescriptor>> it = pdStore.values().iterator();
+    while (it.hasNext()) {
+        pd = null;
+        gpd = null;
+        spd = null;
+        ipd = null;
+        igpd = null;
+        ispd = null;
+        list = it.next();
+        // First pass. Find the latest getter method. Merge properties
+        // of previous getter methods.
+        for (int i = 0; i < list.size(); i++) {
+            pd = list.get(i);
+            if (pd instanceof IndexedPropertyDescriptor) {
+                ipd = (IndexedPropertyDescriptor) pd;
+                if (ipd.getIndexedReadMethod() != null) {
+                    if (igpd != null) {
+                        igpd = new IndexedPropertyDescriptor(igpd, ipd);
+                    } else {
+                        igpd = ipd;
+                    }
+                }
+            } else {
+                if (pd.getReadMethod() != null) {
+                    String pdName = pd.getReadMethod().getName();
+                    if (gpd != null) {
+                        // Don't replace the existing read
+                        // method if it starts with "is"
+                        String gpdName = gpd.getReadMethod().getName();
+                        if (gpdName.equals(pdName) || !gpdName.startsWith(IS_PREFIX)) {
+                            gpd = new PropertyDescriptor(gpd, pd);
+                        }
+                    } else {
+                        gpd = pd;
+                    }
+                }
+            }
+        }
+        // Second pass. Find the latest setter method which
+        // has the same type as the getter method.
+        for (int i = 0; i < list.size(); i++) {
+            pd = list.get(i);
+            if (pd instanceof IndexedPropertyDescriptor) {
+                ipd = (IndexedPropertyDescriptor) pd;
+                if (ipd.getIndexedWriteMethod() != null) {
+                    if (igpd != null) {
+                        if (isAssignable(igpd.getIndexedPropertyType(), ipd.getIndexedPropertyType())) {
+                            if (ispd != null) {
+                                ispd = new IndexedPropertyDescriptor(ispd, ipd);
+                            } else {
+                                ispd = ipd;
+                            }
+                        }
+                    } else {
+                        if (ispd != null) {
+                            ispd = new IndexedPropertyDescriptor(ispd, ipd);
+                        } else {
+                            ispd = ipd;
+                        }
+                    }
+                }
+            } else {
+                if (pd.getWriteMethod() != null) {
+                    if (gpd != null) {
+                        if (isAssignable(gpd.getPropertyType(), pd.getPropertyType())) {
+                            if (spd != null) {
+                                spd = new PropertyDescriptor(spd, pd);
+                            } else {
+                                spd = pd;
+                            }
+                        }
+                    } else {
+                        if (spd != null) {
+                            spd = new PropertyDescriptor(spd, pd);
+                        } else {
+                            spd = pd;
+                        }
+                    }
+                }
+            }
+        }
+        // At this stage we should have either PDs or IPDs for the
+        // representative getters and setters. The order at which the
+        // property descriptors are determined represent the
+        // precedence of the property ordering.
+        pd = null;
+        ipd = null;
+        if (igpd != null && ispd != null) {
+            // Complete indexed properties set
+            // Merge any classic property descriptors
+            if ((gpd == spd) || (gpd == null)) {
+                pd = spd;
+            } else if (spd == null) {
+                pd = gpd;
+            } else if (spd instanceof IndexedPropertyDescriptor) {
+                pd = mergePropertyWithIndexedProperty(gpd, (IndexedPropertyDescriptor) spd);
+            } else if (gpd instanceof IndexedPropertyDescriptor) {
+                pd = mergePropertyWithIndexedProperty(spd, (IndexedPropertyDescriptor) gpd);
+            } else {
+                pd = mergePropertyDescriptor(gpd, spd);
+            }
+            if (igpd == ispd) {
+                ipd = igpd;
+            } else {
+                ipd = mergePropertyDescriptor(igpd, ispd);
+            }
+            if (pd == null) {
+                pd = ipd;
+            } else {
+                Class<?> propType = pd.getPropertyType();
+                Class<?> ipropType = ipd.getIndexedPropertyType();
+                if (propType.isArray() && propType.getComponentType() == ipropType) {
+                    pd = pd.getClass0().isAssignableFrom(ipd.getClass0()) ? new IndexedPropertyDescriptor(pd, ipd) : new IndexedPropertyDescriptor(ipd, pd);
+                } else if (pd.getClass0().isAssignableFrom(ipd.getClass0())) {
+                    pd = pd.getClass0().isAssignableFrom(ipd.getClass0()) ? new PropertyDescriptor(pd, ipd) : new PropertyDescriptor(ipd, pd);
+                } else {
+                    pd = ipd;
+                }
+            }
+        } else if (gpd != null && spd != null) {
+            if (igpd != null) {
+                gpd = mergePropertyWithIndexedProperty(gpd, igpd);
+            }
+            if (ispd != null) {
+                spd = mergePropertyWithIndexedProperty(spd, ispd);
+            }
+            // Complete simple properties set
+            if (gpd == spd) {
+                pd = gpd;
+            } else if (spd instanceof IndexedPropertyDescriptor) {
+                pd = mergePropertyWithIndexedProperty(gpd, (IndexedPropertyDescriptor) spd);
+            } else if (gpd instanceof IndexedPropertyDescriptor) {
+                pd = mergePropertyWithIndexedProperty(spd, (IndexedPropertyDescriptor) gpd);
+            } else {
+                pd = mergePropertyDescriptor(gpd, spd);
+            }
+        } else if (ispd != null) {
+            // indexed setter
+            pd = ispd;
+            // Merge any classic property descriptors
+            if (spd != null) {
+                pd = mergePropertyDescriptor(ispd, spd);
+            }
+            if (gpd != null) {
+                pd = mergePropertyDescriptor(ispd, gpd);
+            }
+        } else if (igpd != null) {
+            // indexed getter
+            pd = igpd;
+            // Merge any classic property descriptors
+            if (gpd != null) {
+                pd = mergePropertyDescriptor(igpd, gpd);
+            }
+            if (spd != null) {
+                pd = mergePropertyDescriptor(igpd, spd);
+            }
+        } else if (spd != null) {
+            // simple setter
+            pd = spd;
+        } else if (gpd != null) {
+            // simple getter
+            pd = gpd;
+        }
+        // Very special case to ensure that an IndexedPropertyDescriptor
+        // doesn't contain less information than the enclosed
+        // PropertyDescriptor. If it does, then recreate as a
+        // PropertyDescriptor. See 4168833
+        if (pd instanceof IndexedPropertyDescriptor) {
+            ipd = (IndexedPropertyDescriptor) pd;
+            if (ipd.getIndexedReadMethod() == null && ipd.getIndexedWriteMethod() == null) {
+                pd = new PropertyDescriptor(ipd);
+            }
+        }
+        // Find the first property descriptor
+        // which does not have getter and setter methods.
+        // See regression bug 4984912.
+        if ((pd == null) && (list.size() > 0)) {
+            pd = list.get(0);
+        }
+        if (pd != null) {
+            properties.put(pd.getName(), pd);
+        }
+    }
+}

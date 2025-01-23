@@ -1,0 +1,12 @@
+/**
+ * Adds steal count to pool stealCounter if it exists, and resets.
+ */
+final void transferStealCount(ForkJoinPool p) {
+    AtomicLong sc;
+    if (p != null && (sc = p.stealCounter) != null) {
+        int s = nsteals;
+        // if negative, correct for overflow
+        nsteals = 0;
+        sc.getAndAdd((long) (s < 0 ? Integer.MAX_VALUE : s));
+    }
+}

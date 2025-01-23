@@ -1,0 +1,16 @@
+/**
+ * Save the state of the {@code StringBuilder} instance to a stream
+ * (that is, serialize it).
+ *
+ * @serialData the number of characters currently stored in the string
+ *             builder ({@code int}), followed by the characters in the
+ *             string builder ({@code char[]}).   The length of the
+ *             {@code char} array may be greater than the number of
+ *             characters currently stored in the string builder, in which
+ *             case extra characters are ignored.
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    s.defaultWriteObject();
+    s.writeInt(count);
+    s.writeObject(value);
+}

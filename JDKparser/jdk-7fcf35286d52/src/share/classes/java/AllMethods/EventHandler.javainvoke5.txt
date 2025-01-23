@@ -1,0 +1,23 @@
+/**
+ * Extract the appropriate property value from the event and
+ * pass it to the action associated with
+ * this <code>EventHandler</code>.
+ *
+ * @param proxy the proxy object
+ * @param method the method in the listener interface
+ * @return the result of applying the action to the target
+ *
+ * @see EventHandler
+ */
+public Object invoke(final Object proxy, final Method method, final Object[] arguments) {
+    AccessControlContext acc = this.acc;
+    if ((acc == null) && (System.getSecurityManager() != null)) {
+        throw new SecurityException("AccessControlContext is not set");
+    }
+    return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+        public Object run() {
+            return invokeInternal(proxy, method, arguments);
+        }
+    }, acc);
+}

@@ -1,0 +1,15 @@
+/*
+     * Convert an array of signers into an array of concatenated certificate
+     * arrays.
+     */
+private static java.security.cert.Certificate[] mapSignersToCertArray(CodeSigner[] signers) {
+    if (signers != null) {
+        ArrayList<java.security.cert.Certificate> certChains = new ArrayList<>();
+        for (int i = 0; i < signers.length; i++) {
+            certChains.addAll(signers[i].getSignerCertPath().getCertificates());
+        }
+        // Convert into a Certificate[]
+        return certChains.toArray(new java.security.cert.Certificate[certChains.size()]);
+    }
+    return null;
+}

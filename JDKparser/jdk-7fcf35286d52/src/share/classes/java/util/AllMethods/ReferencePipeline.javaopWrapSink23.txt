@@ -1,0 +1,10 @@
+@Override
+Sink<P_OUT> opWrapSink(int flags, Sink<Double> sink) {
+    return new Sink.ChainedReference<P_OUT, Double>(sink) {
+
+        @Override
+        public void accept(P_OUT u) {
+            downstream.accept(mapper.applyAsDouble(u));
+        }
+    };
+}

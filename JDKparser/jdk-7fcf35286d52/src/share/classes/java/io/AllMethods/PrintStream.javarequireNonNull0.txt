@@ -1,0 +1,10 @@
+/**
+ * requireNonNull is explicitly declared here so as not to create an extra
+ * dependency on java.util.Objects.requireNonNull. PrintStream is loaded
+ * early during system initialization.
+ */
+private static <T> T requireNonNull(T obj, String message) {
+    if (obj == null)
+        throw new NullPointerException(message);
+    return obj;
+}

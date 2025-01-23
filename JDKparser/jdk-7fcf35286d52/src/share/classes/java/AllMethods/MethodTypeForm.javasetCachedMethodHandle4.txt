@@ -1,0 +1,12 @@
+synchronized public MethodHandle setCachedMethodHandle(int which, MethodHandle mh) {
+    // Simulate a CAS, to avoid racy duplication of results.
+    SoftReference<MethodHandle> entry = methodHandles[which];
+    if (entry != null) {
+        MethodHandle prev = entry.get();
+        if (prev != null) {
+            return prev;
+        }
+    }
+    methodHandles[which] = new SoftReference<>(mh);
+    return mh;
+}

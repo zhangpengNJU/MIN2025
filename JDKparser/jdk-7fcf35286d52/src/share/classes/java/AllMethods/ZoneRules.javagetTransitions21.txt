@@ -1,0 +1,19 @@
+/**
+ * Gets the complete list of fully defined transitions.
+ * <p>
+ * The complete set of transitions for this rules instance is defined by this method
+ * and {@link #getTransitionRules()}. This method returns those transitions that have
+ * been fully defined. These are typically historical, but may be in the future.
+ * <p>
+ * The list will be empty for fixed offset rules and for any time-zone where there has
+ * only ever been a single offset. The list will also be empty if the transition rules are unknown.
+ *
+ * @return an immutable list of fully defined transitions, not null
+ */
+public List<ZoneOffsetTransition> getTransitions() {
+    List<ZoneOffsetTransition> list = new ArrayList<>();
+    for (int i = 0; i < savingsInstantTransitions.length; i++) {
+        list.add(new ZoneOffsetTransition(savingsInstantTransitions[i], wallOffsets[i], wallOffsets[i + 1]));
+    }
+    return Collections.unmodifiableList(list);
+}

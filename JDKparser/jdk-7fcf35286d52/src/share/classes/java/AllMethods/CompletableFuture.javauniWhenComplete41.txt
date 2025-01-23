@@ -1,0 +1,31 @@
+final boolean uniWhenComplete(CompletableFuture<T> a, BiConsumer<? super T, ? super Throwable> f, UniWhenComplete<T> c) {
+    Object r;
+    T t;
+    Throwable x = null;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    if (result == null) {
+        try {
+            if (c != null && !c.claim())
+                return false;
+            if (r instanceof AltResult) {
+                x = ((AltResult) r).ex;
+                t = null;
+            } else {
+                @SuppressWarnings("unchecked")
+                T tr = (T) r;
+                t = tr;
+            }
+            f.accept(t, x);
+            if (x == null) {
+                internalComplete(r);
+                return true;
+            }
+        } catch (Throwable ex) {
+            if (x == null)
+                x = ex;
+        }
+        completeThrowable(x, r);
+    }
+    return true;
+}

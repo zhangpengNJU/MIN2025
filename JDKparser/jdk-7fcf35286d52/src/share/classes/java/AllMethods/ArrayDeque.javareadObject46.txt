@@ -1,0 +1,15 @@
+/**
+ * Reconstitutes this deque from a stream (that is, deserializes it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    s.defaultReadObject();
+    // Read in size and allocate array
+    int size = s.readInt();
+    int capacity = calculateSize(size);
+    SharedSecrets.getJavaOISAccess().checkArray(s, Object[].class, capacity);
+    allocateElements(size);
+    head = 0;
+    tail = size;
+    // Read in all elements in the proper order.
+    for (int i = 0; i < size; i++) elements[i] = s.readObject();
+}

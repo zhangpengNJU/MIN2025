@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> ceilingEntry(K key) {
+    Entry<K, V> ceiling = (Entry<K, V>) nm.ceilingEntry(key);
+    return (null != ceiling) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(ceiling) : null;
+}

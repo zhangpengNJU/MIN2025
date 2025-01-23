@@ -1,0 +1,33 @@
+@Override
+public String toString() {
+    StringBuilder sb = new StringBuilder(30);
+    sb.append("Localized(");
+    if (chr == 'Y') {
+        if (count == 1) {
+            sb.append("WeekBasedYear");
+        } else if (count == 2) {
+            sb.append("ReducedValue(WeekBasedYear,2,2,2000-01-01)");
+        } else {
+            sb.append("WeekBasedYear,").append(count).append(",").append(19).append(",").append((count < 4) ? SignStyle.NORMAL : SignStyle.EXCEEDS_PAD);
+        }
+    } else {
+        switch(chr) {
+            case 'c':
+            case 'e':
+                sb.append("DayOfWeek");
+                break;
+            case 'w':
+                sb.append("WeekOfWeekBasedYear");
+                break;
+            case 'W':
+                sb.append("WeekOfMonth");
+                break;
+            default:
+                break;
+        }
+        sb.append(",");
+        sb.append(count);
+    }
+    sb.append(")");
+    return sb.toString();
+}

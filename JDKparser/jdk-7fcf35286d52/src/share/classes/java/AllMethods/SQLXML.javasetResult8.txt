@@ -1,0 +1,41 @@
+/**
+ * Returns a Result for setting the XML value designated by this SQLXML instance.
+ * <p>
+ * The systemID of the Result is implementation dependent.
+ * <p>
+ * The SQL XML object becomes not writeable when this method is called and
+ * may also become not readable depending on implementation.
+ * <p>
+ * Note that SAX is a callback architecture and the returned
+ * SAXResult has a content handler assigned that will receive the
+ * SAX events based on the contents of the XML.  Call the content
+ * handler with the contents of the XML document to assign the values.
+ * <pre>
+ *   SAXResult saxResult = sqlxml.setResult(SAXResult.class);
+ *   ContentHandler contentHandler = saxResult.getXMLReader().getContentHandler();
+ *   contentHandler.startDocument();
+ *   // set the XML elements and attributes into the result
+ *   contentHandler.endDocument();
+ * </pre>
+ *
+ * @param <T> the type of the class modeled by this Class object
+ * @param resultClass The class of the result, or null.
+ * If resultClass is null, a vendor specific Result implementation will be returned.
+ * The following classes are supported at a minimum:
+ * <pre>
+ *   javax.xml.transform.dom.DOMResult - returns a DOMResult
+ *   javax.xml.transform.sax.SAXResult - returns a SAXResult
+ *   javax.xml.transform.stax.StAXResult - returns a StAXResult
+ *   javax.xml.transform.stream.StreamResult - returns a StreamResult
+ * </pre>
+ * @return Returns a Result for setting the XML value.
+ * @throws SQLException if there is an error processing the XML value
+ *   or if this feature is not supported.
+ *   The getCause() method of the exception may provide a more detailed exception, for example,
+ *   if an XML parser exception occurs.
+ *   An exception is thrown if the state is not writable.
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+<T extends Result> T setResult(Class<T> resultClass) throws SQLException;

@@ -1,0 +1,11 @@
+@Override
+boolean updateGraphicsData(GraphicsConfiguration gc) {
+    checkTreeLock();
+    boolean ret = super.updateGraphicsData(gc);
+    for (Component comp : component) {
+        if (comp != null) {
+            ret |= comp.updateGraphicsData(gc);
+        }
+    }
+    return ret;
+}

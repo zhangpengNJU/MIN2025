@@ -1,0 +1,22 @@
+/**
+ * Creates a copy of this <code>TextLayout</code>.
+ */
+protected Object clone() {
+    /*
+         * !!! I think this is safe.  Once created, nothing mutates the
+         * glyphvectors or arrays.  But we need to make sure.
+         * {jbr} actually, that's not quite true.  The justification code
+         * mutates after cloning.  It doesn't actually change the glyphvectors
+         * (that's impossible) but it replaces them with justified sets.  This
+         * is a problem for GlyphIterator creation, since new GlyphIterators
+         * are created by cloning a prototype.  If the prototype has outdated
+         * glyphvectors, so will the new ones.  A partial solution is to set the
+         * prototypical GlyphIterator to null when the glyphvectors change.  If
+         * you forget this one time, you're hosed.
+         */
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+}

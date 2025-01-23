@@ -1,0 +1,15 @@
+/*
+     * Reads in a Vector of FilePermissions and saves them in the perms field.
+     */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get the one we want
+    @SuppressWarnings("unchecked")
+    Vector<Permission> permissions = (Vector<Permission>) gfields.get("permissions", null);
+    perms = new ArrayList<>(permissions.size());
+    for (Permission perm : permissions) {
+        perms.add(perm);
+    }
+}

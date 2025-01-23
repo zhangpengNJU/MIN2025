@@ -1,0 +1,17 @@
+/**
+ * Opens an asynchronous socket channel.
+ *
+ * @param   group
+ *          The group to which the channel is bound, or {@code null} to
+ *          bind to the default group
+ *
+ * @return  The new channel
+ *
+ * @throws  IllegalChannelGroupException
+ *          If the provider that created the group differs from this provider
+ * @throws  ShutdownChannelGroupException
+ *          The group is shutdown
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+public abstract AsynchronousSocketChannel openAsynchronousSocketChannel(AsynchronousChannelGroup group) throws IOException;

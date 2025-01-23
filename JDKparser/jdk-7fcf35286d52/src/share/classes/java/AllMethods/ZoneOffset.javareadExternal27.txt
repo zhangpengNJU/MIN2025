@@ -1,0 +1,4 @@
+static ZoneOffset readExternal(DataInput in) throws IOException {
+    int offsetByte = in.readByte();
+    return (offsetByte == 127 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(offsetByte * 900));
+}

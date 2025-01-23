@@ -1,0 +1,36 @@
+// 
+// Utility methods for code point support
+// 
+private static final int countChars(CharSequence seq, int index, int lengthInCodePoints) {
+    // optimization
+    if (lengthInCodePoints == 1 && !Character.isHighSurrogate(seq.charAt(index))) {
+        assert (index >= 0 && index < seq.length());
+        return 1;
+    }
+    int length = seq.length();
+    int x = index;
+    if (lengthInCodePoints >= 0) {
+        assert (index >= 0 && index < length);
+        for (int i = 0; x < length && i < lengthInCodePoints; i++) {
+            if (Character.isHighSurrogate(seq.charAt(x++))) {
+                if (x < length && Character.isLowSurrogate(seq.charAt(x))) {
+                    x++;
+                }
+            }
+        }
+        return x - index;
+    }
+    assert (index >= 0 && index <= length);
+    if (index == 0) {
+        return 0;
+    }
+    int len = -lengthInCodePoints;
+    for (int i = 0; x > 0 && i < len; i++) {
+        if (Character.isLowSurrogate(seq.charAt(--x))) {
+            if (x > 0 && Character.isHighSurrogate(seq.charAt(x - 1))) {
+                x--;
+            }
+        }
+    }
+    return index - x;
+}

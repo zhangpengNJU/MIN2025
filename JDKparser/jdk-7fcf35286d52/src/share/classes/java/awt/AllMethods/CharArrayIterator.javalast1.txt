@@ -1,0 +1,14 @@
+/**
+ * Sets the position to getEndIndex()-1 (getEndIndex() if the text is empty)
+ * and returns the character at that position.
+ * @return the last character in the text, or DONE if the text is empty
+ * @see getEndIndex
+ */
+public char last() {
+    if (chars.length > 0) {
+        pos = chars.length - 1;
+    } else {
+        pos = 0;
+    }
+    return current();
+}

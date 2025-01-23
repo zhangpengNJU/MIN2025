@@ -1,0 +1,37 @@
+/**
+ * Attempts to locate a driver that understands the given URL.
+ * The <code>DriverManager</code> attempts to select an appropriate driver from
+ * the set of registered JDBC drivers.
+ *
+ * @param url a database URL of the form
+ *     <code>jdbc:<em>subprotocol</em>:<em>subname</em></code>
+ * @return a <code>Driver</code> object representing a driver
+ * that can connect to the given URL
+ * @exception SQLException if a database access error occurs
+ */
+@CallerSensitive
+public static Driver getDriver(String url) throws SQLException {
+    println("DriverManager.getDriver(\"" + url + "\")");
+    Class<?> callerClass = Reflection.getCallerClass();
+    // Walk through the loaded registeredDrivers attempting to locate someone
+    // who understands the given URL.
+    for (DriverInfo aDriver : registeredDrivers) {
+        // If the caller does not have permission to load the driver then
+        // skip it.
+        if (isDriverAllowed(aDriver.driver, callerClass)) {
+            try {
+                if (aDriver.driver.acceptsURL(url)) {
+                    // Success!
+                    println("getDriver returning " + aDriver.driver.getClass().getName());
+                    return (aDriver.driver);
+                }
+            } catch (SQLException sqe) {
+            // Drop through and try the next driver.
+            }
+        } else {
+            println("    skipping: " + aDriver.driver.getClass().getName());
+        }
+    }
+    println("getDriver: no suitable driver");
+    throw new SQLException("No suitable driver", "08001");
+}

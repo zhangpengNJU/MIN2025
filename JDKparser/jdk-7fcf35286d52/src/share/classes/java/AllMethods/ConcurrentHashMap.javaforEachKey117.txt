@@ -1,0 +1,13 @@
+/**
+ * Performs the given action for each key.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param action the action
+ * @since 1.8
+ */
+public void forEachKey(long parallelismThreshold, Consumer<? super K> action) {
+    if (action == null)
+        throw new NullPointerException();
+    new ForEachKeyTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, action).invoke();
+}

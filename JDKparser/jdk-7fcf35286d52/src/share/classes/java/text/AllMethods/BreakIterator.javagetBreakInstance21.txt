@@ -1,0 +1,14 @@
+private static BreakIterator getBreakInstance(Locale locale, int type) {
+    if (iterCache[type] != null) {
+        BreakIteratorCache cache = iterCache[type].get();
+        if (cache != null) {
+            if (cache.getLocale().equals(locale)) {
+                return cache.createBreakInstance();
+            }
+        }
+    }
+    BreakIterator result = createBreakInstance(locale, type);
+    BreakIteratorCache cache = new BreakIteratorCache(locale, result);
+    iterCache[type] = new SoftReference<>(cache);
+    return result;
+}

@@ -1,0 +1,4 @@
+@Override
+public final <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super P_OUT> accumulator, BiConsumer<R, R> combiner) {
+    return evaluate(ReduceOps.makeRef(supplier, accumulator, combiner));
+}

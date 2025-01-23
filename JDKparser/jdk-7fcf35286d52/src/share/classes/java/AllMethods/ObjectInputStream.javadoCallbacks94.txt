@@ -1,0 +1,24 @@
+/**
+ * Invokes all registered callbacks and clears the callback list.
+ * Callbacks with higher priorities are called first; those with equal
+ * priorities may be called in any order.  If any of the callbacks
+ * throws an InvalidObjectException, the callback process is terminated
+ * and the exception propagated upwards.
+ */
+void doCallbacks() throws InvalidObjectException {
+    try {
+        while (list != null) {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+                public Void run() throws InvalidObjectException {
+                    list.obj.validateObject();
+                    return null;
+                }
+            }, list.acc);
+            list = list.next;
+        }
+    } catch (PrivilegedActionException ex) {
+        list = null;
+        throw (InvalidObjectException) ex.getException();
+    }
+}

@@ -1,0 +1,106 @@
+/**
+ * This code works in the simplest of cases, where the focus == center
+ * point, the gradient is noncyclic, and the gradient lookup method is
+ * fast (single array index, no conversion necessary).
+ */
+private void simpleNonCyclicFillRaster(int[] pixels, int off, int adjust, int x, int y, int w, int h) {
+    /* We calculate sqrt(X^2 + Y^2) relative to the radius
+         * size to get the fraction for the color to use.
+         *
+         * Each step along the scanline adds (a00, a10) to (X, Y).
+         * If we precalculate:
+         *   gRel = X^2+Y^2
+         * for the start of the row, then for each step we need to
+         * calculate:
+         *   gRel' = (X+a00)^2 + (Y+a10)^2
+         *         = X^2 + 2*X*a00 + a00^2 + Y^2 + 2*Y*a10 + a10^2
+         *         = (X^2+Y^2) + 2*(X*a00+Y*a10) + (a00^2+a10^2)
+         *         = gRel + 2*(X*a00+Y*a10) + (a00^2+a10^2)
+         *         = gRel + 2*DP + SD
+         * (where DP = dot product between X,Y and a00,a10
+         *  and   SD = dot product square of the delta vector)
+         * For the step after that we get:
+         *   gRel'' = (X+2*a00)^2 + (Y+2*a10)^2
+         *          = X^2 + 4*X*a00 + 4*a00^2 + Y^2 + 4*Y*a10 + 4*a10^2
+         *          = (X^2+Y^2) + 4*(X*a00+Y*a10) + 4*(a00^2+a10^2)
+         *          = gRel  + 4*DP + 4*SD
+         *          = gRel' + 2*DP + 3*SD
+         * The increment changed by:
+         *     (gRel'' - gRel') - (gRel' - gRel)
+         *   = (2*DP + 3*SD) - (2*DP + SD)
+         *   = 2*SD
+         * Note that this value depends only on the (inverse of the)
+         * transformation matrix and so is a constant for the loop.
+         * To make this all relative to the unit circle, we need to
+         * divide all values as follows:
+         *   [XY] /= radius
+         *   gRel /= radiusSq
+         *   DP   /= radiusSq
+         *   SD   /= radiusSq
+         */
+    // coordinates of UL corner in "user space" relative to center
+    float rowX = (a00 * x) + (a01 * y) + constA;
+    float rowY = (a10 * x) + (a11 * y) + constB;
+    // second order delta calculated in constructor
+    float gDeltaDelta = this.gDeltaDelta;
+    // adjust is (scan-w) of pixels array, we need (scan)
+    adjust += w;
+    // rgb of the 1.0 color used when the distance exceeds gradient radius
+    int rgbclip = gradient[fastGradientArraySize];
+    for (int j = 0; j < h; j++) {
+        // these values depend on the coordinates of the start of the row
+        float gRel = (rowX * rowX + rowY * rowY) / radiusSq;
+        float gDelta = (2 * (a00 * rowX + a10 * rowY) / radiusSq + gDeltaDelta / 2);
+        /* Use optimized loops for any cases where gRel >= 1.
+             * We do not need to calculate sqrt(gRel) for these
+             * values since sqrt(N>=1) == (M>=1).
+             * Note that gRel follows a parabola which can only be < 1
+             * for a small region around the center on each scanline. In
+             * particular:
+             *   gDeltaDelta is always positive
+             *   gDelta is <0 until it crosses the midpoint, then >0
+             * To the left and right of that region, it will always be
+             * >=1 out to infinity, so we can process the line in 3
+             * regions:
+             *   out to the left  - quick fill until gRel < 1, updating gRel
+             *   in the heart     - slow fraction=sqrt fill while gRel < 1
+             *   out to the right - quick fill rest of scanline, ignore gRel
+             */
+        int i = 0;
+        // Quick fill for "out to the left"
+        while (i < w && gRel >= 1.0f) {
+            pixels[off + i] = rgbclip;
+            gRel += gDelta;
+            gDelta += gDeltaDelta;
+            i++;
+        }
+        // Slow fill for "in the heart"
+        while (i < w && gRel < 1.0f) {
+            int gIndex;
+            if (gRel <= 0) {
+                gIndex = 0;
+            } else {
+                float fIndex = gRel * SQRT_LUT_SIZE;
+                int iIndex = (int) (fIndex);
+                float s0 = sqrtLut[iIndex];
+                float s1 = sqrtLut[iIndex + 1] - s0;
+                fIndex = s0 + (fIndex - iIndex) * s1;
+                gIndex = (int) (fIndex * fastGradientArraySize);
+            }
+            // store the color at this point
+            pixels[off + i] = gradient[gIndex];
+            // incremental calculation
+            gRel += gDelta;
+            gDelta += gDeltaDelta;
+            i++;
+        }
+        // Quick fill to end of line for "out to the right"
+        while (i < w) {
+            pixels[off + i] = rgbclip;
+            i++;
+        }
+        off += adjust;
+        rowX += a01;
+        rowY += a11;
+    }
+}

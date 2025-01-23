@@ -1,0 +1,19 @@
+/**
+ * Returns a string representation for a proxy that uses this invocation
+ * handler.
+ */
+private String proxyToString(Object proxy) {
+    Class<?>[] interfaces = proxy.getClass().getInterfaces();
+    if (interfaces.length == 0) {
+        return "Proxy[" + this + "]";
+    }
+    String iface = interfaces[0].getName();
+    if (iface.equals("java.rmi.Remote") && interfaces.length > 1) {
+        iface = interfaces[1].getName();
+    }
+    int dot = iface.lastIndexOf('.');
+    if (dot >= 0) {
+        iface = iface.substring(dot + 1);
+    }
+    return "Proxy[" + iface + "," + this + "]";
+}

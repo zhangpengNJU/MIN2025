@@ -1,0 +1,22 @@
+public void forEachRemaining(Consumer<? super Map.Entry<K, V>> action) {
+    if (action == null)
+        throw new NullPointerException();
+    int i, hi, mc;
+    IdentityHashMap<K, V> m;
+    Object[] a;
+    if ((m = map) != null && (a = m.table) != null && (i = index) >= 0 && (index = hi = getFence()) <= a.length) {
+        for (; i < hi; i += 2) {
+            Object key = a[i];
+            if (key != null) {
+                @SuppressWarnings("unchecked")
+                K k = (K) unmaskNull(key);
+                @SuppressWarnings("unchecked")
+                V v = (V) a[i + 1];
+                action.accept(new AbstractMap.SimpleImmutableEntry<K, V>(k, v));
+            }
+        }
+        if (m.modCount == expectedModCount)
+            return;
+    }
+    throw new ConcurrentModificationException();
+}

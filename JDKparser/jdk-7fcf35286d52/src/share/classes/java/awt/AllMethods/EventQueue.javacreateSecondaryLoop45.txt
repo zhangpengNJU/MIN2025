@@ -1,0 +1,18 @@
+SecondaryLoop createSecondaryLoop(Conditional cond, EventFilter filter, long interval) {
+    pushPopLock.lock();
+    try {
+        if (nextQueue != null) {
+            // Forward the request to the top of EventQueue stack
+            return nextQueue.createSecondaryLoop(cond, filter, interval);
+        }
+        if (fwDispatcher != null) {
+            return new FwSecondaryLoopWrapper(fwDispatcher.createSecondaryLoop(), filter);
+        }
+        if (dispatchThread == null) {
+            initDispatchThread();
+        }
+        return new WaitDispatchSupport(dispatchThread, cond, filter, interval);
+    } finally {
+        pushPopLock.unlock();
+    }
+}

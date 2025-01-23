@@ -1,0 +1,14 @@
+/**
+ * Returns two paths corresponding to the strong and weak caret.
+ * This method is a convenience overload of <code>getCaretShapes</code>
+ * that uses the default caret policy and this <code>TextLayout</code>
+ * object's natural bounds.
+ * @param offset an offset in this <code>TextLayout</code>
+ * @return two paths corresponding to the strong and weak caret as
+ *    defined by the <code>DEFAULT_CARET_POLICY</code>.  These are
+ *    in standard coordinates.
+ */
+public Shape[] getCaretShapes(int offset) {
+    // {sfb} parameter checking is done in overloaded version
+    return getCaretShapes(offset, getNaturalBounds(), DEFAULT_CARET_POLICY);
+}

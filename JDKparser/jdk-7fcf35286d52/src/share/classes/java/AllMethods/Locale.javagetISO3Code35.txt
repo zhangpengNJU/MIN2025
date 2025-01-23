@@ -1,0 +1,18 @@
+private static String getISO3Code(String iso2Code, String table) {
+    int codeLength = iso2Code.length();
+    if (codeLength == 0) {
+        return "";
+    }
+    int tableLength = table.length();
+    int index = tableLength;
+    if (codeLength == 2) {
+        char c1 = iso2Code.charAt(0);
+        char c2 = iso2Code.charAt(1);
+        for (index = 0; index < tableLength; index += 5) {
+            if (table.charAt(index) == c1 && table.charAt(index + 1) == c2) {
+                break;
+            }
+        }
+    }
+    return index < tableLength ? table.substring(index + 2, index + 5) : null;
+}

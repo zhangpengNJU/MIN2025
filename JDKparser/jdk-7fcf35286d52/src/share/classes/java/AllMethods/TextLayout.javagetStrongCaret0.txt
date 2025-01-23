@@ -1,0 +1,15 @@
+/**
+ * Chooses one of the specified <code>TextHitInfo</code> instances as
+ * a strong caret in the specified <code>TextLayout</code>.
+ * @param hit1 a valid hit in <code>layout</code>
+ * @param hit2 a valid hit in <code>layout</code>
+ * @param layout the <code>TextLayout</code> in which
+ *        <code>hit1</code> and <code>hit2</code> are used
+ * @return <code>hit1</code> or <code>hit2</code>
+ *        (or an equivalent <code>TextHitInfo</code>), indicating the
+ *        strong caret.
+ */
+public TextHitInfo getStrongCaret(TextHitInfo hit1, TextHitInfo hit2, TextLayout layout) {
+    // default implementation just calls private method on layout
+    return layout.getStrongHit(hit1, hit2);
+}

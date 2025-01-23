@@ -1,0 +1,9 @@
+public void remove() {
+    Node<K, V> l = lastReturned;
+    if (l == null)
+        throw new IllegalStateException();
+    // It would not be worth all of the overhead to directly
+    // unlink from here. Using remove is fast enough.
+    ConcurrentSkipListMap.this.remove(l.key);
+    lastReturned = null;
+}

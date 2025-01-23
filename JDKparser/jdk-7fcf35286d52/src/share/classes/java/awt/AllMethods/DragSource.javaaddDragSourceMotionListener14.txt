@@ -1,0 +1,20 @@
+/**
+ * Adds the specified <code>DragSourceMotionListener</code> to this
+ * <code>DragSource</code> to receive drag motion events during drag
+ * operations intiated with this <code>DragSource</code>.
+ * If a <code>null</code> listener is specified, no action is taken and no
+ * exception is thrown.
+ *
+ * @param dsml the <code>DragSourceMotionListener</code> to add
+ *
+ * @see      #removeDragSourceMotionListener
+ * @see      #getDragSourceMotionListeners
+ * @since 1.4
+ */
+public void addDragSourceMotionListener(DragSourceMotionListener dsml) {
+    if (dsml != null) {
+        synchronized (this) {
+            motionListener = DnDEventMulticaster.add(motionListener, dsml);
+        }
+    }
+}

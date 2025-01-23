@@ -1,0 +1,67 @@
+/**
+ * Calculate the multiplicative inverse of this modulo mod, where the mod
+ * argument is odd.  This and mod are not changed by the calculation.
+ *
+ * This method implements an algorithm due to Richard Schroeppel, that uses
+ * the same intermediate representation as Montgomery Reduction
+ * ("Montgomery Form").  The algorithm is described in an unpublished
+ * manuscript entitled "Fast Modular Reciprocals."
+ */
+private MutableBigInteger modInverse(MutableBigInteger mod) {
+    MutableBigInteger p = new MutableBigInteger(mod);
+    MutableBigInteger f = new MutableBigInteger(this);
+    MutableBigInteger g = new MutableBigInteger(p);
+    SignedMutableBigInteger c = new SignedMutableBigInteger(1);
+    SignedMutableBigInteger d = new SignedMutableBigInteger();
+    MutableBigInteger temp = null;
+    SignedMutableBigInteger sTemp = null;
+    int k = 0;
+    // Right shift f k times until odd, left shift d k times
+    if (f.isEven()) {
+        int trailingZeros = f.getLowestSetBit();
+        f.rightShift(trailingZeros);
+        d.leftShift(trailingZeros);
+        k = trailingZeros;
+    }
+    // The Almost Inverse Algorithm
+    while (!f.isOne()) {
+        // If gcd(f, g) != 1, number is not invertible modulo mod
+        if (f.isZero())
+            throw new ArithmeticException("BigInteger not invertible.");
+        // If f < g exchange f, g and c, d
+        if (f.compare(g) < 0) {
+            temp = f;
+            f = g;
+            g = temp;
+            sTemp = d;
+            d = c;
+            c = sTemp;
+        }
+        // If f == g (mod 4)
+        if (((f.value[f.offset + f.intLen - 1] ^ g.value[g.offset + g.intLen - 1]) & 3) == 0) {
+            f.subtract(g);
+            c.signedSubtract(d);
+        } else {
+            // If f != g (mod 4)
+            f.add(g);
+            c.signedAdd(d);
+        }
+        // Right shift f k times until odd, left shift d k times
+        int trailingZeros = f.getLowestSetBit();
+        f.rightShift(trailingZeros);
+        d.leftShift(trailingZeros);
+        k += trailingZeros;
+    }
+    if (c.compare(p) >= 0) {
+        // c has a larger magnitude than p
+        MutableBigInteger remainder = c.divide(p, new MutableBigInteger());
+        // The previous line ignores the sign so we copy the data back
+        // into c which will restore the sign as needed (and converts
+        // it back to a SignedMutableBigInteger)
+        c.copyValue(remainder);
+    }
+    if (c.sign < 0) {
+        c.signedAdd(p);
+    }
+    return fixup(c, p, k);
+}

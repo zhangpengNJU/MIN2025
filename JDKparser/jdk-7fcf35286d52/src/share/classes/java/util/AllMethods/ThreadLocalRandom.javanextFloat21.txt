@@ -1,0 +1,10 @@
+/**
+ * Returns a pseudorandom {@code float} value between zero
+ * (inclusive) and one (exclusive).
+ *
+ * @return a pseudorandom {@code float} value between zero
+ *         (inclusive) and one (exclusive)
+ */
+public float nextFloat() {
+    return (mix32(nextSeed()) >>> 8) * FLOAT_UNIT;
+}

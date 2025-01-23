@@ -1,0 +1,26 @@
+/**
+ * Sets the component at the specified {@code index} of this
+ * vector to be the specified object. The previous component at that
+ * position is discarded.
+ *
+ * <p>The index must be a value greater than or equal to {@code 0}
+ * and less than the current size of the vector.
+ *
+ * <p>This method is identical in functionality to the
+ * {@link #set(int, Object) set(int, E)}
+ * method (which is part of the {@link List} interface). Note that the
+ * {@code set} method reverses the order of the parameters, to more closely
+ * match array usage.  Note also that the {@code set} method returns the
+ * old value that was stored at the specified position.
+ *
+ * @param      obj     what the component is to be set to
+ * @param      index   the specified index
+ * @throws ArrayIndexOutOfBoundsException if the index is out of range
+ *         ({@code index < 0 || index >= size()})
+ */
+public synchronized void setElementAt(E obj, int index) {
+    if (index >= elementCount) {
+        throw new ArrayIndexOutOfBoundsException(index + " >= " + elementCount);
+    }
+    elementData[index] = obj;
+}

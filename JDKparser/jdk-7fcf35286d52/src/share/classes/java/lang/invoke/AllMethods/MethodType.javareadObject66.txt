@@ -1,0 +1,25 @@
+/**
+ * Reconstitute the {@code MethodType} instance from a stream (that is,
+ * deserialize it).
+ * This instance is a scratch object with bogus final fields.
+ * It provides the parameters to the factory method called by
+ * {@link #readResolve readResolve}.
+ * After that call it is discarded.
+ * @param s the stream to read the object from
+ * @throws java.io.IOException if there is a problem reading the object
+ * @throws ClassNotFoundException if one of the component classes cannot be resolved
+ * @see #readResolve
+ * @see #writeObject
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Assign defaults in case this object escapes
+    UNSAFE.putObject(this, rtypeOffset, void.class);
+    UNSAFE.putObject(this, ptypesOffset, NO_PTYPES);
+    // requires serialPersistentFields to be an empty array
+    s.defaultReadObject();
+    Class<?> returnType = (Class<?>) s.readObject();
+    Class<?>[] parameterArray = (Class<?>[]) s.readObject();
+    // Verify all operands, and make sure ptypes is unshared
+    // Cache the new MethodType for readResolve
+    wrapAlt = new MethodType[] { MethodType.methodType(returnType, parameterArray) };
+}

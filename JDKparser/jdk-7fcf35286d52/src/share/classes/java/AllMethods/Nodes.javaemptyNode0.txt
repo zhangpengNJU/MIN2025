@@ -1,0 +1,23 @@
+// General shape-based node creation methods
+/**
+ * Produces an empty node whose count is zero, has no children and no content.
+ *
+ * @param <T> the type of elements of the created node
+ * @param shape the shape of the node to be created
+ * @return an empty node.
+ */
+@SuppressWarnings("unchecked")
+static <T> Node<T> emptyNode(StreamShape shape) {
+    switch(shape) {
+        case REFERENCE:
+            return (Node<T>) EMPTY_NODE;
+        case INT_VALUE:
+            return (Node<T>) EMPTY_INT_NODE;
+        case LONG_VALUE:
+            return (Node<T>) EMPTY_LONG_NODE;
+        case DOUBLE_VALUE:
+            return (Node<T>) EMPTY_DOUBLE_NODE;
+        default:
+            throw new IllegalStateException("Unknown shape " + shape);
+    }
+}

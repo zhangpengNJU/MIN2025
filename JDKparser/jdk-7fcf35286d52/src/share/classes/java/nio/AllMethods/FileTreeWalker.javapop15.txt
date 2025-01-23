@@ -1,0 +1,15 @@
+/**
+ * Pops the directory node that is the current top of the stack so that
+ * there are no more events for the directory (including no END_DIRECTORY)
+ * event. This method is a no-op if the stack is empty or the walker is
+ * closed.
+ */
+void pop() {
+    if (!stack.isEmpty()) {
+        DirectoryNode node = stack.pop();
+        try {
+            node.stream().close();
+        } catch (IOException ignore) {
+        }
+    }
+}

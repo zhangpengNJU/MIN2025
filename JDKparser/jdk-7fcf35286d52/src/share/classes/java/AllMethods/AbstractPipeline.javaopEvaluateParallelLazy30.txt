@@ -1,0 +1,24 @@
+/**
+ * Returns a {@code Spliterator} describing a parallel evaluation of the
+ * operation, using the specified {@code PipelineHelper} which describes the
+ * upstream intermediate operations.  Only called on stateful operations.
+ * It is not necessary (though acceptable) to do a full computation of the
+ * result here; it is preferable, if possible, to describe the result via a
+ * lazily evaluated spliterator.
+ *
+ * @implSpec The default implementation behaves as if:
+ * <pre>{@code
+ *     return evaluateParallel(helper, i -> (E_OUT[]) new
+ * Object[i]).spliterator();
+ * }</pre>
+ * and is suitable for implementations that cannot do better than a full
+ * synchronous evaluation.
+ *
+ * @param helper the pipeline helper
+ * @param spliterator the source {@code Spliterator}
+ * @return a {@code Spliterator} describing the result of the evaluation
+ */
+@SuppressWarnings("unchecked")
+<P_IN> Spliterator<E_OUT> opEvaluateParallelLazy(PipelineHelper<E_OUT> helper, Spliterator<P_IN> spliterator) {
+    return opEvaluateParallel(helper, spliterator, i -> (E_OUT[]) new Object[i]).spliterator();
+}

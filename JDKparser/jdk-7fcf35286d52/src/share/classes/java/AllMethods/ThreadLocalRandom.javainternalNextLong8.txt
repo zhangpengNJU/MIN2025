@@ -1,0 +1,30 @@
+/**
+ * The form of nextLong used by LongStream Spliterators.  If
+ * origin is greater than bound, acts as unbounded form of
+ * nextLong, else as bounded form.
+ *
+ * @param origin the least value, unless greater than bound
+ * @param bound the upper bound (exclusive), must not equal origin
+ * @return a pseudorandom value
+ */
+final long internalNextLong(long origin, long bound) {
+    long r = mix64(nextSeed());
+    if (origin < bound) {
+        long n = bound - origin, m = n - 1;
+        if (// power of two
+        (n & m) == 0L)
+            r = (r & m) + origin;
+        else if (n > 0L) {
+            // reject over-represented candidates
+            for (// ensure nonnegative
+            long u = r >>> 1; // rejection check
+            u + m - (r = u % n) < 0L; // retry
+            u = mix64(nextSeed()) >>> 1) ;
+            r += origin;
+        } else {
+            // range not representable as long
+            while (r < origin || r >= bound) r = mix64(nextSeed());
+        }
+    }
+    return r;
+}

@@ -1,0 +1,20 @@
+/**
+ * Creates a zeroed destination image with the correct size and number of
+ * bands.
+ * @param src       Source image for the filter operation.
+ * @param destCM    ColorModel of the destination.  If null, the
+ *                  ColorModel of the source will be used.
+ * @return the zeroed-destination image.
+ */
+public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
+    BufferedImage image;
+    if (destCM == null) {
+        ColorModel cm = src.getColorModel();
+        image = new BufferedImage(cm, src.getRaster().createCompatibleWritableRaster(), cm.isAlphaPremultiplied(), null);
+    } else {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        image = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(w, h), destCM.isAlphaPremultiplied(), null);
+    }
+    return image;
+}

@@ -1,0 +1,27 @@
+/**
+ * Returns true if the specified character offset is a text boundary.
+ * @param offset the character offset to check.
+ * @return <code>true</code> if "offset" is a boundary position,
+ * <code>false</code> otherwise.
+ * @exception   IllegalArgumentException if the specified offset is less than
+ * the first text boundary or greater than the last text boundary.
+ * @since 1.2
+ */
+public boolean isBoundary(int offset) {
+    // NOTE: This implementation probably is wrong for most situations
+    // because it fails to take into account the possibility that a
+    // CharacterIterator passed to setText() may not have a begin offset
+    // of 0.  But since the abstract BreakIterator doesn't have that
+    // knowledge, it assumes the begin offset is 0.  If you subclass
+    // BreakIterator, copy the SimpleTextBoundary implementation of this
+    // function into your subclass.  [This should have been abstract at
+    // this level, but it's too late to fix that now.]
+    if (offset == 0) {
+        return true;
+    }
+    int boundary = following(offset - 1);
+    if (boundary == DONE) {
+        throw new IllegalArgumentException();
+    }
+    return boundary == offset;
+}

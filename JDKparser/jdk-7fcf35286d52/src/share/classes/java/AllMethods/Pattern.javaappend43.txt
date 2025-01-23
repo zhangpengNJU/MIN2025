@@ -1,0 +1,8 @@
+private void append(int ch, int len) {
+    if (len >= buffer.length) {
+        int[] tmp = new int[len + len];
+        System.arraycopy(buffer, 0, tmp, 0, len);
+        buffer = tmp;
+    }
+    buffer[len] = ch;
+}

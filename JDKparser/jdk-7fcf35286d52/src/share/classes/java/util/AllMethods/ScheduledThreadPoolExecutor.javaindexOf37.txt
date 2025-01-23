@@ -1,0 +1,18 @@
+/**
+ * Finds index of given object, or -1 if absent.
+ */
+private int indexOf(Object x) {
+    if (x != null) {
+        if (x instanceof ScheduledFutureTask) {
+            int i = ((ScheduledFutureTask) x).heapIndex;
+            // Sanity check; x could conceivably be a
+            // ScheduledFutureTask from some other pool.
+            if (i >= 0 && i < size && queue[i] == x)
+                return i;
+        } else {
+            for (int i = 0; i < size; i++) if (x.equals(queue[i]))
+                return i;
+        }
+    }
+    return -1;
+}

@@ -1,0 +1,32 @@
+/**
+ * Sets the starting angle and angular extent of this arc using two
+ * sets of coordinates. The first set of coordinates is used to
+ * determine the angle of the starting point relative to the arc's
+ * center. The second set of coordinates is used to determine the
+ * angle of the end point relative to the arc's center.
+ * The arc will always be non-empty and extend counterclockwise
+ * from the first point around to the second point.
+ *
+ * @param x1 The X coordinate of the arc's starting point.
+ * @param y1 The Y coordinate of the arc's starting point.
+ * @param x2 The X coordinate of the arc's ending point.
+ * @param y2 The Y coordinate of the arc's ending point.
+ * @since 1.2
+ */
+public void setAngles(double x1, double y1, double x2, double y2) {
+    double x = getCenterX();
+    double y = getCenterY();
+    double w = getWidth();
+    double h = getHeight();
+    // Note: reversing the Y equations negates the angle to adjust
+    // for the upside down coordinate system.
+    // Also we should bias atans by the height and width of the oval.
+    double ang1 = Math.atan2(w * (y - y1), h * (x1 - x));
+    double ang2 = Math.atan2(w * (y - y2), h * (x2 - x));
+    ang2 -= ang1;
+    if (ang2 <= 0.0) {
+        ang2 += Math.PI * 2.0;
+    }
+    setAngleStart(Math.toDegrees(ang1));
+    setAngleExtent(Math.toDegrees(ang2));
+}

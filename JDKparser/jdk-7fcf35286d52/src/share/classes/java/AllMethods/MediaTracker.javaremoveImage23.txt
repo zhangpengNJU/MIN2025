@@ -1,0 +1,20 @@
+/**
+ * Removes the specified image from the specified tracking
+ * ID of this media tracker.
+ * All instances of <code>Image</code> being tracked
+ * under the specified ID are removed regardless of scale.
+ * @param      image the image to be removed
+ * @param      id the tracking ID from which to remove the image
+ * @see        java.awt.MediaTracker#removeImage(java.awt.Image)
+ * @see        java.awt.MediaTracker#removeImage(java.awt.Image, int, int, int)
+ * @since      JDK1.1
+ */
+public synchronized void removeImage(Image image, int id) {
+    removeImageImpl(image, id);
+    Image rvImage = getResolutionVariant(image);
+    if (rvImage != null) {
+        removeImageImpl(rvImage, id);
+    }
+    // Notify in case remaining images are "done".
+    notifyAll();
+}

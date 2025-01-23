@@ -1,0 +1,29 @@
+private boolean isUntrusted() throws UnknownHostException {
+    if (trusted)
+        return false;
+    if (invalid || untrusted)
+        return true;
+    try {
+        if (!trustNameService && (defaultDeny || sun.net.www.URLConnection.isProxiedHost(hostname))) {
+            if (this.cname == null) {
+                this.getCanonName();
+            }
+            if (!match(cname, hostname)) {
+                // Last chance
+                if (!authorized(hostname, addresses[0].getAddress())) {
+                    untrusted = true;
+                    Debug debug = getDebug();
+                    if (debug != null && Debug.isOn("failure")) {
+                        debug.println("socket access restriction: proxied host " + "(" + addresses[0] + ")" + " does not match " + cname + " from reverse lookup");
+                    }
+                    return true;
+                }
+            }
+            trusted = true;
+        }
+    } catch (UnknownHostException uhe) {
+        invalid = true;
+        throw uhe;
+    }
+    return false;
+}

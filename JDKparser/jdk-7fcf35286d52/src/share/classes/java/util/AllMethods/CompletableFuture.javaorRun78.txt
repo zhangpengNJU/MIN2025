@@ -1,0 +1,21 @@
+final boolean orRun(CompletableFuture<?> a, CompletableFuture<?> b, Runnable f, OrRun<?, ?> c) {
+    Object r;
+    Throwable x;
+    if (a == null || b == null || ((r = a.result) == null && (r = b.result) == null) || f == null)
+        return false;
+    if (result == null) {
+        try {
+            if (c != null && !c.claim())
+                return false;
+            if (r instanceof AltResult && (x = ((AltResult) r).ex) != null)
+                completeThrowable(x, r);
+            else {
+                f.run();
+                completeNull();
+            }
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

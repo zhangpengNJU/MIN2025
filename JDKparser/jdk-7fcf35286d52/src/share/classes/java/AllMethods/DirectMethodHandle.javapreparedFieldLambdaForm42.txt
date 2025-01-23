@@ -1,0 +1,36 @@
+/**
+ * Create a LF which can access the given field.
+ * Cache and share this structure among all fields with
+ * the same basicType and refKind.
+ */
+private static LambdaForm preparedFieldLambdaForm(MemberName m) {
+    Class<?> ftype = m.getFieldType();
+    boolean isVolatile = m.isVolatile();
+    byte formOp;
+    switch(m.getReferenceKind()) {
+        case REF_getField:
+            formOp = AF_GETFIELD;
+            break;
+        case REF_putField:
+            formOp = AF_PUTFIELD;
+            break;
+        case REF_getStatic:
+            formOp = AF_GETSTATIC;
+            break;
+        case REF_putStatic:
+            formOp = AF_PUTSTATIC;
+            break;
+        default:
+            throw new InternalError(m.toString());
+    }
+    if (shouldBeInitialized(m)) {
+        // precompute the barrier-free version:
+        preparedFieldLambdaForm(formOp, isVolatile, ftype);
+        assert ((AF_GETSTATIC_INIT - AF_GETSTATIC) == (AF_PUTSTATIC_INIT - AF_PUTSTATIC));
+        formOp += (AF_GETSTATIC_INIT - AF_GETSTATIC);
+    }
+    LambdaForm lform = preparedFieldLambdaForm(formOp, isVolatile, ftype);
+    maybeCompile(lform, m);
+    assert (lform.methodType().dropParameterTypes(0, 1).equals(m.getInvocationType().basicType())) : Arrays.asList(m, m.getInvocationType().basicType(), lform, lform.methodType());
+    return lform;
+}

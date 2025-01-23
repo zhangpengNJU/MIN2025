@@ -1,0 +1,33 @@
+private static String getHost(String host) {
+    if (host.equals("")) {
+        return "localhost";
+    } else {
+        /* IPv6 literal address used in this context should follow
+             * the format specified in RFC 2732;
+             * if not, we try to solve the unambiguous case
+             */
+        int ind;
+        if (host.charAt(0) != '[') {
+            if ((ind = host.indexOf(':')) != host.lastIndexOf(':')) {
+                /* More than one ":", meaning IPv6 address is not
+                     * in RFC 2732 format;
+                     * We will rectify user errors for all unambiguious cases
+                     */
+                StringTokenizer st = new StringTokenizer(host, ":");
+                int tokens = st.countTokens();
+                if (tokens == 9) {
+                    // IPv6 address followed by port
+                    ind = host.lastIndexOf(':');
+                    host = "[" + host.substring(0, ind) + "]" + host.substring(ind);
+                } else if (tokens == 8 && host.indexOf("::") == -1) {
+                    // IPv6 address only, not followed by port
+                    host = "[" + host + "]";
+                } else {
+                    // could be ambiguous
+                    throw new IllegalArgumentException("Ambiguous" + " hostport part");
+                }
+            }
+        }
+        return host;
+    }
+}

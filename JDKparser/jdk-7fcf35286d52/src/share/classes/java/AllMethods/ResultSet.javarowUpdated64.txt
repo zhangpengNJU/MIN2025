@@ -1,0 +1,19 @@
+// ---------------------------------------------------------------------
+// Updates
+// ---------------------------------------------------------------------
+/**
+ * Retrieves whether the current row has been updated.  The value returned
+ * depends on whether or not the result set can detect updates.
+ * <p>
+ * <strong>Note:</strong> Support for the <code>rowUpdated</code> method is optional with a result set
+ * concurrency of <code>CONCUR_READ_ONLY</code>
+ * @return <code>true</code> if the current row is detected to
+ * have been visibly updated by the owner or another; <code>false</code> otherwise
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed result set
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see DatabaseMetaData#updatesAreDetected
+ * @since 1.2
+ */
+boolean rowUpdated() throws SQLException;

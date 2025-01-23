@@ -1,0 +1,39 @@
+/**
+ * Returns the number of bytes that can be read without blocking.
+ */
+protected synchronized int available() throws IOException {
+    if (isClosedOrPending()) {
+        throw new IOException("Stream closed.");
+    }
+    /*
+         * If connection has been reset or shut down for input, then return 0
+         * to indicate there are no buffered bytes.
+         */
+    if (isConnectionReset() || shut_rd) {
+        return 0;
+    }
+    /*
+         * If no bytes available and we were previously notified
+         * of a connection reset then we move to the reset state.
+         *
+         * If are notified of a connection reset then check
+         * again if there are bytes buffered on the socket.
+         */
+    int n = 0;
+    try {
+        n = socketAvailable();
+        if (n == 0 && isConnectionResetPending()) {
+            setConnectionReset();
+        }
+    } catch (ConnectionResetException exc1) {
+        setConnectionResetPending();
+        try {
+            n = socketAvailable();
+            if (n == 0) {
+                setConnectionReset();
+            }
+        } catch (ConnectionResetException exc2) {
+        }
+    }
+    return n;
+}

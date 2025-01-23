@@ -1,0 +1,5 @@
+@Override
+public Spliterator<T> trySplit() {
+    Spliterator<T> split = s.trySplit();
+    return (split != null) ? new DistinctSpliterator<>(split, seen) : null;
+}

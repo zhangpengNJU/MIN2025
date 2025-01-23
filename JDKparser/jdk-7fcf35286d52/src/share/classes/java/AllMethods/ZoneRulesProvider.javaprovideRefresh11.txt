@@ -1,0 +1,16 @@
+/**
+ * SPI method to refresh the rules from the underlying data provider.
+ * <p>
+ * This method provides the opportunity for a provider to dynamically
+ * recheck the underlying data provider to find the latest rules.
+ * This could be used to load new rules without stopping the JVM.
+ * Dynamic behavior is entirely optional and most providers do not support it.
+ * <p>
+ * This implementation returns false.
+ *
+ * @return true if the rules were updated
+ * @throws ZoneRulesException if an error occurs during the refresh
+ */
+protected boolean provideRefresh() {
+    return false;
+}

@@ -1,0 +1,5 @@
+static BasicType basicType(Class<?> type) {
+    if (!type.isPrimitive())
+        return L_TYPE;
+    return basicType(Wrapper.forPrimitiveType(type));
+}

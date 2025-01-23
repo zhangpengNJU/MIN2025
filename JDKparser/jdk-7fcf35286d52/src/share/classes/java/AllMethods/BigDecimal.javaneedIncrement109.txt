@@ -1,0 +1,8 @@
+/**
+ * Tests if quotient has to be incremented according the roundingMode
+ */
+private static boolean needIncrement(MutableBigInteger mdivisor, int roundingMode, int qsign, MutableBigInteger mq, MutableBigInteger mr) {
+    assert !mr.isZero();
+    int cmpFracHalf = mr.compareHalf(mdivisor);
+    return commonNeedIncrement(roundingMode, qsign, cmpFracHalf, mq.isOdd());
+}

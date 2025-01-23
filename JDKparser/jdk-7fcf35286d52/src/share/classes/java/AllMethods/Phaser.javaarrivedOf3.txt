@@ -1,0 +1,4 @@
+private static int arrivedOf(long s) {
+    int counts = (int) s;
+    return (counts == EMPTY) ? 0 : (counts >>> PARTIES_SHIFT) - (counts & UNARRIVED_MASK);
+}

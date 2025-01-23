@@ -1,0 +1,47 @@
+static FocusEvent retargetFocusLost(FocusEvent fe) {
+    assert (fe.getID() == FocusEvent.FOCUS_LOST);
+    Component currentFocusOwner = getCurrentKeyboardFocusManager().getGlobalFocusOwner();
+    Component opposite = fe.getOppositeComponent();
+    Component nativeOpposite = getHeavyweight(opposite);
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getFirstHWRequest();
+        if (hwFocusRequest == HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER) {
+            if (currentFocusOwner != null) {
+                // Call to KeyboardFocusManager.clearGlobalFocusOwner()
+                heavyweightRequests.removeFirst();
+                return new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, false, null, CausedFocusEvent.Cause.CLEAR_GLOBAL_FOCUS_OWNER);
+            }
+        // Otherwise, fall through to failure case below
+        } else if (opposite == null) {
+            // Focus leaving application
+            if (currentFocusOwner != null) {
+                return new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, true, null, CausedFocusEvent.Cause.ACTIVATION);
+            } else {
+                return fe;
+            }
+        } else if (hwFocusRequest != null && (nativeOpposite == hwFocusRequest.heavyweight || nativeOpposite == null && opposite == hwFocusRequest.getFirstLightweightRequest().component)) {
+            if (currentFocusOwner == null) {
+                return fe;
+            }
+            // Focus change as a result of a known call to requestFocus(),
+            // or click on a peer focusable heavyweight Component.
+            // If a focus transfer is made across top-levels, then the
+            // FOCUS_LOST event is always temporary, and the FOCUS_GAINED
+            // event is always permanent. Otherwise, the stored temporary
+            // value is honored.
+            LightweightFocusRequest lwFocusRequest = hwFocusRequest.lightweightRequests.getFirst();
+            boolean temporary = isTemporary(opposite, currentFocusOwner) ? true : lwFocusRequest.temporary;
+            return new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, temporary, lwFocusRequest.component, lwFocusRequest.cause);
+        } else if (focusedWindowChanged(opposite, currentFocusOwner)) {
+            // If top-level changed there might be no focus request in a list
+            // But we know the opposite, we now it is temporary - dispatch the event.
+            if (!fe.isTemporary() && currentFocusOwner != null) {
+                // Create copy of the event with only difference in temporary parameter.
+                fe = new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, true, opposite, CausedFocusEvent.Cause.ACTIVATION);
+            }
+            return fe;
+        }
+        return retargetUnexpectedFocusEvent(fe);
+    }
+// end synchronized(heavyweightRequests)
+}

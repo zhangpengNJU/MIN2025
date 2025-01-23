@@ -1,0 +1,4 @@
+private static ValueRange getWeekRange(LocalDate date) {
+    int wby = getWeekBasedYear(date);
+    return ValueRange.of(1, getWeekRange(wby));
+}

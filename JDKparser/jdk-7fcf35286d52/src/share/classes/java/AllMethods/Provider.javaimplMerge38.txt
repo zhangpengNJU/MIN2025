@@ -1,0 +1,9 @@
+private Object implMerge(Object key, Object value, BiFunction<? super Object, ? super Object, ? extends Object> remappingFunction) {
+    if ((key instanceof String) && (value instanceof String)) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.merge((String) key, (String) value, (BiFunction<? super String, ? super String, ? extends String>) remappingFunction);
+    }
+    return super.merge(key, value, remappingFunction);
+}

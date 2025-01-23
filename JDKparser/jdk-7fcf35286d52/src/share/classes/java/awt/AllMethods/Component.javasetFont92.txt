@@ -1,0 +1,39 @@
+/**
+ * Sets the font of this component.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy.
+ *
+ * @param f the font to become this component's font;
+ *          if this parameter is <code>null</code> then this
+ *          component will inherit the font of its parent
+ * @see #getFont
+ * @see #invalidate
+ * @since JDK1.0
+ * @beaninfo
+ *       bound: true
+ */
+public void setFont(Font f) {
+    Font oldFont, newFont;
+    synchronized (getTreeLock()) {
+        oldFont = font;
+        newFont = font = f;
+        ComponentPeer peer = this.peer;
+        if (peer != null) {
+            f = getFont();
+            if (f != null) {
+                peer.setFont(f);
+                peerFont = f;
+            }
+        }
+    }
+    // This is a bound property, so report the change to
+    // any registered listeners.  (Cheap if there are none.)
+    firePropertyChange("font", oldFont, newFont);
+    // This could change the preferred size of the Component.
+    // Fix for 6213660. Should compare old and new fonts and do not
+    // call invalidate() if they are equal.
+    if (f != oldFont && (oldFont == null || !oldFont.equals(f))) {
+        invalidateIfValid();
+    }
+}

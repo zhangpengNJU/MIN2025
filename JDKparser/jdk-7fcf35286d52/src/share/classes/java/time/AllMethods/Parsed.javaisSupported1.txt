@@ -1,0 +1,8 @@
+// -----------------------------------------------------------------------
+@Override
+public boolean isSupported(TemporalField field) {
+    if (fieldValues.containsKey(field) || (date != null && date.isSupported(field)) || (time != null && time.isSupported(field))) {
+        return true;
+    }
+    return field != null && (field instanceof ChronoField == false) && field.isSupportedBy(this);
+}

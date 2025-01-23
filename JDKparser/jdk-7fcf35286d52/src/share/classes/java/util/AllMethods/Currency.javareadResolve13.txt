@@ -1,0 +1,6 @@
+/**
+ * Resolves instances being deserialized to a single instance per currency.
+ */
+private Object readResolve() {
+    return getInstance(currencyCode);
+}

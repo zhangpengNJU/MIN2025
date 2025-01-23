@@ -1,0 +1,7 @@
+final int drainPermits() {
+    for (; ; ) {
+        int current = getState();
+        if (current == 0 || compareAndSetState(current, 0))
+            return current;
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns a field mask (bit mask) indicating all calendar fields that
+ * have the state of externally or internally set.
+ *
+ * @return a bit mask indicating set state fields
+ */
+final int getSetStateFields() {
+    int mask = 0;
+    for (int i = 0; i < fields.length; i++) {
+        if (stamp[i] != UNSET) {
+            mask |= 1 << i;
+        }
+    }
+    return mask;
+}

@@ -1,0 +1,11 @@
+/*
+     * Removes the given top-level window from the list of blocked
+     * windows for this dialog and marks it as unblocked. If the
+     * window is not modal blocked, does nothing.
+     */
+void unblockWindow(Window w) {
+    if (w.isModalBlocked() && blockedWindows.contains(w)) {
+        blockedWindows.remove(w);
+        w.setModalBlocked(this, false, true);
+    }
+}

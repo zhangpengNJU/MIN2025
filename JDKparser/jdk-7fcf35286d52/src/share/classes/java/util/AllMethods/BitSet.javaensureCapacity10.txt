@@ -1,0 +1,12 @@
+/**
+ * Ensures that the BitSet can hold enough words.
+ * @param wordsRequired the minimum acceptable number of words.
+ */
+private void ensureCapacity(int wordsRequired) {
+    if (words.length < wordsRequired) {
+        // Allocate larger of doubled size or required size
+        int request = Math.max(2 * words.length, wordsRequired);
+        words = Arrays.copyOf(words, request);
+        sizeIsSticky = false;
+    }
+}

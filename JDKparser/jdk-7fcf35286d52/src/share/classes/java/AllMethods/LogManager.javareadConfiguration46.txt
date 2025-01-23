@@ -1,0 +1,55 @@
+/**
+ * Reinitialize the logging properties and reread the logging configuration.
+ * <p>
+ * The same rules are used for locating the configuration properties
+ * as are used at startup.  So normally the logging properties will
+ * be re-read from the same file that was used at startup.
+ * <P>
+ * Any log level definitions in the new configuration file will be
+ * applied using Logger.setLevel(), if the target Logger exists.
+ * <p>
+ * A PropertyChangeEvent will be fired after the properties are read.
+ *
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have LoggingPermission("control").
+ * @exception  IOException if there are IO problems reading the configuration.
+ */
+public void readConfiguration() throws IOException, SecurityException {
+    checkPermission();
+    // if a configuration class is specified, load it and use it.
+    String cname = System.getProperty("java.util.logging.config.class");
+    if (cname != null) {
+        try {
+            // Instantiate the named class.  It is its constructor's
+            // responsibility to initialize the logging configuration, by
+            // calling readConfiguration(InputStream) with a suitable stream.
+            try {
+                Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(cname);
+                clz.newInstance();
+                return;
+            } catch (ClassNotFoundException ex) {
+                Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(cname);
+                clz.newInstance();
+                return;
+            }
+        } catch (Exception ex) {
+            System.err.println("Logging configuration class \"" + cname + "\" failed");
+            System.err.println("" + ex);
+        // keep going and useful config file.
+        }
+    }
+    String fname = System.getProperty("java.util.logging.config.file");
+    if (fname == null) {
+        fname = System.getProperty("java.home");
+        if (fname == null) {
+            throw new Error("Can't find java.home ??");
+        }
+        File f = new File(fname, "lib");
+        f = new File(f, "logging.properties");
+        fname = f.getCanonicalPath();
+    }
+    try (final InputStream in = new FileInputStream(fname)) {
+        final BufferedInputStream bin = new BufferedInputStream(in);
+        readConfiguration(bin);
+    }
+}

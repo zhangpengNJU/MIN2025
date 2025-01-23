@@ -1,0 +1,29 @@
+/**
+ * Appends the string representation of the {@code boolean}
+ * argument to the sequence.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(boolean)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   b   a {@code boolean}.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(boolean b) {
+    if (b) {
+        ensureCapacityInternal(count + 4);
+        value[count++] = 't';
+        value[count++] = 'r';
+        value[count++] = 'u';
+        value[count++] = 'e';
+    } else {
+        ensureCapacityInternal(count + 5);
+        value[count++] = 'f';
+        value[count++] = 'a';
+        value[count++] = 'l';
+        value[count++] = 's';
+        value[count++] = 'e';
+    }
+    return this;
+}

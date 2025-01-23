@@ -1,0 +1,18 @@
+@Override
+public final LongStream peek(LongConsumer action) {
+    Objects.requireNonNull(action);
+    return new StatelessOp<Long>(this, StreamShape.LONG_VALUE, 0) {
+
+        @Override
+        Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedLong<Long>(sink) {
+
+                @Override
+                public void accept(long t) {
+                    action.accept(t);
+                    downstream.accept(t);
+                }
+            };
+        }
+    };
+}

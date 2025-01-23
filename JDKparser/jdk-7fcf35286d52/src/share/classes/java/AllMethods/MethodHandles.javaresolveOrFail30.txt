@@ -1,0 +1,9 @@
+MemberName resolveOrFail(byte refKind, MemberName member) throws ReflectiveOperationException {
+    // do this before attempting to resolve
+    checkSymbolicClass(member.getDeclaringClass());
+    // NPE
+    member.getName().getClass();
+    // NPE
+    member.getType().getClass();
+    return IMPL_NAMES.resolveOrFail(refKind, member, lookupClassOrNull(), ReflectiveOperationException.class);
+}

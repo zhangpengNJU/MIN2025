@@ -1,0 +1,41 @@
+/**
+ * Returns a value indicating a character's general category.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  a value of type {@code int} representing the
+ *          character's general category.
+ * @see     Character#COMBINING_SPACING_MARK COMBINING_SPACING_MARK
+ * @see     Character#CONNECTOR_PUNCTUATION CONNECTOR_PUNCTUATION
+ * @see     Character#CONTROL CONTROL
+ * @see     Character#CURRENCY_SYMBOL CURRENCY_SYMBOL
+ * @see     Character#DASH_PUNCTUATION DASH_PUNCTUATION
+ * @see     Character#DECIMAL_DIGIT_NUMBER DECIMAL_DIGIT_NUMBER
+ * @see     Character#ENCLOSING_MARK ENCLOSING_MARK
+ * @see     Character#END_PUNCTUATION END_PUNCTUATION
+ * @see     Character#FINAL_QUOTE_PUNCTUATION FINAL_QUOTE_PUNCTUATION
+ * @see     Character#FORMAT FORMAT
+ * @see     Character#INITIAL_QUOTE_PUNCTUATION INITIAL_QUOTE_PUNCTUATION
+ * @see     Character#LETTER_NUMBER LETTER_NUMBER
+ * @see     Character#LINE_SEPARATOR LINE_SEPARATOR
+ * @see     Character#LOWERCASE_LETTER LOWERCASE_LETTER
+ * @see     Character#MATH_SYMBOL MATH_SYMBOL
+ * @see     Character#MODIFIER_LETTER MODIFIER_LETTER
+ * @see     Character#MODIFIER_SYMBOL MODIFIER_SYMBOL
+ * @see     Character#NON_SPACING_MARK NON_SPACING_MARK
+ * @see     Character#OTHER_LETTER OTHER_LETTER
+ * @see     Character#OTHER_NUMBER OTHER_NUMBER
+ * @see     Character#OTHER_PUNCTUATION OTHER_PUNCTUATION
+ * @see     Character#OTHER_SYMBOL OTHER_SYMBOL
+ * @see     Character#PARAGRAPH_SEPARATOR PARAGRAPH_SEPARATOR
+ * @see     Character#PRIVATE_USE PRIVATE_USE
+ * @see     Character#SPACE_SEPARATOR SPACE_SEPARATOR
+ * @see     Character#START_PUNCTUATION START_PUNCTUATION
+ * @see     Character#SURROGATE SURROGATE
+ * @see     Character#TITLECASE_LETTER TITLECASE_LETTER
+ * @see     Character#UNASSIGNED UNASSIGNED
+ * @see     Character#UPPERCASE_LETTER UPPERCASE_LETTER
+ * @since   1.5
+ */
+public static int getType(int codePoint) {
+    return CharacterData.of(codePoint).getType(codePoint);
+}

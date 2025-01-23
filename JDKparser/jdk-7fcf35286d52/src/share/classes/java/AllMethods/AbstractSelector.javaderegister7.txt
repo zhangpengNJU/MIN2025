@@ -1,0 +1,12 @@
+/**
+ * Removes the given key from its channel's key set.
+ *
+ * <p> This method must be invoked by the selector for each channel that it
+ * deregisters.  </p>
+ *
+ * @param  key
+ *         The selection key to be removed
+ */
+protected final void deregister(AbstractSelectionKey key) {
+    ((AbstractSelectableChannel) key.channel()).removeKey(key);
+}

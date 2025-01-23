@@ -1,0 +1,33 @@
+/**
+ * Returns an object to iterate over the underlying file stores.
+ *
+ * <p> The elements of the returned iterator are the {@link
+ * FileStore FileStores} for this file system. The order of the elements is
+ * not defined and the file stores may change during the lifetime of the
+ * Java virtual machine. When an I/O error occurs, perhaps because a file
+ * store is not accessible, then it is not returned by the iterator.
+ *
+ * <p> In the case of the default provider, and a security manager is
+ * installed, the security manager is invoked to check {@link
+ * RuntimePermission}<tt>("getFileStoreAttributes")</tt>. If denied, then
+ * no file stores are returned by the iterator. In addition, the security
+ * manager's {@link SecurityManager#checkRead(String)} method is invoked to
+ * check read access to the file store's <em>top-most</em> directory. If
+ * denied, the file store is not returned by the iterator. It is system
+ * dependent if the permission checks are done when the iterator is obtained
+ * or during iteration.
+ *
+ * <p> <b>Usage Example:</b>
+ * Suppose we want to print the space usage for all file stores:
+ * <pre>
+ *     for (FileStore store: FileSystems.getDefault().getFileStores()) {
+ *         long total = store.getTotalSpace() / 1024;
+ *         long used = (store.getTotalSpace() - store.getUnallocatedSpace()) / 1024;
+ *         long avail = store.getUsableSpace() / 1024;
+ *         System.out.format("%-20s %12d %12d %12d%n", store, total, used, avail);
+ *     }
+ * </pre>
+ *
+ * @return  An object to iterate over the backing file stores
+ */
+public abstract Iterable<FileStore> getFileStores();

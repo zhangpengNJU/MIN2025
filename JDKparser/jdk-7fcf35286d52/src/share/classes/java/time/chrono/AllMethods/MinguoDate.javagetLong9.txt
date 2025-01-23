@@ -1,0 +1,20 @@
+@Override
+public long getLong(TemporalField field) {
+    if (field instanceof ChronoField) {
+        switch((ChronoField) field) {
+            case PROLEPTIC_MONTH:
+                return getProlepticMonth();
+            case YEAR_OF_ERA:
+                {
+                    int prolepticYear = getProlepticYear();
+                    return (prolepticYear >= 1 ? prolepticYear : 1 - prolepticYear);
+                }
+            case YEAR:
+                return getProlepticYear();
+            case ERA:
+                return (getProlepticYear() >= 1 ? 1 : 0);
+        }
+        return isoDate.getLong(field);
+    }
+    return field.getFrom(this);
+}

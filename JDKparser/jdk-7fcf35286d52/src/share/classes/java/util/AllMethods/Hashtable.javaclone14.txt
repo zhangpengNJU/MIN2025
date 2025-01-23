@@ -1,0 +1,24 @@
+/**
+ * Creates a shallow copy of this hashtable. All the structure of the
+ * hashtable itself is copied, but the keys and values are not cloned.
+ * This is a relatively expensive operation.
+ *
+ * @return  a clone of the hashtable
+ */
+public synchronized Object clone() {
+    try {
+        Hashtable<?, ?> t = (Hashtable<?, ?>) super.clone();
+        t.table = new Entry<?, ?>[table.length];
+        for (int i = table.length; i-- > 0; ) {
+            t.table[i] = (table[i] != null) ? (Entry<?, ?>) table[i].clone() : null;
+        }
+        t.keySet = null;
+        t.entrySet = null;
+        t.values = null;
+        t.modCount = 0;
+        return t;
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

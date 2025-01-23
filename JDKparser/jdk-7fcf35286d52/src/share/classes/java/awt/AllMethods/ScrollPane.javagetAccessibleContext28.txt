@@ -1,0 +1,19 @@
+// ///////////////
+// Accessibility support
+// //////////////
+/**
+ * Gets the AccessibleContext associated with this ScrollPane.
+ * For scroll panes, the AccessibleContext takes the form of an
+ * AccessibleAWTScrollPane.
+ * A new AccessibleAWTScrollPane instance is created if necessary.
+ *
+ * @return an AccessibleAWTScrollPane that serves as the
+ *         AccessibleContext of this ScrollPane
+ * @since 1.3
+ */
+public AccessibleContext getAccessibleContext() {
+    if (accessibleContext == null) {
+        accessibleContext = new AccessibleAWTScrollPane();
+    }
+    return accessibleContext;
+}

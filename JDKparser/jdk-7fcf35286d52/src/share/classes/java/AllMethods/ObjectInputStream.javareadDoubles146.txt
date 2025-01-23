@@ -1,0 +1,18 @@
+void readDoubles(double[] v, int off, int len) throws IOException {
+    int span, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            span = Math.min(endoff - off, MAX_BLOCK_SIZE >> 3);
+            in.readFully(buf, 0, span << 3);
+            pos = 0;
+        } else if (end - pos < 8) {
+            v[off++] = din.readDouble();
+            continue;
+        } else {
+            span = Math.min(endoff - off, ((end - pos) >> 3));
+        }
+        bytesToDoubles(buf, pos, v, off, span);
+        off += span;
+        pos += span << 3;
+    }
+}

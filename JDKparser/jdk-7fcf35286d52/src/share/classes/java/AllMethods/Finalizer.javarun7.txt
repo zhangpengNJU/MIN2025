@@ -1,0 +1,12 @@
+public Void run() {
+    ThreadGroup tg = Thread.currentThread().getThreadGroup();
+    for (ThreadGroup tgn = tg; tgn != null; tg = tgn, tgn = tg.getParent()) ;
+    Thread sft = new Thread(tg, proc, "Secondary finalizer");
+    sft.start();
+    try {
+        sft.join();
+    } catch (InterruptedException x) {
+        Thread.currentThread().interrupt();
+    }
+    return null;
+}

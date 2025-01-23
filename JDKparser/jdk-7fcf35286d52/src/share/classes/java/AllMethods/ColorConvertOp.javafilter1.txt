@@ -1,0 +1,51 @@
+/**
+ * ColorConverts the source BufferedImage.
+ * If the destination image is null,
+ * a BufferedImage will be created with an appropriate ColorModel.
+ * @param src the source <code>BufferedImage</code> to be converted
+ * @param dest the destination <code>BufferedImage</code>,
+ *        or <code>null</code>
+ * @return <code>dest</code> color converted from <code>src</code>
+ *         or a new, converted <code>BufferedImage</code>
+ *         if <code>dest</code> is <code>null</code>
+ * @exception IllegalArgumentException if dest is null and this op was
+ *             constructed using the constructor which takes only a
+ *             RenderingHints argument, since the operation is ill defined.
+ */
+public final BufferedImage filter(BufferedImage src, BufferedImage dest) {
+    ColorSpace srcColorSpace, destColorSpace;
+    BufferedImage savdest = null;
+    if (src.getColorModel() instanceof IndexColorModel) {
+        IndexColorModel icm = (IndexColorModel) src.getColorModel();
+        src = icm.convertToIntDiscrete(src.getRaster(), true);
+    }
+    srcColorSpace = src.getColorModel().getColorSpace();
+    if (dest != null) {
+        if (dest.getColorModel() instanceof IndexColorModel) {
+            savdest = dest;
+            dest = null;
+            destColorSpace = null;
+        } else {
+            destColorSpace = dest.getColorModel().getColorSpace();
+        }
+    } else {
+        destColorSpace = null;
+    }
+    if ((CSList != null) || (!(srcColorSpace instanceof ICC_ColorSpace)) || ((dest != null) && (!(destColorSpace instanceof ICC_ColorSpace)))) {
+        /* non-ICC case */
+        dest = nonICCBIFilter(src, srcColorSpace, dest, destColorSpace);
+    } else {
+        dest = ICCBIFilter(src, srcColorSpace, dest, destColorSpace);
+    }
+    if (savdest != null) {
+        Graphics2D big = savdest.createGraphics();
+        try {
+            big.drawImage(dest, 0, 0, null);
+        } finally {
+            big.dispose();
+        }
+        return savdest;
+    } else {
+        return dest;
+    }
+}

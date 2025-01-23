@@ -1,0 +1,21 @@
+/**
+ * Processes events on this choice. If the event is an
+ * instance of <code>ItemEvent</code>, it invokes the
+ * <code>processItemEvent</code> method. Otherwise, it calls its
+ * superclass's <code>processEvent</code> method.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param      e the event
+ * @see        java.awt.event.ItemEvent
+ * @see        #processItemEvent
+ * @since      JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ItemEvent) {
+        processItemEvent((ItemEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

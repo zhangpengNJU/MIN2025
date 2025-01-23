@@ -1,0 +1,22 @@
+/**
+ * Creates a zeroed destination <CODE>Raster</CODE> with the correct size
+ * and number of bands.
+ * An <CODE>IllegalArgumentException</CODE> may be thrown if the number of
+ * bands in the source is incompatible with the matrix.  See
+ * the class comments for more details.
+ *
+ * @param src The <CODE>Raster</CODE> to be filtered.
+ *
+ * @return The zeroed destination <CODE>Raster</CODE>.
+ */
+public WritableRaster createCompatibleDestRaster(Raster src) {
+    int nBands = src.getNumBands();
+    if ((ncols != nBands) && (ncols != (nBands + 1))) {
+        throw new IllegalArgumentException("Number of columns in the " + "matrix (" + ncols + ") must be equal to the number" + " of bands ([+1]) in src (" + nBands + ").");
+    }
+    if (src.getNumBands() == nrows) {
+        return src.createCompatibleWritableRaster();
+    } else {
+        throw new IllegalArgumentException("Don't know how to create a " + " compatible Raster with " + nrows + " bands.");
+    }
+}

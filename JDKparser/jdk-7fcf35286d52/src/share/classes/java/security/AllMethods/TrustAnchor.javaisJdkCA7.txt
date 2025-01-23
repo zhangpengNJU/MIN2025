@@ -1,0 +1,13 @@
+/**
+ * Returns true if anchor is a JDK CA (a root CA that is included by
+ * default in the cacerts keystore).
+ */
+synchronized boolean isJdkCA() {
+    if (!hasJdkCABeenChecked) {
+        if (trustedCert != null) {
+            jdkCA = AnchorCertificates.contains(trustedCert);
+        }
+        hasJdkCABeenChecked = true;
+    }
+    return jdkCA;
+}

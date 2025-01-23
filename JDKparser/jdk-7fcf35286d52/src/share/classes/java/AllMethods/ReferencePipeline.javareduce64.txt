@@ -1,0 +1,4 @@
+@Override
+public final <R> R reduce(R identity, BiFunction<R, ? super P_OUT, R> accumulator, BinaryOperator<R> combiner) {
+    return evaluate(ReduceOps.makeRef(identity, accumulator, combiner));
+}

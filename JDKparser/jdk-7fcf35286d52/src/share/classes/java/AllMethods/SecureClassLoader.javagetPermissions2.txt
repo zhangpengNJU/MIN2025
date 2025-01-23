@@ -1,0 +1,16 @@
+/**
+ * Returns the permissions for the given CodeSource object.
+ * <p>
+ * This method is invoked by the defineClass method which takes
+ * a CodeSource as an argument when it is constructing the
+ * ProtectionDomain for the class being defined.
+ * <p>
+ * @param codesource the codesource.
+ *
+ * @return the permissions granted to the codesource.
+ */
+protected PermissionCollection getPermissions(CodeSource codesource) {
+    check();
+    // ProtectionDomain defers the binding
+    return new Permissions();
+}

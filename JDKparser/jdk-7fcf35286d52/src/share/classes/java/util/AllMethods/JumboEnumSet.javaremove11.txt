@@ -1,0 +1,21 @@
+/**
+ * Removes the specified element from this set if it is present.
+ *
+ * @param e element to be removed from this set, if present
+ * @return <tt>true</tt> if the set contained the specified element
+ */
+public boolean remove(Object e) {
+    if (e == null)
+        return false;
+    Class<?> eClass = e.getClass();
+    if (eClass != elementType && eClass.getSuperclass() != elementType)
+        return false;
+    int eOrdinal = ((Enum<?>) e).ordinal();
+    int eWordNum = eOrdinal >>> 6;
+    long oldElements = elements[eWordNum];
+    elements[eWordNum] &= ~(1L << eOrdinal);
+    boolean result = (elements[eWordNum] != oldElements);
+    if (result)
+        size--;
+    return result;
+}

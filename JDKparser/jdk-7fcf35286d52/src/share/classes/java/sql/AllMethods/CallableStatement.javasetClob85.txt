@@ -1,0 +1,22 @@
+/**
+ * Sets the designated parameter to a <code>Reader</code> object.  The <code>reader</code> must contain  the number
+ * of characters specified by length otherwise a <code>SQLException</code> will be
+ * generated when the <code>CallableStatement</code> is executed.
+ * This method differs from the <code>setCharacterStream (int, Reader, int)</code> method
+ * because it informs the driver that the parameter value should be sent to
+ * the server as a <code>CLOB</code>.  When the <code>setCharacterStream</code> method is used, the
+ * driver may have to do extra work to determine whether the parameter
+ * data should be send to the server as a <code>LONGVARCHAR</code> or a <code>CLOB</code>
+ * @param parameterName the name of the parameter to be set
+ * @param reader An object that contains the data to set the parameter value to.
+ * @param length the number of characters in the parameter data.
+ * @throws SQLException if parameterName does not correspond to a named
+ * parameter; if the length specified is less than zero;
+ * a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ *
+ * @since 1.6
+ */
+void setClob(String parameterName, Reader reader, long length) throws SQLException;

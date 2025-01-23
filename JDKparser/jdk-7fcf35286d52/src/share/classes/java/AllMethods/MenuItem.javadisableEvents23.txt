@@ -1,0 +1,13 @@
+/**
+ * Disables event delivery to this menu item for events
+ * defined by the specified event mask parameter.
+ *
+ * @param       eventsToDisable the event mask defining the event types
+ * @see         java.awt.MenuItem#processEvent
+ * @see         java.awt.MenuItem#enableEvents
+ * @see         java.awt.Component#disableEvents
+ * @since       JDK1.1
+ */
+protected final void disableEvents(long eventsToDisable) {
+    eventMask &= ~eventsToDisable;
+}

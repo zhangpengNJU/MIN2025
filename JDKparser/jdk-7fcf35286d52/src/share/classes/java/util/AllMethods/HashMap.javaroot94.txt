@@ -1,0 +1,10 @@
+/**
+ * Returns root of tree containing this node.
+ */
+final TreeNode<K, V> root() {
+    for (TreeNode<K, V> r = this, p; ; ) {
+        if ((p = r.parent) == null)
+            return r;
+        r = p;
+    }
+}

@@ -1,0 +1,10 @@
+protected void preAccept() {
+    if (elementIndex == arrayLength(curChunk)) {
+        inflateSpine();
+        if (spineIndex + 1 >= spine.length || spine[spineIndex + 1] == null)
+            increaseCapacity();
+        elementIndex = 0;
+        ++spineIndex;
+        curChunk = spine[spineIndex];
+    }
+}

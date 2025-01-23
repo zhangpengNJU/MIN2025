@@ -1,0 +1,12 @@
+/**
+ * Removes all of the mappings from this map.
+ * The map will be empty after this call returns.
+ */
+public void clear() {
+    Node<K, V>[] tab;
+    modCount++;
+    if ((tab = table) != null && size > 0) {
+        size = 0;
+        for (int i = 0; i < tab.length; ++i) tab[i] = null;
+    }
+}

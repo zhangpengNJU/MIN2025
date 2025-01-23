@@ -1,0 +1,30 @@
+/**
+ * Returns a 3x3 <CODE>float</CODE> matrix constructed from the
+ * X, Y, and Z components of the profile's <CODE>redColorantTag</CODE>,
+ * <CODE>greenColorantTag</CODE>, and <CODE>blueColorantTag</CODE>.
+ * <p>
+ * This matrix can be used for color transforms in the forward
+ * direction of the profile--from the profile color space
+ * to the CIEXYZ PCS.
+ *
+ * @return A 3x3 <CODE>float</CODE> array that contains the x, y, and z
+ * components of the profile's <CODE>redColorantTag</CODE>,
+ * <CODE>greenColorantTag</CODE>, and <CODE>blueColorantTag</CODE>.
+ */
+public float[][] getMatrix() {
+    float[][] theMatrix = new float[3][3];
+    float[] tmpMatrix;
+    tmpMatrix = getXYZTag(ICC_Profile.icSigRedColorantTag);
+    theMatrix[0][0] = tmpMatrix[0];
+    theMatrix[1][0] = tmpMatrix[1];
+    theMatrix[2][0] = tmpMatrix[2];
+    tmpMatrix = getXYZTag(ICC_Profile.icSigGreenColorantTag);
+    theMatrix[0][1] = tmpMatrix[0];
+    theMatrix[1][1] = tmpMatrix[1];
+    theMatrix[2][1] = tmpMatrix[2];
+    tmpMatrix = getXYZTag(ICC_Profile.icSigBlueColorantTag);
+    theMatrix[0][2] = tmpMatrix[0];
+    theMatrix[1][2] = tmpMatrix[1];
+    theMatrix[2][2] = tmpMatrix[2];
+    return theMatrix;
+}

@@ -1,0 +1,9 @@
+@Override
+public synchronized int read() throws IOException {
+    if (b1 == null)
+        b1 = new byte[1];
+    int n = this.read(b1);
+    if (n == 1)
+        return b1[0] & 0xff;
+    return -1;
+}

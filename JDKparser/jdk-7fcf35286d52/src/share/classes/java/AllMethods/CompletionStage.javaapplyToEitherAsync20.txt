@@ -1,0 +1,17 @@
+/**
+ * Returns a new CompletionStage that, when either this or the
+ * other given stage complete normally, is executed using the
+ * supplied executor, with the corresponding result as argument to
+ * the supplied function.
+ *
+ * See the {@link CompletionStage} documentation for rules
+ * covering exceptional completion.
+ *
+ * @param other the other CompletionStage
+ * @param fn the function to use to compute the value of
+ * the returned CompletionStage
+ * @param executor the executor to use for asynchronous execution
+ * @param <U> the function's return type
+ * @return the new CompletionStage
+ */
+public <U> CompletionStage<U> applyToEitherAsync(CompletionStage<? extends T> other, Function<? super T, U> fn, Executor executor);

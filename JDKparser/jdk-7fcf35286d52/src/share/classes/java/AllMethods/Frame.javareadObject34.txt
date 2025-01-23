@@ -1,0 +1,54 @@
+/**
+ * Reads the <code>ObjectInputStream</code>.  Tries
+ * to read an icon <code>Image</code>, which is optional
+ * data available as of 1.4.  If an icon <code>Image</code>
+ * is not available, but anything other than an EOF
+ * is detected, an <code>OptionalDataException</code>
+ * will be thrown.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ * @exception java.io.OptionalDataException if an icon <code>Image</code>
+ *   is not available, but anything other than an EOF
+ *   is detected
+ * @exception HeadlessException if
+ *   <code>GraphicsEnvironment.isHeadless</code> returns
+ *   <code>true</code>
+ * @see java.awt.GraphicsEnvironment#isHeadless()
+ * @see java.awt.Image
+ * @see #getIconImage
+ * @see #setIconImage(Image)
+ * @see #writeObject(ObjectOutputStream)
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    // HeadlessException is thrown by Window's readObject
+    s.defaultReadObject();
+    try {
+        Image icon = (Image) s.readObject();
+        if (icons == null) {
+            icons = new ArrayList<Image>();
+            icons.add(icon);
+        }
+    } catch (java.io.OptionalDataException e) {
+        // pre-1.4 instances will not have this optional data.
+        // 1.6 and later instances serialize icons in the Window class
+        // e.eof will be true to indicate that there is no more
+        // data available for this object.
+        // If e.eof is not true, throw the exception as it
+        // might have been caused by unrelated reasons.
+        if (!e.eof) {
+            throw (e);
+        }
+    }
+    if (menuBar != null)
+        menuBar.parent = this;
+    // Ensure 1.1 serialized Frames can read & hook-up
+    // owned windows properly
+    // 
+    if (ownedWindows != null) {
+        for (int i = 0; i < ownedWindows.size(); i++) {
+            connectOwnedWindow(ownedWindows.elementAt(i));
+        }
+        ownedWindows = null;
+    }
+}

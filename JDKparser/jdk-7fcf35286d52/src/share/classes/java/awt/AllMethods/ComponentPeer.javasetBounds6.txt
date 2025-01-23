@@ -1,0 +1,24 @@
+/**
+ * Sets the location or size or both of the component. The location is
+ * specified relative to the component's parent. The {@code op}
+ * parameter specifies which properties change. If it is
+ * {@link #SET_LOCATION}, then only the location changes (and the size
+ * parameters can be ignored). If {@code op} is {@link #SET_SIZE},
+ * then only the size changes (and the location can be ignored). If
+ * {@code op} is {@link #SET_BOUNDS}, then both change. There is a
+ * special value {@link #SET_CLIENT_SIZE}, which is used only for
+ * window-like components to set the size of the client (i.e. the 'inner'
+ * size, without the insets of the window borders).
+ *
+ * @param x the X location of the component
+ * @param y the Y location of the component
+ * @param width the width of the component
+ * @param height the height of the component
+ * @param op the operation flag
+ *
+ * @see #SET_BOUNDS
+ * @see #SET_LOCATION
+ * @see #SET_SIZE
+ * @see #SET_CLIENT_SIZE
+ */
+void setBounds(int x, int y, int width, int height, int op);

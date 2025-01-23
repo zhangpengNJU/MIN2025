@@ -1,0 +1,61 @@
+/**
+ * Initializes class descriptor representing a non-proxy class.
+ */
+void initNonProxy(ObjectStreamClass model, Class<?> cl, ClassNotFoundException resolveEx, ObjectStreamClass superDesc) throws InvalidClassException {
+    long suid = Long.valueOf(model.getSerialVersionUID());
+    ObjectStreamClass osc = null;
+    if (cl != null) {
+        osc = lookup(cl, true);
+        if (osc.isProxy) {
+            throw new InvalidClassException("cannot bind non-proxy descriptor to a proxy class");
+        }
+        if (model.isEnum != osc.isEnum) {
+            throw new InvalidClassException(model.isEnum ? "cannot bind enum descriptor to a non-enum class" : "cannot bind non-enum descriptor to an enum class");
+        }
+        if (model.serializable == osc.serializable && !cl.isArray() && suid != osc.getSerialVersionUID()) {
+            throw new InvalidClassException(osc.name, "local class incompatible: " + "stream classdesc serialVersionUID = " + suid + ", local class serialVersionUID = " + osc.getSerialVersionUID());
+        }
+        if (!classNamesEqual(model.name, osc.name)) {
+            throw new InvalidClassException(osc.name, "local class name incompatible with stream class " + "name \"" + model.name + "\"");
+        }
+        if (!model.isEnum) {
+            if ((model.serializable == osc.serializable) && (model.externalizable != osc.externalizable)) {
+                throw new InvalidClassException(osc.name, "Serializable incompatible with Externalizable");
+            }
+            if ((model.serializable != osc.serializable) || (model.externalizable != osc.externalizable) || !(model.serializable || model.externalizable)) {
+                deserializeEx = new ExceptionInfo(osc.name, "class invalid for deserialization");
+            }
+        }
+    }
+    this.cl = cl;
+    this.resolveEx = resolveEx;
+    this.superDesc = superDesc;
+    name = model.name;
+    this.suid = suid;
+    isProxy = false;
+    isEnum = model.isEnum;
+    serializable = model.serializable;
+    externalizable = model.externalizable;
+    hasBlockExternalData = model.hasBlockExternalData;
+    hasWriteObjectData = model.hasWriteObjectData;
+    fields = model.fields;
+    primDataSize = model.primDataSize;
+    numObjFields = model.numObjFields;
+    if (osc != null) {
+        localDesc = osc;
+        writeObjectMethod = localDesc.writeObjectMethod;
+        readObjectMethod = localDesc.readObjectMethod;
+        readObjectNoDataMethod = localDesc.readObjectNoDataMethod;
+        writeReplaceMethod = localDesc.writeReplaceMethod;
+        readResolveMethod = localDesc.readResolveMethod;
+        if (deserializeEx == null) {
+            deserializeEx = localDesc.deserializeEx;
+        }
+        domains = localDesc.domains;
+        cons = localDesc.cons;
+    }
+    fieldRefl = getReflector(fields, localDesc);
+    // reassign to matched fields so as to reflect local unshared settings
+    fields = fieldRefl.getFields();
+    initialized = true;
+}

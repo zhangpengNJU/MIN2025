@@ -1,0 +1,29 @@
+/**
+ * Returns an array of unnormalized color/alpha components given a pixel
+ * in this <code>ColorModel</code>.  The pixel value is specified as an
+ * <code>int</code>.  If the <code>components</code> array is
+ * <code>null</code>, a new array is allocated.  The
+ * <code>components</code> array is returned.  Color/alpha components are
+ * stored in the <code>components</code> array starting at
+ * <code>offset</code>, even if the array is allocated by this method.
+ * An <code>ArrayIndexOutOfBoundsException</code> is thrown if the
+ * <code>components</code> array is not <code>null</code> and is not large
+ * enough to hold all the color and alpha components, starting at
+ * <code>offset</code>.
+ * @param pixel the specified pixel
+ * @param components the array to receive the color and alpha
+ * components of the specified pixel
+ * @param offset the offset into the <code>components</code> array at
+ * which to start storing the color and alpha components
+ * @return an array containing the color and alpha components of the
+ * specified pixel starting at the specified offset.
+ */
+final public int[] getComponents(int pixel, int[] components, int offset) {
+    if (components == null) {
+        components = new int[offset + numComponents];
+    }
+    for (int i = 0; i < numComponents; i++) {
+        components[offset + i] = (pixel & maskArray[i]) >>> maskOffsets[i];
+    }
+    return components;
+}

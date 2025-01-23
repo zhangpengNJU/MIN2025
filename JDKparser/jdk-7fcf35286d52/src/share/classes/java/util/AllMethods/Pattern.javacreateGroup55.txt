@@ -1,0 +1,16 @@
+/**
+ * Create group head and tail nodes using double return. If the group is
+ * created with anonymous true then it is a pure group and should not
+ * affect group counting.
+ */
+private Node createGroup(boolean anonymous) {
+    int localIndex = localCount++;
+    int groupIndex = 0;
+    if (!anonymous)
+        groupIndex = capturingGroupCount++;
+    GroupHead head = new GroupHead(localIndex);
+    root = new GroupTail(localIndex, groupIndex);
+    if (!anonymous && groupIndex < 10)
+        groupNodes[groupIndex] = head;
+    return head;
+}

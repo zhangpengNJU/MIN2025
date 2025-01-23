@@ -1,0 +1,29 @@
+private Range rangeForCodePoint(final int codepoint) {
+    if (currentRange.inRange(codepoint)) {
+        return currentRange;
+    }
+    final Range[] ranges = rangeArray;
+    if (ranges.length > BSEARCH_THRESHOLD) {
+        int lo = 0;
+        int hi = ranges.length - 1;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+            Range range = ranges[mid];
+            if (codepoint < range.start) {
+                hi = mid - 1;
+            } else if (codepoint >= range.end) {
+                lo = mid + 1;
+            } else {
+                currentRange = range;
+                return range;
+            }
+        }
+    } else {
+        for (int i = 0; i < ranges.length; i++) {
+            if (ranges[i].inRange(codepoint)) {
+                return ranges[i];
+            }
+        }
+    }
+    return Range.EUROPEAN;
+}

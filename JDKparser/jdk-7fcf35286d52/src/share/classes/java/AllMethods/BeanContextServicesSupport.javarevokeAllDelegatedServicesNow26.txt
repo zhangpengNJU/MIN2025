@@ -1,0 +1,41 @@
+void revokeAllDelegatedServicesNow() {
+    if (serviceClasses == null)
+        return;
+    Iterator serviceClassRefs = new HashSet(serviceClasses.values()).iterator();
+    while (serviceClassRefs.hasNext()) {
+        BCSSCServiceClassRef serviceClassRef = (BCSSCServiceClassRef) serviceClassRefs.next();
+        if (!serviceClassRef.isDelegated())
+            continue;
+        Iterator i = serviceClassRef.cloneOfEntries();
+        BeanContextServiceRevokedEvent bcsre = new BeanContextServiceRevokedEvent(BeanContextServicesSupport.this.getBeanContextServicesPeer(), serviceClassRef.getServiceClass(), true);
+        boolean noMoreRefs = false;
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            BeanContextServiceRevokedListener listener = (BeanContextServiceRevokedListener) entry.getValue();
+            Object requestor = entry.getKey();
+            Map services = (Map) serviceRequestors.get(requestor);
+            if (services != null) {
+                Iterator i1 = services.entrySet().iterator();
+                while (i1.hasNext()) {
+                    Map.Entry tmp = (Map.Entry) i1.next();
+                    BCSSCServiceRef serviceRef = (BCSSCServiceRef) tmp.getValue();
+                    if (serviceRef.getServiceClassRef().equals(serviceClassRef) && serviceRef.isDelegated()) {
+                        i1.remove();
+                    }
+                }
+                if (noMoreRefs = services.isEmpty()) {
+                    serviceRequestors.remove(requestor);
+                }
+            }
+            if (noMoreRefs)
+                serviceClassRef.removeRequestor(requestor);
+            listener.serviceRevoked(bcsre);
+            if (serviceClassRef.isEmpty())
+                serviceClasses.remove(serviceClassRef.getServiceClass());
+        }
+    }
+    if (serviceClasses.isEmpty())
+        serviceClasses = null;
+    if (serviceRequestors != null && serviceRequestors.isEmpty())
+        serviceRequestors = null;
+}

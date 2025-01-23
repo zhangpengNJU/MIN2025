@@ -1,0 +1,9 @@
+// char[] with canonical string representation
+public char[] layoutChars() {
+    StringBuilder sb = new StringBuilder(mant);
+    if (exp != null) {
+        sb.append('E');
+        sb.append(exp);
+    }
+    return toCharArray(sb);
+}

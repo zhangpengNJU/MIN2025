@@ -1,0 +1,12 @@
+/**
+ * Writes given string in "long" UTF format, where the UTF encoding
+ * length of the string is already known.
+ */
+void writeLongUTF(String s, long utflen) throws IOException {
+    writeLong(utflen);
+    if (utflen == (long) s.length()) {
+        writeBytes(s);
+    } else {
+        writeUTFBody(s);
+    }
+}

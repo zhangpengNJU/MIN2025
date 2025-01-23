@@ -1,0 +1,7 @@
+public MemberName asSetter() {
+    byte refKind = getReferenceKind();
+    assert (MethodHandleNatives.refKindIsGetter(refKind));
+    assert ((REF_putStatic - REF_getStatic) == (REF_putField - REF_getField));
+    byte setterRefKind = (byte) (refKind + (REF_putField - REF_getField));
+    return clone().changeReferenceKind(setterRefKind, refKind);
+}

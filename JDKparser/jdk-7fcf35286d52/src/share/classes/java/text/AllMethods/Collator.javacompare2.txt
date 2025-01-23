@@ -1,0 +1,20 @@
+/**
+ * Compares the source string to the target string according to the
+ * collation rules for this Collator.  Returns an integer less than,
+ * equal to or greater than zero depending on whether the source String is
+ * less than, equal to or greater than the target string.  See the Collator
+ * class description for an example of use.
+ * <p>
+ * For a one time comparison, this method has the best performance. If a
+ * given String will be involved in multiple comparisons, CollationKey.compareTo
+ * has the best performance. See the Collator class description for an example
+ * using CollationKeys.
+ * @param source the source string.
+ * @param target the target string.
+ * @return Returns an integer value. Value is less than zero if source is less than
+ * target, value is zero if source and target are equal, value is greater than zero
+ * if source is greater than target.
+ * @see java.text.CollationKey
+ * @see java.text.Collator#getCollationKey
+ */
+public abstract int compare(String source, String target);

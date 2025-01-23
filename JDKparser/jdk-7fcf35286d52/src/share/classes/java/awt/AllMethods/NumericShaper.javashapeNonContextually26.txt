@@ -1,0 +1,23 @@
+/**
+ * Perform non-contextual shaping.
+ */
+private void shapeNonContextually(char[] text, int start, int count) {
+    int base;
+    char minDigit = '0';
+    if (shapingRange != null) {
+        base = shapingRange.getDigitBase();
+        minDigit += shapingRange.getNumericBase();
+    } else {
+        base = bases[key];
+        if (key == ETHIOPIC_KEY) {
+            // Ethiopic doesn't use decimal zero
+            minDigit++;
+        }
+    }
+    for (int i = start, e = start + count; i < e; ++i) {
+        char c = text[i];
+        if (c >= minDigit && c <= '\u0039') {
+            text[i] = (char) (c + base);
+        }
+    }
+}

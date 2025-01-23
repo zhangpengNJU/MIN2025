@@ -1,0 +1,8 @@
+private String defineClassSourceLocation(ProtectionDomain pd) {
+    CodeSource cs = pd.getCodeSource();
+    String source = null;
+    if (cs != null && cs.getLocation() != null) {
+        source = cs.getLocation().toString();
+    }
+    return source;
+}

@@ -1,0 +1,19 @@
+/**
+ * Return the text anti-aliasing rendering mode hint used in this
+ * <code>FontRenderContext</code>.
+ * This will be one of the text antialiasing rendering hint values
+ * defined in {@link java.awt.RenderingHints java.awt.RenderingHints}.
+ * @return  text anti-aliasing rendering mode hint used in this
+ * <code>FontRenderContext</code>.
+ * @since 1.6
+ */
+public Object getAntiAliasingHint() {
+    if (defaulting) {
+        if (isAntiAliased()) {
+            return VALUE_TEXT_ANTIALIAS_ON;
+        } else {
+            return VALUE_TEXT_ANTIALIAS_OFF;
+        }
+    }
+    return aaHintValue;
+}

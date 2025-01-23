@@ -1,0 +1,7 @@
+protected void finalize() throws Throwable {
+    synchronized (queue) {
+        thread.newTasksMayBeScheduled = false;
+        // In case queue is empty.
+        queue.notify();
+    }
+}

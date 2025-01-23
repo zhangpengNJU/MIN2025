@@ -1,0 +1,23 @@
+/**
+ * Ends any input composition that may currently be going on in this
+ * context. Depending on the platform and possibly user preferences,
+ * this may commit or delete uncommitted text. Any changes to the text
+ * are communicated to the active component using an input method event.
+ *
+ * <p>
+ * A text editing component may call this in a variety of situations,
+ * for example, when the user moves the insertion point within the text
+ * (but outside the composed text), or when the component's text is
+ * saved to a file or copied to the clipboard.
+ * <p>
+ * This method is called
+ * <ul>
+ * <li>by {@link java.awt.im.InputContext#endComposition InputContext.endComposition},
+ * <li>by {@link java.awt.im.InputContext#dispatchEvent InputContext.dispatchEvent}
+ *     when switching to a different client component
+ * <li>when switching from this input method to a different one using the
+ *     user interface or
+ *     {@link java.awt.im.InputContext#selectInputMethod InputContext.selectInputMethod}.
+ * </ul>
+ */
+public void endComposition();

@@ -1,0 +1,13 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implNote
+ * Clears spliterator and children fields.  Overriders MUST call
+ * {@code super.onCompletion} as the last thing they do if they want these
+ * cleared.
+ */
+@Override
+public void onCompletion(CountedCompleter<?> caller) {
+    spliterator = null;
+    leftChild = rightChild = null;
+}

@@ -1,0 +1,19 @@
+/**
+ * Converts a given path string to a {@code Path} and resolves it against
+ * this {@code Path} in exactly the manner specified by the {@link
+ * #resolve(Path) resolve} method. For example, suppose that the name
+ * separator is "{@code /}" and a path represents "{@code foo/bar}", then
+ * invoking this method with the path string "{@code gus}" will result in
+ * the {@code Path} "{@code foo/bar/gus}".
+ *
+ * @param   other
+ *          the path string to resolve against this path
+ *
+ * @return  the resulting path
+ *
+ * @throws  InvalidPathException
+ *          if the path string cannot be converted to a Path.
+ *
+ * @see FileSystem#getPath
+ */
+Path resolve(String other);

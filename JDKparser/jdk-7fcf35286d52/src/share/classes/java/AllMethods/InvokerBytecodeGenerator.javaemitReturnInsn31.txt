@@ -1,0 +1,29 @@
+/**
+ * Emits an actual return instruction conforming to the given return type.
+ */
+private void emitReturnInsn(BasicType type) {
+    int opcode;
+    switch(type) {
+        case I_TYPE:
+            opcode = Opcodes.IRETURN;
+            break;
+        case J_TYPE:
+            opcode = Opcodes.LRETURN;
+            break;
+        case F_TYPE:
+            opcode = Opcodes.FRETURN;
+            break;
+        case D_TYPE:
+            opcode = Opcodes.DRETURN;
+            break;
+        case L_TYPE:
+            opcode = Opcodes.ARETURN;
+            break;
+        case V_TYPE:
+            opcode = Opcodes.RETURN;
+            break;
+        default:
+            throw new InternalError("unknown return type: " + type);
+    }
+    mv.visitInsn(opcode);
+}

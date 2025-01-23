@@ -1,0 +1,10 @@
+/**
+ * Prepend an element {@code elem} to an {@code array}.
+ */
+@LambdaForm.Hidden
+private static Object[] prepend(Object elem, Object[] array) {
+    Object[] newArray = new Object[array.length + 1];
+    newArray[0] = elem;
+    System.arraycopy(array, 0, newArray, 1, array.length);
+    return newArray;
+}

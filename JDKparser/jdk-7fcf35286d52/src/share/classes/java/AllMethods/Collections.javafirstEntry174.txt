@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> firstEntry() {
+    Entry<K, V> first = (Entry<K, V>) nm.firstEntry();
+    return (null != first) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(first) : null;
+}

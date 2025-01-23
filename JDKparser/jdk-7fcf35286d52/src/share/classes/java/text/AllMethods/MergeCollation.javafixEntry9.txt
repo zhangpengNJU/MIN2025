@@ -1,0 +1,61 @@
+/*
+      If the strength is RESET, then just change the lastEntry to
+      be the current. (If the current is not in patterns, signal an error).
+      If not, then remove the current entry, and add it after lastEntry
+      (which is usually at the end).
+      */
+private final void fixEntry(PatternEntry newEntry) throws ParseException {
+    // check to see whether the new entry has the same characters as the previous
+    // entry did (this can happen when a pattern declaring a difference between two
+    // strings that are canonically equivalent is normalized).  If so, and the strength
+    // is anything other than IDENTICAL or RESET, throw an exception (you can't
+    // declare a string to be unequal to itself).       --rtg 5/24/99
+    if (lastEntry != null && newEntry.chars.equals(lastEntry.chars) && newEntry.extension.equals(lastEntry.extension)) {
+        if (newEntry.strength != Collator.IDENTICAL && newEntry.strength != PatternEntry.RESET) {
+            throw new ParseException("The entries " + lastEntry + " and " + newEntry + " are adjacent in the rules, but have conflicting " + "strengths: A character can't be unequal to itself.", -1);
+        } else {
+            // otherwise, just skip this entry and behave as though you never saw it
+            return;
+        }
+    }
+    boolean changeLastEntry = true;
+    if (newEntry.strength != PatternEntry.RESET) {
+        int oldIndex = -1;
+        if ((newEntry.chars.length() == 1)) {
+            char c = newEntry.chars.charAt(0);
+            int statusIndex = c >> BYTEPOWER;
+            byte bitClump = statusArray[statusIndex];
+            byte setBit = (byte) (BITARRAYMASK << (c & BYTEMASK));
+            if (bitClump != 0 && (bitClump & setBit) != 0) {
+                oldIndex = patterns.lastIndexOf(newEntry);
+            } else {
+                // We're going to add an element that starts with this
+                // character, so go ahead and set its bit.
+                statusArray[statusIndex] = (byte) (bitClump | setBit);
+            }
+        } else {
+            oldIndex = patterns.lastIndexOf(newEntry);
+        }
+        if (oldIndex != -1) {
+            patterns.remove(oldIndex);
+        }
+        excess.setLength(0);
+        int lastIndex = findLastEntry(lastEntry, excess);
+        if (excess.length() != 0) {
+            newEntry.extension = excess + newEntry.extension;
+            if (lastIndex != patterns.size()) {
+                lastEntry = saveEntry;
+                changeLastEntry = false;
+            }
+        }
+        if (lastIndex == patterns.size()) {
+            patterns.add(newEntry);
+            saveEntry = newEntry;
+        } else {
+            patterns.add(lastIndex, newEntry);
+        }
+    }
+    if (changeLastEntry) {
+        lastEntry = newEntry;
+    }
+}

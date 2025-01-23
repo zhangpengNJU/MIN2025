@@ -1,0 +1,20 @@
+/**
+ * Extract a GraphicAttribute or Font from the given attributes.
+ * If attributes does not contain a GraphicAttribute, Font, or
+ * Font family entry this method returns null.
+ */
+private static Object getGraphicOrFont(Map<? extends Attribute, ?> attributes) {
+    Object value = attributes.get(TextAttribute.CHAR_REPLACEMENT);
+    if (value != null) {
+        return value;
+    }
+    value = attributes.get(TextAttribute.FONT);
+    if (value != null) {
+        return value;
+    }
+    if (attributes.get(TextAttribute.FAMILY) != null) {
+        return Font.getFont(attributes);
+    } else {
+        return null;
+    }
+}

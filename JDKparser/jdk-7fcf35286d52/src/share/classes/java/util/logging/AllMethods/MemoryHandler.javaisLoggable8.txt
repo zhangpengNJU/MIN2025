@@ -1,0 +1,16 @@
+/**
+ * Check if this <tt>Handler</tt> would actually log a given
+ * <tt>LogRecord</tt> into its internal buffer.
+ * <p>
+ * This method checks if the <tt>LogRecord</tt> has an appropriate level and
+ * whether it satisfies any <tt>Filter</tt>.  However it does <b>not</b>
+ * check whether the <tt>LogRecord</tt> would result in a "push" of the
+ * buffer contents. It will return false if the <tt>LogRecord</tt> is null.
+ * <p>
+ * @param record  a <tt>LogRecord</tt>
+ * @return true if the <tt>LogRecord</tt> would be logged.
+ */
+@Override
+public boolean isLoggable(LogRecord record) {
+    return super.isLoggable(record);
+}

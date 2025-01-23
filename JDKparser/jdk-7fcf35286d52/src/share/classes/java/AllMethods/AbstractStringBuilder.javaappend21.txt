@@ -1,0 +1,41 @@
+/**
+ * Appends a subsequence of the specified {@code CharSequence} to this
+ * sequence.
+ * <p>
+ * Characters of the argument {@code s}, starting at
+ * index {@code start}, are appended, in order, to the contents of
+ * this sequence up to the (exclusive) index {@code end}. The length
+ * of this sequence is increased by the value of {@code end - start}.
+ * <p>
+ * Let <i>n</i> be the length of this character sequence just prior to
+ * execution of the {@code append} method. Then the character at
+ * index <i>k</i> in this character sequence becomes equal to the
+ * character at index <i>k</i> in this sequence, if <i>k</i> is less than
+ * <i>n</i>; otherwise, it is equal to the character at index
+ * <i>k+start-n</i> in the argument {@code s}.
+ * <p>
+ * If {@code s} is {@code null}, then this method appends
+ * characters as if the s parameter was a sequence containing the four
+ * characters {@code "null"}.
+ *
+ * @param   s the sequence to append.
+ * @param   start   the starting index of the subsequence to be appended.
+ * @param   end     the end index of the subsequence to be appended.
+ * @return  a reference to this object.
+ * @throws     IndexOutOfBoundsException if
+ *             {@code start} is negative, or
+ *             {@code start} is greater than {@code end} or
+ *             {@code end} is greater than {@code s.length()}
+ */
+@Override
+public AbstractStringBuilder append(CharSequence s, int start, int end) {
+    if (s == null)
+        s = "null";
+    if ((start < 0) || (start > end) || (end > s.length()))
+        throw new IndexOutOfBoundsException("start " + start + ", end " + end + ", s.length() " + s.length());
+    int len = end - start;
+    ensureCapacityInternal(count + len);
+    for (int i = start, j = count; i < end; i++, j++) value[j] = s.charAt(i);
+    count += len;
+    return this;
+}

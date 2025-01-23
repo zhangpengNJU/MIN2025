@@ -1,0 +1,9 @@
+@Override
+public final Stream<P_OUT> skip(long n) {
+    if (n < 0)
+        throw new IllegalArgumentException(Long.toString(n));
+    if (n == 0)
+        return this;
+    else
+        return SliceOps.makeRef(this, n, -1);
+}

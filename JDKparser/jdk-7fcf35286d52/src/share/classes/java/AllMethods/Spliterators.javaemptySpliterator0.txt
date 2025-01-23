@@ -1,0 +1,15 @@
+// Empty spliterators
+/**
+ * Creates an empty {@code Spliterator}
+ *
+ * <p>The empty spliterator reports {@link Spliterator#SIZED} and
+ * {@link Spliterator#SUBSIZED}.  Calls to
+ * {@link java.util.Spliterator#trySplit()} always return {@code null}.
+ *
+ * @param <T> Type of elements
+ * @return An empty spliterator
+ */
+@SuppressWarnings("unchecked")
+public static <T> Spliterator<T> emptySpliterator() {
+    return (Spliterator<T>) EMPTY_SPLITERATOR;
+}

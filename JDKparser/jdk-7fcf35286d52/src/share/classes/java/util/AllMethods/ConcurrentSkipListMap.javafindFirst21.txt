@@ -1,0 +1,14 @@
+/* ---------------- Finding and removing first element -------------- */
+/**
+ * Specialized variant of findNode to get first valid node.
+ * @return first node or null if empty
+ */
+final Node<K, V> findFirst() {
+    for (Node<K, V> b, n; ; ) {
+        if ((n = (b = head.node).next) == null)
+            return null;
+        if (n.value != null)
+            return n;
+        n.helpDelete(b, n.next);
+    }
+}

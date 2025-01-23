@@ -1,0 +1,8 @@
+/**
+ * Check access and get the requested method, eliding receiver narrowing rules.
+ */
+private MethodHandle getDirectMethodNoRestrict(byte refKind, Class<?> refc, MemberName method, Class<?> callerClass) throws IllegalAccessException {
+    final boolean doRestrict = false;
+    final boolean checkSecurity = true;
+    return getDirectMethodCommon(refKind, refc, method, checkSecurity, doRestrict, callerClass);
+}

@@ -1,0 +1,21 @@
+/**
+ * Returns a particular tagged data element from the profile as
+ * a byte array.  Elements are identified by signatures
+ * as defined in the ICC specification.  The signature
+ * icSigHead can be used to get the header.  This method is useful
+ * for advanced applets or applications which need to access
+ * profile data directly.
+ *
+ * @param tagSignature The ICC tag signature for the data element you
+ * want to get.
+ *
+ * @return A byte array that contains the tagged data element. Returns
+ * <code>null</code> if the specified tag doesn't exist.
+ * @see #setData(int, byte[])
+ */
+public byte[] getData(int tagSignature) {
+    if (ProfileDeferralMgr.deferring) {
+        ProfileDeferralMgr.activateProfiles();
+    }
+    return getData(cmmProfile, tagSignature);
+}

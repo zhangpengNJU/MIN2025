@@ -1,0 +1,15 @@
+/**
+ * set the Component that the DragGestureRecognizer is associated with
+ *
+ * registerListeners() and unregisterListeners() are called as a side
+ * effect as appropriate.
+ * <P>
+ * @param c The <code>Component</code> or <code>null</code>
+ */
+public synchronized void setComponent(Component c) {
+    if (component != null && dragGestureListener != null)
+        unregisterListeners();
+    component = c;
+    if (component != null && dragGestureListener != null)
+        registerListeners();
+}

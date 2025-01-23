@@ -1,0 +1,5 @@
+void connectOwnedWindow(Window child) {
+    child.parent = this;
+    addOwnedWindow(child.weakThis);
+    child.disposerRecord.updateOwner();
+}

@@ -1,0 +1,34 @@
+/**
+ * Returns an array of {@code AnnotatedType} objects that represent the use
+ * of types to specify superinterfaces of the entity represented by this
+ * {@code Class} object. (The <em>use</em> of type Foo to specify a
+ * superinterface in '... implements Foo' is distinct from the
+ * <em>declaration</em> of type Foo.)
+ *
+ * <p> If this {@code Class} object represents a class, the return value is
+ * an array containing objects representing the uses of interface types to
+ * specify interfaces implemented by the class. The order of the objects in
+ * the array corresponds to the order of the interface types used in the
+ * 'implements' clause of the declaration of this {@code Class} object.
+ *
+ * <p> If this {@code Class} object represents an interface, the return
+ * value is an array containing objects representing the uses of interface
+ * types to specify interfaces directly extended by the interface. The
+ * order of the objects in the array corresponds to the order of the
+ * interface types used in the 'extends' clause of the declaration of this
+ * {@code Class} object.
+ *
+ * <p> If this {@code Class} object represents a class or interface whose
+ * declaration does not explicitly indicate any annotated superinterfaces,
+ * the return value is an array of length 0.
+ *
+ * <p> If this {@code Class} object represents either the {@code Object}
+ * class, an array type, a primitive type, or void, the return value is an
+ * array of length 0.
+ *
+ * @return an array representing the superinterfaces
+ * @since 1.8
+ */
+public AnnotatedType[] getAnnotatedInterfaces() {
+    return TypeAnnotationParser.buildAnnotatedInterfaces(getRawTypeAnnotations(), getConstantPool(), this);
+}

@@ -1,0 +1,9 @@
+@CallerSensitive
+private static boolean checkCallerClass(Class<?> expected, Class<?> expected2) {
+    // This method is called via MH_checkCallerClass and so it's
+    // correct to ask for the immediate caller here.
+    Class<?> actual = Reflection.getCallerClass();
+    if (actual != expected && actual != expected2)
+        throw new InternalError("found " + actual.getName() + ", expected " + expected.getName() + (expected == expected2 ? "" : ", or else " + expected2.getName()));
+    return true;
+}

@@ -1,0 +1,27 @@
+/**
+ * Performs the specified {@code PrivilegedAction} with privileges
+ * enabled. The action is performed with <i>all</i> of the permissions
+ * possessed by the caller's protection domain.
+ *
+ * <p> If the action's {@code run} method throws an (unchecked)
+ * exception, it will propagate through this method.
+ *
+ * <p> Note that any DomainCombiner associated with the current
+ * AccessControlContext will be ignored while the action is performed.
+ *
+ * @param <T> the type of the value returned by the PrivilegedAction's
+ *                  {@code run} method.
+ *
+ * @param action the action to be performed.
+ *
+ * @return the value returned by the action's {@code run} method.
+ *
+ * @exception NullPointerException if the action is {@code null}
+ *
+ * @see #doPrivileged(PrivilegedAction,AccessControlContext)
+ * @see #doPrivileged(PrivilegedExceptionAction)
+ * @see #doPrivilegedWithCombiner(PrivilegedAction)
+ * @see java.security.DomainCombiner
+ */
+@CallerSensitive
+public static native <T> T doPrivileged(PrivilegedAction<T> action);

@@ -1,0 +1,37 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to create a subprocess.
+ * <p>
+ * This method is invoked for the current security manager by the
+ * <code>exec</code> methods of class <code>Runtime</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>FilePermission(cmd,"execute")</code> permission
+ * if cmd is an absolute path, otherwise it calls
+ * <code>checkPermission</code> with
+ * <code>FilePermission("&lt;&lt;ALL FILES&gt;&gt;","execute")</code>.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkExec</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      cmd   the specified system command.
+ * @exception  SecurityException if the calling thread does not have
+ *             permission to create a subprocess.
+ * @exception  NullPointerException if the <code>cmd</code> argument is
+ *             <code>null</code>.
+ * @see     java.lang.Runtime#exec(java.lang.String)
+ * @see     java.lang.Runtime#exec(java.lang.String, java.lang.String[])
+ * @see     java.lang.Runtime#exec(java.lang.String[])
+ * @see     java.lang.Runtime#exec(java.lang.String[], java.lang.String[])
+ * @see     #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkExec(String cmd) {
+    File f = new File(cmd);
+    if (f.isAbsolute()) {
+        checkPermission(new FilePermission(cmd, SecurityConstants.FILE_EXECUTE_ACTION));
+    } else {
+        checkPermission(new FilePermission("<<ALL FILES>>", SecurityConstants.FILE_EXECUTE_ACTION));
+    }
+}

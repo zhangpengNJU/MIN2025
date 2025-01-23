@@ -1,0 +1,6 @@
+@Override
+public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    synchronized (mutex) {
+        m.replaceAll(function);
+    }
+}

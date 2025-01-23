@@ -1,0 +1,42 @@
+void pumpOneEventForFilters(int id) {
+    AWTEvent event = null;
+    boolean eventOK = false;
+    try {
+        EventQueue eq = null;
+        EventQueueDelegate.Delegate delegate = null;
+        do {
+            // EventQueue may change during the dispatching
+            eq = getEventQueue();
+            delegate = EventQueueDelegate.getDelegate();
+            if (delegate != null && id == ANY_EVENT) {
+                event = delegate.getNextEvent(eq);
+            } else {
+                event = (id == ANY_EVENT) ? eq.getNextEvent() : eq.getNextEvent(id);
+            }
+            eventOK = filterAndCheckEvent(event);
+            if (!eventOK) {
+                event.consume();
+            }
+        } while (eventOK == false);
+        if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            eventLog.finest("Dispatching: " + event);
+        }
+        Object handle = null;
+        if (delegate != null) {
+            handle = delegate.beforeDispatch(event);
+        }
+        eq.dispatchEvent(event);
+        if (delegate != null) {
+            delegate.afterDispatch(event, handle);
+        }
+    } catch (ThreadDeath death) {
+        doDispatch = false;
+        throw death;
+    } catch (InterruptedException interruptedException) {
+        // AppContext.dispose() interrupts all
+        doDispatch = false;
+    // Threads in the AppContext
+    } catch (Throwable e) {
+        processException(e);
+    }
+}

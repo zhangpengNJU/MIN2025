@@ -1,0 +1,9 @@
+/**
+ * Returns a hash code value for this elliptic curve point.
+ * @return a hash code value.
+ */
+public int hashCode() {
+    if (this == POINT_INFINITY)
+        return 0;
+    return x.hashCode() << 5 + y.hashCode();
+}

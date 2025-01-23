@@ -1,0 +1,12 @@
+/**
+ * Takes a {@code Sink} that accepts elements of the output type of the
+ * {@code PipelineHelper}, and wrap it with a {@code Sink} that accepts
+ * elements of the input type and implements all the intermediate operations
+ * described by this {@code PipelineHelper}, delivering the result into the
+ * provided {@code Sink}.
+ *
+ * @param sink the {@code Sink} to receive the results
+ * @return a {@code Sink} that implements the pipeline stages and sends
+ *         results to the provided {@code Sink}
+ */
+abstract <P_IN> Sink<P_IN> wrapSink(Sink<P_OUT> sink);

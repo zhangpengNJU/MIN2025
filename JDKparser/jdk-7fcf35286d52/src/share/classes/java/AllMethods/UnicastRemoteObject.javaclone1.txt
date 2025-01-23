@@ -1,0 +1,18 @@
+/**
+ * Returns a clone of the remote object that is distinct from
+ * the original.
+ *
+ * @exception CloneNotSupportedException if clone failed due to
+ * a RemoteException.
+ * @return the new remote object
+ * @since JDK1.1
+ */
+public Object clone() throws CloneNotSupportedException {
+    try {
+        UnicastRemoteObject cloned = (UnicastRemoteObject) super.clone();
+        cloned.reexport();
+        return cloned;
+    } catch (RemoteException e) {
+        throw new ServerCloneException("Clone failed", e);
+    }
+}

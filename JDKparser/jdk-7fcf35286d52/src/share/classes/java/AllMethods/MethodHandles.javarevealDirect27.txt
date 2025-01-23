@@ -1,0 +1,48 @@
+/**
+ * Cracks a <a href="MethodHandleInfo.html#directmh">direct method handle</a>
+ * created by this lookup object or a similar one.
+ * Security and access checks are performed to ensure that this lookup object
+ * is capable of reproducing the target method handle.
+ * This means that the cracking may fail if target is a direct method handle
+ * but was created by an unrelated lookup object.
+ * This can happen if the method handle is <a href="MethodHandles.Lookup.html#callsens">caller sensitive</a>
+ * and was created by a lookup object for a different class.
+ * @param target a direct method handle to crack into symbolic reference components
+ * @return a symbolic reference which can be used to reconstruct this method handle from this lookup object
+ * @exception SecurityException if a security manager is present and it
+ *                              <a href="MethodHandles.Lookup.html#secmgr">refuses access</a>
+ * @throws IllegalArgumentException if the target is not a direct method handle or if access checking fails
+ * @exception NullPointerException if the target is {@code null}
+ * @see MethodHandleInfo
+ * @since 1.8
+ */
+public MethodHandleInfo revealDirect(MethodHandle target) {
+    MemberName member = target.internalMemberName();
+    if (member == null || (!member.isResolved() && !member.isMethodHandleInvoke()))
+        throw newIllegalArgumentException("not a direct method handle");
+    Class<?> defc = member.getDeclaringClass();
+    byte refKind = member.getReferenceKind();
+    assert (MethodHandleNatives.refKindIsValid(refKind));
+    if (refKind == REF_invokeSpecial && !target.isInvokeSpecial())
+        // Devirtualized method invocation is usually formally virtual.
+        // To avoid creating extra MemberName objects for this common case,
+        // we encode this extra degree of freedom using MH.isInvokeSpecial.
+        refKind = REF_invokeVirtual;
+    if (refKind == REF_invokeVirtual && defc.isInterface())
+        // Symbolic reference is through interface but resolves to Object method (toString, etc.)
+        refKind = REF_invokeInterface;
+    // Check SM permissions and member access before cracking.
+    try {
+        checkAccess(refKind, defc, member);
+        checkSecurityManager(defc, member);
+    } catch (IllegalAccessException ex) {
+        throw new IllegalArgumentException(ex);
+    }
+    if (allowedModes != TRUSTED && member.isCallerSensitive()) {
+        Class<?> callerClass = target.internalCallerClass();
+        if (!hasPrivateAccess() || callerClass != lookupClass())
+            throw new IllegalArgumentException("method handle is caller sensitive: " + callerClass);
+    }
+    // Produce the handle to the results.
+    return new InfoFromMemberName(this, member, refKind);
+}

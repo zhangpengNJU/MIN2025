@@ -1,0 +1,13 @@
+/**
+ * This implements the unsynchronized semantics of ensureCapacity.
+ * Synchronized methods in this class can internally call this
+ * method for ensuring capacity without incurring the cost of an
+ * extra synchronization.
+ *
+ * @see #ensureCapacity(int)
+ */
+private void ensureCapacityHelper(int minCapacity) {
+    // overflow-conscious code
+    if (minCapacity - elementData.length > 0)
+        grow(minCapacity);
+}

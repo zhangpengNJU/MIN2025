@@ -1,0 +1,7 @@
+/**
+ * Returns the 32 high bits of Stafford variant 4 mix64 function as int.
+ */
+private static int mix32(long z) {
+    z = (z ^ (z >>> 33)) * 0x62a9d9ed799705f5L;
+    return (int) (((z ^ (z >>> 28)) * 0xcb24d0a5c88c35b3L) >>> 32);
+}

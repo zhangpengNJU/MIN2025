@@ -1,0 +1,23 @@
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    int n = Array.getLength(oldInstance);
+    for (int i = 0; i < n; i++) {
+        Object index = new Integer(i);
+        // Expression oldGetExp = new Expression(Array.class, "get", new Object[]{oldInstance, index});
+        // Expression newGetExp = new Expression(Array.class, "get", new Object[]{newInstance, index});
+        Expression oldGetExp = new Expression(oldInstance, "get", new Object[] { index });
+        Expression newGetExp = new Expression(newInstance, "get", new Object[] { index });
+        try {
+            Object oldValue = oldGetExp.getValue();
+            Object newValue = newGetExp.getValue();
+            out.writeExpression(oldGetExp);
+            if (!Objects.equals(newValue, out.get(oldValue))) {
+                // System.out.println("Not equal: " + newGetExp + " != " + actualGetExp);
+                // invokeStatement(Array.class, "set", new Object[]{oldInstance, index, oldValue}, out);
+                DefaultPersistenceDelegate.invokeStatement(oldInstance, "set", new Object[] { index, oldValue }, out);
+            }
+        } catch (Exception e) {
+            // System.err.println("Warning:: failed to write: " + oldGetExp);
+            out.getExceptionListener().exceptionThrown(e);
+        }
+    }
+}

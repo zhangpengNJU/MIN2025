@@ -1,0 +1,10 @@
+/**
+ * To be removed in a future release.
+ */
+private static <T> void legacyMergeSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+    T[] aux = copyOfRange(a, fromIndex, toIndex);
+    if (c == null)
+        mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
+    else
+        mergeSort(aux, a, fromIndex, toIndex, -fromIndex, c);
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns the size (in bits) of the data type, given a datatype tag.
+ * @param type the value of one of the defined datatype tags
+ * @return the size of the data type
+ * @throws IllegalArgumentException if <code>type</code> is less than
+ *         zero or greater than {@link #TYPE_DOUBLE}
+ */
+public static int getDataTypeSize(int type) {
+    if (type < TYPE_BYTE || type > TYPE_DOUBLE) {
+        throw new IllegalArgumentException("Unknown data type " + type);
+    }
+    return dataTypeSize[type];
+}

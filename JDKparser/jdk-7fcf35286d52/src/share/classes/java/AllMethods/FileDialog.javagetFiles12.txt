@@ -1,0 +1,21 @@
+/**
+ * Returns files that the user selects.
+ * <p>
+ * If the user cancels the file dialog,
+ * then the method returns an empty array.
+ *
+ * @return    files that the user selects or an empty array
+ *            if the user cancels the file dialog.
+ * @see       #setFile(String)
+ * @see       #getFile
+ * @since 1.7
+ */
+public File[] getFiles() {
+    synchronized (getObjectLock()) {
+        if (files != null) {
+            return files.clone();
+        } else {
+            return new File[0];
+        }
+    }
+}

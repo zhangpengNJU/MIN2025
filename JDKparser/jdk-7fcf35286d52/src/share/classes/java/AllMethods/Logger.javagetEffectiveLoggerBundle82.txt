@@ -1,0 +1,39 @@
+// Private method to get the potentially inherited
+// resource bundle and resource bundle name for this Logger.
+// This method never returns null.
+private LoggerBundle getEffectiveLoggerBundle() {
+    final LoggerBundle lb = loggerBundle;
+    if (lb.isSystemBundle()) {
+        return SYSTEM_BUNDLE;
+    }
+    // first take care of this logger
+    final ResourceBundle b = getResourceBundle();
+    if (b != null && b == lb.userBundle) {
+        return lb;
+    } else if (b != null) {
+        // either lb.userBundle is null or getResourceBundle() is
+        // overriden
+        final String rbName = getResourceBundleName();
+        return LoggerBundle.get(rbName, b);
+    }
+    // no resource bundle was specified on this logger, look up the
+    // parent stack.
+    Logger target = this.parent;
+    while (target != null) {
+        final LoggerBundle trb = target.loggerBundle;
+        if (trb.isSystemBundle()) {
+            return SYSTEM_BUNDLE;
+        }
+        if (trb.userBundle != null) {
+            return trb;
+        }
+        final String rbName = isSystemLogger ? // ancestor of a system logger is expected to be a system logger.
+        // ignore resource bundle name if it's not.
+        (target.isSystemLogger ? trb.resourceBundleName : null) : target.getResourceBundleName();
+        if (rbName != null) {
+            return LoggerBundle.get(rbName, findResourceBundle(rbName, true));
+        }
+        target = isSystemLogger ? target.parent : target.getParent();
+    }
+    return NO_RESOURCE_BUNDLE;
+}

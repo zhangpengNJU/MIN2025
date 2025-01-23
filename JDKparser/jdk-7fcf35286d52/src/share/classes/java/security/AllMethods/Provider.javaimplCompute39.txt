@@ -1,0 +1,9 @@
+private Object implCompute(Object key, BiFunction<? super Object, ? super Object, ? extends Object> remappingFunction) {
+    if (key instanceof String) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.computeIfAbsent((String) key, (Function<? super String, ? extends String>) remappingFunction);
+    }
+    return super.compute(key, remappingFunction);
+}

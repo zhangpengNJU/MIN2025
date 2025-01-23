@@ -1,0 +1,26 @@
+/**
+ * Calculate GCD of a and b interpreted as unsigned integers.
+ */
+static int binaryGcd(int a, int b) {
+    if (b == 0)
+        return a;
+    if (a == 0)
+        return b;
+    // Right shift a & b till their last bits equal to 1.
+    int aZeros = Integer.numberOfTrailingZeros(a);
+    int bZeros = Integer.numberOfTrailingZeros(b);
+    a >>>= aZeros;
+    b >>>= bZeros;
+    int t = (aZeros < bZeros ? aZeros : bZeros);
+    while (a != b) {
+        if ((a + 0x80000000) > (b + 0x80000000)) {
+            // a > b as unsigned
+            a -= b;
+            a >>>= Integer.numberOfTrailingZeros(a);
+        } else {
+            b -= a;
+            b >>>= Integer.numberOfTrailingZeros(b);
+        }
+    }
+    return a << t;
+}

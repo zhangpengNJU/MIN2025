@@ -1,0 +1,21 @@
+/**
+ * Writes class descriptor representing a dynamic proxy class to stream.
+ */
+private void writeProxyDesc(ObjectStreamClass desc, boolean unshared) throws IOException {
+    bout.writeByte(TC_PROXYCLASSDESC);
+    handles.assign(unshared ? null : desc);
+    Class<?> cl = desc.forClass();
+    Class<?>[] ifaces = cl.getInterfaces();
+    bout.writeInt(ifaces.length);
+    for (int i = 0; i < ifaces.length; i++) {
+        bout.writeUTF(ifaces[i].getName());
+    }
+    bout.setBlockDataMode(true);
+    if (cl != null && isCustomSubclass()) {
+        ReflectUtil.checkPackageAccess(cl);
+    }
+    annotateProxyClass(cl);
+    bout.setBlockDataMode(false);
+    bout.writeByte(TC_ENDBLOCKDATA);
+    writeClassDesc(desc.getSuperDesc(), false);
+}

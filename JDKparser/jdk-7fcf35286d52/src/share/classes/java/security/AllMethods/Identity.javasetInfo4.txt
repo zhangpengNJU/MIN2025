@@ -1,0 +1,20 @@
+/**
+ * Specifies a general information string for this identity.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "setIdentityInfo"}
+ * as its argument to see if it's ok to specify the information string.
+ *
+ * @param info the information string.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * setting the information string.
+ *
+ * @see #getInfo
+ * @see SecurityManager#checkSecurityAccess
+ */
+public void setInfo(String info) {
+    check("setIdentityInfo");
+    this.info = info;
+}

@@ -1,0 +1,72 @@
+/**
+ * Computes {@code this/b} and {@code this%b} using the
+ * <a href="http://cr.yp.to/bib/1998/burnikel.ps"> Burnikel-Ziegler algorithm</a>.
+ * This method implements algorithm 3 from pg. 9 of the Burnikel-Ziegler paper.
+ * The parameter beta was chosen to b 2<sup>32</sup> so almost all shifts are
+ * multiples of 32 bits.<br/>
+ * {@code this} and {@code b} must be nonnegative.
+ * @param b the divisor
+ * @param quotient output parameter for {@code this/b}
+ * @return the remainder
+ */
+MutableBigInteger divideAndRemainderBurnikelZiegler(MutableBigInteger b, MutableBigInteger quotient) {
+    int r = intLen;
+    int s = b.intLen;
+    // Clear the quotient
+    quotient.offset = quotient.intLen = 0;
+    if (r < s) {
+        return this;
+    } else {
+        // Unlike Knuth division, we don't check for common powers of two here because
+        // BZ already runs faster if both numbers contain powers of two and cancelling them has no
+        // additional benefit.
+        // step 1: let m = min{2^k | (2^k)*BURNIKEL_ZIEGLER_THRESHOLD > s}
+        int m = 1 << (32 - Integer.numberOfLeadingZeros(s / BigInteger.BURNIKEL_ZIEGLER_THRESHOLD));
+        // step 2a: j = ceil(s/m)
+        int j = (s + m - 1) / m;
+        // step 2b: block length in 32-bit units
+        int n = j * m;
+        // block length in bits
+        long n32 = 32L * n;
+        // step 3: sigma = max{T | (2^T)*B < beta^n}
+        int sigma = (int) Math.max(0, n32 - b.bitLength());
+        MutableBigInteger bShifted = new MutableBigInteger(b);
+        // step 4a: shift b so its length is a multiple of n
+        bShifted.safeLeftShift(sigma);
+        MutableBigInteger aShifted = new MutableBigInteger(this);
+        // step 4b: shift a by the same amount
+        aShifted.safeLeftShift(sigma);
+        // step 5: t is the number of blocks needed to accommodate a plus one additional bit
+        int t = (int) ((aShifted.bitLength() + n32) / n32);
+        if (t < 2) {
+            t = 2;
+        }
+        // step 6: conceptually split a into blocks a[t-1], ..., a[0]
+        // the most significant block of a
+        MutableBigInteger a1 = aShifted.getBlock(t - 1, t, n);
+        // step 7: z[t-2] = [a[t-1], a[t-2]]
+        // the second to most significant block
+        MutableBigInteger z = aShifted.getBlock(t - 2, t, n);
+        // z[t-2]
+        z.addDisjoint(a1, n);
+        // do schoolbook division on blocks, dividing 2-block numbers by 1-block numbers
+        MutableBigInteger qi = new MutableBigInteger();
+        MutableBigInteger ri;
+        for (int i = t - 2; i > 0; i--) {
+            // step 8a: compute (qi,ri) such that z=b*qi+ri
+            ri = z.divide2n1n(bShifted, qi);
+            // step 8b: z = [ri, a[i-1]]
+            // a[i-1]
+            z = aShifted.getBlock(i - 1, t, n);
+            z.addDisjoint(ri, n);
+            // update q (part of step 9)
+            quotient.addShifted(qi, i * n);
+        }
+        // final iteration of step 8: do the loop one more time for i=0 but leave z unchanged
+        ri = z.divide2n1n(bShifted, qi);
+        quotient.add(qi);
+        // step 9: a and b were shifted, so shift back
+        ri.rightShift(sigma);
+        return ri;
+    }
+}

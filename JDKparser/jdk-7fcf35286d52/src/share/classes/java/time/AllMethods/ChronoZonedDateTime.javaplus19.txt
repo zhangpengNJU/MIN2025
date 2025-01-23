@@ -1,0 +1,9 @@
+/**
+ * {@inheritDoc}
+ * @throws DateTimeException {@inheritDoc}
+ * @throws ArithmeticException {@inheritDoc}
+ */
+@Override
+default ChronoZonedDateTime<D> plus(TemporalAmount amount) {
+    return ChronoZonedDateTimeImpl.ensureValid(getChronology(), Temporal.super.plus(amount));
+}

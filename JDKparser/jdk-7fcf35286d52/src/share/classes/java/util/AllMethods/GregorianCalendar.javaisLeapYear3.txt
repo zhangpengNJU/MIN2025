@@ -1,0 +1,33 @@
+/**
+ * Determines if the given year is a leap year. Returns <code>true</code> if
+ * the given year is a leap year. To specify BC year numbers,
+ * <code>1 - year number</code> must be given. For example, year BC 4 is
+ * specified as -3.
+ *
+ * @param year the given year.
+ * @return <code>true</code> if the given year is a leap year; <code>false</code> otherwise.
+ */
+public boolean isLeapYear(int year) {
+    if ((year & 3) != 0) {
+        return false;
+    }
+    if (year > gregorianCutoverYear) {
+        // Gregorian
+        return (year % 100 != 0) || (year % 400 == 0);
+    }
+    if (year < gregorianCutoverYearJulian) {
+        // Julian
+        return true;
+    }
+    boolean gregorian;
+    // If the given year is the Gregorian cutover year, we need to
+    // determine which calendar system to be applied to February in the year.
+    if (gregorianCutoverYear == gregorianCutoverYearJulian) {
+        // Gregorian
+        BaseCalendar.Date d = getCalendarDate(gregorianCutoverDate);
+        gregorian = d.getMonth() < BaseCalendar.MARCH;
+    } else {
+        gregorian = year == gregorianCutoverYear;
+    }
+    return gregorian ? (year % 100 != 0) || (year % 400 == 0) : true;
+}

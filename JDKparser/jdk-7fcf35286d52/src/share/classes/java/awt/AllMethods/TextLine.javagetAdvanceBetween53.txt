@@ -1,0 +1,20 @@
+// return the sum of the advances of text between the logical start and limit
+public static float getAdvanceBetween(TextLineComponent[] components, int start, int limit) {
+    float advance = 0;
+    int tlcStart = 0;
+    for (int i = 0; i < components.length; i++) {
+        TextLineComponent comp = components[i];
+        int tlcLength = comp.getNumCharacters();
+        int tlcLimit = tlcStart + tlcLength;
+        if (tlcLimit > start) {
+            int measureStart = Math.max(0, start - tlcStart);
+            int measureLimit = Math.min(tlcLength, limit - tlcStart);
+            advance += comp.getAdvanceBetween(measureStart, measureLimit);
+            if (tlcLimit >= limit) {
+                break;
+            }
+        }
+        tlcStart = tlcLimit;
+    }
+    return advance;
+}

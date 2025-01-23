@@ -1,0 +1,14 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    switch(type) {
+        case GREEDY:
+            return (atom.match(matcher, i, seq) && next.match(matcher, matcher.last, seq)) || next.match(matcher, i, seq);
+        case LAZY:
+            return next.match(matcher, i, seq) || (atom.match(matcher, i, seq) && next.match(matcher, matcher.last, seq));
+        case POSSESSIVE:
+            if (atom.match(matcher, i, seq))
+                i = matcher.last;
+            return next.match(matcher, i, seq);
+        default:
+            return atom.match(matcher, i, seq) && next.match(matcher, matcher.last, seq);
+    }
+}

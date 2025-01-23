@@ -1,0 +1,10 @@
+/**
+ * Returns common pool queue for an external thread.
+ */
+static WorkQueue commonSubmitterQueue() {
+    ForkJoinPool p = common;
+    int r = ThreadLocalRandom.getProbe();
+    WorkQueue[] ws;
+    int m;
+    return (p != null && (ws = p.workQueues) != null && (m = ws.length - 1) >= 0) ? ws[m & r & SQMASK] : null;
+}

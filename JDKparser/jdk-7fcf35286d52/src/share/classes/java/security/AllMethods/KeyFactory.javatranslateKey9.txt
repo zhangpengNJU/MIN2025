@@ -1,0 +1,35 @@
+/**
+ * Translates a key object, whose provider may be unknown or potentially
+ * untrusted, into a corresponding key object of this key factory.
+ *
+ * @param key the key whose provider is unknown or untrusted.
+ *
+ * @return the translated key.
+ *
+ * @exception InvalidKeyException if the given key cannot be processed
+ * by this key factory.
+ */
+public final Key translateKey(Key key) throws InvalidKeyException {
+    if (serviceIterator == null) {
+        return spi.engineTranslateKey(key);
+    }
+    Exception failure = null;
+    KeyFactorySpi mySpi = spi;
+    do {
+        try {
+            return mySpi.engineTranslateKey(key);
+        } catch (Exception e) {
+            if (failure == null) {
+                failure = e;
+            }
+            mySpi = nextSpi(mySpi);
+        }
+    } while (mySpi != null);
+    if (failure instanceof RuntimeException) {
+        throw (RuntimeException) failure;
+    }
+    if (failure instanceof InvalidKeyException) {
+        throw (InvalidKeyException) failure;
+    }
+    throw new InvalidKeyException("Could not translate key", failure);
+}

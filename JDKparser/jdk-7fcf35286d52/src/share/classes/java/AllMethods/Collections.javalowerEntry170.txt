@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> lowerEntry(K key) {
+    Entry<K, V> lower = (Entry<K, V>) nm.lowerEntry(key);
+    return (null != lower) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(lower) : null;
+}

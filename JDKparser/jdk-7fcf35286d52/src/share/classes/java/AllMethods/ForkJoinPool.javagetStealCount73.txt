@@ -1,0 +1,24 @@
+/**
+ * Returns an estimate of the total number of tasks stolen from
+ * one thread's work queue by another. The reported value
+ * underestimates the actual total number of steals when the pool
+ * is not quiescent. This value may be useful for monitoring and
+ * tuning fork/join programs: in general, steal counts should be
+ * high enough to keep threads busy, but low enough to avoid
+ * overhead and contention across threads.
+ *
+ * @return the number of steals
+ */
+public long getStealCount() {
+    AtomicLong sc = stealCounter;
+    long count = (sc == null) ? 0L : sc.get();
+    WorkQueue[] ws;
+    WorkQueue w;
+    if ((ws = workQueues) != null) {
+        for (int i = 1; i < ws.length; i += 2) {
+            if ((w = ws[i]) != null)
+                count += w.nsteals;
+        }
+    }
+    return count;
+}

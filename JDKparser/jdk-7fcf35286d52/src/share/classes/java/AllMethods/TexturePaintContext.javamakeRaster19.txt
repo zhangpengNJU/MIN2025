@@ -1,0 +1,8 @@
+public WritableRaster makeRaster(int w, int h) {
+    WritableRaster ras = makeByteRaster(srcRas, w, h);
+    ByteInterleavedRaster biRas = (ByteInterleavedRaster) ras;
+    outData = biRas.getDataStorage();
+    outSpan = biRas.getScanlineStride();
+    outOff = biRas.getDataOffset(0);
+    return ras;
+}

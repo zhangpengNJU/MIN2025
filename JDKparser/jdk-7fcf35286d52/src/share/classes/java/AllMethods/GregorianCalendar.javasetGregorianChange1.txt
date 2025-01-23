@@ -1,0 +1,24 @@
+private void setGregorianChange(long cutoverTime) {
+    gregorianCutover = cutoverTime;
+    gregorianCutoverDate = CalendarUtils.floorDivide(cutoverTime, ONE_DAY) + EPOCH_OFFSET;
+    // To provide the "pure" Julian calendar as advertised.
+    // Strictly speaking, the last millisecond should be a
+    // Gregorian date. However, the API doc specifies that setting
+    // the cutover date to Long.MAX_VALUE will make this calendar
+    // a pure Julian calendar. (See 4167995)
+    if (cutoverTime == Long.MAX_VALUE) {
+        gregorianCutoverDate++;
+    }
+    BaseCalendar.Date d = getGregorianCutoverDate();
+    // Set the cutover year (in the Gregorian year numbering)
+    gregorianCutoverYear = d.getYear();
+    BaseCalendar julianCal = getJulianCalendarSystem();
+    d = (BaseCalendar.Date) julianCal.newCalendarDate(TimeZone.NO_TIMEZONE);
+    julianCal.getCalendarDateFromFixedDate(d, gregorianCutoverDate - 1);
+    gregorianCutoverYearJulian = d.getNormalizedYear();
+    if (time < gregorianCutover) {
+        // The field values are no longer valid under the new
+        // cutover date.
+        setUnnormalized();
+    }
+}

@@ -1,0 +1,29 @@
+// engine method
+public void initialize(AlgorithmParameterSpec params, SecureRandom random) throws InvalidAlgorithmParameterException {
+    if (serviceIterator == null) {
+        spi.initialize(params, random);
+        return;
+    }
+    Exception failure = null;
+    KeyPairGeneratorSpi mySpi = spi;
+    do {
+        try {
+            mySpi.initialize(params, random);
+            initType = I_PARAMS;
+            initKeySize = 0;
+            initParams = params;
+            initRandom = random;
+            return;
+        } catch (Exception e) {
+            if (failure == null) {
+                failure = e;
+            }
+            mySpi = nextSpi(mySpi, false);
+        }
+    } while (mySpi != null);
+    if (failure instanceof RuntimeException) {
+        throw (RuntimeException) failure;
+    }
+    // must be an InvalidAlgorithmParameterException
+    throw (InvalidAlgorithmParameterException) failure;
+}

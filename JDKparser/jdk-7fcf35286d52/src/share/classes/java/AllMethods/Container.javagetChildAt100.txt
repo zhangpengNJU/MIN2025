@@ -1,0 +1,15 @@
+/**
+ * Helper method for findComponentAtImpl. Finds a child component using
+ * findComponentAtImpl for Container and getComponentAt for Component.
+ */
+private static Component getChildAt(Component comp, int x, int y, boolean ignoreEnabled) {
+    if (comp instanceof Container) {
+        comp = ((Container) comp).findComponentAtImpl(x, y, ignoreEnabled);
+    } else {
+        comp = comp.getComponentAt(x, y);
+    }
+    if (comp != null && comp.visible && (ignoreEnabled || comp.enabled)) {
+        return comp;
+    }
+    return null;
+}

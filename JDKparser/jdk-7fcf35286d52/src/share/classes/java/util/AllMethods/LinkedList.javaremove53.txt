@@ -1,0 +1,13 @@
+public void remove() {
+    checkForComodification();
+    if (lastReturned == null)
+        throw new IllegalStateException();
+    Node<E> lastNext = lastReturned.next;
+    unlink(lastReturned);
+    if (next == lastReturned)
+        next = lastNext;
+    else
+        nextIndex--;
+    lastReturned = null;
+    expectedModCount++;
+}

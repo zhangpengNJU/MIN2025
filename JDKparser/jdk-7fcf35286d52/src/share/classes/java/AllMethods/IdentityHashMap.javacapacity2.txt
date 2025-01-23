@@ -1,0 +1,11 @@
+/**
+ * Returns the appropriate capacity for the given expected maximum size.
+ * Returns the smallest power of two between MINIMUM_CAPACITY and
+ * MAXIMUM_CAPACITY, inclusive, that is greater than (3 *
+ * expectedMaxSize)/2, if such a number exists.  Otherwise returns
+ * MAXIMUM_CAPACITY.
+ */
+private static int capacity(int expectedMaxSize) {
+    // assert expectedMaxSize >= 0;
+    return (expectedMaxSize > MAXIMUM_CAPACITY / 3) ? MAXIMUM_CAPACITY : (expectedMaxSize <= 2 * MINIMUM_CAPACITY / 3) ? MINIMUM_CAPACITY : Integer.highestOneBit(expectedMaxSize + (expectedMaxSize << 1));
+}

@@ -1,0 +1,26 @@
+/**
+ * BeanContextServicesListener callback, propagates event to all
+ * currently registered listeners and BeanContextServices children,
+ * if this BeanContextService does not already implement this service
+ * itself.
+ *
+ * subclasses may override or envelope this method to implement their
+ * own propagation semantics.
+ */
+public void serviceRevoked(BeanContextServiceRevokedEvent bcssre) {
+    synchronized (BeanContext.globalHierarchyLock) {
+        if (services.containsKey(bcssre.getServiceClass()))
+            return;
+        fireServiceRevoked(bcssre);
+        Iterator i;
+        synchronized (children) {
+            i = children.keySet().iterator();
+        }
+        while (i.hasNext()) {
+            Object c = i.next();
+            if (c instanceof BeanContextServices) {
+                ((BeanContextServicesListener) c).serviceRevoked(bcssre);
+            }
+        }
+    }
+}

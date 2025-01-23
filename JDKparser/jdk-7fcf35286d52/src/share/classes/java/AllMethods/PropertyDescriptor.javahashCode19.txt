@@ -1,0 +1,20 @@
+/**
+ * Returns a hash code value for the object.
+ * See {@link java.lang.Object#hashCode} for a complete description.
+ *
+ * @return a hash code value for this object.
+ * @since 1.5
+ */
+public int hashCode() {
+    int result = 7;
+    result = 37 * result + ((getPropertyType() == null) ? 0 : getPropertyType().hashCode());
+    result = 37 * result + ((getReadMethod() == null) ? 0 : getReadMethod().hashCode());
+    result = 37 * result + ((getWriteMethod() == null) ? 0 : getWriteMethod().hashCode());
+    result = 37 * result + ((getPropertyEditorClass() == null) ? 0 : getPropertyEditorClass().hashCode());
+    result = 37 * result + ((writeMethodName == null) ? 0 : writeMethodName.hashCode());
+    result = 37 * result + ((readMethodName == null) ? 0 : readMethodName.hashCode());
+    result = 37 * result + getName().hashCode();
+    result = 37 * result + ((bound == false) ? 0 : 1);
+    result = 37 * result + ((constrained == false) ? 0 : 1);
+    return result;
+}

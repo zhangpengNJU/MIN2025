@@ -1,0 +1,45 @@
+/**
+ * Returns a data element array representation of a pixel in this
+ * <code>ColorModel</code>, given an array of normalized color/alpha
+ * components.  This array can then be passed to the
+ * <code>setDataElements</code> method of a <code>WritableRaster</code>
+ * object.  An <code>ArrayIndexOutOfBoundsException</code> is thrown
+ * if the <code>normComponents</code> array is not large enough to hold
+ * all the color and alpha components (starting at
+ * <code>normOffset</code>).  If the <code>obj</code> variable is
+ * <code>null</code>, a new array will be allocated.  If
+ * <code>obj</code> is not <code>null</code>, it must be a primitive
+ * array of type transferType; otherwise, a
+ * <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if
+ * <code>obj</code> is not large enough to hold a pixel value for this
+ * <code>ColorModel</code>.
+ * Since <code>ColorModel</code> is an abstract class,
+ * any instance is an instance of a subclass.  The default implementation
+ * of this method in this abstract class first converts from the
+ * normalized form to the unnormalized form and then calls
+ * <code>getDataElement(int[], int, Object)</code>.  Subclasses which may
+ * have instances which do not support the unnormalized form must
+ * override this method.
+ * @param normComponents an array of normalized color and alpha
+ * components
+ * @param normOffset the index into <code>normComponents</code> at which to
+ * begin retrieving color and alpha components
+ * @param obj a primitive data array to hold the returned pixel
+ * @return an <code>Object</code> which is a primitive data array
+ * representation of a pixel
+ * @throws ClassCastException if <code>obj</code>
+ *  is not a primitive array of type <code>transferType</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *  <code>obj</code> is not large enough to hold a pixel value
+ *  for this <code>ColorModel</code> or the <code>normComponents</code>
+ *  array is not large enough to hold all of the color and alpha
+ *  components starting at <code>normOffset</code>
+ * @see WritableRaster#setDataElements
+ * @see SampleModel#setDataElements
+ * @since 1.4
+ */
+public Object getDataElements(float[] normComponents, int normOffset, Object obj) {
+    int[] components = getUnnormalizedComponents(normComponents, normOffset, null, 0);
+    return getDataElements(components, 0, obj);
+}

@@ -1,0 +1,9 @@
+// The global logger, which if not null, and if
+// the context requires default loggers, will be added to the context
+// logger's tree.
+final Logger getGlobalLogger() {
+    // avoids initialization cycles.
+    @SuppressWarnings("deprecated")
+    final Logger global = Logger.global;
+    return global;
+}

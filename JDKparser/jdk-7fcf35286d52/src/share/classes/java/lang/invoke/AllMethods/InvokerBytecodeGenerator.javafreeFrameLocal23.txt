@@ -1,0 +1,12 @@
+private void freeFrameLocal(int oldFrameLocal) {
+    int i = indexForFrameLocal(oldFrameLocal);
+    if (i < 0)
+        return;
+    BasicType type = localTypes[i];
+    int newFrameLocal = makeLocalTemp(type);
+    mv.visitVarInsn(loadInsnOpcode(type), oldFrameLocal);
+    mv.visitVarInsn(storeInsnOpcode(type), newFrameLocal);
+    assert (localsMap[i] == oldFrameLocal);
+    localsMap[i] = newFrameLocal;
+    assert (indexForFrameLocal(oldFrameLocal) < 0);
+}

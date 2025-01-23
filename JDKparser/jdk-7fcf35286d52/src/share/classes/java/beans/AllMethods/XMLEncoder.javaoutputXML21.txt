@@ -1,0 +1,19 @@
+private void outputXML(String tag, String attributes, Object value, Object... args) {
+    List<Statement> statements = statementList(value);
+    // Use XML's short form when there is no body.
+    if (args.length == 0 && statements.size() == 0) {
+        writeln("<" + tag + attributes + "/>");
+        return;
+    }
+    writeln("<" + tag + attributes + ">");
+    indentation++;
+    for (int i = 0; i < args.length; i++) {
+        outputValue(args[i], null, true);
+    }
+    while (!statements.isEmpty()) {
+        Statement s = statements.remove(0);
+        outputStatement(s, value, false);
+    }
+    indentation--;
+    writeln("</" + tag + ">");
+}

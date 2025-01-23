@@ -1,0 +1,22 @@
+private ChronoLocalDate resolveWBY(Map<TemporalField, Long> fieldValues, Chronology chrono, int localDow, ResolverStyle resolverStyle) {
+    int yowby = weekDef.weekBasedYear.range().checkValidIntValue(fieldValues.get(weekDef.weekBasedYear), weekDef.weekBasedYear);
+    ChronoLocalDate date;
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        date = ofWeekBasedYear(chrono, yowby, 1, localDow);
+        long wowby = fieldValues.get(weekDef.weekOfWeekBasedYear);
+        long weeks = Math.subtractExact(wowby, 1);
+        date = date.plus(weeks, WEEKS);
+    } else {
+        int wowby = weekDef.weekOfWeekBasedYear.range().checkValidIntValue(fieldValues.get(weekDef.weekOfWeekBasedYear), // validate
+        weekDef.weekOfWeekBasedYear);
+        date = ofWeekBasedYear(chrono, yowby, wowby, localDow);
+        if (resolverStyle == ResolverStyle.STRICT && localizedWeekBasedYear(date) != yowby) {
+            throw new DateTimeException("Strict mode rejected resolved date as it is in a different week-based-year");
+        }
+    }
+    fieldValues.remove(this);
+    fieldValues.remove(weekDef.weekBasedYear);
+    fieldValues.remove(weekDef.weekOfWeekBasedYear);
+    fieldValues.remove(DAY_OF_WEEK);
+    return date;
+}

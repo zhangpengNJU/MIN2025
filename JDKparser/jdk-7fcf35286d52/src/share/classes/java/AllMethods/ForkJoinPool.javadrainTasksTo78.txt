@@ -1,0 +1,34 @@
+/**
+ * Removes all available unexecuted submitted and forked tasks
+ * from scheduling queues and adds them to the given collection,
+ * without altering their execution status. These may include
+ * artificially generated or wrapped tasks. This method is
+ * designed to be invoked only when the pool is known to be
+ * quiescent. Invocations at other times may not remove all
+ * tasks. A failure encountered while attempting to add elements
+ * to collection {@code c} may result in elements being in
+ * neither, either or both collections when the associated
+ * exception is thrown.  The behavior of this operation is
+ * undefined if the specified collection is modified while the
+ * operation is in progress.
+ *
+ * @param c the collection to transfer elements into
+ * @return the number of elements transferred
+ */
+protected int drainTasksTo(Collection<? super ForkJoinTask<?>> c) {
+    int count = 0;
+    WorkQueue[] ws;
+    WorkQueue w;
+    ForkJoinTask<?> t;
+    if ((ws = workQueues) != null) {
+        for (int i = 0; i < ws.length; ++i) {
+            if ((w = ws[i]) != null) {
+                while ((t = w.poll()) != null) {
+                    c.add(t);
+                    ++count;
+                }
+            }
+        }
+    }
+    return count;
+}

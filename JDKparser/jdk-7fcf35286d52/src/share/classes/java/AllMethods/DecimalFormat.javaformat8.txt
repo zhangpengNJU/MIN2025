@@ -1,0 +1,40 @@
+/**
+ * Format a BigInteger to produce a string.
+ * @param number    The BigInteger to format
+ * @param result    where the text is to be appended
+ * @param delegate notified of locations of sub fields
+ * @return The formatted number string
+ * @exception        ArithmeticException if rounding is needed with rounding
+ *                   mode being set to RoundingMode.UNNECESSARY
+ * @see java.text.FieldPosition
+ */
+private StringBuffer format(BigInteger number, StringBuffer result, FieldDelegate delegate, boolean formatLong) {
+    if (multiplier != 1) {
+        number = number.multiply(getBigIntegerMultiplier());
+    }
+    boolean isNegative = number.signum() == -1;
+    if (isNegative) {
+        number = number.negate();
+    }
+    synchronized (digitList) {
+        int maxIntDigits, minIntDigits, maxFraDigits, minFraDigits, maximumDigits;
+        if (formatLong) {
+            maxIntDigits = super.getMaximumIntegerDigits();
+            minIntDigits = super.getMinimumIntegerDigits();
+            maxFraDigits = super.getMaximumFractionDigits();
+            minFraDigits = super.getMinimumFractionDigits();
+            maximumDigits = maxIntDigits + maxFraDigits;
+        } else {
+            maxIntDigits = getMaximumIntegerDigits();
+            minIntDigits = getMinimumIntegerDigits();
+            maxFraDigits = getMaximumFractionDigits();
+            minFraDigits = getMinimumFractionDigits();
+            maximumDigits = maxIntDigits + maxFraDigits;
+            if (maximumDigits < 0) {
+                maximumDigits = Integer.MAX_VALUE;
+            }
+        }
+        digitList.set(isNegative, number, useExponentialNotation ? maximumDigits : 0);
+        return subformat(result, delegate, isNegative, true, maxIntDigits, minIntDigits, maxFraDigits, minFraDigits);
+    }
+}

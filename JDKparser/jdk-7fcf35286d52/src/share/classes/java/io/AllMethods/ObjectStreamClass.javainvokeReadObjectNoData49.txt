@@ -1,0 +1,26 @@
+/**
+ * Invokes the readObjectNoData method of the represented serializable
+ * class.  Throws UnsupportedOperationException if this class descriptor is
+ * not associated with a class, or if the class is externalizable,
+ * non-serializable or does not define readObjectNoData.
+ */
+void invokeReadObjectNoData(Object obj) throws IOException, UnsupportedOperationException {
+    requireInitialized();
+    if (readObjectNoDataMethod != null) {
+        try {
+            readObjectNoDataMethod.invoke(obj, (Object[]) null);
+        } catch (InvocationTargetException ex) {
+            Throwable th = ex.getTargetException();
+            if (th instanceof ObjectStreamException) {
+                throw (ObjectStreamException) th;
+            } else {
+                throwMiscException(th);
+            }
+        } catch (IllegalAccessException ex) {
+            // should not occur, as access checks have been suppressed
+            throw new InternalError(ex);
+        }
+    } else {
+        throw new UnsupportedOperationException();
+    }
+}

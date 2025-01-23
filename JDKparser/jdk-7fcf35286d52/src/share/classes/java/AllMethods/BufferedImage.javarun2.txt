@@ -1,0 +1,5 @@
+@Override
+public Boolean run() {
+    final ClassLoader std = System.class.getClassLoader();
+    return (cmClass.getClassLoader() == std) && (smClass.getClassLoader() == std) && (wrClass.getClassLoader() == std);
+}

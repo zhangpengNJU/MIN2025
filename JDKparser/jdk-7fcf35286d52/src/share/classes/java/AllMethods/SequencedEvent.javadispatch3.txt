@@ -1,0 +1,39 @@
+/**
+ * Dispatches the nested event after all previous nested events have been
+ * dispatched or disposed. If this method is invoked before all previous nested events
+ * have been dispatched, then this method blocks until such a point is
+ * reached.
+ * While waiting disposes nested events to disposed AppContext
+ *
+ * NOTE: Locking protocol.  Since dispose() can get EventQueue lock,
+ * dispatch() shall never call dispose() while holding the lock on the list,
+ * as EventQueue lock is held during dispatching.  The locks should be acquired
+ * in the same order.
+ */
+public final void dispatch() {
+    try {
+        appContext = AppContext.getAppContext();
+        if (getFirst() != this) {
+            if (EventQueue.isDispatchThread()) {
+                EventDispatchThread edt = (EventDispatchThread) Thread.currentThread();
+                edt.pumpEventsForFilter(() -> !SequencedEvent.this.isFirstOrDisposed(), new SequencedEventsFilter(this));
+            } else {
+                while (!isFirstOrDisposed()) {
+                    synchronized (SequencedEvent.class) {
+                        try {
+                            SequencedEvent.class.wait(1000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (!disposed) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().setCurrentSequencedEvent(this);
+            Toolkit.getEventQueue().dispatchEvent(nested);
+        }
+    } finally {
+        dispose();
+    }
+}

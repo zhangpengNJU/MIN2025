@@ -1,0 +1,44 @@
+/**
+ * Shared logic of need increment computation.
+ */
+private static boolean commonNeedIncrement(int roundingMode, int qsign, int cmpFracHalf, boolean oddQuot) {
+    switch(roundingMode) {
+        case ROUND_UNNECESSARY:
+            throw new ArithmeticException("Rounding necessary");
+        case // Away from zero
+        ROUND_UP:
+            return true;
+        case // Towards zero
+        ROUND_DOWN:
+            return false;
+        case // Towards +infinity
+        ROUND_CEILING:
+            return qsign > 0;
+        case // Towards -infinity
+        ROUND_FLOOR:
+            return qsign < 0;
+        default:
+            // Some kind of half-way rounding
+            assert roundingMode >= ROUND_HALF_UP && roundingMode <= ROUND_HALF_EVEN : "Unexpected rounding mode" + RoundingMode.valueOf(roundingMode);
+            if (// We're closer to higher digit
+            cmpFracHalf < 0)
+                return false;
+            else if (// We're closer to lower digit
+            cmpFracHalf > 0)
+                return true;
+            else {
+                // half-way
+                assert cmpFracHalf == 0;
+                switch(roundingMode) {
+                    case ROUND_HALF_DOWN:
+                        return false;
+                    case ROUND_HALF_UP:
+                        return true;
+                    case ROUND_HALF_EVEN:
+                        return oddQuot;
+                    default:
+                        throw new AssertionError("Unexpected rounding mode" + roundingMode);
+                }
+            }
+    }
+}

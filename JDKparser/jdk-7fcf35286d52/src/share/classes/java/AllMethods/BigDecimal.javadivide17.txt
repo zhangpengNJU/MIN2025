@@ -1,0 +1,19 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this /
+ * divisor)}, and whose scale is as specified.  If rounding must
+ * be performed to generate a result with the specified scale, the
+ * specified rounding mode is applied.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @param  scale scale of the {@code BigDecimal} quotient to be returned.
+ * @param  roundingMode rounding mode to apply.
+ * @return {@code this / divisor}
+ * @throws ArithmeticException if {@code divisor} is zero,
+ *         {@code roundingMode==RoundingMode.UNNECESSARY} and
+ *         the specified scale is insufficient to represent the result
+ *         of the division exactly.
+ * @since 1.5
+ */
+public BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
+    return divide(divisor, scale, roundingMode.oldMode);
+}

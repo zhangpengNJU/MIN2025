@@ -1,0 +1,12 @@
+/* ----------------- primitive data output methods ----------------- */
+/*
+         * The following methods are equivalent to their counterparts in
+         * DataOutputStream, except that they partition written data into data
+         * blocks when in block data mode.
+         */
+public void writeBoolean(boolean v) throws IOException {
+    if (pos >= MAX_BLOCK_SIZE) {
+        drain();
+    }
+    Bits.putBoolean(buf, pos++, v);
+}

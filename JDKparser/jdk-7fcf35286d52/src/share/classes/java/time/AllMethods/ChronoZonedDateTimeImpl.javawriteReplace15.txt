@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the ChronoZonedDateTime using a
+ * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(3);                  // identifies a ChronoZonedDateTime
+ *  out.writeObject(toLocalDateTime());
+ *  out.writeObject(getOffset());
+ *  out.writeObject(getZone());
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.CHRONO_ZONE_DATE_TIME_TYPE, this);
+}

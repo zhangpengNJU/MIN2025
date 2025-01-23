@@ -1,0 +1,65 @@
+/**
+ * ********************************************************************
+ */
+/**
+ * obtain a service which may be delegated
+ */
+public Object getService(BeanContextChild child, Object requestor, Class serviceClass, Object serviceSelector, BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException {
+    if (child == null)
+        throw new NullPointerException("child");
+    if (serviceClass == null)
+        throw new NullPointerException("serviceClass");
+    if (requestor == null)
+        throw new NullPointerException("requestor");
+    if (bcsrl == null)
+        throw new NullPointerException("bcsrl");
+    Object service = null;
+    BCSSChild bcsc;
+    BeanContextServices bcssp = getBeanContextServicesPeer();
+    synchronized (BeanContext.globalHierarchyLock) {
+        synchronized (children) {
+            bcsc = (BCSSChild) children.get(child);
+        }
+        // not a child ...
+        if (bcsc == null)
+            throw new IllegalArgumentException("not a child of this context");
+        BCSSServiceProvider bcsssp = (BCSSServiceProvider) services.get(serviceClass);
+        if (bcsssp != null) {
+            BeanContextServiceProvider bcsp = bcsssp.getServiceProvider();
+            service = bcsp.getService(bcssp, requestor, serviceClass, serviceSelector);
+            if (service != null) {
+                // do bookkeeping ...
+                try {
+                    bcsc.usingService(requestor, service, serviceClass, bcsp, false, bcsrl);
+                } catch (TooManyListenersException tmle) {
+                    bcsp.releaseService(bcssp, requestor, service);
+                    throw tmle;
+                } catch (UnsupportedOperationException uope) {
+                    bcsp.releaseService(bcssp, requestor, service);
+                    // unchecked rt exception
+                    throw uope;
+                }
+                return service;
+            }
+        }
+        if (proxy != null) {
+            // try to delegate ...
+            service = proxy.getService(bcssp, requestor, serviceClass, serviceSelector);
+            if (service != null) {
+                // do bookkeeping ...
+                try {
+                    bcsc.usingService(requestor, service, serviceClass, proxy, true, bcsrl);
+                } catch (TooManyListenersException tmle) {
+                    proxy.releaseService(bcssp, requestor, service);
+                    throw tmle;
+                } catch (UnsupportedOperationException uope) {
+                    proxy.releaseService(bcssp, requestor, service);
+                    // unchecked rt exception
+                    throw uope;
+                }
+                return service;
+            }
+        }
+    }
+    return null;
+}

@@ -1,0 +1,8 @@
+public void run() {
+    log.fine("Starting a new event pump");
+    if (filter == null) {
+        dispatchThread.pumpEvents(condition);
+    } else {
+        dispatchThread.pumpEventsForFilter(condition, filter);
+    }
+}

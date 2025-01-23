@@ -1,0 +1,51 @@
+/**
+ * Returns a pixel value represented as an int in this
+ * <code>ColorModel</code> given an array of unnormalized
+ * color/alpha components.  An
+ * <code>ArrayIndexOutOfBoundsException</code>
+ * is thrown if the <code>components</code> array is not large
+ * enough to hold all of the color and alpha components starting
+ * at <code>offset</code>.  Since
+ * <code>ColorModel</code> can be subclassed, subclasses inherit the
+ * implementation of this method and if they don't override it then
+ * they throw an exception if they use an unsupported transferType.
+ * @param components an array of unnormalized color and alpha
+ * components
+ * @param offset the index into <code>components</code> at which to
+ * begin retrieving the color and alpha components
+ * @return an <code>int</code> pixel value in this
+ * <code>ColorModel</code> corresponding to the specified components.
+ * @throws ArrayIndexOutOfBoundsException if
+ *  the <code>components</code> array is not large enough to
+ *  hold all of the color and alpha components starting at
+ *  <code>offset</code>
+ * @throws UnsupportedOperationException if <code>transferType</code>
+ *         is invalid
+ */
+public int getDataElement(int[] components, int offset) {
+    int rgb = (components[offset + 0] << 16) | (components[offset + 1] << 8) | (components[offset + 2]);
+    if (supportsAlpha) {
+        rgb |= (components[offset + 3] << 24);
+    } else {
+        rgb |= 0xff000000;
+    }
+    Object inData = getDataElements(rgb, null);
+    int pixel;
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata = (byte[]) inData;
+            pixel = bdata[0] & 0xff;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] sdata = (short[]) inData;
+            pixel = sdata[0];
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata = (int[]) inData;
+            pixel = idata[0];
+            break;
+        default:
+            throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+    }
+    return pixel;
+}

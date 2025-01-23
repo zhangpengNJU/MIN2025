@@ -1,0 +1,58 @@
+/**
+ * Java Runtime may use intrinsic for this method.
+ */
+private static final int[] implSquareToLen(int[] x, int len, int[] z, int zlen) {
+    /*
+         * The algorithm used here is adapted from Colin Plumb's C library.
+         * Technique: Consider the partial products in the multiplication
+         * of "abcde" by itself:
+         *
+         *               a  b  c  d  e
+         *            *  a  b  c  d  e
+         *          ==================
+         *              ae be ce de ee
+         *           ad bd cd dd de
+         *        ac bc cc cd ce
+         *     ab bb bc bd be
+         *  aa ab ac ad ae
+         *
+         * Note that everything above the main diagonal:
+         *              ae be ce de = (abcd) * e
+         *           ad bd cd       = (abc) * d
+         *        ac bc             = (ab) * c
+         *     ab                   = (a) * b
+         *
+         * is a copy of everything below the main diagonal:
+         *                       de
+         *                 cd ce
+         *           bc bd be
+         *     ab ac ad ae
+         *
+         * Thus, the sum is 2 * (off the diagonal) + diagonal.
+         *
+         * This is accumulated beginning with the diagonal (which
+         * consist of the squares of the digits of the input), which is then
+         * divided by two, the off-diagonal added, and multiplied by two
+         * again.  The low bit is simply a copy of the low bit of the
+         * input, so it doesn't need special care.
+         */
+    // Store the squares, right shifted one bit (i.e., divided by 2)
+    int lastProductLowWord = 0;
+    for (int j = 0, i = 0; j < len; j++) {
+        long piece = (x[j] & LONG_MASK);
+        long product = piece * piece;
+        z[i++] = (lastProductLowWord << 31) | (int) (product >>> 33);
+        z[i++] = (int) (product >>> 1);
+        lastProductLowWord = (int) product;
+    }
+    // Add in off-diagonal sums
+    for (int i = len, offset = 1; i > 0; i--, offset += 2) {
+        int t = x[i - 1];
+        t = mulAdd(z, x, offset, i - 1, t);
+        addOne(z, offset - 1, i, t);
+    }
+    // Shift back up and set low bit
+    primitiveLeftShift(z, zlen, 1);
+    z[zlen - 1] |= x[len - 1] & 1;
+    return z;
+}

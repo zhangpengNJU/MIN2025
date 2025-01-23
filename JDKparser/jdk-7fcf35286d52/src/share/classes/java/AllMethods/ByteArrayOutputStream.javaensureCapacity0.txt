@@ -1,0 +1,15 @@
+/**
+ * Increases the capacity if necessary to ensure that it can hold
+ * at least the number of elements specified by the minimum
+ * capacity argument.
+ *
+ * @param minCapacity the desired minimum capacity
+ * @throws OutOfMemoryError if {@code minCapacity < 0}.  This is
+ * interpreted as a request for the unsatisfiably large capacity
+ * {@code (long) Integer.MAX_VALUE + (minCapacity - Integer.MAX_VALUE)}.
+ */
+private void ensureCapacity(int minCapacity) {
+    // overflow-conscious code
+    if (minCapacity - buf.length > 0)
+        grow(minCapacity);
+}

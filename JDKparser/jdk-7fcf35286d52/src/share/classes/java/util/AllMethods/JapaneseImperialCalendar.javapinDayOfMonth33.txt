@@ -1,0 +1,46 @@
+/**
+ * After adjustments such as add(MONTH), add(YEAR), we don't want the
+ * month to jump around.  E.g., we don't want Jan 31 + 1 month to go to Mar
+ * 3, we want it to go to Feb 28.  Adjustments which might run into this
+ * problem call this method to retain the proper month.
+ */
+private void pinDayOfMonth(LocalGregorianCalendar.Date date) {
+    int year = date.getYear();
+    int dom = date.getDayOfMonth();
+    if (year != getMinimum(YEAR)) {
+        date.setDayOfMonth(1);
+        jcal.normalize(date);
+        int monthLength = jcal.getMonthLength(date);
+        if (dom > monthLength) {
+            date.setDayOfMonth(monthLength);
+        } else {
+            date.setDayOfMonth(dom);
+        }
+        jcal.normalize(date);
+    } else {
+        LocalGregorianCalendar.Date d = jcal.getCalendarDate(Long.MIN_VALUE, getZone());
+        LocalGregorianCalendar.Date realDate = jcal.getCalendarDate(time, getZone());
+        long tod = realDate.getTimeOfDay();
+        // Use an equivalent year.
+        realDate.addYear(+400);
+        realDate.setMonth(date.getMonth());
+        realDate.setDayOfMonth(1);
+        jcal.normalize(realDate);
+        int monthLength = jcal.getMonthLength(realDate);
+        if (dom > monthLength) {
+            realDate.setDayOfMonth(monthLength);
+        } else {
+            if (dom < d.getDayOfMonth()) {
+                realDate.setDayOfMonth(d.getDayOfMonth());
+            } else {
+                realDate.setDayOfMonth(dom);
+            }
+        }
+        if (realDate.getDayOfMonth() == d.getDayOfMonth() && tod < d.getTimeOfDay()) {
+            realDate.setDayOfMonth(Math.min(dom + 1, monthLength));
+        }
+        // restore the year.
+        date.setDate(year, realDate.getMonth(), realDate.getDayOfMonth());
+    // Don't normalize date here so as not to cause underflow.
+    }
+}

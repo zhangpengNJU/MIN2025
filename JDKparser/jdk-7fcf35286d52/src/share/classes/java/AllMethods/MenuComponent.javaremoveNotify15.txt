@@ -1,0 +1,15 @@
+/**
+ * Removes the menu component's peer.  The peer allows us to modify the
+ * appearance of the menu component without changing the functionality of
+ * the menu component.
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        MenuComponentPeer p = this.peer;
+        if (p != null) {
+            Toolkit.getEventQueue().removeSourceEvents(this, true);
+            this.peer = null;
+            p.dispose();
+        }
+    }
+}

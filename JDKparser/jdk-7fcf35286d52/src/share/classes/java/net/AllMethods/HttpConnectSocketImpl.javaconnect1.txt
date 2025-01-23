@@ -1,0 +1,30 @@
+@Override
+protected void connect(SocketAddress endpoint, int timeout) throws IOException {
+    if (endpoint == null || !(endpoint instanceof InetSocketAddress))
+        throw new IllegalArgumentException("Unsupported address type");
+    final InetSocketAddress epoint = (InetSocketAddress) endpoint;
+    final String destHost = epoint.isUnresolved() ? epoint.getHostName() : epoint.getAddress().getHostAddress();
+    final int destPort = epoint.getPort();
+    SecurityManager security = System.getSecurityManager();
+    if (security != null)
+        security.checkConnect(destHost, destPort);
+    // Connect to the HTTP proxy server
+    String urlString = "http://" + destHost + ":" + destPort;
+    Socket httpSocket = privilegedDoTunnel(urlString, timeout);
+    // Success!
+    external_address = epoint;
+    // close the original socket impl and release its descriptor
+    close();
+    // update the Sockets impl to the impl from the http Socket
+    AbstractPlainSocketImpl psi = (AbstractPlainSocketImpl) httpSocket.impl;
+    this.getSocket().impl = psi;
+    // best effort is made to try and reset options previously set
+    Set<Map.Entry<Integer, Object>> options = optionsMap.entrySet();
+    try {
+        for (Map.Entry<Integer, Object> entry : options) {
+            psi.setOption(entry.getKey(), entry.getValue());
+        }
+    } catch (IOException x) {
+    /* gulp! */
+    }
+}

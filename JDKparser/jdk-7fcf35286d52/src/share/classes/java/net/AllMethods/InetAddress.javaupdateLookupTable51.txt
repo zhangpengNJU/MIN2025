@@ -1,0 +1,6 @@
+private static void updateLookupTable(String host) {
+    synchronized (lookupTable) {
+        lookupTable.remove(host);
+        lookupTable.notifyAll();
+    }
+}

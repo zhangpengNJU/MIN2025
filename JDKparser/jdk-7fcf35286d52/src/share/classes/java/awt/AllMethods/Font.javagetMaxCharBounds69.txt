@@ -1,0 +1,14 @@
+/**
+ * Returns the bounds for the character with the maximum
+ * bounds as defined in the specified <code>FontRenderContext</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.Font class notes}).
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>Rectangle2D</code> that is the bounding box
+ * for the character with the maximum bounds.
+ */
+public Rectangle2D getMaxCharBounds(FontRenderContext frc) {
+    float[] metrics = new float[4];
+    getFont2D().getFontMetrics(this, frc, metrics);
+    return new Rectangle2D.Float(0, -metrics[0], metrics[3], metrics[0] + metrics[1] + metrics[2]);
+}

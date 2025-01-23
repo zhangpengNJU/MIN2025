@@ -1,0 +1,9 @@
+/**
+ * Returns the approximate number of tasks in the queue.
+ */
+final int queueSize() {
+    // non-owner callers must read base first
+    int n = base - top;
+    // ignore transient negative
+    return (n >= 0) ? 0 : -n;
+}

@@ -1,0 +1,10 @@
+/**
+ * cause autoscroll to occur
+ * <P>
+ * @param e the <code>ActionEvent</code>
+ */
+public synchronized void actionPerformed(ActionEvent e) {
+    updateRegion();
+    if (outer.contains(locn) && !inner.contains(locn))
+        autoScroll.autoscroll(locn);
+}

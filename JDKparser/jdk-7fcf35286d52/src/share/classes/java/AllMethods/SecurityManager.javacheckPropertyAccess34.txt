@@ -1,0 +1,30 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to access the system property with
+ * the specified <code>key</code> name.
+ * <p>
+ * This method is used by the <code>getProperty</code> method of
+ * class <code>System</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>PropertyPermission(key, "read")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkPropertyAccess</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      key   a system property key.
+ *
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to access the specified system property.
+ * @exception  NullPointerException if the <code>key</code> argument is
+ *             <code>null</code>.
+ * @exception  IllegalArgumentException if <code>key</code> is empty.
+ *
+ * @see        java.lang.System#getProperty(java.lang.String)
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkPropertyAccess(String key) {
+    checkPermission(new PropertyPermission(key, SecurityConstants.PROPERTY_READ_ACTION));
+}

@@ -1,0 +1,18 @@
+public Iterator<K> iterator() {
+    return new Iterator<K>() {
+
+        private Iterator<Entry<K, V>> i = entrySet().iterator();
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        public K next() {
+            return i.next().getKey();
+        }
+
+        public void remove() {
+            i.remove();
+        }
+    };
+}

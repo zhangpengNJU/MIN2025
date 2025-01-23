@@ -1,0 +1,128 @@
+/*
+     * Write central directory (CEN) header for specified entry.
+     * REMIND: add support for file attributes
+     */
+private void writeCEN(XEntry xentry) throws IOException {
+    ZipEntry e = xentry.entry;
+    int flag = e.flag;
+    int version = version(e);
+    long csize = e.csize;
+    long size = e.size;
+    long offset = xentry.offset;
+    int elenZIP64 = 0;
+    boolean hasZip64 = false;
+    if (e.csize >= ZIP64_MAGICVAL) {
+        csize = ZIP64_MAGICVAL;
+        // csize(8)
+        elenZIP64 += 8;
+        hasZip64 = true;
+    }
+    if (e.size >= ZIP64_MAGICVAL) {
+        // size(8)
+        size = ZIP64_MAGICVAL;
+        elenZIP64 += 8;
+        hasZip64 = true;
+    }
+    if (xentry.offset >= ZIP64_MAGICVAL) {
+        offset = ZIP64_MAGICVAL;
+        // offset(8)
+        elenZIP64 += 8;
+        hasZip64 = true;
+    }
+    // CEN header signature
+    writeInt(CENSIG);
+    if (hasZip64) {
+        // ver 4.5 for zip64
+        writeShort(45);
+        writeShort(45);
+    } else {
+        // version made by
+        writeShort(version);
+        // version needed to extract
+        writeShort(version);
+    }
+    // general purpose bit flag
+    writeShort(flag);
+    // compression method
+    writeShort(e.method);
+    // last modification time
+    writeInt(e.xdostime);
+    // crc-32
+    writeInt(e.crc);
+    // compressed size
+    writeInt(csize);
+    // uncompressed size
+    writeInt(size);
+    byte[] nameBytes = zc.getBytes(e.name);
+    writeShort(nameBytes.length);
+    int elen = getExtraLen(e.extra);
+    if (hasZip64) {
+        // + headid(2) + datasize(2)
+        elen += (elenZIP64 + 4);
+    }
+    // cen info-zip extended timestamp only outputs mtime
+    // but set the flag for a/ctime, if present in loc
+    int flagEXTT = 0;
+    if (e.mtime != null) {
+        // + mtime(4)
+        elen += 4;
+        flagEXTT |= EXTT_FLAG_LMT;
+    }
+    if (e.atime != null) {
+        flagEXTT |= EXTT_FLAG_LAT;
+    }
+    if (e.ctime != null) {
+        flagEXTT |= EXTT_FLAT_CT;
+    }
+    if (flagEXTT != 0) {
+        // headid + sz + flag
+        elen += 5;
+    }
+    writeShort(elen);
+    byte[] commentBytes;
+    if (e.comment != null) {
+        commentBytes = zc.getBytes(e.comment);
+        writeShort(Math.min(commentBytes.length, 0xffff));
+    } else {
+        commentBytes = null;
+        writeShort(0);
+    }
+    // starting disk number
+    writeShort(0);
+    // internal file attributes (unused)
+    writeShort(0);
+    // external file attributes (unused)
+    writeInt(0);
+    // relative offset of local header
+    writeInt(offset);
+    writeBytes(nameBytes, 0, nameBytes.length);
+    // take care of EXTID_ZIP64 and EXTID_EXTT
+    if (hasZip64) {
+        // Zip64 extra
+        writeShort(ZIP64_EXTID);
+        writeShort(elenZIP64);
+        if (size == ZIP64_MAGICVAL)
+            writeLong(e.size);
+        if (csize == ZIP64_MAGICVAL)
+            writeLong(e.csize);
+        if (offset == ZIP64_MAGICVAL)
+            writeLong(xentry.offset);
+    }
+    if (flagEXTT != 0) {
+        writeShort(EXTID_EXTT);
+        if (e.mtime != null) {
+            // flag + mtime
+            writeShort(5);
+            writeByte(flagEXTT);
+            writeInt(fileTimeToUnixTime(e.mtime));
+        } else {
+            // flag only
+            writeShort(1);
+            writeByte(flagEXTT);
+        }
+    }
+    writeExtra(e.extra);
+    if (commentBytes != null) {
+        writeBytes(commentBytes, 0, Math.min(commentBytes.length, 0xffff));
+    }
+}

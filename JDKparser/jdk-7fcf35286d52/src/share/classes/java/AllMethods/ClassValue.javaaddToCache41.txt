@@ -1,0 +1,27 @@
+/**
+ * Add the given entry to the cache, in its home location.
+ */
+private <T> void addToCache(ClassValue<T> classValue, Entry<T> e) {
+    // do not fill cache
+    if (PROBE_LIMIT <= 0)
+        return;
+    // Add e to the cache.
+    Entry<?>[] cache = getCache();
+    int mask = (cache.length - 1);
+    int home = classValue.hashCodeForCache & mask;
+    Entry<?> e2 = placeInCache(cache, home, e, false);
+    // done
+    if (e2 == null)
+        return;
+    if (PROBE_LIMIT > 1) {
+        // try to move e2 somewhere else in his probe range
+        int dis2 = entryDislocation(cache, home, e2);
+        int home2 = home - dis2;
+        for (int i2 = home2; i2 < home2 + PROBE_LIMIT; i2++) {
+            if (placeInCache(cache, i2 & mask, e2, true) == null) {
+                return;
+            }
+        }
+    }
+// Note:  At this point, e2 is just dropped from the cache.
+}

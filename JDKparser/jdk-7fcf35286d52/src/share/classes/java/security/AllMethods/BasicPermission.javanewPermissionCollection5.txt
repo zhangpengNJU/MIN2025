@@ -1,0 +1,15 @@
+/**
+ * Returns a new PermissionCollection object for storing BasicPermission
+ * objects.
+ *
+ * <p>BasicPermission objects must be stored in a manner that allows them
+ * to be inserted in any order, but that also enables the
+ * PermissionCollection {@code implies} method
+ * to be implemented in an efficient (and consistent) manner.
+ *
+ * @return a new PermissionCollection object suitable for
+ * storing BasicPermissions.
+ */
+public PermissionCollection newPermissionCollection() {
+    return new BasicPermissionCollection(this.getClass());
+}

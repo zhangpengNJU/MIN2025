@@ -1,0 +1,60 @@
+/**
+ * Return a PermissionCollection object containing the set of
+ * permissions granted to the specified ProtectionDomain.
+ *
+ * <p> Applications are discouraged from calling this method
+ * since this operation may not be supported by all policy implementations.
+ * Applications should rely on the {@code implies} method
+ * to perform policy checks.
+ *
+ * <p> The default implementation of this method first retrieves
+ * the permissions returned via {@code getPermissions(CodeSource)}
+ * (the CodeSource is taken from the specified ProtectionDomain),
+ * as well as the permissions located inside the specified ProtectionDomain.
+ * All of these permissions are then combined and returned in a new
+ * PermissionCollection object.  If {@code getPermissions(CodeSource)}
+ * returns Policy.UNSUPPORTED_EMPTY_COLLECTION, then this method
+ * returns the permissions contained inside the specified ProtectionDomain
+ * in a new PermissionCollection object.
+ *
+ * <p> This method can be overridden if the policy implementation
+ * supports returning a set of permissions granted to a ProtectionDomain.
+ *
+ * @param domain the ProtectionDomain to which the returned
+ *          PermissionCollection has been granted.
+ *
+ * @return a set of permissions granted to the specified ProtectionDomain.
+ *          If this operation is supported, the returned
+ *          set of permissions must be a new mutable instance
+ *          and it must support heterogeneous Permission types.
+ *          If this operation is not supported,
+ *          Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
+ *
+ * @since 1.4
+ */
+public PermissionCollection getPermissions(ProtectionDomain domain) {
+    PermissionCollection pc = null;
+    if (domain == null)
+        return new Permissions();
+    if (pdMapping == null) {
+        initPolicy(this);
+    }
+    synchronized (pdMapping) {
+        pc = pdMapping.get(domain.key);
+    }
+    if (pc != null) {
+        Permissions perms = new Permissions();
+        synchronized (pc) {
+            for (Enumeration<Permission> e = pc.elements(); e.hasMoreElements(); ) {
+                perms.add(e.nextElement());
+            }
+        }
+        return perms;
+    }
+    pc = getPermissions(domain.getCodeSource());
+    if (pc == null || pc == UNSUPPORTED_EMPTY_COLLECTION) {
+        pc = new Permissions();
+    }
+    addStaticPerms(pc, domain.getPermissions());
+    return pc;
+}

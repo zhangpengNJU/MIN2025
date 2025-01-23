@@ -1,0 +1,11 @@
+final void reducePermits(int reductions) {
+    for (; ; ) {
+        int current = getState();
+        int next = current - reductions;
+        if (// underflow
+        next > current)
+            throw new Error("Permit count underflow");
+        if (compareAndSetState(current, next))
+            return;
+    }
+}

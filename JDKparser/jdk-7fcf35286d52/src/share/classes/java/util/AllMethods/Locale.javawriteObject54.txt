@@ -1,0 +1,17 @@
+/**
+ * Serializes this <code>Locale</code> to the specified <code>ObjectOutputStream</code>.
+ * @param out the <code>ObjectOutputStream</code> to write
+ * @throws IOException
+ * @since 1.7
+ */
+private void writeObject(ObjectOutputStream out) throws IOException {
+    ObjectOutputStream.PutField fields = out.putFields();
+    fields.put("language", baseLocale.getLanguage());
+    fields.put("script", baseLocale.getScript());
+    fields.put("country", baseLocale.getRegion());
+    fields.put("variant", baseLocale.getVariant());
+    fields.put("extensions", localeExtensions == null ? "" : localeExtensions.getID());
+    // place holder just for backward support
+    fields.put("hashcode", -1);
+    out.writeFields();
+}

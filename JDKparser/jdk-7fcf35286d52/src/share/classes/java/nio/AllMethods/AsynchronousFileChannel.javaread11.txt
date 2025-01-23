@@ -1,0 +1,34 @@
+/**
+ * Reads a sequence of bytes from this channel into the given buffer,
+ * starting at the given file position.
+ *
+ * <p> This method initiates the reading of a sequence of bytes from this
+ * channel into the given buffer, starting at the given file position. The
+ * result of the read is the number of bytes read or {@code -1} if the given
+ * position is greater than or equal to the file's size at the time that the
+ * read is attempted.
+ *
+ * <p> This method works in the same manner as the {@link
+ * AsynchronousByteChannel#read(ByteBuffer,Object,CompletionHandler)}
+ * method, except that bytes are read starting at the given file position.
+ * If the given file position is greater than the file's size at the time
+ * that the read is attempted then no bytes are read.
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   dst
+ *          The buffer into which bytes are to be transferred
+ * @param   position
+ *          The file position at which the transfer is to begin;
+ *          must be non-negative
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  IllegalArgumentException
+ *          If the position is negative or the buffer is read-only
+ * @throws  NonReadableChannelException
+ *          If this channel was not opened for reading
+ */
+public abstract <A> void read(ByteBuffer dst, long position, A attachment, CompletionHandler<Integer, ? super A> handler);

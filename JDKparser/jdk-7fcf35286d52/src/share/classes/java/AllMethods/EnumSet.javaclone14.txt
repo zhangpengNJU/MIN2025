@@ -1,0 +1,13 @@
+/**
+ * Returns a copy of this set.
+ *
+ * @return a copy of this set
+ */
+@SuppressWarnings("unchecked")
+public EnumSet<E> clone() {
+    try {
+        return (EnumSet<E>) super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new AssertionError(e);
+    }
+}

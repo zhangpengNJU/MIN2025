@@ -1,0 +1,10 @@
+/**
+ * Create a spliterator that wraps a source spliterator, compatible with
+ * this stream shape, and operations associated with a {@link
+ * PipelineHelper}.
+ *
+ * @param ph the pipeline helper describing the pipeline stages
+ * @param supplier the supplier of a spliterator
+ * @return a wrapping spliterator compatible with this shape
+ */
+abstract <P_IN> Spliterator<E_OUT> wrap(PipelineHelper<E_OUT> ph, Supplier<Spliterator<P_IN>> supplier, boolean isParallel);

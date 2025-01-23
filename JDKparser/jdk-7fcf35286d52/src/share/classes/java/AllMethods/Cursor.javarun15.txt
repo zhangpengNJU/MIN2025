@@ -1,0 +1,11 @@
+public Object run() throws Exception {
+    FileInputStream fis = null;
+    try {
+        fis = new FileInputStream(systemCustomCursorPropertiesFile);
+        systemCustomCursorProperties.load(fis);
+    } finally {
+        if (fis != null)
+            fis.close();
+    }
+    return null;
+}

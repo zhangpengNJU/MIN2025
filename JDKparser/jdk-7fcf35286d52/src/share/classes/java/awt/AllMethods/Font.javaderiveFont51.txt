@@ -1,0 +1,18 @@
+/**
+ * Creates a new <code>Font</code> object by replicating the current
+ * <code>Font</code> object and applying a new set of font attributes
+ * to it.
+ *
+ * @param attributes a map of attributes enabled for the new
+ * <code>Font</code>
+ * @return a new <code>Font</code> object.
+ * @since 1.2
+ */
+public Font deriveFont(Map<? extends Attribute, ?> attributes) {
+    if (attributes == null) {
+        return this;
+    }
+    AttributeValues newValues = getAttributeValues().clone();
+    newValues.merge(attributes, RECOGNIZED_MASK);
+    return new Font(newValues, name, style, createdFont, font2DHandle);
+}

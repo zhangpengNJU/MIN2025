@@ -1,0 +1,21 @@
+/**
+ * Returns a specialized version of the {@code SystemColor}
+ * object for writing to the serialized stream.
+ * @serialData
+ * The value field of a serialized {@code SystemColor} object
+ * contains the array index of the system color instead of the
+ * rgb data for the system color.
+ * This index is used by the {@link #readResolve} method to
+ * resolve the deserialized objects back to the original
+ * static constant versions to ensure unique instances of
+ * each {@code SystemColor} object.
+ * @return a proxy {@code SystemColor} object with its value
+ *         replaced by the corresponding system color index.
+ */
+private Object writeReplace() throws ObjectStreamException {
+    // we put an array index in the SystemColor.value while serialize
+    // to keep compatibility.
+    SystemColor color = new SystemColor((byte) index);
+    color.value = index;
+    return color;
+}

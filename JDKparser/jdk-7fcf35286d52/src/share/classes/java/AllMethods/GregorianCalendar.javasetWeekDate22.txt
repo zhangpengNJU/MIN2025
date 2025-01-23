@@ -1,0 +1,77 @@
+/**
+ * Sets this {@code GregorianCalendar} to the date given by the
+ * date specifiers - <a href="#week_year">{@code weekYear}</a>,
+ * {@code weekOfYear}, and {@code dayOfWeek}. {@code weekOfYear}
+ * follows the <a href="#week_and_year">{@code WEEK_OF_YEAR}
+ * numbering</a>.  The {@code dayOfWeek} value must be one of the
+ * {@link Calendar#DAY_OF_WEEK DAY_OF_WEEK} values: {@link
+ * Calendar#SUNDAY SUNDAY} to {@link Calendar#SATURDAY SATURDAY}.
+ *
+ * <p>Note that the numeric day-of-week representation differs from
+ * the ISO 8601 standard, and that the {@code weekOfYear}
+ * numbering is compatible with the standard when {@code
+ * getFirstDayOfWeek()} is {@code MONDAY} and {@code
+ * getMinimalDaysInFirstWeek()} is 4.
+ *
+ * <p>Unlike the {@code set} method, all of the calendar fields
+ * and the instant of time value are calculated upon return.
+ *
+ * <p>If {@code weekOfYear} is out of the valid week-of-year
+ * range in {@code weekYear}, the {@code weekYear}
+ * and {@code weekOfYear} values are adjusted in lenient
+ * mode, or an {@code IllegalArgumentException} is thrown in
+ * non-lenient mode.
+ *
+ * @param weekYear    the week year
+ * @param weekOfYear  the week number based on {@code weekYear}
+ * @param dayOfWeek   the day of week value: one of the constants
+ *                    for the {@link #DAY_OF_WEEK DAY_OF_WEEK} field:
+ *                    {@link Calendar#SUNDAY SUNDAY}, ...,
+ *                    {@link Calendar#SATURDAY SATURDAY}.
+ * @exception IllegalArgumentException
+ *            if any of the given date specifiers is invalid,
+ *            or if any of the calendar fields are inconsistent
+ *            with the given date specifiers in non-lenient mode
+ * @see GregorianCalendar#isWeekDateSupported()
+ * @see Calendar#getFirstDayOfWeek()
+ * @see Calendar#getMinimalDaysInFirstWeek()
+ * @since 1.7
+ */
+@Override
+public void setWeekDate(int weekYear, int weekOfYear, int dayOfWeek) {
+    if (dayOfWeek < SUNDAY || dayOfWeek > SATURDAY) {
+        throw new IllegalArgumentException("invalid dayOfWeek: " + dayOfWeek);
+    }
+    // To avoid changing the time of day fields by date
+    // calculations, use a clone with the GMT time zone.
+    GregorianCalendar gc = (GregorianCalendar) clone();
+    gc.setLenient(true);
+    int era = gc.get(ERA);
+    gc.clear();
+    gc.setTimeZone(TimeZone.getTimeZone("GMT"));
+    gc.set(ERA, era);
+    gc.set(YEAR, weekYear);
+    gc.set(WEEK_OF_YEAR, 1);
+    gc.set(DAY_OF_WEEK, getFirstDayOfWeek());
+    int days = dayOfWeek - getFirstDayOfWeek();
+    if (days < 0) {
+        days += 7;
+    }
+    days += 7 * (weekOfYear - 1);
+    if (days != 0) {
+        gc.add(DAY_OF_YEAR, days);
+    } else {
+        gc.complete();
+    }
+    if (!isLenient() && (gc.getWeekYear() != weekYear || gc.internalGet(WEEK_OF_YEAR) != weekOfYear || gc.internalGet(DAY_OF_WEEK) != dayOfWeek)) {
+        throw new IllegalArgumentException();
+    }
+    set(ERA, gc.internalGet(ERA));
+    set(YEAR, gc.internalGet(YEAR));
+    set(MONTH, gc.internalGet(MONTH));
+    set(DAY_OF_MONTH, gc.internalGet(DAY_OF_MONTH));
+    // to avoid throwing an IllegalArgumentException in
+    // non-lenient, set WEEK_OF_YEAR internally
+    internalSet(WEEK_OF_YEAR, weekOfYear);
+    complete();
+}

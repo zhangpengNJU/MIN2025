@@ -1,0 +1,21 @@
+/**
+ * Determines whether this input method is enabled.
+ * An input method that is enabled for composition interprets incoming
+ * events for both composition and control purposes, while a
+ * disabled input method does not interpret events for composition.
+ * <p>
+ * This method is called
+ * <ul>
+ * <li>by {@link java.awt.im.InputContext#isCompositionEnabled InputContext.isCompositionEnabled} and
+ * <li>when switching from this input method to a different one using the
+ *     user interface or
+ *     {@link java.awt.im.InputContext#selectInputMethod InputContext.selectInputMethod}.
+ * </ul>
+ *
+ * @return <code>true</code> if this input method is enabled for
+ * composition; <code>false</code> otherwise.
+ * @throws UnsupportedOperationException if this input method does not
+ * support checking whether it is enabled for composition
+ * @see #setCompositionEnabled
+ */
+public boolean isCompositionEnabled();

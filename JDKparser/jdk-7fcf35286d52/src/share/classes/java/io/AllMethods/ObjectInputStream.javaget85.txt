@@ -1,0 +1,4 @@
+public short get(String name, short val) throws IOException {
+    int off = getFieldOffset(name, Short.TYPE);
+    return (off >= 0) ? Bits.getShort(primVals, off) : val;
+}

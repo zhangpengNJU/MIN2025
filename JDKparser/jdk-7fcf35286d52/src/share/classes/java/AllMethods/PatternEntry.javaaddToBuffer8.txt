@@ -1,0 +1,44 @@
+// ===== privates =====
+void addToBuffer(StringBuffer toAddTo, boolean showExtension, boolean showWhiteSpace, PatternEntry lastEntry) {
+    if (showWhiteSpace && toAddTo.length() > 0)
+        if (strength == Collator.PRIMARY || lastEntry != null)
+            toAddTo.append('\n');
+        else
+            toAddTo.append(' ');
+    if (lastEntry != null) {
+        toAddTo.append('&');
+        if (showWhiteSpace)
+            toAddTo.append(' ');
+        lastEntry.appendQuotedChars(toAddTo);
+        appendQuotedExtension(toAddTo);
+        if (showWhiteSpace)
+            toAddTo.append(' ');
+    }
+    switch(strength) {
+        case Collator.IDENTICAL:
+            toAddTo.append('=');
+            break;
+        case Collator.TERTIARY:
+            toAddTo.append(',');
+            break;
+        case Collator.SECONDARY:
+            toAddTo.append(';');
+            break;
+        case Collator.PRIMARY:
+            toAddTo.append('<');
+            break;
+        case RESET:
+            toAddTo.append('&');
+            break;
+        case UNSET:
+            toAddTo.append('?');
+            break;
+    }
+    if (showWhiteSpace)
+        toAddTo.append(' ');
+    appendQuoted(chars, toAddTo);
+    if (showExtension && extension.length() != 0) {
+        toAddTo.append('/');
+        appendQuoted(extension, toAddTo);
+    }
+}

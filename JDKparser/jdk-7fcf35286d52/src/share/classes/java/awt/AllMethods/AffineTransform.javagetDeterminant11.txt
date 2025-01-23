@@ -1,0 +1,61 @@
+/**
+ * Returns the determinant of the matrix representation of the transform.
+ * The determinant is useful both to determine if the transform can
+ * be inverted and to get a single value representing the
+ * combined X and Y scaling of the transform.
+ * <p>
+ * If the determinant is non-zero, then this transform is
+ * invertible and the various methods that depend on the inverse
+ * transform do not need to throw a
+ * {@link NoninvertibleTransformException}.
+ * If the determinant is zero then this transform can not be
+ * inverted since the transform maps all input coordinates onto
+ * a line or a point.
+ * If the determinant is near enough to zero then inverse transform
+ * operations might not carry enough precision to produce meaningful
+ * results.
+ * <p>
+ * If this transform represents a uniform scale, as indicated by
+ * the <code>getType</code> method then the determinant also
+ * represents the square of the uniform scale factor by which all of
+ * the points are expanded from or contracted towards the origin.
+ * If this transform represents a non-uniform scale or more general
+ * transform then the determinant is not likely to represent a
+ * value useful for any purpose other than determining if inverse
+ * transforms are possible.
+ * <p>
+ * Mathematically, the determinant is calculated using the formula:
+ * <pre>
+ *          |  m00  m01  m02  |
+ *          |  m10  m11  m12  |  =  m00 * m11 - m01 * m10
+ *          |   0    0    1   |
+ * </pre>
+ *
+ * @return the determinant of the matrix used to transform the
+ * coordinates.
+ * @see #getType
+ * @see #createInverse
+ * @see #inverseTransform
+ * @see #TYPE_UNIFORM_SCALE
+ * @since 1.2
+ */
+@SuppressWarnings("fallthrough")
+public double getDeterminant() {
+    switch(state) {
+        default:
+            stateError();
+        /* NOTREACHED */
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SHEAR | APPLY_SCALE):
+            return m00 * m11 - m01 * m10;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            return -(m01 * m10);
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            return m00 * m11;
+        case (APPLY_TRANSLATE):
+        case (APPLY_IDENTITY):
+            return 1.0;
+    }
+}

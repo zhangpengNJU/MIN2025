@@ -1,0 +1,35 @@
+/**
+ * Private code-size reduction function used by subParse.
+ * @param text the time text being parsed.
+ * @param start where to start parsing.
+ * @param field the date field being parsed.
+ * @param data the string array to parsed.
+ * @return the new start position if matching succeeded; a negative number
+ * indicating matching failure, otherwise.
+ */
+private int matchString(String text, int start, int field, String[] data, CalendarBuilder calb) {
+    int i = 0;
+    int count = data.length;
+    if (field == Calendar.DAY_OF_WEEK) {
+        i = 1;
+    }
+    // There may be multiple strings in the data[] array which begin with
+    // the same prefix (e.g., Cerven and Cervenec (June and July) in Czech).
+    // We keep track of the longest match, and return that.  Note that this
+    // unfortunately requires us to test all array elements.
+    int bestMatchLength = 0, bestMatch = -1;
+    for (; i < count; ++i) {
+        int length = data[i].length();
+        // Always compare if we have no match yet; otherwise only compare
+        // against potentially better matches (longer strings).
+        if (length > bestMatchLength && text.regionMatches(true, start, data[i], 0, length)) {
+            bestMatch = i;
+            bestMatchLength = length;
+        }
+    }
+    if (bestMatch >= 0) {
+        calb.set(field, bestMatch);
+        return start + bestMatchLength;
+    }
+    return -start;
+}

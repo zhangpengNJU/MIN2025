@@ -1,0 +1,83 @@
+/**
+ * Generate a file based on a user-supplied pattern, generation number,
+ * and an integer uniqueness suffix
+ * @param pattern the pattern for naming the output file
+ * @param generation the generation number to distinguish rotated logs
+ * @param unique a unique number to resolve conflicts
+ * @return the generated File
+ * @throws IOException
+ */
+private File generate(String pattern, int generation, int unique) throws IOException {
+    File file = null;
+    String word = "";
+    int ix = 0;
+    boolean sawg = false;
+    boolean sawu = false;
+    while (ix < pattern.length()) {
+        char ch = pattern.charAt(ix);
+        ix++;
+        char ch2 = 0;
+        if (ix < pattern.length()) {
+            ch2 = Character.toLowerCase(pattern.charAt(ix));
+        }
+        if (ch == '/') {
+            if (file == null) {
+                file = new File(word);
+            } else {
+                file = new File(file, word);
+            }
+            word = "";
+            continue;
+        } else if (ch == '%') {
+            if (ch2 == 't') {
+                String tmpDir = System.getProperty("java.io.tmpdir");
+                if (tmpDir == null) {
+                    tmpDir = System.getProperty("user.home");
+                }
+                file = new File(tmpDir);
+                ix++;
+                word = "";
+                continue;
+            } else if (ch2 == 'h') {
+                file = new File(System.getProperty("user.home"));
+                if (isSetUID()) {
+                    // Ok, we are in a set UID program.  For safety's sake
+                    // we disallow attempts to open files relative to %h.
+                    throw new IOException("can't use %h in set UID program");
+                }
+                ix++;
+                word = "";
+                continue;
+            } else if (ch2 == 'g') {
+                word = word + generation;
+                sawg = true;
+                ix++;
+                continue;
+            } else if (ch2 == 'u') {
+                word = word + unique;
+                sawu = true;
+                ix++;
+                continue;
+            } else if (ch2 == '%') {
+                word = word + "%";
+                ix++;
+                continue;
+            }
+        }
+        word = word + ch;
+    }
+    if (count > 1 && !sawg) {
+        word = word + "." + generation;
+    }
+    if (unique > 0 && !sawu) {
+        word = word + "." + unique;
+    }
+    if (word.length() > 0) {
+        if (file == null) {
+            file = new File(word);
+        } else {
+            file = new File(file, word);
+        }
+    }
+    return file;
+}

@@ -1,0 +1,12 @@
+/**
+ * called by BeanContextSupport superclass during construction and
+ * deserialization to initialize subclass transient state.
+ *
+ * subclasses may envelope this method, but should not override it or
+ * call it directly.
+ */
+public void initialize() {
+    super.initialize();
+    services = new HashMap(serializable + 1);
+    bcsListeners = new ArrayList(1);
+}

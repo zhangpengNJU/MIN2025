@@ -1,0 +1,16 @@
+@Override
+public void forEachRemaining(LongConsumer consumer) {
+    Objects.requireNonNull(consumer);
+    long i = from;
+    final long hUpTo = upTo;
+    int hLast = last;
+    from = upTo;
+    last = 0;
+    while (i < hUpTo) {
+        consumer.accept(i++);
+    }
+    if (hLast > 0) {
+        // Last element of closed range
+        consumer.accept(i);
+    }
+}

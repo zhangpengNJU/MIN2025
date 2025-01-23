@@ -1,0 +1,21 @@
+@SuppressWarnings("unchecked")
+Collection<E> checkedCopyOf(Collection<? extends E> coll) {
+    Object[] a;
+    try {
+        E[] z = zeroLengthElementArray();
+        a = coll.toArray(z);
+        // Defend against coll violating the toArray contract
+        if (a.getClass() != z.getClass())
+            a = Arrays.copyOf(a, a.length, z.getClass());
+    } catch (ArrayStoreException ignore) {
+        // To get better and consistent diagnostics,
+        // we call typeCheck explicitly on each element.
+        // We call clone() to defend against coll retaining a
+        // reference to the returned array and storing a bad
+        // element into it after it has been type checked.
+        a = coll.toArray().clone();
+        for (Object o : a) typeCheck(o);
+    }
+    // A slight abuse of the type system, but safe here.
+    return (Collection<E>) Arrays.asList(a);
+}

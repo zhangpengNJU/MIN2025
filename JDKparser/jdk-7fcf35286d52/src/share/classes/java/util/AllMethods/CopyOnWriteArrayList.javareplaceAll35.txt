@@ -1,0 +1,19 @@
+public void replaceAll(UnaryOperator<E> operator) {
+    if (operator == null)
+        throw new NullPointerException();
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        Object[] newElements = Arrays.copyOf(elements, len);
+        for (int i = 0; i < len; ++i) {
+            @SuppressWarnings("unchecked")
+            E e = (E) elements[i];
+            newElements[i] = operator.apply(e);
+        }
+        setArray(newElements);
+    } finally {
+        lock.unlock();
+    }
+}

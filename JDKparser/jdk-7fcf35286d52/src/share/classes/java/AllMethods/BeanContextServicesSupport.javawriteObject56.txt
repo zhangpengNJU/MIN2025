@@ -1,0 +1,7 @@
+/**
+ * serialize the instance
+ */
+private synchronized void writeObject(ObjectOutputStream oos) throws IOException {
+    oos.defaultWriteObject();
+    serialize(oos, (Collection) bcsListeners);
+}

@@ -1,0 +1,17 @@
+/**
+ * Associates a string representing the specified float value with the
+ * specified key in this preference node.  The associated string is the
+ * one that would be returned if the float value were passed to
+ * {@link Float#toString(float)}.  This method is intended for use in
+ * conjunction with {@link #getFloat}.
+ *
+ * @param key key with which the string form of value is to be associated.
+ * @param value value whose string form is to be associated with key.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.
+ * @throws IllegalArgumentException if <tt>key.length()</tt> exceeds
+ *         <tt>MAX_KEY_LENGTH</tt>.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @see #getFloat(String,float)
+ */
+public abstract void putFloat(String key, float value);

@@ -1,0 +1,20 @@
+/**
+ *  Listeners registered on the Component by this Recognizer shall record
+ *  all Events that are recognized as part of the series of Events that go
+ *  to comprise a Drag and Drop initiating gesture via this API.
+ * <P>
+ *  This method is used by a <code>DragGestureRecognizer</code>
+ *  implementation to add an <code>InputEvent</code>
+ *  subclass (that it believes is one in a series
+ *  of events that comprise a Drag and Drop operation)
+ *  to the array of events that this
+ *  <code>DragGestureRecognizer</code> maintains internally.
+ *  <P>
+ *  @param awtie the <code>InputEvent</code>
+ *  to add to this <code>DragGestureRecognizer</code>'s
+ *  internal array of events. Note that <code>null</code>
+ *  is not a valid value, and will be ignored.
+ */
+protected synchronized void appendEvent(InputEvent awtie) {
+    events.add(awtie);
+}

@@ -1,0 +1,11 @@
+/**
+ * Returns the set union of two CharProperty nodes.
+ */
+private static CharProperty union(final CharProperty lhs, final CharProperty rhs) {
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return lhs.isSatisfiedBy(ch) || rhs.isSatisfiedBy(ch);
+        }
+    };
+}

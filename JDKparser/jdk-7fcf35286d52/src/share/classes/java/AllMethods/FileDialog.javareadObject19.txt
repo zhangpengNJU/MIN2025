@@ -1,0 +1,18 @@
+/**
+ * Reads the <code>ObjectInputStream</code> and performs
+ * a backwards compatibility check by converting
+ * either a <code>dir</code> or a <code>file</code>
+ * equal to an empty string to <code>null</code>.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    s.defaultReadObject();
+    // 1.1 Compatibility: "" is not converted to null in 1.1
+    if (dir != null && dir.equals("")) {
+        dir = null;
+    }
+    if (file != null && file.equals("")) {
+        file = null;
+    }
+}

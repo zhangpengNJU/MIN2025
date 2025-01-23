@@ -1,0 +1,13 @@
+// REMIND: if we want any decent performance for getScaledInstance(),
+// we should override the Image implementation of it...
+/**
+ * This method returns a {@link Graphics2D}, but is here
+ * for backwards compatibility.  {@link #createGraphics() createGraphics} is more
+ * convenient, since it is declared to return a
+ * <code>Graphics2D</code>.
+ * @return a <code>Graphics2D</code>, which can be used to draw into
+ *          this image.
+ */
+public Graphics getGraphics() {
+    return createGraphics();
+}

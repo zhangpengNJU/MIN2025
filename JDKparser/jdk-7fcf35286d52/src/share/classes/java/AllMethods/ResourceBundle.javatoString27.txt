@@ -1,0 +1,11 @@
+public String toString() {
+    String l = locale.toString();
+    if (l.length() == 0) {
+        if (locale.getVariant().length() != 0) {
+            l = "__" + locale.getVariant();
+        } else {
+            l = "\"\"";
+        }
+    }
+    return "CacheKey[" + name + ", lc=" + l + ", ldr=" + getLoader() + "(format=" + format + ")]";
+}

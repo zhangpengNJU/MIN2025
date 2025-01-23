@@ -1,0 +1,16 @@
+/**
+ * Compares two activation group descriptors for content equality.
+ *
+ * @param   obj     the Object to compare with
+ * @return  true if these Objects are equal; false otherwise.
+ * @see             java.util.Hashtable
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof ActivationGroupDesc) {
+        ActivationGroupDesc desc = (ActivationGroupDesc) obj;
+        return ((className == null ? desc.className == null : className.equals(desc.className)) && (location == null ? desc.location == null : location.equals(desc.location)) && (data == null ? desc.data == null : data.equals(desc.data)) && (env == null ? desc.env == null : env.equals(desc.env)) && (props == null ? desc.props == null : props.equals(desc.props)));
+    } else {
+        return false;
+    }
+}

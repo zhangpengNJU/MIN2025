@@ -1,0 +1,25 @@
+/**
+ * Fires a PropertyChangeEvent in response to a change in a vetoable
+ * property. The event will be delivered to all registered
+ * VetoableChangeListeners. If a VetoableChangeListener throws a
+ * PropertyVetoException, a new event is fired reverting all
+ * VetoableChangeListeners to the old value and the exception is then
+ * rethrown. No event will be delivered if oldValue and newValue are the
+ * same.
+ *
+ * @param propertyName the name of the property that has changed
+ * @param oldValue the property's previous value
+ * @param newValue the property's new value
+ * @throws java.beans.PropertyVetoException if a
+ *         <code>VetoableChangeListener</code> threw
+ *         <code>PropertyVetoException</code>
+ */
+protected void fireVetoableChange(String propertyName, Object oldValue, Object newValue) throws PropertyVetoException {
+    if (oldValue == newValue) {
+        return;
+    }
+    VetoableChangeSupport vetoableSupport = this.vetoableSupport;
+    if (vetoableSupport != null) {
+        vetoableSupport.fireVetoableChange(propertyName, oldValue, newValue);
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getMinimumSize()</code>.
+ */
+@Deprecated
+public Dimension minimumSize() {
+    /* Avoid grabbing the lock if a reasonable cached size value
+         * is available.
+         */
+    Dimension dim = minSize;
+    if (dim == null || !(isMinimumSizeSet() || isValid())) {
+        synchronized (getTreeLock()) {
+            minSize = (peer != null) ? peer.getMinimumSize() : size();
+            dim = minSize;
+        }
+    }
+    return new Dimension(dim);
+}

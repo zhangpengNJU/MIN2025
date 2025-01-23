@@ -1,0 +1,22 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getPreferredSize()</code>.
+ */
+@Deprecated
+public Dimension preferredSize() {
+    /* Avoid grabbing the lock if a reasonable cached size value
+         * is available.
+         */
+    Dimension dim = prefSize;
+    if (dim == null || !(isPreferredSizeSet() || isValid())) {
+        synchronized (getTreeLock()) {
+            prefSize = (layoutMgr != null) ? layoutMgr.preferredLayoutSize(this) : super.preferredSize();
+            dim = prefSize;
+        }
+    }
+    if (dim != null) {
+        return new Dimension(dim);
+    } else {
+        return dim;
+    }
+}

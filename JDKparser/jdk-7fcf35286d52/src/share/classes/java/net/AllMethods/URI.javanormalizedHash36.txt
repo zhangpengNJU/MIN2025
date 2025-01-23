@@ -1,0 +1,15 @@
+private static int normalizedHash(int hash, String s) {
+    int h = 0;
+    for (int index = 0; index < s.length(); index++) {
+        char ch = s.charAt(index);
+        h = 31 * h + ch;
+        if (ch == '%') {
+            /*
+                 * Process the next two encoded characters
+                 */
+            for (int i = index + 1; i < index + 3; i++) h = 31 * h + toUpper(s.charAt(i));
+            index += 2;
+        }
+    }
+    return hash * 127 + h;
+}

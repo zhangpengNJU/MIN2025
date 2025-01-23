@@ -1,0 +1,20 @@
+/**
+ * Compares the equality of two Collators.
+ * @param that the Collator to be compared with this.
+ * @return true if this Collator is the same as that Collator;
+ * false otherwise.
+ */
+@Override
+public boolean equals(Object that) {
+    if (this == that) {
+        return true;
+    }
+    if (that == null) {
+        return false;
+    }
+    if (getClass() != that.getClass()) {
+        return false;
+    }
+    Collator other = (Collator) that;
+    return ((strength == other.strength) && (decmp == other.decmp));
+}

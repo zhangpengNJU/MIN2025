@@ -1,0 +1,61 @@
+/**
+ * Reads from the current ZIP entry into an array of bytes.
+ * If <code>len</code> is not zero, the method
+ * blocks until some input is available; otherwise, no
+ * bytes are read and <code>0</code> is returned.
+ * @param b the buffer into which the data is read
+ * @param off the start offset in the destination array <code>b</code>
+ * @param len the maximum number of bytes read
+ * @return the actual number of bytes read, or -1 if the end of the
+ *         entry is reached
+ * @exception  NullPointerException if <code>b</code> is <code>null</code>.
+ * @exception  IndexOutOfBoundsException if <code>off</code> is negative,
+ * <code>len</code> is negative, or <code>len</code> is greater than
+ * <code>b.length - off</code>
+ * @exception ZipException if a ZIP file error has occurred
+ * @exception IOException if an I/O error has occurred
+ */
+public int read(byte[] b, int off, int len) throws IOException {
+    ensureOpen();
+    if (off < 0 || len < 0 || off > b.length - len) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0) {
+        return 0;
+    }
+    if (entry == null) {
+        return -1;
+    }
+    switch(entry.method) {
+        case DEFLATED:
+            len = super.read(b, off, len);
+            if (len == -1) {
+                readEnd(entry);
+                entryEOF = true;
+                entry = null;
+            } else {
+                crc.update(b, off, len);
+            }
+            return len;
+        case STORED:
+            if (remaining <= 0) {
+                entryEOF = true;
+                entry = null;
+                return -1;
+            }
+            if (len > remaining) {
+                len = (int) remaining;
+            }
+            len = in.read(b, off, len);
+            if (len == -1) {
+                throw new ZipException("unexpected EOF");
+            }
+            crc.update(b, off, len);
+            remaining -= len;
+            if (remaining == 0 && entry.crc != crc.getValue()) {
+                throw new ZipException("invalid entry CRC (expected 0x" + Long.toHexString(entry.crc) + " but got 0x" + Long.toHexString(crc.getValue()) + ")");
+            }
+            return len;
+        default:
+            throw new ZipException("invalid compression method");
+    }
+}

@@ -1,0 +1,31 @@
+/**
+ * Sets the menu bar for this frame to the specified menu bar.
+ * @param     mb the menu bar being set.
+ *            If this parameter is <code>null</code> then any
+ *            existing menu bar on this frame is removed.
+ * @see       #getMenuBar
+ */
+public void setMenuBar(MenuBar mb) {
+    synchronized (getTreeLock()) {
+        if (menuBar == mb) {
+            return;
+        }
+        if ((mb != null) && (mb.parent != null)) {
+            mb.parent.remove(mb);
+        }
+        if (menuBar != null) {
+            remove(menuBar);
+        }
+        menuBar = mb;
+        if (menuBar != null) {
+            menuBar.parent = this;
+            FramePeer peer = (FramePeer) this.peer;
+            if (peer != null) {
+                mbManagement = true;
+                menuBar.addNotify();
+                invalidateIfValid();
+                peer.setMenuBar(menuBar);
+            }
+        }
+    }
+}

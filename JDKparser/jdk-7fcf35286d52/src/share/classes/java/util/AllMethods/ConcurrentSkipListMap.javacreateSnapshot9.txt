@@ -1,0 +1,13 @@
+/**
+ * Creates and returns a new SimpleImmutableEntry holding current
+ * mapping if this node holds a valid value, else null.
+ * @return new entry or null
+ */
+AbstractMap.SimpleImmutableEntry<K, V> createSnapshot() {
+    Object v = value;
+    if (v == null || v == this || v == BASE_HEADER)
+        return null;
+    @SuppressWarnings("unchecked")
+    V vv = (V) v;
+    return new AbstractMap.SimpleImmutableEntry<K, V>(key, vv);
+}

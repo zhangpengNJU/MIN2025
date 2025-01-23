@@ -1,0 +1,18 @@
+/**
+ * Creates a new <code>Font</code> object by replicating this
+ * <code>Font</code> object and applying a new style and transform.
+ * @param style the style for the new <code>Font</code>
+ * @param trans the <code>AffineTransform</code> associated with the
+ * new <code>Font</code>
+ * @return a new <code>Font</code> object.
+ * @throws IllegalArgumentException if <code>trans</code> is
+ *         <code>null</code>
+ * @since 1.2
+ */
+public Font deriveFont(int style, AffineTransform trans) {
+    AttributeValues newValues = getAttributeValues().clone();
+    int oldStyle = (this.style != style) ? this.style : -1;
+    applyStyle(style, newValues);
+    applyTransform(trans, newValues);
+    return new Font(newValues, null, oldStyle, createdFont, font2DHandle);
+}

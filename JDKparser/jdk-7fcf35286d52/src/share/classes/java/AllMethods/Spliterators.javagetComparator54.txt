@@ -1,0 +1,6 @@
+@Override
+public Comparator<? super Integer> getComparator() {
+    if (hasCharacteristics(Spliterator.SORTED))
+        return null;
+    throw new IllegalStateException();
+}

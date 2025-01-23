@@ -1,0 +1,10 @@
+private static int version(ZipEntry e) throws ZipException {
+    switch(e.method) {
+        case DEFLATED:
+            return 20;
+        case STORED:
+            return 10;
+        default:
+            throw new ZipException("unsupported compression method");
+    }
+}

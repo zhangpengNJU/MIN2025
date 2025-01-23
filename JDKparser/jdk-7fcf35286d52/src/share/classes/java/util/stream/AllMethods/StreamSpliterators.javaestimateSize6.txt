@@ -1,0 +1,8 @@
+@Override
+public final long estimateSize() {
+    init();
+    // Use the estimate of the wrapped spliterator
+    // Note this may not be accurate if there are filter/flatMap
+    // operations filtering or adding elements to the stream
+    return spliterator.estimateSize();
+}

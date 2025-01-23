@@ -1,0 +1,26 @@
+/**
+ * Returns the bounds of the splash screen window as a {@link Rectangle}.
+ * This may be useful if, for example, you want to replace the splash
+ * screen with your window at the same location.
+ * <p>
+ * You cannot control the size or position of the splash screen.
+ * The splash screen size is adjusted automatically when the image changes.
+ * <p>
+ * The image may contain transparent areas, and thus the reported bounds may
+ * be larger than the visible splash screen image on the screen.
+ *
+ * @return a {@code Rectangle} containing the splash screen bounds
+ * @throws IllegalStateException if the splash screen has already been closed
+ */
+public Rectangle getBounds() throws IllegalStateException {
+    synchronized (SplashScreen.class) {
+        checkVisible();
+        float scale = _getScaleFactor(splashPtr);
+        Rectangle bounds = _getBounds(splashPtr);
+        assert scale > 0;
+        if (scale > 0 && scale != 1) {
+            bounds.setSize((int) (bounds.getWidth() / scale), (int) (bounds.getHeight() / scale));
+        }
+        return bounds;
+    }
+}

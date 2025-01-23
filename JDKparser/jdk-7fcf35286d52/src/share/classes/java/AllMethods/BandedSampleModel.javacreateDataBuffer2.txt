@@ -1,0 +1,34 @@
+/**
+ * Creates a DataBuffer that corresponds to this BandedSampleModel,
+ * The DataBuffer's data type, number of banks, and size
+ * will be consistent with this BandedSampleModel.
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported types.
+ */
+public DataBuffer createDataBuffer() {
+    DataBuffer dataBuffer = null;
+    int size = scanlineStride * height;
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            dataBuffer = new DataBufferByte(size, numBanks);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            dataBuffer = new DataBufferUShort(size, numBanks);
+            break;
+        case DataBuffer.TYPE_SHORT:
+            dataBuffer = new DataBufferShort(size, numBanks);
+            break;
+        case DataBuffer.TYPE_INT:
+            dataBuffer = new DataBufferInt(size, numBanks);
+            break;
+        case DataBuffer.TYPE_FLOAT:
+            dataBuffer = new DataBufferFloat(size, numBanks);
+            break;
+        case DataBuffer.TYPE_DOUBLE:
+            dataBuffer = new DataBufferDouble(size, numBanks);
+            break;
+        default:
+            throw new IllegalArgumentException("dataType is not one " + "of the supported types.");
+    }
+    return dataBuffer;
+}

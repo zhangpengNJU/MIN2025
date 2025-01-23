@@ -1,0 +1,6 @@
+private static int getPrimeSearchLen(int bitLength) {
+    if (bitLength > PRIME_SEARCH_BIT_LENGTH_LIMIT + 1) {
+        throw new ArithmeticException("Prime search implementation restriction on bitLength");
+    }
+    return bitLength / 20 * 64;
+}

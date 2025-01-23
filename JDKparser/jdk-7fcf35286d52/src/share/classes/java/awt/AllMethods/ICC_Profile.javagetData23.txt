@@ -1,0 +1,16 @@
+static byte[] getData(Profile p, int tagSignature) {
+    int tagSize;
+    byte[] tagData;
+    try {
+        PCMM mdl = CMSManager.getModule();
+        /* get the number of bytes needed for this tag */
+        tagSize = mdl.getTagSize(p, tagSignature);
+        tagData = new byte[tagSize];
+        /* get an array for the tag */
+        /* get the tag's data */
+        mdl.getTagData(p, tagSignature, tagData);
+    } catch (CMMException c) {
+        tagData = null;
+    }
+    return tagData;
+}

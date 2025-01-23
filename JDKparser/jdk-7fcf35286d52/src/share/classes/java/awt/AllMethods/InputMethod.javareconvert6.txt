@@ -1,0 +1,19 @@
+/**
+ * Starts the reconversion operation. The input method obtains the
+ * text to be reconverted from the current client component using the
+ * {@link java.awt.im.InputMethodRequests#getSelectedText InputMethodRequests.getSelectedText}
+ * method. It can use other <code>InputMethodRequests</code>
+ * methods to request additional information required for the
+ * reconversion operation. The composed and committed text
+ * produced by the operation is sent to the client component as a
+ * sequence of <code>InputMethodEvent</code>s. If the given text
+ * cannot be reconverted, the same text should be sent to the
+ * client component as committed text.
+ * <p>
+ * This method is called by
+ * {@link java.awt.im.InputContext#reconvert() InputContext.reconvert}.
+ *
+ * @throws UnsupportedOperationException if the input method does not
+ * support the reconversion operation.
+ */
+public void reconvert();

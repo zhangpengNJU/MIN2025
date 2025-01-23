@@ -1,0 +1,10 @@
+protected static void save(ObjectOutputStream s, String k, EventListener l) throws IOException {
+    if (l == null) {
+        return;
+    } else if (l instanceof AWTEventMulticaster) {
+        ((AWTEventMulticaster) l).saveInternal(s, k);
+    } else if (l instanceof Serializable) {
+        s.writeObject(k);
+        s.writeObject(l);
+    }
+}

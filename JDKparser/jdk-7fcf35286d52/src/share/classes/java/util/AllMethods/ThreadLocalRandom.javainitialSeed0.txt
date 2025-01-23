@@ -1,0 +1,10 @@
+private static long initialSeed() {
+    String sec = VM.getSavedProperty("java.util.secureRandomSeed");
+    if (Boolean.parseBoolean(sec)) {
+        byte[] seedBytes = java.security.SecureRandom.getSeed(8);
+        long s = (long) (seedBytes[0]) & 0xffL;
+        for (int i = 1; i < 8; ++i) s = (s << 8) | ((long) (seedBytes[i]) & 0xffL);
+        return s;
+    }
+    return (mix64(System.currentTimeMillis()) ^ mix64(System.nanoTime()));
+}

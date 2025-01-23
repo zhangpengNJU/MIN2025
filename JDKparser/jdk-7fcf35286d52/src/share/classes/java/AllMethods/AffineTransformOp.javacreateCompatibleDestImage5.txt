@@ -1,0 +1,43 @@
+/**
+ * Creates a zeroed destination image with the correct size and number of
+ * bands.  A <CODE>RasterFormatException</CODE> may be thrown if the
+ * transformed width or height is equal to 0.
+ * <p>
+ * If <CODE>destCM</CODE> is null,
+ * an appropriate <CODE>ColorModel</CODE> is used; this
+ * <CODE>ColorModel</CODE> may have
+ * an alpha channel even if the source <CODE>ColorModel</CODE> is opaque.
+ *
+ * @param src  The <CODE>BufferedImage</CODE> to be transformed.
+ * @param destCM  <CODE>ColorModel</CODE> of the destination.  If null,
+ * an appropriate <CODE>ColorModel</CODE> is used.
+ *
+ * @return The zeroed destination image.
+ */
+public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
+    BufferedImage image;
+    Rectangle r = getBounds2D(src).getBounds();
+    // If r.x (or r.y) is < 0, then we want to only create an image
+    // that is in the positive range.
+    // If r.x (or r.y) is > 0, then we need to create an image that
+    // includes the translation.
+    int w = r.x + r.width;
+    int h = r.y + r.height;
+    if (w <= 0) {
+        throw new RasterFormatException("Transformed width (" + w + ") is less than or equal to 0.");
+    }
+    if (h <= 0) {
+        throw new RasterFormatException("Transformed height (" + h + ") is less than or equal to 0.");
+    }
+    if (destCM == null) {
+        ColorModel cm = src.getColorModel();
+        if (interpolationType != TYPE_NEAREST_NEIGHBOR && (cm instanceof IndexColorModel || cm.getTransparency() == Transparency.OPAQUE)) {
+            image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        } else {
+            image = new BufferedImage(cm, src.getRaster().createCompatibleWritableRaster(w, h), cm.isAlphaPremultiplied(), null);
+        }
+    } else {
+        image = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(w, h), destCM.isAlphaPremultiplied(), null);
+    }
+    return image;
+}

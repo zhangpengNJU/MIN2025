@@ -1,0 +1,27 @@
+/**
+ * Returns a gamma value representing a tone reproduction
+ * curve (TRC).  If the profile represents the TRC as a table rather
+ * than a single gamma value, then an exception is thrown.  In this
+ * case the actual table can be obtained via getTRC().
+ * theTagSignature should be one of icSigGrayTRCTag, icSigRedTRCTag,
+ * icSigGreenTRCTag, or icSigBlueTRCTag.
+ * @return the gamma value as a float.
+ * @exception ProfileDataException if the profile does not specify
+ *            the TRC as a single gamma value.
+ */
+float getGamma(int theTagSignature) {
+    byte[] theTRCData;
+    float theGamma;
+    int theU8Fixed8;
+    theTRCData = getData(theTagSignature);
+    /* get the TRC */
+    /* getData will activate deferred
+                                                  profiles if necessary */
+    if (intFromBigEndian(theTRCData, icCurveCount) != 1) {
+        throw new ProfileDataException("TRC is not a gamma");
+    }
+    /* convert u8Fixed8 to float */
+    theU8Fixed8 = (shortFromBigEndian(theTRCData, icCurveData)) & 0xffff;
+    theGamma = ((float) theU8Fixed8) / 256.0f;
+    return theGamma;
+}

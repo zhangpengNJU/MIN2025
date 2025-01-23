@@ -1,0 +1,32 @@
+@Override
+int setValue(DateTimeParseContext context, long value, int errorPos, int successPos) {
+    int baseValue = this.baseValue;
+    if (baseDate != null) {
+        Chronology chrono = context.getEffectiveChronology();
+        baseValue = chrono.date(baseDate).get(field);
+        // In case the Chronology is changed later, add a callback when/if it changes
+        final long initialValue = value;
+        context.addChronoChangedListener((_unused) -> {
+            /* Repeat the set of the field using the current Chronology
+                             * The success/error position is ignored because the value is
+                             * intentionally being overwritten.
+                             */
+            setValue(context, initialValue, errorPos, successPos);
+        });
+    }
+    int parseLen = successPos - errorPos;
+    if (parseLen == minWidth && value >= 0) {
+        long range = EXCEED_POINTS[minWidth];
+        long lastPart = baseValue % range;
+        long basePart = baseValue - lastPart;
+        if (baseValue > 0) {
+            value = basePart + value;
+        } else {
+            value = basePart - value;
+        }
+        if (value < baseValue) {
+            value += range;
+        }
+    }
+    return context.setParsedField(field, value, errorPos, successPos);
+}

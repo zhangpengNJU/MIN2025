@@ -1,0 +1,25 @@
+/**
+ * Retrieves the value of the designated column in the current row
+ * of this <code>ResultSet</code> object as a stream of
+ * ASCII characters. The value can then be read in chunks from the
+ * stream. This method is particularly
+ * suitable for retrieving large <code>LONGVARCHAR</code> values.
+ * The JDBC driver will
+ * do any necessary conversion from the database format into ASCII.
+ *
+ * <P><B>Note:</B> All the data in the returned stream must be
+ * read prior to getting the value of any other column. The next
+ * call to a getter method implicitly closes the stream. Also, a
+ * stream may return <code>0</code> when the method <code>available</code>
+ * is called whether there is data available or not.
+ *
+ * @param columnLabel the label for the column specified with the SQL AS clause.  If the SQL AS clause was not specified, then the label is the name of the column
+ * @return a Java input stream that delivers the database column value
+ * as a stream of one-byte ASCII characters.
+ * If the value is SQL <code>NULL</code>,
+ * the value returned is <code>null</code>.
+ * @exception SQLException if the columnLabel is not valid;
+ * if a database access error occurs or this method is
+ *            called on a closed result set
+ */
+java.io.InputStream getAsciiStream(String columnLabel) throws SQLException;

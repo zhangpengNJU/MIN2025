@@ -1,0 +1,90 @@
+/**
+ * Parses a string and returns an <code>AWTKeyStroke</code>.
+ * The string must have the following syntax:
+ * <pre>
+ *    &lt;modifiers&gt;* (&lt;typedID&gt; | &lt;pressedReleasedID&gt;)
+ *
+ *    modifiers := shift | control | ctrl | meta | alt | altGraph
+ *    typedID := typed &lt;typedKey&gt;
+ *    typedKey := string of length 1 giving Unicode character.
+ *    pressedReleasedID := (pressed | released) key
+ *    key := KeyEvent key code name, i.e. the name following "VK_".
+ * </pre>
+ * If typed, pressed or released is not specified, pressed is assumed. Here
+ * are some examples:
+ * <pre>
+ *     "INSERT" =&gt; getAWTKeyStroke(KeyEvent.VK_INSERT, 0);
+ *     "control DELETE" =&gt; getAWTKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_MASK);
+ *     "alt shift X" =&gt; getAWTKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK);
+ *     "alt shift released X" =&gt; getAWTKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK, true);
+ *     "typed a" =&gt; getAWTKeyStroke('a');
+ * </pre>
+ *
+ * @param s a String formatted as described above
+ * @return an <code>AWTKeyStroke</code> object for that String
+ * @throws IllegalArgumentException if <code>s</code> is <code>null</code>,
+ *        or is formatted incorrectly
+ */
+public static AWTKeyStroke getAWTKeyStroke(String s) {
+    if (s == null) {
+        throw new IllegalArgumentException("String cannot be null");
+    }
+    final String errmsg = "String formatted incorrectly";
+    StringTokenizer st = new StringTokenizer(s, " ");
+    int mask = 0;
+    boolean released = false;
+    boolean typed = false;
+    boolean pressed = false;
+    synchronized (AWTKeyStroke.class) {
+        if (modifierKeywords == null) {
+            Map<String, Integer> uninitializedMap = new HashMap<>(8, 1.0f);
+            uninitializedMap.put("shift", Integer.valueOf(InputEvent.SHIFT_DOWN_MASK | InputEvent.SHIFT_MASK));
+            uninitializedMap.put("control", Integer.valueOf(InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK));
+            uninitializedMap.put("ctrl", Integer.valueOf(InputEvent.CTRL_DOWN_MASK | InputEvent.CTRL_MASK));
+            uninitializedMap.put("meta", Integer.valueOf(InputEvent.META_DOWN_MASK | InputEvent.META_MASK));
+            uninitializedMap.put("alt", Integer.valueOf(InputEvent.ALT_DOWN_MASK | InputEvent.ALT_MASK));
+            uninitializedMap.put("altGraph", Integer.valueOf(InputEvent.ALT_GRAPH_DOWN_MASK | InputEvent.ALT_GRAPH_MASK));
+            uninitializedMap.put("button1", Integer.valueOf(InputEvent.BUTTON1_DOWN_MASK));
+            uninitializedMap.put("button2", Integer.valueOf(InputEvent.BUTTON2_DOWN_MASK));
+            uninitializedMap.put("button3", Integer.valueOf(InputEvent.BUTTON3_DOWN_MASK));
+            modifierKeywords = Collections.synchronizedMap(uninitializedMap);
+        }
+    }
+    int count = st.countTokens();
+    for (int i = 1; i <= count; i++) {
+        String token = st.nextToken();
+        if (typed) {
+            if (token.length() != 1 || i != count) {
+                throw new IllegalArgumentException(errmsg);
+            }
+            return getCachedStroke(token.charAt(0), KeyEvent.VK_UNDEFINED, mask, false);
+        }
+        if (pressed || released || i == count) {
+            if (i != count) {
+                throw new IllegalArgumentException(errmsg);
+            }
+            String keyCodeName = "VK_" + token;
+            int keyCode = getVKValue(keyCodeName);
+            return getCachedStroke(KeyEvent.CHAR_UNDEFINED, keyCode, mask, released);
+        }
+        if (token.equals("released")) {
+            released = true;
+            continue;
+        }
+        if (token.equals("pressed")) {
+            pressed = true;
+            continue;
+        }
+        if (token.equals("typed")) {
+            typed = true;
+            continue;
+        }
+        Integer tokenMask = (Integer) modifierKeywords.get(token);
+        if (tokenMask != null) {
+            mask |= tokenMask.intValue();
+        } else {
+            throw new IllegalArgumentException(errmsg);
+        }
+    }
+    throw new IllegalArgumentException(errmsg);
+}

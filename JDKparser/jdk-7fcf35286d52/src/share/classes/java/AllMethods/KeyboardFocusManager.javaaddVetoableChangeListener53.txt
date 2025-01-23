@@ -1,0 +1,28 @@
+/**
+ * Adds a VetoableChangeListener to the listener list for a specific
+ * property. The specified property may be user-defined, or one of the
+ * following:
+ * <ul>
+ *    <li>the focus owner ("focusOwner")</li>
+ *    <li>the permanent focus owner ("permanentFocusOwner")</li>
+ *    <li>the focused Window ("focusedWindow")</li>
+ *    <li>the active Window ("activeWindow")</li>
+ * </ul>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param propertyName one of the property names listed above
+ * @param listener the VetoableChangeListener to be added
+ * @see #addVetoableChangeListener(java.beans.VetoableChangeListener)
+ * @see #removeVetoableChangeListener
+ * @see #getVetoableChangeListeners
+ */
+public void addVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
+    if (listener != null) {
+        synchronized (this) {
+            if (vetoableSupport == null) {
+                vetoableSupport = new VetoableChangeSupport(this);
+            }
+            vetoableSupport.addVetoableChangeListener(propertyName, listener);
+        }
+    }
+}

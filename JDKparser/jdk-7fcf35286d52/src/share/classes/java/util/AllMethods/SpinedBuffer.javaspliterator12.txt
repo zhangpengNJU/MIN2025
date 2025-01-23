@@ -1,0 +1,113 @@
+/**
+ * Return a {@link Spliterator} describing the contents of the buffer.
+ */
+public Spliterator<E> spliterator() {
+    class Splitr implements Spliterator<E> {
+
+        // The current spine index
+        int splSpineIndex;
+
+        // Last spine index
+        final int lastSpineIndex;
+
+        // The current element index into the current spine
+        int splElementIndex;
+
+        // Last spine's last element index + 1
+        final int lastSpineElementFence;
+
+        // When splSpineIndex >= lastSpineIndex and
+        // splElementIndex >= lastSpineElementFence then
+        // this spliterator is fully traversed
+        // tryAdvance can set splSpineIndex > spineIndex if the last spine is full
+        // The current spine array
+        E[] splChunk;
+
+        Splitr(int firstSpineIndex, int lastSpineIndex, int firstSpineElementIndex, int lastSpineElementFence) {
+            this.splSpineIndex = firstSpineIndex;
+            this.lastSpineIndex = lastSpineIndex;
+            this.splElementIndex = firstSpineElementIndex;
+            this.lastSpineElementFence = lastSpineElementFence;
+            assert spine != null || firstSpineIndex == 0 && lastSpineIndex == 0;
+            splChunk = (spine == null) ? curChunk : spine[firstSpineIndex];
+        }
+
+        @Override
+        public long estimateSize() {
+            return (splSpineIndex == lastSpineIndex) ? (long) lastSpineElementFence - splElementIndex : // # of elements prior to end -
+            priorElementCount[lastSpineIndex] + lastSpineElementFence - // # of elements prior to current
+            priorElementCount[splSpineIndex] - splElementIndex;
+        }
+
+        @Override
+        public int characteristics() {
+            return SPLITERATOR_CHARACTERISTICS;
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super E> consumer) {
+            Objects.requireNonNull(consumer);
+            if (splSpineIndex < lastSpineIndex || (splSpineIndex == lastSpineIndex && splElementIndex < lastSpineElementFence)) {
+                consumer.accept(splChunk[splElementIndex++]);
+                if (splElementIndex == splChunk.length) {
+                    splElementIndex = 0;
+                    ++splSpineIndex;
+                    if (spine != null && splSpineIndex <= lastSpineIndex)
+                        splChunk = spine[splSpineIndex];
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> consumer) {
+            Objects.requireNonNull(consumer);
+            if (splSpineIndex < lastSpineIndex || (splSpineIndex == lastSpineIndex && splElementIndex < lastSpineElementFence)) {
+                int i = splElementIndex;
+                // completed chunks, if any
+                for (int sp = splSpineIndex; sp < lastSpineIndex; sp++) {
+                    E[] chunk = spine[sp];
+                    for (; i < chunk.length; i++) {
+                        consumer.accept(chunk[i]);
+                    }
+                    i = 0;
+                }
+                // last (or current uncompleted) chunk
+                E[] chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
+                int hElementIndex = lastSpineElementFence;
+                for (; i < hElementIndex; i++) {
+                    consumer.accept(chunk[i]);
+                }
+                // mark consumed
+                splSpineIndex = lastSpineIndex;
+                splElementIndex = lastSpineElementFence;
+            }
+        }
+
+        @Override
+        public Spliterator<E> trySplit() {
+            if (splSpineIndex < lastSpineIndex) {
+                // split just before last chunk (if it is full this means 50:50 split)
+                Spliterator<E> ret = new Splitr(splSpineIndex, lastSpineIndex - 1, splElementIndex, spine[lastSpineIndex - 1].length);
+                // position to start of last chunk
+                splSpineIndex = lastSpineIndex;
+                splElementIndex = 0;
+                splChunk = spine[splSpineIndex];
+                return ret;
+            } else if (splSpineIndex == lastSpineIndex) {
+                int t = (lastSpineElementFence - splElementIndex) / 2;
+                if (t == 0)
+                    return null;
+                else {
+                    Spliterator<E> ret = Arrays.spliterator(splChunk, splElementIndex, splElementIndex + t);
+                    splElementIndex += t;
+                    return ret;
+                }
+            } else {
+                return null;
+            }
+        }
+    }
+    return new Splitr(0, spineIndex, 0, elementIndex);
+}

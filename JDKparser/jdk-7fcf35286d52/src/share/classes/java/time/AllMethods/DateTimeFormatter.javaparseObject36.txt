@@ -1,0 +1,14 @@
+@Override
+public Object parseObject(String text) throws ParseException {
+    Objects.requireNonNull(text, "text");
+    try {
+        if (parseType == null) {
+            return formatter.parseResolved0(text, null);
+        }
+        return formatter.parse(text, parseType);
+    } catch (DateTimeParseException ex) {
+        throw new ParseException(ex.getMessage(), ex.getErrorIndex());
+    } catch (RuntimeException ex) {
+        throw (ParseException) new ParseException(ex.getMessage(), 0).initCause(ex);
+    }
+}

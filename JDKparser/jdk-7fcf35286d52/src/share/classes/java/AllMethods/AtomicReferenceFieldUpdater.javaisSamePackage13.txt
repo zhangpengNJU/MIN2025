@@ -1,0 +1,7 @@
+/**
+ * Returns true if the two classes have the same class loader and
+ * package qualifier
+ */
+private static boolean isSamePackage(Class<?> class1, Class<?> class2) {
+    return class1.getClassLoader() == class2.getClassLoader() && Objects.equals(getPackageName(class1), getPackageName(class2));
+}

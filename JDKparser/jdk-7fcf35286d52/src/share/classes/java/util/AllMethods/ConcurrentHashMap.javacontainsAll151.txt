@@ -1,0 +1,9 @@
+public final boolean containsAll(Collection<?> c) {
+    if (c != this) {
+        for (Object e : c) {
+            if (e == null || !contains(e))
+                return false;
+        }
+    }
+    return true;
+}

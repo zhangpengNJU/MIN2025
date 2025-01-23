@@ -1,0 +1,16 @@
+/**
+ * Returns an <code>Enumeration</code> of the keys contained in
+ * this <code>ResourceBundle</code> and its parent bundles.
+ *
+ * @return an <code>Enumeration</code> of the keys contained in
+ *         this <code>ResourceBundle</code> and its parent bundles.
+ * @see #keySet()
+ */
+public Enumeration<String> getKeys() {
+    // lazily load the lookup hashtable.
+    if (lookup == null) {
+        loadLookup();
+    }
+    ResourceBundle parent = this.parent;
+    return new ResourceBundleEnumeration(lookup.keySet(), (parent != null) ? parent.getKeys() : null);
+}

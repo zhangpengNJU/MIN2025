@@ -1,0 +1,6 @@
+private Window getOwningFrameDialog(Window window) {
+    while (window != null && !(window instanceof Frame || window instanceof Dialog)) {
+        window = (Window) window.getParent();
+    }
+    return window;
+}

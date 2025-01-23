@@ -1,0 +1,16 @@
+/**
+ * Moves the focus down one focus traversal cycle. If aContainer is a focus
+ * cycle root, then the focus owner is set to aContainer's default
+ * Component to focus, and the current focus cycle root is set to
+ * aContainer. If aContainer is not a focus cycle root, then no focus
+ * traversal operation occurs.
+ *
+ * @param aContainer the Container that is the basis for the focus
+ *        traversal operation
+ * @see Container#transferFocusDownCycle
+ */
+public void downFocusCycle(Container aContainer) {
+    if (aContainer != null && aContainer.isFocusCycleRoot()) {
+        aContainer.transferFocusDownCycle();
+    }
+}

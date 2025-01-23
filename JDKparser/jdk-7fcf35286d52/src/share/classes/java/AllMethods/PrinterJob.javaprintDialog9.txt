@@ -1,0 +1,20 @@
+/**
+ * Presents a dialog to the user for changing the properties of
+ * the print job.
+ * This method will display a native dialog if a native print
+ * service is selected, and user choice of printers will be restricted
+ * to these native print services.
+ * To present the cross platform print dialog for all services,
+ * including native ones instead use
+ * <code>printDialog(PrintRequestAttributeSet)</code>.
+ * <p>
+ * PrinterJob implementations which can use PrintService's will update
+ * the PrintService for this PrinterJob to reflect the new service
+ * selected by the user.
+ * @return <code>true</code> if the user does not cancel the dialog;
+ * <code>false</code> otherwise.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true.
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+public abstract boolean printDialog() throws HeadlessException;

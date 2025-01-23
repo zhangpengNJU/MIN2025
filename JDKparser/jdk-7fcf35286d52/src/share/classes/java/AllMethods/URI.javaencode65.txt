@@ -1,0 +1,31 @@
+// Encodes all characters >= \u0080 into escaped, normalized UTF-8 octets,
+// assuming that s is otherwise legal
+// 
+private static String encode(String s) {
+    int n = s.length();
+    if (n == 0)
+        return s;
+    // First check whether we actually need to encode
+    for (int i = 0; ; ) {
+        if (s.charAt(i) >= '\u0080')
+            break;
+        if (++i >= n)
+            return s;
+    }
+    String ns = Normalizer.normalize(s, Normalizer.Form.NFC);
+    ByteBuffer bb = null;
+    try {
+        bb = ThreadLocalCoders.encoderFor("UTF-8").encode(CharBuffer.wrap(ns));
+    } catch (CharacterCodingException x) {
+        assert false;
+    }
+    StringBuffer sb = new StringBuffer();
+    while (bb.hasRemaining()) {
+        int b = bb.get() & 0xff;
+        if (b >= 0x80)
+            appendEscape(sb, (byte) b);
+        else
+            sb.append((char) b);
+    }
+    return sb.toString();
+}

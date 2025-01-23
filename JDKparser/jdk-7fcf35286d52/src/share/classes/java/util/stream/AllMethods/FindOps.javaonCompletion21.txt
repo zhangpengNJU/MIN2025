@@ -1,0 +1,14 @@
+@Override
+public void onCompletion(CountedCompleter<?> caller) {
+    if (op.mustFindFirst) {
+        for (FindTask<P_IN, P_OUT, O> child = leftChild, p = null; child != p; p = child, child = rightChild) {
+            O result = child.getLocalResult();
+            if (result != null && op.presentPredicate.test(result)) {
+                setLocalResult(result);
+                foundResult(result);
+                break;
+            }
+        }
+    }
+    super.onCompletion(caller);
+}

@@ -1,0 +1,18 @@
+void processEvent(AWTEvent e) {
+    if (e instanceof MouseEvent) {
+        switch(e.getID()) {
+            case MouseEvent.MOUSE_PRESSED:
+            case MouseEvent.MOUSE_RELEASED:
+            case MouseEvent.MOUSE_CLICKED:
+                processMouseEvent((MouseEvent) e);
+                break;
+            case MouseEvent.MOUSE_MOVED:
+                processMouseMotionEvent((MouseEvent) e);
+                break;
+            default:
+                return;
+        }
+    } else if (e instanceof ActionEvent) {
+        processActionEvent((ActionEvent) e);
+    }
+}

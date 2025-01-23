@@ -1,0 +1,22 @@
+/**
+ * Removes and executes all local tasks. If LIFO, invokes
+ * pollAndExecAll. Otherwise implements a specialized pop loop
+ * to exec until empty.
+ */
+final void execLocalTasks() {
+    int b = base, m, s;
+    ForkJoinTask<?>[] a = array;
+    if (b - (s = top - 1) <= 0 && a != null && (m = a.length - 1) >= 0) {
+        if ((config & FIFO_QUEUE) == 0) {
+            for (ForkJoinTask<?> t; ; ) {
+                if ((t = (ForkJoinTask<?>) U.getAndSetObject(a, ((m & s) << ASHIFT) + ABASE, null)) == null)
+                    break;
+                U.putOrderedInt(this, QTOP, s);
+                t.doExec();
+                if (base - (s = top - 1) > 0)
+                    break;
+            }
+        } else
+            pollAndExecAll();
+    }
+}

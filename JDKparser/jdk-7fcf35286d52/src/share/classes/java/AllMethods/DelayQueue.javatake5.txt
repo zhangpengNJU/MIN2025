@@ -1,0 +1,41 @@
+/**
+ * Retrieves and removes the head of this queue, waiting if necessary
+ * until an element with an expired delay is available on this queue.
+ *
+ * @return the head of this queue
+ * @throws InterruptedException {@inheritDoc}
+ */
+public E take() throws InterruptedException {
+    final ReentrantLock lock = this.lock;
+    lock.lockInterruptibly();
+    try {
+        for (; ; ) {
+            E first = q.peek();
+            if (first == null)
+                available.await();
+            else {
+                long delay = first.getDelay(NANOSECONDS);
+                if (delay <= 0)
+                    return q.poll();
+                // don't retain ref while waiting
+                first = null;
+                if (leader != null)
+                    available.await();
+                else {
+                    Thread thisThread = Thread.currentThread();
+                    leader = thisThread;
+                    try {
+                        available.awaitNanos(delay);
+                    } finally {
+                        if (leader == thisThread)
+                            leader = null;
+                    }
+                }
+            }
+        }
+    } finally {
+        if (leader == null && q.peek() != null)
+            available.signal();
+        lock.unlock();
+    }
+}

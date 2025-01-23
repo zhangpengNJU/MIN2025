@@ -1,0 +1,33 @@
+/**
+ * Reads characters into a portion of an array, reading from the underlying
+ * stream if necessary.
+ */
+private int read1(char[] cbuf, int off, int len) throws IOException {
+    if (nextChar >= nChars) {
+        /* If the requested length is at least as large as the buffer, and
+               if there is no mark/reset activity, and if line feeds are not
+               being skipped, do not bother to copy the characters into the
+               local buffer.  In this way buffered streams will cascade
+               harmlessly. */
+        if (len >= cb.length && markedChar <= UNMARKED && !skipLF) {
+            return in.read(cbuf, off, len);
+        }
+        fill();
+    }
+    if (nextChar >= nChars)
+        return -1;
+    if (skipLF) {
+        skipLF = false;
+        if (cb[nextChar] == '\n') {
+            nextChar++;
+            if (nextChar >= nChars)
+                fill();
+            if (nextChar >= nChars)
+                return -1;
+        }
+    }
+    int n = Math.min(len, nChars - nextChar);
+    System.arraycopy(cb, nextChar, cbuf, off, n);
+    nextChar += n;
+    return n;
+}

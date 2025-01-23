@@ -1,0 +1,41 @@
+private void addMethod(MethodDescriptor md) {
+    // We have to be careful here to distinguish method by both name
+    // and argument lists.
+    // This method gets called a *lot, so we try to be efficient.
+    String name = md.getName();
+    MethodDescriptor old = methods.get(name);
+    if (old == null) {
+        // This is the common case.
+        methods.put(name, md);
+        return;
+    }
+    // We have a collision on method names.  This is rare.
+    // Check if old and md have the same type.
+    String[] p1 = md.getParamNames();
+    String[] p2 = old.getParamNames();
+    boolean match = false;
+    if (p1.length == p2.length) {
+        match = true;
+        for (int i = 0; i < p1.length; i++) {
+            if (p1[i] != p2[i]) {
+                match = false;
+                break;
+            }
+        }
+    }
+    if (match) {
+        MethodDescriptor composite = new MethodDescriptor(old, md);
+        methods.put(name, composite);
+        return;
+    }
+    // We have a collision on method names with different type signatures.
+    // This is very rare.
+    String longKey = makeQualifiedMethodName(name, p1);
+    old = methods.get(longKey);
+    if (old == null) {
+        methods.put(longKey, md);
+        return;
+    }
+    MethodDescriptor composite = new MethodDescriptor(old, md);
+    methods.put(longKey, composite);
+}

@@ -1,0 +1,32 @@
+private static Charset lookupViaProviders(final String charsetName) {
+    // The runtime startup sequence looks up standard charsets as a
+    // consequence of the VM's invocation of System.initializeSystemClass
+    // in order to, e.g., set system properties and encode filenames.  At
+    // that point the application class loader has not been initialized,
+    // however, so we can't look for providers because doing so will cause
+    // that loader to be prematurely initialized with incomplete
+    // information.
+    // 
+    if (!sun.misc.VM.isBooted())
+        return null;
+    if (gate.get() != null)
+        // Avoid recursive provider lookups
+        return null;
+    try {
+        gate.set(gate);
+        return AccessController.doPrivileged(new PrivilegedAction<Charset>() {
+
+            public Charset run() {
+                for (Iterator<CharsetProvider> i = providers(); i.hasNext(); ) {
+                    CharsetProvider cp = i.next();
+                    Charset cs = cp.charsetForName(charsetName);
+                    if (cs != null)
+                        return cs;
+                }
+                return null;
+            }
+        });
+    } finally {
+        gate.set(null);
+    }
+}

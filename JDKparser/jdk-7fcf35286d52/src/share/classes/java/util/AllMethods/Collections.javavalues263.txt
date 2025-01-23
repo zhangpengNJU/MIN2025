@@ -1,0 +1,7 @@
+public Collection<V> values() {
+    synchronized (mutex) {
+        if (values == null)
+            values = new SynchronizedCollection<>(m.values(), mutex);
+        return values;
+    }
+}

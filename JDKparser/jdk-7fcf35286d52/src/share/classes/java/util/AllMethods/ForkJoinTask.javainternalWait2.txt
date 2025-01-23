@@ -1,0 +1,21 @@
+/**
+ * If not done, sets SIGNAL status and performs Object.wait(timeout).
+ * This task may or may not be done on exit. Ignores interrupts.
+ *
+ * @param timeout using Object.wait conventions.
+ */
+final void internalWait(long timeout) {
+    int s;
+    if (// force completer to issue notify
+    (s = status) >= 0 && U.compareAndSwapInt(this, STATUS, s, s | SIGNAL)) {
+        synchronized (this) {
+            if (status >= 0)
+                try {
+                    wait(timeout);
+                } catch (InterruptedException ie) {
+                }
+            else
+                notifyAll();
+        }
+    }
+}

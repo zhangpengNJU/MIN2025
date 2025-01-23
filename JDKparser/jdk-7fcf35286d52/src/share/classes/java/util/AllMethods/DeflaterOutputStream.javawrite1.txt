@@ -1,0 +1,24 @@
+/**
+ * Writes an array of bytes to the compressed output stream. This
+ * method will block until all the bytes are written.
+ * @param b the data to be written
+ * @param off the start offset of the data
+ * @param len the length of the data
+ * @exception IOException if an I/O error has occurred
+ */
+public void write(byte[] b, int off, int len) throws IOException {
+    if (def.finished()) {
+        throw new IOException("write beyond end of stream");
+    }
+    if ((off | len | (off + len) | (b.length - (off + len))) < 0) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0) {
+        return;
+    }
+    if (!def.finished()) {
+        def.setInput(b, off, len);
+        while (!def.needsInput()) {
+            deflate();
+        }
+    }
+}

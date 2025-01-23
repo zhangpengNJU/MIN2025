@@ -1,0 +1,18 @@
+@Override
+public final Stream<P_OUT> peek(Consumer<? super P_OUT> action) {
+    Objects.requireNonNull(action);
+    return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE, 0) {
+
+        @Override
+        Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
+            return new Sink.ChainedReference<P_OUT, P_OUT>(sink) {
+
+                @Override
+                public void accept(P_OUT u) {
+                    action.accept(u);
+                    downstream.accept(u);
+                }
+            };
+        }
+    };
+}

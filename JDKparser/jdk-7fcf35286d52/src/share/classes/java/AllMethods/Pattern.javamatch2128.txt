@@ -1,0 +1,10 @@
+boolean match2(Matcher matcher, int i, int j, CharSequence seq) {
+    for (; j < cmax; j++) {
+        if (!atom.match(matcher, i, seq))
+            break;
+        if (i == matcher.last)
+            break;
+        i = matcher.last;
+    }
+    return next.match(matcher, i, seq);
+}

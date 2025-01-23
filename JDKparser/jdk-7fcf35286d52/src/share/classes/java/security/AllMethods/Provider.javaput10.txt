@@ -1,0 +1,24 @@
+/**
+ * Sets the {@code key} property to have the specified
+ * {@code value}.
+ *
+ * <p>If a security manager is enabled, its {@code checkSecurityAccess}
+ * method is called with the string {@code "putProviderProperty."+name},
+ * where {@code name} is the provider name, to see if it's ok to set this
+ * provider's property values.
+ *
+ * @throws  SecurityException
+ *          if a security manager exists and its {@link
+ *          java.lang.SecurityManager#checkSecurityAccess} method
+ *          denies access to set property values.
+ *
+ * @since 1.2
+ */
+@Override
+public synchronized Object put(Object key, Object value) {
+    check("putProviderProperty." + name);
+    if (debug != null) {
+        debug.println("Set " + name + " provider property [" + key + "/" + value + "]");
+    }
+    return implPut(key, value);
+}

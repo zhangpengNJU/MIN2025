@@ -1,0 +1,12 @@
+/**
+ * Resolve the given chars into Fonts using FontResolver, then add
+ * font runs for each.
+ */
+private void addFonts(char[] chars, Map<? extends Attribute, ?> attributes, int start, int limit) {
+    FontResolver resolver = FontResolver.getInstance();
+    CodePointIterator iter = CodePointIterator.create(chars, start, limit);
+    for (int runStart = iter.charIndex(); runStart < limit; runStart = iter.charIndex()) {
+        int fontIndex = resolver.nextFontRunIndex(iter);
+        addFont(resolver.getFont(fontIndex, attributes), runStart);
+    }
+}

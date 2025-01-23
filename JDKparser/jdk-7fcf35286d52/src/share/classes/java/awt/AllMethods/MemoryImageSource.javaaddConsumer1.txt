@@ -1,0 +1,29 @@
+/**
+ * Adds an ImageConsumer to the list of consumers interested in
+ * data for this image.
+ * @param ic the specified <code>ImageConsumer</code>
+ * @throws NullPointerException if the specified
+ *           <code>ImageConsumer</code> is null
+ * @see ImageConsumer
+ */
+public synchronized void addConsumer(ImageConsumer ic) {
+    if (theConsumers.contains(ic)) {
+        return;
+    }
+    theConsumers.addElement(ic);
+    try {
+        initConsumer(ic);
+        sendPixels(ic, 0, 0, width, height);
+        if (isConsumer(ic)) {
+            ic.imageComplete(animating ? ImageConsumer.SINGLEFRAMEDONE : ImageConsumer.STATICIMAGEDONE);
+            if (!animating && isConsumer(ic)) {
+                ic.imageComplete(ImageConsumer.IMAGEERROR);
+                removeConsumer(ic);
+            }
+        }
+    } catch (Exception e) {
+        if (isConsumer(ic)) {
+            ic.imageComplete(ImageConsumer.IMAGEERROR);
+        }
+    }
+}

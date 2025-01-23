@@ -1,0 +1,17 @@
+/**
+ * Translates the vertices of the <code>Polygon</code> by
+ * <code>deltaX</code> along the x axis and by
+ * <code>deltaY</code> along the y axis.
+ * @param deltaX the amount to translate along the X axis
+ * @param deltaY the amount to translate along the Y axis
+ * @since 1.1
+ */
+public void translate(int deltaX, int deltaY) {
+    for (int i = 0; i < npoints; i++) {
+        xpoints[i] += deltaX;
+        ypoints[i] += deltaY;
+    }
+    if (bounds != null) {
+        bounds.translate(deltaX, deltaY);
+    }
+}

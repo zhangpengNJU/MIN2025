@@ -1,0 +1,47 @@
+public String run() {
+    // Try loading the per-user accessibility properties file.
+    try {
+        File propsFile = new File(System.getProperty("user.home") + sep + ".accessibility.properties");
+        FileInputStream in = new FileInputStream(propsFile);
+        // Inputstream has been buffered in Properties class
+        properties.load(in);
+        in.close();
+    } catch (Exception e) {
+    // Per-user accessibility properties file does not exist
+    }
+    // Try loading the system-wide accessibility properties
+    // file only if a per-user accessibility properties
+    // file does not exist or is empty.
+    if (properties.size() == 0) {
+        try {
+            File propsFile = new File(System.getProperty("java.home") + sep + "lib" + sep + "accessibility.properties");
+            FileInputStream in = new FileInputStream(propsFile);
+            // Inputstream has been buffered in Properties class
+            properties.load(in);
+            in.close();
+        } catch (Exception e) {
+        // System-wide accessibility properties file does
+        // not exist;
+        }
+    }
+    // Get whether a screen magnifier is present.  First check
+    // the system property and then check the properties file.
+    String magPresent = System.getProperty("javax.accessibility.screen_magnifier_present");
+    if (magPresent == null) {
+        magPresent = properties.getProperty("screen_magnifier_present", null);
+        if (magPresent != null) {
+            System.setProperty("javax.accessibility.screen_magnifier_present", magPresent);
+        }
+    }
+    // Get the names of any assistive technolgies to load.  First
+    // check the system property and then check the properties
+    // file.
+    String classNames = System.getProperty("javax.accessibility.assistive_technologies");
+    if (classNames == null) {
+        classNames = properties.getProperty("assistive_technologies", null);
+        if (classNames != null) {
+            System.setProperty("javax.accessibility.assistive_technologies", classNames);
+        }
+    }
+    return classNames;
+}

@@ -1,0 +1,5 @@
+private static Class<?>[] listToArray(List<Class<?>> ptypes) {
+    // sanity check the size before the toArray call, since size might be huge
+    checkSlotCount(ptypes.size());
+    return ptypes.toArray(NO_PTYPES);
+}

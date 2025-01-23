@@ -1,0 +1,45 @@
+/**
+ * Write a byte of data to the stream.  If it is not a newline, then
+ * the byte is appended to the internal buffer.  If it is a newline,
+ * then the currently buffered line is sent to the log's output
+ * stream, prefixed with the appropriate logging information.
+ * @since JDK1.1
+ * @deprecated no replacement
+ */
+@Deprecated
+public void write(int b) {
+    if (b == '\n') {
+        // synchronize on "this" first to avoid potential deadlock
+        synchronized (this) {
+            synchronized (logOut) {
+                // construct prefix for log messages:
+                buffer.setLength(0);
+                ;
+                // date/time stamp...
+                buffer.append((new Date()).toString());
+                buffer.append(':');
+                // ...log name...
+                buffer.append(name);
+                buffer.append(':');
+                buffer.append(Thread.currentThread().getName());
+                // ...and thread name
+                buffer.append(':');
+                try {
+                    // write prefix through to underlying byte stream
+                    logWriter.write(buffer.toString());
+                    logWriter.flush();
+                    // finally, write the already converted bytes of
+                    // the log message
+                    bufOut.writeTo(logOut);
+                    logOut.write(b);
+                    logOut.flush();
+                } catch (IOException e) {
+                    setError();
+                } finally {
+                    bufOut.reset();
+                }
+            }
+        }
+    } else
+        super.write(b);
+}

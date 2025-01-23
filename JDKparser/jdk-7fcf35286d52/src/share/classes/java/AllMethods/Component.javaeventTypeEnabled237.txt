@@ -1,0 +1,91 @@
+boolean eventTypeEnabled(int type) {
+    switch(type) {
+        case ComponentEvent.COMPONENT_MOVED:
+        case ComponentEvent.COMPONENT_RESIZED:
+        case ComponentEvent.COMPONENT_SHOWN:
+        case ComponentEvent.COMPONENT_HIDDEN:
+            if ((eventMask & AWTEvent.COMPONENT_EVENT_MASK) != 0 || componentListener != null) {
+                return true;
+            }
+            break;
+        case FocusEvent.FOCUS_GAINED:
+        case FocusEvent.FOCUS_LOST:
+            if ((eventMask & AWTEvent.FOCUS_EVENT_MASK) != 0 || focusListener != null) {
+                return true;
+            }
+            break;
+        case KeyEvent.KEY_PRESSED:
+        case KeyEvent.KEY_RELEASED:
+        case KeyEvent.KEY_TYPED:
+            if ((eventMask & AWTEvent.KEY_EVENT_MASK) != 0 || keyListener != null) {
+                return true;
+            }
+            break;
+        case MouseEvent.MOUSE_PRESSED:
+        case MouseEvent.MOUSE_RELEASED:
+        case MouseEvent.MOUSE_ENTERED:
+        case MouseEvent.MOUSE_EXITED:
+        case MouseEvent.MOUSE_CLICKED:
+            if ((eventMask & AWTEvent.MOUSE_EVENT_MASK) != 0 || mouseListener != null) {
+                return true;
+            }
+            break;
+        case MouseEvent.MOUSE_MOVED:
+        case MouseEvent.MOUSE_DRAGGED:
+            if ((eventMask & AWTEvent.MOUSE_MOTION_EVENT_MASK) != 0 || mouseMotionListener != null) {
+                return true;
+            }
+            break;
+        case MouseEvent.MOUSE_WHEEL:
+            if ((eventMask & AWTEvent.MOUSE_WHEEL_EVENT_MASK) != 0 || mouseWheelListener != null) {
+                return true;
+            }
+            break;
+        case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
+        case InputMethodEvent.CARET_POSITION_CHANGED:
+            if ((eventMask & AWTEvent.INPUT_METHOD_EVENT_MASK) != 0 || inputMethodListener != null) {
+                return true;
+            }
+            break;
+        case HierarchyEvent.HIERARCHY_CHANGED:
+            if ((eventMask & AWTEvent.HIERARCHY_EVENT_MASK) != 0 || hierarchyListener != null) {
+                return true;
+            }
+            break;
+        case HierarchyEvent.ANCESTOR_MOVED:
+        case HierarchyEvent.ANCESTOR_RESIZED:
+            if ((eventMask & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) != 0 || hierarchyBoundsListener != null) {
+                return true;
+            }
+            break;
+        case ActionEvent.ACTION_PERFORMED:
+            if ((eventMask & AWTEvent.ACTION_EVENT_MASK) != 0) {
+                return true;
+            }
+            break;
+        case TextEvent.TEXT_VALUE_CHANGED:
+            if ((eventMask & AWTEvent.TEXT_EVENT_MASK) != 0) {
+                return true;
+            }
+            break;
+        case ItemEvent.ITEM_STATE_CHANGED:
+            if ((eventMask & AWTEvent.ITEM_EVENT_MASK) != 0) {
+                return true;
+            }
+            break;
+        case AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED:
+            if ((eventMask & AWTEvent.ADJUSTMENT_EVENT_MASK) != 0) {
+                return true;
+            }
+            break;
+        default:
+            break;
+    }
+    // 
+    // Always pass on events defined by external programs.
+    // 
+    if (type > AWTEvent.RESERVED_ID_MAX) {
+        return true;
+    }
+    return false;
+}

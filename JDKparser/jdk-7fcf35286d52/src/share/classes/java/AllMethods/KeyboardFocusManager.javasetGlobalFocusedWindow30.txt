@@ -1,0 +1,46 @@
+/**
+ * Sets the focused Window. The focused Window is the Window that is or
+ * contains the focus owner. The operation will be cancelled if the
+ * specified Window to focus is not a focusable Window.
+ * <p>
+ * This method does not actually change the focused Window as far as the
+ * native windowing system is concerned. It merely stores the value to be
+ * subsequently returned by <code>getFocusedWindow()</code>. Use
+ * <code>Component.requestFocus()</code> or
+ * <code>Component.requestFocusInWindow()</code> to change the focused
+ * Window, subject to platform limitations.
+ *
+ * @param focusedWindow the focused Window
+ * @see #getFocusedWindow
+ * @see #getGlobalFocusedWindow
+ * @see Component#requestFocus()
+ * @see Component#requestFocusInWindow()
+ * @see Window#isFocusableWindow
+ * @throws SecurityException if this KeyboardFocusManager is not the
+ *         current KeyboardFocusManager for the calling thread's context
+ *         and if the calling thread does not have "replaceKeyboardFocusManager"
+ *         permission
+ * @beaninfo
+ *       bound: true
+ */
+protected void setGlobalFocusedWindow(Window focusedWindow) throws SecurityException {
+    Window oldFocusedWindow = null;
+    boolean shouldFire = false;
+    if (focusedWindow == null || focusedWindow.isFocusableWindow()) {
+        synchronized (KeyboardFocusManager.class) {
+            checkKFMSecurity();
+            oldFocusedWindow = getFocusedWindow();
+            try {
+                fireVetoableChange("focusedWindow", oldFocusedWindow, focusedWindow);
+            } catch (PropertyVetoException e) {
+                // rejected
+                return;
+            }
+            KeyboardFocusManager.focusedWindow = focusedWindow;
+            shouldFire = true;
+        }
+    }
+    if (shouldFire) {
+        firePropertyChange("focusedWindow", oldFocusedWindow, focusedWindow);
+    }
+}

@@ -1,0 +1,7 @@
+public void formatted(Format.Field attr, Object value, int start, int end, StringBuffer buffer) {
+    if (!encounteredField && matchesField(attr)) {
+        setBeginIndex(start);
+        setEndIndex(end);
+        encounteredField = (start != end);
+    }
+}

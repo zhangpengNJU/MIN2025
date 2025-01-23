@@ -1,0 +1,18 @@
+/**
+ * Compute val * 10 ^ n; return this product if it is
+ * representable as a long, INFLATED otherwise.
+ */
+private static long longMultiplyPowerTen(long val, int n) {
+    if (val == 0 || n <= 0)
+        return val;
+    long[] tab = LONG_TEN_POWERS_TABLE;
+    long[] bounds = THRESHOLDS_TABLE;
+    if (n < tab.length && n < bounds.length) {
+        long tenpower = tab[n];
+        if (val == 1)
+            return tenpower;
+        if (Math.abs(val) <= bounds[n])
+            return val * tenpower;
+    }
+    return INFLATED;
+}

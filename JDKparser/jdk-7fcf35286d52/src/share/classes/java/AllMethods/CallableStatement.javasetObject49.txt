@@ -1,0 +1,20 @@
+/**
+ * Sets the value of the designated parameter with the given object.
+ *
+ * This method is similar to {@link #setObject(String parameterName,
+ * Object x, int targetSqlType, int scaleOrLength)},
+ * except that it assumes a scale of zero.
+ *
+ * @param parameterName the name of the parameter
+ * @param x the object containing the input parameter value
+ * @param targetSqlType the SQL type (as defined in java.sql.Types) to be
+ *                      sent to the database
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if
+ * the JDBC driver does not support the specified targetSqlType
+ * @see #getObject
+ * @since 1.4
+ */
+void setObject(String parameterName, Object x, int targetSqlType) throws SQLException;

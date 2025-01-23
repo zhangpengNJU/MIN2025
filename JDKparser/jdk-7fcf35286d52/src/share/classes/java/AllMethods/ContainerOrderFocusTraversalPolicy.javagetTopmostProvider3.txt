@@ -1,0 +1,14 @@
+private Container getTopmostProvider(Container focusCycleRoot, Component aComponent) {
+    Container aCont = aComponent.getParent();
+    Container ftp = null;
+    while (aCont != focusCycleRoot && aCont != null) {
+        if (aCont.isFocusTraversalPolicyProvider()) {
+            ftp = aCont;
+        }
+        aCont = aCont.getParent();
+    }
+    if (aCont == null) {
+        return null;
+    }
+    return ftp;
+}

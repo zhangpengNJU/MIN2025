@@ -1,0 +1,16 @@
+/**
+ * Notify the DragGestureListener that a Drag and Drop initiating
+ * gesture has occurred. Then reset the state of the Recognizer.
+ * <P>
+ * @param dragAction The action initially selected by the users gesture
+ * @param p          The point (in Component coords) where the gesture originated
+ */
+protected synchronized void fireDragGestureRecognized(int dragAction, Point p) {
+    try {
+        if (dragGestureListener != null) {
+            dragGestureListener.dragGestureRecognized(new DragGestureEvent(this, dragAction, p, events));
+        }
+    } finally {
+        events.clear();
+    }
+}

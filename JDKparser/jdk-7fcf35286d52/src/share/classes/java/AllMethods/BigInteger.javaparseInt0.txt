@@ -1,0 +1,15 @@
+// Create an integer with the digits between the two indexes
+// Assumes start < end. The result may be negative, but it
+// is to be treated as an unsigned value.
+private int parseInt(char[] source, int start, int end) {
+    int result = Character.digit(source[start++], 10);
+    if (result == -1)
+        throw new NumberFormatException(new String(source));
+    for (int index = start; index < end; index++) {
+        int nextVal = Character.digit(source[index], 10);
+        if (nextVal == -1)
+            throw new NumberFormatException(new String(source));
+        result = 10 * result + nextVal;
+    }
+    return result;
+}

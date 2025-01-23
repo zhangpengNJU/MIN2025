@@ -1,0 +1,15 @@
+/**
+ * return the index of the first non white space character in
+ * rawdata at or after index i.
+ */
+private static int skipWhiteSpace(String rawdata, int i) {
+    int length = rawdata.length();
+    if (i < length) {
+        char c = rawdata.charAt(i);
+        while ((i < length) && Character.isWhitespace(c)) {
+            ++i;
+            c = rawdata.charAt(i);
+        }
+    }
+    return i;
+}

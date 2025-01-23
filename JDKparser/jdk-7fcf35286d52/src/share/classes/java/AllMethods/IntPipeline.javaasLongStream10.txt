@@ -1,0 +1,17 @@
+// Stateless intermediate ops from IntStream
+@Override
+public final LongStream asLongStream() {
+    return new LongPipeline.StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedInt<Long>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    downstream.accept((long) t);
+                }
+            };
+        }
+    };
+}

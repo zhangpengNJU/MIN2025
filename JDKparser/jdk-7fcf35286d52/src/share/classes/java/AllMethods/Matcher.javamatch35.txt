@@ -1,0 +1,20 @@
+/**
+ * Initiates a search for an anchored match to a Pattern within the given
+ * bounds. The groups are filled with default values and the match of the
+ * root of the state machine is called. The state machine will hold the
+ * state of the match as it proceeds in this matcher.
+ */
+boolean match(int from, int anchor) {
+    this.hitEnd = false;
+    this.requireEnd = false;
+    from = from < 0 ? 0 : from;
+    this.first = from;
+    this.oldLast = oldLast < 0 ? from : oldLast;
+    for (int i = 0; i < groups.length; i++) groups[i] = -1;
+    acceptMode = anchor;
+    boolean result = parentPattern.matchRoot.match(this, from, text);
+    if (!result)
+        this.first = -1;
+    this.oldLast = this.last;
+    return result;
+}

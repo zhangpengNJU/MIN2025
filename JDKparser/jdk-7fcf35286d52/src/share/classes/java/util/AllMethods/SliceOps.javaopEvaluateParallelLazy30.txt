@@ -1,0 +1,11 @@
+@Override
+<P_IN> Spliterator<Double> opEvaluateParallelLazy(PipelineHelper<Double> helper, Spliterator<P_IN> spliterator) {
+    long size = helper.exactOutputSizeIfKnown(spliterator);
+    if (size > 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+        return new StreamSpliterators.SliceSpliterator.OfDouble((Spliterator.OfDouble) helper.wrapSpliterator(spliterator), skip, calcSliceFence(skip, limit));
+    } else if (!StreamOpFlag.ORDERED.isKnown(helper.getStreamAndOpFlags())) {
+        return unorderedSkipLimitSpliterator((Spliterator.OfDouble) helper.wrapSpliterator(spliterator), skip, limit, size);
+    } else {
+        return new SliceTask<>(this, helper, spliterator, Double[]::new, skip, limit).invoke().spliterator();
+    }
+}

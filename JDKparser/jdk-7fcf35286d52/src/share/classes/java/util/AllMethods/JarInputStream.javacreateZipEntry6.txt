@@ -1,0 +1,16 @@
+/**
+ * Creates a new <code>JarEntry</code> (<code>ZipEntry</code>) for the
+ * specified JAR file entry name. The manifest attributes of
+ * the specified JAR file entry name will be copied to the new
+ * <CODE>JarEntry</CODE>.
+ *
+ * @param name the name of the JAR/ZIP file entry
+ * @return the <code>JarEntry</code> object just created
+ */
+protected ZipEntry createZipEntry(String name) {
+    JarEntry e = new JarEntry(name);
+    if (man != null) {
+        e.attr = man.getAttributes(name);
+    }
+    return e;
+}

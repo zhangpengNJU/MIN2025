@@ -1,0 +1,30 @@
+/**
+ * Returns a stream consisting of the elements of this stream, additionally
+ * performing the provided action on each element as elements are consumed
+ * from the resulting stream.
+ *
+ * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+ * operation</a>.
+ *
+ * <p>For parallel stream pipelines, the action may be called at
+ * whatever time and in whatever thread the element is made available by the
+ * upstream operation.  If the action modifies shared state,
+ * it is responsible for providing the required synchronization.
+ *
+ * @apiNote This method exists mainly to support debugging, where you want
+ * to see the elements as they flow past a certain point in a pipeline:
+ * <pre>{@code
+ *     DoubleStream.of(1, 2, 3, 4)
+ *         .filter(e -> e > 2)
+ *         .peek(e -> System.out.println("Filtered value: " + e))
+ *         .map(e -> e * e)
+ *         .peek(e -> System.out.println("Mapped value: " + e))
+ *         .sum();
+ * }</pre>
+ *
+ * @param action a <a href="package-summary.html#NonInterference">
+ *               non-interfering</a> action to perform on the elements as
+ *               they are consumed from the stream
+ * @return the new stream
+ */
+DoubleStream peek(DoubleConsumer action);

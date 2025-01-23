@@ -1,0 +1,24 @@
+/**
+ * Indicates a preference for locale-specific fonts in the mapping of
+ * logical fonts to physical fonts. Calling this method indicates that font
+ * rendering should primarily use fonts specific to the primary writing
+ * system (the one indicated by the default encoding and the initial
+ * default locale). For example, if the primary writing system is
+ * Japanese, then characters should be rendered using a Japanese font
+ * if possible, and other fonts should only be used for characters for
+ * which the Japanese font doesn't have glyphs.
+ * <p>
+ * The actual change in font rendering behavior resulting from a call
+ * to this method is implementation dependent; it may have no effect at
+ * all, or the requested behavior may already match the default behavior.
+ * The behavior may differ between font rendering in lightweight
+ * and peered components.  Since calling this method requests a
+ * different font, clients should expect different metrics, and may need
+ * to recalculate window sizes and layout. Therefore this method should
+ * be called before user interface initialisation.
+ * @since 1.5
+ */
+public void preferLocaleFonts() {
+    FontManager fm = FontManagerFactory.getInstance();
+    fm.preferLocaleFonts();
+}

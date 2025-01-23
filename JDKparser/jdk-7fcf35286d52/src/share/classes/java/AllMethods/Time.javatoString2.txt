@@ -1,0 +1,30 @@
+/**
+ * Formats a time in JDBC time escape format.
+ *
+ * @return a <code>String</code> in hh:mm:ss format
+ */
+@SuppressWarnings("deprecation")
+public String toString() {
+    int hour = super.getHours();
+    int minute = super.getMinutes();
+    int second = super.getSeconds();
+    String hourString;
+    String minuteString;
+    String secondString;
+    if (hour < 10) {
+        hourString = "0" + hour;
+    } else {
+        hourString = Integer.toString(hour);
+    }
+    if (minute < 10) {
+        minuteString = "0" + minute;
+    } else {
+        minuteString = Integer.toString(minute);
+    }
+    if (second < 10) {
+        secondString = "0" + second;
+    } else {
+        secondString = Integer.toString(second);
+    }
+    return (hourString + ":" + minuteString + ":" + secondString);
+}

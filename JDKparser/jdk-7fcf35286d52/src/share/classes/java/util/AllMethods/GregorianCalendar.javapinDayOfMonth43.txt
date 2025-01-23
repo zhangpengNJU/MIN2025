@@ -1,0 +1,20 @@
+/**
+ * After adjustments such as add(MONTH), add(YEAR), we don't want the
+ * month to jump around.  E.g., we don't want Jan 31 + 1 month to go to Mar
+ * 3, we want it to go to Feb 28.  Adjustments which might run into this
+ * problem call this method to retain the proper month.
+ */
+private void pinDayOfMonth() {
+    int year = internalGet(YEAR);
+    int monthLen;
+    if (year > gregorianCutoverYear || year < gregorianCutoverYearJulian) {
+        monthLen = monthLength(internalGet(MONTH));
+    } else {
+        GregorianCalendar gc = getNormalizedCalendar();
+        monthLen = gc.getActualMaximum(DAY_OF_MONTH);
+    }
+    int dom = internalGet(DAY_OF_MONTH);
+    if (dom > monthLen) {
+        set(DAY_OF_MONTH, monthLen);
+    }
+}

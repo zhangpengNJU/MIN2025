@@ -1,0 +1,15 @@
+/**
+ * Returns the result of accumulating all entries using the
+ * given reducer to combine values, or null if none.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param reducer a commutative associative combining function
+ * @return the result of accumulating all entries
+ * @since 1.8
+ */
+public Map.Entry<K, V> reduceEntries(long parallelismThreshold, BiFunction<Map.Entry<K, V>, Map.Entry<K, V>, ? extends Map.Entry<K, V>> reducer) {
+    if (reducer == null)
+        throw new NullPointerException();
+    return new ReduceEntriesTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, null, reducer).invoke();
+}

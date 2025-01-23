@@ -1,0 +1,23 @@
+/**
+ * Updates the message digest (if the digest function is on) using
+ * the specified byte, and in any case writes the byte
+ * to the output stream. That is, if the digest function is on
+ * (see {@link #on(boolean) on}), this method calls
+ * {@code update} on the message digest associated with this
+ * stream, passing it the byte {@code b}. This method then
+ * writes the byte to the output stream, blocking until the byte
+ * is actually written.
+ *
+ * @param b the byte to be used for updating and writing to the
+ * output stream.
+ *
+ * @exception IOException if an I/O error occurs.
+ *
+ * @see MessageDigest#update(byte)
+ */
+public void write(int b) throws IOException {
+    out.write(b);
+    if (on) {
+        digest.update((byte) b);
+    }
+}

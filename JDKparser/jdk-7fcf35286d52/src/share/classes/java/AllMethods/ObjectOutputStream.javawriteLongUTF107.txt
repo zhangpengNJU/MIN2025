@@ -1,0 +1,8 @@
+/**
+ * Writes given string in "long" UTF format.  "Long" UTF format is
+ * identical to standard UTF, except that it uses an 8 byte header
+ * (instead of the standard 2 bytes) to convey the UTF encoding length.
+ */
+void writeLongUTF(String s) throws IOException {
+    writeLongUTF(s, getUTFLength(s));
+}

@@ -1,0 +1,26 @@
+/**
+ * Returns a <code>DirectColorModel</code> that describes the default
+ * format for integer RGB values used in many of the methods in the
+ * AWT image interfaces for the convenience of the programmer.
+ * The color space is the default {@link ColorSpace}, sRGB.
+ * The format for the RGB values is an integer with 8 bits
+ * each of alpha, red, green, and blue color components ordered
+ * correspondingly from the most significant byte to the least
+ * significant byte, as in:  0xAARRGGBB.  Color components are
+ * not premultiplied by the alpha component.  This format does not
+ * necessarily represent the native or the most efficient
+ * <code>ColorModel</code> for a particular device or for all images.
+ * It is merely used as a common color model format.
+ * @return a <code>DirectColorModel</code>object describing default
+ *          RGB values.
+ */
+public static ColorModel getRGBdefault() {
+    if (RGBdefault == null) {
+        RGBdefault = new DirectColorModel(32, // Red
+        0x00ff0000, // Green
+        0x0000ff00, // Blue
+        0x000000ff, // Alpha
+        0xff000000);
+    }
+    return RGBdefault;
+}

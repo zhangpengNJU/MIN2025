@@ -1,0 +1,25 @@
+/**
+ * Moves the cursor a relative number of rows, either positive or negative.
+ * Attempting to move beyond the first/last row in the
+ * result set positions the cursor before/after the
+ * the first/last row. Calling <code>relative(0)</code> is valid, but does
+ * not change the cursor position.
+ *
+ * <p>Note: Calling the method <code>relative(1)</code>
+ * is identical to calling the method <code>next()</code> and
+ * calling the method <code>relative(-1)</code> is identical
+ * to calling the method <code>previous()</code>.
+ *
+ * @param rows an <code>int</code> specifying the number of rows to
+ *        move from the current row; a positive number moves the cursor
+ *        forward; a negative number moves the cursor backward
+ * @return <code>true</code> if the cursor is on a row;
+ *         <code>false</code> otherwise
+ * @exception SQLException if a database access error occurs;  this method
+ * is called on a closed result set or the result set type is
+ *            <code>TYPE_FORWARD_ONLY</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+boolean relative(int rows) throws SQLException;

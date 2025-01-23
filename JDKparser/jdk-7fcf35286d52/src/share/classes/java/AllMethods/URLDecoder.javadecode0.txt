@@ -1,0 +1,21 @@
+/**
+ * Decodes a {@code x-www-form-urlencoded} string.
+ * The platform's default encoding is used to determine what characters
+ * are represented by any consecutive sequences of the form
+ * "<i>{@code %xy}</i>".
+ * @param s the {@code String} to decode
+ * @deprecated The resulting string may vary depending on the platform's
+ *          default encoding. Instead, use the decode(String,String) method
+ *          to specify the encoding.
+ * @return the newly decoded {@code String}
+ */
+@Deprecated
+public static String decode(String s) {
+    String str = null;
+    try {
+        str = decode(s, dfltEncName);
+    } catch (UnsupportedEncodingException e) {
+    // The system should always have the platform default
+    }
+    return str;
+}

@@ -1,0 +1,11 @@
+private void setCause(Throwable cause) {
+    if (this.cause == null) {
+        this.cause = cause;
+    } else {
+        // Override the cause if the previous one is
+        // ClassNotFoundException.
+        if (this.cause instanceof ClassNotFoundException) {
+            this.cause = cause;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+/**
+ * Attempts to compute a mapping for the specified key and its
+ * current mapped value (or {@code null} if there is no current
+ * mapping). The function is <em>NOT</em> guaranteed to be applied
+ * once atomically.
+ *
+ * @param key key with which the specified value is to be associated
+ * @param remappingFunction the function to compute a value
+ * @return the new value associated with the specified key, or null if none
+ * @throws NullPointerException if the specified key is null
+ *         or the remappingFunction is null
+ * @since 1.8
+ */
+public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    if (key == null || remappingFunction == null)
+        throw new NullPointerException();
+    for (; ; ) {
+        Node<K, V> n;
+        Object v;
+        V r;
+        if ((n = findNode(key)) == null) {
+            if ((r = remappingFunction.apply(key, null)) == null)
+                break;
+            if (doPut(key, r, true) == null)
+                return r;
+        } else if ((v = n.value) != null) {
+            @SuppressWarnings("unchecked")
+            V vv = (V) v;
+            if ((r = remappingFunction.apply(key, vv)) != null) {
+                if (n.casValue(vv, r))
+                    return r;
+            } else if (doRemove(key, vv) != null)
+                break;
+        }
+    }
+    return null;
+}

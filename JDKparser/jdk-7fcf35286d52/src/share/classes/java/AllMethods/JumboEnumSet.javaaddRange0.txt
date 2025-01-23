@@ -1,0 +1,12 @@
+void addRange(E from, E to) {
+    int fromIndex = from.ordinal() >>> 6;
+    int toIndex = to.ordinal() >>> 6;
+    if (fromIndex == toIndex) {
+        elements[fromIndex] = (-1L >>> (from.ordinal() - to.ordinal() - 1)) << from.ordinal();
+    } else {
+        elements[fromIndex] = (-1L << from.ordinal());
+        for (int i = fromIndex + 1; i < toIndex; i++) elements[i] = -1;
+        elements[toIndex] = -1L >>> (63 - to.ordinal());
+    }
+    size = to.ordinal() - from.ordinal() + 1;
+}

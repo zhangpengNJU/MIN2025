@@ -1,0 +1,13 @@
+// Adapt mh so that it can be called directly from an injected invoker:
+private static MethodHandle prepareForInvoker(MethodHandle mh) {
+    mh = mh.asFixedArity();
+    MethodType mt = mh.type();
+    int arity = mt.parameterCount();
+    MethodHandle vamh = mh.asType(mt.generic());
+    // eliminate LFI stack frames
+    vamh.internalForm().compileToBytecode();
+    vamh = vamh.asSpreader(Object[].class, arity);
+    // eliminate LFI stack frames
+    vamh.internalForm().compileToBytecode();
+    return vamh;
+}

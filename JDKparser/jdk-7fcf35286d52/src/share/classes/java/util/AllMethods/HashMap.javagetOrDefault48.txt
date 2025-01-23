@@ -1,0 +1,6 @@
+// Overrides of JDK8 Map extension methods
+@Override
+public V getOrDefault(Object key, V defaultValue) {
+    Node<K, V> e;
+    return (e = getNode(hash(key), key)) == null ? defaultValue : e.value;
+}

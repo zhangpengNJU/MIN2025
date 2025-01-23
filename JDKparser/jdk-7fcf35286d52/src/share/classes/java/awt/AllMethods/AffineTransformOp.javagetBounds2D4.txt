@@ -1,0 +1,36 @@
+/**
+ * Returns the bounding box of the transformed destination.  The
+ * rectangle returned will be the actual bounding box of the
+ * transformed points.  The coordinates of the upper-left corner
+ * of the returned rectangle might not be (0,&nbsp;0).
+ *
+ * @param src The <CODE>Raster</CODE> to be transformed.
+ *
+ * @return The <CODE>Rectangle2D</CODE> representing the destination's
+ * bounding box.
+ */
+public final Rectangle2D getBounds2D(Raster src) {
+    int w = src.getWidth();
+    int h = src.getHeight();
+    // Get the bounding box of the src and transform the corners
+    float[] pts = { 0, 0, w, 0, w, h, 0, h };
+    xform.transform(pts, 0, pts, 0, 4);
+    // Get the min, max of the dst
+    float fmaxX = pts[0];
+    float fmaxY = pts[1];
+    float fminX = pts[0];
+    float fminY = pts[1];
+    for (int i = 2; i < 8; i += 2) {
+        if (pts[i] > fmaxX) {
+            fmaxX = pts[i];
+        } else if (pts[i] < fminX) {
+            fminX = pts[i];
+        }
+        if (pts[i + 1] > fmaxY) {
+            fmaxY = pts[i + 1];
+        } else if (pts[i + 1] < fminY) {
+            fminY = pts[i + 1];
+        }
+    }
+    return new Rectangle2D.Float(fminX, fminY, fmaxX - fminX, fmaxY - fminY);
+}

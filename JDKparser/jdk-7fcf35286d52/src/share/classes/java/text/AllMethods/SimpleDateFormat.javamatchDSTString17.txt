@@ -1,0 +1,8 @@
+private boolean matchDSTString(String text, int start, int zoneIndex, int standardIndex, String[][] zoneStrings) {
+    int index = standardIndex + 2;
+    String zoneName = zoneStrings[zoneIndex][index];
+    if (text.regionMatches(true, start, zoneName, 0, zoneName.length())) {
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,10 @@
+public void readFully(byte[] b, int off, int len, boolean copy) throws IOException {
+    while (len > 0) {
+        int n = read(b, off, len, copy);
+        if (n < 0) {
+            throw new EOFException();
+        }
+        off += n;
+        len -= n;
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Processes events on this container. If the event is a
+ * <code>ContainerEvent</code>, it invokes the
+ * <code>processContainerEvent</code> method, else it invokes
+ * its superclass's <code>processEvent</code>.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the event
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ContainerEvent) {
+        processContainerEvent((ContainerEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

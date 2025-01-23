@@ -1,0 +1,30 @@
+// --------------------------JDBC 2.0-----------------------------
+/**
+ * Creates a <code>Statement</code> object that will generate
+ * <code>ResultSet</code> objects with the given type and concurrency.
+ * This method is the same as the <code>createStatement</code> method
+ * above, but it allows the default result set
+ * type and concurrency to be overridden.
+ * The holdability of the created result sets can be determined by
+ * calling {@link #getHoldability}.
+ *
+ * @param resultSetType a result set type; one of
+ *        <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+ *        <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+ *        <code>ResultSet.TYPE_SCROLL_SENSITIVE</code>
+ * @param resultSetConcurrency a concurrency type; one of
+ *        <code>ResultSet.CONCUR_READ_ONLY</code> or
+ *        <code>ResultSet.CONCUR_UPDATABLE</code>
+ * @return a new <code>Statement</code> object that will generate
+ *         <code>ResultSet</code> objects with the given type and
+ *         concurrency
+ * @exception SQLException if a database access error occurs, this
+ * method is called on a closed connection
+ *         or the given parameters are not <code>ResultSet</code>
+ *         constants indicating type and concurrency
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method or this method is not supported for the specified result
+ * set type and result set concurrency.
+ * @since 1.2
+ */
+Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException;

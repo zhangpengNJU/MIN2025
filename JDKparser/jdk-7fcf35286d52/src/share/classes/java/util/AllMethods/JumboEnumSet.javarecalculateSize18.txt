@@ -1,0 +1,9 @@
+/**
+ * Recalculates the size of the set.  Returns true if it's changed.
+ */
+private boolean recalculateSize() {
+    int oldSize = size;
+    size = 0;
+    for (long elt : elements) size += Long.bitCount(elt);
+    return size != oldSize;
+}

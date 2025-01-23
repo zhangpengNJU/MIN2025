@@ -1,0 +1,10 @@
+/**
+ * Sets the new design time value for this <tt>BeanContext</tt>.
+ * @param dTime the new designTime value
+ */
+public synchronized void setDesignTime(boolean dTime) {
+    if (designTime != dTime) {
+        designTime = dTime;
+        firePropertyChange("designMode", Boolean.valueOf(!dTime), Boolean.valueOf(dTime));
+    }
+}

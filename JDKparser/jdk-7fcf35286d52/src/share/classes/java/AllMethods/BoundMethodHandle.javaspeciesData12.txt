@@ -1,0 +1,8 @@
+/*non-public*/
+static SpeciesData speciesData(LambdaForm form) {
+    Object c = form.names[0].constraint;
+    if (c instanceof SpeciesData)
+        return (SpeciesData) c;
+    // if there is no BMH constraint, then use the null constraint
+    return SpeciesData.EMPTY;
+}

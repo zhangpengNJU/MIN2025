@@ -1,0 +1,7 @@
+public E take() throws InterruptedException {
+    E e = xfer(null, false, SYNC, 0);
+    if (e != null)
+        return e;
+    Thread.interrupted();
+    throw new InterruptedException();
+}

@@ -1,0 +1,17 @@
+/**
+ * Gets the OCSP responses. These responses are used to determine
+ * the revocation status of the specified certificates when OCSP is used.
+ *
+ * @return a map of OCSP responses. Each key is an
+ *        {@code X509Certificate} that maps to the corresponding
+ *        DER-encoded OCSP response for that certificate. A deep copy of
+ *        the map is returned to protect against subsequent modification.
+ *        Returns an empty map if no responses have been specified.
+ */
+public Map<X509Certificate, byte[]> getOcspResponses() {
+    Map<X509Certificate, byte[]> copy = new HashMap<>(ocspResponses.size());
+    for (Map.Entry<X509Certificate, byte[]> e : ocspResponses.entrySet()) {
+        copy.put(e.getKey(), e.getValue().clone());
+    }
+    return copy;
+}

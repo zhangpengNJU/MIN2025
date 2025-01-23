@@ -1,0 +1,17 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this % divisor)}.
+ *
+ * <p>The remainder is given by
+ * {@code this.subtract(this.divideToIntegralValue(divisor).multiply(divisor))}.
+ * Note that this is not the modulo operation (the result can be
+ * negative).
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @return {@code this % divisor}.
+ * @throws ArithmeticException if {@code divisor==0}
+ * @since  1.5
+ */
+public BigDecimal remainder(BigDecimal divisor) {
+    BigDecimal[] divrem = this.divideAndRemainder(divisor);
+    return divrem[1];
+}

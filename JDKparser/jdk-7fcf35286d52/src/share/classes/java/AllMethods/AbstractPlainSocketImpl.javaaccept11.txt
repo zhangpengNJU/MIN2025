@@ -1,0 +1,12 @@
+/**
+ * Accepts connections.
+ * @param s the connection
+ */
+protected void accept(SocketImpl s) throws IOException {
+    acquireFD();
+    try {
+        socketAccept(s);
+    } finally {
+        releaseFD();
+    }
+}

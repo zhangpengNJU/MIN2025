@@ -1,0 +1,8 @@
+/**
+ * Returns true if successfully pushed c onto stack.
+ */
+final boolean tryPushStack(Completion c) {
+    Completion h = stack;
+    lazySetNext(c, h);
+    return UNSAFE.compareAndSwapObject(this, STACK, h, c);
+}

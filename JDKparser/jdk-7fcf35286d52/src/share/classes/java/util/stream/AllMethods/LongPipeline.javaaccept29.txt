@@ -1,0 +1,14 @@
+@Override
+public void accept(long t) {
+    try (LongStream result = mapper.apply(t)) {
+        if (result != null) {
+            if (!cancellationRequestedCalled) {
+                result.sequential().forEach(downstreamAsLong);
+            } else {
+                Spliterator.OfLong s = result.sequential().spliterator();
+                do {
+                } while (!downstream.cancellationRequested() && s.tryAdvance(downstreamAsLong));
+            }
+        }
+    }
+}

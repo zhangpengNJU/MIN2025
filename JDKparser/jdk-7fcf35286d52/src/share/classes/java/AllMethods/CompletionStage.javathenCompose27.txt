@@ -1,0 +1,13 @@
+/**
+ * Returns a new CompletionStage that, when this stage completes
+ * normally, is executed with this stage as the argument
+ * to the supplied function.
+ *
+ * See the {@link CompletionStage} documentation for rules
+ * covering exceptional completion.
+ *
+ * @param fn the function returning a new CompletionStage
+ * @param <U> the type of the returned CompletionStage's result
+ * @return the CompletionStage
+ */
+public <U> CompletionStage<U> thenCompose(Function<? super T, ? extends CompletionStage<U>> fn);

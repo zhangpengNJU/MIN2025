@@ -1,0 +1,9 @@
+/**
+ * readObject is called to restore the state of the BasicPermission from
+ * a stream.
+ */
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    s.defaultReadObject();
+    // init is called to initialize the rest of the values.
+    init(getName());
+}

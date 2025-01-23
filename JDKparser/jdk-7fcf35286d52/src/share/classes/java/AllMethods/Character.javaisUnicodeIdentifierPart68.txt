@@ -1,0 +1,28 @@
+/**
+ * Determines if the specified character (Unicode code point) may be part of a Unicode
+ * identifier as other than the first character.
+ * <p>
+ * A character may be part of a Unicode identifier if and only if
+ * one of the following statements is true:
+ * <ul>
+ * <li>  it is a letter
+ * <li>  it is a connecting punctuation character (such as {@code '_'})
+ * <li>  it is a digit
+ * <li>  it is a numeric letter (such as a Roman numeral character)
+ * <li>  it is a combining mark
+ * <li>  it is a non-spacing mark
+ * <li> {@code isIdentifierIgnorable} returns
+ * {@code true} for this character.
+ * </ul>
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character may be part of a
+ *          Unicode identifier; {@code false} otherwise.
+ * @see     Character#isIdentifierIgnorable(int)
+ * @see     Character#isJavaIdentifierPart(int)
+ * @see     Character#isLetterOrDigit(int)
+ * @see     Character#isUnicodeIdentifierStart(int)
+ * @since   1.5
+ */
+public static boolean isUnicodeIdentifierPart(int codePoint) {
+    return CharacterData.of(codePoint).isUnicodeIdentifierPart(codePoint);
+}

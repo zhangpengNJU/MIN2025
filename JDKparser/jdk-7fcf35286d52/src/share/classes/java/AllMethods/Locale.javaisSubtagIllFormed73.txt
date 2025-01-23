@@ -1,0 +1,24 @@
+private static boolean isSubtagIllFormed(String subtag, boolean isFirstSubtag) {
+    if (subtag.equals("") || subtag.length() > 8) {
+        return true;
+    } else if (subtag.equals("*")) {
+        return false;
+    }
+    char[] charArray = subtag.toCharArray();
+    if (isFirstSubtag) {
+        // ALPHA
+        for (char c : charArray) {
+            if (c < 'a' || c > 'z') {
+                return true;
+            }
+        }
+    } else {
+        // ALPHA / DIGIT
+        for (char c : charArray) {
+            if (c < '0' || (c > '9' && c < 'a') || c > 'z') {
+                return true;
+            }
+        }
+    }
+    return false;
+}

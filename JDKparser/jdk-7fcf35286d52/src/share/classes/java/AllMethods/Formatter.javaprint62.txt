@@ -1,0 +1,102 @@
+// value > 0
+private void print(StringBuilder sb, BigDecimal value, Locale l, Flags f, char c, int precision, boolean neg) throws IOException {
+    if (c == Conversion.SCIENTIFIC) {
+        // Create a new BigDecimal with the desired precision.
+        int prec = (precision == -1 ? 6 : precision);
+        int scale = value.scale();
+        int origPrec = value.precision();
+        int nzeros = 0;
+        int compPrec;
+        if (prec > origPrec - 1) {
+            compPrec = origPrec;
+            nzeros = prec - (origPrec - 1);
+        } else {
+            compPrec = prec + 1;
+        }
+        MathContext mc = new MathContext(compPrec);
+        BigDecimal v = new BigDecimal(value.unscaledValue(), scale, mc);
+        BigDecimalLayout bdl = new BigDecimalLayout(v.unscaledValue(), v.scale(), BigDecimalLayoutForm.SCIENTIFIC);
+        char[] mant = bdl.mantissa();
+        // Add a decimal point if necessary.  The mantissa may not
+        // contain a decimal point if the scale is zero (the internal
+        // representation has no fractional part) or the original
+        // precision is one. Append a decimal point if '#' is set or if
+        // we require zero padding to get to the requested precision.
+        if ((origPrec == 1 || !bdl.hasDot()) && (nzeros > 0 || (f.contains(Flags.ALTERNATE))))
+            mant = addDot(mant);
+        // Add trailing zeros in the case precision is greater than
+        // the number of available digits after the decimal separator.
+        mant = trailingZeros(mant, nzeros);
+        char[] exp = bdl.exponent();
+        int newW = width;
+        if (width != -1)
+            newW = adjustWidth(width - exp.length - 1, f, neg);
+        localizedMagnitude(sb, mant, f, newW, l);
+        sb.append(f.contains(Flags.UPPERCASE) ? 'E' : 'e');
+        Flags flags = f.dup().remove(Flags.GROUP);
+        char sign = exp[0];
+        assert (sign == '+' || sign == '-');
+        sb.append(exp[0]);
+        char[] tmp = new char[exp.length - 1];
+        System.arraycopy(exp, 1, tmp, 0, exp.length - 1);
+        sb.append(localizedMagnitude(null, tmp, flags, -1, l));
+    } else if (c == Conversion.DECIMAL_FLOAT) {
+        // Create a new BigDecimal with the desired precision.
+        int prec = (precision == -1 ? 6 : precision);
+        int scale = value.scale();
+        if (scale > prec) {
+            // more "scale" digits than the requested "precision"
+            int compPrec = value.precision();
+            if (compPrec <= scale) {
+                // case of 0.xxxxxx
+                value = value.setScale(prec, RoundingMode.HALF_UP);
+            } else {
+                compPrec -= (scale - prec);
+                value = new BigDecimal(value.unscaledValue(), scale, new MathContext(compPrec));
+            }
+        }
+        BigDecimalLayout bdl = new BigDecimalLayout(value.unscaledValue(), value.scale(), BigDecimalLayoutForm.DECIMAL_FLOAT);
+        char[] mant = bdl.mantissa();
+        int nzeros = (bdl.scale() < prec ? prec - bdl.scale() : 0);
+        // Add a decimal point if necessary.  The mantissa may not
+        // contain a decimal point if the scale is zero (the internal
+        // representation has no fractional part).  Append a decimal
+        // point if '#' is set or we require zero padding to get to the
+        // requested precision.
+        if (bdl.scale() == 0 && (f.contains(Flags.ALTERNATE) || nzeros > 0))
+            mant = addDot(bdl.mantissa());
+        // Add trailing zeros if the precision is greater than the
+        // number of available digits after the decimal separator.
+        mant = trailingZeros(mant, nzeros);
+        localizedMagnitude(sb, mant, f, adjustWidth(width, f, neg), l);
+    } else if (c == Conversion.GENERAL) {
+        int prec = precision;
+        if (precision == -1)
+            prec = 6;
+        else if (precision == 0)
+            prec = 1;
+        BigDecimal tenToTheNegFour = BigDecimal.valueOf(1, 4);
+        BigDecimal tenToThePrec = BigDecimal.valueOf(1, -prec);
+        if ((value.equals(BigDecimal.ZERO)) || ((value.compareTo(tenToTheNegFour) != -1) && (value.compareTo(tenToThePrec) == -1))) {
+            int e = -value.scale() + (value.unscaledValue().toString().length() - 1);
+            // xxx.yyy
+            // g precision (# sig digits) = #x + #y
+            // f precision = #y
+            // exponent = #x - 1
+            // => f precision = g precision - exponent - 1
+            // 0.000zzz
+            // g precision (# sig digits) = #z
+            // f precision = #0 (after '.') + #z
+            // exponent = - #0 (after '.') - 1
+            // => f precision = g precision - exponent - 1
+            prec = prec - e - 1;
+            print(sb, value, l, f, Conversion.DECIMAL_FLOAT, prec, neg);
+        } else {
+            print(sb, value, l, f, Conversion.SCIENTIFIC, prec - 1, neg);
+        }
+    } else if (c == Conversion.HEXADECIMAL_FLOAT) {
+        // This conversion isn't supported.  The error should be
+        // reported earlier.
+        assert false;
+    }
+}

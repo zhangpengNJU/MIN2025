@@ -1,0 +1,35 @@
+/**
+ * Inserts the specified element at the tail of this queue if it is
+ * possible to do so immediately without exceeding the queue's capacity,
+ * returning {@code true} upon success and {@code false} if this queue
+ * is full.
+ * When using a capacity-restricted queue, this method is generally
+ * preferable to method {@link BlockingQueue#add add}, which can fail to
+ * insert an element only by throwing an exception.
+ *
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean offer(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    final AtomicInteger count = this.count;
+    if (count.get() == capacity)
+        return false;
+    int c = -1;
+    Node<E> node = new Node<E>(e);
+    final ReentrantLock putLock = this.putLock;
+    putLock.lock();
+    try {
+        if (count.get() < capacity) {
+            enqueue(node);
+            c = count.getAndIncrement();
+            if (c + 1 < capacity)
+                notFull.signal();
+        }
+    } finally {
+        putLock.unlock();
+    }
+    if (c == 0)
+        signalNotEmpty();
+    return c >= 0;
+}

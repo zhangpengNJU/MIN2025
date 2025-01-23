@@ -1,0 +1,23 @@
+/**
+ * <strong>Denigrated</strong>, replaced by {@linkplain
+ * #getSubjectX500Principal()}. This method returns the {@code subject}
+ * as an implementation specific Principal object, which should not be
+ * relied upon by portable code.
+ *
+ * <p>
+ * Gets the {@code subject} (subject distinguished name) value
+ * from the certificate.  If the {@code subject} value is empty,
+ * then the {@code getName()} method of the returned
+ * {@code Principal} object returns an empty string ("").
+ *
+ * <p> The ASN.1 definition for this is:
+ * <pre>
+ * subject    Name
+ * </pre>
+ *
+ * <p>See {@link #getIssuerDN() getIssuerDN} for {@code Name}
+ * and other relevant definitions.
+ *
+ * @return a Principal whose name is the subject name.
+ */
+public abstract Principal getSubjectDN();

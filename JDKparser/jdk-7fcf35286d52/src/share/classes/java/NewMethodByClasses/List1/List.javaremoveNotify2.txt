@@ -1,0 +1,13 @@
+/**
+ * Removes the peer for this list.  The peer allows us to modify the
+ * list's appearance without changing its functionality.
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        ListPeer peer = (ListPeer) this.peer;
+        if (peer != null) {
+            selected = peer.getSelectedIndexes();
+        }
+        super.removeNotify();
+    }
+}

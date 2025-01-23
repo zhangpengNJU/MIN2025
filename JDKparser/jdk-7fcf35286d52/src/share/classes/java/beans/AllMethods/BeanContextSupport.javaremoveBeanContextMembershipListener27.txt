@@ -1,0 +1,16 @@
+/**
+ * Removes a BeanContextMembershipListener
+ *
+ * @param  bcml the BeanContextMembershipListener to remove
+ * @throws NullPointerException if the argument is null
+ */
+public void removeBeanContextMembershipListener(BeanContextMembershipListener bcml) {
+    if (bcml == null)
+        throw new NullPointerException("listener");
+    synchronized (bcmListeners) {
+        if (!bcmListeners.contains(bcml))
+            return;
+        else
+            bcmListeners.remove(bcml);
+    }
+}

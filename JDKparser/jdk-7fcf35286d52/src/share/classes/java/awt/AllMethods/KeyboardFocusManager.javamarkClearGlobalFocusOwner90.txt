@@ -1,0 +1,25 @@
+/**
+ * Returns the Window which will be active after processing this request,
+ * or null if this is a duplicate request. The active Window is useful
+ * because some native platforms do not support setting the native focus
+ * owner to null. On these platforms, the obvious choice is to set the
+ * focus owner to the focus proxy of the active Window.
+ */
+static Window markClearGlobalFocusOwner() {
+    // need to call this out of synchronized block to avoid possible deadlock
+    // see 6454631.
+    final Component nativeFocusedWindow = getCurrentKeyboardFocusManager().getNativeFocusedWindow();
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getLastHWRequest();
+        if (hwFocusRequest == HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER) {
+            // duplicate request
+            return null;
+        }
+        heavyweightRequests.add(HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER);
+        Component activeWindow = ((hwFocusRequest != null) ? SunToolkit.getContainingWindow(hwFocusRequest.heavyweight) : nativeFocusedWindow);
+        while (activeWindow != null && !((activeWindow instanceof Frame) || (activeWindow instanceof Dialog))) {
+            activeWindow = activeWindow.getParent_NoClientCode();
+        }
+        return (Window) activeWindow;
+    }
+}

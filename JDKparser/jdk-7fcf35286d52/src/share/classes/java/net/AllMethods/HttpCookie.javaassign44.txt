@@ -1,0 +1,5 @@
+public void assign(HttpCookie cookie, String attrName, String attrValue) {
+    if (cookie.getMaxAge() == MAX_AGE_UNSPECIFIED) {
+        cookie.setMaxAge(cookie.expiryDate2DeltaSeconds(attrValue));
+    }
+}

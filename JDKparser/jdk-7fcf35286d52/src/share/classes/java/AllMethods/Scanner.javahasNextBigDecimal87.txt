@@ -1,0 +1,24 @@
+/**
+ * Returns true if the next token in this scanner's input can be
+ * interpreted as a <code>BigDecimal</code> using the
+ * {@link #nextBigDecimal} method. The scanner does not advance past any
+ * input.
+ *
+ * @return true if and only if this scanner's next token is a valid
+ *         <code>BigDecimal</code>
+ * @throws IllegalStateException if this scanner is closed
+ */
+public boolean hasNextBigDecimal() {
+    setRadix(10);
+    boolean result = hasNext(decimalPattern());
+    if (result) {
+        // Cache it
+        try {
+            String s = processFloatToken(hasNextResult);
+            typeCache = new BigDecimal(s);
+        } catch (NumberFormatException nfe) {
+            result = false;
+        }
+    }
+    return result;
+}

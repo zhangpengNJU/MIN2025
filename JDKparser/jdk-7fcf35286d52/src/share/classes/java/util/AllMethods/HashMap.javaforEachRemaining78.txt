@@ -1,0 +1,26 @@
+public void forEachRemaining(Consumer<? super V> action) {
+    int i, hi, mc;
+    if (action == null)
+        throw new NullPointerException();
+    HashMap<K, V> m = map;
+    Node<K, V>[] tab = m.table;
+    if ((hi = fence) < 0) {
+        mc = expectedModCount = m.modCount;
+        hi = fence = (tab == null) ? 0 : tab.length;
+    } else
+        mc = expectedModCount;
+    if (tab != null && tab.length >= hi && (i = index) >= 0 && (i < (index = hi) || current != null)) {
+        Node<K, V> p = current;
+        current = null;
+        do {
+            if (p == null)
+                p = tab[i++];
+            else {
+                action.accept(p.value);
+                p = p.next;
+            }
+        } while (p != null || i < hi);
+        if (m.modCount != mc)
+            throw new ConcurrentModificationException();
+    }
+}

@@ -1,0 +1,14 @@
+static <T> Entry<T> makeEntry(Version<T> explicitVersion, T value) {
+    // Note that explicitVersion might be different from this.version.
+    return new Entry<>(explicitVersion, value);
+// As soon as the Entry is put into the cache, the value will be
+// reachable via a data race (as defined by the Java Memory Model).
+// This race is benign, assuming the value object itself can be
+// read safely by multiple threads.  This is up to the user.
+// 
+// The entry and version fields themselves can be safely read via
+// a race because they are either final or have controlled states.
+// If the pointer from the entry to the version is still null,
+// or if the version goes immediately dead and is nulled out,
+// the reader will take the slow path and retry under a lock.
+}

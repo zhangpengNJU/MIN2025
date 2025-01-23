@@ -1,0 +1,86 @@
+private static LambdaForm makePreparedLambdaForm(MethodType mtype, int which) {
+    boolean needsInit = (which == LF_INVSTATIC_INIT);
+    boolean doesAlloc = (which == LF_NEWINVSPECIAL);
+    boolean needsReceiverCheck = (which == LF_INVINTERFACE);
+    String linkerName, lambdaName;
+    switch(which) {
+        case LF_INVVIRTUAL:
+            linkerName = "linkToVirtual";
+            lambdaName = "DMH.invokeVirtual";
+            break;
+        case LF_INVSTATIC:
+            linkerName = "linkToStatic";
+            lambdaName = "DMH.invokeStatic";
+            break;
+        case LF_INVSTATIC_INIT:
+            linkerName = "linkToStatic";
+            lambdaName = "DMH.invokeStaticInit";
+            break;
+        case LF_INVSPECIAL:
+            linkerName = "linkToSpecial";
+            lambdaName = "DMH.invokeSpecial";
+            break;
+        case LF_INVINTERFACE:
+            linkerName = "linkToInterface";
+            lambdaName = "DMH.invokeInterface";
+            break;
+        case LF_NEWINVSPECIAL:
+            linkerName = "linkToSpecial";
+            lambdaName = "DMH.newInvokeSpecial";
+            break;
+        default:
+            throw new InternalError("which=" + which);
+    }
+    MethodType mtypeWithArg = mtype.appendParameterTypes(MemberName.class);
+    if (doesAlloc)
+        mtypeWithArg = mtypeWithArg.insertParameterTypes(0, // insert newly allocated obj
+        Object.class).changeReturnType(// <init> returns void
+        void.class);
+    MemberName linker = new MemberName(MethodHandle.class, linkerName, mtypeWithArg, REF_invokeStatic);
+    try {
+        linker = IMPL_NAMES.resolveOrFail(REF_invokeStatic, linker, null, NoSuchMethodException.class);
+    } catch (ReflectiveOperationException ex) {
+        throw newInternalError(ex);
+    }
+    final int DMH_THIS = 0;
+    final int ARG_BASE = 1;
+    final int ARG_LIMIT = ARG_BASE + mtype.parameterCount();
+    int nameCursor = ARG_LIMIT;
+    final int NEW_OBJ = (doesAlloc ? nameCursor++ : -1);
+    final int GET_MEMBER = nameCursor++;
+    final int CHECK_RECEIVER = (needsReceiverCheck ? nameCursor++ : -1);
+    final int LINKER_CALL = nameCursor++;
+    Name[] names = arguments(nameCursor - ARG_LIMIT, mtype.invokerType());
+    assert (names.length == nameCursor);
+    if (doesAlloc) {
+        // names = { argx,y,z,... new C, init method }
+        names[NEW_OBJ] = new Name(Lazy.NF_allocateInstance, names[DMH_THIS]);
+        names[GET_MEMBER] = new Name(Lazy.NF_constructorMethod, names[DMH_THIS]);
+    } else if (needsInit) {
+        names[GET_MEMBER] = new Name(Lazy.NF_internalMemberNameEnsureInit, names[DMH_THIS]);
+    } else {
+        names[GET_MEMBER] = new Name(Lazy.NF_internalMemberName, names[DMH_THIS]);
+    }
+    assert (findDirectMethodHandle(names[GET_MEMBER]) == names[DMH_THIS]);
+    Object[] outArgs = Arrays.copyOfRange(names, ARG_BASE, GET_MEMBER + 1, Object[].class);
+    if (needsReceiverCheck) {
+        names[CHECK_RECEIVER] = new Name(Lazy.NF_checkReceiver, names[DMH_THIS], names[ARG_BASE]);
+        outArgs[0] = names[CHECK_RECEIVER];
+    }
+    // look, shifted args!
+    assert (outArgs[outArgs.length - 1] == names[GET_MEMBER]);
+    int result = LAST_RESULT;
+    if (doesAlloc) {
+        // got to move this one
+        assert (outArgs[outArgs.length - 2] == names[NEW_OBJ]);
+        System.arraycopy(outArgs, 0, outArgs, 1, outArgs.length - 2);
+        outArgs[0] = names[NEW_OBJ];
+        result = NEW_OBJ;
+    }
+    names[LINKER_CALL] = new Name(linker, outArgs);
+    lambdaName += "_" + shortenSignature(basicTypeSignature(mtype));
+    LambdaForm lform = new LambdaForm(lambdaName, ARG_LIMIT, names, result);
+    // This is a tricky bit of code.  Don't send it through the LF interpreter.
+    lform.compileToBytecode();
+    return lform;
+}

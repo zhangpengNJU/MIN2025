@@ -1,0 +1,42 @@
+/**
+ * Updates the <code>TextMeasurer</code> after a single character has
+ * been deleted
+ * from the paragraph currently represented by this
+ * <code>TextMeasurer</code>.  After this call, this
+ * <code>TextMeasurer</code> is equivalent to a new <code>TextMeasurer</code>
+ * created from the text;  however, it will usually be more efficient
+ * to update an existing <code>TextMeasurer</code> than to create a new one
+ * from scratch.
+ *
+ * @param newParagraph the text of the paragraph after performing
+ * the deletion.  Cannot be null.
+ * @param deletePos the position in the text where the character was removed.
+ * Must not be less than
+ * the start of <code>newParagraph</code>, and must not be greater than the
+ * end of <code>newParagraph</code>.
+ * @throws IndexOutOfBoundsException if <code>deletePos</code> is
+ *         less than the start of <code>newParagraph</code> or greater
+ *         than the end of <code>newParagraph</code>
+ * @throws NullPointerException if <code>newParagraph</code> is
+ *         <code>null</code>
+ */
+public void deleteChar(AttributedCharacterIterator newParagraph, int deletePos) {
+    fStart = newParagraph.getBeginIndex();
+    int end = newParagraph.getEndIndex();
+    if (end - fStart != fChars.length - 1) {
+        initAll(newParagraph);
+    }
+    char[] newChars = new char[end - fStart];
+    int changedIndex = deletePos - fStart;
+    System.arraycopy(fChars, 0, newChars, 0, deletePos - fStart);
+    System.arraycopy(fChars, changedIndex + 1, newChars, changedIndex, end - deletePos);
+    fChars = newChars;
+    if (fBidi != null) {
+        fBidi = new Bidi(newParagraph);
+        if (fBidi.isLeftToRight()) {
+            fBidi = null;
+        }
+    }
+    fParagraph = StyledParagraph.deleteChar(newParagraph, fChars, deletePos, fParagraph);
+    invalidateComponents();
+}

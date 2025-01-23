@@ -1,0 +1,13 @@
+/**
+ * Remove a PropertyChangeListener from the listener list.
+ * This removes a PropertyChangeListener that was registered
+ * for all properties.
+ *
+ * @param listener the PropertyChangeListener to be removed
+ */
+public void removePropertyChangeListener(PropertyChangeListener listener) {
+    if (--propertyListenersCount == 0) {
+        Container.this.removeContainerListener(accessibleContainerHandler);
+    }
+    super.removePropertyChangeListener(listener);
+}

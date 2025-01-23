@@ -1,0 +1,12 @@
+@Override
+double[] cloneCoordsDouble(AffineTransform at) {
+    // trim arrays:
+    double[] ret;
+    if (at == null) {
+        ret = Arrays.copyOf(doubleCoords, numCoords);
+    } else {
+        ret = new double[numCoords];
+        at.transform(doubleCoords, 0, ret, 0, numCoords / 2);
+    }
+    return ret;
+}

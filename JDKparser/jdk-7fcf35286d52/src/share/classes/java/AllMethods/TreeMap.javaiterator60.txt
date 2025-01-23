@@ -1,0 +1,6 @@
+public Iterator<E> iterator() {
+    if (m instanceof TreeMap)
+        return ((TreeMap<E, ?>) m).keyIterator();
+    else
+        return ((TreeMap.NavigableSubMap<E, ?>) m).keyIterator();
+}

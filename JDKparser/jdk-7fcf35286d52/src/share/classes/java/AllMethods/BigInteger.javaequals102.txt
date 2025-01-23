@@ -1,0 +1,25 @@
+/**
+ * Compares this BigInteger with the specified Object for equality.
+ *
+ * @param  x Object to which this BigInteger is to be compared.
+ * @return {@code true} if and only if the specified Object is a
+ *         BigInteger whose value is numerically equal to this BigInteger.
+ */
+public boolean equals(Object x) {
+    // This test is just an optimization, which may or may not help
+    if (x == this)
+        return true;
+    if (!(x instanceof BigInteger))
+        return false;
+    BigInteger xInt = (BigInteger) x;
+    if (xInt.signum != signum)
+        return false;
+    int[] m = mag;
+    int len = m.length;
+    int[] xm = xInt.mag;
+    if (len != xm.length)
+        return false;
+    for (int i = 0; i < len; i++) if (xm[i] != m[i])
+        return false;
+    return true;
+}

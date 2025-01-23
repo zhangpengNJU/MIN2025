@@ -1,0 +1,8 @@
+private static int ftypeKind(Class<?> ftype) {
+    if (ftype.isPrimitive())
+        return Wrapper.forPrimitiveType(ftype).ordinal();
+    else if (VerifyType.isNullReferenceConversion(Object.class, ftype))
+        return FT_UNCHECKED_REF;
+    else
+        return FT_CHECKED_REF;
+}

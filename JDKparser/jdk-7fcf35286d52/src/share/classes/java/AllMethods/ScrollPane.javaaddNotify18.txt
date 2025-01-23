@@ -1,0 +1,27 @@
+/**
+ * Creates the scroll pane's peer.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        int vAdjustableValue = 0;
+        int hAdjustableValue = 0;
+        // Bug 4124460. Save the current adjustable values,
+        // so they can be restored after addnotify. Set the
+        // adjustables to 0, to prevent crashes for possible
+        // negative values.
+        if (getComponentCount() > 0) {
+            vAdjustableValue = vAdjustable.getValue();
+            hAdjustableValue = hAdjustable.getValue();
+            vAdjustable.setValue(0);
+            hAdjustable.setValue(0);
+        }
+        if (peer == null)
+            peer = getToolkit().createScrollPane(this);
+        super.addNotify();
+        // Bug 4124460. Restore the adjustable values.
+        if (getComponentCount() > 0) {
+            vAdjustable.setValue(vAdjustableValue);
+            hAdjustable.setValue(hAdjustableValue);
+        }
+    }
+}

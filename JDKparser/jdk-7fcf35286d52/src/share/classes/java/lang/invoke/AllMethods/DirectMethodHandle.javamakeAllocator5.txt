@@ -1,0 +1,11 @@
+private static DirectMethodHandle makeAllocator(MemberName ctor) {
+    assert (ctor.isConstructor() && ctor.getName().equals("<init>"));
+    Class<?> instanceClass = ctor.getDeclaringClass();
+    ctor = ctor.asConstructor();
+    assert (ctor.isConstructor() && ctor.getReferenceKind() == REF_newInvokeSpecial) : ctor;
+    MethodType mtype = ctor.getMethodType().changeReturnType(instanceClass);
+    LambdaForm lform = preparedLambdaForm(ctor);
+    MemberName init = ctor.asSpecial();
+    assert (init.getMethodType().returnType() == void.class);
+    return new Constructor(mtype, lform, ctor, init, instanceClass);
+}

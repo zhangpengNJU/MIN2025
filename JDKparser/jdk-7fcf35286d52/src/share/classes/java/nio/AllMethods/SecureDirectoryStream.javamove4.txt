@@ -1,0 +1,39 @@
+/**
+ * Move a file from this directory to another directory.
+ *
+ * <p> This method works in a similar manner to {@link Files#move move}
+ * method when the {@link StandardCopyOption#ATOMIC_MOVE ATOMIC_MOVE} option
+ * is specified. That is, this method moves a file as an atomic file system
+ * operation. If the {@code srcpath} parameter is an {@link Path#isAbsolute
+ * absolute} path then it locates the source file. If the parameter is a
+ * relative path then it is located relative to this open directory. If
+ * the {@code targetpath} parameter is absolute then it locates the target
+ * file (the {@code targetdir} parameter is ignored). If the parameter is
+ * a relative path it is located relative to the open directory identified
+ * by the {@code targetdir} parameter. In all cases, if the target file
+ * exists then it is implementation specific if it is replaced or this
+ * method fails.
+ *
+ * @param   srcpath
+ *          the name of the file to move
+ * @param   targetdir
+ *          the destination directory
+ * @param   targetpath
+ *          the name to give the file in the destination directory
+ *
+ * @throws  ClosedDirectoryStreamException
+ *          if this or the target directory stream is closed
+ * @throws  FileAlreadyExistsException
+ *          if the file already exists in the target directory and cannot
+ *          be replaced <i>(optional specific exception)</i>
+ * @throws  AtomicMoveNotSupportedException
+ *          if the file cannot be moved as an atomic file system operation
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkWrite(String) checkWrite}
+ *          method is invoked to check write access to both the source and
+ *          target file.
+ */
+void move(T srcpath, SecureDirectoryStream<T> targetdir, T targetpath) throws IOException;

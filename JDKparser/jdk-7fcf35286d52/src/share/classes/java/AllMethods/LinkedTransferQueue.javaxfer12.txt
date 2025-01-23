@@ -1,0 +1,63 @@
+/**
+ * Implements all queuing methods. See above for explanation.
+ *
+ * @param e the item or null for take
+ * @param haveData true if this is a put, else a take
+ * @param how NOW, ASYNC, SYNC, or TIMED
+ * @param nanos timeout in nanosecs, used only if mode is TIMED
+ * @return an item if matched, else e
+ * @throws NullPointerException if haveData mode but e is null
+ */
+private E xfer(E e, boolean haveData, int how, long nanos) {
+    if (haveData && (e == null))
+        throw new NullPointerException();
+    // the node to append, if needed
+    Node s = null;
+    retry: for (; ; ) {
+        // restart on append race
+        for (Node h = head, p = h; p != null; ) {
+            // find & match first node
+            boolean isData = p.isData;
+            Object item = p.item;
+            if (item != p && (item != null) == isData) {
+                // unmatched
+                if (// can't match
+                isData == haveData)
+                    break;
+                if (p.casItem(item, e)) {
+                    // match
+                    for (Node q = p; q != h; ) {
+                        // update by 2 unless singleton
+                        Node n = q.next;
+                        if (head == h && casHead(h, n == null ? q : n)) {
+                            h.forgetNext();
+                            break;
+                        }
+                        // advance and retry
+                        if ((h = head) == null || (q = h.next) == null || !q.isMatched())
+                            // unless slack < 2
+                            break;
+                    }
+                    LockSupport.unpark(p.waiter);
+                    return LinkedTransferQueue.<E>cast(item);
+                }
+            }
+            Node n = p.next;
+            // Use head if p offlist
+            p = (p != n) ? n : (h = head);
+        }
+        if (how != NOW) {
+            // No matches available
+            if (s == null)
+                s = new Node(e, haveData);
+            Node pred = tryAppend(s, haveData);
+            if (pred == null)
+                // lost race vs opposite mode
+                continue retry;
+            if (how != ASYNC)
+                return awaitMatch(s, pred, e, (how == TIMED), nanos);
+        }
+        // not waiting
+        return e;
+    }
+}

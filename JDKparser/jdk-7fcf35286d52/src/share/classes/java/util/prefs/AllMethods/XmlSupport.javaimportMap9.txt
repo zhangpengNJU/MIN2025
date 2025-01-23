@@ -1,0 +1,30 @@
+/**
+ * Import Map from the specified input stream, which is assumed
+ * to contain a map document as per the prefs DTD.  This is used
+ * as the internal (undocumented) format for FileSystemPrefs.  The
+ * key-value pairs specified in the XML document will be put into
+ * the specified Map.  (If this Map is empty, it will contain exactly
+ * the key-value pairs int the XML-document when this method returns.)
+ *
+ * @throws IOException if reading from the specified output stream
+ *         results in an <tt>IOException</tt>.
+ * @throws InvalidPreferencesFormatException Data on input stream does not
+ *         constitute a valid XML document with the mandated document type.
+ */
+static void importMap(InputStream is, Map<String, String> m) throws IOException, InvalidPreferencesFormatException {
+    try {
+        Document doc = loadPrefsDoc(is);
+        Element xmlMap = doc.getDocumentElement();
+        // check version
+        String mapVersion = xmlMap.getAttribute("MAP_XML_VERSION");
+        if (mapVersion.compareTo(MAP_XML_VERSION) > 0)
+            throw new InvalidPreferencesFormatException("Preferences map file format version " + mapVersion + " is not supported. This java installation can read" + " versions " + MAP_XML_VERSION + " or older. You may need" + " to install a newer version of JDK.");
+        NodeList entries = xmlMap.getChildNodes();
+        for (int i = 0, numEntries = entries.getLength(); i < numEntries; i++) {
+            Element entry = (Element) entries.item(i);
+            m.put(entry.getAttribute("key"), entry.getAttribute("value"));
+        }
+    } catch (SAXException e) {
+        throw new InvalidPreferencesFormatException(e);
+    }
+}

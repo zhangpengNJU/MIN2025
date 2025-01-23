@@ -1,0 +1,9 @@
+/**
+ * Returns a numeric value for this object that is likely to be unique,
+ * making it a good choice as the index value in a hash table.
+ *
+ * @return an int that represents this object
+ */
+public int hashCode() {
+    return (((int) keyChar) + 1) * (2 * (keyCode + 1)) * (modifiers + 1) + (onKeyRelease ? 1 : 2);
+}

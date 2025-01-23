@@ -1,0 +1,44 @@
+/**
+ * Save the state of this object to a stream (i.e., serialize it).
+ *
+ * Ideally, <code>Calendar</code> would only write out its state data and
+ * the current time, and not write any field data out, such as
+ * <code>fields[]</code>, <code>isTimeSet</code>, <code>areFieldsSet</code>,
+ * and <code>isSet[]</code>.  <code>nextStamp</code> also should not be part
+ * of the persistent state. Unfortunately, this didn't happen before JDK 1.1
+ * shipped. To be compatible with JDK 1.1, we will always have to write out
+ * the field values and state flags.  However, <code>nextStamp</code> can be
+ * removed from the serialization stream; this will probably happen in the
+ * near future.
+ */
+private synchronized void writeObject(ObjectOutputStream stream) throws IOException {
+    // Try to compute the time correctly, for the future (stream
+    // version 2) in which we don't write out fields[] or isSet[].
+    if (!isTimeSet) {
+        try {
+            updateTime();
+        } catch (IllegalArgumentException e) {
+        }
+    }
+    // If this Calendar has a ZoneInfo, save it and set a
+    // SimpleTimeZone equivalent (as a single DST schedule) for
+    // backward compatibility.
+    TimeZone savedZone = null;
+    if (zone instanceof ZoneInfo) {
+        SimpleTimeZone stz = ((ZoneInfo) zone).getLastRuleInstance();
+        if (stz == null) {
+            stz = new SimpleTimeZone(zone.getRawOffset(), zone.getID());
+        }
+        savedZone = zone;
+        zone = stz;
+    }
+    // Write out the 1.1 FCS object.
+    stream.defaultWriteObject();
+    // Write out the ZoneInfo object
+    // 4802409: we write out even if it is null, a temporary workaround
+    // the real fix for bug 4844924 in corba-iiop
+    stream.writeObject(savedZone);
+    if (savedZone != null) {
+        zone = savedZone;
+    }
+}

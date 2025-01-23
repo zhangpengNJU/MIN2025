@@ -1,0 +1,9 @@
+public boolean remove(Object o) {
+    for (Entry<K, V> e = getFirstEntry(); e != null; e = successor(e)) {
+        if (valEquals(e.getValue(), o)) {
+            deleteEntry(e);
+            return true;
+        }
+    }
+    return false;
+}

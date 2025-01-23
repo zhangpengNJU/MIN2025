@@ -1,0 +1,25 @@
+/**
+ * A private method that adds a name (String or byte array) to the
+ * subjectAlternativeNames criterion. The {@code X509Certificate}
+ * must contain the specified subjectAlternativeName.
+ *
+ * @param type the name type (0-8, as specified in
+ *             RFC 5280, section 4.2.1.6)
+ * @param name the name in string or byte array form
+ * @throws IOException if a parsing error occurs
+ */
+private void addSubjectAlternativeNameInternal(int type, Object name) throws IOException {
+    // First, ensure that the name parses
+    GeneralNameInterface tempName = makeGeneralNameInterface(type, name);
+    if (subjectAlternativeNames == null) {
+        subjectAlternativeNames = new HashSet<List<?>>();
+    }
+    if (subjectAlternativeGeneralNames == null) {
+        subjectAlternativeGeneralNames = new HashSet<GeneralNameInterface>();
+    }
+    List<Object> list = new ArrayList<Object>(2);
+    list.add(Integer.valueOf(type));
+    list.add(name);
+    subjectAlternativeNames.add(list);
+    subjectAlternativeGeneralNames.add(tempName);
+}

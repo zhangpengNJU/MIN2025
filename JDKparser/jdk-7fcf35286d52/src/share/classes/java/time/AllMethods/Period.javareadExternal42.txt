@@ -1,0 +1,6 @@
+static Period readExternal(DataInput in) throws IOException {
+    int years = in.readInt();
+    int months = in.readInt();
+    int days = in.readInt();
+    return Period.of(years, months, days);
+}

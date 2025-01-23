@@ -1,0 +1,37 @@
+/**
+ * The workhorse of the connection operation.  Tries several times to
+ * establish a connection to the given <host, port>.  If unsuccessful,
+ * throws an IOException indicating what went wrong.
+ */
+synchronized void doConnect(InetAddress address, int port, int timeout) throws IOException {
+    synchronized (fdLock) {
+        if (!closePending && (socket == null || !socket.isBound())) {
+            NetHooks.beforeTcpConnect(fd, address, port);
+        }
+    }
+    try {
+        acquireFD();
+        try {
+            socketConnect(address, port, timeout);
+            /* socket may have been closed during poll/select */
+            synchronized (fdLock) {
+                if (closePending) {
+                    throw new SocketException("Socket closed");
+                }
+            }
+            // If we have a ref. to the Socket, then sets the flags
+            // created, bound & connected to true.
+            // This is normally done in Socket.connect() but some
+            // subclasses of Socket may call impl.connect() directly!
+            if (socket != null) {
+                socket.setBound();
+                socket.setConnected();
+            }
+        } finally {
+            releaseFD();
+        }
+    } catch (IOException e) {
+        close();
+        throw e;
+    }
+}

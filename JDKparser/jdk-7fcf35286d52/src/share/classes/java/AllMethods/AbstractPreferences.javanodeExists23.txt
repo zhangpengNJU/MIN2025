@@ -1,0 +1,23 @@
+/**
+ * tokenizer contains <name> {'/' <name>}*
+ */
+private boolean nodeExists(StringTokenizer path) throws BackingStoreException {
+    String token = path.nextToken();
+    if (// Check for consecutive slashes
+    token.equals("/"))
+        throw new IllegalArgumentException("Consecutive slashes in path");
+    synchronized (lock) {
+        AbstractPreferences child = kidCache.get(token);
+        if (child == null)
+            child = getChild(token);
+        if (child == null)
+            return false;
+        if (!path.hasMoreTokens())
+            return true;
+        // Consume slash
+        path.nextToken();
+        if (!path.hasMoreTokens())
+            throw new IllegalArgumentException("Path ends with slash");
+        return child.nodeExists(path);
+    }
+}

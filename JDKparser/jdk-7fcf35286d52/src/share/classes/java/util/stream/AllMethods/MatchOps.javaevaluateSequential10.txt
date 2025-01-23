@@ -1,0 +1,4 @@
+@Override
+public <S> Boolean evaluateSequential(PipelineHelper<T> helper, Spliterator<S> spliterator) {
+    return helper.wrapAndCopyInto(sinkSupplier.get(), spliterator).getAndClearState();
+}

@@ -1,0 +1,16 @@
+/**
+ * Determines whether a key is granted permission for the specified
+ * cryptographic primitives.
+ * <p>
+ * This method is usually used to check key size and key usage.
+ *
+ * @param primitives a set of cryptographic primitives
+ * @param key the key
+ *
+ * @return true if the key can be used for all of the specified
+ *     cryptographic primitives
+ *
+ * @throws IllegalArgumentException if primitives is null or empty,
+ *     or the key is null
+ */
+public boolean permits(Set<CryptoPrimitive> primitives, Key key);

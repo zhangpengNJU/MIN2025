@@ -1,0 +1,10 @@
+/**
+ * Returns access exception if accessCheck failed due to
+ * protected access, else ClassCastException.
+ */
+private final RuntimeException accessCheckException(T obj) {
+    if (cclass == tclass)
+        return new ClassCastException();
+    else
+        return new RuntimeException(new IllegalAccessException("Class " + cclass.getName() + " can not access a protected member of class " + tclass.getName() + " using an instance of " + obj.getClass().getName()));
+}

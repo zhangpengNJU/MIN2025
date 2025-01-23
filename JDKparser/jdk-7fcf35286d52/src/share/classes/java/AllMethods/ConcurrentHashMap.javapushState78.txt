@@ -1,0 +1,16 @@
+/**
+ * Saves traversal state upon encountering a forwarding node.
+ */
+private void pushState(Node<K, V>[] t, int i, int n) {
+    // reuse if possible
+    TableStack<K, V> s = spare;
+    if (s != null)
+        spare = s.next;
+    else
+        s = new TableStack<K, V>();
+    s.tab = t;
+    s.length = n;
+    s.index = i;
+    s.next = stack;
+    stack = s;
+}

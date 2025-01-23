@@ -1,0 +1,11 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    for (int n = 0; n < size; n++) {
+        if (atoms[n] == null) {
+            if (conn.next.match(matcher, i, seq))
+                return true;
+        } else if (atoms[n].match(matcher, i, seq)) {
+            return true;
+        }
+    }
+    return false;
+}

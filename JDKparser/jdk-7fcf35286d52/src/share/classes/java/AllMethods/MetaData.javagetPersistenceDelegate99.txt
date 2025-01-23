@@ -1,0 +1,56 @@
+@SuppressWarnings("rawtypes")
+public synchronized static PersistenceDelegate getPersistenceDelegate(Class type) {
+    if (type == null) {
+        return nullPersistenceDelegate;
+    }
+    if (Enum.class.isAssignableFrom(type)) {
+        return enumPersistenceDelegate;
+    }
+    if (null != XMLEncoder.primitiveTypeFor(type)) {
+        return primitivePersistenceDelegate;
+    }
+    // The persistence delegate for arrays is non-trivial; instantiate it lazily.
+    if (type.isArray()) {
+        if (arrayPersistenceDelegate == null) {
+            arrayPersistenceDelegate = new ArrayPersistenceDelegate();
+        }
+        return arrayPersistenceDelegate;
+    }
+    // Handle proxies lazily for backward compatibility with 1.2.
+    try {
+        if (java.lang.reflect.Proxy.isProxyClass(type)) {
+            if (proxyPersistenceDelegate == null) {
+                proxyPersistenceDelegate = new ProxyPersistenceDelegate();
+            }
+            return proxyPersistenceDelegate;
+        }
+    } catch (Exception e) {
+    }
+    // else if (type.getDeclaringClass() != null) {
+    // return new DefaultPersistenceDelegate(new String[]{"this$0"});
+    // }
+    String typeName = type.getName();
+    PersistenceDelegate pd = (PersistenceDelegate) getBeanAttribute(type, "persistenceDelegate");
+    if (pd == null) {
+        pd = internalPersistenceDelegates.get(typeName);
+        if (pd != null) {
+            return pd;
+        }
+        internalPersistenceDelegates.put(typeName, defaultPersistenceDelegate);
+        try {
+            String name = type.getName();
+            Class c = Class.forName("java.beans.MetaData$" + name.replace('.', '_') + "_PersistenceDelegate");
+            pd = (PersistenceDelegate) c.newInstance();
+            internalPersistenceDelegates.put(typeName, pd);
+        } catch (ClassNotFoundException e) {
+            String[] properties = getConstructorProperties(type);
+            if (properties != null) {
+                pd = new DefaultPersistenceDelegate(properties);
+                internalPersistenceDelegates.put(typeName, pd);
+            }
+        } catch (Exception e) {
+            System.err.println("Internal error: " + e);
+        }
+    }
+    return (pd != null) ? pd : defaultPersistenceDelegate;
+}

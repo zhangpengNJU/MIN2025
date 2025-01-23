@@ -1,0 +1,14 @@
+/**
+ * Helper to compare two {@code char}.
+ * This uses {@link #isCaseSensitive()}.
+ *
+ * @param ch1  the first character
+ * @param ch2  the second character
+ * @return true if equal
+ */
+boolean charEquals(char ch1, char ch2) {
+    if (isCaseSensitive()) {
+        return ch1 == ch2;
+    }
+    return charEqualsIgnoreCase(ch1, ch2);
+}

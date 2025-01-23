@@ -1,0 +1,11 @@
+/**
+ * Creates the TextField's peer.  The peer allows us to modify the
+ * appearance of the TextField without changing its functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createTextField(this);
+        super.addNotify();
+    }
+}

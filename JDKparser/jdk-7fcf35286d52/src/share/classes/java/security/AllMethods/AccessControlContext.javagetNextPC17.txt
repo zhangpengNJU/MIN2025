@@ -1,0 +1,12 @@
+/*
+     * Follow the privilegedContext link making our best effort to skip
+     * through any wrapper contexts.
+     */
+private static AccessControlContext getNextPC(AccessControlContext acc) {
+    while (acc != null && acc.privilegedContext != null) {
+        acc = acc.privilegedContext;
+        if (!acc.isWrapped)
+            return acc;
+    }
+    return null;
+}

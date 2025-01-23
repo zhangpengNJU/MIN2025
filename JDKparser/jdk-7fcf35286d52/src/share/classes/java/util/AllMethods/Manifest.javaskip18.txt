@@ -1,0 +1,14 @@
+public long skip(long n) throws IOException {
+    if (n <= 0) {
+        return 0;
+    }
+    long avail = count - pos;
+    if (avail <= 0) {
+        return in.skip(n);
+    }
+    if (n > avail) {
+        n = avail;
+    }
+    pos += n;
+    return n;
+}

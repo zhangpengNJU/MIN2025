@@ -1,0 +1,27 @@
+/**
+ * Removes the element at the specified position in this list (optional
+ * operation).  Shifts any subsequent elements to the left (subtracts one
+ * from their indices).  Returns the element that was removed from the
+ * list.
+ *
+ * <p>This implementation first gets a list iterator pointing to the
+ * indexed element (with <tt>listIterator(index)</tt>).  Then, it removes
+ * the element with <tt>ListIterator.remove</tt>.
+ *
+ * <p>Note that this implementation will throw an
+ * <tt>UnsupportedOperationException</tt> if the list iterator does not
+ * implement the <tt>remove</tt> operation.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws IndexOutOfBoundsException     {@inheritDoc}
+ */
+public E remove(int index) {
+    try {
+        ListIterator<E> e = listIterator(index);
+        E outCast = e.next();
+        e.remove();
+        return outCast;
+    } catch (NoSuchElementException exc) {
+        throw new IndexOutOfBoundsException("Index: " + index);
+    }
+}

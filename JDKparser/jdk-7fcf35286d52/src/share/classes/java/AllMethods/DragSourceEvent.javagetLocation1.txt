@@ -1,0 +1,17 @@
+/**
+ * This method returns a <code>Point</code> indicating the cursor
+ * location in screen coordinates at the moment this event occurred, or
+ * <code>null</code> if the cursor location is not specified for this
+ * event.
+ *
+ * @return the <code>Point</code> indicating the cursor location
+ *         or <code>null</code> if the cursor location is not specified
+ * @since 1.4
+ */
+public Point getLocation() {
+    if (locationSpecified) {
+        return new Point(x, y);
+    } else {
+        return null;
+    }
+}

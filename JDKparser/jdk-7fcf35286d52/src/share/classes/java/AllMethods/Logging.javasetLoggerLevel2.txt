@@ -1,0 +1,18 @@
+public void setLoggerLevel(String loggerName, String levelName) {
+    if (loggerName == null) {
+        throw new NullPointerException("loggerName is null");
+    }
+    Logger logger = logManager.getLogger(loggerName);
+    if (logger == null) {
+        throw new IllegalArgumentException("Logger " + loggerName + "does not exist");
+    }
+    Level level = null;
+    if (levelName != null) {
+        // parse will throw IAE if logLevel is invalid
+        level = Level.findLevel(levelName);
+        if (level == null) {
+            throw new IllegalArgumentException("Unknown level \"" + levelName + "\"");
+        }
+    }
+    logger.setLevel(level);
+}

@@ -1,0 +1,8 @@
+public E peekLast() {
+    for (Node<E> p = last(); p != null; p = pred(p)) {
+        E item = p.item;
+        if (item != null)
+            return item;
+    }
+    return null;
+}

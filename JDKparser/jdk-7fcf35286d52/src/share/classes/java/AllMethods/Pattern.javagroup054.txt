@@ -1,0 +1,168 @@
+/**
+ * Parses a group and returns the head node of a set of nodes that process
+ * the group. Sometimes a double return system is used where the tail is
+ * returned in root.
+ */
+private Node group0() {
+    boolean capturingGroup = false;
+    Node head = null;
+    Node tail = null;
+    int save = flags;
+    root = null;
+    int ch = next();
+    if (ch == '?') {
+        ch = skip();
+        switch(ch) {
+            case // (?:xxx) pure group
+            ':':
+                head = createGroup(true);
+                tail = root;
+                head.next = expr(tail);
+                break;
+            // (?=xxx) and (?!xxx) lookahead
+            case '=':
+            case '!':
+                head = createGroup(true);
+                tail = root;
+                head.next = expr(tail);
+                if (ch == '=') {
+                    head = tail = new Pos(head);
+                } else {
+                    head = tail = new Neg(head);
+                }
+                break;
+            case // (?>xxx)  independent group
+            '>':
+                head = createGroup(true);
+                tail = root;
+                head.next = expr(tail);
+                head = tail = new Ques(head, INDEPENDENT);
+                break;
+            case // (?<xxx)  look behind
+            '<':
+                ch = read();
+                if (ASCII.isLower(ch) || ASCII.isUpper(ch)) {
+                    // named captured group
+                    String name = groupname(ch);
+                    if (namedGroups().containsKey(name))
+                        throw error("Named capturing group <" + name + "> is already defined");
+                    capturingGroup = true;
+                    head = createGroup(false);
+                    tail = root;
+                    namedGroups().put(name, capturingGroupCount - 1);
+                    head.next = expr(tail);
+                    break;
+                }
+                int start = cursor;
+                head = createGroup(true);
+                tail = root;
+                head.next = expr(tail);
+                tail.next = lookbehindEnd;
+                TreeInfo info = new TreeInfo();
+                head.study(info);
+                if (info.maxValid == false) {
+                    throw error("Look-behind group does not have " + "an obvious maximum length");
+                }
+                boolean hasSupplementary = findSupplementary(start, patternLength);
+                if (ch == '=') {
+                    head = tail = (hasSupplementary ? new BehindS(head, info.maxLength, info.minLength) : new Behind(head, info.maxLength, info.minLength));
+                } else if (ch == '!') {
+                    head = tail = (hasSupplementary ? new NotBehindS(head, info.maxLength, info.minLength) : new NotBehind(head, info.maxLength, info.minLength));
+                } else {
+                    throw error("Unknown look-behind group");
+                }
+                break;
+            case '$':
+            case '@':
+                throw error("Unknown group type");
+            default:
+                // (?xxx:) inlined match flags
+                unread();
+                addFlag();
+                ch = read();
+                if (ch == ')') {
+                    // Inline modifier only
+                    return null;
+                }
+                if (ch != ':') {
+                    throw error("Unknown inline modifier");
+                }
+                head = createGroup(true);
+                tail = root;
+                head.next = expr(tail);
+                break;
+        }
+    } else {
+        // (xxx) a regular group
+        capturingGroup = true;
+        head = createGroup(false);
+        tail = root;
+        head.next = expr(tail);
+    }
+    accept(')', "Unclosed group");
+    flags = save;
+    // Check for quantifiers
+    Node node = closure(head);
+    if (node == head) {
+        // No closure
+        root = tail;
+        // Dual return
+        return node;
+    }
+    if (head == tail) {
+        // Zero length assertion
+        root = node;
+        // Dual return
+        return node;
+    }
+    if (node instanceof Ques) {
+        Ques ques = (Ques) node;
+        if (ques.type == POSSESSIVE) {
+            root = node;
+            return node;
+        }
+        tail.next = new BranchConn();
+        tail = tail.next;
+        if (ques.type == GREEDY) {
+            head = new Branch(head, null, tail);
+        } else {
+            // Reluctant quantifier
+            head = new Branch(null, head, tail);
+        }
+        root = tail;
+        return head;
+    } else if (node instanceof Curly) {
+        Curly curly = (Curly) node;
+        if (curly.type == POSSESSIVE) {
+            root = node;
+            return node;
+        }
+        // Discover if the group is deterministic
+        TreeInfo info = new TreeInfo();
+        if (head.study(info)) {
+            // Deterministic
+            GroupTail temp = (GroupTail) tail;
+            head = root = new GroupCurly(head.next, curly.cmin, curly.cmax, curly.type, ((GroupTail) tail).localIndex, ((GroupTail) tail).groupIndex, capturingGroup);
+            return head;
+        } else {
+            // Non-deterministic
+            int temp = ((GroupHead) head).localIndex;
+            Loop loop;
+            if (curly.type == GREEDY)
+                loop = new Loop(this.localCount, temp);
+            else
+                // Reluctant Curly
+                loop = new LazyLoop(this.localCount, temp);
+            Prolog prolog = new Prolog(loop);
+            this.localCount += 1;
+            loop.cmin = curly.cmin;
+            loop.cmax = curly.cmax;
+            loop.body = head;
+            tail.next = loop;
+            root = loop;
+            // Dual return
+            return prolog;
+        }
+    }
+    throw error("Internal logic error");
+}

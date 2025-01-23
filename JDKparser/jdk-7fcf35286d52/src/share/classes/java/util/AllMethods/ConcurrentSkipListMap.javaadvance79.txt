@@ -1,0 +1,17 @@
+/**
+ * Advances next to higher entry.
+ */
+final void advance() {
+    if (next == null)
+        throw new NoSuchElementException();
+    lastReturned = next;
+    while ((next = next.next) != null) {
+        Object x = next.value;
+        if (x != null && x != next) {
+            @SuppressWarnings("unchecked")
+            V vv = (V) x;
+            nextValue = vv;
+            break;
+        }
+    }
+}

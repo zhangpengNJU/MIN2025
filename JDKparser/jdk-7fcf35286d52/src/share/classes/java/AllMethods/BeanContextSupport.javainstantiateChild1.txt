@@ -1,0 +1,21 @@
+/**
+ * <p>
+ * The instantiateChild method is a convenience hook
+ * in BeanContext to simplify
+ * the task of instantiating a Bean, nested,
+ * into a <tt>BeanContext</tt>.
+ * </p>
+ * <p>
+ * The semantics of the beanName parameter are defined by java.beans.Beans.instantiate.
+ * </p>
+ *
+ * @param beanName the name of the Bean to instantiate within this BeanContext
+ * @throws IOException if there is an I/O error when the bean is being deserialized
+ * @throws ClassNotFoundException if the class
+ * identified by the beanName parameter is not found
+ * @return the new object
+ */
+public Object instantiateChild(String beanName) throws IOException, ClassNotFoundException {
+    BeanContext bc = getBeanContextPeer();
+    return Beans.instantiate(bc.getClass().getClassLoader(), beanName, bc);
+}

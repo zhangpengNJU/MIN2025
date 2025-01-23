@@ -1,0 +1,122 @@
+@SuppressWarnings("fallthrough")
+private void parseField(char cur, int count, TemporalField field) {
+    boolean standalone = false;
+    switch(cur) {
+        case 'u':
+        case 'y':
+            if (count == 2) {
+                appendValueReduced(field, 2, 2, ReducedPrinterParser.BASE_DATE);
+            } else if (count < 4) {
+                appendValue(field, count, 19, SignStyle.NORMAL);
+            } else {
+                appendValue(field, count, 19, SignStyle.EXCEEDS_PAD);
+            }
+            break;
+        case 'c':
+            if (count == 2) {
+                throw new IllegalArgumentException("Invalid pattern \"cc\"");
+            }
+        /*fallthrough*/
+        case 'L':
+        case 'q':
+            standalone = true;
+        /*fallthrough*/
+        case 'M':
+        case 'Q':
+        case 'E':
+        case 'e':
+            switch(count) {
+                case 1:
+                case 2:
+                    if (cur == 'c' || cur == 'e') {
+                        appendInternal(new WeekBasedFieldPrinterParser(cur, count));
+                    } else if (cur == 'E') {
+                        appendText(field, TextStyle.SHORT);
+                    } else {
+                        if (count == 1) {
+                            appendValue(field);
+                        } else {
+                            appendValue(field, 2);
+                        }
+                    }
+                    break;
+                case 3:
+                    appendText(field, standalone ? TextStyle.SHORT_STANDALONE : TextStyle.SHORT);
+                    break;
+                case 4:
+                    appendText(field, standalone ? TextStyle.FULL_STANDALONE : TextStyle.FULL);
+                    break;
+                case 5:
+                    appendText(field, standalone ? TextStyle.NARROW_STANDALONE : TextStyle.NARROW);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'a':
+            if (count == 1) {
+                appendText(field, TextStyle.SHORT);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'G':
+            switch(count) {
+                case 1:
+                case 2:
+                case 3:
+                    appendText(field, TextStyle.SHORT);
+                    break;
+                case 4:
+                    appendText(field, TextStyle.FULL);
+                    break;
+                case 5:
+                    appendText(field, TextStyle.NARROW);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'S':
+            appendFraction(NANO_OF_SECOND, count, count, false);
+            break;
+        case 'F':
+            if (count == 1) {
+                appendValue(field);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'd':
+        case 'h':
+        case 'H':
+        case 'k':
+        case 'K':
+        case 'm':
+        case 's':
+            if (count == 1) {
+                appendValue(field);
+            } else if (count == 2) {
+                appendValue(field, count);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        case 'D':
+            if (count == 1) {
+                appendValue(field);
+            } else if (count <= 3) {
+                appendValue(field, count);
+            } else {
+                throw new IllegalArgumentException("Too many pattern letters: " + cur);
+            }
+            break;
+        default:
+            if (count == 1) {
+                appendValue(field);
+            } else {
+                appendValue(field, count);
+            }
+            break;
+    }
+}

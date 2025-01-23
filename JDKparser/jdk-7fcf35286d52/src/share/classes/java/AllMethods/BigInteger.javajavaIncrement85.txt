@@ -1,0 +1,9 @@
+int[] javaIncrement(int[] val) {
+    int lastSum = 0;
+    for (int i = val.length - 1; i >= 0 && lastSum == 0; i--) lastSum = (val[i] += 1);
+    if (lastSum == 0) {
+        val = new int[val.length + 1];
+        val[0] = 1;
+    }
+    return val;
+}

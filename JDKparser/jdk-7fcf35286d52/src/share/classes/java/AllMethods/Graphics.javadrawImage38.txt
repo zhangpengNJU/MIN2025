@@ -1,0 +1,33 @@
+/**
+ * Draws as much of the specified image as is currently available.
+ * The image is drawn with its top-left corner at
+ * (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's coordinate
+ * space. Transparent pixels in the image do not affect whatever
+ * pixels are already there.
+ * <p>
+ * This method returns immediately in all cases, even if the
+ * complete image has not yet been loaded, and it has not been dithered
+ * and converted for the current output device.
+ * <p>
+ * If the image has completely loaded and its pixels are
+ * no longer being changed, then
+ * <code>drawImage</code> returns <code>true</code>.
+ * Otherwise, <code>drawImage</code> returns <code>false</code>
+ * and as more of
+ * the image becomes available
+ * or it is time to draw another frame of animation,
+ * the process that loads the image notifies
+ * the specified image observer.
+ * @param    img the specified image to be drawn. This method does
+ *               nothing if <code>img</code> is null.
+ * @param    x   the <i>x</i> coordinate.
+ * @param    y   the <i>y</i> coordinate.
+ * @param    observer    object to be notified as more of
+ *                          the image is converted.
+ * @return   <code>false</code> if the image pixels are still changing;
+ *           <code>true</code> otherwise.
+ * @see      java.awt.Image
+ * @see      java.awt.image.ImageObserver
+ * @see      java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int, int, int, int, int)
+ */
+public abstract boolean drawImage(Image img, int x, int y, ImageObserver observer);

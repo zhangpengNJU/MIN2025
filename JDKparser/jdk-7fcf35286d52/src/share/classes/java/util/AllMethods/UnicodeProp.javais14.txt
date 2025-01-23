@@ -1,0 +1,8 @@
+// \p{Whitespace} --
+// [\N{LF} \N{VT} \N{FF} \N{CR} \N{NEL}  -> 0xa, 0xb, 0xc, 0xd, 0x85
+// \p{gc=Line_Separator}
+// \p{gc=Paragraph_Separator}]
+public boolean is(int ch) {
+    return Character.getType(ch) == Character.SPACE_SEPARATOR || // \N{HT}
+    ch == 0x9;
+}

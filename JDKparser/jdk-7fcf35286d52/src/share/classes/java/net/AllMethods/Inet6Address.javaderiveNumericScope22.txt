@@ -1,0 +1,18 @@
+private static int deriveNumericScope(byte[] thisAddr, NetworkInterface ifc) throws UnknownHostException {
+    Enumeration<InetAddress> addresses = ifc.getInetAddresses();
+    while (addresses.hasMoreElements()) {
+        InetAddress addr = addresses.nextElement();
+        if (!(addr instanceof Inet6Address)) {
+            continue;
+        }
+        Inet6Address ia6_addr = (Inet6Address) addr;
+        /* check if site or link local prefixes match */
+        if (!isDifferentLocalAddressType(thisAddr, ia6_addr.getAddress())) {
+            /* type not the same, so carry on searching */
+            continue;
+        }
+        /* found a matching address - return its scope_id */
+        return ia6_addr.getScopeId();
+    }
+    throw new UnknownHostException("no scope_id found");
+}

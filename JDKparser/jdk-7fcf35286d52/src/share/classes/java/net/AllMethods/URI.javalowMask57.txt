@@ -1,0 +1,23 @@
+// -- Character classes for parsing --
+// RFC2396 precisely specifies which characters in the US-ASCII charset are
+// permissible in the various components of a URI reference.  We here
+// define a set of mask pairs to aid in enforcing these restrictions.  Each
+// mask pair consists of two longs, a low mask and a high mask.  Taken
+// together they represent a 128-bit mask, where bit i is set iff the
+// character with value i is permitted.
+// 
+// This approach is more efficient than sequentially searching arrays of
+// permitted characters.  It could be made still more efficient by
+// precompiling the mask information so that a character's presence in a
+// given mask could be determined by a single table lookup.
+// Compute the low-order mask for the characters in the given string
+private static long lowMask(String chars) {
+    int n = chars.length();
+    long m = 0;
+    for (int i = 0; i < n; i++) {
+        char c = chars.charAt(i);
+        if (c < 64)
+            m |= (1L << c);
+    }
+    return m;
+}

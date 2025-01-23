@@ -1,0 +1,12 @@
+/**
+ * Peeks at next byte value in stream.  Similar to read(), except
+ * that it does not consume the read value.
+ */
+int peek() throws IOException {
+    if (peekb >= 0) {
+        return peekb;
+    }
+    peekb = in.read();
+    totalBytesRead += peekb >= 0 ? 1 : 0;
+    return peekb;
+}

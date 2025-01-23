@@ -1,0 +1,13 @@
+private final int outLength(int srclen) {
+    int len = 0;
+    if (doPadding) {
+        len = 4 * ((srclen + 2) / 3);
+    } else {
+        int n = srclen % 3;
+        len = 4 * (srclen / 3) + (n == 0 ? 0 : n + 1);
+    }
+    if (// line separators
+    linemax > 0)
+        len += (len - 1) / linemax * newline.length;
+    return len;
+}

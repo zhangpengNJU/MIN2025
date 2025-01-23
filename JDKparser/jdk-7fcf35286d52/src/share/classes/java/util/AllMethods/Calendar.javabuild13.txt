@@ -1,0 +1,108 @@
+/**
+ * Returns a {@code Calendar} built from the parameters set by the
+ * setter methods. The calendar type given by the {@link #setCalendarType(String)
+ * setCalendarType} method or the {@linkplain #setLocale(Locale) locale} is
+ * used to determine what {@code Calendar} to be created. If no explicit
+ * calendar type is given, the locale's default calendar is created.
+ *
+ * <p>If the calendar type is {@code "iso8601"}, the
+ * {@linkplain GregorianCalendar#setGregorianChange(Date) Gregorian change date}
+ * of a {@link GregorianCalendar} is set to {@code Date(Long.MIN_VALUE)}
+ * to be the <em>proleptic</em> Gregorian calendar. Its week definition
+ * parameters are also set to be <a
+ * href="GregorianCalendar.html#iso8601_compatible_setting">compatible
+ * with the ISO 8601 standard</a>. Note that the
+ * {@link GregorianCalendar#getCalendarType() getCalendarType} method of
+ * a {@code GregorianCalendar} created with {@code "iso8601"} returns
+ * {@code "gregory"}.
+ *
+ * <p>The default values are used for locale and time zone if these
+ * parameters haven't been given explicitly.
+ *
+ * <p>Any out of range field values are either normalized in lenient
+ * mode or detected as an invalid value in non-lenient mode.
+ *
+ * @return a {@code Calendar} built with parameters of this {@code
+ *         Calendar.Builder}
+ * @throws IllegalArgumentException if the calendar type is unknown, or
+ *             if any invalid field values are given in non-lenient mode, or
+ *             if a week date is given for the calendar type that doesn't
+ *             support week dates.
+ * @see Calendar#getInstance(TimeZone, Locale)
+ * @see Locale#getDefault(Locale.Category)
+ * @see TimeZone#getDefault()
+ */
+public Calendar build() {
+    if (locale == null) {
+        locale = Locale.getDefault();
+    }
+    if (zone == null) {
+        zone = TimeZone.getDefault();
+    }
+    Calendar cal;
+    if (type == null) {
+        type = locale.getUnicodeLocaleType("ca");
+    }
+    if (type == null) {
+        if (locale.getCountry() == "TH" && locale.getLanguage() == "th") {
+            type = "buddhist";
+        } else {
+            type = "gregory";
+        }
+    }
+    switch(type) {
+        case "gregory":
+            cal = new GregorianCalendar(zone, locale, true);
+            break;
+        case "iso8601":
+            GregorianCalendar gcal = new GregorianCalendar(zone, locale, true);
+            // make gcal a proleptic Gregorian
+            gcal.setGregorianChange(new Date(Long.MIN_VALUE));
+            // and week definition to be compatible with ISO 8601
+            setWeekDefinition(MONDAY, 4);
+            cal = gcal;
+            break;
+        case "buddhist":
+            cal = new BuddhistCalendar(zone, locale);
+            cal.clear();
+            break;
+        case "japanese":
+            cal = new JapaneseImperialCalendar(zone, locale, true);
+            break;
+        default:
+            throw new IllegalArgumentException("unknown calendar type: " + type);
+    }
+    cal.setLenient(lenient);
+    if (firstDayOfWeek != 0) {
+        cal.setFirstDayOfWeek(firstDayOfWeek);
+        cal.setMinimalDaysInFirstWeek(minimalDaysInFirstWeek);
+    }
+    if (isInstantSet()) {
+        cal.setTimeInMillis(instant);
+        cal.complete();
+        return cal;
+    }
+    if (fields != null) {
+        boolean weekDate = isSet(WEEK_YEAR) && fields[WEEK_YEAR] > fields[YEAR];
+        if (weekDate && !cal.isWeekDateSupported()) {
+            throw new IllegalArgumentException("week date is unsupported by " + type);
+        }
+        // Set the fields from the min stamp to the max stamp so that
+        // the fields resolution works in the Calendar.
+        for (int stamp = MINIMUM_USER_STAMP; stamp < nextStamp; stamp++) {
+            for (int index = 0; index <= maxFieldIndex; index++) {
+                if (fields[index] == stamp) {
+                    cal.set(index, fields[NFIELDS + index]);
+                    break;
+                }
+            }
+        }
+        if (weekDate) {
+            int weekOfYear = isSet(WEEK_OF_YEAR) ? fields[NFIELDS + WEEK_OF_YEAR] : 1;
+            int dayOfWeek = isSet(DAY_OF_WEEK) ? fields[NFIELDS + DAY_OF_WEEK] : cal.getFirstDayOfWeek();
+            cal.setWeekDate(fields[NFIELDS + WEEK_YEAR], weekOfYear, dayOfWeek);
+        }
+        cal.complete();
+    }
+    return cal;
+}

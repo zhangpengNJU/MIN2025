@@ -1,0 +1,24 @@
+/**
+ * Associates a string representing the specified byte array with the
+ * specified key in this preference node.  The associated string is
+ * the <i>Base64</i> encoding of the byte array, as defined in <a
+ * href=http://www.ietf.org/rfc/rfc2045.txt>RFC 2045</a>, Section 6.8,
+ * with one minor change: the string will consist solely of characters
+ * from the <i>Base64 Alphabet</i>; it will not contain any newline
+ * characters.  Note that the maximum length of the byte array is limited
+ * to three quarters of <tt>MAX_VALUE_LENGTH</tt> so that the length
+ * of the Base64 encoded String does not exceed <tt>MAX_VALUE_LENGTH</tt>.
+ * This method is intended for use in conjunction with
+ * {@link #getByteArray}.
+ *
+ * @param key key with which the string form of value is to be associated.
+ * @param value value whose string form is to be associated with key.
+ * @throws NullPointerException if key or value is <tt>null</tt>.
+ * @throws IllegalArgumentException if key.length() exceeds MAX_KEY_LENGTH
+ *         or if value.length exceeds MAX_VALUE_LENGTH*3/4.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @see #getByteArray(String,byte[])
+ * @see #get(String,String)
+ */
+public abstract void putByteArray(String key, byte[] value);

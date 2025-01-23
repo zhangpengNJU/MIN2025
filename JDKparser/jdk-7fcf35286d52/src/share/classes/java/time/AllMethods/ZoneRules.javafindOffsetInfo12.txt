@@ -1,0 +1,29 @@
+/**
+ * Finds the offset info for a local date-time and transition.
+ *
+ * @param dt  the date-time, not null
+ * @param trans  the transition, not null
+ * @return the offset info, not null
+ */
+private Object findOffsetInfo(LocalDateTime dt, ZoneOffsetTransition trans) {
+    LocalDateTime localTransition = trans.getDateTimeBefore();
+    if (trans.isGap()) {
+        if (dt.isBefore(localTransition)) {
+            return trans.getOffsetBefore();
+        }
+        if (dt.isBefore(trans.getDateTimeAfter())) {
+            return trans;
+        } else {
+            return trans.getOffsetAfter();
+        }
+    } else {
+        if (dt.isBefore(localTransition) == false) {
+            return trans.getOffsetAfter();
+        }
+        if (dt.isBefore(trans.getDateTimeAfter())) {
+            return trans.getOffsetBefore();
+        } else {
+            return trans;
+        }
+    }
+}

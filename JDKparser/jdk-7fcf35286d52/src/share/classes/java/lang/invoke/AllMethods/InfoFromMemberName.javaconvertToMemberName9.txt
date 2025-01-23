@@ -1,0 +1,12 @@
+private static MemberName convertToMemberName(byte refKind, Member mem) throws IllegalAccessException {
+    if (mem instanceof Method) {
+        boolean wantSpecial = (refKind == REF_invokeSpecial);
+        return new MemberName((Method) mem, wantSpecial);
+    } else if (mem instanceof Constructor) {
+        return new MemberName((Constructor) mem);
+    } else if (mem instanceof Field) {
+        boolean isSetter = (refKind == REF_putField || refKind == REF_putStatic);
+        return new MemberName((Field) mem, isSetter);
+    }
+    throw new InternalError(mem.getClass().getName());
+}

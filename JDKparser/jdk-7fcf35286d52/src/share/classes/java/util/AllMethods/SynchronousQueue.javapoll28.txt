@@ -1,0 +1,10 @@
+/**
+ * Retrieves and removes the head of this queue, if another thread
+ * is currently making an element available.
+ *
+ * @return the head of this queue, or {@code null} if no
+ *         element is available
+ */
+public E poll() {
+    return transferer.transfer(null, true, 0);
+}

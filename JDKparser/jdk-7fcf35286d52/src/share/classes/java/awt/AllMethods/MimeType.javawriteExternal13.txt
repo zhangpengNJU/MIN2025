@@ -1,0 +1,21 @@
+/**
+ * The object implements the writeExternal method to save its contents
+ * by calling the methods of DataOutput for its primitive values or
+ * calling the writeObject method of ObjectOutput for objects, strings
+ * and arrays.
+ * @exception IOException Includes any I/O exceptions that may occur
+ */
+public void writeExternal(ObjectOutput out) throws IOException {
+    // contains ASCII chars only
+    String s = toString();
+    // one-to-one correspondence between ASCII char and byte in UTF string
+    if (s.length() <= 65535) {
+        // 65535 is max length of UTF string
+        out.writeUTF(s);
+    } else {
+        out.writeByte(0);
+        out.writeByte(0);
+        out.writeInt(s.length());
+        out.write(s.getBytes());
+    }
+}

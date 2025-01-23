@@ -1,0 +1,27 @@
+@Override
+public synchronized int read(byte[] bs, int off, int len) throws IOException {
+    if ((off < 0) || (off > bs.length) || (len < 0) || ((off + len) > bs.length) || ((off + len) < 0)) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0)
+        return 0;
+    ByteBuffer bb = ((this.bs == bs) ? this.bb : ByteBuffer.wrap(bs));
+    bb.position(off);
+    bb.limit(Math.min(off + len, bb.capacity()));
+    this.bb = bb;
+    this.bs = bs;
+    boolean interrupted = false;
+    try {
+        for (; ; ) {
+            try {
+                return ch.read(bb).get();
+            } catch (ExecutionException ee) {
+                throw new IOException(ee.getCause());
+            } catch (InterruptedException ie) {
+                interrupted = true;
+            }
+        }
+    } finally {
+        if (interrupted)
+            Thread.currentThread().interrupt();
+    }
+}

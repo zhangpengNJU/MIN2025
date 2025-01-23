@@ -1,0 +1,7 @@
+private static Object getBeanAttribute(Class<?> type, String attribute) {
+    try {
+        return Introspector.getBeanInfo(type).getBeanDescriptor().getValue(attribute);
+    } catch (IntrospectionException exception) {
+        return null;
+    }
+}

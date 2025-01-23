@@ -1,0 +1,15 @@
+/**
+ * Returns first non-privileged class loader on the stack (excluding
+ * reflection generated frames) or the extension class loader if only
+ * class loaded by the boot class loader and extension class loader are
+ * found on the stack. This method is also called via reflection by the
+ * following RMI-IIOP class:
+ *
+ *     com.sun.corba.se.internal.util.JDKClassLoader
+ *
+ * This method should not be removed or its signature changed without
+ * corresponding modifications to the above class.
+ */
+private static ClassLoader latestUserDefinedLoader() {
+    return sun.misc.VM.latestUserDefinedLoader();
+}

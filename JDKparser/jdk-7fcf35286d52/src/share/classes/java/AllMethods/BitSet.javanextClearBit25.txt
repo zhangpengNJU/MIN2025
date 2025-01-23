@@ -1,0 +1,27 @@
+/**
+ * Returns the index of the first bit that is set to {@code false}
+ * that occurs on or after the specified starting index.
+ *
+ * @param  fromIndex the index to start checking from (inclusive)
+ * @return the index of the next clear bit
+ * @throws IndexOutOfBoundsException if the specified index is negative
+ * @since  1.4
+ */
+public int nextClearBit(int fromIndex) {
+    // Neither spec nor implementation handle bitsets of maximal length.
+    // See 4816253.
+    if (fromIndex < 0)
+        throw new IndexOutOfBoundsException("fromIndex < 0: " + fromIndex);
+    checkInvariants();
+    int u = wordIndex(fromIndex);
+    if (u >= wordsInUse)
+        return fromIndex;
+    long word = ~words[u] & (WORD_MASK << fromIndex);
+    while (true) {
+        if (word != 0)
+            return (u * BITS_PER_WORD) + Long.numberOfTrailingZeros(word);
+        if (++u == wordsInUse)
+            return wordsInUse * BITS_PER_WORD;
+        word = ~words[u];
+    }
+}

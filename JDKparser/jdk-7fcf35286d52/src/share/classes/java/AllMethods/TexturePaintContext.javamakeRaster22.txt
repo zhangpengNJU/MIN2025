@@ -1,0 +1,10 @@
+public WritableRaster makeRaster(int w, int h) {
+    // Note that we do not pass srcRas to makeRaster since it
+    // is a Byte Raster and this colorModel needs an Int Raster
+    WritableRaster ras = makeRaster(colorModel, null, w, h);
+    IntegerInterleavedRaster iiRas = (IntegerInterleavedRaster) ras;
+    outData = iiRas.getDataStorage();
+    outSpan = iiRas.getScanlineStride();
+    outOff = iiRas.getDataOffset(0);
+    return ras;
+}

@@ -1,0 +1,35 @@
+private final void shortFilter(ShortLookupTable lookup, Raster src, WritableRaster dst, int width, int height, int numBands) {
+    int band;
+    int[] srcPix = null;
+    // Find the ref to the table and the offset
+    short[][] table = lookup.getTable();
+    int offset = lookup.getOffset();
+    int tidx;
+    int step = 1;
+    // Check if it is one lookup applied to all bands
+    if (table.length == 1) {
+        step = 0;
+    }
+    int x = 0;
+    int y = 0;
+    int index;
+    int maxShort = (1 << 16) - 1;
+    // Loop through the data
+    for (y = 0; y < height; y++) {
+        tidx = 0;
+        for (band = 0; band < numBands; band++, tidx += step) {
+            // Find data for this band, scanline
+            srcPix = src.getSamples(0, y, width, 1, band, srcPix);
+            for (x = 0; x < width; x++) {
+                index = srcPix[x] - offset;
+                if (index < 0 || index > maxShort) {
+                    throw new IllegalArgumentException("index out of range " + index + " x is " + x + "srcPix[x]=" + srcPix[x] + " offset=" + offset);
+                }
+                // Do the lookup
+                srcPix[x] = table[tidx][index];
+            }
+            // Put it back
+            dst.setSamples(0, y, width, 1, band, srcPix);
+        }
+    }
+}

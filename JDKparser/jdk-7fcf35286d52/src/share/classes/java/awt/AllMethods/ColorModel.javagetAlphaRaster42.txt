@@ -1,0 +1,28 @@
+/**
+ * Returns a <code>Raster</code> representing the alpha channel of an
+ * image, extracted from the input <code>Raster</code>, provided that
+ * pixel values of this <code>ColorModel</code> represent color and
+ * alpha information as separate spatial bands (e.g.
+ * {@link ComponentColorModel} and <code>DirectColorModel</code>).
+ * This method assumes that <code>Raster</code> objects associated
+ * with such a <code>ColorModel</code> store the alpha band, if
+ * present, as the last band of image data.  Returns <code>null</code>
+ * if there is no separate spatial alpha channel associated with this
+ * <code>ColorModel</code>.  If this is an
+ * <code>IndexColorModel</code> which has alpha in the lookup table,
+ * this method will return <code>null</code> since
+ * there is no spatially discrete alpha channel.
+ * This method will create a new <code>Raster</code> (but will share
+ * the data array).
+ * Since <code>ColorModel</code> is an abstract class, any instance
+ * is an instance of a subclass.  Subclasses must override this
+ * method to get any behavior other than returning <code>null</code>
+ * because the implementation in this abstract class returns
+ * <code>null</code>.
+ * @param raster the specified <code>Raster</code>
+ * @return a <code>Raster</code> representing the alpha channel of
+ * an image, obtained from the specified <code>Raster</code>.
+ */
+public WritableRaster getAlphaRaster(WritableRaster raster) {
+    return null;
+}

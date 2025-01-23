@@ -1,0 +1,12 @@
+/**
+ * WARNING this is used for searching in a Vector.
+ * Because Vector.indexOf doesn't take a comparator,
+ * this method is ill-defined and ignores strength.
+ */
+public boolean equals(Object obj) {
+    if (obj == null)
+        return false;
+    PatternEntry other = (PatternEntry) obj;
+    boolean result = chars.equals(other.chars);
+    return result;
+}

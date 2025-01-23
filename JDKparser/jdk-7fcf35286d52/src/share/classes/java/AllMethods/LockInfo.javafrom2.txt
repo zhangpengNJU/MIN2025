@@ -1,0 +1,42 @@
+/**
+ * Returns a {@code LockInfo} object represented by the
+ * given {@code CompositeData}.
+ * The given {@code CompositeData} must contain the following attributes:
+ * <blockquote>
+ * <table border summary="The attributes and the types the given CompositeData contains">
+ * <tr>
+ *   <th align=left>Attribute Name</th>
+ *   <th align=left>Type</th>
+ * </tr>
+ * <tr>
+ *   <td>className</td>
+ *   <td><tt>java.lang.String</tt></td>
+ * </tr>
+ * <tr>
+ *   <td>identityHashCode</td>
+ *   <td><tt>java.lang.Integer</tt></td>
+ * </tr>
+ * </table>
+ * </blockquote>
+ *
+ * @param cd {@code CompositeData} representing a {@code LockInfo}
+ *
+ * @throws IllegalArgumentException if {@code cd} does not
+ *   represent a {@code LockInfo} with the attributes described
+ *   above.
+ * @return a {@code LockInfo} object represented
+ *         by {@code cd} if {@code cd} is not {@code null};
+ *         {@code null} otherwise.
+ *
+ * @since 1.8
+ */
+public static LockInfo from(CompositeData cd) {
+    if (cd == null) {
+        return null;
+    }
+    if (cd instanceof LockInfoCompositeData) {
+        return ((LockInfoCompositeData) cd).getLockInfo();
+    } else {
+        return LockInfoCompositeData.toLockInfo(cd);
+    }
+}

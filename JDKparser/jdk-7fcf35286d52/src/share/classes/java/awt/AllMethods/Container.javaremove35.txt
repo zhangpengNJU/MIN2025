@@ -1,0 +1,28 @@
+/**
+ * Removes the specified component from this container.
+ * This method also notifies the layout manager to remove the
+ * component from this container's layout via the
+ * <code>removeLayoutComponent</code> method.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * reflect the changes.
+ *
+ * @param comp the component to be removed
+ * @throws NullPointerException if {@code comp} is {@code null}
+ * @see #add
+ * @see #invalidate
+ * @see #validate
+ * @see #remove(int)
+ */
+public void remove(Component comp) {
+    synchronized (getTreeLock()) {
+        if (comp.parent == this) {
+            int index = component.indexOf(comp);
+            if (index >= 0) {
+                remove(index);
+            }
+        }
+    }
+}

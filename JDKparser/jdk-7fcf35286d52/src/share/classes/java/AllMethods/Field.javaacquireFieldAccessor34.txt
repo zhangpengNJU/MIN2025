@@ -1,0 +1,22 @@
+// NOTE that there is no synchronization used here. It is correct
+// (though not efficient) to generate more than one FieldAccessor
+// for a given Field. However, avoiding synchronization will
+// probably make the implementation more scalable.
+private FieldAccessor acquireFieldAccessor(boolean overrideFinalCheck) {
+    // First check to see if one has been created yet, and take it
+    // if so
+    FieldAccessor tmp = null;
+    if (root != null)
+        tmp = root.getFieldAccessor(overrideFinalCheck);
+    if (tmp != null) {
+        if (overrideFinalCheck)
+            overrideFieldAccessor = tmp;
+        else
+            fieldAccessor = tmp;
+    } else {
+        // Otherwise fabricate one and propagate it up to the root
+        tmp = reflectionFactory.newFieldAccessor(this, overrideFinalCheck);
+        setFieldAccessor(tmp, overrideFinalCheck);
+    }
+    return tmp;
+}

@@ -1,0 +1,51 @@
+/**
+ * A convenience method which displays a cross-platform print dialog
+ * for all services which are capable of printing 2D graphics using the
+ * <code>Pageable</code> interface. The selected printer when the
+ * dialog is initially displayed will reflect the print service currently
+ * attached to this print job.
+ * If the user changes the print service, the PrinterJob will be
+ * updated to reflect this, unless the user cancels the dialog.
+ * As well as allowing the user to select the destination printer,
+ * the user can also select values of various print request attributes.
+ * <p>
+ * The attributes parameter on input will reflect the applications
+ * required initial selections in the user dialog. Attributes not
+ * specified display using the default for the service. On return it
+ * will reflect the user's choices. Selections may be updated by
+ * the implementation to be consistent with the supported values
+ * for the currently selected print service.
+ * <p>
+ * As the user scrolls to a new print service selection, the values
+ * copied are based on the settings for the previous service, together
+ * with any user changes. The values are not based on the original
+ * settings supplied by the client.
+ * <p>
+ * With the exception of selected printer, the PrinterJob state is
+ * not updated to reflect the user's changes.
+ * For the selections to affect a printer job, the attributes must
+ * be specified in the call to the
+ * <code>print(PrintRequestAttributeSet)</code> method. If using
+ * the Pageable interface, clients which intend to use media selected
+ * by the user must create a PageFormat derived from the user's
+ * selections.
+ * If the user cancels the dialog, the attributes will not reflect
+ * any changes made by the user.
+ * @param attributes on input is application supplied attributes,
+ * on output the contents are updated to reflect user choices.
+ * This parameter may not be null.
+ * @return <code>true</code> if the user does not cancel the dialog;
+ * <code>false</code> otherwise.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true.
+ * @exception NullPointerException if <code>attributes</code> parameter
+ * is null.
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @since     1.4
+ */
+public boolean printDialog(PrintRequestAttributeSet attributes) throws HeadlessException {
+    if (attributes == null) {
+        throw new NullPointerException("attributes");
+    }
+    return printDialog();
+}

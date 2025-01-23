@@ -1,0 +1,12 @@
+/**
+ * Sets the name of the component to the specified string.
+ * @param         name    the name of the menu component
+ * @see           java.awt.MenuComponent#getName
+ * @since         JDK1.1
+ */
+public void setName(String name) {
+    synchronized (this) {
+        this.name = name;
+        nameExplicitlySet = true;
+    }
+}

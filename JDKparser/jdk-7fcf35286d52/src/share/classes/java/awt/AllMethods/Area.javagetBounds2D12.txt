@@ -1,0 +1,16 @@
+/**
+ * Returns a high precision bounding {@link Rectangle2D} that
+ * completely encloses this <code>Area</code>.
+ * <p>
+ * The Area class will attempt to return the tightest bounding
+ * box possible for the Shape.  The bounding box will not be
+ * padded to include the control points of curves in the outline
+ * of the Shape, but should tightly fit the actual geometry of
+ * the outline itself.
+ * @return    the bounding <code>Rectangle2D</code> for the
+ * <code>Area</code>.
+ * @since 1.2
+ */
+public Rectangle2D getBounds2D() {
+    return getCachedBounds().getBounds2D();
+}

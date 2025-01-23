@@ -1,0 +1,11 @@
+public static Flags parse(String s) {
+    char[] ca = s.toCharArray();
+    Flags f = new Flags(0);
+    for (int i = 0; i < ca.length; i++) {
+        Flags v = parse(ca[i]);
+        if (f.contains(v))
+            throw new DuplicateFormatFlagsException(v.toString());
+        f.add(v);
+    }
+    return f;
+}

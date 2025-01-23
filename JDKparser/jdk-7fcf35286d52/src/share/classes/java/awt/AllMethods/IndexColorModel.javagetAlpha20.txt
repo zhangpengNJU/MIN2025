@@ -1,0 +1,12 @@
+/**
+ * Returns the alpha component for the specified pixel, scaled
+ * from 0 to 255.  The pixel value is specified as an int.
+ * Only the lower <em>n</em> bits of the pixel value, as specified in the
+ * <a href="#index_values">class description</a> above, are used to
+ * calculate the returned value.
+ * @param pixel the specified pixel
+ * @return the value of the alpha component for the specified pixel
+ */
+final public int getAlpha(int pixel) {
+    return (rgb[pixel & pixel_mask] >> 24) & 0xff;
+}

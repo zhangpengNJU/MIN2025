@@ -1,0 +1,40 @@
+/**
+ * Tries to append node s as tail.
+ *
+ * @param s the node to append
+ * @param haveData true if appending in data mode
+ * @return null on failure due to losing race with append in
+ * different mode, else s's predecessor, or s itself if no
+ * predecessor
+ */
+private Node tryAppend(Node s, boolean haveData) {
+    for (Node t = tail, p = t; ; ) {
+        // move p to last node and append
+        // temps for reads of next & tail
+        Node n, u;
+        if (p == null && (p = head) == null) {
+            if (casHead(null, s))
+                // initialize
+                return s;
+        } else if (p.cannotPrecede(haveData))
+            // lost race vs opposite mode
+            return null;
+        else if (// not last; keep traversing
+        (n = p.next) != null)
+            p = // stale tail
+            p != t && t != (u = tail) ? // stale tail
+            (t = u) : // restart if off list
+            (p != n) ? n : null;
+        else if (!p.casNext(null, s))
+            // re-read on CAS failure
+            p = p.next;
+        else {
+            if (p != t) {
+                // update if slack now >= 2
+                while ((tail != t || !casTail(t, s)) && (t = tail) != null && // advance and retry
+                (s = t.next) != null && (s = s.next) != null && s != t) ;
+            }
+            return p;
+        }
+    }
+}

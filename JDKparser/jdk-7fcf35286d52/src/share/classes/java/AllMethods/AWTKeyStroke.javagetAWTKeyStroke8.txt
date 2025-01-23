@@ -1,0 +1,42 @@
+/**
+ * Returns a shared instance of an <code>AWTKeyStroke</code>,
+ * given a numeric key code and a set of modifiers. The returned
+ * <code>AWTKeyStroke</code> will correspond to a key press.
+ * <p>
+ * The "virtual key" constants defined in
+ * <code>java.awt.event.KeyEvent</code> can be
+ * used to specify the key code. For example:<ul>
+ * <li><code>java.awt.event.KeyEvent.VK_ENTER</code>
+ * <li><code>java.awt.event.KeyEvent.VK_TAB</code>
+ * <li><code>java.awt.event.KeyEvent.VK_SPACE</code>
+ * </ul>
+ * The modifiers consist of any combination of:<ul>
+ * <li>java.awt.event.InputEvent.SHIFT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.CTRL_DOWN_MASK
+ * <li>java.awt.event.InputEvent.META_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_DOWN_MASK
+ * </ul>
+ * The old modifiers <ul>
+ * <li>java.awt.event.InputEvent.SHIFT_MASK
+ * <li>java.awt.event.InputEvent.CTRL_MASK
+ * <li>java.awt.event.InputEvent.META_MASK
+ * <li>java.awt.event.InputEvent.ALT_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_MASK
+ * </ul>
+ * also can be used, but they are mapped to _DOWN_ modifiers.
+ *
+ * Since these numbers are all different powers of two, any combination of
+ * them is an integer in which each bit represents a different modifier
+ * key. Use 0 to specify no modifiers.
+ *
+ * @param keyCode an int specifying the numeric code for a keyboard key
+ * @param modifiers a bitwise-ored combination of any modifiers
+ * @return an <code>AWTKeyStroke</code> object for that key
+ *
+ * @see java.awt.event.KeyEvent
+ * @see java.awt.event.InputEvent
+ */
+public static AWTKeyStroke getAWTKeyStroke(int keyCode, int modifiers) {
+    return getCachedStroke(KeyEvent.CHAR_UNDEFINED, keyCode, modifiers, false);
+}

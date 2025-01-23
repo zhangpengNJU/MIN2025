@@ -1,0 +1,10 @@
+/**
+ * For NumberPrinterParser, the width is fixed depending on the
+ * minWidth, maxWidth, signStyle and whether subsequent fields are fixed.
+ * @param context the context
+ * @return true if the field is fixed width
+ * @see DateTimeFormatterBuilder#appendValue(java.time.temporal.TemporalField, int)
+ */
+boolean isFixedWidth(DateTimeParseContext context) {
+    return subsequentWidth == -1 || (subsequentWidth > 0 && minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE);
+}

@@ -1,0 +1,17 @@
+/**
+ * Private version of findComponentAt which has a controllable
+ * behavior. Setting 'ignoreEnabled' to 'false' bypasses disabled
+ * Components during the search. This behavior is used by the
+ * lightweight cursor support in sun.awt.GlobalCursorManager.
+ *
+ * The addition of this feature is temporary, pending the
+ * adoption of new, public API which exports this feature.
+ */
+final Component findComponentAt(int x, int y, boolean ignoreEnabled) {
+    synchronized (getTreeLock()) {
+        if (isRecursivelyVisible()) {
+            return findComponentAtImpl(x, y, ignoreEnabled);
+        }
+    }
+    return null;
+}

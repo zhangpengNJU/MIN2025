@@ -1,0 +1,16 @@
+/**
+ * Return an array of the display names of the variant.
+ * @param bundle the ResourceBundle to use to get the display names
+ * @return an array of display names, possible of zero length.
+ */
+private String[] getDisplayVariantArray(Locale inLocale) {
+    // Split the variant name into tokens separated by '_'.
+    StringTokenizer tokenizer = new StringTokenizer(baseLocale.getVariant(), "_");
+    String[] names = new String[tokenizer.countTokens()];
+    // For each variant token, lookup the display name.  If
+    // not found, use the variant name itself.
+    for (int i = 0; i < names.length; ++i) {
+        names[i] = getDisplayString(tokenizer.nextToken(), inLocale, DISPLAY_VARIANT);
+    }
+    return names;
+}

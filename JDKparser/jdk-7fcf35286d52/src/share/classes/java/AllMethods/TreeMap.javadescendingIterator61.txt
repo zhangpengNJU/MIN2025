@@ -1,0 +1,6 @@
+public Iterator<E> descendingIterator() {
+    if (m instanceof TreeMap)
+        return ((TreeMap<E, ?>) m).descendingKeyIterator();
+    else
+        return ((TreeMap.NavigableSubMap<E, ?>) m).descendingKeyIterator();
+}

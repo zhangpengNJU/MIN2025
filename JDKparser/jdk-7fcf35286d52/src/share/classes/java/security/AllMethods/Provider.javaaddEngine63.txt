@@ -1,0 +1,6 @@
+private static void addEngine(String name, boolean sp, String paramName) {
+    EngineDescription ed = new EngineDescription(name, sp, paramName);
+    // also index by canonical name to avoid toLowerCase() for some lookups
+    knownEngines.put(name.toLowerCase(ENGLISH), ed);
+    knownEngines.put(name, ed);
+}

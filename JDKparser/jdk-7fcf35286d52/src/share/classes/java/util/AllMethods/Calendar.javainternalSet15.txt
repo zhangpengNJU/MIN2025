@@ -1,0 +1,10 @@
+private void internalSet(int field, int value) {
+    fields[field] = nextStamp++;
+    if (nextStamp < 0) {
+        throw new IllegalStateException("stamp counter overflow");
+    }
+    fields[NFIELDS + field] = value;
+    if (field > maxFieldIndex && field < WEEK_YEAR) {
+        maxFieldIndex = field;
+    }
+}

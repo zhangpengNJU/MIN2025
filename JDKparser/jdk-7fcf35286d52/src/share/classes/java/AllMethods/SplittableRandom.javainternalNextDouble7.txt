@@ -1,0 +1,17 @@
+/**
+ * The form of nextDouble used by DoubleStream Spliterators.
+ *
+ * @param origin the least value, unless greater than bound
+ * @param bound the upper bound (exclusive), must not equal origin
+ * @return a pseudorandom value
+ */
+final double internalNextDouble(double origin, double bound) {
+    double r = (nextLong() >>> 11) * DOUBLE_UNIT;
+    if (origin < bound) {
+        r = r * (bound - origin) + origin;
+        if (// correct for rounding
+        r >= bound)
+            r = Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
+    }
+    return r;
+}

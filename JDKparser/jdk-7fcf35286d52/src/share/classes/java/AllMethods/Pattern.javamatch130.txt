@@ -1,0 +1,44 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    int[] groups = matcher.groups;
+    int[] locals = matcher.locals;
+    int save0 = locals[localIndex];
+    int save1 = 0;
+    int save2 = 0;
+    if (capture) {
+        save1 = groups[groupIndex];
+        save2 = groups[groupIndex + 1];
+    }
+    // Notify GroupTail there is no need to setup group info
+    // because it will be set here
+    locals[localIndex] = -1;
+    boolean ret = true;
+    for (int j = 0; j < cmin; j++) {
+        if (atom.match(matcher, i, seq)) {
+            if (capture) {
+                groups[groupIndex] = i;
+                groups[groupIndex + 1] = matcher.last;
+            }
+            i = matcher.last;
+        } else {
+            ret = false;
+            break;
+        }
+    }
+    if (ret) {
+        if (type == GREEDY) {
+            ret = match0(matcher, i, cmin, seq);
+        } else if (type == LAZY) {
+            ret = match1(matcher, i, cmin, seq);
+        } else {
+            ret = match2(matcher, i, cmin, seq);
+        }
+    }
+    if (!ret) {
+        locals[localIndex] = save0;
+        if (capture) {
+            groups[groupIndex] = save1;
+            groups[groupIndex + 1] = save2;
+        }
+    }
+    return ret;
+}

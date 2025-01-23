@@ -1,0 +1,20 @@
+private final static int[] createBitsArray(int rmask, int gmask, int bmask, int amask) {
+    int[] arr = new int[3 + (amask == 0 ? 0 : 1)];
+    arr[0] = countBits(rmask);
+    arr[1] = countBits(gmask);
+    arr[2] = countBits(bmask);
+    if (arr[0] < 0) {
+        throw new IllegalArgumentException("Noncontiguous red mask (" + Integer.toHexString(rmask));
+    } else if (arr[1] < 0) {
+        throw new IllegalArgumentException("Noncontiguous green mask (" + Integer.toHexString(gmask));
+    } else if (arr[2] < 0) {
+        throw new IllegalArgumentException("Noncontiguous blue mask (" + Integer.toHexString(bmask));
+    }
+    if (amask != 0) {
+        arr[3] = countBits(amask);
+        if (arr[3] < 0) {
+            throw new IllegalArgumentException("Noncontiguous alpha mask (" + Integer.toHexString(amask));
+        }
+    }
+    return arr;
+}

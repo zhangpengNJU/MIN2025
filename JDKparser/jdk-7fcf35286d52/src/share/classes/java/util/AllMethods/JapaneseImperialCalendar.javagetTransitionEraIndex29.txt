@@ -1,0 +1,22 @@
+/**
+ * Returns the index to the new era if the given date is in a
+ * transition month.  For example, if the give date is Heisei 1
+ * (1989) January 20, then the era index for Heisei is
+ * returned. Likewise, if the given date is Showa 64 (1989)
+ * January 3, then the era index for Heisei is returned. If the
+ * given date is not in any transition month, then -1 is returned.
+ */
+private static int getTransitionEraIndex(LocalGregorianCalendar.Date date) {
+    int eraIndex = getEraIndex(date);
+    CalendarDate transitionDate = eras[eraIndex].getSinceDate();
+    if (transitionDate.getYear() == date.getNormalizedYear() && transitionDate.getMonth() == date.getMonth()) {
+        return eraIndex;
+    }
+    if (eraIndex < eras.length - 1) {
+        transitionDate = eras[++eraIndex].getSinceDate();
+        if (transitionDate.getYear() == date.getNormalizedYear() && transitionDate.getMonth() == date.getMonth()) {
+            return eraIndex;
+        }
+    }
+    return -1;
+}

@@ -1,0 +1,15 @@
+/**
+ * Analagous to <code>java.lang.ClassLoader.getResourceAsStream()</code>,
+ * this method allows a <code>BeanContext</code> implementation
+ * to interpose behavior between the child <code>Component</code>
+ * and underlying <code>ClassLoader</code>.
+ *
+ * @param name the resource name
+ * @param bcc the specified child
+ * @return an <code>InputStream</code> for reading the resource,
+ * or <code>null</code> if the resource could not
+ * be found.
+ * @throws IllegalArgumentException if
+ * the resource is not valid
+ */
+InputStream getResourceAsStream(String name, BeanContextChild bcc) throws IllegalArgumentException;

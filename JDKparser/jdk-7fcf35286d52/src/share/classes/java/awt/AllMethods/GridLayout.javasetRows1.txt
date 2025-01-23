@@ -1,0 +1,13 @@
+/**
+ * Sets the number of rows in this layout to the specified value.
+ * @param        rows   the number of rows in this layout
+ * @exception    IllegalArgumentException  if the value of both
+ *               <code>rows</code> and <code>cols</code> is set to zero
+ * @since        JDK1.1
+ */
+public void setRows(int rows) {
+    if ((rows == 0) && (this.cols == 0)) {
+        throw new IllegalArgumentException("rows and cols cannot both be zero");
+    }
+    this.rows = rows;
+}

@@ -1,0 +1,26 @@
+/**
+ * Sets the failure handler to be called by the RMI runtime if server
+ * socket creation fails.  By default, if no failure handler is installed
+ * and server socket creation fails, the RMI runtime does attempt to
+ * recreate the server socket.
+ *
+ * <p>If there is a security manager, this method first calls
+ * the security manager's <code>checkSetFactory</code> method
+ * to ensure the operation is allowed.
+ * This could result in a <code>SecurityException</code>.
+ *
+ * @param fh the failure handler
+ * @throws  SecurityException  if a security manager exists and its
+ *          <code>checkSetFactory</code> method doesn't allow the
+ *          operation.
+ * @see #getFailureHandler
+ * @see java.rmi.server.RMIFailureHandler#failure(Exception)
+ * @since JDK1.1
+ */
+public synchronized static void setFailureHandler(RMIFailureHandler fh) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkSetFactory();
+    }
+    handler = fh;
+}

@@ -1,0 +1,10 @@
+/**
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if {@code toKey} is null
+ * @throws IllegalArgumentException {@inheritDoc}
+ */
+public ConcurrentNavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+    if (toKey == null)
+        throw new NullPointerException();
+    return new SubMap<K, V>(this, null, false, toKey, inclusive, false);
+}

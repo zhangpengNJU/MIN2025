@@ -1,0 +1,84 @@
+/**
+ * Retrieves a description of the foreign key columns in the given foreign key
+ * table that reference the primary key or the columns representing a unique constraint of the  parent table (could be the same or a different table).
+ * The number of columns returned from the parent table must match the number of
+ * columns that make up the foreign key.  They
+ * are ordered by FKTABLE_CAT, FKTABLE_SCHEM, FKTABLE_NAME, and
+ * KEY_SEQ.
+ *
+ * <P>Each foreign key column description has the following columns:
+ *  <OL>
+ *  <LI><B>PKTABLE_CAT</B> String {@code =>} parent key table catalog (may be <code>null</code>)
+ *  <LI><B>PKTABLE_SCHEM</B> String {@code =>} parent key table schema (may be <code>null</code>)
+ *  <LI><B>PKTABLE_NAME</B> String {@code =>} parent key table name
+ *  <LI><B>PKCOLUMN_NAME</B> String {@code =>} parent key column name
+ *  <LI><B>FKTABLE_CAT</B> String {@code =>} foreign key table catalog (may be <code>null</code>)
+ *      being exported (may be <code>null</code>)
+ *  <LI><B>FKTABLE_SCHEM</B> String {@code =>} foreign key table schema (may be <code>null</code>)
+ *      being exported (may be <code>null</code>)
+ *  <LI><B>FKTABLE_NAME</B> String {@code =>} foreign key table name
+ *      being exported
+ *  <LI><B>FKCOLUMN_NAME</B> String {@code =>} foreign key column name
+ *      being exported
+ *  <LI><B>KEY_SEQ</B> short {@code =>} sequence number within foreign key( a value
+ *  of 1 represents the first column of the foreign key, a value of 2 would
+ *  represent the second column within the foreign key).
+ *  <LI><B>UPDATE_RULE</B> short {@code =>} What happens to
+ *       foreign key when parent key is updated:
+ *      <UL>
+ *      <LI> importedNoAction - do not allow update of parent
+ *               key if it has been imported
+ *      <LI> importedKeyCascade - change imported key to agree
+ *               with parent key update
+ *      <LI> importedKeySetNull - change imported key to <code>NULL</code> if
+ *               its parent key has been updated
+ *      <LI> importedKeySetDefault - change imported key to default values
+ *               if its parent key has been updated
+ *      <LI> importedKeyRestrict - same as importedKeyNoAction
+ *                                 (for ODBC 2.x compatibility)
+ *      </UL>
+ *  <LI><B>DELETE_RULE</B> short {@code =>} What happens to
+ *      the foreign key when parent key is deleted.
+ *      <UL>
+ *      <LI> importedKeyNoAction - do not allow delete of parent
+ *               key if it has been imported
+ *      <LI> importedKeyCascade - delete rows that import a deleted key
+ *      <LI> importedKeySetNull - change imported key to <code>NULL</code> if
+ *               its primary key has been deleted
+ *      <LI> importedKeyRestrict - same as importedKeyNoAction
+ *                                 (for ODBC 2.x compatibility)
+ *      <LI> importedKeySetDefault - change imported key to default if
+ *               its parent key has been deleted
+ *      </UL>
+ *  <LI><B>FK_NAME</B> String {@code =>} foreign key name (may be <code>null</code>)
+ *  <LI><B>PK_NAME</B> String {@code =>} parent key name (may be <code>null</code>)
+ *  <LI><B>DEFERRABILITY</B> short {@code =>} can the evaluation of foreign key
+ *      constraints be deferred until commit
+ *      <UL>
+ *      <LI> importedKeyInitiallyDeferred - see SQL92 for definition
+ *      <LI> importedKeyInitiallyImmediate - see SQL92 for definition
+ *      <LI> importedKeyNotDeferrable - see SQL92 for definition
+ *      </UL>
+ *  </OL>
+ *
+ * @param parentCatalog a catalog name; must match the catalog name
+ * as it is stored in the database; "" retrieves those without a
+ * catalog; <code>null</code> means drop catalog name from the selection criteria
+ * @param parentSchema a schema name; must match the schema name as
+ * it is stored in the database; "" retrieves those without a schema;
+ * <code>null</code> means drop schema name from the selection criteria
+ * @param parentTable the name of the table that exports the key; must match
+ * the table name as it is stored in the database
+ * @param foreignCatalog a catalog name; must match the catalog name as
+ * it is stored in the database; "" retrieves those without a
+ * catalog; <code>null</code> means drop catalog name from the selection criteria
+ * @param foreignSchema a schema name; must match the schema name as it
+ * is stored in the database; "" retrieves those without a schema;
+ * <code>null</code> means drop schema name from the selection criteria
+ * @param foreignTable the name of the table that imports the key; must match
+ * the table name as it is stored in the database
+ * @return <code>ResultSet</code> - each row is a foreign key column description
+ * @exception SQLException if a database access error occurs
+ * @see #getImportedKeys
+ */
+ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable, String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException;

@@ -1,0 +1,37 @@
+/**
+ * Put a new bundle in the cache.
+ *
+ * @param cacheKey the key for the resource bundle
+ * @param bundle the resource bundle to be put in the cache
+ * @return the ResourceBundle for the cacheKey; if someone has put
+ * the bundle before this call, the one found in the cache is
+ * returned.
+ */
+private static ResourceBundle putBundleInCache(CacheKey cacheKey, ResourceBundle bundle, Control control) {
+    setExpirationTime(cacheKey, control);
+    if (cacheKey.expirationTime != Control.TTL_DONT_CACHE) {
+        CacheKey key = (CacheKey) cacheKey.clone();
+        BundleReference bundleRef = new BundleReference(bundle, referenceQueue, key);
+        bundle.cacheKey = key;
+        // Put the bundle in the cache if it's not been in the cache.
+        BundleReference result = cacheList.putIfAbsent(key, bundleRef);
+        // If someone else has put the same bundle in the cache before
+        // us and it has not expired, we should use the one in the cache.
+        if (result != null) {
+            ResourceBundle rb = result.get();
+            if (rb != null && !rb.expired) {
+                // Clear the back link to the cache key
+                bundle.cacheKey = null;
+                bundle = rb;
+                // Clear the reference in the BundleReference so that
+                // it won't be enqueued.
+                bundleRef.clear();
+            } else {
+                // Replace the invalid (garbage collected or expired)
+                // instance with the valid one.
+                cacheList.put(key, bundleRef);
+            }
+        }
+    }
+    return bundle;
+}

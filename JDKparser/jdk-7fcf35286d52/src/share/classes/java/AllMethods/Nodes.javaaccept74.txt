@@ -1,0 +1,8 @@
+@Override
+public void accept(T t) {
+    if (curSize < array.length) {
+        array[curSize++] = t;
+    } else {
+        throw new IllegalStateException(String.format("Accept exceeded fixed size of %d", array.length));
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Creates the menu bar's peer.  The peer allows us to change the
+ * appearance of the menu bar without changing any of the menu bar's
+ * functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = Toolkit.getDefaultToolkit().createMenuBar(this);
+        int nmenus = getMenuCount();
+        for (int i = 0; i < nmenus; i++) {
+            getMenu(i).addNotify();
+        }
+    }
+}

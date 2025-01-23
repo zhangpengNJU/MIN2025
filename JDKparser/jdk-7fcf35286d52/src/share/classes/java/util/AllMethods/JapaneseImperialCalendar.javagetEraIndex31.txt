@@ -1,0 +1,9 @@
+private static int getEraIndex(LocalGregorianCalendar.Date date) {
+    Era era = date.getEra();
+    for (int i = eras.length - 1; i > 0; i--) {
+        if (eras[i] == era) {
+            return i;
+        }
+    }
+    return 0;
+}

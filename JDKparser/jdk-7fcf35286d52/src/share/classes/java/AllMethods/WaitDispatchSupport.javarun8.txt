@@ -1,0 +1,8 @@
+public void run() {
+    log.fine("Wake up EDT");
+    synchronized (getTreeLock()) {
+        keepBlockingCT.set(false);
+        getTreeLock().notifyAll();
+    }
+    log.fine("Wake up EDT done");
+}

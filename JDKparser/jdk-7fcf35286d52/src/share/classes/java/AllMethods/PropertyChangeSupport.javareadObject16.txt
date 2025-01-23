@@ -1,0 +1,19 @@
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    this.map = new PropertyChangeListenerMap();
+    ObjectInputStream.GetField fields = s.readFields();
+    @SuppressWarnings("unchecked")
+    Hashtable<String, PropertyChangeSupport> children = (Hashtable<String, PropertyChangeSupport>) fields.get("children", null);
+    this.source = fields.get("source", null);
+    fields.get("propertyChangeSupportSerializedDataVersion", 2);
+    Object listenerOrNull;
+    while (null != (listenerOrNull = s.readObject())) {
+        this.map.add(null, (PropertyChangeListener) listenerOrNull);
+    }
+    if (children != null) {
+        for (Entry<String, PropertyChangeSupport> entry : children.entrySet()) {
+            for (PropertyChangeListener listener : entry.getValue().getPropertyChangeListeners()) {
+                this.map.add(entry.getKey(), listener);
+            }
+        }
+    }
+}

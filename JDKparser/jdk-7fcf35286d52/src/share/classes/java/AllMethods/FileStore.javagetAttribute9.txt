@@ -1,0 +1,34 @@
+/**
+ * Reads the value of a file store attribute.
+ *
+ * <p> The {@code attribute} parameter identifies the attribute to be read
+ * and takes the form:
+ * <blockquote>
+ * <i>view-name</i><b>:</b><i>attribute-name</i>
+ * </blockquote>
+ * where the character {@code ':'} stands for itself.
+ *
+ * <p> <i>view-name</i> is the {@link FileStoreAttributeView#name name} of
+ * a {@link FileStore AttributeView} that identifies a set of file attributes.
+ * <i>attribute-name</i> is the name of the attribute.
+ *
+ * <p> <b>Usage Example:</b>
+ * Suppose we want to know if ZFS compression is enabled (assuming the "zfs"
+ * view is supported):
+ * <pre>
+ *    boolean compression = (Boolean)fs.getAttribute("zfs:compression");
+ * </pre>
+ *
+ * @param   attribute
+ *          the attribute to read
+ *
+ * @return  the attribute value; {@code null} may be a valid valid for some
+ *          attributes
+ *
+ * @throws  UnsupportedOperationException
+ *          if the attribute view is not available or it does not support
+ *          reading the attribute
+ * @throws  IOException
+ *          if an I/O error occurs
+ */
+public abstract Object getAttribute(String attribute) throws IOException;

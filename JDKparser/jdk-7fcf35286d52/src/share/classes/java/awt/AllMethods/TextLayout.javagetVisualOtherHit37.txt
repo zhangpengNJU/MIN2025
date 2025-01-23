@@ -1,0 +1,47 @@
+/**
+ * Returns the hit on the opposite side of the specified hit's caret.
+ * @param hit the specified hit
+ * @return a hit that is on the opposite side of the specified hit's
+ *    caret.
+ */
+public TextHitInfo getVisualOtherHit(TextHitInfo hit) {
+    ensureCache();
+    checkTextHit(hit);
+    int hitCharIndex = hit.getCharIndex();
+    int charIndex;
+    boolean leading;
+    if (hitCharIndex == -1 || hitCharIndex == characterCount) {
+        int visIndex;
+        if (textLine.isDirectionLTR() == (hitCharIndex == -1)) {
+            visIndex = 0;
+        } else {
+            visIndex = characterCount - 1;
+        }
+        charIndex = textLine.visualToLogical(visIndex);
+        if (textLine.isDirectionLTR() == (hitCharIndex == -1)) {
+            // at left end
+            leading = textLine.isCharLTR(charIndex);
+        } else {
+            // at right end
+            leading = !textLine.isCharLTR(charIndex);
+        }
+    } else {
+        int visIndex = textLine.logicalToVisual(hitCharIndex);
+        boolean movedToRight;
+        if (textLine.isCharLTR(hitCharIndex) == hit.isLeadingEdge()) {
+            --visIndex;
+            movedToRight = false;
+        } else {
+            ++visIndex;
+            movedToRight = true;
+        }
+        if (visIndex > -1 && visIndex < characterCount) {
+            charIndex = textLine.visualToLogical(visIndex);
+            leading = movedToRight == textLine.isCharLTR(charIndex);
+        } else {
+            charIndex = (movedToRight == textLine.isDirectionLTR()) ? characterCount : -1;
+            leading = charIndex == characterCount;
+        }
+    }
+    return leading ? TextHitInfo.leading(charIndex) : TextHitInfo.trailing(charIndex);
+}

@@ -1,0 +1,17 @@
+/**
+ * Casts the {@code Temporal} to {@code ChronoLocalDate} ensuring it bas the specified chronology.
+ *
+ * @param chrono  the chronology to check for, not null
+ * @param temporal  a date-time to cast, not null
+ * @return the date-time checked and cast to {@code ChronoLocalDate}, not null
+ * @throws ClassCastException if the date-time cannot be cast to ChronoLocalDate
+ *  or the chronology is not equal this Chronology
+ */
+static <D extends ChronoLocalDate> D ensureValid(Chronology chrono, Temporal temporal) {
+    @SuppressWarnings("unchecked")
+    D other = (D) temporal;
+    if (chrono.equals(other.getChronology()) == false) {
+        throw new ClassCastException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + other.getChronology().getId());
+    }
+    return other;
+}

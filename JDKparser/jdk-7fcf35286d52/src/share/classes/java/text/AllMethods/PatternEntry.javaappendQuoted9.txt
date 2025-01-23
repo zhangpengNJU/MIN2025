@@ -1,0 +1,38 @@
+static void appendQuoted(String chars, StringBuffer toAddTo) {
+    boolean inQuote = false;
+    char ch = chars.charAt(0);
+    if (Character.isSpaceChar(ch)) {
+        inQuote = true;
+        toAddTo.append('\'');
+    } else {
+        if (PatternEntry.isSpecialChar(ch)) {
+            inQuote = true;
+            toAddTo.append('\'');
+        } else {
+            switch(ch) {
+                case 0x0010:
+                case '\f':
+                case '\r':
+                case '\t':
+                case '\n':
+                case '@':
+                    inQuote = true;
+                    toAddTo.append('\'');
+                    break;
+                case '\'':
+                    inQuote = true;
+                    toAddTo.append('\'');
+                    break;
+                default:
+                    if (inQuote) {
+                        inQuote = false;
+                        toAddTo.append('\'');
+                    }
+                    break;
+            }
+        }
+    }
+    toAddTo.append(chars);
+    if (inQuote)
+        toAddTo.append('\'');
+}

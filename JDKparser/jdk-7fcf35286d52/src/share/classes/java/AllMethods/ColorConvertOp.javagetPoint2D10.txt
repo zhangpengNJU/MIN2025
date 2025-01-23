@@ -1,0 +1,18 @@
+/**
+ * Returns the location of the destination point given a
+ * point in the source.  If <code>dstPt</code> is non-null,
+ * it will be used to hold the return value.  Note that
+ * for this class, the destination point will be the same
+ * as the source point.
+ * @param srcPt the specified source <code>Point2D</code>
+ * @param dstPt the destination <code>Point2D</code>
+ * @return <code>dstPt</code> after setting its location to be
+ *         the same as <code>srcPt</code>
+ */
+public final Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+    if (dstPt == null) {
+        dstPt = new Point2D.Float();
+    }
+    dstPt.setLocation(srcPt.getX(), srcPt.getY());
+    return dstPt;
+}

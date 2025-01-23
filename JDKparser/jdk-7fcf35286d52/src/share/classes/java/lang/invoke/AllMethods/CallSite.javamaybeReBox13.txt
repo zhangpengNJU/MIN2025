@@ -1,0 +1,9 @@
+private static Object maybeReBox(Object x) {
+    if (x instanceof Integer) {
+        int xi = (int) x;
+        if (xi == (byte) xi)
+            // must rebox; see JLS 5.1.7
+            x = xi;
+    }
+    return x;
+}

@@ -1,0 +1,9 @@
+Entry<T> refreshVersion(Version<T> v2) {
+    assertNotPromise();
+    // if !isPromise, type is T
+    @SuppressWarnings("unchecked")
+    Entry<T> e2 = new Entry<>(v2, (T) value);
+    clear();
+    // value = null -- caller must drop
+    return e2;
+}

@@ -1,0 +1,6 @@
+private static <T> T deref(ThreadLocal<SoftReference<T>> tl) {
+    SoftReference<T> sr = tl.get();
+    if (sr == null)
+        return null;
+    return sr.get();
+}

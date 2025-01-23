@@ -1,0 +1,9 @@
+/**
+ * Release the resources allocated for the operation.
+ */
+public void dispose() {
+    if (saved != null) {
+        putCachedRaster(model, saved);
+        saved = null;
+    }
+}

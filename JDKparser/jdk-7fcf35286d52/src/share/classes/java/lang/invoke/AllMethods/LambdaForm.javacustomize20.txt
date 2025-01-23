@@ -1,0 +1,13 @@
+/**
+ * Customize LambdaForm for a particular MethodHandle
+ */
+LambdaForm customize(MethodHandle mh) {
+    LambdaForm customForm = new LambdaForm(debugName, arity, names, result, forceInline, mh);
+    if (COMPILE_THRESHOLD > 0 && isCompiled) {
+        // If shared LambdaForm has been compiled, compile customized version as well.
+        customForm.compileToBytecode();
+    }
+    // LambdaFormEditor should always use uncustomized form.
+    customForm.transformCache = this;
+    return customForm;
+}

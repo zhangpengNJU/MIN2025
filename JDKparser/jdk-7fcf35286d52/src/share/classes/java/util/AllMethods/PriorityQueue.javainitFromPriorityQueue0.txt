@@ -1,0 +1,8 @@
+private void initFromPriorityQueue(PriorityQueue<? extends E> c) {
+    if (c.getClass() == PriorityQueue.class) {
+        this.queue = c.toArray();
+        this.size = c.size();
+    } else {
+        initFromCollection(c);
+    }
+}

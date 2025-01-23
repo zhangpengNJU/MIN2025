@@ -1,0 +1,9 @@
+Window getDocumentRoot() {
+    synchronized (getTreeLock()) {
+        Window w = this;
+        while (w.getOwner() != null) {
+            w = w.getOwner();
+        }
+        return w;
+    }
+}

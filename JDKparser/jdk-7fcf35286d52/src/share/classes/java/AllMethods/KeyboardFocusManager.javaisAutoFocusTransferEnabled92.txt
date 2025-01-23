@@ -1,0 +1,5 @@
+static boolean isAutoFocusTransferEnabled() {
+    synchronized (heavyweightRequests) {
+        return (heavyweightRequests.size() == 0) && !disableRestoreFocus && (null == currentLightweightRequests);
+    }
+}

@@ -1,0 +1,69 @@
+/*
+     * (Implementation of AWTEventListener)
+     * Listen for drag events posted in other hw components so we can
+     * track enter/exit regardless of where a drag originated
+     */
+public void eventDispatched(AWTEvent e) {
+    boolean isForeignDrag = (e instanceof MouseEvent) && !(e instanceof SunDropTargetEvent) && (e.id == MouseEvent.MOUSE_DRAGGED) && (e.getSource() != nativeContainer);
+    if (!isForeignDrag) {
+        // only interested in drags from other hw components
+        return;
+    }
+    MouseEvent srcEvent = (MouseEvent) e;
+    MouseEvent me;
+    synchronized (nativeContainer.getTreeLock()) {
+        Component srcComponent = srcEvent.getComponent();
+        // component may have disappeared since drag event posted
+        // (i.e. Swing hierarchical menus)
+        if (!srcComponent.isShowing()) {
+            return;
+        }
+        // see 5083555
+        // check if srcComponent is in any modal blocked window
+        Component c = nativeContainer;
+        while ((c != null) && !(c instanceof Window)) {
+            c = c.getParent_NoClientCode();
+        }
+        if ((c == null) || ((Window) c).isModalBlocked()) {
+            return;
+        }
+        // 
+        // create an internal 'dragged-over' event indicating
+        // we are being dragged over from another hw component
+        // 
+        me = new MouseEvent(nativeContainer, LWD_MOUSE_DRAGGED_OVER, srcEvent.getWhen(), srcEvent.getModifiersEx() | srcEvent.getModifiers(), srcEvent.getX(), srcEvent.getY(), srcEvent.getXOnScreen(), srcEvent.getYOnScreen(), srcEvent.getClickCount(), srcEvent.isPopupTrigger(), srcEvent.getButton());
+        MouseEventAccessor meAccessor = AWTAccessor.getMouseEventAccessor();
+        meAccessor.setCausedByTouchEvent(me, meAccessor.isCausedByTouchEvent(srcEvent));
+        ((AWTEvent) srcEvent).copyPrivateDataInto(me);
+        // translate coordinates to this native container
+        final Point ptSrcOrigin = srcComponent.getLocationOnScreen();
+        if (AppContext.getAppContext() != nativeContainer.appContext) {
+            final MouseEvent mouseEvent = me;
+            Runnable r = new Runnable() {
+
+                public void run() {
+                    if (!nativeContainer.isShowing()) {
+                        return;
+                    }
+                    Point ptDstOrigin = nativeContainer.getLocationOnScreen();
+                    mouseEvent.translatePoint(ptSrcOrigin.x - ptDstOrigin.x, ptSrcOrigin.y - ptDstOrigin.y);
+                    Component targetOver = nativeContainer.getMouseEventTarget(mouseEvent.getX(), mouseEvent.getY(), Container.INCLUDE_SELF);
+                    trackMouseEnterExit(targetOver, mouseEvent);
+                }
+            };
+            SunToolkit.executeOnEventHandlerThread(nativeContainer, r);
+            return;
+        } else {
+            if (!nativeContainer.isShowing()) {
+                return;
+            }
+            Point ptDstOrigin = nativeContainer.getLocationOnScreen();
+            me.translatePoint(ptSrcOrigin.x - ptDstOrigin.x, ptSrcOrigin.y - ptDstOrigin.y);
+        }
+    }
+    // System.out.println("Track event: " + me);
+    // feed the 'dragged-over' event directly to the enter/exit
+    // code (not a real event so don't pass it to dispatchEvent)
+    Component targetOver = nativeContainer.getMouseEventTarget(me.getX(), me.getY(), Container.INCLUDE_SELF);
+    trackMouseEnterExit(targetOver, me);
+}

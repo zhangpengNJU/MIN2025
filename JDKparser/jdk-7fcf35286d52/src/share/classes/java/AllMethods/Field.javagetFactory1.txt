@@ -1,0 +1,6 @@
+// Accessor for factory
+private GenericsFactory getFactory() {
+    Class<?> c = getDeclaringClass();
+    // create scope and factory
+    return CoreReflectionFactory.make(c, ClassScope.make(c));
+}

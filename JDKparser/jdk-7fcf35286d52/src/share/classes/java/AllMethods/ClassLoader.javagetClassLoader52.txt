@@ -1,0 +1,9 @@
+// Returns the class's class loader, or null if none.
+static ClassLoader getClassLoader(Class<?> caller) {
+    // This can be null if the VM is requesting it
+    if (caller == null) {
+        return null;
+    }
+    // Circumvent security check since this is package-private
+    return caller.getClassLoader0();
+}

@@ -1,0 +1,38 @@
+/**
+ * Obtains a value for the specified desktop property.
+ *
+ * A desktop property is a uniquely named value for a resource that
+ * is Toolkit global in nature. Usually it also is an abstract
+ * representation for an underlying platform dependent desktop setting.
+ * For more information on desktop properties supported by the AWT see
+ * <a href="doc-files/DesktopProperties.html">AWT Desktop Properties</a>.
+ */
+public final synchronized Object getDesktopProperty(String propertyName) {
+    // This is a workaround for headless toolkits.  It would be
+    // better to override this method but it is declared final.
+    // "this instanceof" syntax defeats polymorphism.
+    // --mm, 03/03/00
+    if (this instanceof HeadlessToolkit) {
+        return ((HeadlessToolkit) this).getUnderlyingToolkit().getDesktopProperty(propertyName);
+    }
+    if (desktopProperties.isEmpty()) {
+        initializeDesktopProperties();
+    }
+    Object value;
+    // This property should never be cached
+    if (propertyName.equals("awt.dynamicLayoutSupported")) {
+        return getDefaultToolkit().lazilyLoadDesktopProperty(propertyName);
+    }
+    value = desktopProperties.get(propertyName);
+    if (value == null) {
+        value = lazilyLoadDesktopProperty(propertyName);
+        if (value != null) {
+            setDesktopProperty(propertyName, value);
+        }
+    }
+    /* for property "awt.font.desktophints" */
+    if (value instanceof RenderingHints) {
+        value = ((RenderingHints) value).clone();
+    }
+    return value;
+}

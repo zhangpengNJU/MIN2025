@@ -1,0 +1,19 @@
+private void buildFloatAndDecimalPattern() {
+    // \\p{javaDigit} may not be perfect, see above
+    String digit = "(([0-9\\p{javaDigit}]))";
+    String exponent = "([eE][+-]?" + digit + "+)?";
+    String groupedNumeral = "(" + non0Digit + digit + "?" + digit + "?(" + groupSeparator + digit + digit + digit + ")+)";
+    // Once again digit++ is used for performance, as above
+    String numeral = "((" + digit + "++)|" + groupedNumeral + ")";
+    String decimalNumeral = "(" + numeral + "|" + numeral + decimalSeparator + digit + "*+|" + decimalSeparator + digit + "++)";
+    String nonNumber = "(NaN|" + nanString + "|Infinity|" + infinityString + ")";
+    String positiveFloat = "(" + positivePrefix + decimalNumeral + positiveSuffix + exponent + ")";
+    String negativeFloat = "(" + negativePrefix + decimalNumeral + negativeSuffix + exponent + ")";
+    String decimal = "(([-+]?" + decimalNumeral + exponent + ")|" + positiveFloat + "|" + negativeFloat + ")";
+    String hexFloat = "[-+]?0[xX][0-9a-fA-F]*\\.[0-9a-fA-F]+([pP][-+]?[0-9]+)?";
+    String positiveNonNumber = "(" + positivePrefix + nonNumber + positiveSuffix + ")";
+    String negativeNonNumber = "(" + negativePrefix + nonNumber + negativeSuffix + ")";
+    String signedNonNumber = "(([-+]?" + nonNumber + ")|" + positiveNonNumber + "|" + negativeNonNumber + ")";
+    floatPattern = Pattern.compile(decimal + "|" + hexFloat + "|" + signedNonNumber);
+    decimalPattern = Pattern.compile(decimal);
+}

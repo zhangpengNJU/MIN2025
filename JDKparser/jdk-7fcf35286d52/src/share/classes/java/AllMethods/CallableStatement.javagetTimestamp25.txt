@@ -1,0 +1,23 @@
+/**
+ * Retrieves the value of the designated JDBC <code>TIMESTAMP</code> parameter as a
+ * <code>java.sql.Timestamp</code> object, using
+ * the given <code>Calendar</code> object to construct
+ * the <code>Timestamp</code> object.
+ * With a <code>Calendar</code> object, the driver
+ * can calculate the timestamp taking into account a custom timezone and locale.
+ * If no <code>Calendar</code> object is specified, the driver uses the
+ * default timezone and locale.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ * and so on
+ * @param cal the <code>Calendar</code> object the driver will use
+ *            to construct the timestamp
+ * @return the parameter value.  If the value is SQL <code>NULL</code>, the result
+ *         is <code>null</code>.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @see #setTimestamp
+ * @since 1.2
+ */
+java.sql.Timestamp getTimestamp(int parameterIndex, Calendar cal) throws SQLException;

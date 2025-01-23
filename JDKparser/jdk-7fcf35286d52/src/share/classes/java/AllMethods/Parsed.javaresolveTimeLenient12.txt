@@ -1,0 +1,54 @@
+private void resolveTimeLenient() {
+    // leniently create a time from incomplete information
+    // done after everything else as it creates information from nothing
+    // which would break updateCheckConflict(field)
+    if (time == null) {
+        // NANO_OF_SECOND merged with MILLI/MICRO above
+        if (fieldValues.containsKey(MILLI_OF_SECOND)) {
+            long los = fieldValues.remove(MILLI_OF_SECOND);
+            if (fieldValues.containsKey(MICRO_OF_SECOND)) {
+                // merge milli-of-second and micro-of-second for better error message
+                long cos = los * 1_000 + (fieldValues.get(MICRO_OF_SECOND) % 1_000);
+                updateCheckConflict(MILLI_OF_SECOND, MICRO_OF_SECOND, cos);
+                fieldValues.remove(MICRO_OF_SECOND);
+                fieldValues.put(NANO_OF_SECOND, cos * 1_000L);
+            } else {
+                // convert milli-of-second to nano-of-second
+                fieldValues.put(NANO_OF_SECOND, los * 1_000_000L);
+            }
+        } else if (fieldValues.containsKey(MICRO_OF_SECOND)) {
+            // convert micro-of-second to nano-of-second
+            long cos = fieldValues.remove(MICRO_OF_SECOND);
+            fieldValues.put(NANO_OF_SECOND, cos * 1_000L);
+        }
+        // merge hour/minute/second/nano leniently
+        Long hod = fieldValues.get(HOUR_OF_DAY);
+        if (hod != null) {
+            Long moh = fieldValues.get(MINUTE_OF_HOUR);
+            Long som = fieldValues.get(SECOND_OF_MINUTE);
+            Long nos = fieldValues.get(NANO_OF_SECOND);
+            // check for invalid combinations that cannot be defaulted
+            if ((moh == null && (som != null || nos != null)) || (moh != null && som == null && nos != null)) {
+                return;
+            }
+            // default as necessary and build time
+            long mohVal = (moh != null ? moh : 0);
+            long somVal = (som != null ? som : 0);
+            long nosVal = (nos != null ? nos : 0);
+            resolveTime(hod, mohVal, somVal, nosVal);
+            fieldValues.remove(HOUR_OF_DAY);
+            fieldValues.remove(MINUTE_OF_HOUR);
+            fieldValues.remove(SECOND_OF_MINUTE);
+            fieldValues.remove(NANO_OF_SECOND);
+        }
+    }
+    // validate remaining
+    if (resolverStyle != ResolverStyle.LENIENT && fieldValues.size() > 0) {
+        for (Entry<TemporalField, Long> entry : fieldValues.entrySet()) {
+            TemporalField field = entry.getKey();
+            if (field instanceof ChronoField && field.isTimeBased()) {
+                ((ChronoField) field).checkValidValue(entry.getValue());
+            }
+        }
+    }
+}

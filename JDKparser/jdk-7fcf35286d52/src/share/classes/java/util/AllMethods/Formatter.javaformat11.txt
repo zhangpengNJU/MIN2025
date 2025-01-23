@@ -1,0 +1,79 @@
+/**
+ * Writes a formatted string to this object's destination using the
+ * specified locale, format string, and arguments.
+ *
+ * @param  l
+ *         The {@linkplain java.util.Locale locale} to apply during
+ *         formatting.  If {@code l} is {@code null} then no localization
+ *         is applied.  This does not change this object's locale that was
+ *         set during construction.
+ *
+ * @param  format
+ *         A format string as described in <a href="#syntax">Format string
+ *         syntax</a>
+ *
+ * @param  args
+ *         Arguments referenced by the format specifiers in the format
+ *         string.  If there are more arguments than format specifiers, the
+ *         extra arguments are ignored.  The maximum number of arguments is
+ *         limited by the maximum dimension of a Java array as defined by
+ *         <cite>The Java&trade; Virtual Machine Specification</cite>.
+ *
+ * @throws  IllegalFormatException
+ *          If a format string contains an illegal syntax, a format
+ *          specifier that is incompatible with the given arguments,
+ *          insufficient arguments given the format string, or other
+ *          illegal conditions.  For specification of all possible
+ *          formatting errors, see the <a href="#detail">Details</a>
+ *          section of the formatter class specification.
+ *
+ * @throws  FormatterClosedException
+ *          If this formatter has been closed by invoking its {@link
+ *          #close()} method
+ *
+ * @return  This formatter
+ */
+public Formatter format(Locale l, String format, Object... args) {
+    ensureOpen();
+    // index of last argument referenced
+    int last = -1;
+    // last ordinary index
+    int lasto = -1;
+    FormatString[] fsa = parse(format);
+    for (int i = 0; i < fsa.length; i++) {
+        FormatString fs = fsa[i];
+        int index = fs.index();
+        try {
+            switch(index) {
+                case // fixed string, "%n", or "%%"
+                -2:
+                    fs.print(null, l);
+                    break;
+                case // relative index
+                -1:
+                    if (last < 0 || (args != null && last > args.length - 1))
+                        throw new MissingFormatArgumentException(fs.toString());
+                    fs.print((args == null ? null : args[last]), l);
+                    break;
+                case // ordinary index
+                0:
+                    lasto++;
+                    last = lasto;
+                    if (args != null && lasto > args.length - 1)
+                        throw new MissingFormatArgumentException(fs.toString());
+                    fs.print((args == null ? null : args[lasto]), l);
+                    break;
+                default:
+                    // explicit index
+                    last = index - 1;
+                    if (args != null && last > args.length - 1)
+                        throw new MissingFormatArgumentException(fs.toString());
+                    fs.print((args == null ? null : args[last]), l);
+                    break;
+            }
+        } catch (IOException x) {
+            lastException = x;
+        }
+    }
+    return this;
+}

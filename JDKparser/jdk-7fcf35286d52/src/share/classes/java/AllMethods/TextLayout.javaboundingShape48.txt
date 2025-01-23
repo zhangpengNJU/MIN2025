@@ -1,0 +1,35 @@
+// A utility to return a path enclosing the given path
+// Path0 must be left or top of path1
+// {jbr} no assumptions about size of path0, path1 anymore.
+private GeneralPath boundingShape(double[] path0, double[] path1) {
+    // Really, we want the path to be a convex hull around all of the
+    // points in path0 and path1.  But we can get by with less than
+    // that.  We do need to prevent the two segments which
+    // join path0 to path1 from crossing each other.  So, if we
+    // traverse path0 from top to bottom, we'll traverse path1 from
+    // bottom to top (and vice versa).
+    GeneralPath result = pathToShape(path0, false, null);
+    boolean sameDirection;
+    if (isVerticalLine) {
+        sameDirection = (path0[1] > path0[path0.length - 1]) == (path1[1] > path1[path1.length - 1]);
+    } else {
+        sameDirection = (path0[0] > path0[path0.length - 2]) == (path1[0] > path1[path1.length - 2]);
+    }
+    int start;
+    int limit;
+    int increment;
+    if (sameDirection) {
+        start = path1.length - 2;
+        limit = -2;
+        increment = -2;
+    } else {
+        start = 0;
+        limit = path1.length;
+        increment = 2;
+    }
+    for (int i = start; i != limit; i += increment) {
+        result.lineTo((float) path1[i], (float) path1[i + 1]);
+    }
+    result.closePath();
+    return result;
+}

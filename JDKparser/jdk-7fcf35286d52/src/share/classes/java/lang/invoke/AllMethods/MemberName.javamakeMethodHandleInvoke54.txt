@@ -1,0 +1,9 @@
+/**
+ * Create a name for a signature-polymorphic invoker.
+ * This is a placeholder for a signature-polymorphic instance
+ * (of MH.invokeExact, etc.) that the JVM does not reify.
+ * See comments on {@link MethodHandleNatives#linkMethod}.
+ */
+static MemberName makeMethodHandleInvoke(String name, MethodType type) {
+    return makeMethodHandleInvoke(name, type, MH_INVOKE_MODS | SYNTHETIC);
+}

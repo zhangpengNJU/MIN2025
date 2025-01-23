@@ -1,0 +1,14 @@
+/**
+ * Creates the peer of the Checkbox. The peer allows you to change the
+ * look of the Checkbox without changing its functionality.
+ *
+ * @see     java.awt.Toolkit#createCheckbox(java.awt.Checkbox)
+ * @see     java.awt.Component#getToolkit()
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createCheckbox(this);
+        super.addNotify();
+    }
+}

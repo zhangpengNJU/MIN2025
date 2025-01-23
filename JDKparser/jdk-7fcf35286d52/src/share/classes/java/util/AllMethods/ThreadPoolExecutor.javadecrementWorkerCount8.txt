@@ -1,0 +1,9 @@
+/**
+ * Decrements the workerCount field of ctl. This is called only on
+ * abrupt termination of a thread (see processWorkerExit). Other
+ * decrements are performed within getTask.
+ */
+private void decrementWorkerCount() {
+    do {
+    } while (!compareAndDecrementWorkerCount(ctl.get()));
+}

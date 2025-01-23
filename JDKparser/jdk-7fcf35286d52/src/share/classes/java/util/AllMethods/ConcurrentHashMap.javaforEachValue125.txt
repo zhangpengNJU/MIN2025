@@ -1,0 +1,13 @@
+/**
+ * Performs the given action for each value.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param action the action
+ * @since 1.8
+ */
+public void forEachValue(long parallelismThreshold, Consumer<? super V> action) {
+    if (action == null)
+        throw new NullPointerException();
+    new ForEachValueTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, action).invoke();
+}

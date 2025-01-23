@@ -1,0 +1,10 @@
+public void forEachRemaining(Consumer<? super E> action) {
+    Objects.requireNonNull(action);
+    while (modCount == expectedModCount && nextIndex < size) {
+        action.accept(next.item);
+        lastReturned = next;
+        next = next.next;
+        nextIndex++;
+    }
+    checkForComodification();
+}

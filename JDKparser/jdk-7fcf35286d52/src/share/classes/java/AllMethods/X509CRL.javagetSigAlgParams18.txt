@@ -1,0 +1,17 @@
+/**
+ * Gets the DER-encoded signature algorithm parameters from this
+ * CRL's signature algorithm. In most cases, the signature
+ * algorithm parameters are null; the parameters are usually
+ * supplied with the public key.
+ * If access to individual parameter values is needed then use
+ * {@link java.security.AlgorithmParameters AlgorithmParameters}
+ * and instantiate with the name returned by
+ * {@link #getSigAlgName() getSigAlgName}.
+ *
+ * <p>See {@link #getSigAlgName() getSigAlgName} for
+ * relevant ASN.1 definitions.
+ *
+ * @return the DER-encoded signature algorithm parameters, or
+ *         null if no parameters are present.
+ */
+public abstract byte[] getSigAlgParams();

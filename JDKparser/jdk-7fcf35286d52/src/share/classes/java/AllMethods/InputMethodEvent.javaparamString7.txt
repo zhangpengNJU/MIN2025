@@ -1,0 +1,56 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ * It contains the event ID in text form, the characters of the
+ * committed and composed text
+ * separated by "+", the number of committed characters,
+ * the caret, and the visible position.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case INPUT_METHOD_TEXT_CHANGED:
+            typeStr = "INPUT_METHOD_TEXT_CHANGED";
+            break;
+        case CARET_POSITION_CHANGED:
+            typeStr = "CARET_POSITION_CHANGED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    String textString;
+    if (text == null) {
+        textString = "no text";
+    } else {
+        StringBuilder textBuffer = new StringBuilder("\"");
+        int committedCharacterCount = this.committedCharacterCount;
+        char c = text.first();
+        while (committedCharacterCount-- > 0) {
+            textBuffer.append(c);
+            c = text.next();
+        }
+        textBuffer.append("\" + \"");
+        while (c != CharacterIterator.DONE) {
+            textBuffer.append(c);
+            c = text.next();
+        }
+        textBuffer.append("\"");
+        textString = textBuffer.toString();
+    }
+    String countString = committedCharacterCount + " characters committed";
+    String caretString;
+    if (caret == null) {
+        caretString = "no caret";
+    } else {
+        caretString = "caret: " + caret.toString();
+    }
+    String visiblePositionString;
+    if (visiblePosition == null) {
+        visiblePositionString = "no visible position";
+    } else {
+        visiblePositionString = "visible position: " + visiblePosition.toString();
+    }
+    return typeStr + ", " + textString + ", " + countString + ", " + caretString + ", " + visiblePositionString;
+}

@@ -1,0 +1,33 @@
+/**
+ * Performs the same thing as matchString(String, int, int,
+ * String[]). This method takes a Map<String, Integer> instead of
+ * String[].
+ */
+private int matchString(String text, int start, int field, Map<String, Integer> data, CalendarBuilder calb) {
+    if (data != null) {
+        // TODO: make this default when it's in the spec.
+        if (data instanceof SortedMap) {
+            for (String name : data.keySet()) {
+                if (text.regionMatches(true, start, name, 0, name.length())) {
+                    calb.set(field, data.get(name));
+                    return start + name.length();
+                }
+            }
+            return -start;
+        }
+        String bestMatch = null;
+        for (String name : data.keySet()) {
+            int length = name.length();
+            if (bestMatch == null || length > bestMatch.length()) {
+                if (text.regionMatches(true, start, name, 0, length)) {
+                    bestMatch = name;
+                }
+            }
+        }
+        if (bestMatch != null) {
+            calb.set(field, data.get(bestMatch));
+            return start + bestMatch.length();
+        }
+    }
+    return -start;
+}

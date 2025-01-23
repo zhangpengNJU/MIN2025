@@ -1,0 +1,38 @@
+/**
+ * Remove a service previously added using
+ * {@link #putService putService()}. The specified service is removed from
+ * this provider. It will no longer be returned by
+ * {@link #getService getService()} and its information will be removed
+ * from this provider's Hashtable.
+ *
+ * <p>Also, if there is a security manager, its
+ * {@code checkSecurityAccess} method is called with the string
+ * {@code "removeProviderProperty."+name}, where {@code name} is
+ * the provider name, to see if it's ok to remove this provider's
+ * properties. If the default implementation of
+ * {@code checkSecurityAccess} is used (that is, that method is not
+ * overriden), then this results in a call to the security manager's
+ * {@code checkPermission} method with a
+ * {@code SecurityPermission("removeProviderProperty."+name)}
+ * permission.
+ *
+ * @param s the Service to be removed
+ *
+ * @throws  SecurityException
+ *          if a security manager exists and its {@link
+ *          java.lang.SecurityManager#checkSecurityAccess} method denies
+ *          access to remove this provider's properties.
+ * @throws NullPointerException if s is null
+ *
+ * @since 1.5
+ */
+protected synchronized void removeService(Service s) {
+    check("removeProviderProperty." + name);
+    if (debug != null) {
+        debug.println(name + ".removeService(): " + s);
+    }
+    if (s == null) {
+        throw new NullPointerException();
+    }
+    implRemoveService(s);
+}

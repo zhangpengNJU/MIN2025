@@ -1,0 +1,22 @@
+/**
+ * Awaits the phase of this phaser to advance from the given phase
+ * value, returning immediately if the current phase is not equal
+ * to the given phase value or this phaser is terminated.
+ *
+ * @param phase an arrival phase number, or negative value if
+ * terminated; this argument is normally the value returned by a
+ * previous call to {@code arrive} or {@code arriveAndDeregister}.
+ * @return the next arrival phase number, or the argument if it is
+ * negative, or the (negative) {@linkplain #getPhase() current phase}
+ * if terminated
+ */
+public int awaitAdvance(int phase) {
+    final Phaser root = this.root;
+    long s = (root == this) ? state : reconcileState();
+    int p = (int) (s >>> PHASE_SHIFT);
+    if (phase < 0)
+        return phase;
+    if (p == phase)
+        return root.internalAwaitAdvance(phase, null);
+    return p;
+}

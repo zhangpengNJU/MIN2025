@@ -1,0 +1,34 @@
+private static void writeInternal(byte type, Object object, ObjectOutput out) throws IOException {
+    out.writeByte(type);
+    switch(type) {
+        case CHRONO_TYPE:
+            ((AbstractChronology) object).writeExternal(out);
+            break;
+        case CHRONO_LOCAL_DATE_TIME_TYPE:
+            ((ChronoLocalDateTimeImpl<?>) object).writeExternal(out);
+            break;
+        case CHRONO_ZONE_DATE_TIME_TYPE:
+            ((ChronoZonedDateTimeImpl<?>) object).writeExternal(out);
+            break;
+        case JAPANESE_DATE_TYPE:
+            ((JapaneseDate) object).writeExternal(out);
+            break;
+        case JAPANESE_ERA_TYPE:
+            ((JapaneseEra) object).writeExternal(out);
+            break;
+        case HIJRAH_DATE_TYPE:
+            ((HijrahDate) object).writeExternal(out);
+            break;
+        case MINGUO_DATE_TYPE:
+            ((MinguoDate) object).writeExternal(out);
+            break;
+        case THAIBUDDHIST_DATE_TYPE:
+            ((ThaiBuddhistDate) object).writeExternal(out);
+            break;
+        case CHRONO_PERIOD_TYPE:
+            ((ChronoPeriodImpl) object).writeExternal(out);
+            break;
+        default:
+            throw new InvalidClassException("Unknown serialized type");
+    }
+}

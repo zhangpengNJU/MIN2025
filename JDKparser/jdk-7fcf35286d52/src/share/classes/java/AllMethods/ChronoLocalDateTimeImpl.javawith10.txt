@@ -1,0 +1,12 @@
+@Override
+public ChronoLocalDateTimeImpl<D> with(TemporalField field, long newValue) {
+    if (field instanceof ChronoField) {
+        ChronoField f = (ChronoField) field;
+        if (f.isTimeBased()) {
+            return with(date, time.with(field, newValue));
+        } else {
+            return with(date.with(field, newValue), time);
+        }
+    }
+    return ChronoLocalDateTimeImpl.ensureValid(date.getChronology(), field.adjustInto(this, newValue));
+}

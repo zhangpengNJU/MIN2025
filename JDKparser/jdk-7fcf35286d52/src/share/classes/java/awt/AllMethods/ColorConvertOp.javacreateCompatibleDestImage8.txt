@@ -1,0 +1,20 @@
+private BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM, ColorSpace destCS) {
+    BufferedImage image;
+    if (destCM == null) {
+        ColorModel srcCM = src.getColorModel();
+        int nbands = destCS.getNumComponents();
+        boolean hasAlpha = srcCM.hasAlpha();
+        if (hasAlpha) {
+            nbands += 1;
+        }
+        int[] nbits = new int[nbands];
+        for (int i = 0; i < nbands; i++) {
+            nbits[i] = 8;
+        }
+        destCM = new ComponentColorModel(destCS, nbits, hasAlpha, srcCM.isAlphaPremultiplied(), srcCM.getTransparency(), DataBuffer.TYPE_BYTE);
+    }
+    int w = src.getWidth();
+    int h = src.getHeight();
+    image = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(w, h), destCM.isAlphaPremultiplied(), null);
+    return image;
+}

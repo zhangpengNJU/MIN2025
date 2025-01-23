@@ -1,0 +1,85 @@
+/**
+ * Get the previous collation element in the string.  <p>This iterator iterates
+ * over a sequence of collation elements that were built from the string.
+ * Because there isn't necessarily a one-to-one mapping from characters to
+ * collation elements, this doesn't mean the same thing as "return the
+ * collation element [or ordering priority] of the previous character in the
+ * string".</p>
+ * <p>This function updates the iterator's internal pointer to point to the
+ * collation element preceding the one it's currently pointing to and then
+ * returns that element, while next() returns the current element and then
+ * updates the pointer.  This means that when you change direction while
+ * iterating (i.e., call next() and then call previous(), or call previous()
+ * and then call next()), you'll get back the same element twice.</p>
+ *
+ * @return the previous collation element
+ * @since 1.2
+ */
+public int previous() {
+    if (text == null) {
+        return NULLORDER;
+    }
+    NormalizerBase.Mode textMode = text.getMode();
+    // convert the owner's mode to something the Normalizer understands
+    NormalizerBase.Mode ownerMode = CollatorUtilities.toNormalizerMode(owner.getDecomposition());
+    if (textMode != ownerMode) {
+        text.setMode(ownerMode);
+    }
+    if (buffer != null) {
+        if (expIndex > 0) {
+            return strengthOrder(buffer[--expIndex]);
+        } else {
+            buffer = null;
+            expIndex = 0;
+        }
+    } else if (swapOrder != 0) {
+        if (Character.isSupplementaryCodePoint(swapOrder)) {
+            char[] chars = Character.toChars(swapOrder);
+            swapOrder = chars[1];
+            return chars[0] << 16;
+        }
+        int order = swapOrder << 16;
+        swapOrder = 0;
+        return order;
+    }
+    int ch = text.previous();
+    if (ch == NormalizerBase.DONE) {
+        return NULLORDER;
+    }
+    int value = ordering.getUnicodeOrder(ch);
+    if (value == RuleBasedCollator.UNMAPPED) {
+        swapOrder = UNMAPPEDCHARVALUE;
+        return ch;
+    } else if (value >= RuleBasedCollator.CONTRACTCHARINDEX) {
+        value = prevContractChar(ch);
+    }
+    if (value >= RuleBasedCollator.EXPANDCHARINDEX) {
+        buffer = ordering.getExpandValueList(value);
+        expIndex = buffer.length;
+        value = buffer[--expIndex];
+    }
+    if (ordering.isSEAsianSwapping()) {
+        int vowel;
+        if (isThaiBaseConsonant(ch)) {
+            vowel = text.previous();
+            if (isThaiPreVowel(vowel)) {
+                buffer = makeReorderedBuffer(vowel, value, buffer, false);
+                expIndex = buffer.length - 1;
+                value = buffer[expIndex];
+            } else {
+                text.next();
+            }
+        }
+        if (isLaoBaseConsonant(ch)) {
+            vowel = text.previous();
+            if (isLaoPreVowel(vowel)) {
+                buffer = makeReorderedBuffer(vowel, value, buffer, false);
+                expIndex = buffer.length - 1;
+                value = buffer[expIndex];
+            } else {
+                text.next();
+            }
+        }
+    }
+    return strengthOrder(value);
+}

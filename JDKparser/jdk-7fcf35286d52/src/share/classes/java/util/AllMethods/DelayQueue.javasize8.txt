@@ -1,0 +1,9 @@
+public int size() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return q.size();
+    } finally {
+        lock.unlock();
+    }
+}

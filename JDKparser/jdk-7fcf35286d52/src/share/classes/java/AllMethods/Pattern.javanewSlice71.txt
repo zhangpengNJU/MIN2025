@@ -1,0 +1,22 @@
+/**
+ *  Utility method for creating a string slice matcher.
+ */
+private Node newSlice(int[] buf, int count, boolean hasSupplementary) {
+    int[] tmp = new int[count];
+    if (has(CASE_INSENSITIVE)) {
+        if (has(UNICODE_CASE)) {
+            for (int i = 0; i < count; i++) {
+                tmp[i] = Character.toLowerCase(Character.toUpperCase(buf[i]));
+            }
+            return hasSupplementary ? new SliceUS(tmp) : new SliceU(tmp);
+        }
+        for (int i = 0; i < count; i++) {
+            tmp[i] = ASCII.toLower(buf[i]);
+        }
+        return hasSupplementary ? new SliceIS(tmp) : new SliceI(tmp);
+    }
+    for (int i = 0; i < count; i++) {
+        tmp[i] = buf[i];
+    }
+    return hasSupplementary ? new SliceS(tmp) : new Slice(tmp);
+}

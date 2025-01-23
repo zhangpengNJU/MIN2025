@@ -1,0 +1,15 @@
+/**
+ * Returns a new CompletionStage that, when this stage completes
+ * normally, is executed using the supplied Executor, with this
+ * stage's result as the argument to the supplied function.
+ *
+ * See the {@link CompletionStage} documentation for rules
+ * covering exceptional completion.
+ *
+ * @param fn the function to use to compute the value of
+ * the returned CompletionStage
+ * @param executor the executor to use for asynchronous execution
+ * @param <U> the function's return type
+ * @return the new CompletionStage
+ */
+public <U> CompletionStage<U> thenApplyAsync(Function<? super T, ? extends U> fn, Executor executor);

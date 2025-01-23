@@ -1,0 +1,13 @@
+/**
+ * Common code for all constructors; do not call directly except from immediately above.
+ */
+private MethodHandle getDirectConstructorCommon(Class<?> refc, MemberName ctor, boolean checkSecurity) throws IllegalAccessException {
+    assert (ctor.isConstructor());
+    checkAccess(REF_newInvokeSpecial, refc, ctor);
+    // Optionally check with the security manager; this isn't needed for unreflect* calls.
+    if (checkSecurity)
+        checkSecurityManager(refc, ctor);
+    // maybeBindCaller not relevant here
+    assert (!MethodHandleNatives.isCallerSensitive(ctor));
+    return DirectMethodHandle.make(ctor).setVarargs(ctor);
+}

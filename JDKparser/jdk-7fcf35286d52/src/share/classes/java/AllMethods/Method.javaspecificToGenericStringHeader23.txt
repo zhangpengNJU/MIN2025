@@ -1,0 +1,7 @@
+@Override
+void specificToGenericStringHeader(StringBuilder sb) {
+    Type genRetType = getGenericReturnType();
+    sb.append(genRetType.getTypeName()).append(' ');
+    sb.append(getDeclaringClass().getTypeName()).append('.');
+    sb.append(getName());
+}

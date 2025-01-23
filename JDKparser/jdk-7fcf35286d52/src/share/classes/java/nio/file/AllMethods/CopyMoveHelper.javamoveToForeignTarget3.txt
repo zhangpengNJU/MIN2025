@@ -1,0 +1,8 @@
+/**
+ * Simple move implements as copy+delete for use when source and target are
+ * associated with different providers
+ */
+static void moveToForeignTarget(Path source, Path target, CopyOption... options) throws IOException {
+    copyToForeignTarget(source, target, convertMoveToCopyOptions(options));
+    Files.delete(source);
+}

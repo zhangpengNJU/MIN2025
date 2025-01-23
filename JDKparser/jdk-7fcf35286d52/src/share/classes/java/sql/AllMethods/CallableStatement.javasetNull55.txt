@@ -1,0 +1,31 @@
+/**
+ * Sets the designated parameter to SQL <code>NULL</code>.
+ * This version of the method <code>setNull</code> should
+ * be used for user-defined types and REF type parameters.  Examples
+ * of user-defined types include: STRUCT, DISTINCT, JAVA_OBJECT, and
+ * named array types.
+ *
+ * <P><B>Note:</B> To be portable, applications must give the
+ * SQL type code and the fully-qualified SQL type name when specifying
+ * a NULL user-defined or REF parameter.  In the case of a user-defined type
+ * the name is the type name of the parameter itself.  For a REF
+ * parameter, the name is the type name of the referenced type.
+ * <p>
+ * Although it is intended for user-defined and Ref parameters,
+ * this method may be used to set a null parameter of any JDBC type.
+ * If the parameter does not have a user-defined or REF type, the given
+ * typeName is ignored.
+ *
+ * @param parameterName the name of the parameter
+ * @param sqlType a value from <code>java.sql.Types</code>
+ * @param typeName the fully-qualified name of an SQL user-defined type;
+ *        ignored if the parameter is not a user-defined type or
+ *        SQL <code>REF</code> value
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.4
+ */
+void setNull(String parameterName, int sqlType, String typeName) throws SQLException;

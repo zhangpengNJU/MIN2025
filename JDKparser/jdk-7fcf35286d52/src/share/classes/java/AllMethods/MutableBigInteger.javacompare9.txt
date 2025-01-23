@@ -1,0 +1,24 @@
+/**
+ * Compare the magnitude of two MutableBigIntegers. Returns -1, 0 or 1
+ * as this MutableBigInteger is numerically less than, equal to, or
+ * greater than <tt>b</tt>.
+ */
+final int compare(MutableBigInteger b) {
+    int blen = b.intLen;
+    if (intLen < blen)
+        return -1;
+    if (intLen > blen)
+        return 1;
+    // Add Integer.MIN_VALUE to make the comparison act as unsigned integer
+    // comparison.
+    int[] bval = b.value;
+    for (int i = offset, j = b.offset; i < intLen + offset; i++, j++) {
+        int b1 = value[i] + 0x80000000;
+        int b2 = bval[j] + 0x80000000;
+        if (b1 < b2)
+            return -1;
+        if (b1 > b2)
+            return 1;
+    }
+    return 0;
+}

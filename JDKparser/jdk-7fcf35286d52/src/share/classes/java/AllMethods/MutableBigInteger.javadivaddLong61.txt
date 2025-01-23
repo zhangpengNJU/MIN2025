@@ -1,0 +1,14 @@
+/**
+ * A primitive used for division by long.
+ * Specialized version of the method divadd.
+ * dh is a high part of the divisor, dl is a low part
+ */
+private int divaddLong(int dh, int dl, int[] result, int offset) {
+    long carry = 0;
+    long sum = (dl & LONG_MASK) + (result[1 + offset] & LONG_MASK);
+    result[1 + offset] = (int) sum;
+    sum = (dh & LONG_MASK) + (result[offset] & LONG_MASK) + carry;
+    result[offset] = (int) sum;
+    carry = sum >>> 32;
+    return (int) carry;
+}

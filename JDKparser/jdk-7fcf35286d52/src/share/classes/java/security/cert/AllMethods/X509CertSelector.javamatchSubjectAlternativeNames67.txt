@@ -1,0 +1,38 @@
+/* match on subject alternative name extension names */
+private boolean matchSubjectAlternativeNames(X509Certificate xcert) {
+    if ((subjectAlternativeNames == null) || subjectAlternativeNames.isEmpty()) {
+        return true;
+    }
+    try {
+        SubjectAlternativeNameExtension sanExt = (SubjectAlternativeNameExtension) getExtensionObject(xcert, SUBJECT_ALT_NAME_ID);
+        if (sanExt == null) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "no subject alternative name extension");
+            }
+            return false;
+        }
+        GeneralNames certNames = sanExt.get(SubjectAlternativeNameExtension.SUBJECT_NAME);
+        Iterator<GeneralNameInterface> i = subjectAlternativeGeneralNames.iterator();
+        while (i.hasNext()) {
+            GeneralNameInterface matchName = i.next();
+            boolean found = false;
+            for (Iterator<GeneralName> t = certNames.iterator(); t.hasNext() && !found; ) {
+                GeneralNameInterface certName = (t.next()).getName();
+                found = certName.equals(matchName);
+            }
+            if (!found && (matchAllSubjectAltNames || !i.hasNext())) {
+                if (debug != null) {
+                    debug.println("X509CertSelector.match: subject alternative " + "name " + matchName + " not found");
+                }
+                return false;
+            } else if (found && !matchAllSubjectAltNames) {
+                break;
+            }
+        }
+    } catch (IOException ex) {
+        if (debug != null)
+            debug.println("X509CertSelector.match: IOException in subject " + "alternative name check");
+        return false;
+    }
+    return true;
+}

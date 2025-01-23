@@ -1,0 +1,29 @@
+/**
+ * Processes action events occurring on this text field by
+ * dispatching them to any registered
+ * <code>ActionListener</code> objects.
+ * <p>
+ * This method is not called unless action events are
+ * enabled for this component. Action events are enabled
+ * when one of the following occurs:
+ * <ul>
+ * <li>An <code>ActionListener</code> object is registered
+ * via <code>addActionListener</code>.
+ * <li>Action events are enabled via <code>enableEvents</code>.
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the action event
+ * @see         java.awt.event.ActionListener
+ * @see         java.awt.TextField#addActionListener
+ * @see         java.awt.Component#enableEvents
+ * @since       JDK1.1
+ */
+protected void processActionEvent(ActionEvent e) {
+    ActionListener listener = actionListener;
+    if (listener != null) {
+        listener.actionPerformed(e);
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns the {@code UserPrincipalLookupService} for this file system
+ * <i>(optional operation)</i>. The resulting lookup service may be used to
+ * lookup user or group names.
+ *
+ * <p> <b>Usage Example:</b>
+ * Suppose we want to make "joe" the owner of a file:
+ * <pre>
+ *     UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+ *     Files.setOwner(path, lookupService.lookupPrincipalByName("joe"));
+ * </pre>
+ *
+ * @throws  UnsupportedOperationException
+ *          If this {@code FileSystem} does not does have a lookup service
+ *
+ * @return  The {@code UserPrincipalLookupService} for this file system
+ */
+public abstract UserPrincipalLookupService getUserPrincipalLookupService();

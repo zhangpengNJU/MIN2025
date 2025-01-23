@@ -1,0 +1,30 @@
+/**
+ * Writes statement <code>oldStm</code> to the stream.
+ * The <code>oldStm</code> should be written entirely
+ * in terms of the callers environment, i.e. the
+ * target and all arguments should be part of the
+ * object graph being written. These expressions
+ * represent a series of "what happened" expressions
+ * which tell the output stream how to produce an
+ * object graph like the original.
+ * <p>
+ * The implementation of this method will produce
+ * a second expression to represent the same expression in
+ * an environment that will exist when the stream is read.
+ * This is achieved simply by calling <code>writeObject</code>
+ * on the target and all the arguments and building a new
+ * expression with the results.
+ *
+ * @param oldStm The expression to be written to the stream.
+ */
+public void writeStatement(Statement oldStm) {
+    // System.out.println("writeStatement: " + oldExp);
+    Statement newStm = cloneStatement(oldStm);
+    if (oldStm.getTarget() != this && executeStatements) {
+        try {
+            newStm.execute();
+        } catch (Exception e) {
+            getExceptionListener().exceptionThrown(new Exception("Encoder: discarding statement " + newStm, e));
+        }
+    }
+}

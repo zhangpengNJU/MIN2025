@@ -1,0 +1,18 @@
+/**
+ * Posts the specified event to the menu.
+ * This method is part of the Java&nbsp;1.0 event system
+ * and it is maintained only for backwards compatibility.
+ * Its use is discouraged, and it may not be supported
+ * in the future.
+ * @param evt the event which is to take place
+ * @deprecated As of JDK version 1.1, replaced by {@link
+ * #dispatchEvent(AWTEvent) dispatchEvent}.
+ */
+@Deprecated
+public boolean postEvent(Event evt) {
+    MenuContainer parent = this.parent;
+    if (parent != null) {
+        parent.postEvent(evt);
+    }
+    return false;
+}

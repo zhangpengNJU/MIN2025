@@ -1,0 +1,4 @@
+protected int engineSign(byte[] outbuf, int offset, int len) throws SignatureException {
+    chooseFirstProvider();
+    return sigSpi.engineSign(outbuf, offset, len);
+}

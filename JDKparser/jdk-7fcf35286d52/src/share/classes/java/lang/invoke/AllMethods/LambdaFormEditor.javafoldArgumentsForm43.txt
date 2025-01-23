@@ -1,0 +1,12 @@
+LambdaForm foldArgumentsForm(int foldPos, boolean dropResult, MethodType combinerType) {
+    int combinerArity = combinerType.parameterCount();
+    Transform.Kind kind = (dropResult ? Transform.Kind.FOLD_ARGS_TO_VOID : Transform.Kind.FOLD_ARGS);
+    Transform key = Transform.of(kind, foldPos, combinerArity);
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.arity == lambdaForm.arity - (kind == Transform.Kind.FOLD_ARGS ? 1 : 0));
+        return form;
+    }
+    form = makeArgumentCombinationForm(foldPos, combinerType, true, dropResult);
+    return putInCache(key, form);
+}

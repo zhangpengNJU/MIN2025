@@ -1,0 +1,15 @@
+private String getDisplayString(String code, Locale inLocale, int type) {
+    if (code.length() == 0) {
+        return "";
+    }
+    if (inLocale == null) {
+        throw new NullPointerException();
+    }
+    LocaleServiceProviderPool pool = LocaleServiceProviderPool.getPool(LocaleNameProvider.class);
+    String key = (type == DISPLAY_VARIANT ? "%%" + code : code);
+    String result = pool.getLocalizedObject(LocaleNameGetter.INSTANCE, inLocale, key, type, code);
+    if (result != null) {
+        return result;
+    }
+    return code;
+}

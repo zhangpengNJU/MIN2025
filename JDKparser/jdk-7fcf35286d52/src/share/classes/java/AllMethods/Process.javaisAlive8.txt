@@ -1,0 +1,16 @@
+/**
+ * Tests whether the subprocess represented by this {@code Process} is
+ * alive.
+ *
+ * @return {@code true} if the subprocess represented by this
+ *         {@code Process} object has not yet terminated.
+ * @since 1.8
+ */
+public boolean isAlive() {
+    try {
+        exitValue();
+        return false;
+    } catch (IllegalThreadStateException e) {
+        return true;
+    }
+}

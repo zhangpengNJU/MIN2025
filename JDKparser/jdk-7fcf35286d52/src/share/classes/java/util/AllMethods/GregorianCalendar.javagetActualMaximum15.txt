@@ -1,0 +1,261 @@
+/**
+ * Returns the maximum value that this calendar field could have,
+ * taking into consideration the given time value and the current
+ * values of the
+ * {@link Calendar#getFirstDayOfWeek() getFirstDayOfWeek},
+ * {@link Calendar#getMinimalDaysInFirstWeek() getMinimalDaysInFirstWeek},
+ * {@link #getGregorianChange() getGregorianChange} and
+ * {@link Calendar#getTimeZone() getTimeZone} methods.
+ * For example, if the date of this instance is February 1, 2004,
+ * the actual maximum value of the <code>DAY_OF_MONTH</code> field
+ * is 29 because 2004 is a leap year, and if the date of this
+ * instance is February 1, 2005, it's 28.
+ *
+ * <p>This method calculates the maximum value of {@link
+ * Calendar#WEEK_OF_YEAR WEEK_OF_YEAR} based on the {@link
+ * Calendar#YEAR YEAR} (calendar year) value, not the <a
+ * href="#week_year">week year</a>. Call {@link
+ * #getWeeksInWeekYear()} to get the maximum value of {@code
+ * WEEK_OF_YEAR} in the week year of this {@code GregorianCalendar}.
+ *
+ * @param field the calendar field
+ * @return the maximum of the given field for the time value of
+ * this <code>GregorianCalendar</code>
+ * @see #getMinimum(int)
+ * @see #getMaximum(int)
+ * @see #getGreatestMinimum(int)
+ * @see #getLeastMaximum(int)
+ * @see #getActualMinimum(int)
+ * @since 1.2
+ */
+@Override
+public int getActualMaximum(int field) {
+    final int fieldsForFixedMax = ERA_MASK | DAY_OF_WEEK_MASK | HOUR_MASK | AM_PM_MASK | HOUR_OF_DAY_MASK | MINUTE_MASK | SECOND_MASK | MILLISECOND_MASK | ZONE_OFFSET_MASK | DST_OFFSET_MASK;
+    if ((fieldsForFixedMax & (1 << field)) != 0) {
+        return getMaximum(field);
+    }
+    GregorianCalendar gc = getNormalizedCalendar();
+    BaseCalendar.Date date = gc.cdate;
+    BaseCalendar cal = gc.calsys;
+    int normalizedYear = date.getNormalizedYear();
+    int value = -1;
+    switch(field) {
+        case MONTH:
+            {
+                if (!gc.isCutoverYear(normalizedYear)) {
+                    value = DECEMBER;
+                    break;
+                }
+                // January 1 of the next year may or may not exist.
+                long nextJan1;
+                do {
+                    nextJan1 = gcal.getFixedDate(++normalizedYear, BaseCalendar.JANUARY, 1, null);
+                } while (nextJan1 < gregorianCutoverDate);
+                BaseCalendar.Date d = (BaseCalendar.Date) date.clone();
+                cal.getCalendarDateFromFixedDate(d, nextJan1 - 1);
+                value = d.getMonth() - 1;
+            }
+            break;
+        case DAY_OF_MONTH:
+            {
+                value = cal.getMonthLength(date);
+                if (!gc.isCutoverYear(normalizedYear) || date.getDayOfMonth() == value) {
+                    break;
+                }
+                // Handle cutover year.
+                long fd = gc.getCurrentFixedDate();
+                if (fd >= gregorianCutoverDate) {
+                    break;
+                }
+                int monthLength = gc.actualMonthLength();
+                long monthEnd = gc.getFixedDateMonth1(gc.cdate, fd) + monthLength - 1;
+                // Convert the fixed date to its calendar date.
+                BaseCalendar.Date d = gc.getCalendarDate(monthEnd);
+                value = d.getDayOfMonth();
+            }
+            break;
+        case DAY_OF_YEAR:
+            {
+                if (!gc.isCutoverYear(normalizedYear)) {
+                    value = cal.getYearLength(date);
+                    break;
+                }
+                // Handle cutover year.
+                long jan1;
+                if (gregorianCutoverYear == gregorianCutoverYearJulian) {
+                    BaseCalendar cocal = gc.getCutoverCalendarSystem();
+                    jan1 = cocal.getFixedDate(normalizedYear, 1, 1, null);
+                } else if (normalizedYear == gregorianCutoverYearJulian) {
+                    jan1 = cal.getFixedDate(normalizedYear, 1, 1, null);
+                } else {
+                    jan1 = gregorianCutoverDate;
+                }
+                // January 1 of the next year may or may not exist.
+                long nextJan1 = gcal.getFixedDate(++normalizedYear, 1, 1, null);
+                if (nextJan1 < gregorianCutoverDate) {
+                    nextJan1 = gregorianCutoverDate;
+                }
+                assert jan1 <= cal.getFixedDate(date.getNormalizedYear(), date.getMonth(), date.getDayOfMonth(), date);
+                assert nextJan1 >= cal.getFixedDate(date.getNormalizedYear(), date.getMonth(), date.getDayOfMonth(), date);
+                value = (int) (nextJan1 - jan1);
+            }
+            break;
+        case WEEK_OF_YEAR:
+            {
+                if (!gc.isCutoverYear(normalizedYear)) {
+                    // Get the day of week of January 1 of the year
+                    CalendarDate d = cal.newCalendarDate(TimeZone.NO_TIMEZONE);
+                    d.setDate(date.getYear(), BaseCalendar.JANUARY, 1);
+                    int dayOfWeek = cal.getDayOfWeek(d);
+                    // Normalize the day of week with the firstDayOfWeek value
+                    dayOfWeek -= getFirstDayOfWeek();
+                    if (dayOfWeek < 0) {
+                        dayOfWeek += 7;
+                    }
+                    value = 52;
+                    int magic = dayOfWeek + getMinimalDaysInFirstWeek() - 1;
+                    if ((magic == 6) || (date.isLeapYear() && (magic == 5 || magic == 12))) {
+                        value++;
+                    }
+                    break;
+                }
+                if (gc == this) {
+                    gc = (GregorianCalendar) gc.clone();
+                }
+                int maxDayOfYear = getActualMaximum(DAY_OF_YEAR);
+                gc.set(DAY_OF_YEAR, maxDayOfYear);
+                value = gc.get(WEEK_OF_YEAR);
+                if (internalGet(YEAR) != gc.getWeekYear()) {
+                    gc.set(DAY_OF_YEAR, maxDayOfYear - 7);
+                    value = gc.get(WEEK_OF_YEAR);
+                }
+            }
+            break;
+        case WEEK_OF_MONTH:
+            {
+                if (!gc.isCutoverYear(normalizedYear)) {
+                    CalendarDate d = cal.newCalendarDate(null);
+                    d.setDate(date.getYear(), date.getMonth(), 1);
+                    int dayOfWeek = cal.getDayOfWeek(d);
+                    int monthLength = cal.getMonthLength(d);
+                    dayOfWeek -= getFirstDayOfWeek();
+                    if (dayOfWeek < 0) {
+                        dayOfWeek += 7;
+                    }
+                    // # of days in the first week
+                    int nDaysFirstWeek = 7 - dayOfWeek;
+                    value = 3;
+                    if (nDaysFirstWeek >= getMinimalDaysInFirstWeek()) {
+                        value++;
+                    }
+                    monthLength -= nDaysFirstWeek + 7 * 3;
+                    if (monthLength > 0) {
+                        value++;
+                        if (monthLength > 7) {
+                            value++;
+                        }
+                    }
+                    break;
+                }
+                // Cutover year handling
+                if (gc == this) {
+                    gc = (GregorianCalendar) gc.clone();
+                }
+                int y = gc.internalGet(YEAR);
+                int m = gc.internalGet(MONTH);
+                do {
+                    value = gc.get(WEEK_OF_MONTH);
+                    gc.add(WEEK_OF_MONTH, +1);
+                } while (gc.get(YEAR) == y && gc.get(MONTH) == m);
+            }
+            break;
+        case DAY_OF_WEEK_IN_MONTH:
+            {
+                // may be in the Gregorian cutover month
+                int ndays, dow1;
+                int dow = date.getDayOfWeek();
+                if (!gc.isCutoverYear(normalizedYear)) {
+                    BaseCalendar.Date d = (BaseCalendar.Date) date.clone();
+                    ndays = cal.getMonthLength(d);
+                    d.setDayOfMonth(1);
+                    cal.normalize(d);
+                    dow1 = d.getDayOfWeek();
+                } else {
+                    // Let a cloned GregorianCalendar take care of the cutover cases.
+                    if (gc == this) {
+                        gc = (GregorianCalendar) clone();
+                    }
+                    ndays = gc.actualMonthLength();
+                    gc.set(DAY_OF_MONTH, gc.getActualMinimum(DAY_OF_MONTH));
+                    dow1 = gc.get(DAY_OF_WEEK);
+                }
+                int x = dow - dow1;
+                if (x < 0) {
+                    x += 7;
+                }
+                ndays -= x;
+                value = (ndays + 6) / 7;
+            }
+            break;
+        case YEAR:
+            /* The year computation is no different, in principle, from the
+             * others, however, the range of possible maxima is large.  In
+             * addition, the way we know we've exceeded the range is different.
+             * For these reasons, we use the special case code below to handle
+             * this field.
+             *
+             * The actual maxima for YEAR depend on the type of calendar:
+             *
+             *     Gregorian = May 17, 292275056 BCE - Aug 17, 292278994 CE
+             *     Julian    = Dec  2, 292269055 BCE - Jan  3, 292272993 CE
+             *     Hybrid    = Dec  2, 292269055 BCE - Aug 17, 292278994 CE
+             *
+             * We know we've exceeded the maximum when either the month, date,
+             * time, or era changes in response to setting the year.  We don't
+             * check for month, date, and time here because the year and era are
+             * sufficient to detect an invalid year setting.  NOTE: If code is
+             * added to check the month and date in the future for some reason,
+             * Feb 29 must be allowed to shift to Mar 1 when setting the year.
+             */
+            {
+                if (gc == this) {
+                    gc = (GregorianCalendar) clone();
+                }
+                // Calculate the millisecond offset from the beginning
+                // of the year of this calendar and adjust the max
+                // year value if we are beyond the limit in the max
+                // year.
+                long current = gc.getYearOffsetInMillis();
+                if (gc.internalGetEra() == CE) {
+                    gc.setTimeInMillis(Long.MAX_VALUE);
+                    value = gc.get(YEAR);
+                    long maxEnd = gc.getYearOffsetInMillis();
+                    if (current > maxEnd) {
+                        value--;
+                    }
+                } else {
+                    CalendarSystem mincal = gc.getTimeInMillis() >= gregorianCutover ? gcal : getJulianCalendarSystem();
+                    CalendarDate d = mincal.getCalendarDate(Long.MIN_VALUE, getZone());
+                    long maxEnd = (cal.getDayOfYear(d) - 1) * 24 + d.getHours();
+                    maxEnd *= 60;
+                    maxEnd += d.getMinutes();
+                    maxEnd *= 60;
+                    maxEnd += d.getSeconds();
+                    maxEnd *= 1000;
+                    maxEnd += d.getMillis();
+                    value = d.getYear();
+                    if (value <= 0) {
+                        assert mincal == gcal;
+                        value = 1 - value;
+                    }
+                    if (current < maxEnd) {
+                        value--;
+                    }
+                }
+            }
+            break;
+        default:
+            throw new ArrayIndexOutOfBoundsException(field);
+    }
+    return value;
+}

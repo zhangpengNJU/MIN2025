@@ -1,0 +1,18 @@
+boolean addLightweightRequest(Component descendant, boolean temporary, CausedFocusEvent.Cause cause) {
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        if (this == HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER) {
+            log.fine("Assertion (this != HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER) failed");
+        }
+        if (descendant == null) {
+            log.fine("Assertion (descendant != null) failed");
+        }
+    }
+    Component lastDescendant = ((lightweightRequests.size() > 0) ? lightweightRequests.getLast().component : null);
+    if (descendant != lastDescendant) {
+        // Not a duplicate request
+        lightweightRequests.add(new LightweightFocusRequest(descendant, temporary, cause));
+        return true;
+    } else {
+        return false;
+    }
+}

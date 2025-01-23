@@ -1,0 +1,17 @@
+/**
+ * Override hashCode.
+ * Since Locales are often used in hashtables, caches the value
+ * for speed.
+ */
+@Override
+public int hashCode() {
+    int hc = hashCodeValue;
+    if (hc == 0) {
+        hc = baseLocale.hashCode();
+        if (localeExtensions != null) {
+            hc ^= localeExtensions.hashCode();
+        }
+        hashCodeValue = hc;
+    }
+    return hc;
+}

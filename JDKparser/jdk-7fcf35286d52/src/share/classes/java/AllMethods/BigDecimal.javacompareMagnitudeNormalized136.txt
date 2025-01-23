@@ -1,0 +1,10 @@
+// Compare Normalize dividend & divisor so that both fall into [0.1, 0.999...]
+private static int compareMagnitudeNormalized(BigInteger xs, int xscale, BigInteger ys, int yscale) {
+    int sdiff = xscale - yscale;
+    if (sdiff < 0) {
+        return bigMultiplyPowerTen(xs, -sdiff).compareMagnitude(ys);
+    } else {
+        // sdiff >= 0
+        return xs.compareMagnitude(bigMultiplyPowerTen(ys, sdiff));
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Produce identical numbers for similar <code>ActivationGroupDesc</code>s.
+ * @return an integer
+ * @see java.util.Hashtable
+ */
+public int hashCode() {
+    // hash location, className, data, and env
+    // but omit props (may be expensive)
+    return ((location == null ? 0 : location.hashCode() << 24) ^ (env == null ? 0 : env.hashCode() << 16) ^ (className == null ? 0 : className.hashCode() << 8) ^ (data == null ? 0 : data.hashCode()));
+}

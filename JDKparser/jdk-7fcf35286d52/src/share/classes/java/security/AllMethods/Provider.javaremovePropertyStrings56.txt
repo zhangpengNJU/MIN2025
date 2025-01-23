@@ -1,0 +1,17 @@
+/**
+ * Remove the string properties for this Service from this Provider's
+ * Hashtable.
+ */
+private void removePropertyStrings(Service s) {
+    String type = s.getType();
+    String algorithm = s.getAlgorithm();
+    // use super() to avoid permission check and other processing
+    super.remove(type + "." + algorithm);
+    for (String alias : s.getAliases()) {
+        super.remove(ALIAS_PREFIX + type + "." + alias);
+    }
+    for (Map.Entry<UString, String> entry : s.attributes.entrySet()) {
+        String key = type + "." + algorithm + " " + entry.getKey();
+        super.remove(key);
+    }
+}

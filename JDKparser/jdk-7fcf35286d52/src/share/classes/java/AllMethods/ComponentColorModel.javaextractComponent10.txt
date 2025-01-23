@@ -1,0 +1,109 @@
+private int extractComponent(Object inData, int idx, int precision) {
+    // Extract component idx from inData.  The precision argument
+    // should be either 8 or 16.  If it's 8, this method will return
+    // an 8-bit value.  If it's 16, this method will return a 16-bit
+    // value for transferTypes other than TYPE_BYTE.  For TYPE_BYTE,
+    // an 8-bit value will be returned.
+    // This method maps the input value corresponding to a
+    // normalized ColorSpace component value of 0.0 to 0, and the
+    // input value corresponding to a normalized ColorSpace
+    // component value of 1.0 to 2^n - 1 (where n is 8 or 16), so
+    // it is appropriate only for ColorSpaces with min/max component
+    // values of 0.0/1.0.  This will be true for sRGB, the built-in
+    // Linear RGB and Linear Gray spaces, and any other ICC grayscale
+    // spaces for which we have precomputed LUTs.
+    boolean needAlpha = (supportsAlpha && isAlphaPremultiplied);
+    int alp = 0;
+    int comp;
+    int mask = (1 << nBits[idx]) - 1;
+    switch(transferType) {
+        // Note: we do no clamping of the pixel data here - we
+        // assume that the data is scaled properly
+        case DataBuffer.TYPE_SHORT:
+            {
+                short[] sdata = (short[]) inData;
+                float scalefactor = (float) ((1 << precision) - 1);
+                if (needAlpha) {
+                    short s = sdata[numColorComponents];
+                    if (s != (short) 0) {
+                        return (int) ((((float) sdata[idx]) / ((float) s)) * scalefactor + 0.5f);
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return (int) ((sdata[idx] / 32767.0f) * scalefactor + 0.5f);
+                }
+            }
+        case DataBuffer.TYPE_FLOAT:
+            {
+                float[] fdata = (float[]) inData;
+                float scalefactor = (float) ((1 << precision) - 1);
+                if (needAlpha) {
+                    float f = fdata[numColorComponents];
+                    if (f != 0.0f) {
+                        return (int) (((fdata[idx] / f) * scalefactor) + 0.5f);
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return (int) (fdata[idx] * scalefactor + 0.5f);
+                }
+            }
+        case DataBuffer.TYPE_DOUBLE:
+            {
+                double[] ddata = (double[]) inData;
+                double scalefactor = (double) ((1 << precision) - 1);
+                if (needAlpha) {
+                    double d = ddata[numColorComponents];
+                    if (d != 0.0) {
+                        return (int) (((ddata[idx] / d) * scalefactor) + 0.5);
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return (int) (ddata[idx] * scalefactor + 0.5);
+                }
+            }
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata = (byte[]) inData;
+            comp = bdata[idx] & mask;
+            precision = 8;
+            if (needAlpha) {
+                alp = bdata[numColorComponents] & mask;
+            }
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] usdata = (short[]) inData;
+            comp = usdata[idx] & mask;
+            if (needAlpha) {
+                alp = usdata[numColorComponents] & mask;
+            }
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata = (int[]) inData;
+            comp = idata[idx];
+            if (needAlpha) {
+                alp = idata[numColorComponents];
+            }
+            break;
+        default:
+            throw new UnsupportedOperationException("This method has not " + "been implemented for transferType " + transferType);
+    }
+    if (needAlpha) {
+        if (alp != 0) {
+            float scalefactor = (float) ((1 << precision) - 1);
+            float fcomp = ((float) comp) / ((float) mask);
+            float invalp = ((float) ((1 << nBits[numColorComponents]) - 1)) / ((float) alp);
+            return (int) (fcomp * invalp * scalefactor + 0.5f);
+        } else {
+            return 0;
+        }
+    } else {
+        if (nBits[idx] != precision) {
+            float scalefactor = (float) ((1 << precision) - 1);
+            float fcomp = ((float) comp) / ((float) mask);
+            return (int) (fcomp * scalefactor + 0.5f);
+        }
+        return comp;
+    }
+}

@@ -1,0 +1,17 @@
+/**
+ * Calculate GCD of this and b. This and b are changed by the computation.
+ */
+MutableBigInteger hybridGCD(MutableBigInteger b) {
+    // Use Euclid's algorithm until the numbers are approximately the
+    // same length, then use the binary GCD algorithm to find the GCD.
+    MutableBigInteger a = this;
+    MutableBigInteger q = new MutableBigInteger();
+    while (b.intLen != 0) {
+        if (Math.abs(a.intLen - b.intLen) < 2)
+            return a.binaryGCD(b);
+        MutableBigInteger r = a.divide(b, q);
+        a = b;
+        b = r;
+    }
+    return a;
+}

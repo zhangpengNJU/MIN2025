@@ -1,0 +1,35 @@
+// -----------------------------------------------------------------------
+/**
+ * Queries this date using the specified query.
+ * <p>
+ * This queries this date using the specified query strategy object.
+ * The {@code TemporalQuery} object defines the logic to be used to
+ * obtain the result. Read the documentation of the query to understand
+ * what the result of this method will be.
+ * <p>
+ * The result of this method is obtained by invoking the
+ * {@link TemporalQuery#queryFrom(TemporalAccessor)} method on the
+ * specified query passing {@code this} as the argument.
+ *
+ * @param <R> the type of the result
+ * @param query  the query to invoke, not null
+ * @return the query result, null may be returned (defined by the query)
+ * @throws DateTimeException if unable to query (defined by the query)
+ * @throws ArithmeticException if numeric overflow occurs (defined by the query)
+ */
+@SuppressWarnings("unchecked")
+@Override
+default <R> R query(TemporalQuery<R> query) {
+    if (query == TemporalQueries.zoneId() || query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+        return null;
+    } else if (query == TemporalQueries.localTime()) {
+        return null;
+    } else if (query == TemporalQueries.chronology()) {
+        return (R) getChronology();
+    } else if (query == TemporalQueries.precision()) {
+        return (R) DAYS;
+    }
+    // inline TemporalAccessor.super.query(query) as an optimization
+    // non-JDK classes are not permitted to make this optimization
+    return query.queryFrom(this);
+}

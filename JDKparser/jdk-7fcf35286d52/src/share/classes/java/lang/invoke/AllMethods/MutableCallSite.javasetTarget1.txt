@@ -1,0 +1,25 @@
+/**
+ * Updates the target method of this call site, as a normal variable.
+ * The type of the new target must agree with the type of the old target.
+ * <p>
+ * The interactions with memory are the same
+ * as of a write to an ordinary variable, such as an array element or a
+ * non-volatile, non-final field.
+ * <p>
+ * In particular, unrelated threads may fail to see the updated target
+ * until they perform a read from memory.
+ * Stronger guarantees can be created by putting appropriate operations
+ * into the bootstrap method and/or the target methods used
+ * at any given call site.
+ *
+ * @param newTarget the new target
+ * @throws NullPointerException if the proposed new target is null
+ * @throws WrongMethodTypeException if the proposed new target
+ *         has a method type that differs from the previous target
+ * @see #getTarget
+ */
+@Override
+public void setTarget(MethodHandle newTarget) {
+    checkTargetChange(this.target, newTarget);
+    setTargetNormal(newTarget);
+}

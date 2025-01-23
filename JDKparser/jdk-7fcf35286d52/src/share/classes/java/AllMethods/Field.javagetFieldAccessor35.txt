@@ -1,0 +1,5 @@
+// Returns FieldAccessor for this Field object, not looking up
+// the chain to the root
+private FieldAccessor getFieldAccessor(boolean overrideFinalCheck) {
+    return (overrideFinalCheck) ? overrideFieldAccessor : fieldAccessor;
+}

@@ -1,0 +1,6 @@
+/**
+ * The JVM wants a pointer to a MethodType.  Oblige it by finding or creating one.
+ */
+static MethodType findMethodHandleType(Class<?> rtype, Class<?>[] ptypes) {
+    return MethodType.makeImpl(rtype, ptypes, true);
+}

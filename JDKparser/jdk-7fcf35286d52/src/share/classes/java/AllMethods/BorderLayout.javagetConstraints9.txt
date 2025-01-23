@@ -1,0 +1,36 @@
+/**
+ * Gets the constraints for the specified component
+ *
+ * @param   comp the component to be queried
+ * @return  the constraint for the specified component,
+ *          or null if component is null or is not present
+ *          in this layout
+ * @see #addLayoutComponent(java.awt.Component, java.lang.Object)
+ * @since 1.5
+ */
+public Object getConstraints(Component comp) {
+    // fix for 6242148 : API method java.awt.BorderLayout.getConstraints(null) should return null
+    if (comp == null) {
+        return null;
+    }
+    if (comp == center) {
+        return CENTER;
+    } else if (comp == north) {
+        return NORTH;
+    } else if (comp == south) {
+        return SOUTH;
+    } else if (comp == west) {
+        return WEST;
+    } else if (comp == east) {
+        return EAST;
+    } else if (comp == firstLine) {
+        return PAGE_START;
+    } else if (comp == lastLine) {
+        return PAGE_END;
+    } else if (comp == firstItem) {
+        return LINE_START;
+    } else if (comp == lastItem) {
+        return LINE_END;
+    }
+    return null;
+}

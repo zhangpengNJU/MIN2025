@@ -1,0 +1,33 @@
+/**
+ * Returns an image which gets pixel data from the specified file,
+ * whose format can be either GIF, JPEG or PNG.
+ * The underlying toolkit attempts to resolve multiple requests
+ * with the same filename to the same returned Image.
+ * <p>
+ * Since the mechanism required to facilitate this sharing of
+ * <code>Image</code> objects may continue to hold onto images
+ * that are no longer in use for an indefinite period of time,
+ * developers are encouraged to implement their own caching of
+ * images by using the {@link #createImage(java.lang.String) createImage}
+ * variant wherever available.
+ * If the image data contained in the specified file changes,
+ * the <code>Image</code> object returned from this method may
+ * still contain stale information which was loaded from the
+ * file after a prior call.
+ * Previously loaded image data can be manually discarded by
+ * calling the {@link Image#flush flush} method on the
+ * returned <code>Image</code>.
+ * <p>
+ * This method first checks if there is a security manager installed.
+ * If so, the method calls the security manager's
+ * <code>checkRead</code> method with the file specified to ensure
+ * that the access to the image is allowed.
+ * @param     filename   the name of a file containing pixel data
+ *                         in a recognized file format.
+ * @return    an image which gets its pixel data from
+ *                         the specified file.
+ * @throws SecurityException  if a security manager exists and its
+ *                            checkRead method doesn't allow the operation.
+ * @see #createImage(java.lang.String)
+ */
+public abstract Image getImage(String filename);

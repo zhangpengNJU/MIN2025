@@ -1,0 +1,15 @@
+private void updateCheckConflict(LocalTime timeToSet, Period periodToSet) {
+    if (time != null) {
+        if (time.equals(timeToSet) == false) {
+            throw new DateTimeException("Conflict found: Fields resolved to different times: " + time + " " + timeToSet);
+        }
+        if (excessDays.isZero() == false && periodToSet.isZero() == false && excessDays.equals(periodToSet) == false) {
+            throw new DateTimeException("Conflict found: Fields resolved to different excess periods: " + excessDays + " " + periodToSet);
+        } else {
+            excessDays = periodToSet;
+        }
+    } else {
+        time = timeToSet;
+        excessDays = periodToSet;
+    }
+}

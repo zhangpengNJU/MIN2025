@@ -1,0 +1,16 @@
+/**
+ * Adds a BeanContextMembershipListener
+ *
+ * @param  bcml the BeanContextMembershipListener to add
+ * @throws NullPointerException if the argument is null
+ */
+public void addBeanContextMembershipListener(BeanContextMembershipListener bcml) {
+    if (bcml == null)
+        throw new NullPointerException("listener");
+    synchronized (bcmListeners) {
+        if (bcmListeners.contains(bcml))
+            return;
+        else
+            bcmListeners.add(bcml);
+    }
+}

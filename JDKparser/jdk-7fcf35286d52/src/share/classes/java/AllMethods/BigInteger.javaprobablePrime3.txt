@@ -1,0 +1,18 @@
+/**
+ * Returns a positive BigInteger that is probably prime, with the
+ * specified bitLength. The probability that a BigInteger returned
+ * by this method is composite does not exceed 2<sup>-100</sup>.
+ *
+ * @param  bitLength bitLength of the returned BigInteger.
+ * @param  rnd source of random bits used to select candidates to be
+ *         tested for primality.
+ * @return a BigInteger of {@code bitLength} bits that is probably prime
+ * @throws ArithmeticException {@code bitLength < 2} or {@code bitLength} is too large.
+ * @see    #bitLength()
+ * @since 1.4
+ */
+public static BigInteger probablePrime(int bitLength, Random rnd) {
+    if (bitLength < 2)
+        throw new ArithmeticException("bitLength < 2");
+    return (bitLength < SMALL_PRIME_THRESHOLD ? smallPrime(bitLength, DEFAULT_PRIME_CERTAINTY, rnd) : largePrime(bitLength, DEFAULT_PRIME_CERTAINTY, rnd));
+}

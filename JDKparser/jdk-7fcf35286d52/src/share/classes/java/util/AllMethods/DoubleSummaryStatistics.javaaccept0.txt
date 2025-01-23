@@ -1,0 +1,13 @@
+/**
+ * Records another value into the summary information.
+ *
+ * @param value the input value
+ */
+@Override
+public void accept(double value) {
+    ++count;
+    simpleSum += value;
+    sumWithCompensation(value);
+    min = Math.min(min, value);
+    max = Math.max(max, value);
+}

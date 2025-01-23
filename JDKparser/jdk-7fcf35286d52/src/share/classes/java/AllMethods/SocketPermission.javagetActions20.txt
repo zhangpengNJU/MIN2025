@@ -1,0 +1,39 @@
+/**
+ * Returns the "canonical string representation" of the actions in the
+ * specified mask.
+ * Always returns present actions in the following order:
+ * connect, listen, accept, resolve.
+ *
+ * @param mask a specific integer action mask to translate into a string
+ * @return the canonical string representation of the actions
+ */
+private static String getActions(int mask) {
+    StringBuilder sb = new StringBuilder();
+    boolean comma = false;
+    if ((mask & CONNECT) == CONNECT) {
+        comma = true;
+        sb.append("connect");
+    }
+    if ((mask & LISTEN) == LISTEN) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("listen");
+    }
+    if ((mask & ACCEPT) == ACCEPT) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("accept");
+    }
+    if ((mask & RESOLVE) == RESOLVE) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("resolve");
+    }
+    return sb.toString();
+}

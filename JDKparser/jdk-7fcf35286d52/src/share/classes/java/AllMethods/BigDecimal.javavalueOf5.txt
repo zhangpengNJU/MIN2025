@@ -1,0 +1,8 @@
+static BigDecimal valueOf(long unscaledVal, int scale, int prec) {
+    if (scale == 0 && unscaledVal >= 0 && unscaledVal < zeroThroughTen.length) {
+        return zeroThroughTen[(int) unscaledVal];
+    } else if (unscaledVal == 0) {
+        return zeroValueOf(scale);
+    }
+    return new BigDecimal(unscaledVal == INFLATED ? INFLATED_BIGINT : null, unscaledVal, scale, prec);
+}

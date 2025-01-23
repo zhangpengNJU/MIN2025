@@ -1,0 +1,7 @@
+public Spliterator<V> spliterator() {
+    Node<K, V>[] t;
+    ConcurrentHashMap<K, V> m = map;
+    long n = m.sumCount();
+    int f = (t = m.table) == null ? 0 : t.length;
+    return new ValueSpliterator<K, V>(t, f, 0, f, n < 0L ? 0L : n);
+}

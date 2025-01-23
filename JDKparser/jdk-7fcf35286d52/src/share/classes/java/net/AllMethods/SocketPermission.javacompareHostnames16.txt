@@ -1,0 +1,13 @@
+private boolean compareHostnames(SocketPermission that) {
+    // we see if the original names/IPs passed in were equal.
+    String thisHost = hostname;
+    String thatHost = that.hostname;
+    if (thisHost == null) {
+        return false;
+    } else if (this.wildcard) {
+        final int cnameLength = this.cname.length();
+        return thatHost.regionMatches(true, (thatHost.length() - cnameLength), this.cname, 0, cnameLength);
+    } else {
+        return thisHost.equalsIgnoreCase(thatHost);
+    }
+}

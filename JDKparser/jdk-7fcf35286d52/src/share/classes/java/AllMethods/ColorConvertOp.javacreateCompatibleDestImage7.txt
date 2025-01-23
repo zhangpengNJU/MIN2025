@@ -1,0 +1,33 @@
+/**
+ * Creates a zeroed destination image with the correct size and number of
+ * bands, given this source.
+ * @param src       Source image for the filter operation.
+ * @param destCM    ColorModel of the destination.  If null, an
+ *                  appropriate ColorModel will be used.
+ * @return a <code>BufferedImage</code> with the correct size and
+ * number of bands from the specified <code>src</code>.
+ * @throws IllegalArgumentException if <code>destCM</code> is
+ *         <code>null</code> and this <code>ColorConvertOp</code> was
+ *         created without any <code>ICC_Profile</code> or
+ *         <code>ColorSpace</code> defined for the destination
+ */
+public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
+    ColorSpace cs = null;
+    ;
+    if (destCM == null) {
+        if (CSList == null) {
+            /* ICC case */
+            int nProfiles = profileList.length;
+            if (nProfiles == 0) {
+                throw new IllegalArgumentException("Destination ColorSpace is undefined");
+            }
+            ICC_Profile destProfile = profileList[nProfiles - 1];
+            cs = new ICC_ColorSpace(destProfile);
+        } else {
+            /* non-ICC case */
+            int nSpaces = CSList.length;
+            cs = CSList[nSpaces - 1];
+        }
+    }
+    return createCompatibleDestImage(src, destCM, cs);
+}

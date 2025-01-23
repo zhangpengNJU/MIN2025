@@ -1,0 +1,48 @@
+/**
+ * Accepts a connection made to this channel's socket.
+ *
+ * <p> If this channel is in non-blocking mode then this method will
+ * immediately return <tt>null</tt> if there are no pending connections.
+ * Otherwise it will block indefinitely until a new connection is available
+ * or an I/O error occurs.
+ *
+ * <p> The socket channel returned by this method, if any, will be in
+ * blocking mode regardless of the blocking mode of this channel.
+ *
+ * <p> This method performs exactly the same security checks as the {@link
+ * java.net.ServerSocket#accept accept} method of the {@link
+ * java.net.ServerSocket} class.  That is, if a security manager has been
+ * installed then for each new connection this method verifies that the
+ * address and port number of the connection's remote endpoint are
+ * permitted by the security manager's {@link
+ * java.lang.SecurityManager#checkAccept checkAccept} method.  </p>
+ *
+ * @return  The socket channel for the new connection,
+ *          or <tt>null</tt> if this channel is in non-blocking mode
+ *          and no connection is available to be accepted
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the accept operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the accept operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  NotYetBoundException
+ *          If this channel's socket has not yet been bound
+ *
+ * @throws  SecurityException
+ *          If a security manager has been installed
+ *          and it does not permit access to the remote endpoint
+ *          of the new connection
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract SocketChannel accept() throws IOException;

@@ -1,0 +1,11 @@
+/**
+ * Sets the text that is presented by this
+ * text component to be the specified text.
+ * @param       t   the new text.
+ * @see         java.awt.TextComponent#getText
+ */
+public void setText(String t) {
+    super.setText(t);
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

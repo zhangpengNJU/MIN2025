@@ -1,0 +1,19 @@
+/**
+ * Checks whether given file resides inside give directory.
+ */
+private static boolean isChildOf(File f, String dirName) {
+    try {
+        File dir = new File(dirName);
+        String canonicalDirName = dir.getCanonicalPath();
+        if (!canonicalDirName.endsWith(File.separator)) {
+            canonicalDirName += File.separator;
+        }
+        String canonicalFileName = f.getCanonicalPath();
+        return canonicalFileName.startsWith(canonicalDirName);
+    } catch (IOException e) {
+        /* we do not expect the IOException here, because invocation
+             * of this function is always preceeded by isFile() call.
+             */
+        return false;
+    }
+}

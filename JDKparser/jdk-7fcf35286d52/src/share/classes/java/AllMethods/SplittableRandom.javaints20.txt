@@ -1,0 +1,12 @@
+/**
+ * Returns an effectively unlimited stream of pseudorandom {@code int}
+ * values from this generator and/or one split from it.
+ *
+ * @implNote This method is implemented to be equivalent to {@code
+ * ints(Long.MAX_VALUE)}.
+ *
+ * @return a stream of pseudorandom {@code int} values
+ */
+public IntStream ints() {
+    return StreamSupport.intStream(new RandomIntsSpliterator(this, 0L, Long.MAX_VALUE, Integer.MAX_VALUE, 0), false);
+}

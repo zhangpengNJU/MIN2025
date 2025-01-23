@@ -1,0 +1,53 @@
+/**
+ * Reads and returns "ordinary" (i.e., not a String, Class,
+ * ObjectStreamClass, array, or enum constant) object, or null if object's
+ * class is unresolvable (in which case a ClassNotFoundException will be
+ * associated with object's handle).  Sets passHandle to object's assigned
+ * handle.
+ */
+private Object readOrdinaryObject(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_OBJECT) {
+        throw new InternalError();
+    }
+    ObjectStreamClass desc = readClassDesc(false);
+    desc.checkDeserialize();
+    Class<?> cl = desc.forClass();
+    if (cl == String.class || cl == Class.class || cl == ObjectStreamClass.class) {
+        throw new InvalidClassException("invalid class descriptor");
+    }
+    Object obj;
+    try {
+        obj = desc.isInstantiable() ? desc.newInstance() : null;
+    } catch (Exception ex) {
+        throw (IOException) new InvalidClassException(desc.forClass().getName(), "unable to create instance").initCause(ex);
+    }
+    passHandle = handles.assign(unshared ? unsharedMarker : obj);
+    ClassNotFoundException resolveEx = desc.getResolveException();
+    if (resolveEx != null) {
+        handles.markException(passHandle, resolveEx);
+    }
+    if (desc.isExternalizable()) {
+        readExternalData((Externalizable) obj, desc);
+    } else {
+        readSerialData(obj, desc);
+    }
+    handles.finish(passHandle);
+    if (obj != null && handles.lookupException(passHandle) == null && desc.hasReadResolveMethod()) {
+        Object rep = desc.invokeReadResolve(obj);
+        if (unshared && rep.getClass().isArray()) {
+            rep = cloneArray(rep);
+        }
+        if (rep != obj) {
+            // Filter the replacement object
+            if (rep != null) {
+                if (rep.getClass().isArray()) {
+                    filterCheck(rep.getClass(), Array.getLength(rep));
+                } else {
+                    filterCheck(rep.getClass(), -1);
+                }
+            }
+            handles.setObject(passHandle, obj = rep);
+        }
+    }
+    return obj;
+}

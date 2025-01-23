@@ -1,0 +1,5 @@
+public T next() {
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    return nextElement();
+}

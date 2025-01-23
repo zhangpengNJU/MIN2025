@@ -1,0 +1,35 @@
+/**
+ *  Registers the parameter named
+ *  <code>parameterName</code> to be of JDBC type
+ *  {@code sqlType}.  All OUT parameters must be registered
+ *  before a stored procedure is executed.
+ *  <p>
+ *  The JDBC type specified by {@code sqlType} for an OUT
+ *  parameter determines the Java type that must be used
+ *  in the {@code get} method to read the value of that parameter.
+ *  <p>
+ *  This version of {@code  registerOutParameter} should be
+ *  used when the parameter is of JDBC type {@code JDBCType.NUMERIC}
+ *  or {@code JDBCType.DECIMAL}.
+ * <P>
+ *  The default implementation will throw {@code SQLFeatureNotSupportedException}
+ *
+ *  @param parameterName the name of the parameter
+ *  @param sqlType the JDBC type code defined by {@code SQLType} to use to
+ *  register the OUT Parameter.
+ *  @param scale the desired number of digits to the right of the
+ *  decimal point.  It must be greater than or equal to zero.
+ *  @exception SQLException if parameterName does not correspond to a named
+ *  parameter; if a database access error occurs or
+ *  this method is called on a closed {@code CallableStatement}
+ *  @exception SQLFeatureNotSupportedException if
+ *  the JDBC driver does not support the specified sqlType
+ *  or if the JDBC driver does not support
+ *  this method
+ *  @since 1.8
+ *  @see JDBCType
+ *  @see SQLType
+ */
+default void registerOutParameter(String parameterName, SQLType sqlType, int scale) throws SQLException {
+    throw new SQLFeatureNotSupportedException("registerOutParameter not implemented");
+}

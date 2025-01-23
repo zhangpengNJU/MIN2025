@@ -1,0 +1,20 @@
+/**
+ * Sets the selection end for this text component to
+ * the specified position. The new end point is constrained
+ * to be at or after the current selection start. It also
+ * cannot be set beyond the end of the component's text.
+ * If the caller supplies a value for <code>selectionEnd</code>
+ * that is out of bounds, the method enforces these constraints
+ * silently, and without failure.
+ * @param       selectionEnd   the end position of the
+ *                        selected text
+ * @see         java.awt.TextComponent#getSelectionEnd
+ * @see         java.awt.TextComponent#setSelectionStart
+ * @since       JDK1.1
+ */
+public synchronized void setSelectionEnd(int selectionEnd) {
+    /* Route through select method to enforce consistent policy
+         * between selectionStart and selectionEnd.
+         */
+    select(getSelectionStart(), selectionEnd);
+}

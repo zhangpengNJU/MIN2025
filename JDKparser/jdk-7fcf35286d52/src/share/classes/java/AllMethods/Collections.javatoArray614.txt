@@ -1,0 +1,14 @@
+@SuppressWarnings("unchecked")
+public <T> T[] toArray(T[] a) {
+    final int n = this.n;
+    if (a.length < n) {
+        a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), n);
+        if (element != null)
+            Arrays.fill(a, 0, n, element);
+    } else {
+        Arrays.fill(a, 0, n, element);
+        if (a.length > n)
+            a[n] = null;
+    }
+    return a;
+}

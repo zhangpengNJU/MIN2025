@@ -1,0 +1,9 @@
+Annotation[][] sharedGetParameterAnnotations(Class<?>[] parameterTypes, byte[] parameterAnnotations) {
+    int numParameters = parameterTypes.length;
+    if (parameterAnnotations == null)
+        return new Annotation[numParameters][0];
+    Annotation[][] result = parseParameterAnnotations(parameterAnnotations);
+    if (result.length != numParameters)
+        handleParameterNumberMismatch(result.length, numParameters);
+    return result;
+}

@@ -1,0 +1,16 @@
+/**
+ * Queries if this {@code TimeZone} uses Daylight Saving Time.
+ *
+ * <p>If an underlying {@code TimeZone} implementation subclass
+ * supports historical and future Daylight Saving Time schedule
+ * changes, this method refers to the last known Daylight Saving Time
+ * rule that can be a future prediction and may not be the same as
+ * the current rule. Consider calling {@link #observesDaylightTime()}
+ * if the current rule should also be taken into account.
+ *
+ * @return {@code true} if this {@code TimeZone} uses Daylight Saving Time,
+ *         {@code false}, otherwise.
+ * @see #inDaylightTime(Date)
+ * @see Calendar#DST_OFFSET
+ */
+public abstract boolean useDaylightTime();

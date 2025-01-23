@@ -1,0 +1,14 @@
+/**
+ * Returns the millisecond offset from the beginning of this
+ * year. This Calendar object must have been normalized.
+ */
+private long getYearOffsetInMillis() {
+    long t = (internalGet(DAY_OF_YEAR) - 1) * 24;
+    t += internalGet(HOUR_OF_DAY);
+    t *= 60;
+    t += internalGet(MINUTE);
+    t *= 60;
+    t += internalGet(SECOND);
+    t *= 1000;
+    return t + internalGet(MILLISECOND) - (internalGet(ZONE_OFFSET) + internalGet(DST_OFFSET));
+}

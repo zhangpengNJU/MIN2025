@@ -1,0 +1,15 @@
+/**
+ * Creates the peer of the button.  The button's peer allows the
+ * application to change the look of the button without changing
+ * its functionality.
+ *
+ * @see     java.awt.Toolkit#createButton(java.awt.Button)
+ * @see     java.awt.Component#getToolkit()
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createButton(this);
+        super.addNotify();
+    }
+}

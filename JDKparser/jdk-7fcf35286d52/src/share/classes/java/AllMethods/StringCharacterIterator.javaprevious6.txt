@@ -1,0 +1,12 @@
+/**
+ * Implements CharacterIterator.previous() for String.
+ * @see CharacterIterator#previous
+ */
+public char previous() {
+    if (pos > begin) {
+        pos--;
+        return text.charAt(pos);
+    } else {
+        return DONE;
+    }
+}

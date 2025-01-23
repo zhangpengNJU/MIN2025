@@ -1,0 +1,8 @@
+boolean hasRealParameterData() {
+    // If this somehow gets called before parameters gets
+    // initialized, force it into existence.
+    if (parameters == null) {
+        privateGetParameters();
+    }
+    return hasRealParameterData;
+}

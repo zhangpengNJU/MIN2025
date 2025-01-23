@@ -1,0 +1,73 @@
+/**
+ * Writes a sequence of bytes to this channel from a subsequence of the given
+ * buffers. This operation, sometimes called a <em>gathering write</em>, is
+ * often useful when implementing network protocols that group data into
+ * segments consisting of one or more fixed-length headers followed by a
+ * variable-length body. The {@code handler} parameter is a completion
+ * handler that is invoked when the write operation completes (or fails).
+ * The result passed to the completion handler is the number of bytes written.
+ *
+ * <p> This method initiates a write of up to <i>r</i> bytes to this channel,
+ * where <i>r</i> is the total number of bytes remaining in the specified
+ * subsequence of the given buffer array, that is,
+ *
+ * <blockquote><pre>
+ * srcs[offset].remaining()
+ *     + srcs[offset+1].remaining()
+ *     + ... + srcs[offset+length-1].remaining()</pre></blockquote>
+ *
+ * at the moment that the write is attempted.
+ *
+ * <p> Suppose that a byte sequence of length <i>n</i> is written, where
+ * <tt>0</tt>&nbsp;<tt>&lt;</tt>&nbsp;<i>n</i>&nbsp;<tt>&lt;=</tt>&nbsp;<i>r</i>.
+ * Up to the first <tt>srcs[offset].remaining()</tt> bytes of this sequence
+ * are written from buffer <tt>srcs[offset]</tt>, up to the next
+ * <tt>srcs[offset+1].remaining()</tt> bytes are written from buffer
+ * <tt>srcs[offset+1]</tt>, and so forth, until the entire byte sequence is
+ * written.  As many bytes as possible are written from each buffer, hence
+ * the final position of each updated buffer, except the last updated
+ * buffer, is guaranteed to be equal to that buffer's limit. The underlying
+ * operating system may impose a limit on the number of buffers that may be
+ * used in an I/O operation. Where the number of buffers (with bytes
+ * remaining), exceeds this limit, then the I/O operation is performed with
+ * the maximum number of buffers allowed by the operating system.
+ *
+ * <p> If a timeout is specified and the timeout elapses before the operation
+ * completes then it completes with the exception {@link
+ * InterruptedByTimeoutException}. Where a timeout occurs, and the
+ * implementation cannot guarantee that bytes have not been written, or will
+ * not be written to the channel from the given buffers, then further attempts
+ * to write to the channel will cause an unspecific runtime exception to be
+ * thrown.
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   srcs
+ *          The buffers from which bytes are to be retrieved
+ * @param   offset
+ *          The offset within the buffer array of the first buffer from which
+ *          bytes are to be retrieved; must be non-negative and no larger
+ *          than {@code srcs.length}
+ * @param   length
+ *          The maximum number of buffers to be accessed; must be non-negative
+ *          and no larger than {@code srcs.length - offset}
+ * @param   timeout
+ *          The maximum time for the I/O operation to complete
+ * @param   unit
+ *          The time unit of the {@code timeout} argument
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  IndexOutOfBoundsException
+ *          If the pre-conditions for the {@code offset}  and {@code length}
+ *          parameter aren't met
+ * @throws  WritePendingException
+ *          If a write operation is already in progress on this channel
+ * @throws  NotYetConnectedException
+ *          If this channel is not yet connected
+ * @throws  ShutdownChannelGroupException
+ *          If the channel group has terminated
+ */
+public abstract <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler);

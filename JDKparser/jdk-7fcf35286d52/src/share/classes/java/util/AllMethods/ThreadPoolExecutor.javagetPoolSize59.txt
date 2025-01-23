@@ -1,0 +1,17 @@
+/* Statistics */
+/**
+ * Returns the current number of threads in the pool.
+ *
+ * @return the number of threads
+ */
+public int getPoolSize() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        // Remove rare and surprising possibility of
+        // isTerminated() && getPoolSize() > 0
+        return runStateAtLeast(ctl.get(), TIDYING) ? 0 : workers.size();
+    } finally {
+        mainLock.unlock();
+    }
+}

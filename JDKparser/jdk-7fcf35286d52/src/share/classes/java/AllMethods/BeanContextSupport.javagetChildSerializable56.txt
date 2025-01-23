@@ -1,0 +1,12 @@
+/**
+ * Gets the Serializable (if any) associated with the specified Child
+ * @param child the specified child
+ * @return the Serializable (if any) associated with the specified Child
+ */
+protected static final Serializable getChildSerializable(Object child) {
+    try {
+        return (Serializable) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

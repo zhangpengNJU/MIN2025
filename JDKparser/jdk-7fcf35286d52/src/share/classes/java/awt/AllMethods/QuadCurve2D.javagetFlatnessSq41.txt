@@ -1,0 +1,11 @@
+/**
+ * Returns the square of the flatness, or maximum distance of a
+ * control point from the line connecting the end points, of this
+ * <code>QuadCurve2D</code>.
+ * @return the square of the flatness of this
+ *          <code>QuadCurve2D</code>.
+ * @since 1.2
+ */
+public double getFlatnessSq() {
+    return Line2D.ptSegDistSq(getX1(), getY1(), getX2(), getY2(), getCtrlX(), getCtrlY());
+}

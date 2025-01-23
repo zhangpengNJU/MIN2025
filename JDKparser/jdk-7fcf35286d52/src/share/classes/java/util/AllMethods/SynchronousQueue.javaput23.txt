@@ -1,0 +1,15 @@
+/**
+ * Adds the specified element to this queue, waiting if necessary for
+ * another thread to receive it.
+ *
+ * @throws InterruptedException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public void put(E e) throws InterruptedException {
+    if (e == null)
+        throw new NullPointerException();
+    if (transferer.transfer(e, false, 0) == null) {
+        Thread.interrupted();
+        throw new InterruptedException();
+    }
+}

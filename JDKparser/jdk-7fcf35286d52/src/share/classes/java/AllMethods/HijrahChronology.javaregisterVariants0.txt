@@ -1,0 +1,28 @@
+/**
+ * For each Hijrah variant listed, create the HijrahChronology and register it.
+ * Exceptions during initialization are logged but otherwise ignored.
+ */
+private static void registerVariants() {
+    for (String name : calendarProperties.stringPropertyNames()) {
+        if (name.startsWith(PROP_PREFIX)) {
+            String id = name.substring(PROP_PREFIX.length());
+            if (id.indexOf('.') >= 0) {
+                // no name or not a simple name of a calendar
+                continue;
+            }
+            if (id.equals(INSTANCE.getId())) {
+                // do not duplicate the default
+                continue;
+            }
+            try {
+                // Create and register the variant
+                HijrahChronology chrono = new HijrahChronology(id);
+                AbstractChronology.registerChrono(chrono);
+            } catch (DateTimeException ex) {
+                // Log error and continue
+                PlatformLogger logger = PlatformLogger.getLogger("java.time.chrono");
+                logger.severe("Unable to initialize Hijrah calendar: " + id, ex);
+            }
+        }
+    }
+}

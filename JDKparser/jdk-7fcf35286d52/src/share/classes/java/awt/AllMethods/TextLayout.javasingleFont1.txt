@@ -1,0 +1,36 @@
+/*
+     * Determines a font for the attributes, and if a single font can render
+     * all the text on one baseline, return it, otherwise null.  If the
+     * attributes specify a font, assume it can display all the text without
+     * checking.
+     * If the AttributeSet contains an embedded graphic, return null.
+     */
+private static Font singleFont(char[] text, int start, int limit, Map<? extends Attribute, ?> attributes) {
+    if (attributes.get(TextAttribute.CHAR_REPLACEMENT) != null) {
+        return null;
+    }
+    Font font = null;
+    try {
+        font = (Font) attributes.get(TextAttribute.FONT);
+    } catch (ClassCastException e) {
+    }
+    if (font == null) {
+        if (attributes.get(TextAttribute.FAMILY) != null) {
+            font = Font.getFont(attributes);
+            if (font.canDisplayUpTo(text, start, limit) != -1) {
+                return null;
+            }
+        } else {
+            FontResolver resolver = FontResolver.getInstance();
+            CodePointIterator iter = CodePointIterator.create(text, start, limit);
+            int fontIndex = resolver.nextFontRunIndex(iter);
+            if (iter.charIndex() == limit) {
+                font = resolver.getFont(fontIndex, attributes);
+            }
+        }
+    }
+    if (sameBaselineUpTo(font, text, start, limit) != limit) {
+        return null;
+    }
+    return font;
+}

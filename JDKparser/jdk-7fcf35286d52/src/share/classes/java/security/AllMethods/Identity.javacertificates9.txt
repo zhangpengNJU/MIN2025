@@ -1,0 +1,14 @@
+/**
+ * Returns a copy of all the certificates for this identity.
+ *
+ * @return a copy of all the certificates for this identity.
+ */
+public Certificate[] certificates() {
+    if (certificates == null) {
+        return new Certificate[0];
+    }
+    int len = certificates.size();
+    Certificate[] certs = new Certificate[len];
+    certificates.copyInto(certs);
+    return certs;
+}

@@ -1,0 +1,11 @@
+final CompletableFuture<Void> tryFire(int mode) {
+    CompletableFuture<Void> d;
+    CompletableFuture<T> a;
+    CompletableFuture<U> b;
+    if ((d = dep) == null || !d.biRelay(a = src, b = snd))
+        return null;
+    src = null;
+    snd = null;
+    dep = null;
+    return d.postFire(a, b, mode);
+}

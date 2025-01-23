@@ -1,0 +1,18 @@
+@SuppressWarnings("unchecked")
+public T nextElement() {
+    Entry<?, ?> et = entry;
+    int i = index;
+    Entry<?, ?>[] t = table;
+    /* Use locals for faster loop iteration */
+    while (et == null && i > 0) {
+        et = t[--i];
+    }
+    entry = et;
+    index = i;
+    if (et != null) {
+        Entry<?, ?> e = lastReturned = entry;
+        entry = e.next;
+        return type == KEYS ? (T) e.key : (type == VALUES ? (T) e.value : (T) e);
+    }
+    throw new NoSuchElementException("Hashtable Enumerator");
+}

@@ -1,0 +1,26 @@
+/**
+ * Filters the information provided in the
+ * {@link ImageConsumer#setDimensions(int, int) setDimensions } method
+ * of the {@link ImageConsumer} interface.
+ * <p>
+ * Note: This method is intended to be called by the
+ * {@link ImageProducer} of the <code>Image</code> whose pixels are
+ * being filtered. Developers using this class to retrieve pixels from
+ * an image should avoid calling this method directly since that
+ * operation could result in problems with retrieving the requested
+ * pixels.
+ * <p>
+ * @param width the width to which to set the width of this
+ *        <code>BufferedImageFilter</code>
+ * @param height the height to which to set the height of this
+ *        <code>BufferedImageFilter</code>
+ * @see ImageConsumer#setDimensions
+ */
+public void setDimensions(int width, int height) {
+    if (width <= 0 || height <= 0) {
+        imageComplete(STATICIMAGEDONE);
+        return;
+    }
+    this.width = width;
+    this.height = height;
+}

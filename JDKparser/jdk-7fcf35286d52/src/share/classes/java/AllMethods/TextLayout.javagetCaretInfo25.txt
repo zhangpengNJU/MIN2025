@@ -1,0 +1,22 @@
+/**
+ * Returns information about the caret corresponding to <code>hit</code>.
+ * The first element of the array is the intersection of the caret with
+ * the baseline, as a distance along the baseline. The second element
+ * of the array is the inverse slope (run/rise) of the caret, measured
+ * with respect to the baseline at that point.
+ * <p>
+ * This method is meant for informational use.  To display carets, it
+ * is better to use <code>getCaretShapes</code>.
+ * @param hit a hit on a character in this <code>TextLayout</code>
+ * @param bounds the bounds to which the caret info is constructed.
+ *     The bounds is in baseline-relative coordinates.
+ * @return a two-element array containing the position and slope of
+ * the caret.  The returned caret info is in baseline-relative coordinates.
+ * @see #getCaretShapes(int, Rectangle2D, TextLayout.CaretPolicy)
+ * @see Font#getItalicAngle
+ */
+public float[] getCaretInfo(TextHitInfo hit, Rectangle2D bounds) {
+    ensureCache();
+    checkTextHit(hit);
+    return getCaretInfoTestInternal(hit, bounds);
+}

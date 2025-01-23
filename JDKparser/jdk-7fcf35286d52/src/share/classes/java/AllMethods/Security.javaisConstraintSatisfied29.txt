@@ -1,0 +1,23 @@
+/*
+     * Returns true if the requested attribute value is supported;
+     * otherwise, returns false.
+     */
+private static boolean isConstraintSatisfied(String attribute, String value, String prop) {
+    // For KeySize, prop is the max key size the
+    // provider supports for a specific <crypto_service>.<algorithm>.
+    if (attribute.equalsIgnoreCase("KeySize")) {
+        int requestedSize = Integer.parseInt(value);
+        int maxSize = Integer.parseInt(prop);
+        if (requestedSize <= maxSize) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // For Type, prop is the type of the implementation
+    // for a specific <crypto service>.<algorithm>.
+    if (attribute.equalsIgnoreCase("ImplementedIn")) {
+        return value.equalsIgnoreCase(prop);
+    }
+    return false;
+}

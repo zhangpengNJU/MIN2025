@@ -1,0 +1,67 @@
+private TextLineComponent[] makeComponentsOnRange(int startPos, int limitPos) {
+    // sigh I really hate to do this here since it's part of the
+    // bidi algorithm.
+    // cdWsStart is the start of the trailing counterdirectional
+    // whitespace
+    final int cdWsStart = trailingCdWhitespaceStart(startPos, limitPos);
+    int tlcIndex;
+    int tlcStart = fComponentStart;
+    for (tlcIndex = 0; tlcIndex < fComponents.length; tlcIndex++) {
+        int gaLimit = tlcStart + fComponents[tlcIndex].getNumCharacters();
+        if (gaLimit > startPos) {
+            break;
+        } else {
+            tlcStart = gaLimit;
+        }
+    }
+    // tlcStart is now the start of the tlc at tlcIndex
+    int componentCount;
+    {
+        boolean split = false;
+        int compStart = tlcStart;
+        int lim = tlcIndex;
+        for (boolean cont = true; cont; lim++) {
+            int gaLimit = compStart + fComponents[lim].getNumCharacters();
+            if (cdWsStart > Math.max(compStart, startPos) && cdWsStart < Math.min(gaLimit, limitPos)) {
+                split = true;
+            }
+            if (gaLimit >= limitPos) {
+                cont = false;
+            } else {
+                compStart = gaLimit;
+            }
+        }
+        componentCount = lim - tlcIndex;
+        if (split) {
+            componentCount++;
+        }
+    }
+    TextLineComponent[] components = new TextLineComponent[componentCount];
+    int newCompIndex = 0;
+    int linePos = startPos;
+    int breakPt = cdWsStart;
+    int subsetFlag;
+    if (breakPt == startPos) {
+        subsetFlag = fIsDirectionLTR ? TextLineComponent.LEFT_TO_RIGHT : TextLineComponent.RIGHT_TO_LEFT;
+        breakPt = limitPos;
+    } else {
+        subsetFlag = TextLineComponent.UNCHANGED;
+    }
+    while (linePos < limitPos) {
+        int compLength = fComponents[tlcIndex].getNumCharacters();
+        int tlcLimit = tlcStart + compLength;
+        int start = Math.max(linePos, tlcStart);
+        int limit = Math.min(breakPt, tlcLimit);
+        components[newCompIndex++] = fComponents[tlcIndex].getSubset(start - tlcStart, limit - tlcStart, subsetFlag);
+        linePos += (limit - start);
+        if (linePos == breakPt) {
+            breakPt = limitPos;
+            subsetFlag = fIsDirectionLTR ? TextLineComponent.LEFT_TO_RIGHT : TextLineComponent.RIGHT_TO_LEFT;
+        }
+        if (linePos == tlcLimit) {
+            tlcIndex++;
+            tlcStart = tlcLimit;
+        }
+    }
+    return components;
+}

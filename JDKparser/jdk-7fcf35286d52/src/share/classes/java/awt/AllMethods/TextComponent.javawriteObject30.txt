@@ -1,0 +1,29 @@
+/**
+ * Writes default serializable fields to stream.  Writes
+ * a list of serializable TextListener(s) as optional data.
+ * The non-serializable TextListener(s) are detected and
+ * no attempt is made to serialize them.
+ *
+ * @serialData Null terminated sequence of zero or more pairs.
+ *             A pair consists of a String and Object.
+ *             The String indicates the type of object and
+ *             is one of the following :
+ *             textListenerK indicating and TextListener object.
+ *
+ * @see AWTEventMulticaster#save(ObjectOutputStream, String, EventListener)
+ * @see java.awt.Component#textListenerK
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws IOException {
+    // Serialization support.  Since the value of the fields
+    // selectionStart, selectionEnd, and text aren't necessarily
+    // up to date, we sync them up with the peer before serializing.
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        text = peer.getText();
+        selectionStart = peer.getSelectionStart();
+        selectionEnd = peer.getSelectionEnd();
+    }
+    s.defaultWriteObject();
+    AWTEventMulticaster.save(s, textListenerK, textListener);
+    s.writeObject(null);
+}

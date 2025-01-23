@@ -1,0 +1,10 @@
+private static void assignAttribute(HttpCookie cookie, String attrName, String attrValue) {
+    // strip off the surrounding "-sign if there's any
+    attrValue = stripOffSurroundingQuote(attrValue);
+    CookieAttributeAssignor assignor = assignors.get(attrName.toLowerCase());
+    if (assignor != null) {
+        assignor.assign(cookie, attrName, attrValue);
+    } else {
+    // Ignore the attribute as per RFC 2965
+    }
+}

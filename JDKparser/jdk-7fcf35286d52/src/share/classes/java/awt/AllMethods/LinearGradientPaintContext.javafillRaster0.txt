@@ -1,0 +1,32 @@
+/**
+ * Return a Raster containing the colors generated for the graphics
+ * operation.  This is where the area is filled with colors distributed
+ * linearly.
+ *
+ * @param x,y,w,h the area in device space for which colors are
+ * generated.
+ */
+protected void fillRaster(int[] pixels, int off, int adjust, int x, int y, int w, int h) {
+    // current value for row gradients
+    float g = 0;
+    // used to end iteration on rows
+    int rowLimit = off + w;
+    // constant which can be pulled out of the inner loop
+    float initConst = (dgdX * x) + gc;
+    for (int i = 0; i < h; i++) {
+        // for every row
+        // initialize current value to be start
+        g = initConst + dgdY * (y + i);
+        while (off < rowLimit) {
+            // for every pixel in this row
+            // get the color
+            pixels[off++] = indexIntoGradientsArrays(g);
+            // incremental change in g
+            g += dgdX;
+        }
+        // change in off from row to row
+        off += adjust;
+        // rowlimit is width + offset
+        rowLimit = off + w;
+    }
+}

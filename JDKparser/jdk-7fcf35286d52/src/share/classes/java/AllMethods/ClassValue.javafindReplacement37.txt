@@ -1,0 +1,49 @@
+/**
+ * Clearing a cache slot risks disconnecting following entries
+ *  from the head of a non-null run, which would allow them
+ *  to be found via reprobes.  Find an entry after cache[begin]
+ *  to plug into the hole, or return null if none is needed.
+ */
+private Entry<?> findReplacement(Entry<?>[] cache, int home1) {
+    Entry<?> replacement = null;
+    int haveReplacement = -1, replacementPos = 0;
+    int mask = (cache.length - 1);
+    for (int i2 = home1 + 1; i2 < home1 + PROBE_LIMIT; i2++) {
+        Entry<?> e2 = cache[i2 & mask];
+        // End of non-null run.
+        if (e2 == null)
+            break;
+        // Doomed anyway.
+        if (!e2.isLive())
+            continue;
+        int dis2 = entryDislocation(cache, i2, e2);
+        // e2 already optimally placed
+        if (dis2 == 0)
+            continue;
+        int home2 = i2 - dis2;
+        if (home2 <= home1) {
+            // e2 can replace entry at cache[home1]
+            if (home2 == home1) {
+                // Put e2 exactly where he belongs.
+                haveReplacement = 1;
+                replacementPos = i2;
+                replacement = e2;
+            } else if (haveReplacement <= 0) {
+                haveReplacement = 0;
+                replacementPos = i2;
+                replacement = e2;
+            }
+        // And keep going, so we can favor larger dislocations.
+        }
+    }
+    if (haveReplacement >= 0) {
+        if (cache[(replacementPos + 1) & mask] != null) {
+            // Be conservative, to avoid breaking up a non-null run.
+            cache[replacementPos & mask] = (Entry<?>) Entry.DEAD_ENTRY;
+        } else {
+            cache[replacementPos & mask] = null;
+            cacheLoad -= 1;
+        }
+    }
+    return replacement;
+}

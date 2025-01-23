@@ -1,0 +1,10 @@
+private void restoreFocus(WindowEvent we) {
+    Window realOppositeWindow = this.realOppositeWindowWR.get();
+    if (realOppositeWindow != null && restoreFocus(realOppositeWindow, null, false)) {
+    // do nothing, everything is done in restoreFocus()
+    } else if (we.getOppositeWindow() != null && restoreFocus(we.getOppositeWindow(), null, false)) {
+    // do nothing, everything is done in restoreFocus()
+    } else {
+        clearGlobalFocusOwnerPriv();
+    }
+}

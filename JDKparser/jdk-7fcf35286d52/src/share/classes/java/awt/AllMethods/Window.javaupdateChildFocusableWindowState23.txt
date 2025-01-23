@@ -1,0 +1,11 @@
+static void updateChildFocusableWindowState(Window w) {
+    if (w.getPeer() != null && w.isShowing()) {
+        ((WindowPeer) w.getPeer()).updateFocusableWindowState();
+    }
+    for (int i = 0; i < w.ownedWindowList.size(); i++) {
+        Window child = w.ownedWindowList.elementAt(i).get();
+        if (child != null) {
+            updateChildFocusableWindowState(child);
+        }
+    }
+}

@@ -1,0 +1,14 @@
+Component getCurrentWaitingRequest(Component parent) {
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getFirstHWRequest();
+        if (hwFocusRequest != null) {
+            if (hwFocusRequest.heavyweight == parent) {
+                LightweightFocusRequest lwFocusRequest = hwFocusRequest.lightweightRequests.getFirst();
+                if (lwFocusRequest != null) {
+                    return lwFocusRequest.component;
+                }
+            }
+        }
+    }
+    return null;
+}

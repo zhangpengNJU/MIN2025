@@ -1,0 +1,8 @@
+/*non-public*/
+Invokers invokers() {
+    Invokers inv = invokers;
+    if (inv != null)
+        return inv;
+    invokers = inv = new Invokers(this);
+    return inv;
+}

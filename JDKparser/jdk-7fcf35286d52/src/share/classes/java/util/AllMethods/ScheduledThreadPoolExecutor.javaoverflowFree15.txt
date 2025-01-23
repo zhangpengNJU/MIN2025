@@ -1,0 +1,16 @@
+/**
+ * Constrains the values of all delays in the queue to be within
+ * Long.MAX_VALUE of each other, to avoid overflow in compareTo.
+ * This may occur if a task is eligible to be dequeued, but has
+ * not yet been, while some other task is added with a delay of
+ * Long.MAX_VALUE.
+ */
+private long overflowFree(long delay) {
+    Delayed head = (Delayed) super.getQueue().peek();
+    if (head != null) {
+        long headDelay = head.getDelay(NANOSECONDS);
+        if (headDelay < 0 && (delay - headDelay < 0))
+            delay = Long.MAX_VALUE + headDelay;
+    }
+    return delay;
+}

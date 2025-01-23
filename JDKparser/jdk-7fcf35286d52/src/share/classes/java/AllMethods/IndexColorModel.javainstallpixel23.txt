@@ -1,0 +1,34 @@
+private Object installpixel(Object pixel, int pix) {
+    switch(transferType) {
+        case DataBuffer.TYPE_INT:
+            int[] intObj;
+            if (pixel == null) {
+                pixel = intObj = new int[1];
+            } else {
+                intObj = (int[]) pixel;
+            }
+            intObj[0] = pix;
+            break;
+        case DataBuffer.TYPE_BYTE:
+            byte[] byteObj;
+            if (pixel == null) {
+                pixel = byteObj = new byte[1];
+            } else {
+                byteObj = (byte[]) pixel;
+            }
+            byteObj[0] = (byte) pix;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] shortObj;
+            if (pixel == null) {
+                pixel = shortObj = new short[1];
+            } else {
+                shortObj = (short[]) pixel;
+            }
+            shortObj[0] = (short) pix;
+            break;
+        default:
+            throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+    }
+    return pixel;
+}

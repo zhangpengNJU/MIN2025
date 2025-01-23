@@ -1,0 +1,14 @@
+/**
+ * Gets the calendar type of the calendar system.
+ * <p>
+ * The calendar type is an identifier defined by the CLDR and
+ * <em>Unicode Locale Data Markup Language (LDML)</em> specifications
+ * to uniquely identification a calendar.
+ * The {@code getCalendarType} is the concatenation of the CLDR calendar type
+ * and the variant, if applicable, is appended separated by "-".
+ * The calendar type is used to lookup the {@code Chronology} using {@link #of(String)}.
+ *
+ * @return the calendar system type, null if the calendar is not defined by CLDR/LDML
+ * @see #getId()
+ */
+String getCalendarType();

@@ -1,0 +1,43 @@
+/*
+     * Returns true if the given provider satisfies
+     * the selection criterion key:value.
+     */
+private static boolean isCriterionSatisfied(Provider prov, String serviceName, String algName, String attrName, String filterValue) {
+    String key = serviceName + '.' + algName;
+    if (attrName != null) {
+        key += ' ' + attrName;
+    }
+    // Check whether the provider has a property
+    // whose key is the same as the given key.
+    String propValue = getProviderProperty(key, prov);
+    if (propValue == null) {
+        // Check whether we have an alias instead
+        // of a standard name in the key.
+        String standardName = getProviderProperty("Alg.Alias." + serviceName + "." + algName, prov);
+        if (standardName != null) {
+            key = serviceName + "." + standardName;
+            if (attrName != null) {
+                key += ' ' + attrName;
+            }
+            propValue = getProviderProperty(key, prov);
+        }
+        if (propValue == null) {
+            // The provider doesn't have the given
+            // key in its property list.
+            return false;
+        }
+    }
+    // If the key is in the format of:
+    // <crypto_service>.<algorithm_or_type>,
+    // there is no need to check the value.
+    if (attrName == null) {
+        return true;
+    }
+    // If we get here, the key must be in the
+    // format of <crypto_service>.<algorithm_or_provider> <attribute_name>.
+    if (isStandardAttr(attrName)) {
+        return isConstraintSatisfied(attrName, filterValue, propValue);
+    } else {
+        return filterValue.equalsIgnoreCase(propValue);
+    }
+}

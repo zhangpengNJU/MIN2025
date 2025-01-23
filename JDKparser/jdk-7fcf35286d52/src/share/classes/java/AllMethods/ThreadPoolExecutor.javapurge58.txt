@@ -1,0 +1,29 @@
+/**
+ * Tries to remove from the work queue all {@link Future}
+ * tasks that have been cancelled. This method can be useful as a
+ * storage reclamation operation, that has no other impact on
+ * functionality. Cancelled tasks are never executed, but may
+ * accumulate in work queues until worker threads can actively
+ * remove them. Invoking this method instead tries to remove them now.
+ * However, this method may fail to remove tasks in
+ * the presence of interference by other threads.
+ */
+public void purge() {
+    final BlockingQueue<Runnable> q = workQueue;
+    try {
+        Iterator<Runnable> it = q.iterator();
+        while (it.hasNext()) {
+            Runnable r = it.next();
+            if (r instanceof Future<?> && ((Future<?>) r).isCancelled())
+                it.remove();
+        }
+    } catch (ConcurrentModificationException fallThrough) {
+        // Take slow path if we encounter interference during traversal.
+        // Make copy for traversal and call remove for cancelled entries.
+        // The slow path is more likely to be O(N*N).
+        for (Object r : q.toArray()) if (r instanceof Future<?> && ((Future<?>) r).isCancelled())
+            q.remove(r);
+    }
+    // In case SHUTDOWN and now empty
+    tryTerminate();
+}

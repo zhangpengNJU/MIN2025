@@ -1,0 +1,6 @@
+@Override
+public final IntStream distinct() {
+    // While functional and quick to implement, this approach is not very efficient.
+    // An efficient version requires an int-specific map/set implementation.
+    return boxed().distinct().mapToInt(i -> i);
+}

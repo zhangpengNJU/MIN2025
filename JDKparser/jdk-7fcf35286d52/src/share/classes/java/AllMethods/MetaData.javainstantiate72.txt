@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    java.awt.MenuShortcut m = (java.awt.MenuShortcut) oldInstance;
+    return new Expression(oldInstance, m.getClass(), "new", new Object[] { new Integer(m.getKey()), Boolean.valueOf(m.usesShiftModifier()) });
+}

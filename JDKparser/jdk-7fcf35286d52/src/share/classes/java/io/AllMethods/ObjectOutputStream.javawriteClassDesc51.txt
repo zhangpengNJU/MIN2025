@@ -1,0 +1,15 @@
+/**
+ * Writes representation of given class descriptor to stream.
+ */
+private void writeClassDesc(ObjectStreamClass desc, boolean unshared) throws IOException {
+    int handle;
+    if (desc == null) {
+        writeNull();
+    } else if (!unshared && (handle = handles.lookup(desc)) != -1) {
+        writeHandle(handle);
+    } else if (desc.isProxy()) {
+        writeProxyDesc(desc, unshared);
+    } else {
+        writeNonProxyDesc(desc, unshared);
+    }
+}

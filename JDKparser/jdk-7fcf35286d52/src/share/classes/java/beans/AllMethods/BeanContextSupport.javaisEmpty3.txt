@@ -1,0 +1,13 @@
+/**
+ * Reports whether or not this
+ * <tt>BeanContext</tt> is empty.
+ * A <tt>BeanContext</tt> is considered
+ * empty when it contains zero
+ * nested children.
+ * @return if there are not children
+ */
+public boolean isEmpty() {
+    synchronized (children) {
+        return children.isEmpty();
+    }
+}

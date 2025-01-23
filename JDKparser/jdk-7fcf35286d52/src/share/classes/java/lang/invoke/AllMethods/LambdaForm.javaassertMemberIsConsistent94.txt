@@ -1,0 +1,8 @@
+// Called only from assert.
+private boolean assertMemberIsConsistent() {
+    if (resolvedHandle instanceof DirectMethodHandle) {
+        MemberName m = resolvedHandle.internalMemberName();
+        assert (m.equals(member));
+    }
+    return true;
+}

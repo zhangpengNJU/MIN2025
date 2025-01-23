@@ -1,0 +1,11 @@
+@Override
+final <P_IN> void copyInto(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator) {
+    Objects.requireNonNull(wrappedSink);
+    if (!StreamOpFlag.SHORT_CIRCUIT.isKnown(getStreamAndOpFlags())) {
+        wrappedSink.begin(spliterator.getExactSizeIfKnown());
+        spliterator.forEachRemaining(wrappedSink);
+        wrappedSink.end();
+    } else {
+        copyIntoWithCancel(wrappedSink, spliterator);
+    }
+}

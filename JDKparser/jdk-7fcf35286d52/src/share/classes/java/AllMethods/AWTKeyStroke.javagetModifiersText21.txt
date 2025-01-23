@@ -1,0 +1,28 @@
+static String getModifiersText(int modifiers) {
+    StringBuilder buf = new StringBuilder();
+    if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
+        buf.append("shift ");
+    }
+    if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+        buf.append("ctrl ");
+    }
+    if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+        buf.append("meta ");
+    }
+    if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+        buf.append("alt ");
+    }
+    if ((modifiers & InputEvent.ALT_GRAPH_DOWN_MASK) != 0) {
+        buf.append("altGraph ");
+    }
+    if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+        buf.append("button1 ");
+    }
+    if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+        buf.append("button2 ");
+    }
+    if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+        buf.append("button3 ");
+    }
+    return buf.toString();
+}

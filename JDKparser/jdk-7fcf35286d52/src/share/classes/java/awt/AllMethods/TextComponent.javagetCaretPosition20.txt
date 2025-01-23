@@ -1,0 +1,25 @@
+/**
+ * Returns the position of the text insertion caret.
+ * The caret position is constrained to be between 0
+ * and the last character of the text, inclusive.
+ * If the text or caret have not been set, the default
+ * caret position is 0.
+ *
+ * @return       the position of the text insertion caret
+ * @see #setCaretPosition(int)
+ * @since        JDK1.1
+ */
+public synchronized int getCaretPosition() {
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    int position = 0;
+    if (peer != null) {
+        position = peer.getCaretPosition();
+    } else {
+        position = selectionStart;
+    }
+    int maxposition = getText().length();
+    if (position > maxposition) {
+        position = maxposition;
+    }
+    return position;
+}

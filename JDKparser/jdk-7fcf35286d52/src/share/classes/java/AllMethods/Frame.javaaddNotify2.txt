@@ -1,0 +1,25 @@
+/**
+ * Makes this Frame displayable by connecting it to
+ * a native screen resource.  Making a frame displayable will
+ * cause any of its children to be made displayable.
+ * This method is called internally by the toolkit and should
+ * not be called directly by programs.
+ * @see Component#isDisplayable
+ * @see #removeNotify
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null) {
+            peer = getToolkit().createFrame(this);
+        }
+        FramePeer p = (FramePeer) peer;
+        MenuBar menuBar = this.menuBar;
+        if (menuBar != null) {
+            mbManagement = true;
+            menuBar.addNotify();
+            p.setMenuBar(menuBar);
+        }
+        p.setMaximizedBounds(maximizedBounds);
+        super.addNotify();
+    }
+}

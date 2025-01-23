@@ -1,0 +1,8 @@
+/**
+ * A reinvoker MH has this form:
+ * {@code lambda (bmh, arg*) { thismh = bmh[0]; invokeBasic(thismh, arg*) }}
+ */
+static BoundMethodHandle makeReinvoker(MethodHandle target) {
+    LambdaForm form = DelegatingMethodHandle.makeReinvokerForm(target, MethodTypeForm.LF_REBIND, Species_L.SPECIES_DATA, Species_L.SPECIES_DATA.getterFunction(0));
+    return Species_L.make(target.type(), form, target);
+}

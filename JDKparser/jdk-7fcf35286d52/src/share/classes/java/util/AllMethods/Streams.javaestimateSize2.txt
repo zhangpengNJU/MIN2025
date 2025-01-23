@@ -1,0 +1,5 @@
+@Override
+public long estimateSize() {
+    // Ensure ranges of size > Integer.MAX_VALUE report the correct size
+    return ((long) upTo) - from + last;
+}

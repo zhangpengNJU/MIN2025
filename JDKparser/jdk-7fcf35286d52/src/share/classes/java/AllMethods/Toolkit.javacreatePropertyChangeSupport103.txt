@@ -1,0 +1,7 @@
+private static PropertyChangeSupport createPropertyChangeSupport(Toolkit toolkit) {
+    if (toolkit instanceof SunToolkit || toolkit instanceof HeadlessToolkit) {
+        return new DesktopPropertyChangeSupport(toolkit);
+    } else {
+        return new PropertyChangeSupport(toolkit);
+    }
+}

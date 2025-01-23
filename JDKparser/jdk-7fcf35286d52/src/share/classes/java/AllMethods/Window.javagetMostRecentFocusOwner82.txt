@@ -1,0 +1,29 @@
+/**
+ * Returns the child Component of this Window that will receive the focus
+ * when this Window is focused. If this Window is currently focused, this
+ * method returns the same Component as {@code getFocusOwner()}. If
+ * this Window is not focused, then the child Component that most recently
+ * requested focus will be returned. If no child Component has ever
+ * requested focus, and this is a focusable Window, then this Window's
+ * initial focusable Component is returned. If no child Component has ever
+ * requested focus, and this is a non-focusable Window, null is returned.
+ *
+ * @return the child Component that will receive focus when this Window is
+ *         focused
+ * @see #getFocusOwner
+ * @see #isFocused
+ * @see #isFocusableWindow
+ * @since 1.4
+ */
+public Component getMostRecentFocusOwner() {
+    if (isFocused()) {
+        return getFocusOwner();
+    } else {
+        Component mostRecent = KeyboardFocusManager.getMostRecentFocusOwner(this);
+        if (mostRecent != null) {
+            return mostRecent;
+        } else {
+            return (isFocusableWindow()) ? getFocusTraversalPolicy().getInitialComponent(this) : null;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ */
+public int drainTo(Collection<? super E> c) {
+    if (c == null)
+        throw new NullPointerException();
+    if (c == this)
+        throw new IllegalArgumentException();
+    int n = 0;
+    for (E e; (e = poll()) != null; ) {
+        c.add(e);
+        ++n;
+    }
+    return n;
+}

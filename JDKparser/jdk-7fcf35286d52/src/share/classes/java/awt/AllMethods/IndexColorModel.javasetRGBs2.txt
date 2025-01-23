@@ -1,0 +1,39 @@
+private void setRGBs(int size, int[] cmap, int start, boolean hasalpha) {
+    map_size = size;
+    rgb = new int[calcRealMapSize(pixel_bits, size)];
+    int j = start;
+    int transparency = OPAQUE;
+    boolean allgray = true;
+    BigInteger validBits = this.validBits;
+    for (int i = 0; i < size; i++, j++) {
+        if (validBits != null && !validBits.testBit(i)) {
+            continue;
+        }
+        int cmaprgb = cmap[j];
+        int r = (cmaprgb >> 16) & 0xff;
+        int g = (cmaprgb >> 8) & 0xff;
+        int b = (cmaprgb) & 0xff;
+        allgray = allgray && (r == g) && (g == b);
+        if (hasalpha) {
+            int alpha = cmaprgb >>> 24;
+            if (alpha != 0xff) {
+                if (alpha == 0x00) {
+                    if (transparency == OPAQUE) {
+                        transparency = BITMASK;
+                    }
+                    if (transparent_index < 0) {
+                        transparent_index = i;
+                    }
+                } else {
+                    transparency = TRANSLUCENT;
+                }
+                allgray = false;
+            }
+        } else {
+            cmaprgb |= 0xff000000;
+        }
+        rgb[i] = cmaprgb;
+    }
+    this.allgrayopaque = allgray;
+    setTransparency(transparency);
+}

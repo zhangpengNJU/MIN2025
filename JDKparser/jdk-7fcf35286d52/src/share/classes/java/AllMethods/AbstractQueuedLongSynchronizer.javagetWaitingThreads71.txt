@@ -1,0 +1,22 @@
+/**
+ * Returns a collection containing those threads that may be
+ * waiting on this Condition.
+ * Implements {@link AbstractQueuedLongSynchronizer#getWaitingThreads(ConditionObject)}.
+ *
+ * @return the collection of threads
+ * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
+ *         returns {@code false}
+ */
+protected final Collection<Thread> getWaitingThreads() {
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+    ArrayList<Thread> list = new ArrayList<Thread>();
+    for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
+        if (w.waitStatus == Node.CONDITION) {
+            Thread t = w.thread;
+            if (t != null)
+                list.add(t);
+        }
+    }
+    return list;
+}

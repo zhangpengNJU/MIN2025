@@ -1,0 +1,120 @@
+/**
+ * Positions on the baseline.
+ *
+ * @param cellY the location of the row, does not include insets
+ * @param cellHeight the height of the row, does not take into account
+ *        insets
+ * @param r available bounds for the component, is padded by insets and
+ *        ipady
+ */
+private void alignOnBaseline(GridBagConstraints cons, Rectangle r, int cellY, int cellHeight) {
+    if (cons.ascent >= 0) {
+        if (cons.baselineResizeBehavior == Component.BaselineResizeBehavior.CONSTANT_DESCENT) {
+            // Anchor to the bottom.
+            // Baseline is at (cellY + cellHeight - maxDescent).
+            // Bottom of component (maxY) is at baseline + descent
+            // of component. We need to subtract the bottom inset here
+            // as the descent in the constraints object includes the
+            // bottom inset.
+            int maxY = cellY + cellHeight - layoutInfo.maxDescent[cons.tempY + cons.tempHeight - 1] + cons.descent - cons.insets.bottom;
+            if (!cons.isVerticallyResizable()) {
+                // Component not resizable, calculate y location
+                // from maxY - height.
+                r.y = maxY - cons.minHeight;
+                r.height = cons.minHeight;
+            } else {
+                // Component is resizable. As brb is constant descent,
+                // can expand component to fill region above baseline.
+                // Subtract out the top inset so that components insets
+                // are honored.
+                r.height = maxY - cellY - cons.insets.top;
+            }
+        } else {
+            // BRB is not constant_descent
+            // baseline for the row, relative to cellY
+            int baseline;
+            // Component baseline, includes insets.top
+            int ascent = cons.ascent;
+            if (layoutInfo.hasConstantDescent(cons.tempY)) {
+                // Mixed ascent/descent in same row, calculate position
+                // off maxDescent
+                baseline = cellHeight - layoutInfo.maxDescent[cons.tempY];
+            } else {
+                // Only ascents/unknown in this row, anchor to top
+                baseline = layoutInfo.maxAscent[cons.tempY];
+            }
+            if (cons.baselineResizeBehavior == Component.BaselineResizeBehavior.OTHER) {
+                // BRB is other, which means we can only determine
+                // the baseline by asking for it again giving the
+                // size we plan on using for the component.
+                boolean fits = false;
+                ascent = componentAdjusting.getBaseline(r.width, r.height);
+                if (ascent >= 0) {
+                    // Component has a baseline, pad with top inset
+                    // (this follows from calculateBaseline which
+                    // does the same).
+                    ascent += cons.insets.top;
+                }
+                if (ascent >= 0 && ascent <= baseline) {
+                    // Components baseline fits within rows baseline.
+                    // Make sure the descent fits within the space as well.
+                    if (baseline + (r.height - ascent - cons.insets.top) <= cellHeight - cons.insets.bottom) {
+                        // It fits, we're good.
+                        fits = true;
+                    } else if (cons.isVerticallyResizable()) {
+                        // Doesn't fit, but it's resizable.  Try
+                        // again assuming we'll get ascent again.
+                        int ascent2 = componentAdjusting.getBaseline(r.width, cellHeight - cons.insets.bottom - baseline + ascent);
+                        if (ascent2 >= 0) {
+                            ascent2 += cons.insets.top;
+                        }
+                        if (ascent2 >= 0 && ascent2 <= ascent) {
+                            // It'll fit
+                            r.height = cellHeight - cons.insets.bottom - baseline + ascent;
+                            ascent = ascent2;
+                            fits = true;
+                        }
+                    }
+                }
+                if (!fits) {
+                    // Doesn't fit, use min size and original ascent
+                    ascent = cons.ascent;
+                    r.width = cons.minWidth;
+                    r.height = cons.minHeight;
+                }
+            }
+            // Reset the components y location based on
+            // components ascent and baseline for row. Because ascent
+            // includes the baseline
+            r.y = cellY + baseline - ascent + cons.insets.top;
+            if (cons.isVerticallyResizable()) {
+                switch(cons.baselineResizeBehavior) {
+                    case CONSTANT_ASCENT:
+                        r.height = Math.max(cons.minHeight, cellY + cellHeight - r.y - cons.insets.bottom);
+                        break;
+                    case CENTER_OFFSET:
+                        {
+                            int upper = r.y - cellY - cons.insets.top;
+                            int lower = cellY + cellHeight - r.y - cons.minHeight - cons.insets.bottom;
+                            int delta = Math.min(upper, lower);
+                            delta += delta;
+                            if (delta > 0 && (cons.minHeight + cons.centerPadding + delta) / 2 + cons.centerOffset != baseline) {
+                                // Off by 1
+                                delta--;
+                            }
+                            r.height = cons.minHeight + delta;
+                            r.y = cellY + baseline - (r.height + cons.centerPadding) / 2 - cons.centerOffset;
+                        }
+                        break;
+                    case OTHER:
+                        // Handled above
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    } else {
+        centerVertically(cons, r, cellHeight);
+    }
+}

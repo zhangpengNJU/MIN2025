@@ -1,0 +1,7 @@
+public boolean equals(Object o) {
+    if (!(o instanceof AttributeEntry)) {
+        return false;
+    }
+    AttributeEntry other = (AttributeEntry) o;
+    return other.key.equals(key) && (value == null ? other.value == null : other.value.equals(value));
+}

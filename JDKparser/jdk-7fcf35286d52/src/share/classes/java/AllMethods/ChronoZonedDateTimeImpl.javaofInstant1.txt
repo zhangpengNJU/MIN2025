@@ -1,0 +1,17 @@
+/**
+ * Obtains an instance from an instant using the specified time-zone.
+ *
+ * @param chrono  the chronology, not null
+ * @param instant  the instant, not null
+ * @param zone  the zone identifier, not null
+ * @return the zoned date-time, not null
+ */
+static ChronoZonedDateTimeImpl<?> ofInstant(Chronology chrono, Instant instant, ZoneId zone) {
+    ZoneRules rules = zone.getRules();
+    ZoneOffset offset = rules.getOffset(instant);
+    // protect against bad ZoneRules
+    Objects.requireNonNull(offset, "offset");
+    LocalDateTime ldt = LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), offset);
+    ChronoLocalDateTimeImpl<?> cldt = (ChronoLocalDateTimeImpl<?>) chrono.localDateTime(ldt);
+    return new ChronoZonedDateTimeImpl<>(cldt, offset, zone);
+}

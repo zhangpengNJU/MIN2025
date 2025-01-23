@@ -1,0 +1,11 @@
+private CompletableFuture<T> uniWhenCompleteStage(Executor e, BiConsumer<? super T, ? super Throwable> f) {
+    if (f == null)
+        throw new NullPointerException();
+    CompletableFuture<T> d = new CompletableFuture<T>();
+    if (e != null || !d.uniWhenComplete(this, f, null)) {
+        UniWhenComplete<T> c = new UniWhenComplete<T>(e, d, this, f);
+        push(c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

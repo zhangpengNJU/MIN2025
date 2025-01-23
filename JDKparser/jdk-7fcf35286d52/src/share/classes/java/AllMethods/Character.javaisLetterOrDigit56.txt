@@ -1,0 +1,20 @@
+/**
+ * Determines if the specified character (Unicode code point) is a letter or digit.
+ * <p>
+ * A character is considered to be a letter or digit if either
+ * {@link #isLetter(int) isLetter(codePoint)} or
+ * {@link #isDigit(int) isDigit(codePoint)} returns
+ * {@code true} for the character.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is a letter or digit;
+ *          {@code false} otherwise.
+ * @see     Character#isDigit(int)
+ * @see     Character#isJavaIdentifierPart(int)
+ * @see     Character#isLetter(int)
+ * @see     Character#isUnicodeIdentifierPart(int)
+ * @since   1.5
+ */
+public static boolean isLetterOrDigit(int codePoint) {
+    return ((((1 << Character.UPPERCASE_LETTER) | (1 << Character.LOWERCASE_LETTER) | (1 << Character.TITLECASE_LETTER) | (1 << Character.MODIFIER_LETTER) | (1 << Character.OTHER_LETTER) | (1 << Character.DECIMAL_DIGIT_NUMBER)) >> getType(codePoint)) & 1) != 0;
+}

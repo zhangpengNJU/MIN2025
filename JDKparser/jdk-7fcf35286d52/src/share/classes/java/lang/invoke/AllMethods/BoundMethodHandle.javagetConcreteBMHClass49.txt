@@ -1,0 +1,17 @@
+/**
+ * Get a concrete subclass of BMH for a given combination of bound types.
+ *
+ * @param types the type signature, wherein reference types are erased to 'L'
+ * @return the concrete BMH class
+ */
+static Class<? extends BoundMethodHandle> getConcreteBMHClass(String types) {
+    // CHM.computeIfAbsent ensures generateConcreteBMHClass is called
+    // only once per key.
+    return CLASS_CACHE.computeIfAbsent(types, new Function<String, Class<? extends BoundMethodHandle>>() {
+
+        @Override
+        public Class<? extends BoundMethodHandle> apply(String types) {
+            return generateConcreteBMHClass(types);
+        }
+    });
+}

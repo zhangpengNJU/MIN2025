@@ -1,0 +1,7 @@
+void engineInitSign(PrivateKey privateKey, AlgorithmParameterSpec params, SecureRandom sr) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    if (sigSpi != null) {
+        sigSpi.engineInitSign(privateKey, params, sr);
+    } else {
+        chooseProvider(I_PRIV_PARAM_SR, privateKey, params, sr);
+    }
+}

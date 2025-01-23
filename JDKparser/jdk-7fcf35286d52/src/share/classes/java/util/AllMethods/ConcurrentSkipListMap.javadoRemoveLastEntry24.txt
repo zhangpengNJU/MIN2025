@@ -1,0 +1,54 @@
+/**
+ * Removes last entry; returns its snapshot.
+ * Specialized variant of doRemove.
+ * @return null if empty, else snapshot of last entry
+ */
+private Map.Entry<K, V> doRemoveLastEntry() {
+    for (; ; ) {
+        Node<K, V> b = findPredecessorOfLast();
+        Node<K, V> n = b.next;
+        if (n == null) {
+            if (// empty
+            b.isBaseHeader())
+                return null;
+            else
+                // all b's successors are deleted; retry
+                continue;
+        }
+        for (; ; ) {
+            Node<K, V> f = n.next;
+            if (// inconsistent read
+            n != b.next)
+                break;
+            Object v = n.value;
+            if (v == null) {
+                // n is deleted
+                n.helpDelete(b, f);
+                break;
+            }
+            if (// b is deleted
+            b.value == null || v == n)
+                break;
+            if (f != null) {
+                b = n;
+                n = f;
+                continue;
+            }
+            if (!n.casValue(v, null))
+                break;
+            K key = n.key;
+            if (!n.appendMarker(f) || !b.casNext(n, f))
+                // retry via findNode
+                findNode(key);
+            else {
+                // clean index
+                findPredecessor(key, comparator);
+                if (head.right == null)
+                    tryReduceLevel();
+            }
+            @SuppressWarnings("unchecked")
+            V vv = (V) v;
+            return new AbstractMap.SimpleImmutableEntry<K, V>(key, vv);
+        }
+    }
+}

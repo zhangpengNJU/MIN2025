@@ -1,0 +1,48 @@
+// fastTime and the returned data are in sync upon return.
+private final BaseCalendar.Date normalize(BaseCalendar.Date date) {
+    int y = date.getNormalizedYear();
+    int m = date.getMonth();
+    int d = date.getDayOfMonth();
+    int hh = date.getHours();
+    int mm = date.getMinutes();
+    int ss = date.getSeconds();
+    int ms = date.getMillis();
+    TimeZone tz = date.getZone();
+    // If the specified year can't be handled using a long value
+    // in milliseconds, GregorianCalendar is used for full
+    // compatibility with underflow and overflow. This is required
+    // by some JCK tests. The limits are based max year values -
+    // years that can be represented by max values of d, hh, mm,
+    // ss and ms. Also, let GregorianCalendar handle the default
+    // cutover year so that we don't need to worry about the
+    // transition here.
+    if (y == 1582 || y > 280000000 || y < -280000000) {
+        if (tz == null) {
+            tz = TimeZone.getTimeZone("GMT");
+        }
+        GregorianCalendar gc = new GregorianCalendar(tz);
+        gc.clear();
+        gc.set(GregorianCalendar.MILLISECOND, ms);
+        gc.set(y, m - 1, d, hh, mm, ss);
+        fastTime = gc.getTimeInMillis();
+        BaseCalendar cal = getCalendarSystem(fastTime);
+        date = (BaseCalendar.Date) cal.getCalendarDate(fastTime, tz);
+        return date;
+    }
+    BaseCalendar cal = getCalendarSystem(y);
+    if (cal != getCalendarSystem(date)) {
+        date = (BaseCalendar.Date) cal.newCalendarDate(tz);
+        date.setNormalizedDate(y, m, d).setTimeOfDay(hh, mm, ss, ms);
+    }
+    // Perform the GregorianCalendar-style normalization.
+    fastTime = cal.getTime(date);
+    // In case the normalized date requires the other calendar
+    // system, we need to recalculate it using the other one.
+    BaseCalendar ncal = getCalendarSystem(fastTime);
+    if (ncal != cal) {
+        date = (BaseCalendar.Date) ncal.newCalendarDate(tz);
+        date.setNormalizedDate(y, m, d).setTimeOfDay(hh, mm, ss, ms);
+        fastTime = ncal.getTime(date);
+    }
+    return date;
+}

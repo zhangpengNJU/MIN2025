@@ -1,0 +1,19 @@
+/**
+ * Updates this canvas.
+ * <p>
+ * This method is called in response to a call to <code>repaint</code>.
+ * The canvas is first cleared by filling it with the background
+ * color, and then completely redrawn by calling this canvas's
+ * <code>paint</code> method.
+ * Note: applications that override this method should either call
+ * super.update(g) or incorporate the functionality described
+ * above into their own code.
+ *
+ * @param g the specified Graphics context
+ * @see   #paint(Graphics)
+ * @see   Component#update(Graphics)
+ */
+public void update(Graphics g) {
+    g.clearRect(0, 0, width, height);
+    paint(g);
+}

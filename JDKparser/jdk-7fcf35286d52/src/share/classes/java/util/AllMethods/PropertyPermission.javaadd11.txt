@@ -1,0 +1,38 @@
+/**
+ * Adds a permission to the PropertyPermissions. The key for the hash is
+ * the name.
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception IllegalArgumentException - if the permission is not a
+ *                                       PropertyPermission
+ *
+ * @exception SecurityException - if this PropertyPermissionCollection
+ *                                object has been marked readonly
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof PropertyPermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+    PropertyPermission pp = (PropertyPermission) permission;
+    String propName = pp.getName();
+    synchronized (this) {
+        PropertyPermission existing = perms.get(propName);
+        if (existing != null) {
+            int oldMask = existing.getMask();
+            int newMask = pp.getMask();
+            if (oldMask != newMask) {
+                int effective = oldMask | newMask;
+                String actions = PropertyPermission.getActions(effective);
+                perms.put(propName, new PropertyPermission(propName, actions));
+            }
+        } else {
+            perms.put(propName, pp);
+        }
+    }
+    if (!all_allowed) {
+        if (propName.equals("*"))
+            all_allowed = true;
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Adapt a {@code Sink<Long> to an {@code LongConsumer}, ideally simply
+ * by casting.
+ */
+private static LongConsumer adapt(Sink<Long> sink) {
+    if (sink instanceof LongConsumer) {
+        return (LongConsumer) sink;
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(AbstractPipeline.class, "using LongStream.adapt(Sink<Long> s)");
+        return sink::accept;
+    }
+}

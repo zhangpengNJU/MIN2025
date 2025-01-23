@@ -1,0 +1,20 @@
+/**
+ * Yet another helper function.  This one extracts the color components
+ * of an integer RGB triple, converts them from LinearRGB to SRGB, then
+ * recompacts them into an int.
+ */
+private int convertEntireColorLinearRGBtoSRGB(int rgb) {
+    // color components
+    int a1, r1, g1, b1;
+    // extract red, green, blue components
+    a1 = (rgb >> 24) & 0xff;
+    r1 = (rgb >> 16) & 0xff;
+    g1 = (rgb >> 8) & 0xff;
+    b1 = (rgb) & 0xff;
+    // use the lookup table
+    r1 = LinearRGBtoSRGB[r1];
+    g1 = LinearRGBtoSRGB[g1];
+    b1 = LinearRGBtoSRGB[b1];
+    // re-compact the components
+    return ((a1 << 24) | (r1 << 16) | (g1 << 8) | (b1));
+}

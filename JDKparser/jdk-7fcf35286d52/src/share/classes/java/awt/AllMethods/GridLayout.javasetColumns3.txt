@@ -1,0 +1,18 @@
+/**
+ * Sets the number of columns in this layout to the specified value.
+ * Setting the number of columns has no affect on the layout
+ * if the number of rows specified by a constructor or by
+ * the <tt>setRows</tt> method is non-zero. In that case, the number
+ * of columns displayed in the layout is determined by the total
+ * number of components and the number of rows specified.
+ * @param        cols   the number of columns in this layout
+ * @exception    IllegalArgumentException  if the value of both
+ *               <code>rows</code> and <code>cols</code> is set to zero
+ * @since        JDK1.1
+ */
+public void setColumns(int cols) {
+    if ((cols == 0) && (this.rows == 0)) {
+        throw new IllegalArgumentException("rows and cols cannot both be zero");
+    }
+    this.cols = cols;
+}

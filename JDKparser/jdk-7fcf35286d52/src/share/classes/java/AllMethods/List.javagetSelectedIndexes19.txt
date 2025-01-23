@@ -1,0 +1,16 @@
+/**
+ * Gets the selected indexes on the list.
+ *
+ * @return        an array of the selected indexes on this scrolling list;
+ *                if no item is selected, a zero-length array is returned.
+ * @see           #select
+ * @see           #deselect
+ * @see           #isIndexSelected
+ */
+public synchronized int[] getSelectedIndexes() {
+    ListPeer peer = (ListPeer) this.peer;
+    if (peer != null) {
+        selected = peer.getSelectedIndexes();
+    }
+    return selected.clone();
+}

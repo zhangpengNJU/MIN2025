@@ -1,0 +1,53 @@
+/**
+ * Choose the Spi from the first provider available. Used if
+ * delayed provider selection is not possible because initSign()/
+ * initVerify() is not the first method called.
+ */
+void chooseFirstProvider() {
+    if (sigSpi != null) {
+        return;
+    }
+    synchronized (lock) {
+        if (sigSpi != null) {
+            return;
+        }
+        if (debug != null) {
+            int w = --warnCount;
+            if (w >= 0) {
+                debug.println("Signature.init() not first method " + "called, disabling delayed provider selection");
+                if (w == 0) {
+                    debug.println("Further warnings of this type will " + "be suppressed");
+                }
+                new Exception("Debug call trace").printStackTrace();
+            }
+        }
+        Exception lastException = null;
+        while ((firstService != null) || serviceIterator.hasNext()) {
+            Service s;
+            if (firstService != null) {
+                s = firstService;
+                firstService = null;
+            } else {
+                s = serviceIterator.next();
+            }
+            if (isSpi(s) == false) {
+                continue;
+            }
+            try {
+                sigSpi = newInstance(s);
+                provider = s.getProvider();
+                // not needed any more
+                firstService = null;
+                serviceIterator = null;
+                return;
+            } catch (NoSuchAlgorithmException e) {
+                lastException = e;
+            }
+        }
+        ProviderException e = new ProviderException("Could not construct SignatureSpi instance");
+        if (lastException != null) {
+            e.initCause(lastException);
+        }
+        throw e;
+    }
+}

@@ -1,0 +1,16 @@
+public Object run() {
+    String prop = System.getProperty("java.time.zone.DefaultZoneRulesProvider");
+    if (prop != null) {
+        try {
+            Class<?> c = Class.forName(prop, true, ClassLoader.getSystemClassLoader());
+            ZoneRulesProvider provider = ZoneRulesProvider.class.cast(c.newInstance());
+            registerProvider(provider);
+            loaded.add(provider);
+        } catch (Exception x) {
+            throw new Error(x);
+        }
+    } else {
+        registerProvider(new TzdbZoneRulesProvider());
+    }
+    return null;
+}

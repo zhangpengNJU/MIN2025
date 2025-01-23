@@ -1,0 +1,43 @@
+/**
+ * Reads the {@code ObjectInputStream} and an optional
+ * list of listeners to receive various events fired by
+ * the component; also reads a list of
+ * (possibly {@code null}) child windows.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the {@code ObjectInputStream} to read
+ * @exception HeadlessException if
+ *   {@code GraphicsEnvironment.isHeadless} returns
+ *   {@code true}
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @see #writeObject
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    initDeserializedWindow();
+    ObjectInputStream.GetField f = s.readFields();
+    syncLWRequests = f.get("syncLWRequests", systemSyncLWRequests);
+    state = f.get("state", 0);
+    focusableWindowState = f.get("focusableWindowState", true);
+    windowSerializedDataVersion = f.get("windowSerializedDataVersion", 1);
+    locationByPlatform = f.get("locationByPlatform", locationByPlatformProp);
+    // Note: 1.4 (or later) doesn't use focusMgr
+    focusMgr = (FocusManager) f.get("focusMgr", null);
+    Dialog.ModalExclusionType et = (Dialog.ModalExclusionType) f.get("modalExclusionType", Dialog.ModalExclusionType.NO_EXCLUDE);
+    // since 6.0
+    setModalExclusionType(et);
+    boolean aot = f.get("alwaysOnTop", false);
+    if (aot) {
+        // since 1.5; subject to permission check
+        setAlwaysOnTop(aot);
+    }
+    shape = (Shape) f.get("shape", null);
+    opacity = (Float) f.get("opacity", 1.0f);
+    this.securityWarningWidth = 0;
+    this.securityWarningHeight = 0;
+    this.securityWarningPointX = 2.0;
+    this.securityWarningPointY = 0.0;
+    this.securityWarningAlignmentX = RIGHT_ALIGNMENT;
+    this.securityWarningAlignmentY = TOP_ALIGNMENT;
+    deserializeResources(s);
+}

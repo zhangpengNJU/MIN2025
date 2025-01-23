@@ -1,0 +1,10 @@
+private static int toRangeMask(Set<Range> ranges) {
+    int m = 0;
+    for (Range range : ranges) {
+        int index = range.ordinal();
+        if (index < NUM_KEYS) {
+            m |= 1 << index;
+        }
+    }
+    return m;
+}

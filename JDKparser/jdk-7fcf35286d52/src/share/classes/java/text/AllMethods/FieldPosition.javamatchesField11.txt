@@ -1,0 +1,11 @@
+/**
+ * Return true if the receiver wants a <code>Format.Field</code> value and
+ * <code>attribute</code> is equal to it, or true if the receiver
+ * represents an inteter constant and <code>field</code> equals it.
+ */
+private boolean matchesField(Format.Field attribute, int field) {
+    if (this.attribute != null) {
+        return this.attribute.equals(attribute);
+    }
+    return (field == this.field);
+}

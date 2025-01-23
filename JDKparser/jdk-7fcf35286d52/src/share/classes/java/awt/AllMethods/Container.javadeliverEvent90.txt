@@ -1,0 +1,14 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>dispatchEvent(AWTEvent e)</code>
+ */
+@Deprecated
+public void deliverEvent(Event e) {
+    Component comp = getComponentAt(e.x, e.y);
+    if ((comp != null) && (comp != this)) {
+        e.translate(-comp.x, -comp.y);
+        comp.deliverEvent(e);
+    } else {
+        postEvent(e);
+    }
+}

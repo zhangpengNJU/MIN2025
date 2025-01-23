@@ -1,0 +1,18 @@
+// Checks if this KeyboardFocusManager instance is the current KFM,
+// or otherwise checks if the calling thread has "replaceKeyboardFocusManager"
+// permission. Here's the reasoning to do so:
+// 
+// A system KFM instance (which is the current KFM by default) may have no
+// "replaceKFM" permission when a client code is on the call stack beneath,
+// but still it should be able to execute the methods protected by this check
+// due to the system KFM is trusted (and so it does like "privileged").
+// 
+// If this KFM instance is not the current KFM but the client code has all
+// permissions we can't throw SecurityException because it would contradict
+// the security concepts. In this case the trusted client code is responsible
+// for calling the secured methods from KFM instance which is not current.
+private void checkKFMSecurity() throws SecurityException {
+    if (this != getCurrentKeyboardFocusManager()) {
+        checkReplaceKFMPermission();
+    }
+}

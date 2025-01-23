@@ -1,0 +1,35 @@
+/**
+ * Note: this interface is required to permit the safe association
+ * of a DropTarget with a Component in one of two ways, either:
+ * <code> component.setDropTarget(droptarget); </code>
+ * or <code> droptarget.setComponent(component); </code>
+ * <P>
+ * The Component will receive drops only if it is enabled.
+ * @param c The new <code>Component</code> this <code>DropTarget</code>
+ * is to be associated with.
+ */
+public synchronized void setComponent(Component c) {
+    if (component == c || component != null && component.equals(c))
+        return;
+    Component old;
+    ComponentPeer oldPeer = null;
+    if ((old = component) != null) {
+        clearAutoscroll();
+        component = null;
+        if (componentPeer != null) {
+            oldPeer = componentPeer;
+            removeNotify(componentPeer);
+        }
+        old.setDropTarget(null);
+    }
+    if ((component = c) != null)
+        try {
+            c.setDropTarget(this);
+        } catch (Exception e) {
+            // undo the change
+            if (old != null) {
+                old.setDropTarget(this);
+                addNotify(oldPeer);
+            }
+        }
+}

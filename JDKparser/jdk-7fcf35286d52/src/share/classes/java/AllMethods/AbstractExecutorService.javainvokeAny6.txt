@@ -1,0 +1,8 @@
+public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+    try {
+        return doInvokeAny(tasks, false, 0);
+    } catch (TimeoutException cannotHappen) {
+        assert false;
+        return null;
+    }
+}

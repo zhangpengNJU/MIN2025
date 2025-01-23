@@ -1,0 +1,16 @@
+private String buildIntegerPatternString() {
+    String radixDigits = digits.substring(0, radix);
+    // \\p{javaDigit} is not guaranteed to be appropriate
+    // here but what can we do? The final authority will be
+    // whatever parse method is invoked, so ultimately the
+    // Scanner will do the right thing
+    String digit = "((?i)[" + radixDigits + "\\p{javaDigit}])";
+    String groupedNumeral = "(" + non0Digit + digit + "?" + digit + "?(" + groupSeparator + digit + digit + digit + ")+)";
+    // digit++ is the possessive form which is necessary for reducing
+    // backtracking that would otherwise cause unacceptable performance
+    String numeral = "((" + digit + "++)|" + groupedNumeral + ")";
+    String javaStyleInteger = "([-+]?(" + numeral + "))";
+    String negativeInteger = negativePrefix + numeral + negativeSuffix;
+    String positiveInteger = positivePrefix + numeral + positiveSuffix;
+    return "(" + javaStyleInteger + ")|(" + positiveInteger + ")|(" + negativeInteger + ")";
+}

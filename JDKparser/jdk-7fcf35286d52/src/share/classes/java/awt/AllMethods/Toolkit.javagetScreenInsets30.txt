@@ -1,0 +1,17 @@
+/**
+ * Gets the insets of the screen.
+ * @param     gc a <code>GraphicsConfiguration</code>
+ * @return    the insets of this toolkit's screen, in pixels.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @since     1.4
+ */
+public Insets getScreenInsets(GraphicsConfiguration gc) throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    if (this != Toolkit.getDefaultToolkit()) {
+        return Toolkit.getDefaultToolkit().getScreenInsets(gc);
+    } else {
+        return new Insets(0, 0, 0, 0);
+    }
+}

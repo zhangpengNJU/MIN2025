@@ -1,0 +1,29 @@
+/**
+ * Enables or disables the current input method for composition,
+ * depending on the value of the parameter <code>enable</code>.
+ * <p>
+ * An input method that is enabled for composition interprets incoming
+ * events for both composition and control purposes, while a
+ * disabled input method does not interpret events for composition.
+ * Note however that events are passed on to the input method regardless
+ * whether it is enabled or not, and that an input method that is disabled
+ * for composition may still interpret events for control purposes,
+ * including to enable or disable itself for composition.
+ * <p>
+ * For input methods provided by host operating systems, it is not always possible to
+ * determine whether this operation is supported. For example, an input method may enable
+ * composition only for some locales, and do nothing for other locales. For such input
+ * methods, it is possible that this method does not throw
+ * {@link java.lang.UnsupportedOperationException UnsupportedOperationException},
+ * but also does not affect whether composition is enabled.
+ *
+ * @param enable whether to enable the current input method for composition
+ * @throws UnsupportedOperationException if there is no current input
+ * method available or the current input method does not support
+ * the enabling/disabling operation
+ * @see #isCompositionEnabled
+ * @since 1.3
+ */
+public void setCompositionEnabled(boolean enable) {
+// real implementation is in sun.awt.im.InputContext
+}

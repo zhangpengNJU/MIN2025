@@ -1,0 +1,74 @@
+/**
+ * Set the serialization filter for the stream.
+ * The filter's {@link ObjectInputFilter#checkInput checkInput} method is called
+ * for each class and reference in the stream.
+ * The filter can check any or all of the class, the array length, the number
+ * of references, the depth of the graph, and the size of the input stream.
+ * <p>
+ * If the filter returns {@link ObjectInputFilter.Status#REJECTED Status.REJECTED},
+ * {@code null} or throws a {@link RuntimeException},
+ * the active {@code readObject} or {@code readUnshared}
+ * throws {@link InvalidClassException}, otherwise deserialization
+ * continues uninterrupted.
+ * <p>
+ * The serialization filter is initialized to the value of
+ * {@link ObjectInputFilter.Config#getSerialFilter() ObjectInputFilter.Config.getSerialFilter}
+ * when the {@code  ObjectInputStream} is constructed and can be set
+ * to a custom filter only once.
+ *
+ * @implSpec
+ * The filter, when not {@code null}, is invoked during {@link #readObject readObject}
+ * and {@link #readUnshared readUnshared} for each object
+ * (regular or class) in the stream including the following:
+ * <ul>
+ *     <li>each object reference previously deserialized from the stream
+ *     (class is {@code null}, arrayLength is -1),
+ *     <li>each regular class (class is not {@code null}, arrayLength is -1),
+ *     <li>each interface of a dynamic proxy and the dynamic proxy class itself
+ *     (class is not {@code null}, arrayLength is -1),
+ *     <li>each array is filtered using the array type and length of the array
+ *     (class is the array type, arrayLength is the requested length),
+ *     <li>each object replaced by its class' {@code readResolve} method
+ *         is filtered using the replacement object's class, if not {@code null},
+ *         and if it is an array, the arrayLength, otherwise -1,
+ *     <li>and each object replaced by {@link #resolveObject resolveObject}
+ *         is filtered using the replacement object's class, if not {@code null},
+ *         and if it is an array, the arrayLength, otherwise -1.
+ * </ul>
+ *
+ * When the {@link ObjectInputFilter#checkInput checkInput} method is invoked
+ * it is given access to the current class, the array length,
+ * the current number of references already read from the stream,
+ * the depth of nested calls to {@link #readObject readObject} or
+ * {@link #readUnshared readUnshared},
+ * and the implementation dependent number of bytes consumed from the input stream.
+ * <p>
+ * Each call to {@link #readObject readObject} or
+ * {@link #readUnshared readUnshared} increases the depth by 1
+ * before reading an object and decreases by 1 before returning
+ * normally or exceptionally.
+ * The depth starts at {@code 1} and increases for each nested object and
+ * decrements when each nested call returns.
+ * The count of references in the stream starts at {@code 1} and
+ * is increased before reading an object.
+ *
+ * @param filter the filter, may be null
+ * @throws SecurityException if there is security manager and the
+ *       {@code SerializablePermission("serialFilter")} is not granted
+ * @throws IllegalStateException if the {@linkplain #getInternalObjectInputFilter() current filter}
+ *       is not {@code null} and is not the process-wide filter
+ */
+private final void setInternalObjectInputFilter(ObjectInputFilter filter) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(new SerializablePermission("serialFilter"));
+    }
+    // Allow replacement of the process-wide filter if not already set
+    if (serialFilter != null && serialFilter != ObjectInputFilter.Config.getSerialFilter()) {
+        throw new IllegalStateException("filter can not be set more than once");
+    }
+    if (totalObjectRefs > 0 && !Caches.SET_FILTER_AFTER_READ) {
+        throw new IllegalStateException("filter can not be set after an object has been read");
+    }
+    this.serialFilter = filter;
+}

@@ -1,0 +1,5 @@
+@Override
+public <S> O evaluateSequential(PipelineHelper<T> helper, Spliterator<S> spliterator) {
+    O result = helper.wrapAndCopyInto(sinkSupplier.get(), spliterator).get();
+    return result != null ? result : emptyValue;
+}

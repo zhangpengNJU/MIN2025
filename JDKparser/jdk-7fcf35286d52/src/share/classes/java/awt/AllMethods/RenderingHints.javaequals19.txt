@@ -1,0 +1,28 @@
+/**
+ * Compares the specified <code>Object</code> with this
+ * <code>RenderingHints</code> for equality.
+ * Returns <code>true</code> if the specified object is also a
+ * <code>Map</code> and the two <code>Map</code> objects represent
+ * the same mappings.  More formally, two <code>Map</code> objects
+ * <code>t1</code> and <code>t2</code> represent the same mappings
+ * if <code>t1.keySet().equals(t2.keySet())</code> and for every
+ * key <code>k</code> in <code>t1.keySet()</code>,
+ * <pre>
+ * (t1.get(k)==null ? t2.get(k)==null : t1.get(k).equals(t2.get(k)))
+ * </pre>.
+ * This ensures that the <code>equals</code> method works properly across
+ * different implementations of the <code>Map</code> interface.
+ *
+ * @param o <code>Object</code> to be compared for equality with
+ * this <code>RenderingHints</code>.
+ * @return <code>true</code> if the specified <code>Object</code>
+ * is equal to this <code>RenderingHints</code>.
+ */
+public boolean equals(Object o) {
+    if (o instanceof RenderingHints) {
+        return hintmap.equals(((RenderingHints) o).hintmap);
+    } else if (o instanceof Map) {
+        return hintmap.equals(o);
+    }
+    return false;
+}

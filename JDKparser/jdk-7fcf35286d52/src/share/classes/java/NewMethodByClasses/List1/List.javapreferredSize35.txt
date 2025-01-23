@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getPreferredSize(int)</code>.
+ */
+@Deprecated
+public Dimension preferredSize(int rows) {
+    synchronized (getTreeLock()) {
+        ListPeer peer = (ListPeer) this.peer;
+        return (peer != null) ? peer.getPreferredSize(rows) : super.preferredSize();
+    }
+}

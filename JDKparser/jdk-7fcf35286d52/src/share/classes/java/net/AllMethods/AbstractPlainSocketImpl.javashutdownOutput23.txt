@@ -1,0 +1,9 @@
+/**
+ * Shutdown write-half of the socket connection;
+ */
+protected void shutdownOutput() throws IOException {
+    if (fd != null) {
+        socketShutdown(SHUT_WR);
+        shut_wr = true;
+    }
+}

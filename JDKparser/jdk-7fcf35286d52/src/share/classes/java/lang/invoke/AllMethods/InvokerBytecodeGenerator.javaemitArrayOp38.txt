@@ -1,0 +1,11 @@
+void emitArrayOp(Name name, int arrayOpcode) {
+    assert arrayOpcode == Opcodes.AALOAD || arrayOpcode == Opcodes.AASTORE;
+    Class<?> elementType = name.function.methodType().parameterType(0).getComponentType();
+    assert elementType != null;
+    emitPushArguments(name);
+    if (elementType.isPrimitive()) {
+        Wrapper w = Wrapper.forPrimitiveType(elementType);
+        arrayOpcode = arrayInsnOpcode(arrayTypeCode(w), arrayOpcode);
+    }
+    mv.visitInsn(arrayOpcode);
+}

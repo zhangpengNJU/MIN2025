@@ -1,0 +1,15 @@
+/**
+ * Change the current ParameterBlock of the operation, allowing
+ * editing of image rendering chains.  The effects of such a
+ * change will be visible when a new rendering is created from
+ * this RenderableImageOp or any dependent RenderableImageOp.
+ *
+ * @param paramBlock the new ParameterBlock.
+ * @return the old ParameterBlock.
+ * @see #getParameterBlock
+ */
+public ParameterBlock setParameterBlock(ParameterBlock paramBlock) {
+    ParameterBlock oldParamBlock = this.paramBlock;
+    this.paramBlock = (ParameterBlock) paramBlock.clone();
+    return oldParamBlock;
+}

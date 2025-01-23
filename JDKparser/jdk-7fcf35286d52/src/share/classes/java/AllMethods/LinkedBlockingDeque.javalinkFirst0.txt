@@ -1,0 +1,19 @@
+// Basic linking and unlinking operations, called only while holding lock
+/**
+ * Links node as first element, or returns false if full.
+ */
+private boolean linkFirst(Node<E> node) {
+    // assert lock.isHeldByCurrentThread();
+    if (count >= capacity)
+        return false;
+    Node<E> f = first;
+    node.next = f;
+    first = node;
+    if (last == null)
+        last = node;
+    else
+        f.prev = node;
+    ++count;
+    notEmpty.signal();
+    return true;
+}

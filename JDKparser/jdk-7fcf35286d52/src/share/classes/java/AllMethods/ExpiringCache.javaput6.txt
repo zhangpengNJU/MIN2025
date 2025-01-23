@@ -1,0 +1,12 @@
+synchronized void put(String key, String val) {
+    if (++queryCount >= queryOverflow) {
+        cleanup();
+    }
+    Entry entry = entryFor(key);
+    if (entry != null) {
+        entry.setTimestamp(System.currentTimeMillis());
+        entry.setVal(val);
+    } else {
+        map.put(key, new Entry(System.currentTimeMillis(), val));
+    }
+}

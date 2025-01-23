@@ -1,0 +1,44 @@
+/**
+ * Expand an affix pattern into an affix string.  All characters in the
+ * pattern are literal unless prefixed by QUOTE.  The following characters
+ * after QUOTE are recognized: PATTERN_PERCENT, PATTERN_PER_MILLE,
+ * PATTERN_MINUS, and CURRENCY_SIGN.  If CURRENCY_SIGN is doubled (QUOTE +
+ * CURRENCY_SIGN + CURRENCY_SIGN), it is interpreted as an ISO 4217
+ * currency code.  Any other character after a QUOTE represents itself.
+ * QUOTE must be followed by another character; QUOTE may not occur by
+ * itself at the end of the pattern.
+ *
+ * @param pattern the non-null, possibly empty pattern
+ * @param buffer a scratch StringBuffer; its contents will be lost
+ * @return the expanded equivalent of pattern
+ */
+private String expandAffix(String pattern, StringBuffer buffer) {
+    buffer.setLength(0);
+    for (int i = 0; i < pattern.length(); ) {
+        char c = pattern.charAt(i++);
+        if (c == QUOTE) {
+            c = pattern.charAt(i++);
+            switch(c) {
+                case CURRENCY_SIGN:
+                    if (i < pattern.length() && pattern.charAt(i) == CURRENCY_SIGN) {
+                        ++i;
+                        buffer.append(symbols.getInternationalCurrencySymbol());
+                    } else {
+                        buffer.append(symbols.getCurrencySymbol());
+                    }
+                    continue;
+                case PATTERN_PERCENT:
+                    c = symbols.getPercent();
+                    break;
+                case PATTERN_PER_MILLE:
+                    c = symbols.getPerMill();
+                    break;
+                case PATTERN_MINUS:
+                    c = symbols.getMinusSign();
+                    break;
+            }
+        }
+        buffer.append(c);
+    }
+    return buffer.toString();
+}

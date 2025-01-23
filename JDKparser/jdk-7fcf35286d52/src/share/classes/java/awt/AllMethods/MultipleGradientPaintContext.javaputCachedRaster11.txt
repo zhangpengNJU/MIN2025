@@ -1,0 +1,24 @@
+/**
+ * Took this cacheRaster code from GradientPaint. It appears to recycle
+ * rasters for use by any other instance, as long as they are sufficiently
+ * large.
+ */
+private static synchronized void putCachedRaster(ColorModel cm, Raster ras) {
+    if (cached != null) {
+        Raster cras = (Raster) cached.get();
+        if (cras != null) {
+            int cw = cras.getWidth();
+            int ch = cras.getHeight();
+            int iw = ras.getWidth();
+            int ih = ras.getHeight();
+            if (cw >= iw && ch >= ih) {
+                return;
+            }
+            if (cw * ch >= iw * ih) {
+                return;
+            }
+        }
+    }
+    cachedModel = cm;
+    cached = new WeakReference<Raster>(ras);
+}

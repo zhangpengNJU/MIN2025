@@ -1,0 +1,14 @@
+@Override
+public void accept(P_OUT u) {
+    try (Stream<? extends R> result = mapper.apply(u)) {
+        if (result != null) {
+            if (!cancellationRequestedCalled) {
+                result.sequential().forEach(downstream);
+            } else {
+                Spliterator<? extends R> s = result.sequential().spliterator();
+                do {
+                } while (!downstream.cancellationRequested() && s.tryAdvance(downstream));
+            }
+        }
+    }
+}

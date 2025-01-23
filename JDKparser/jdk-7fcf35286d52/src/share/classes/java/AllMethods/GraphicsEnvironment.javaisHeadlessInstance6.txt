@@ -1,0 +1,18 @@
+/**
+ * Returns whether or not a display, keyboard, and mouse can be
+ * supported in this graphics environment.  If this returns true,
+ * <code>HeadlessException</code> will be thrown from areas of the
+ * graphics environment that are dependent on a display, keyboard, or
+ * mouse.
+ * @return <code>true</code> if a display, keyboard, and mouse
+ * can be supported in this environment; <code>false</code>
+ * otherwise
+ * @see java.awt.HeadlessException
+ * @see #isHeadless
+ * @since 1.4
+ */
+public boolean isHeadlessInstance() {
+    // By default (local graphics environment), simply check the
+    // headless property.
+    return getHeadlessProperty();
+}

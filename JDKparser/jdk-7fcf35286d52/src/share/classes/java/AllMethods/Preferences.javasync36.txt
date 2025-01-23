@@ -1,0 +1,16 @@
+/**
+ * Ensures that future reads from this preference node and its
+ * descendants reflect any changes that were committed to the persistent
+ * store (from any VM) prior to the <tt>sync</tt> invocation.  As a
+ * side-effect, forces any changes in the contents of this preference node
+ * and its descendants to the persistent store, as if the <tt>flush</tt>
+ * method had been invoked on this node.
+ *
+ * @throws BackingStoreException if this operation cannot be completed
+ *         due to a failure in the backing store, or inability to
+ *         communicate with it.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @see    #flush()
+ */
+public abstract void sync() throws BackingStoreException;

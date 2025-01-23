@@ -1,0 +1,19 @@
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    this.map = new VetoableChangeListenerMap();
+    ObjectInputStream.GetField fields = s.readFields();
+    @SuppressWarnings("unchecked")
+    Hashtable<String, VetoableChangeSupport> children = (Hashtable<String, VetoableChangeSupport>) fields.get("children", null);
+    this.source = fields.get("source", null);
+    fields.get("vetoableChangeSupportSerializedDataVersion", 2);
+    Object listenerOrNull;
+    while (null != (listenerOrNull = s.readObject())) {
+        this.map.add(null, (VetoableChangeListener) listenerOrNull);
+    }
+    if (children != null) {
+        for (Entry<String, VetoableChangeSupport> entry : children.entrySet()) {
+            for (VetoableChangeListener listener : entry.getValue().getVetoableChangeListeners()) {
+                this.map.add(entry.getKey(), listener);
+            }
+        }
+    }
+}

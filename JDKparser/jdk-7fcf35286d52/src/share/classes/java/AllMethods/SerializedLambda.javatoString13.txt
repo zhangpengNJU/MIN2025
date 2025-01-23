@@ -1,0 +1,5 @@
+@Override
+public String toString() {
+    String implKind = MethodHandleInfo.referenceKindToString(implMethodKind);
+    return String.format("SerializedLambda[%s=%s, %s=%s.%s:%s, " + "%s=%s %s.%s:%s, %s=%s, %s=%d]", "capturingClass", capturingClass, "functionalInterfaceMethod", functionalInterfaceClass, functionalInterfaceMethodName, functionalInterfaceMethodSignature, "implementation", implKind, implClass, implMethodName, implMethodSignature, "instantiatedMethodType", instantiatedMethodType, "numCaptured", capturedArgs.length);
+}

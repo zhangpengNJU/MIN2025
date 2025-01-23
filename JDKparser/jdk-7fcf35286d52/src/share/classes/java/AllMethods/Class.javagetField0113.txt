@@ -1,0 +1,32 @@
+private Field getField0(String name) throws NoSuchFieldException {
+    // Note: the intent is that the search algorithm this routine
+    // uses be equivalent to the ordering imposed by
+    // privateGetPublicFields(). It fetches only the declared
+    // public fields for each class, however, to reduce the number
+    // of Field objects which have to be created for the common
+    // case where the field being requested is declared in the
+    // class which is being queried.
+    Field res;
+    // Search declared public fields
+    if ((res = searchFields(privateGetDeclaredFields(true), name)) != null) {
+        return res;
+    }
+    // Direct superinterfaces, recursively
+    Class<?>[] interfaces = getInterfaces();
+    for (int i = 0; i < interfaces.length; i++) {
+        Class<?> c = interfaces[i];
+        if ((res = c.getField0(name)) != null) {
+            return res;
+        }
+    }
+    // Direct superclass, recursively
+    if (!isInterface()) {
+        Class<?> c = getSuperclass();
+        if (c != null) {
+            if ((res = c.getField0(name)) != null) {
+                return res;
+            }
+        }
+    }
+    return null;
+}

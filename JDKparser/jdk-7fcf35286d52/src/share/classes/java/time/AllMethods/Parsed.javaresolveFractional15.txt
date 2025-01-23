@@ -1,0 +1,15 @@
+private void resolveFractional() {
+    // ensure fractional seconds available as ChronoField requires
+    // resolveTimeLenient() will have merged MICRO_OF_SECOND/MILLI_OF_SECOND to NANO_OF_SECOND
+    if (time == null && (fieldValues.containsKey(INSTANT_SECONDS) || fieldValues.containsKey(SECOND_OF_DAY) || fieldValues.containsKey(SECOND_OF_MINUTE))) {
+        if (fieldValues.containsKey(NANO_OF_SECOND)) {
+            long nos = fieldValues.get(NANO_OF_SECOND);
+            fieldValues.put(MICRO_OF_SECOND, nos / 1000);
+            fieldValues.put(MILLI_OF_SECOND, nos / 1000000);
+        } else {
+            fieldValues.put(NANO_OF_SECOND, 0L);
+            fieldValues.put(MICRO_OF_SECOND, 0L);
+            fieldValues.put(MILLI_OF_SECOND, 0L);
+        }
+    }
+}

@@ -1,0 +1,50 @@
+/**
+ * Finishes the process of connecting a socket channel.
+ *
+ * <p> A non-blocking connection operation is initiated by placing a socket
+ * channel in non-blocking mode and then invoking its {@link #connect
+ * connect} method.  Once the connection is established, or the attempt has
+ * failed, the socket channel will become connectable and this method may
+ * be invoked to complete the connection sequence.  If the connection
+ * operation failed then invoking this method will cause an appropriate
+ * {@link java.io.IOException} to be thrown.
+ *
+ * <p> If this channel is already connected then this method will not block
+ * and will immediately return <tt>true</tt>.  If this channel is in
+ * non-blocking mode then this method will return <tt>false</tt> if the
+ * connection process is not yet complete.  If this channel is in blocking
+ * mode then this method will block until the connection either completes
+ * or fails, and will always either return <tt>true</tt> or throw a checked
+ * exception describing the failure.
+ *
+ * <p> This method may be invoked at any time.  If a read or write
+ * operation upon this channel is invoked while an invocation of this
+ * method is in progress then that operation will first block until this
+ * invocation is complete.  If a connection attempt fails, that is, if an
+ * invocation of this method throws a checked exception, then the channel
+ * will be closed.  </p>
+ *
+ * @return  <tt>true</tt> if, and only if, this channel's socket is now
+ *          connected
+ *
+ * @throws  NoConnectionPendingException
+ *          If this channel is not connected and a connection operation
+ *          has not been initiated
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the connect operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the connect operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract boolean finishConnect() throws IOException;

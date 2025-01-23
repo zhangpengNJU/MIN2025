@@ -1,0 +1,6 @@
+static ZonedDateTime readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    LocalDateTime dateTime = LocalDateTime.readExternal(in);
+    ZoneOffset offset = ZoneOffset.readExternal(in);
+    ZoneId zone = (ZoneId) Ser.read(in);
+    return ZonedDateTime.ofLenient(dateTime, offset, zone);
+}

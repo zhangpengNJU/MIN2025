@@ -1,0 +1,24 @@
+/**
+ * Translates a {@code double} into a {@code BigDecimal}, using
+ * the {@code double}'s canonical string representation provided
+ * by the {@link Double#toString(double)} method.
+ *
+ * <p><b>Note:</b> This is generally the preferred way to convert
+ * a {@code double} (or {@code float}) into a
+ * {@code BigDecimal}, as the value returned is equal to that
+ * resulting from constructing a {@code BigDecimal} from the
+ * result of using {@link Double#toString(double)}.
+ *
+ * @param  val {@code double} to convert to a {@code BigDecimal}.
+ * @return a {@code BigDecimal} whose value is equal to or approximately
+ *         equal to the value of {@code val}.
+ * @throws NumberFormatException if {@code val} is infinite or NaN.
+ * @since  1.5
+ */
+public static BigDecimal valueOf(double val) {
+    // Reminder: a zero double returns '0.0', so we cannot fastpath
+    // to use the constant ZERO.  This might be important enough to
+    // justify a factory approach, a cache, or a few private
+    // constants, later.
+    return new BigDecimal(Double.toString(val));
+}

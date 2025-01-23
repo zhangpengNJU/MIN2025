@@ -1,0 +1,55 @@
+/**
+ * Combines stream or operation flags with previously combined stream and
+ * operation flags to produce updated combined stream and operation flags.
+ * <p>
+ * A flag set on stream flags or injected on operation flags,
+ * and injected combined stream and operation flags,
+ * will be injected on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag set on stream flags or injected on operation flags,
+ * and cleared on the combined stream and operation flags,
+ * will be cleared on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag set on the stream flags or injected on operation flags,
+ * and preserved on the combined stream and operation flags,
+ * will be injected on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag not set on the stream flags or cleared/preserved on operation
+ * flags, and injected on the combined stream and operation flags,
+ * will be injected on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag not set on the stream flags or cleared/preserved on operation
+ * flags, and cleared on the combined stream and operation flags,
+ * will be cleared on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag not set on the stream flags,
+ * and preserved on the combined stream and operation flags
+ * will be preserved on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag cleared on operation flags,
+ * and preserved on the combined stream and operation flags
+ * will be cleared on the updated combined stream and operation flags.
+ *
+ * <p>
+ * A flag preserved on operation flags,
+ * and preserved on the combined stream and operation flags
+ * will be preserved on the updated combined stream and operation flags.
+ *
+ * @param newStreamOrOpFlags the stream or operation flags.
+ * @param prevCombOpFlags previously combined stream and operation flags.
+ *        The value {#link INITIAL_OPS_VALUE} must be used as the seed value.
+ * @return the updated combined stream and operation flags.
+ */
+static int combineOpFlags(int newStreamOrOpFlags, int prevCombOpFlags) {
+    // 0x01 or 0x10 nibbles are transformed to 0x11
+    // 0x00 nibbles remain unchanged
+    // Then all the bits are flipped
+    // Then the result is logically or'ed with the operation flags.
+    return (prevCombOpFlags & StreamOpFlag.getMask(newStreamOrOpFlags)) | newStreamOrOpFlags;
+}

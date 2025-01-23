@@ -1,0 +1,16 @@
+/**
+ * Sets the transform of the specified glyph within this
+ * <code>GlyphVector</code>.  The transform is relative to the glyph
+ * position.  A <code>null</code> argument for <code>newTX</code>
+ * indicates that no special transform is applied for the specified
+ * glyph.
+ * This method can be used to rotate, mirror, translate and scale the
+ * glyph.  Adding a transform can result in significant performance changes.
+ * @param glyphIndex the index into this <code>GlyphVector</code>
+ * @param newTX the new transform of the glyph at <code>glyphIndex</code>
+ * @throws IndexOutOfBoundsException if <code>glyphIndex</code>
+ *   is less than 0 or greater than or equal to the number
+ *   of glyphs in this <code>GlyphVector</code>
+ * @see #getGlyphTransform
+ */
+public abstract void setGlyphTransform(int glyphIndex, AffineTransform newTX);

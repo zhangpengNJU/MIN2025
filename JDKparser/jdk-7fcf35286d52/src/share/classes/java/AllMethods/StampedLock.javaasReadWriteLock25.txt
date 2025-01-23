@@ -1,0 +1,12 @@
+/**
+ * Returns a {@link ReadWriteLock} view of this StampedLock in
+ * which the {@link ReadWriteLock#readLock()} method is mapped to
+ * {@link #asReadLock()}, and {@link ReadWriteLock#writeLock()} to
+ * {@link #asWriteLock()}.
+ *
+ * @return the lock
+ */
+public ReadWriteLock asReadWriteLock() {
+    ReadWriteLockView v;
+    return ((v = readWriteLockView) != null ? v : (readWriteLockView = new ReadWriteLockView()));
+}

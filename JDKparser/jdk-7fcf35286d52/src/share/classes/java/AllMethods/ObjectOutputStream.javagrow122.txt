@@ -1,0 +1,8 @@
+/**
+ * Increases table capacity.
+ */
+private void grow() {
+    Object[] newReps = new Object[(reps.length << 1) + 1];
+    System.arraycopy(reps, 0, newReps, 0, reps.length);
+    reps = newReps;
+}

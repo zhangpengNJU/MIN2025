@@ -1,0 +1,14 @@
+/**
+ * Returns the data array for all banks.
+ * <p>
+ * Note that calling this method may cause this {@code DataBuffer}
+ * object to be incompatible with <a href="#optimizations">performance
+ * optimizations</a> used by some implementations (such as caching
+ * an associated image in video memory).
+ *
+ * @return all data arrays for this data buffer.
+ */
+public float[][] getBankData() {
+    theTrackable.setUntrackable();
+    return (float[][]) bankdata.clone();
+}

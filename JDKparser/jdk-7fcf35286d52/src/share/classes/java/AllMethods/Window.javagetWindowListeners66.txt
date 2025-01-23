@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the window listeners
+ * registered on this window.
+ *
+ * @return all of this window's {@code WindowListener}s
+ *         or an empty array if no window
+ *         listeners are currently registered
+ *
+ * @see #addWindowListener
+ * @see #removeWindowListener
+ * @since 1.4
+ */
+public synchronized WindowListener[] getWindowListeners() {
+    return getListeners(WindowListener.class);
+}

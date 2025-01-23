@@ -1,0 +1,21 @@
+/**
+ * Returns the fixed date of the first date of the month (usually
+ * the 1st of the month) before the specified date.
+ *
+ * @param date the date for which the first day of the month is
+ * calculated. The date must be in the era transition year.
+ * @param fixedDate the fixed date representation of the date
+ */
+private long getFixedDateMonth1(LocalGregorianCalendar.Date date, long fixedDate) {
+    int eraIndex = getTransitionEraIndex(date);
+    if (eraIndex != -1) {
+        long transition = sinceFixedDates[eraIndex];
+        // If the given date is on or after the transition date, then
+        // return the transition date.
+        if (transition <= fixedDate) {
+            return transition;
+        }
+    }
+    // Otherwise, we can use the 1st day of the month.
+    return fixedDate - date.getDayOfMonth() + 1;
+}

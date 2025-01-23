@@ -1,0 +1,20 @@
+@Override
+public boolean tryAdvance(T_CONS consumer) {
+    if (!initTryAdvance())
+        return false;
+    boolean hasNext = tryAdvanceSpliterator.tryAdvance(consumer);
+    if (!hasNext) {
+        if (lastNodeSpliterator == null) {
+            // Advance to the spliterator of the next non-empty leaf node
+            N leaf = findNextLeafNode(tryAdvanceStack);
+            if (leaf != null) {
+                tryAdvanceSpliterator = leaf.spliterator();
+                // Since the node is not-empty the spliterator can be advanced
+                return tryAdvanceSpliterator.tryAdvance(consumer);
+            }
+        }
+        // No more elements to traverse
+        curNode = null;
+    }
+    return hasNext;
+}

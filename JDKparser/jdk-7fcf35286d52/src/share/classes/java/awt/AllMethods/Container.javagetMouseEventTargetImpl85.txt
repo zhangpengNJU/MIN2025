@@ -1,0 +1,57 @@
+/**
+ * A private version of getMouseEventTarget which has three additional
+ * controllable behaviors. This method searches for the top-most
+ * descendant of this container that contains the given coordinates
+ * and is accepted by the given filter. The search will be constrained to
+ * descendants of only lightweight children or only heavyweight children
+ * of this container depending on searchHeavyweightChildren. The search will
+ * be constrained to only lightweight descendants of the searched children
+ * of this container if searchHeavyweightDescendants is <code>false</code>.
+ *
+ * @param filter EventTargetFilter instance to determine whether the
+ *        selected component is a valid target for this event.
+ * @param searchHeavyweightChildren if <code>true</code>, the method
+ *        will bypass immediate lightweight children during the search.
+ *        If <code>false</code>, the methods will bypass immediate
+ *        heavyweight children during the search.
+ * @param searchHeavyweightDescendants if <code>false</code>, the method
+ *        will bypass heavyweight descendants which are not immediate
+ *        children during the search. If <code>true</code>, the method
+ *        will traverse both lightweight and heavyweight descendants during
+ *        the search.
+ */
+private Component getMouseEventTargetImpl(int x, int y, boolean includeSelf, EventTargetFilter filter, boolean searchHeavyweightChildren, boolean searchHeavyweightDescendants) {
+    synchronized (getTreeLock()) {
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            if (comp != null && comp.visible && ((!searchHeavyweightChildren && comp.peer instanceof LightweightPeer) || (searchHeavyweightChildren && !(comp.peer instanceof LightweightPeer))) && comp.contains(x - comp.x, y - comp.y)) {
+                // found a component that intersects the point, see if there
+                // is a deeper possibility.
+                if (comp instanceof Container) {
+                    Container child = (Container) comp;
+                    Component deeper = child.getMouseEventTarget(x - child.x, y - child.y, includeSelf, filter, searchHeavyweightDescendants);
+                    if (deeper != null) {
+                        return deeper;
+                    }
+                } else {
+                    if (filter.accept(comp)) {
+                        // there isn't a deeper target, but this component
+                        // is a target
+                        return comp;
+                    }
+                }
+            }
+        }
+        boolean isPeerOK;
+        boolean isMouseOverMe;
+        isPeerOK = (peer instanceof LightweightPeer) || includeSelf;
+        isMouseOverMe = contains(x, y);
+        // didn't find a child target, return this component if it's
+        // a possible target
+        if (isMouseOverMe && isPeerOK && filter.accept(this)) {
+            return this;
+        }
+        // no possible target
+        return null;
+    }
+}

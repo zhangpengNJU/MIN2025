@@ -1,0 +1,8 @@
+private static SpeciesData checkCache(int size, String types) {
+    int idx = size - 1;
+    SpeciesData data = SPECIES_DATA_CACHE[idx];
+    if (data != null)
+        return data;
+    SPECIES_DATA_CACHE[idx] = data = getSpeciesData(types);
+    return data;
+}

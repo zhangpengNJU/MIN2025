@@ -1,0 +1,12 @@
+/**
+ * Adds the low {@code n} ints of {@code addend}.
+ */
+void addLower(MutableBigInteger addend, int n) {
+    MutableBigInteger a = new MutableBigInteger(addend);
+    if (a.offset + a.intLen >= n) {
+        a.offset = a.offset + a.intLen - n;
+        a.intLen = n;
+    }
+    a.normalize();
+    add(a);
+}

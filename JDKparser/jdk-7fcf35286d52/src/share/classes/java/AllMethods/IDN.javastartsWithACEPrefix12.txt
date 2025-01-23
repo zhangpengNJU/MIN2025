@@ -1,0 +1,15 @@
+// 
+// to check if a string starts with ACE-prefix
+// 
+private static boolean startsWithACEPrefix(StringBuffer input) {
+    boolean startsWithPrefix = true;
+    if (input.length() < ACE_PREFIX_LENGTH) {
+        return false;
+    }
+    for (int i = 0; i < ACE_PREFIX_LENGTH; i++) {
+        if (toASCIILower(input.charAt(i)) != ACE_PREFIX.charAt(i)) {
+            startsWithPrefix = false;
+        }
+    }
+    return startsWithPrefix;
+}

@@ -1,0 +1,18 @@
+// Should only be called while holding tree lock
+void adjustListeningChildren(long mask, int num) {
+    if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+        boolean toAssert = (mask == AWTEvent.HIERARCHY_EVENT_MASK || mask == AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK || mask == (AWTEvent.HIERARCHY_EVENT_MASK | AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK));
+        if (!toAssert) {
+            eventLog.fine("Assertion failed");
+        }
+    }
+    if (num == 0)
+        return;
+    if ((mask & AWTEvent.HIERARCHY_EVENT_MASK) != 0) {
+        listeningChildren += num;
+    }
+    if ((mask & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) != 0) {
+        listeningBoundsChildren += num;
+    }
+    adjustListeningChildrenOnParent(mask, num);
+}

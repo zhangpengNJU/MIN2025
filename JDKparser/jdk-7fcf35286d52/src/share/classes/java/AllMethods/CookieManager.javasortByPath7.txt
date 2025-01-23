@@ -1,0 +1,19 @@
+/*
+     * sort cookies with respect to their path: those with more specific Path attributes
+     * precede those with less specific, as defined in RFC 2965 sec. 3.3.4
+     */
+private List<String> sortByPath(List<HttpCookie> cookies) {
+    Collections.sort(cookies, new CookiePathComparator());
+    List<String> cookieHeader = new java.util.ArrayList<String>();
+    for (HttpCookie cookie : cookies) {
+        // Netscape cookie spec and RFC 2965 have different format of Cookie
+        // header; RFC 2965 requires a leading $Version="1" string while Netscape
+        // does not.
+        // The workaround here is to add a $Version="1" string in advance
+        if (cookies.indexOf(cookie) == 0 && cookie.getVersion() > 0) {
+            cookieHeader.add("$Version=\"1\"");
+        }
+        cookieHeader.add(cookie.toString());
+    }
+    return cookieHeader;
+}

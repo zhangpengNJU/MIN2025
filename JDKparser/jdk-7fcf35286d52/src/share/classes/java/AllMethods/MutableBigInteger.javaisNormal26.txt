@@ -1,0 +1,12 @@
+/**
+ * Returns true iff this MutableBigInteger is in normal form. A
+ * MutableBigInteger is in normal form if it has no leading zeros
+ * after the offset, and intLen + offset <= value.length.
+ */
+boolean isNormal() {
+    if (intLen + offset > value.length)
+        return false;
+    if (intLen == 0)
+        return true;
+    return (value[offset] != 0);
+}

@@ -1,0 +1,36 @@
+// @param cookies           [OUT] contains the found cookies
+// @param cookieIndex       the index
+// @param comparator        the prediction to decide whether or not
+// a cookie in index should be returned
+private <T> void getInternal2(List<HttpCookie> cookies, Map<T, List<HttpCookie>> cookieIndex, Comparable<T> comparator, boolean secureLink) {
+    for (T index : cookieIndex.keySet()) {
+        if (comparator.compareTo(index) == 0) {
+            List<HttpCookie> indexedCookies = cookieIndex.get(index);
+            // check the list of cookies associated with this domain
+            if (indexedCookies != null) {
+                Iterator<HttpCookie> it = indexedCookies.iterator();
+                while (it.hasNext()) {
+                    HttpCookie ck = it.next();
+                    if (cookieJar.indexOf(ck) != -1) {
+                        // the cookie still in main cookie store
+                        if (!ck.hasExpired()) {
+                            // don't add twice
+                            if ((secureLink || !ck.getSecure()) && !cookies.contains(ck))
+                                cookies.add(ck);
+                        } else {
+                            it.remove();
+                            cookieJar.remove(ck);
+                        }
+                    } else {
+                        // the cookie has beed removed from main store,
+                        // so also remove it from domain indexed store
+                        it.remove();
+                    }
+                }
+            }
+        // end of indexedCookies != null
+        }
+    // end of comparator.compareTo(index) == 0
+    }
+// end of cookieIndex iteration
+}

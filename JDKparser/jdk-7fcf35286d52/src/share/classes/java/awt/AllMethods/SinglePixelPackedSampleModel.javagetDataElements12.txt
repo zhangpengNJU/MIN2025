@@ -1,0 +1,76 @@
+/**
+ * Returns data for a single pixel in a primitive array of type
+ * TransferType.  For a SinglePixelPackedSampleModel, the array will
+ * have one element, and the type will be the same as the storage
+ * data type.  Generally, obj
+ * should be passed in as null, so that the Object will be created
+ * automatically and will be of the right primitive data type.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * DataBuffer <code>db1</code>, whose storage layout is described by
+ * SinglePixelPackedSampleModel <code>sppsm1</code>, to
+ * DataBuffer <code>db2</code>, whose storage layout is described by
+ * SinglePixelPackedSampleModel <code>sppsm2</code>.
+ * The transfer will generally be more efficient than using
+ * getPixel/setPixel.
+ * <pre>
+ *       SinglePixelPackedSampleModel sppsm1, sppsm2;
+ *       DataBufferInt db1, db2;
+ *       sppsm2.setDataElements(x, y, sppsm1.getDataElements(x, y, null,
+ *                              db1), db2);
+ * </pre>
+ * Using getDataElements/setDataElements to transfer between two
+ * DataBuffer/SampleModel pairs is legitimate if the SampleModels have
+ * the same number of bands, corresponding bands have the same number of
+ * bits per sample, and the TransferTypes are the same.
+ * <p>
+ * If obj is non-null, it should be a primitive array of type TransferType.
+ * Otherwise, a ClassCastException is thrown.  An
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds, or if obj is non-null and is not large enough to hold
+ * the pixel data.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param obj       If non-null, a primitive array in which to return
+ *                  the pixel data.
+ * @param data      The DataBuffer containing the image data.
+ * @return the data for the specified pixel.
+ * @see #setDataElements(int, int, Object, DataBuffer)
+ */
+public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+    // Bounds check for 'b' will be performed automatically
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int type = getTransferType();
+    switch(type) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata;
+            if (obj == null)
+                bdata = new byte[1];
+            else
+                bdata = (byte[]) obj;
+            bdata[0] = (byte) data.getElem(y * scanlineStride + x);
+            obj = (Object) bdata;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] sdata;
+            if (obj == null)
+                sdata = new short[1];
+            else
+                sdata = (short[]) obj;
+            sdata[0] = (short) data.getElem(y * scanlineStride + x);
+            obj = (Object) sdata;
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata;
+            if (obj == null)
+                idata = new int[1];
+            else
+                idata = (int[]) obj;
+            idata[0] = data.getElem(y * scanlineStride + x);
+            obj = (Object) idata;
+            break;
+    }
+    return obj;
+}

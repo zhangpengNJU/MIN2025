@@ -1,0 +1,17 @@
+private static MethodHandle computeInvoker(MethodTypeForm typeForm) {
+    // normalize to basic type
+    typeForm = typeForm.basicType().form();
+    MethodHandle mh = typeForm.cachedMethodHandle(MethodTypeForm.MH_NF_INV);
+    if (mh != null)
+        return mh;
+    // this could take a while
+    MemberName invoker = InvokerBytecodeGenerator.generateNamedFunctionInvoker(typeForm);
+    mh = DirectMethodHandle.make(invoker);
+    MethodHandle mh2 = typeForm.cachedMethodHandle(MethodTypeForm.MH_NF_INV);
+    // benign race
+    if (mh2 != null)
+        return mh2;
+    if (!mh.type().equals(INVOKER_METHOD_TYPE))
+        throw newInternalError(mh.debugString());
+    return typeForm.setCachedMethodHandle(MethodTypeForm.MH_NF_INV, mh);
+}

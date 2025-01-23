@@ -1,0 +1,12 @@
+private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
+    stream.defaultReadObject();
+    if (reason == null) {
+        reason = BasicReason.UNSPECIFIED;
+    }
+    if (certPath == null && index != -1) {
+        throw new InvalidObjectException("certpath is null and index != -1");
+    }
+    if (index < -1 || (certPath != null && index >= certPath.getCertificates().size())) {
+        throw new InvalidObjectException("index out of range");
+    }
+}

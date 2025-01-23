@@ -1,0 +1,21 @@
+/**
+ * Create a compatible WritableRaster with location (minX, minY)
+ * and size (width, height) specified by rect, a
+ * new SampleModel, and a new initialized DataBuffer.
+ * @param rect a <code>Rectangle</code> that specifies the size and
+ *        location of the <code>WritableRaster</code>
+ * @return a compatible <code>WritableRaster</code> with the specified
+ *         size and location and a new sample model and data buffer.
+ * @throws RasterFormatException if <code>rect</code> has width
+ *         or height less than or equal to zero, or computing either
+ *         <code>rect.x + rect.width</code> or
+ *         <code>rect.y + rect.height</code> results in integer
+ *         overflow
+ * @throws NullPointerException if <code>rect</code> is null
+ */
+public WritableRaster createCompatibleWritableRaster(Rectangle rect) {
+    if (rect == null) {
+        throw new NullPointerException("Rect cannot be null");
+    }
+    return createCompatibleWritableRaster(rect.x, rect.y, rect.width, rect.height);
+}

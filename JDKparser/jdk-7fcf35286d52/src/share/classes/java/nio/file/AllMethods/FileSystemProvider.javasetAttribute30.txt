@@ -1,0 +1,33 @@
+/**
+ * Sets the value of a file attribute. This method works in exactly the
+ * manner specified by the {@link Files#setAttribute} method.
+ *
+ * @param   path
+ *          the path to the file
+ * @param   attribute
+ *          the attribute to set
+ * @param   value
+ *          the attribute value
+ * @param   options
+ *          options indicating how symbolic links are handled
+ *
+ * @throws  UnsupportedOperationException
+ *          if the attribute view is not available
+ * @throws  IllegalArgumentException
+ *          if the attribute name is not specified, or is not recognized, or
+ *          the attribute value is of the correct type but has an
+ *          inappropriate value
+ * @throws  ClassCastException
+ *          If the attribute value is not of the expected type or is a
+ *          collection containing elements that are not of the expected
+ *          type
+ * @throws  IOException
+ *          If an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, its {@link SecurityManager#checkWrite(String) checkWrite}
+ *          method denies write access to the file. If this method is invoked
+ *          to set security sensitive attributes then the security manager
+ *          may be invoked to check for additional permissions.
+ */
+public abstract void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws IOException;

@@ -1,0 +1,14 @@
+/*
+     * A utility to return the path bounding the area to the right (bottom) of
+     * the layout.
+     */
+private GeneralPath rightShape(Rectangle2D bounds) {
+    double[] path1;
+    if (isVerticalLine) {
+        path1 = new double[] { bounds.getX(), bounds.getY() + bounds.getHeight(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight() };
+    } else {
+        path1 = new double[] { bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), bounds.getX() + bounds.getWidth(), bounds.getY() };
+    }
+    double[] path0 = getCaretPath(characterCount, bounds, true);
+    return boundingShape(path0, path1);
+}

@@ -1,0 +1,22 @@
+void clearMostRecentFocusOwnerOnHide() {
+    boolean reset = false;
+    Window window = null;
+    synchronized (getTreeLock()) {
+        window = getContainingWindow();
+        if (window != null) {
+            Component comp = KeyboardFocusManager.getMostRecentFocusOwner(window);
+            reset = ((comp == this) || isParentOf(comp));
+            // This synchronized should always be the second in a pair
+            // (tree lock, KeyboardFocusManager.class)
+            synchronized (KeyboardFocusManager.class) {
+                Component storedComp = window.getTemporaryLostComponent();
+                if (isParentOf(storedComp) || storedComp == this) {
+                    window.setTemporaryLostComponent(null);
+                }
+            }
+        }
+    }
+    if (reset) {
+        KeyboardFocusManager.setMostRecentFocusOwner(window, null);
+    }
+}

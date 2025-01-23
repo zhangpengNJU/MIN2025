@@ -1,0 +1,56 @@
+/**
+ * Returns a pixel value represented as an <code>int</code> in this
+ * <code>ColorModel</code>, given an array of normalized color/alpha
+ * components.  This method will throw an
+ * <code>IllegalArgumentException</code> if pixel values for this
+ * <code>ColorModel</code> are not conveniently representable as a
+ * single <code>int</code>.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if  the
+ * <code>normComponents</code> array is not large enough to hold all the
+ * color and alpha components (starting at <code>normOffset</code>).
+ * @param normComponents an array of normalized color and alpha
+ * components
+ * @param normOffset the index into <code>normComponents</code> at which to
+ * begin retrieving the color and alpha components
+ * @return an <code>int</code> pixel value in this
+ * <code>ColorModel</code> corresponding to the specified components.
+ * @throws IllegalArgumentException if
+ *  pixel values for this <code>ColorModel</code> are not
+ *  conveniently representable as a single <code>int</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *  the <code>normComponents</code> array is not large enough to
+ *  hold all of the color and alpha components starting at
+ *  <code>normOffset</code>
+ * @since 1.4
+ */
+public int getDataElement(float[] normComponents, int normOffset) {
+    if (numComponents > 1) {
+        throw new IllegalArgumentException("More than one component per pixel");
+    }
+    if (signed) {
+        throw new IllegalArgumentException("Component value is signed");
+    }
+    if (needScaleInit) {
+        initScale();
+    }
+    Object pixel = getDataElements(normComponents, normOffset, null);
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            {
+                byte[] bpixel = (byte[]) pixel;
+                return bpixel[0] & 0xff;
+            }
+        case DataBuffer.TYPE_USHORT:
+            {
+                short[] uspixel = (short[]) pixel;
+                return uspixel[0] & 0xffff;
+            }
+        case DataBuffer.TYPE_INT:
+            {
+                int[] ipixel = (int[]) pixel;
+                return ipixel[0];
+            }
+        default:
+            throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+    }
+}

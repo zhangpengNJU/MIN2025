@@ -1,0 +1,11 @@
+@Override
+Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
+    return new Sink.ChainedReference<P_OUT, P_OUT>(sink) {
+
+        @Override
+        public void accept(P_OUT u) {
+            action.accept(u);
+            downstream.accept(u);
+        }
+    };
+}

@@ -1,0 +1,12 @@
+public void add(E e) {
+    checkForComodification();
+    try {
+        int i = cursor;
+        AbstractList.this.add(i, e);
+        lastRet = -1;
+        cursor = i + 1;
+        expectedModCount = modCount;
+    } catch (IndexOutOfBoundsException ex) {
+        throw new ConcurrentModificationException();
+    }
+}

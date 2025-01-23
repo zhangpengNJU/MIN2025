@@ -1,0 +1,28 @@
+/**
+ * {@inheritDoc}
+ *
+ * <p>This implementation gets an iterator over the specified collection
+ * and iterates over it, inserting the elements obtained from the
+ * iterator into this list at the appropriate position, one at a time,
+ * using {@code add(int, E)}.
+ * Many implementations will override this method for efficiency.
+ *
+ * <p>Note that this implementation throws an
+ * {@code UnsupportedOperationException} unless
+ * {@link #add(int, Object) add(int, E)} is overridden.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ * @throws IndexOutOfBoundsException     {@inheritDoc}
+ */
+public boolean addAll(int index, Collection<? extends E> c) {
+    rangeCheckForAdd(index);
+    boolean modified = false;
+    for (E e : c) {
+        add(index++, e);
+        modified = true;
+    }
+    return modified;
+}

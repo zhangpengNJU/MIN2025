@@ -1,0 +1,6 @@
+@SuppressWarnings("unchecked")
+public final V getAndSet(T obj, V newValue) {
+    accessCheck(obj);
+    valueCheck(newValue);
+    return (V) U.getAndSetObject(obj, offset, newValue);
+}

@@ -1,0 +1,17 @@
+/**
+ * Writes any remaining uncompressed data to the output stream and closes
+ * the underlying output stream.
+ *
+ * @throws IOException if an I/O error occurs
+ */
+public void close() throws IOException {
+    if (!closed) {
+        // Complete the uncompressed output
+        try {
+            finish();
+        } finally {
+            out.close();
+            closed = true;
+        }
+    }
+}

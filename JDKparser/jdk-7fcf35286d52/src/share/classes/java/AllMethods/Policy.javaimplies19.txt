@@ -1,0 +1,35 @@
+/**
+ * Evaluates the global policy for the permissions granted to
+ * the ProtectionDomain and tests whether the permission is
+ * granted.
+ *
+ * @param domain the ProtectionDomain to test
+ * @param permission the Permission object to be tested for implication.
+ *
+ * @return true if "permission" is a proper subset of a permission
+ * granted to this ProtectionDomain.
+ *
+ * @see java.security.ProtectionDomain
+ * @since 1.4
+ */
+public boolean implies(ProtectionDomain domain, Permission permission) {
+    PermissionCollection pc;
+    if (pdMapping == null) {
+        initPolicy(this);
+    }
+    synchronized (pdMapping) {
+        pc = pdMapping.get(domain.key);
+    }
+    if (pc != null) {
+        return pc.implies(permission);
+    }
+    pc = getPermissions(domain);
+    if (pc == null) {
+        return false;
+    }
+    synchronized (pdMapping) {
+        // cache it
+        pdMapping.put(domain.key, pc);
+    }
+    return pc.implies(permission);
+}

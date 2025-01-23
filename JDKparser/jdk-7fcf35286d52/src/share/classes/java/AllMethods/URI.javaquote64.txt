@@ -1,0 +1,33 @@
+// Quote any characters in s that are not permitted
+// by the given mask pair
+// 
+private static String quote(String s, long lowMask, long highMask) {
+    int n = s.length();
+    StringBuffer sb = null;
+    boolean allowNonASCII = ((lowMask & L_ESCAPED) != 0);
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (c < '\u0080') {
+            if (!match(c, lowMask, highMask)) {
+                if (sb == null) {
+                    sb = new StringBuffer();
+                    sb.append(s.substring(0, i));
+                }
+                appendEscape(sb, (byte) c);
+            } else {
+                if (sb != null)
+                    sb.append(c);
+            }
+        } else if (allowNonASCII && (Character.isSpaceChar(c) || Character.isISOControl(c))) {
+            if (sb == null) {
+                sb = new StringBuffer();
+                sb.append(s.substring(0, i));
+            }
+            appendEncoded(sb, c);
+        } else {
+            if (sb != null)
+                sb.append(c);
+        }
+    }
+    return (sb == null) ? s : sb.toString();
+}

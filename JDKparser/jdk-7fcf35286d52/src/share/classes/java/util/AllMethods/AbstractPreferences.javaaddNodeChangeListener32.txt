@@ -1,0 +1,19 @@
+public void addNodeChangeListener(NodeChangeListener ncl) {
+    if (ncl == null)
+        throw new NullPointerException("Change listener is null.");
+    synchronized (lock) {
+        if (removed)
+            throw new IllegalStateException("Node has been removed.");
+        // Copy-on-write
+        if (nodeListeners == null) {
+            nodeListeners = new NodeChangeListener[1];
+            nodeListeners[0] = ncl;
+        } else {
+            NodeChangeListener[] old = nodeListeners;
+            nodeListeners = new NodeChangeListener[old.length + 1];
+            System.arraycopy(old, 0, nodeListeners, 0, old.length);
+            nodeListeners[old.length] = ncl;
+        }
+    }
+    startEventDispatchThreadIfNecessary();
+}

@@ -1,0 +1,16 @@
+@Override
+default Node.OfInt truncate(long from, long to, IntFunction<Integer[]> generator) {
+    if (from == 0 && to == count())
+        return this;
+    long size = to - from;
+    Spliterator.OfInt spliterator = spliterator();
+    Node.Builder.OfInt nodeBuilder = Nodes.intBuilder(size);
+    nodeBuilder.begin(size);
+    for (int i = 0; i < from && spliterator.tryAdvance((IntConsumer) e -> {
+    }); i++) {
+    }
+    for (int i = 0; (i < size) && spliterator.tryAdvance((IntConsumer) nodeBuilder); i++) {
+    }
+    nodeBuilder.end();
+    return nodeBuilder.build();
+}

@@ -1,0 +1,23 @@
+/**
+ * Returns the bounds of this <code>TextLayout</code>.
+ * The bounds are in standard coordinates.
+ * <p>Due to rasterization effects, this bounds might not enclose all of the
+ * pixels rendered by the TextLayout.</p>
+ * It might not coincide exactly with the ascent, descent,
+ * origin or advance of the <code>TextLayout</code>.
+ * @return a {@link Rectangle2D} that is the bounds of this
+ *        <code>TextLayout</code>.
+ */
+public Rectangle2D getBounds() {
+    ensureCache();
+    if (boundsRect == null) {
+        Rectangle2D vb = textLine.getVisualBounds();
+        if (dx != 0 || dy != 0) {
+            vb.setRect(vb.getX() - dx, vb.getY() - dy, vb.getWidth(), vb.getHeight());
+        }
+        boundsRect = vb;
+    }
+    Rectangle2D bounds = new Rectangle2D.Float();
+    bounds.setRect(boundsRect);
+    return bounds;
+}

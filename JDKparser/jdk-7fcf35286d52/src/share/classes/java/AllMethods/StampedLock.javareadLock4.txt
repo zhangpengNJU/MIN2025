@@ -1,0 +1,11 @@
+/**
+ * Non-exclusively acquires the lock, blocking if necessary
+ * until available.
+ *
+ * @return a stamp that can be used to unlock or convert mode
+ */
+public long readLock() {
+    // bypass acquireRead on common uncontended case
+    long s = state, next;
+    return ((whead == wtail && (s & ABITS) < RFULL && U.compareAndSwapLong(this, STATE, s, next = s + RUNIT)) ? next : acquireRead(false, 0L));
+}

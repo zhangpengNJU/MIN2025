@@ -1,0 +1,9 @@
+private static MethodHandle bindCaller(MethodHandle target, Class<?> hostClass) {
+    MethodHandle cbmh = MethodHandleImpl.bindCaller(target, hostClass);
+    if (target.isVarargsCollector()) {
+        MethodType type = cbmh.type();
+        int arity = type.parameterCount();
+        return cbmh.asVarargsCollector(type.parameterType(arity - 1));
+    }
+    return cbmh;
+}

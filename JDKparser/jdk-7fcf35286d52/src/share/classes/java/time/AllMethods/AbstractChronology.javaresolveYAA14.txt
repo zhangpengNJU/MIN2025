@@ -1,0 +1,15 @@
+ChronoLocalDate resolveYAA(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    int y = range(YEAR).checkValidIntValue(fieldValues.remove(YEAR), YEAR);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        long weeks = Math.subtractExact(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), 1);
+        long days = Math.subtractExact(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), 1);
+        return dateYearDay(y, 1).plus(weeks, WEEKS).plus(days, DAYS);
+    }
+    int aw = range(ALIGNED_WEEK_OF_YEAR).checkValidIntValue(fieldValues.remove(ALIGNED_WEEK_OF_YEAR), ALIGNED_WEEK_OF_YEAR);
+    int ad = range(ALIGNED_DAY_OF_WEEK_IN_YEAR).checkValidIntValue(fieldValues.remove(ALIGNED_DAY_OF_WEEK_IN_YEAR), ALIGNED_DAY_OF_WEEK_IN_YEAR);
+    ChronoLocalDate date = dateYearDay(y, 1).plus((aw - 1) * 7 + (ad - 1), DAYS);
+    if (resolverStyle == ResolverStyle.STRICT && date.get(YEAR) != y) {
+        throw new DateTimeException("Strict mode rejected resolved date as it is in a different year");
+    }
+    return date;
+}

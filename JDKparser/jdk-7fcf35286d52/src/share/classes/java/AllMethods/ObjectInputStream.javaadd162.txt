@@ -1,0 +1,8 @@
+public void add(int handle) {
+    if (size >= list.length) {
+        int[] newList = new int[list.length << 1];
+        System.arraycopy(list, 0, newList, 0, list.length);
+        list = newList;
+    }
+    list[size++] = handle;
+}

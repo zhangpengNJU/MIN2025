@@ -1,0 +1,17 @@
+/*
+     * Gets the <code>EventDispatchThread</code> for this
+     * <code>EventQueue</code>.
+     * @return the event dispatch thread associated with this event queue
+     *         or <code>null</code> if this event queue doesn't have a
+     *         working thread associated with it
+     * @see    java.awt.EventQueue#initDispatchThread
+     * @see    java.awt.EventQueue#detachDispatchThread
+     */
+final EventDispatchThread getDispatchThread() {
+    pushPopLock.lock();
+    try {
+        return dispatchThread;
+    } finally {
+        pushPopLock.unlock();
+    }
+}

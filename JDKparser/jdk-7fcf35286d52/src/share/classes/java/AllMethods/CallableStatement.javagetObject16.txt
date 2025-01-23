@@ -1,0 +1,23 @@
+// ----------------------------------------------------------------------
+// Advanced features:
+/**
+ * Retrieves the value of the designated parameter as an <code>Object</code>
+ * in the Java programming language. If the value is an SQL <code>NULL</code>,
+ * the driver returns a Java <code>null</code>.
+ * <p>
+ * This method returns a Java object whose type corresponds to the JDBC
+ * type that was registered for this parameter using the method
+ * <code>registerOutParameter</code>.  By registering the target JDBC
+ * type as <code>java.sql.Types.OTHER</code>, this method can be used
+ * to read database-specific abstract data types.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ *        and so on
+ * @return A <code>java.lang.Object</code> holding the OUT parameter value
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @see Types
+ * @see #setObject
+ */
+Object getObject(int parameterIndex) throws SQLException;

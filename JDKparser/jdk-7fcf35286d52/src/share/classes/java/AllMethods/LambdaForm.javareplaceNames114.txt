@@ -1,0 +1,36 @@
+/**
+ * In the arguments of this Name, replace oldNames[i] pairwise by newNames[i].
+ *  Limit such replacements to {@code start<=i<end}.  Return possibly changed self.
+ */
+Name replaceNames(Name[] oldNames, Name[] newNames, int start, int end) {
+    if (start >= end)
+        return this;
+    @SuppressWarnings("LocalVariableHidesMemberVariable")
+    Object[] arguments = this.arguments;
+    boolean replaced = false;
+    eachArg: for (int j = 0; j < arguments.length; j++) {
+        if (arguments[j] instanceof Name) {
+            Name n = (Name) arguments[j];
+            int check = n.index;
+            // harmless check to see if the thing is already in newNames:
+            if (check >= 0 && check < newNames.length && n == newNames[check])
+                continue eachArg;
+            // n might not have the correct index: n != oldNames[n.index].
+            for (int i = start; i < end; i++) {
+                if (n == oldNames[i]) {
+                    if (n == newNames[i])
+                        continue eachArg;
+                    if (!replaced) {
+                        replaced = true;
+                        arguments = arguments.clone();
+                    }
+                    arguments[j] = newNames[i];
+                    continue eachArg;
+                }
+            }
+        }
+    }
+    if (!replaced)
+        return this;
+    return new Name(function, arguments);
+}

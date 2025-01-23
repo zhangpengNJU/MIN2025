@@ -1,0 +1,20 @@
+/**
+ * Returns a <code>Set</code> view of the mappings contained
+ * in this <code>RenderingHints</code>.  Each element in the
+ * returned <code>Set</code> is a <code>Map.Entry</code>.
+ * The <code>Set</code> is backed by the <code>RenderingHints</code>,
+ * so changes to the <code>RenderingHints</code> are reflected
+ * in the <code>Set</code>, and vice-versa.  If the
+ * <code>RenderingHints</code> is modified while
+ * while an iteration over the <code>Set</code> is in progress,
+ * the results of the iteration are undefined.
+ * <p>
+ * The entrySet returned from a <code>RenderingHints</code> object
+ * is not modifiable.
+ *
+ * @return a <code>Set</code> view of the mappings contained in
+ * this <code>RenderingHints</code>.
+ */
+public Set<Map.Entry<Object, Object>> entrySet() {
+    return Collections.unmodifiableMap(hintmap).entrySet();
+}

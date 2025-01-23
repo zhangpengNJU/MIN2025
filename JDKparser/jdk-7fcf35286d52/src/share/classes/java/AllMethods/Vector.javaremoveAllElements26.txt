@@ -1,0 +1,12 @@
+/**
+ * Removes all components from this vector and sets its size to zero.
+ *
+ * <p>This method is identical in functionality to the {@link #clear}
+ * method (which is part of the {@link List} interface).
+ */
+public synchronized void removeAllElements() {
+    modCount++;
+    // Let gc do its work
+    for (int i = 0; i < elementCount; i++) elementData[i] = null;
+    elementCount = 0;
+}

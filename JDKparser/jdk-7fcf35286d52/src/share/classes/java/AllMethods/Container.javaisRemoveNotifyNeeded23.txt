@@ -1,0 +1,45 @@
+/**
+ * Detects whether or not remove from current parent and adding to new parent requires call of
+ * removeNotify on the component. Since removeNotify destroys native window this might (not)
+ * be required. For example, if new container and old containers are the same we don't need to
+ * destroy native window.
+ * @since: 1.5
+ */
+private static boolean isRemoveNotifyNeeded(Component comp, Container oldContainer, Container newContainer) {
+    if (oldContainer == null) {
+        // Component didn't have parent - no removeNotify
+        return false;
+    }
+    if (comp.peer == null) {
+        // Component didn't have peer - no removeNotify
+        return false;
+    }
+    if (newContainer.peer == null) {
+        // Component has peer but new Container doesn't - call removeNotify
+        return true;
+    }
+    // If component is lightweight non-Container or lightweight Container with all but heavyweight
+    // children there is no need to call remove notify
+    if (comp.isLightweight()) {
+        boolean isContainer = comp instanceof Container;
+        if (!isContainer || (isContainer && !((Container) comp).hasHeavyweightDescendants())) {
+            return false;
+        }
+    }
+    // If this point is reached, then the comp is either a HW or a LW container with HW descendants.
+    // All three components have peers, check for peer change
+    Container newNativeContainer = oldContainer.getHeavyweightContainer();
+    Container oldNativeContainer = newContainer.getHeavyweightContainer();
+    if (newNativeContainer != oldNativeContainer) {
+        // Native containers change - check whether or not current platform supports
+        // changing of widget hierarchy on native level without recreation.
+        // The current implementation forbids reparenting of LW containers with HW descendants
+        // into another native container w/o destroying the peers. Actually such an operation
+        // is quite rare. If we ever need to save the peers, we'll have to slightly change the
+        // addDelicately() method in order to handle such LW containers recursively, reparenting
+        // each HW descendant independently.
+        return !comp.peer.isReparentSupported();
+    } else {
+        return false;
+    }
+}

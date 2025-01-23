@@ -1,0 +1,24 @@
+// Modification Operations
+/**
+ * Associates the specified value with the specified key in this map.
+ * If the map previously contained a mapping for this key, the old
+ * value is replaced.
+ *
+ * @param key the key with which the specified value is to be associated
+ * @param value the value to be associated with the specified key
+ *
+ * @return the previous value associated with specified key, or
+ *     <tt>null</tt> if there was no mapping for key.  (A <tt>null</tt>
+ *     return can also indicate that the map previously associated
+ *     <tt>null</tt> with the specified key.)
+ * @throws NullPointerException if the specified key is null
+ */
+public V put(K key, V value) {
+    typeCheck(key);
+    int index = key.ordinal();
+    Object oldValue = vals[index];
+    vals[index] = maskNull(value);
+    if (oldValue == null)
+        size++;
+    return unmaskNull(oldValue);
+}

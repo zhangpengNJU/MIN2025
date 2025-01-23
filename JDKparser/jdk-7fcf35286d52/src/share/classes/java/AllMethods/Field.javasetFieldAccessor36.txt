@@ -1,0 +1,12 @@
+// Sets the FieldAccessor for this Field object and
+// (recursively) its root
+private void setFieldAccessor(FieldAccessor accessor, boolean overrideFinalCheck) {
+    if (overrideFinalCheck)
+        overrideFieldAccessor = accessor;
+    else
+        fieldAccessor = accessor;
+    // Propagate up
+    if (root != null) {
+        root.setFieldAccessor(accessor, overrideFinalCheck);
+    }
+}

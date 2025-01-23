@@ -1,0 +1,34 @@
+/**
+ * Determine if the delivered int pixels intersect the region to
+ * be extracted and pass through only that subset of pixels that
+ * appear in the output region.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose
+ * pixels are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ */
+public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
+    int x1 = x;
+    if (x1 < cropX) {
+        x1 = cropX;
+    }
+    int x2 = addWithoutOverflow(x, w);
+    if (x2 > cropX + cropW) {
+        x2 = cropX + cropW;
+    }
+    int y1 = y;
+    if (y1 < cropY) {
+        y1 = cropY;
+    }
+    int y2 = addWithoutOverflow(y, h);
+    if (y2 > cropY + cropH) {
+        y2 = cropY + cropH;
+    }
+    if (x1 >= x2 || y1 >= y2) {
+        return;
+    }
+    consumer.setPixels(x1 - cropX, y1 - cropY, (x2 - x1), (y2 - y1), model, pixels, off + (y1 - y) * scansize + (x1 - x), scansize);
+}

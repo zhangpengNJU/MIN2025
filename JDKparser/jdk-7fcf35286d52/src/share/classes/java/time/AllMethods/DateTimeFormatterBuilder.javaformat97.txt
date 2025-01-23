@@ -1,0 +1,32 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Long offsetSecs = context.getValue(OFFSET_SECONDS);
+    if (offsetSecs == null) {
+        return false;
+    }
+    int totalSecs = Math.toIntExact(offsetSecs);
+    if (totalSecs == 0) {
+        buf.append(noOffsetText);
+    } else {
+        // anything larger than 99 silently dropped
+        int absHours = Math.abs((totalSecs / 3600) % 100);
+        int absMinutes = Math.abs((totalSecs / 60) % 60);
+        int absSeconds = Math.abs(totalSecs % 60);
+        int bufPos = buf.length();
+        int output = absHours;
+        buf.append(totalSecs < 0 ? "-" : "+").append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'));
+        if (type >= 3 || (type >= 1 && absMinutes > 0)) {
+            buf.append((type % 2) == 0 ? ":" : "").append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
+            output += absMinutes;
+            if (type >= 7 || (type >= 5 && absSeconds > 0)) {
+                buf.append((type % 2) == 0 ? ":" : "").append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
+                output += absSeconds;
+            }
+        }
+        if (output == 0) {
+            buf.setLength(bufPos);
+            buf.append(noOffsetText);
+        }
+    }
+    return true;
+}

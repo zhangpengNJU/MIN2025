@@ -1,0 +1,11 @@
+private CompletableFuture<Void> uniRunStage(Executor e, Runnable f) {
+    if (f == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.uniRun(this, f, null)) {
+        UniRun<T> c = new UniRun<T>(e, d, this, f);
+        push(c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

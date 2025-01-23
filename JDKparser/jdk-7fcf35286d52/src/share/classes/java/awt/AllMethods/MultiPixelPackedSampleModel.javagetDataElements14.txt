@@ -1,0 +1,92 @@
+/**
+ * Returns data for a single pixel in a primitive array of type
+ * TransferType.  For a <code>MultiPixelPackedSampleModel</code>,
+ * the array has one element, and the type is the smallest of
+ * DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT, or DataBuffer.TYPE_INT
+ * that can hold a single pixel.  Generally, <code>obj</code>
+ * should be passed in as <code>null</code>, so that the
+ * <code>Object</code> is created automatically and is the
+ * correct primitive data type.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * <code>DataBuffer</code> <code>db1</code>, whose storage layout is
+ * described by <code>MultiPixelPackedSampleModel</code>
+ * <code>mppsm1</code>, to <code>DataBuffer</code> <code>db2</code>,
+ * whose storage layout is described by
+ * <code>MultiPixelPackedSampleModel</code> <code>mppsm2</code>.
+ * The transfer is generally more efficient than using
+ * <code>getPixel</code> or <code>setPixel</code>.
+ * <pre>
+ *       MultiPixelPackedSampleModel mppsm1, mppsm2;
+ *       DataBufferInt db1, db2;
+ *       mppsm2.setDataElements(x, y, mppsm1.getDataElements(x, y, null,
+ *                              db1), db2);
+ * </pre>
+ * Using <code>getDataElements</code> or <code>setDataElements</code>
+ * to transfer between two <code>DataBuffer/SampleModel</code> pairs
+ * is legitimate if the <code>SampleModels</code> have the same number
+ * of bands, corresponding bands have the same number of
+ * bits per sample, and the TransferTypes are the same.
+ * <p>
+ * If <code>obj</code> is not <code>null</code>, it should be a
+ * primitive array of type TransferType.  Otherwise, a
+ * <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if the
+ * coordinates are not in bounds, or if <code>obj</code> is not
+ * <code>null</code> and is not large enough to hold the pixel data.
+ * @param x the X coordinate of the specified pixel
+ * @param y the Y coordinate of the specified pixel
+ * @param obj a primitive array in which to return the pixel data or
+ *          <code>null</code>.
+ * @param data the <code>DataBuffer</code> containing the image data.
+ * @return an <code>Object</code> containing data for the specified
+ *  pixel.
+ * @exception ClassCastException if <code>obj</code> is not a
+ *  primitive array of type TransferType or is not <code>null</code>
+ * @exception ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if <code>obj</code> is not <code>null</code> or
+ * not large enough to hold the pixel data
+ * @see #setDataElements(int, int, Object, DataBuffer)
+ */
+public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int type = getTransferType();
+    int bitnum = dataBitOffset + x * pixelBitStride;
+    int shift = dataElementSize - (bitnum & (dataElementSize - 1)) - pixelBitStride;
+    int element = 0;
+    switch(type) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata;
+            if (obj == null)
+                bdata = new byte[1];
+            else
+                bdata = (byte[]) obj;
+            element = data.getElem(y * scanlineStride + bitnum / dataElementSize);
+            bdata[0] = (byte) ((element >> shift) & bitMask);
+            obj = (Object) bdata;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] sdata;
+            if (obj == null)
+                sdata = new short[1];
+            else
+                sdata = (short[]) obj;
+            element = data.getElem(y * scanlineStride + bitnum / dataElementSize);
+            sdata[0] = (short) ((element >> shift) & bitMask);
+            obj = (Object) sdata;
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata;
+            if (obj == null)
+                idata = new int[1];
+            else
+                idata = (int[]) obj;
+            element = data.getElem(y * scanlineStride + bitnum / dataElementSize);
+            idata[0] = (element >> shift) & bitMask;
+            obj = (Object) idata;
+            break;
+    }
+    return obj;
+}

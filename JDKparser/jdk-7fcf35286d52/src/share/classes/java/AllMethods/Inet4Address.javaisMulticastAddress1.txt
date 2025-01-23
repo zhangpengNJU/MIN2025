@@ -1,0 +1,11 @@
+/**
+ * Utility routine to check if the InetAddress is an
+ * IP multicast address. IP multicast address is a Class D
+ * address i.e first four bits of the address are 1110.
+ * @return a {@code boolean} indicating if the InetAddress is
+ * an IP multicast address
+ * @since   JDK1.1
+ */
+public boolean isMulticastAddress() {
+    return ((holder().getAddress() & 0xf0000000) == 0xe0000000);
+}

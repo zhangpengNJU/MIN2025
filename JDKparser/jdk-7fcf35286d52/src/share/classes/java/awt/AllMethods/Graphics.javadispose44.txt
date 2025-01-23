@@ -1,0 +1,28 @@
+/**
+ * Disposes of this graphics context and releases
+ * any system resources that it is using.
+ * A <code>Graphics</code> object cannot be used after
+ * <code>dispose</code>has been called.
+ * <p>
+ * When a Java program runs, a large number of <code>Graphics</code>
+ * objects can be created within a short time frame.
+ * Although the finalization process of the garbage collector
+ * also disposes of the same system resources, it is preferable
+ * to manually free the associated resources by calling this
+ * method rather than to rely on a finalization process which
+ * may not run to completion for a long period of time.
+ * <p>
+ * Graphics objects which are provided as arguments to the
+ * <code>paint</code> and <code>update</code> methods
+ * of components are automatically released by the system when
+ * those methods return. For efficiency, programmers should
+ * call <code>dispose</code> when finished using
+ * a <code>Graphics</code> object only if it was created
+ * directly from a component or another <code>Graphics</code> object.
+ * @see         java.awt.Graphics#finalize
+ * @see         java.awt.Component#paint
+ * @see         java.awt.Component#update
+ * @see         java.awt.Component#getGraphics
+ * @see         java.awt.Graphics#create
+ */
+public abstract void dispose();

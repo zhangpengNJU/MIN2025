@@ -1,0 +1,17 @@
+@Override
+public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+    Objects.requireNonNull(obj, "obj");
+    Objects.requireNonNull(toAppendTo, "toAppendTo");
+    Objects.requireNonNull(pos, "pos");
+    if (obj instanceof TemporalAccessor == false) {
+        throw new IllegalArgumentException("Format target must implement TemporalAccessor");
+    }
+    pos.setBeginIndex(0);
+    pos.setEndIndex(0);
+    try {
+        formatter.formatTo((TemporalAccessor) obj, toAppendTo);
+    } catch (RuntimeException ex) {
+        throw new IllegalArgumentException(ex.getMessage(), ex);
+    }
+    return toAppendTo;
+}

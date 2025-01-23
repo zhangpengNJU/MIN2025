@@ -1,0 +1,25 @@
+private static BigDecimal add(final long xs, int scale1, final long ys, int scale2) {
+    long sdiff = (long) scale1 - scale2;
+    if (sdiff == 0) {
+        return add(xs, ys, scale1);
+    } else if (sdiff < 0) {
+        int raise = checkScale(xs, -sdiff);
+        long scaledX = longMultiplyPowerTen(xs, raise);
+        if (scaledX != INFLATED) {
+            return add(scaledX, ys, scale2);
+        } else {
+            BigInteger bigsum = bigMultiplyPowerTen(xs, raise).add(ys);
+            return // same sign test
+            ((xs ^ ys) >= 0) ? new BigDecimal(bigsum, INFLATED, scale2, 0) : valueOf(bigsum, scale2, 0);
+        }
+    } else {
+        int raise = checkScale(ys, sdiff);
+        long scaledY = longMultiplyPowerTen(ys, raise);
+        if (scaledY != INFLATED) {
+            return add(xs, scaledY, scale1);
+        } else {
+            BigInteger bigsum = bigMultiplyPowerTen(ys, raise).add(xs);
+            return ((xs ^ ys) >= 0) ? new BigDecimal(bigsum, INFLATED, scale1, 0) : valueOf(bigsum, scale1, 0);
+        }
+    }
+}

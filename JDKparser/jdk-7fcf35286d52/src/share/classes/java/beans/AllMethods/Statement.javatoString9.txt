@@ -1,0 +1,22 @@
+/**
+ * Prints the value of this statement using a Java-style syntax.
+ */
+public String toString() {
+    // Respect a subclass's implementation here.
+    Object target = getTarget();
+    String methodName = getMethodName();
+    Object[] arguments = getArguments();
+    if (arguments == null) {
+        arguments = emptyArray;
+    }
+    StringBuffer result = new StringBuffer(instanceName(target) + "." + methodName + "(");
+    int n = arguments.length;
+    for (int i = 0; i < n; i++) {
+        result.append(instanceName(arguments[i]));
+        if (i != n - 1) {
+            result.append(", ");
+        }
+    }
+    result.append(");");
+    return result.toString();
+}

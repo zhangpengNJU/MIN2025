@@ -1,0 +1,17 @@
+/**
+ * If given class is the same as the class associated with this class
+ * descriptor, returns reference to this class descriptor.  Otherwise,
+ * returns variant of this class descriptor bound to given class.
+ */
+private ObjectStreamClass getVariantFor(Class<?> cl) throws InvalidClassException {
+    if (this.cl == cl) {
+        return this;
+    }
+    ObjectStreamClass desc = new ObjectStreamClass();
+    if (isProxy) {
+        desc.initProxy(cl, null, superDesc);
+    } else {
+        desc.initNonProxy(this, cl, null, superDesc);
+    }
+    return desc;
+}

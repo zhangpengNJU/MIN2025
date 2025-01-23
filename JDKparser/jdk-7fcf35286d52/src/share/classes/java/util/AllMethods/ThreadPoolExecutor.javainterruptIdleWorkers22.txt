@@ -1,0 +1,40 @@
+/**
+ * Interrupts threads that might be waiting for tasks (as
+ * indicated by not being locked) so they can check for
+ * termination or configuration changes. Ignores
+ * SecurityExceptions (in which case some threads may remain
+ * uninterrupted).
+ *
+ * @param onlyOne If true, interrupt at most one worker. This is
+ * called only from tryTerminate when termination is otherwise
+ * enabled but there are still other workers.  In this case, at
+ * most one waiting worker is interrupted to propagate shutdown
+ * signals in case all threads are currently waiting.
+ * Interrupting any arbitrary thread ensures that newly arriving
+ * workers since shutdown began will also eventually exit.
+ * To guarantee eventual termination, it suffices to always
+ * interrupt only one idle worker, but shutdown() interrupts all
+ * idle workers so that redundant workers exit promptly, not
+ * waiting for a straggler task to finish.
+ */
+private void interruptIdleWorkers(boolean onlyOne) {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        for (Worker w : workers) {
+            Thread t = w.thread;
+            if (!t.isInterrupted() && w.tryLock()) {
+                try {
+                    t.interrupt();
+                } catch (SecurityException ignore) {
+                } finally {
+                    w.unlock();
+                }
+            }
+            if (onlyOne)
+                break;
+        }
+    } finally {
+        mainLock.unlock();
+    }
+}

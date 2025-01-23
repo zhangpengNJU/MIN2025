@@ -1,0 +1,14 @@
+// Should only be called while holding tree lock
+int countHierarchyMembers() {
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        // Verify descendantsCount is correct
+        int sum = 0;
+        for (Component comp : component) {
+            sum += comp.countHierarchyMembers();
+        }
+        if (descendantsCount != sum) {
+            log.fine("Assertion (descendantsCount == sum) failed");
+        }
+    }
+    return descendantsCount + 1;
+}

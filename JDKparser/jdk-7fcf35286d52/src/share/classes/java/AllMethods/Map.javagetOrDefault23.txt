@@ -1,0 +1,27 @@
+// Defaultable methods
+/**
+ * Returns the value to which the specified key is mapped, or
+ * {@code defaultValue} if this map contains no mapping for the key.
+ *
+ * @implSpec
+ * The default implementation makes no guarantees about synchronization
+ * or atomicity properties of this method. Any implementation providing
+ * atomicity guarantees must override this method and document its
+ * concurrency properties.
+ *
+ * @param key the key whose associated value is to be returned
+ * @param defaultValue the default mapping of the key
+ * @return the value to which the specified key is mapped, or
+ * {@code defaultValue} if this map contains no mapping for the key
+ * @throws ClassCastException if the key is of an inappropriate type for
+ * this map
+ * (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
+ * @throws NullPointerException if the specified key is null and this map
+ * does not permit null keys
+ * (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
+ * @since 1.8
+ */
+default V getOrDefault(Object key, V defaultValue) {
+    V v;
+    return (((v = get(key)) != null) || containsKey(key)) ? v : defaultValue;
+}

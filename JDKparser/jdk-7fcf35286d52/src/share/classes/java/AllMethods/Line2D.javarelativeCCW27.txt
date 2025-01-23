@@ -1,0 +1,18 @@
+/**
+ * Returns an indicator of where the specified point
+ * {@code (px,py)} lies with respect to this line segment.
+ * See the method comments of
+ * {@link #relativeCCW(double, double, double, double, double, double)}
+ * to interpret the return value.
+ * @param px the X coordinate of the specified point
+ *           to be compared with this <code>Line2D</code>
+ * @param py the Y coordinate of the specified point
+ *           to be compared with this <code>Line2D</code>
+ * @return an integer that indicates the position of the specified
+ *         coordinates with respect to this <code>Line2D</code>
+ * @see #relativeCCW(double, double, double, double, double, double)
+ * @since 1.2
+ */
+public int relativeCCW(double px, double py) {
+    return relativeCCW(getX1(), getY1(), getX2(), getY2(), px, py);
+}

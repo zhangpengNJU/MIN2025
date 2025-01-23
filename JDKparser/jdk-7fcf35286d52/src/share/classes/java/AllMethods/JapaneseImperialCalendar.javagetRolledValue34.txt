@@ -1,0 +1,16 @@
+/**
+ * Returns the new value after 'roll'ing the specified value and amount.
+ */
+private static int getRolledValue(int value, int amount, int min, int max) {
+    assert value >= min && value <= max;
+    int range = max - min + 1;
+    amount %= range;
+    int n = value + amount;
+    if (n > max) {
+        n -= range;
+    } else if (n < min) {
+        n += range;
+    }
+    assert n >= min && n <= max;
+    return n;
+}

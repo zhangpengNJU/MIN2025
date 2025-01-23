@@ -1,0 +1,60 @@
+/**
+ * Determines whether or not the specified point is inside the boundary
+ * of the arc.
+ *
+ * @param x The X coordinate of the point to test.
+ * @param y The Y coordinate of the point to test.
+ *
+ * @return <CODE>true</CODE> if the point lies within the bound of
+ * the arc, <CODE>false</CODE> if the point lies outside of the
+ * arc's bounds.
+ * @since 1.2
+ */
+public boolean contains(double x, double y) {
+    // Normalize the coordinates compared to the ellipse
+    // having a center at 0,0 and a radius of 0.5.
+    double ellw = getWidth();
+    if (ellw <= 0.0) {
+        return false;
+    }
+    double normx = (x - getX()) / ellw - 0.5;
+    double ellh = getHeight();
+    if (ellh <= 0.0) {
+        return false;
+    }
+    double normy = (y - getY()) / ellh - 0.5;
+    double distSq = (normx * normx + normy * normy);
+    if (distSq >= 0.25) {
+        return false;
+    }
+    double angExt = Math.abs(getAngleExtent());
+    if (angExt >= 360.0) {
+        return true;
+    }
+    boolean inarc = containsAngle(-Math.toDegrees(Math.atan2(normy, normx)));
+    if (type == PIE) {
+        return inarc;
+    }
+    // CHORD and OPEN behave the same way
+    if (inarc) {
+        if (angExt >= 180.0) {
+            return true;
+        }
+    // point must be outside the "pie triangle"
+    } else {
+        if (angExt <= 180.0) {
+            return false;
+        }
+    // point must be inside the "pie triangle"
+    }
+    // The point is inside the pie triangle iff it is on the same
+    // side of the line connecting the ends of the arc as the center.
+    double angle = Math.toRadians(-getAngleStart());
+    double x1 = Math.cos(angle);
+    double y1 = Math.sin(angle);
+    angle += Math.toRadians(-getAngleExtent());
+    double x2 = Math.cos(angle);
+    double y2 = Math.sin(angle);
+    boolean inside = (Line2D.relativeCCW(x1, y1, x2, y2, 2 * normx, 2 * normy) * Line2D.relativeCCW(x1, y1, x2, y2, 0, 0) >= 0);
+    return inarc ? !inside : inside;
+}

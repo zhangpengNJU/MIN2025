@@ -1,0 +1,14 @@
+private void ownedInit(Window owner) {
+    this.parent = owner;
+    if (owner != null) {
+        owner.addOwnedWindow(weakThis);
+        if (owner.isAlwaysOnTop()) {
+            try {
+                setAlwaysOnTop(true);
+            } catch (SecurityException ignore) {
+            }
+        }
+    }
+    // WindowDisposerRecord requires a proper value of parent field.
+    disposerRecord.updateOwner();
+}

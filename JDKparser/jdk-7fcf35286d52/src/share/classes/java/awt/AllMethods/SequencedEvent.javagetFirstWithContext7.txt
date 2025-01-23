@@ -1,0 +1,11 @@
+/* Disposes all events from disposed AppContext
+     * return first valid event
+     */
+private final static SequencedEvent getFirstWithContext() {
+    SequencedEvent first = getFirst();
+    while (isOwnerAppContextDisposed(first)) {
+        first.dispose();
+        first = getFirst();
+    }
+    return first;
+}

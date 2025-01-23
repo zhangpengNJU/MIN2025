@@ -1,0 +1,7 @@
+@Override
+public long getFrom(TemporalAccessor temporal) {
+    if (isSupportedBy(temporal) == false) {
+        throw new UnsupportedTemporalTypeException("Unsupported field: WeekBasedYear");
+    }
+    return getWeekBasedYear(LocalDate.from(temporal));
+}

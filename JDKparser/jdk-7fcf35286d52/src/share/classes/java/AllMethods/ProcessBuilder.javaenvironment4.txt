@@ -1,0 +1,22 @@
+// Only for use by Runtime.exec(...envp...)
+ProcessBuilder environment(String[] envp) {
+    assert environment == null;
+    if (envp != null) {
+        environment = ProcessEnvironment.emptyEnvironment(envp.length);
+        assert environment != null;
+        for (String envstring : envp) {
+            // Before 1.5, we blindly passed invalid envstrings
+            // to the child process.
+            // We would like to throw an exception, but do not,
+            // for compatibility with old broken code.
+            // Silently discard any trailing junk.
+            if (envstring.indexOf((int) '\u0000') != -1)
+                envstring = envstring.replaceFirst("\u0000.*", "");
+            int eqlsign = envstring.indexOf('=', ProcessEnvironment.MIN_NAME_LENGTH);
+            // Silently ignore envstrings lacking the required `='.
+            if (eqlsign != -1)
+                environment.put(envstring.substring(0, eqlsign), envstring.substring(eqlsign + 1));
+        }
+    }
+    return this;
+}

@@ -1,0 +1,12 @@
+private void checkNumeric() {
+    if (width != -1 && width < 0)
+        throw new IllegalFormatWidthException(width);
+    if (precision != -1 && precision < 0)
+        throw new IllegalFormatPrecisionException(precision);
+    // '-' and '0' require a width
+    if (width == -1 && (f.contains(Flags.LEFT_JUSTIFY) || f.contains(Flags.ZERO_PAD)))
+        throw new MissingFormatWidthException(toString());
+    // bad combination
+    if ((f.contains(Flags.PLUS) && f.contains(Flags.LEADING_SPACE)) || (f.contains(Flags.LEFT_JUSTIFY) && f.contains(Flags.ZERO_PAD)))
+        throw new IllegalFormatFlagsException(f.toString());
+}

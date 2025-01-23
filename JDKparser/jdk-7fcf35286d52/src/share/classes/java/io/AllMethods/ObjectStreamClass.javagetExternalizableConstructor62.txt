@@ -1,0 +1,14 @@
+/**
+ * Returns public no-arg constructor of given class, or null if none found.
+ * Access checks are disabled on the returned constructor (if any), since
+ * the defining class may still be non-public.
+ */
+private static Constructor<?> getExternalizableConstructor(Class<?> cl) {
+    try {
+        Constructor<?> cons = cl.getDeclaredConstructor((Class<?>[]) null);
+        cons.setAccessible(true);
+        return ((cons.getModifiers() & Modifier.PUBLIC) != 0) ? cons : null;
+    } catch (NoSuchMethodException ex) {
+        return null;
+    }
+}

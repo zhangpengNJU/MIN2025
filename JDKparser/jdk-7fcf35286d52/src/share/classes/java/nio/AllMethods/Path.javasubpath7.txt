@@ -1,0 +1,26 @@
+/**
+ * Returns a relative {@code Path} that is a subsequence of the name
+ * elements of this path.
+ *
+ * <p> The {@code beginIndex} and {@code endIndex} parameters specify the
+ * subsequence of name elements. The name that is <em>closest</em> to the root
+ * in the directory hierarchy has index {@code 0}. The name that is
+ * <em>farthest</em> from the root has index {@link #getNameCount
+ * count}{@code -1}. The returned {@code Path} object has the name elements
+ * that begin at {@code beginIndex} and extend to the element at index {@code
+ * endIndex-1}.
+ *
+ * @param   beginIndex
+ *          the index of the first element, inclusive
+ * @param   endIndex
+ *          the index of the last element, exclusive
+ *
+ * @return  a new {@code Path} object that is a subsequence of the name
+ *          elements in this {@code Path}
+ *
+ * @throws  IllegalArgumentException
+ *          if {@code beginIndex} is negative, or greater than or equal to
+ *          the number of elements. If {@code endIndex} is less than or
+ *          equal to {@code beginIndex}, or larger than the number of elements.
+ */
+Path subpath(int beginIndex, int endIndex);

@@ -1,0 +1,19 @@
+/**
+ * Returns the target method of the call site, which behaves
+ * like a normal field of the {@code MutableCallSite}.
+ * <p>
+ * The interactions of {@code getTarget} with memory are the same
+ * as of a read from an ordinary variable, such as an array element or a
+ * non-volatile, non-final field.
+ * <p>
+ * In particular, the current thread may choose to reuse the result
+ * of a previous read of the target from memory, and may fail to see
+ * a recent update to the target by another thread.
+ *
+ * @return the linkage state of this call site, a method handle which can change over time
+ * @see #setTarget
+ */
+@Override
+public final MethodHandle getTarget() {
+    return target;
+}

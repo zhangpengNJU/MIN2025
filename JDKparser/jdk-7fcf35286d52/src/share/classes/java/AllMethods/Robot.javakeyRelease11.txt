@@ -1,0 +1,18 @@
+/**
+ * Releases a given key.
+ * <p>
+ * Key codes that have more than one physical key associated with them
+ * (e.g. <code>KeyEvent.VK_SHIFT</code> could mean either the
+ * left or right shift key) will map to the left key.
+ *
+ * @param   keycode Key to release (e.g. <code>KeyEvent.VK_A</code>)
+ * @throws  IllegalArgumentException if <code>keycode</code> is not a
+ *          valid key
+ * @see  #keyPress(int)
+ * @see     java.awt.event.KeyEvent
+ */
+public synchronized void keyRelease(int keycode) {
+    checkKeycodeArgument(keycode);
+    peer.keyRelease(keycode);
+    afterEvent();
+}

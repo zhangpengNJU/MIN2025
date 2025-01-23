@@ -1,0 +1,72 @@
+/**
+ * Returns a string representation of this thread info.
+ * The format of this string depends on the implementation.
+ * The returned string will typically include
+ * the {@linkplain #getThreadName thread name},
+ * the {@linkplain #getThreadId thread ID},
+ * its {@linkplain #getThreadState state},
+ * and a {@linkplain #getStackTrace stack trace} if any.
+ *
+ * @return a string representation of this thread info.
+ */
+public String toString() {
+    StringBuilder sb = new StringBuilder("\"" + getThreadName() + "\"" + " Id=" + getThreadId() + " " + getThreadState());
+    if (getLockName() != null) {
+        sb.append(" on " + getLockName());
+    }
+    if (getLockOwnerName() != null) {
+        sb.append(" owned by \"" + getLockOwnerName() + "\" Id=" + getLockOwnerId());
+    }
+    if (isSuspended()) {
+        sb.append(" (suspended)");
+    }
+    if (isInNative()) {
+        sb.append(" (in native)");
+    }
+    sb.append('\n');
+    int i = 0;
+    for (; i < stackTrace.length && i < MAX_FRAMES; i++) {
+        StackTraceElement ste = stackTrace[i];
+        sb.append("\tat " + ste.toString());
+        sb.append('\n');
+        if (i == 0 && getLockInfo() != null) {
+            Thread.State ts = getThreadState();
+            switch(ts) {
+                case BLOCKED:
+                    sb.append("\t-  blocked on " + getLockInfo());
+                    sb.append('\n');
+                    break;
+                case WAITING:
+                    sb.append("\t-  waiting on " + getLockInfo());
+                    sb.append('\n');
+                    break;
+                case TIMED_WAITING:
+                    sb.append("\t-  waiting on " + getLockInfo());
+                    sb.append('\n');
+                    break;
+                default:
+            }
+        }
+        for (MonitorInfo mi : lockedMonitors) {
+            if (mi.getLockedStackDepth() == i) {
+                sb.append("\t-  locked " + mi);
+                sb.append('\n');
+            }
+        }
+    }
+    if (i < stackTrace.length) {
+        sb.append("\t...");
+        sb.append('\n');
+    }
+    LockInfo[] locks = getLockedSynchronizers();
+    if (locks.length > 0) {
+        sb.append("\n\tNumber of locked synchronizers = " + locks.length);
+        sb.append('\n');
+        for (LockInfo li : locks) {
+            sb.append("\t- " + li);
+            sb.append('\n');
+        }
+    }
+    sb.append('\n');
+    return sb.toString();
+}

@@ -1,0 +1,18 @@
+/**
+ * Obtains an instance of {@code ZonedDateTime} using seconds from the
+ * epoch of 1970-01-01T00:00:00Z.
+ *
+ * @param epochSecond  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+ * @param nanoOfSecond  the nanosecond within the second, from 0 to 999,999,999
+ * @param zone  the time-zone, not null
+ * @return the zoned date-time, not null
+ * @throws DateTimeException if the result exceeds the supported range
+ */
+private static ZonedDateTime create(long epochSecond, int nanoOfSecond, ZoneId zone) {
+    ZoneRules rules = zone.getRules();
+    // TODO: rules should be queryable by epochSeconds
+    Instant instant = Instant.ofEpochSecond(epochSecond, nanoOfSecond);
+    ZoneOffset offset = rules.getOffset(instant);
+    LocalDateTime ldt = LocalDateTime.ofEpochSecond(epochSecond, nanoOfSecond, offset);
+    return new ZonedDateTime(ldt, offset, zone);
+}

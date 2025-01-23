@@ -1,0 +1,45 @@
+/**
+ * Adds the contents of the int array x and long value val. This
+ * method allocates a new int array to hold the answer and returns
+ * a reference to that array.  Assumes x.length &gt; 0 and val is
+ * non-negative
+ */
+private static int[] add(int[] x, long val) {
+    int[] y;
+    long sum = 0;
+    int xIndex = x.length;
+    int[] result;
+    int highWord = (int) (val >>> 32);
+    if (highWord == 0) {
+        result = new int[xIndex];
+        sum = (x[--xIndex] & LONG_MASK) + val;
+        result[xIndex] = (int) sum;
+    } else {
+        if (xIndex == 1) {
+            result = new int[2];
+            sum = val + (x[0] & LONG_MASK);
+            result[1] = (int) sum;
+            result[0] = (int) (sum >>> 32);
+            return result;
+        } else {
+            result = new int[xIndex];
+            sum = (x[--xIndex] & LONG_MASK) + (val & LONG_MASK);
+            result[xIndex] = (int) sum;
+            sum = (x[--xIndex] & LONG_MASK) + (highWord & LONG_MASK) + (sum >>> 32);
+            result[xIndex] = (int) sum;
+        }
+    }
+    // Copy remainder of longer number while carry propagation is required
+    boolean carry = (sum >>> 32 != 0);
+    while (xIndex > 0 && carry) carry = ((result[--xIndex] = x[xIndex] + 1) == 0);
+    // Copy remainder of longer number
+    while (xIndex > 0) result[--xIndex] = x[xIndex];
+    // Grow result if necessary
+    if (carry) {
+        int[] bigger = new int[result.length + 1];
+        System.arraycopy(result, 0, bigger, 1, result.length);
+        bigger[0] = 0x01;
+        return bigger;
+    }
+    return result;
+}

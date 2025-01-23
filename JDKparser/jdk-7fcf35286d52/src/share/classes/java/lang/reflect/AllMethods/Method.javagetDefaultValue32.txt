@@ -1,0 +1,23 @@
+/**
+ * Returns the default value for the annotation member represented by
+ * this {@code Method} instance.  If the member is of a primitive type,
+ * an instance of the corresponding wrapper type is returned. Returns
+ * null if no default is associated with the member, or if the method
+ * instance does not represent a declared member of an annotation type.
+ *
+ * @return the default value for the annotation member represented
+ *     by this {@code Method} instance.
+ * @throws TypeNotPresentException if the annotation is of type
+ *     {@link Class} and no definition can be found for the
+ *     default class value.
+ * @since  1.5
+ */
+public Object getDefaultValue() {
+    if (annotationDefault == null)
+        return null;
+    Class<?> memberType = AnnotationType.invocationHandlerReturnType(getReturnType());
+    Object result = AnnotationParser.parseMemberValue(memberType, ByteBuffer.wrap(annotationDefault), sun.misc.SharedSecrets.getJavaLangAccess().getConstantPool(getDeclaringClass()), getDeclaringClass());
+    if (result instanceof sun.reflect.annotation.ExceptionProxy)
+        throw new AnnotationFormatError("Invalid default: " + this);
+    return result;
+}

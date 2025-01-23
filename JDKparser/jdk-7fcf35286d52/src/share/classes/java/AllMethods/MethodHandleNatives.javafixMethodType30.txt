@@ -1,0 +1,6 @@
+private static MethodType fixMethodType(Class<?> callerClass, Object type) {
+    if (type instanceof MethodType)
+        return (MethodType) type;
+    else
+        return MethodType.fromMethodDescriptorString((String) type, callerClass.getClassLoader());
+}

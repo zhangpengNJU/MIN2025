@@ -1,0 +1,14 @@
+/**
+ * Removes an ACL entry from this ACL.
+ *
+ * @param caller the principal invoking this method. It must be an
+ * owner of this ACL.
+ *
+ * @param entry the ACL entry to be removed from this ACL.
+ *
+ * @return true on success, false if the entry is not part of this ACL.
+ *
+ * @exception NotOwnerException if the caller principal is not
+ * an owner of this Acl.
+ */
+public boolean removeEntry(Principal caller, AclEntry entry) throws NotOwnerException;

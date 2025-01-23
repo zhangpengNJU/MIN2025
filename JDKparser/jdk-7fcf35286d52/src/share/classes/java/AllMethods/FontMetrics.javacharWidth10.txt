@@ -1,0 +1,34 @@
+/**
+ * Returns the advance width of the specified character in this
+ * <code>Font</code>.  The advance is the
+ * distance from the leftmost point to the rightmost point on the
+ * character's baseline.  Note that the advance of a
+ * <code>String</code> is not necessarily the sum of the advances
+ * of its characters.
+ *
+ * <p>This method doesn't validate the specified character to be a
+ * valid Unicode code point. The caller must validate the
+ * character value using {@link
+ * java.lang.Character#isValidCodePoint(int)
+ * Character.isValidCodePoint} if necessary.
+ *
+ * @param codePoint the character (Unicode code point) to be measured
+ * @return    the advance width of the specified character
+ *            in the <code>Font</code> described by this
+ *            <code>FontMetrics</code> object.
+ * @see   #charsWidth(char[], int, int)
+ * @see   #stringWidth(String)
+ */
+public int charWidth(int codePoint) {
+    if (!Character.isValidCodePoint(codePoint)) {
+        // substitute missing glyph width
+        codePoint = 0xffff;
+    }
+    if (codePoint < 256) {
+        return getWidths()[codePoint];
+    } else {
+        char[] buffer = new char[2];
+        int len = Character.toChars(codePoint, buffer, 0);
+        return charsWidth(buffer, 0, len);
+    }
+}

@@ -1,0 +1,33 @@
+/**
+ * Returns whether this <code>DataFlavor</code> is a valid text flavor for
+ * this implementation of the Java platform. Only flavors equivalent to
+ * <code>DataFlavor.stringFlavor</code> and <code>DataFlavor</code>s with
+ * a primary MIME type of "text" can be valid text flavors.
+ * <p>
+ * If this flavor supports the charset parameter, it must be equivalent to
+ * <code>DataFlavor.stringFlavor</code>, or its representation must be
+ * <code>java.io.Reader</code>, <code>java.lang.String</code>,
+ * <code>java.nio.CharBuffer</code>, <code>[C</code>,
+ * <code>java.io.InputStream</code>, <code>java.nio.ByteBuffer</code>, or
+ * <code>[B</code>. If the representation is
+ * <code>java.io.InputStream</code>, <code>java.nio.ByteBuffer</code>, or
+ * <code>[B</code>, then this flavor's <code>charset</code> parameter must
+ * be supported by this implementation of the Java platform. If a charset
+ * is not specified, then the platform default charset, which is always
+ * supported, is assumed.
+ * <p>
+ * If this flavor does not support the charset parameter, its
+ * representation must be <code>java.io.InputStream</code>,
+ * <code>java.nio.ByteBuffer</code>, or <code>[B</code>.
+ * <p>
+ * See <code>selectBestTextFlavor</code> for a list of text flavors which
+ * support the charset parameter.
+ *
+ * @return <code>true</code> if this <code>DataFlavor</code> is a valid
+ *         text flavor as described above; <code>false</code> otherwise
+ * @see #selectBestTextFlavor
+ * @since 1.4
+ */
+public boolean isFlavorTextType() {
+    return (DataTransferer.isFlavorCharsetTextType(this) || DataTransferer.isFlavorNoncharsetTextType(this));
+}

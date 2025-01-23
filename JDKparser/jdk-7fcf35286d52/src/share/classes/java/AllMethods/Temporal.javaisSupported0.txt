@@ -1,0 +1,22 @@
+/**
+ * Checks if the specified unit is supported.
+ * <p>
+ * This checks if the specified unit can be added to, or subtracted from, this date-time.
+ * If false, then calling the {@link #plus(long, TemporalUnit)} and
+ * {@link #minus(long, TemporalUnit) minus} methods will throw an exception.
+ *
+ * @implSpec
+ * Implementations must check and handle all units defined in {@link ChronoUnit}.
+ * If the unit is supported, then true must be returned, otherwise false must be returned.
+ * <p>
+ * If the field is not a {@code ChronoUnit}, then the result of this method
+ * is obtained by invoking {@code TemporalUnit.isSupportedBy(Temporal)}
+ * passing {@code this} as the argument.
+ * <p>
+ * Implementations must ensure that no observable state is altered when this
+ * read-only method is invoked.
+ *
+ * @param unit  the unit to check, null returns false
+ * @return true if the unit can be added/subtracted, false if not
+ */
+boolean isSupported(TemporalUnit unit);

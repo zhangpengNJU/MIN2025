@@ -1,0 +1,7 @@
+private long monthsUntil(LocalDate end) {
+    // no overflow
+    long packed1 = getProlepticMonth() * 32L + getDayOfMonth();
+    // no overflow
+    long packed2 = end.getProlepticMonth() * 32L + end.getDayOfMonth();
+    return (packed2 - packed1) / 32;
+}

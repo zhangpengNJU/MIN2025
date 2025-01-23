@@ -1,0 +1,27 @@
+/**
+ * Adds the specified component to this container at the given
+ * position.
+ * This is a convenience method for {@link #addImpl}.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * display the added component.
+ *
+ * @param     comp   the component to be added
+ * @param     index    the position at which to insert the component,
+ *                   or <code>-1</code> to append the component to the end
+ * @exception NullPointerException if {@code comp} is {@code null}
+ * @exception IllegalArgumentException if {@code index} is invalid (see
+ *            {@link #addImpl} for details)
+ * @return    the component <code>comp</code>
+ * @see #addImpl
+ * @see #remove
+ * @see #invalidate
+ * @see #validate
+ * @see javax.swing.JComponent#revalidate()
+ */
+public Component add(Component comp, int index) {
+    addImpl(comp, null, index);
+    return comp;
+}

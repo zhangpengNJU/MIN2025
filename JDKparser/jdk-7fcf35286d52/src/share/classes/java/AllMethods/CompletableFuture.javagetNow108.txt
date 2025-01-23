@@ -1,0 +1,14 @@
+/**
+ * Returns the result value (or throws any encountered exception)
+ * if completed, else returns the given valueIfAbsent.
+ *
+ * @param valueIfAbsent the value to return if not completed
+ * @return the result value, if completed, else the given valueIfAbsent
+ * @throws CancellationException if the computation was cancelled
+ * @throws CompletionException if this future completed
+ * exceptionally or a completion computation threw an exception
+ */
+public T getNow(T valueIfAbsent) {
+    Object r;
+    return ((r = result) == null) ? valueIfAbsent : reportJoin(r);
+}

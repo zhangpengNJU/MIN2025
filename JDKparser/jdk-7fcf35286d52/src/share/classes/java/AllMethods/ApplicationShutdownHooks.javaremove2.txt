@@ -1,0 +1,10 @@
+/* Remove a previously-registered hook.  Like the add method, this method
+     * does not do any security checks.
+     */
+static synchronized boolean remove(Thread hook) {
+    if (hooks == null)
+        throw new IllegalStateException("Shutdown in progress");
+    if (hook == null)
+        throw new NullPointerException();
+    return hooks.remove(hook) != null;
+}

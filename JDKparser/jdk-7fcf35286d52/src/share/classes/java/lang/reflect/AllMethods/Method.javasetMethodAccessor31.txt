@@ -1,0 +1,9 @@
+// Sets the MethodAccessor for this Method object and
+// (recursively) its root
+void setMethodAccessor(MethodAccessor accessor) {
+    methodAccessor = accessor;
+    // Propagate up
+    if (root != null) {
+        root.setMethodAccessor(accessor);
+    }
+}

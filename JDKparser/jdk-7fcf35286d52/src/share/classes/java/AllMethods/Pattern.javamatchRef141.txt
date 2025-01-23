@@ -1,0 +1,8 @@
+boolean matchRef(Matcher matcher, int i, CharSequence seq) {
+    int save = matcher.locals[localIndex];
+    // HACK
+    matcher.locals[localIndex] = ~i;
+    boolean ret = next.match(matcher, i, seq);
+    matcher.locals[localIndex] = save;
+    return ret;
+}

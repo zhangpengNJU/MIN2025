@@ -1,0 +1,17 @@
+@Override
+public final LongStream map(LongUnaryOperator mapper) {
+    Objects.requireNonNull(mapper);
+    return new StatelessOp<Long>(this, StreamShape.LONG_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedLong<Long>(sink) {
+
+                @Override
+                public void accept(long t) {
+                    downstream.accept(mapper.applyAsLong(t));
+                }
+            };
+        }
+    };
+}

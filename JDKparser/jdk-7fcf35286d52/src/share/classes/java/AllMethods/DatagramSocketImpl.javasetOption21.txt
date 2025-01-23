@@ -1,0 +1,22 @@
+<T> void setOption(SocketOption<T> name, T value) throws IOException {
+    if (name == StandardSocketOptions.SO_SNDBUF) {
+        setOption(SocketOptions.SO_SNDBUF, value);
+    } else if (name == StandardSocketOptions.SO_RCVBUF) {
+        setOption(SocketOptions.SO_RCVBUF, value);
+    } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+        setOption(SocketOptions.SO_REUSEADDR, value);
+    } else if (name == StandardSocketOptions.IP_TOS) {
+        setOption(SocketOptions.IP_TOS, value);
+    } else if (name == StandardSocketOptions.IP_MULTICAST_IF && (getDatagramSocket() instanceof MulticastSocket)) {
+        setOption(SocketOptions.IP_MULTICAST_IF2, value);
+    } else if (name == StandardSocketOptions.IP_MULTICAST_TTL && (getDatagramSocket() instanceof MulticastSocket)) {
+        if (!(value instanceof Integer)) {
+            throw new IllegalArgumentException("not an integer");
+        }
+        setTimeToLive((Integer) value);
+    } else if (name == StandardSocketOptions.IP_MULTICAST_LOOP && (getDatagramSocket() instanceof MulticastSocket)) {
+        setOption(SocketOptions.IP_MULTICAST_LOOP, value);
+    } else {
+        throw new UnsupportedOperationException("unsupported option");
+    }
+}

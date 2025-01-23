@@ -1,0 +1,14 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (it == null) {
+        it = collection.iterator();
+        est = (long) collection.size();
+    }
+    if (it.hasNext()) {
+        action.accept(it.next());
+        return true;
+    }
+    return false;
+}

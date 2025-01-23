@@ -1,0 +1,11 @@
+/**
+ * Causes every selected item in the object to be selected
+ * if the object supports multiple selections.
+ */
+public void selectAllAccessibleSelection() {
+    synchronized (List.this) {
+        for (int i = List.this.getItemCount() - 1; i >= 0; i--) {
+            List.this.select(i);
+        }
+    }
+}

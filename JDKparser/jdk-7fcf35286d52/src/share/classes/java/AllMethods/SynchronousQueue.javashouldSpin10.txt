@@ -1,0 +1,8 @@
+/**
+ * Returns true if node s is at head or there is an active
+ * fulfiller.
+ */
+boolean shouldSpin(SNode s) {
+    SNode h = head;
+    return (h == s || h == null || isFulfilling(h.mode));
+}

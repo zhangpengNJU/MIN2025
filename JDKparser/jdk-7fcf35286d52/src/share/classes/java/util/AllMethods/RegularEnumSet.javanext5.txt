@@ -1,0 +1,8 @@
+@SuppressWarnings("unchecked")
+public E next() {
+    if (unseen == 0)
+        throw new NoSuchElementException();
+    lastReturned = unseen & -unseen;
+    unseen -= lastReturned;
+    return (E) universe[Long.numberOfTrailingZeros(lastReturned)];
+}

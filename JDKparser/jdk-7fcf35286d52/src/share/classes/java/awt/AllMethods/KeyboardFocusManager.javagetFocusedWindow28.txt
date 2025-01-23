@@ -1,0 +1,18 @@
+/**
+ * Returns the focused Window, if the focused Window is in the same context
+ * as the calling thread. The focused Window is the Window that is or
+ * contains the focus owner.
+ *
+ * @return the focused Window, or null if the focused Window is not a
+ *         member of the calling thread's context
+ * @see #getGlobalFocusedWindow
+ * @see #setGlobalFocusedWindow
+ */
+public Window getFocusedWindow() {
+    synchronized (KeyboardFocusManager.class) {
+        if (focusedWindow == null) {
+            return null;
+        }
+        return (focusedWindow.appContext == AppContext.getAppContext()) ? focusedWindow : null;
+    }
+}

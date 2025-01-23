@@ -1,0 +1,24 @@
+/**
+ * Flush the Introspector's internal cached information for a given class.
+ * This method is not normally required.  It is normally only needed
+ * by advanced tools that update existing "Class" objects in-place
+ * and need to make the Introspector re-analyze an existing Class object.
+ *
+ * Note that only the direct state associated with the target Class
+ * object is flushed.  We do not flush state for other Class objects
+ * with the same name, nor do we flush state for any related Class
+ * objects (such as subclasses), even though their state may include
+ * information indirectly obtained from the target Class object.
+ *
+ * @param clz  Class object to be flushed.
+ * @throws NullPointerException If the Class object is null.
+ */
+public static void flushFromCaches(Class<?> clz) {
+    if (clz == null) {
+        throw new NullPointerException();
+    }
+    synchronized (declaredMethodCache) {
+        ThreadGroupContext.getContext().removeBeanInfo(clz);
+        declaredMethodCache.put(clz, null);
+    }
+}

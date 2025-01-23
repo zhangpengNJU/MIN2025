@@ -1,0 +1,8 @@
+private static int remainingMillis(long deadlineMillis) throws IOException {
+    if (deadlineMillis == 0L)
+        return 0;
+    final long remaining = deadlineMillis - System.currentTimeMillis();
+    if (remaining > 0)
+        return (int) remaining;
+    throw new SocketTimeoutException();
+}

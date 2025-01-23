@@ -1,0 +1,17 @@
+/**
+ * Transforms the geometry of this <code>Area</code> using the specified
+ * {@link AffineTransform}.  The geometry is transformed in place, which
+ * permanently changes the enclosed area defined by this object.
+ * @param t  the transformation used to transform the area
+ * @throws NullPointerException if <code>t</code> is null
+ * @since 1.2
+ */
+public void transform(AffineTransform t) {
+    if (t == null) {
+        throw new NullPointerException("transform must not be null");
+    }
+    // REMIND: A simpler operation can be performed for some types
+    // of transform.
+    curves = pathToCurves(getPathIterator(t));
+    invalidateBounds();
+}

@@ -1,0 +1,29 @@
+/*
+     * Ensures that the JarVerifier has been created if one is
+     * necessary (i.e., the jar appears to be signed.) This is done as
+     * a quick check to avoid processing of the manifest for unsigned
+     * jars.
+     */
+private void maybeInstantiateVerifier() throws IOException {
+    if (jv != null) {
+        return;
+    }
+    if (verify) {
+        String[] names = getMetaInfEntryNames();
+        if (names != null) {
+            for (int i = 0; i < names.length; i++) {
+                String name = names[i].toUpperCase(Locale.ENGLISH);
+                if (name.endsWith(".DSA") || name.endsWith(".RSA") || name.endsWith(".EC") || name.endsWith(".SF")) {
+                    // Assume since we found a signature-related file
+                    // that the jar is signed and that we therefore
+                    // need a JarVerifier and Manifest
+                    getManifest();
+                    return;
+                }
+            }
+        }
+        // No signature-related files; don't instantiate a
+        // verifier
+        verify = false;
+    }
+}

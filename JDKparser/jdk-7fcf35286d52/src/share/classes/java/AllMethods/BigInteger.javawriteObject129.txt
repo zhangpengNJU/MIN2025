@@ -1,0 +1,22 @@
+/**
+ * Save the {@code BigInteger} instance to a stream.
+ * The magnitude of a BigInteger is serialized as a byte array for
+ * historical reasons.
+ *
+ * @serialData two necessary fields are written as well as obsolete
+ *             fields for compatibility with older versions.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    // set the values of the Serializable fields
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("signum", signum);
+    fields.put("magnitude", magSerializedForm());
+    // The values written for cached fields are compatible with older
+    // versions, but are ignored in readObject so don't otherwise matter.
+    fields.put("bitCount", -1);
+    fields.put("bitLength", -1);
+    fields.put("lowestSetBit", -2);
+    fields.put("firstNonzeroByteNum", -2);
+    // save them
+    s.writeFields();
+}

@@ -1,0 +1,21 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    int length = buf.length();
+    if (optional) {
+        context.startOptional();
+    }
+    try {
+        for (DateTimePrinterParser pp : printerParsers) {
+            if (pp.format(context, buf) == false) {
+                // reset buffer
+                buf.setLength(length);
+                return true;
+            }
+        }
+    } finally {
+        if (optional) {
+            context.endOptional();
+        }
+    }
+    return true;
+}

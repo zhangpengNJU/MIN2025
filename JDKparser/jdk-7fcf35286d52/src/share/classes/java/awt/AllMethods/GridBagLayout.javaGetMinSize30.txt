@@ -1,0 +1,20 @@
+/**
+ * This method is obsolete and supplied for backwards
+ * compatibility only; new code should call {@link
+ * #getMinSize(java.awt.Container, GridBagLayoutInfo) getMinSize} instead.
+ * This method is the same as <code>getMinSize</code>;
+ * refer to <code>getMinSize</code> for details on parameters
+ * and return value.
+ */
+protected Dimension GetMinSize(Container parent, GridBagLayoutInfo info) {
+    Dimension d = new Dimension();
+    int i, t;
+    Insets insets = parent.getInsets();
+    t = 0;
+    for (i = 0; i < info.width; i++) t += info.minWidth[i];
+    d.width = t + insets.left + insets.right;
+    t = 0;
+    for (i = 0; i < info.height; i++) t += info.minHeight[i];
+    d.height = t + insets.top + insets.bottom;
+    return d;
+}

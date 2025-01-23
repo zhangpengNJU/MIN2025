@@ -1,0 +1,28 @@
+/**
+ * Deserializes this <code>Locale</code>.
+ * @param in the <code>ObjectInputStream</code> to read
+ * @throws IOException
+ * @throws ClassNotFoundException
+ * @throws IllformedLocaleException
+ * @since 1.7
+ */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    ObjectInputStream.GetField fields = in.readFields();
+    String language = (String) fields.get("language", "");
+    String script = (String) fields.get("script", "");
+    String country = (String) fields.get("country", "");
+    String variant = (String) fields.get("variant", "");
+    String extStr = (String) fields.get("extensions", "");
+    baseLocale = BaseLocale.getInstance(convertOldISOCodes(language), script, country, variant);
+    if (extStr.length() > 0) {
+        try {
+            InternalLocaleBuilder bldr = new InternalLocaleBuilder();
+            bldr.setExtensions(extStr);
+            localeExtensions = bldr.getLocaleExtensions();
+        } catch (LocaleSyntaxException e) {
+            throw new IllformedLocaleException(e.getMessage());
+        }
+    } else {
+        localeExtensions = null;
+    }
+}

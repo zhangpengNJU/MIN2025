@@ -1,0 +1,17 @@
+/**
+ * equality test between two digit lists.
+ */
+public boolean equals(Object obj) {
+    if (// quick check
+    this == obj)
+        return true;
+    if (// (1) same object?
+    !(obj instanceof DigitList))
+        return false;
+    DigitList other = (DigitList) obj;
+    if (count != other.count || decimalAt != other.decimalAt)
+        return false;
+    for (int i = 0; i < count; i++) if (digits[i] != other.digits[i])
+        return false;
+    return true;
+}

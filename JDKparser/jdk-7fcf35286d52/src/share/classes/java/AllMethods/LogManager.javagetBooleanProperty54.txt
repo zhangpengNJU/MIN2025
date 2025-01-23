@@ -1,0 +1,16 @@
+// Package private method to get a boolean property.
+// If the property is not defined or cannot be parsed
+// we return the given default value.
+boolean getBooleanProperty(String name, boolean defaultValue) {
+    String val = getProperty(name);
+    if (val == null) {
+        return defaultValue;
+    }
+    val = val.toLowerCase();
+    if (val.equals("true") || val.equals("1")) {
+        return true;
+    } else if (val.equals("false") || val.equals("0")) {
+        return false;
+    }
+    return defaultValue;
+}

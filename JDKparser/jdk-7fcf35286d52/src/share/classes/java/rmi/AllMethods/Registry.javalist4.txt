@@ -1,0 +1,16 @@
+/**
+ * Returns an array of the names bound in this registry.  The
+ * array will contain a snapshot of the names bound in this
+ * registry at the time of the given invocation of this method.
+ *
+ * @return  an array of the names bound in this registry
+ *
+ * @throws  RemoteException if remote communication with the
+ * registry failed; if exception is a <code>ServerException</code>
+ * containing an <code>AccessException</code>, then the registry
+ * denies the caller access to perform this operation
+ *
+ * @throws  AccessException if this registry is local and it denies
+ * the caller access to perform this operation
+ */
+public String[] list() throws RemoteException, AccessException;

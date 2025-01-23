@@ -1,0 +1,12 @@
+// Returns true if the specified class loader can be found in this class
+// loader's delegation chain.
+boolean isAncestor(ClassLoader cl) {
+    ClassLoader acl = this;
+    do {
+        acl = acl.parent;
+        if (cl == acl) {
+            return true;
+        }
+    } while (acl != null);
+    return false;
+}

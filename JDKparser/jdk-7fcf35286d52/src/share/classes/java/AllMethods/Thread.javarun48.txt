@@ -1,0 +1,16 @@
+public Boolean run() {
+    for (Class<?> cl = subcl; cl != Thread.class; cl = cl.getSuperclass()) {
+        try {
+            cl.getDeclaredMethod("getContextClassLoader", new Class<?>[0]);
+            return Boolean.TRUE;
+        } catch (NoSuchMethodException ex) {
+        }
+        try {
+            Class<?>[] params = { ClassLoader.class };
+            cl.getDeclaredMethod("setContextClassLoader", params);
+            return Boolean.TRUE;
+        } catch (NoSuchMethodException ex) {
+        }
+    }
+    return Boolean.FALSE;
+}

@@ -1,0 +1,36 @@
+/**
+ * Returns the property type that corresponds to the read and write method.
+ * The type precedence is given to the readMethod.
+ *
+ * @return the type of the property descriptor or null if both
+ *         read and write methods are null.
+ * @throws IntrospectionException if the read or write method is invalid
+ */
+private Class<?> findPropertyType(Method readMethod, Method writeMethod) throws IntrospectionException {
+    Class<?> propertyType = null;
+    try {
+        if (readMethod != null) {
+            Class<?>[] params = getParameterTypes(getClass0(), readMethod);
+            if (params.length != 0) {
+                throw new IntrospectionException("bad read method arg count: " + readMethod);
+            }
+            propertyType = getReturnType(getClass0(), readMethod);
+            if (propertyType == Void.TYPE) {
+                throw new IntrospectionException("read method " + readMethod.getName() + " returns void");
+            }
+        }
+        if (writeMethod != null) {
+            Class<?>[] params = getParameterTypes(getClass0(), writeMethod);
+            if (params.length != 1) {
+                throw new IntrospectionException("bad write method arg count: " + writeMethod);
+            }
+            if (propertyType != null && !params[0].isAssignableFrom(propertyType)) {
+                throw new IntrospectionException("type mismatch between read and write methods");
+            }
+            propertyType = params[0];
+        }
+    } catch (IntrospectionException ex) {
+        throw ex;
+    }
+    return propertyType;
+}

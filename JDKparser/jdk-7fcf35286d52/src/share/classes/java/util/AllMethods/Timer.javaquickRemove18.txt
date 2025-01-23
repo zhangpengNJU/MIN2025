@@ -1,0 +1,11 @@
+/**
+ * Removes the ith element from queue without regard for maintaining
+ * the heap invariant.  Recall that queue is one-based, so
+ * 1 <= i <= size.
+ */
+void quickRemove(int i) {
+    assert i <= size;
+    queue[i] = queue[size];
+    // Drop extra ref to prevent memory leak
+    queue[size--] = null;
+}

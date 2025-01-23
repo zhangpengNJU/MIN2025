@@ -1,0 +1,24 @@
+/**
+ * Returns the current focus cycle root, if the current focus cycle root is
+ * in the same context as the calling thread. If the focus owner is itself
+ * a focus cycle root, then it may be ambiguous as to which Components
+ * represent the next and previous Components to focus during normal focus
+ * traversal. In that case, the current focus cycle root is used to
+ * differentiate among the possibilities.
+ * <p>
+ * This method is intended to be used only by KeyboardFocusManagers and
+ * focus implementations. It is not for general client use.
+ *
+ * @return the current focus cycle root, or null if the current focus cycle
+ *         root is not a member of the calling thread's context
+ * @see #getGlobalCurrentFocusCycleRoot
+ * @see #setGlobalCurrentFocusCycleRoot
+ */
+public Container getCurrentFocusCycleRoot() {
+    synchronized (KeyboardFocusManager.class) {
+        if (currentFocusCycleRoot == null) {
+            return null;
+        }
+        return (currentFocusCycleRoot.appContext == AppContext.getAppContext()) ? currentFocusCycleRoot : null;
+    }
+}

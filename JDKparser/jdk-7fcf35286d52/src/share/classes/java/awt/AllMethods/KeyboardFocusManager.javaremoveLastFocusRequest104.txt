@@ -1,0 +1,19 @@
+static void removeLastFocusRequest(Component heavyweight) {
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        if (heavyweight == null) {
+            log.fine("Assertion (heavyweight != null) failed");
+        }
+    }
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getLastHWRequest();
+        if (hwFocusRequest != null && hwFocusRequest.heavyweight == heavyweight) {
+            heavyweightRequests.removeLast();
+        }
+        // Fix for 4799136 - clear type-ahead markers if requests queue is empty
+        // We do it here because this method is called only when problems happen
+        if (heavyweightRequests.size() == 0) {
+            manager.clearMarkers();
+        }
+    }
+}

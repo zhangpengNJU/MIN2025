@@ -1,0 +1,18 @@
+/**
+ * Casts an object to the class or interface represented
+ * by this {@code Class} object.
+ *
+ * @param obj the object to be cast
+ * @return the object after casting, or null if obj is null
+ *
+ * @throws ClassCastException if the object is not
+ * null and is not assignable to the type T.
+ *
+ * @since 1.5
+ */
+@SuppressWarnings("unchecked")
+public T cast(Object obj) {
+    if (obj != null && !isInstance(obj))
+        throw new ClassCastException(cannotCastMsg(obj));
+    return (T) obj;
+}

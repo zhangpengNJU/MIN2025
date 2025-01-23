@@ -1,0 +1,17 @@
+GraphicsConfiguration getTranslucencyCapableGC() {
+    // If the default GC supports translucency return true.
+    // It is important to optimize the verification this way,
+    // see CR 6661196 for more details.
+    GraphicsConfiguration defaultGC = getDefaultConfiguration();
+    if (defaultGC.isTranslucencyCapable()) {
+        return defaultGC;
+    }
+    // ... otherwise iterate through all the GCs.
+    GraphicsConfiguration[] configs = getConfigurations();
+    for (int j = 0; j < configs.length; j++) {
+        if (configs[j].isTranslucencyCapable()) {
+            return configs[j];
+        }
+    }
+    return null;
+}

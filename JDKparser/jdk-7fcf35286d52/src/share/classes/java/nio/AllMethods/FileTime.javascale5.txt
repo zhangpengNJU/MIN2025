@@ -1,0 +1,10 @@
+/*
+     * Scale d by m, checking for overflow.
+     */
+private static long scale(long d, long m, long over) {
+    if (d > over)
+        return Long.MAX_VALUE;
+    if (d < -over)
+        return Long.MIN_VALUE;
+    return d * m;
+}

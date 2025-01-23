@@ -1,0 +1,11 @@
+@Override
+public void accept(T t) {
+    if (t == null) {
+        if (!seenNull) {
+            seenNull = true;
+            downstream.accept(lastSeen = null);
+        }
+    } else if (lastSeen == null || !t.equals(lastSeen)) {
+        downstream.accept(lastSeen = t);
+    }
+}

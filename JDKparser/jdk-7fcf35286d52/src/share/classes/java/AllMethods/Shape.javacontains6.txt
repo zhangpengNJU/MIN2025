@@ -1,0 +1,43 @@
+/**
+ * Tests if the interior of the <code>Shape</code> entirely contains
+ * the specified rectangular area.  All coordinates that lie inside
+ * the rectangular area must lie within the <code>Shape</code> for the
+ * entire rectangular area to be considered contained within the
+ * <code>Shape</code>.
+ * <p>
+ * The {@code Shape.contains()} method allows a {@code Shape}
+ * implementation to conservatively return {@code false} when:
+ * <ul>
+ * <li>
+ * the <code>intersect</code> method returns <code>true</code> and
+ * <li>
+ * the calculations to determine whether or not the
+ * <code>Shape</code> entirely contains the rectangular area are
+ * prohibitively expensive.
+ * </ul>
+ * This means that for some {@code Shapes} this method might
+ * return {@code false} even though the {@code Shape} contains
+ * the rectangular area.
+ * The {@link java.awt.geom.Area Area} class performs
+ * more accurate geometric computations than most
+ * {@code Shape} objects and therefore can be used if a more precise
+ * answer is required.
+ *
+ * @param x the X coordinate of the upper-left corner
+ *          of the specified rectangular area
+ * @param y the Y coordinate of the upper-left corner
+ *          of the specified rectangular area
+ * @param w the width of the specified rectangular area
+ * @param h the height of the specified rectangular area
+ * @return <code>true</code> if the interior of the <code>Shape</code>
+ *          entirely contains the specified rectangular area;
+ *          <code>false</code> otherwise or, if the <code>Shape</code>
+ *          contains the rectangular area and the
+ *          <code>intersects</code> method returns <code>true</code>
+ *          and the containment calculations would be too expensive to
+ *          perform.
+ * @see java.awt.geom.Area
+ * @see #intersects
+ * @since 1.2
+ */
+public boolean contains(double x, double y, double w, double h);

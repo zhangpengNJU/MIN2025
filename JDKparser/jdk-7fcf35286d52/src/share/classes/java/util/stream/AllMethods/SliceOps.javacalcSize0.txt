@@ -1,0 +1,13 @@
+/**
+ * Calculates the sliced size given the current size, number of elements
+ * skip, and the number of elements to limit.
+ *
+ * @param size the current size
+ * @param skip the number of elements to skip, assumed to be >= 0
+ * @param limit the number of elements to limit, assumed to be >= 0, with
+ *        a value of {@code Long.MAX_VALUE} if there is no limit
+ * @return the sliced size
+ */
+private static long calcSize(long size, long skip, long limit) {
+    return size >= 0 ? Math.max(-1, Math.min(size - skip, limit)) : -1;
+}

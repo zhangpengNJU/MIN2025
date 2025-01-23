@@ -1,0 +1,40 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a mutable reduce on
+ * {@code double} values.
+ *
+ * @param <R> the type of the result
+ * @param supplier a factory to produce a new accumulator of the result type
+ * @param accumulator a function to incorporate an int into an
+ *        accumulator
+ * @param combiner a function to combine an accumulator into another
+ * @return a {@code TerminalOp} implementing the reduction
+ */
+public static <R> TerminalOp<Double, R> makeDouble(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator, BinaryOperator<R> combiner) {
+    Objects.requireNonNull(supplier);
+    Objects.requireNonNull(accumulator);
+    Objects.requireNonNull(combiner);
+    class ReducingSink extends Box<R> implements AccumulatingSink<Double, R, ReducingSink>, Sink.OfDouble {
+
+        @Override
+        public void begin(long size) {
+            state = supplier.get();
+        }
+
+        @Override
+        public void accept(double t) {
+            accumulator.accept(state, t);
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            state = combiner.apply(state, other.state);
+        }
+    }
+    return new ReduceOp<Double, R, ReducingSink>(StreamShape.DOUBLE_VALUE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

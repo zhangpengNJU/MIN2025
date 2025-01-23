@@ -1,0 +1,32 @@
+private void makeLayoutWindow(int localStart) {
+    int compStart = localStart;
+    int compLimit = fChars.length;
+    // If we've already gone past the layout window, format to end of paragraph
+    if (layoutCount > 0 && !haveLayoutWindow) {
+        float avgLineLength = Math.max(layoutCharCount / layoutCount, 1);
+        compLimit = Math.min(localStart + (int) (avgLineLength * EST_LINES), fChars.length);
+    }
+    if (localStart > 0 || compLimit < fChars.length) {
+        if (charIter == null) {
+            charIter = new CharArrayIterator(fChars);
+        } else {
+            charIter.reset(fChars);
+        }
+        if (fLineBreak == null) {
+            fLineBreak = BreakIterator.getLineInstance();
+        }
+        fLineBreak.setText(charIter);
+        if (localStart > 0) {
+            if (!fLineBreak.isBoundary(localStart)) {
+                compStart = fLineBreak.preceding(localStart);
+            }
+        }
+        if (compLimit < fChars.length) {
+            if (!fLineBreak.isBoundary(compLimit)) {
+                compLimit = fLineBreak.following(compLimit);
+            }
+        }
+    }
+    ensureComponents(compStart, compLimit);
+    haveLayoutWindow = true;
+}

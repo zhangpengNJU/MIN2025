@@ -1,0 +1,50 @@
+/**
+ * Returns the green color component for the specified pixel, scaled
+ * from 0 to 255 in the default RGB <code>ColorSpace</code>, sRGB.  A
+ * color conversion is done if necessary.  The pixel value is specified
+ * by an array of data elements of type <code>transferType</code> passed
+ * in as an object reference.
+ * The returned value is a non pre-multiplied value.  Thus, if the
+ * alpha is premultiplied, this method divides it out before returning
+ * the value.  If the alpha value is 0, for example, the green value
+ * is 0.  If <code>inData</code> is not a primitive array of type
+ * <code>transferType</code>, a <code>ClassCastException</code> is thrown.
+ *  An <code>ArrayIndexOutOfBoundsException</code> is
+ * thrown if <code>inData</code> is not large enough to hold a pixel
+ * value for this <code>ColorModel</code>.  Since
+ * <code>DirectColorModel</code> can be subclassed, subclasses inherit
+ * the implementation of this method and if they don't override it
+ * then they throw an exception if they use an unsupported
+ * <code>transferType</code>.
+ * An <code>UnsupportedOperationException</code> is
+ * thrown if this <code>transferType</code> is not supported by this
+ * <code>ColorModel</code>.
+ * @param inData the array containing the pixel value
+ * @return the value of the green component of the specified pixel.
+ * @throws ArrayIndexOutOfBoundsException if <code>inData</code> is not
+ *         large enough to hold a pixel value for this color model
+ * @throws ClassCastException if <code>inData</code> is not a
+ *         primitive array of type <code>transferType</code>
+ * @throws UnsupportedOperationException if this <code>transferType</code>
+ *         is not supported by this color model
+ */
+public int getGreen(Object inData) {
+    int pixel = 0;
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata = (byte[]) inData;
+            pixel = bdata[0] & 0xff;
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] sdata = (short[]) inData;
+            pixel = sdata[0] & 0xffff;
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata = (int[]) inData;
+            pixel = idata[0];
+            break;
+        default:
+            throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+    }
+    return getGreen(pixel);
+}

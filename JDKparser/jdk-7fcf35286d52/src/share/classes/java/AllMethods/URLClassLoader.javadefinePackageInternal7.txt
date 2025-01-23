@@ -1,0 +1,20 @@
+// Also called by VM to define Package for classes loaded from the CDS
+// archive
+private void definePackageInternal(String pkgname, Manifest man, URL url) {
+    if (getAndVerifyPackage(pkgname, man, url) == null) {
+        try {
+            if (man != null) {
+                definePackage(pkgname, man, url);
+            } else {
+                definePackage(pkgname, null, null, null, null, null, null, null);
+            }
+        } catch (IllegalArgumentException iae) {
+            // parallel-capable class loaders: re-verify in case of a
+            // race condition
+            if (getAndVerifyPackage(pkgname, man, url) == null) {
+                // Should never happen
+                throw new AssertionError("Cannot find package " + pkgname);
+            }
+        }
+    }
+}

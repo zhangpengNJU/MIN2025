@@ -1,0 +1,30 @@
+/*
+     * Match CodeSource to a CodeSigner[] in the signer cache.
+     */
+private CodeSigner[] findMatchingSigners(CodeSource cs) {
+    if (cs instanceof VerifierCodeSource) {
+        VerifierCodeSource vcs = (VerifierCodeSource) cs;
+        if (vcs.isSameDomain(csdomain)) {
+            return ((VerifierCodeSource) cs).getPrivateSigners();
+        }
+    }
+    /*
+         * In practice signers should always be optimized above
+         * but this handles a CodeSource of any type, just in case.
+         */
+    CodeSource[] sources = mapSignersToCodeSources(cs.getLocation(), getJarCodeSigners(), true);
+    List<CodeSource> sourceList = new ArrayList<>();
+    for (int i = 0; i < sources.length; i++) {
+        sourceList.add(sources[i]);
+    }
+    int j = sourceList.indexOf(cs);
+    if (j != -1) {
+        CodeSigner[] match;
+        match = ((VerifierCodeSource) sourceList.get(j)).getPrivateSigners();
+        if (match == null) {
+            match = emptySigner;
+        }
+        return match;
+    }
+    return null;
+}

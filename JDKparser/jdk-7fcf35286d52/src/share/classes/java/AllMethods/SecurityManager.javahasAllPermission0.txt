@@ -1,0 +1,11 @@
+/**
+ * returns true if the current context has been granted AllPermission
+ */
+private boolean hasAllPermission() {
+    try {
+        checkPermission(SecurityConstants.ALL_PERMISSION);
+        return true;
+    } catch (SecurityException se) {
+        return false;
+    }
+}

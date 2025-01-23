@@ -1,0 +1,8 @@
+private static Field[] copyFields(Field[] arg) {
+    Field[] out = new Field[arg.length];
+    ReflectionFactory fact = getReflectionFactory();
+    for (int i = 0; i < arg.length; i++) {
+        out[i] = fact.copyField(arg[i]);
+    }
+    return out;
+}

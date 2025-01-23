@@ -1,0 +1,17 @@
+// get the key class object of the specified name
+private Class<?> getKeyClass(String name) {
+    try {
+        return Class.forName(name);
+    } catch (ClassNotFoundException e) {
+    // ignore
+    }
+    try {
+        ClassLoader cl = provider.getClass().getClassLoader();
+        if (cl != null) {
+            return cl.loadClass(name);
+        }
+    } catch (ClassNotFoundException e) {
+    // ignore
+    }
+    return null;
+}

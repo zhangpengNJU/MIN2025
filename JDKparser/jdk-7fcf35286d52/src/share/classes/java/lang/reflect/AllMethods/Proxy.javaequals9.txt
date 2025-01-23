@@ -1,0 +1,12 @@
+private static boolean equals(WeakReference<Class<?>>[] refs1, WeakReference<Class<?>>[] refs2) {
+    if (refs1.length != refs2.length) {
+        return false;
+    }
+    for (int i = 0; i < refs1.length; i++) {
+        Class<?> intf = refs1[i].get();
+        if (intf == null || intf != refs2[i].get()) {
+            return false;
+        }
+    }
+    return true;
+}

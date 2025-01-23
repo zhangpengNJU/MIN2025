@@ -1,0 +1,15 @@
+public NameService run() {
+    Iterator<NameServiceDescriptor> itr = ServiceLoader.load(NameServiceDescriptor.class).iterator();
+    while (itr.hasNext()) {
+        NameServiceDescriptor nsd = itr.next();
+        if (providerName.equalsIgnoreCase(nsd.getType() + "," + nsd.getProviderName())) {
+            try {
+                return nsd.createNameService();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("Cannot create name service:" + providerName + ": " + e);
+            }
+        }
+    }
+    return null;
+}

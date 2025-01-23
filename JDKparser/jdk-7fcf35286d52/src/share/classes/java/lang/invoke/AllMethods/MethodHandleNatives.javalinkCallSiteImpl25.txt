@@ -1,0 +1,10 @@
+static MemberName linkCallSiteImpl(Class<?> caller, MethodHandle bootstrapMethod, String name, MethodType type, Object staticArguments, Object[] appendixResult) {
+    CallSite callSite = CallSite.makeSite(bootstrapMethod, name, type, staticArguments, caller);
+    if (callSite instanceof ConstantCallSite) {
+        appendixResult[0] = callSite.dynamicInvoker();
+        return Invokers.linkToTargetMethod(type);
+    } else {
+        appendixResult[0] = callSite;
+        return Invokers.linkToCallSiteMethod(type);
+    }
+}

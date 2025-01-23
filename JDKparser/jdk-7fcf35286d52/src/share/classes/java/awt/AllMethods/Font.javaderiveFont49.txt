@@ -1,0 +1,15 @@
+/**
+ * Creates a new <code>Font</code> object by replicating the current
+ * <code>Font</code> object and applying a new transform to it.
+ * @param trans the <code>AffineTransform</code> associated with the
+ * new <code>Font</code>
+ * @return a new <code>Font</code> object.
+ * @throws IllegalArgumentException if <code>trans</code> is
+ *         <code>null</code>
+ * @since 1.2
+ */
+public Font deriveFont(AffineTransform trans) {
+    AttributeValues newValues = getAttributeValues().clone();
+    applyTransform(trans, newValues);
+    return new Font(newValues, null, -1, createdFont, font2DHandle);
+}

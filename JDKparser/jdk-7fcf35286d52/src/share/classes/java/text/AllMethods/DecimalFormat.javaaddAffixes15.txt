@@ -1,0 +1,19 @@
+/**
+ * Internal utility.
+ * Adds the passed {@code prefix} and {@code suffix} to {@code container}.
+ *
+ * @param container  Char array container which to prepend/append the
+ *  prefix/suffix.
+ * @param prefix     Char sequence to prepend as a prefix.
+ * @param suffix     Char sequence to append as a suffix.
+ */
+// private void addAffixes(boolean isNegative, char[] container) {
+private void addAffixes(char[] container, char[] prefix, char[] suffix) {
+    // We add affixes only if needed (affix length > 0).
+    int pl = prefix.length;
+    int sl = suffix.length;
+    if (pl != 0)
+        prependPrefix(prefix, pl, container);
+    if (sl != 0)
+        appendSuffix(suffix, sl, container);
+}

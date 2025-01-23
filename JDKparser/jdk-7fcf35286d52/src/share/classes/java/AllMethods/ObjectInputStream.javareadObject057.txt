@@ -1,0 +1,95 @@
+/**
+ * Underlying readObject implementation.
+ * @param type a type expected to be deserialized; non-null
+ * @param unshared true if the object can not be a reference to a shared object, otherwise false
+ */
+private Object readObject0(Class<?> type, boolean unshared) throws IOException {
+    boolean oldMode = bin.getBlockDataMode();
+    if (oldMode) {
+        int remain = bin.currentBlockRemaining();
+        if (remain > 0) {
+            throw new OptionalDataException(remain);
+        } else if (defaultDataEnd) {
+            /*
+                 * Fix for 4360508: stream is currently at the end of a field
+                 * value block written via default serialization; since there
+                 * is no terminating TC_ENDBLOCKDATA tag, simulate
+                 * end-of-custom-data behavior explicitly.
+                 */
+            throw new OptionalDataException(true);
+        }
+        bin.setBlockDataMode(false);
+    }
+    byte tc;
+    while ((tc = bin.peekByte()) == TC_RESET) {
+        bin.readByte();
+        handleReset();
+    }
+    depth++;
+    totalObjectRefs++;
+    try {
+        switch(tc) {
+            case TC_NULL:
+                return readNull();
+            case TC_REFERENCE:
+                // check the type of the existing object
+                return type.cast(readHandle(unshared));
+            case TC_CLASS:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast a class to java.lang.String");
+                }
+                return readClass(unshared);
+            case TC_CLASSDESC:
+            case TC_PROXYCLASSDESC:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast a class to java.lang.String");
+                }
+                return readClassDesc(unshared);
+            case TC_STRING:
+            case TC_LONGSTRING:
+                return checkResolve(readString(unshared));
+            case TC_ARRAY:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast an array to java.lang.String");
+                }
+                return checkResolve(readArray(unshared));
+            case TC_ENUM:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast an enum to java.lang.String");
+                }
+                return checkResolve(readEnum(unshared));
+            case TC_OBJECT:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast an object to java.lang.String");
+                }
+                return checkResolve(readOrdinaryObject(unshared));
+            case TC_EXCEPTION:
+                if (type == String.class) {
+                    throw new ClassCastException("Cannot cast an exception to java.lang.String");
+                }
+                IOException ex = readFatalException();
+                throw new WriteAbortedException("writing aborted", ex);
+            case TC_BLOCKDATA:
+            case TC_BLOCKDATALONG:
+                if (oldMode) {
+                    bin.setBlockDataMode(true);
+                    // force header read
+                    bin.peek();
+                    throw new OptionalDataException(bin.currentBlockRemaining());
+                } else {
+                    throw new StreamCorruptedException("unexpected block data");
+                }
+            case TC_ENDBLOCKDATA:
+                if (oldMode) {
+                    throw new OptionalDataException(true);
+                } else {
+                    throw new StreamCorruptedException("unexpected end of block data");
+                }
+            default:
+                throw new StreamCorruptedException(String.format("invalid type code: %02X", tc));
+        }
+    } finally {
+        depth--;
+        bin.setBlockDataMode(oldMode);
+    }
+}

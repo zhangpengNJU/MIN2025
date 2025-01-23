@@ -1,0 +1,17 @@
+/**
+ * Handles java.lang.Object methods.
+ */
+private Object invokeObjectMethod(Object proxy, Method method, Object[] args) {
+    String name = method.getName();
+    if (name.equals("hashCode")) {
+        return hashCode();
+    } else if (name.equals("equals")) {
+        Object obj = args[0];
+        InvocationHandler hdlr;
+        return proxy == obj || (obj != null && Proxy.isProxyClass(obj.getClass()) && (hdlr = Proxy.getInvocationHandler(obj)) instanceof RemoteObjectInvocationHandler && this.equals(hdlr));
+    } else if (name.equals("toString")) {
+        return proxyToString(proxy);
+    } else {
+        throw new IllegalArgumentException("unexpected Object method: " + method);
+    }
+}

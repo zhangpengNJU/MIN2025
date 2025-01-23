@@ -1,0 +1,14 @@
+/**
+ * Sets the requested data array element in the specified bank to
+ * the given <code>double</code>.
+ *
+ * @param bank The bank number.
+ * @param i The desired data array element.
+ * @param val The value to be set.
+ * @see #getElemDouble(int)
+ * @see #getElemDouble(int, int)
+ */
+public void setElemDouble(int bank, int i, double val) {
+    bankdata[bank][i + offsets[bank]] = (float) val;
+    theTrackable.markDirty();
+}

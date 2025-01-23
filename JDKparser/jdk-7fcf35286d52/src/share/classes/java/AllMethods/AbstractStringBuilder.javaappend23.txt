@@ -1,0 +1,30 @@
+/**
+ * Appends the string representation of a subarray of the
+ * {@code char} array argument to this sequence.
+ * <p>
+ * Characters of the {@code char} array {@code str}, starting at
+ * index {@code offset}, are appended, in order, to the contents
+ * of this sequence. The length of this sequence increases
+ * by the value of {@code len}.
+ * <p>
+ * The overall effect is exactly as if the arguments were converted
+ * to a string by the method {@link String#valueOf(char[],int,int)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   str      the characters to be appended.
+ * @param   offset   the index of the first {@code char} to append.
+ * @param   len      the number of {@code char}s to append.
+ * @return  a reference to this object.
+ * @throws IndexOutOfBoundsException
+ *         if {@code offset < 0} or {@code len < 0}
+ *         or {@code offset+len > str.length}
+ */
+public AbstractStringBuilder append(char[] str, int offset, int len) {
+    if (// let arraycopy report AIOOBE for len < 0
+    len > 0)
+        ensureCapacityInternal(count + len);
+    System.arraycopy(str, offset, value, count, len);
+    count += len;
+    return this;
+}

@@ -1,0 +1,14 @@
+private JarEntry checkManifest(JarEntry e) throws IOException {
+    if (e != null && JarFile.MANIFEST_NAME.equalsIgnoreCase(e.getName())) {
+        man = new Manifest();
+        byte[] bytes = getBytes(new BufferedInputStream(this));
+        man.read(new ByteArrayInputStream(bytes));
+        closeEntry();
+        if (doVerify) {
+            jv = new JarVerifier(e.getName(), bytes);
+            mev = new ManifestEntryVerifier(man, jv.manifestName);
+        }
+        return (JarEntry) super.getNextEntry();
+    }
+    return e;
+}

@@ -1,0 +1,12 @@
+/*non-public*/
+static MethodHandle filterArgument(MethodHandle target, int pos, MethodHandle filter) {
+    filterArgumentChecks(target, pos, filter);
+    MethodType targetType = target.type();
+    MethodType filterType = filter.type();
+    BoundMethodHandle result = target.rebind();
+    Class<?> newParamType = filterType.parameterType(0);
+    LambdaForm lform = result.editor().filterArgumentForm(1 + pos, BasicType.basicType(newParamType));
+    MethodType newType = targetType.changeParameterType(pos, newParamType);
+    result = result.copyWithExtendL(newType, lform, filter);
+    return result;
+}

@@ -1,0 +1,18 @@
+/**
+ * @serialData "permissions" field (a Vector containing the SocketPermissions).
+ */
+/*
+     * Writes the contents of the perms field out as a Vector for
+     * serialization compatibility with earlier releases.
+     */
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // Don't call out.defaultWriteObject()
+    // Write out Vector
+    Vector<SocketPermission> permissions = new Vector<>(perms.size());
+    synchronized (this) {
+        permissions.addAll(perms);
+    }
+    ObjectOutputStream.PutField pfields = out.putFields();
+    pfields.put("permissions", permissions);
+    out.writeFields();
+}

@@ -1,0 +1,17 @@
+// stream methods, coded in a way intended to better isolate for
+// maintenance purposes the small differences across forms.
+/**
+ * Returns a stream producing the given {@code streamSize} number of
+ * pseudorandom {@code int} values.
+ *
+ * @param streamSize the number of values to generate
+ * @return a stream of pseudorandom {@code int} values
+ * @throws IllegalArgumentException if {@code streamSize} is
+ *         less than zero
+ * @since 1.8
+ */
+public IntStream ints(long streamSize) {
+    if (streamSize < 0L)
+        throw new IllegalArgumentException(BadSize);
+    return StreamSupport.intStream(new RandomIntsSpliterator(0L, streamSize, Integer.MAX_VALUE, 0), false);
+}

@@ -1,0 +1,4 @@
+private boolean staticIsConsistent() {
+    byte refKind = getReferenceKind();
+    return MethodHandleNatives.refKindIsStatic(refKind) == isStatic() || getModifiers() == 0;
+}

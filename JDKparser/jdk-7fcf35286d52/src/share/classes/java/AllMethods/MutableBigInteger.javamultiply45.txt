@@ -1,0 +1,34 @@
+/**
+ * Multiply the contents of two MutableBigInteger objects. The result is
+ * placed into MutableBigInteger z. The contents of y are not changed.
+ */
+void multiply(MutableBigInteger y, MutableBigInteger z) {
+    int xLen = intLen;
+    int yLen = y.intLen;
+    int newLen = xLen + yLen;
+    // Put z into an appropriate state to receive product
+    if (z.value.length < newLen)
+        z.value = new int[newLen];
+    z.offset = 0;
+    z.intLen = newLen;
+    // The first iteration is hoisted out of the loop to avoid extra add
+    long carry = 0;
+    for (int j = yLen - 1, k = yLen + xLen - 1; j >= 0; j--, k--) {
+        long product = (y.value[j + y.offset] & LONG_MASK) * (value[xLen - 1 + offset] & LONG_MASK) + carry;
+        z.value[k] = (int) product;
+        carry = product >>> 32;
+    }
+    z.value[xLen - 1] = (int) carry;
+    // Perform the multiplication word by word
+    for (int i = xLen - 2; i >= 0; i--) {
+        carry = 0;
+        for (int j = yLen - 1, k = yLen + i; j >= 0; j--, k--) {
+            long product = (y.value[j + y.offset] & LONG_MASK) * (value[i + offset] & LONG_MASK) + (z.value[k] & LONG_MASK) + carry;
+            z.value[k] = (int) product;
+            carry = product >>> 32;
+        }
+        z.value[i] = (int) carry;
+    }
+    // Remove leading zeros from product
+    z.normalize();
+}

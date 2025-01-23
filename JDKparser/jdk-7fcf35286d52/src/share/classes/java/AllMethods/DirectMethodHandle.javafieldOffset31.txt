@@ -1,0 +1,7 @@
+@ForceInline
+static /*non-public*/
+long fieldOffset(Object accessorObj) {
+    // Note: We return a long because that is what Unsafe.getObject likes.
+    // We store a plain int because it is more compact.
+    return ((Accessor) accessorObj).fieldOffset;
+}

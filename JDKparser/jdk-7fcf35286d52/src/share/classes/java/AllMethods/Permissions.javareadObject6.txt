@@ -1,0 +1,21 @@
+/*
+     * Reads in a Hashtable of Class/PermissionCollections and saves them in the
+     * permsMap field. Reads in allPermission.
+     */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get allPermission
+    allPermission = (PermissionCollection) gfields.get("allPermission", null);
+    // Get permissions
+    // writeObject writes a Hashtable<Class<?>, PermissionCollection> for
+    // the perms key, so this cast is safe, unless the data is corrupt.
+    @SuppressWarnings("unchecked")
+    Hashtable<Class<?>, PermissionCollection> perms = (Hashtable<Class<?>, PermissionCollection>) gfields.get("perms", null);
+    permsMap = new HashMap<Class<?>, PermissionCollection>(perms.size() * 2);
+    permsMap.putAll(perms);
+    // Set hasUnresolved
+    UnresolvedPermissionCollection uc = (UnresolvedPermissionCollection) permsMap.get(UnresolvedPermission.class);
+    hasUnresolved = (uc != null && uc.elements().hasMoreElements());
+}

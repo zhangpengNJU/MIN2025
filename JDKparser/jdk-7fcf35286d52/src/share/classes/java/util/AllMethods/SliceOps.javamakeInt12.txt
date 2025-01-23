@@ -1,0 +1,92 @@
+/**
+ * Appends a "slice" operation to the provided IntStream.  The slice
+ * operation may be may be skip-only, limit-only, or skip-and-limit.
+ *
+ * @param upstream An IntStream
+ * @param skip The number of elements to skip.  Must be >= 0.
+ * @param limit The maximum size of the resulting stream, or -1 if no limit
+ *        is to be imposed
+ */
+public static IntStream makeInt(AbstractPipeline<?, Integer, ?> upstream, long skip, long limit) {
+    if (skip < 0)
+        throw new IllegalArgumentException("Skip must be non-negative: " + skip);
+    return new IntPipeline.StatefulOp<Integer>(upstream, StreamShape.INT_VALUE, flags(limit)) {
+
+        Spliterator.OfInt unorderedSkipLimitSpliterator(Spliterator.OfInt s, long skip, long limit, long sizeIfKnown) {
+            if (skip <= sizeIfKnown) {
+                // Use just the limit if the number of elements
+                // to skip is <= the known pipeline size
+                limit = limit >= 0 ? Math.min(limit, sizeIfKnown - skip) : sizeIfKnown - skip;
+                skip = 0;
+            }
+            return new StreamSpliterators.UnorderedSliceSpliterator.OfInt(s, skip, limit);
+        }
+
+        @Override
+        <P_IN> Spliterator<Integer> opEvaluateParallelLazy(PipelineHelper<Integer> helper, Spliterator<P_IN> spliterator) {
+            long size = helper.exactOutputSizeIfKnown(spliterator);
+            if (size > 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+                return new StreamSpliterators.SliceSpliterator.OfInt((Spliterator.OfInt) helper.wrapSpliterator(spliterator), skip, calcSliceFence(skip, limit));
+            } else if (!StreamOpFlag.ORDERED.isKnown(helper.getStreamAndOpFlags())) {
+                return unorderedSkipLimitSpliterator((Spliterator.OfInt) helper.wrapSpliterator(spliterator), skip, limit, size);
+            } else {
+                return new SliceTask<>(this, helper, spliterator, Integer[]::new, skip, limit).invoke().spliterator();
+            }
+        }
+
+        @Override
+        <P_IN> Node<Integer> opEvaluateParallel(PipelineHelper<Integer> helper, Spliterator<P_IN> spliterator, IntFunction<Integer[]> generator) {
+            long size = helper.exactOutputSizeIfKnown(spliterator);
+            if (size > 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+                // Because the pipeline is SIZED the slice spliterator
+                // can be created from the source, this requires matching
+                // to shape of the source, and is potentially more efficient
+                // than creating the slice spliterator from the pipeline
+                // wrapping spliterator
+                Spliterator<P_IN> s = sliceSpliterator(helper.getSourceShape(), spliterator, skip, limit);
+                return Nodes.collectInt(helper, s, true);
+            } else if (!StreamOpFlag.ORDERED.isKnown(helper.getStreamAndOpFlags())) {
+                Spliterator.OfInt s = unorderedSkipLimitSpliterator((Spliterator.OfInt) helper.wrapSpliterator(spliterator), skip, limit, size);
+                // Collect using this pipeline, which is empty and therefore
+                // can be used with the pipeline wrapping spliterator
+                // Note that we cannot create a slice spliterator from
+                // the source spliterator if the pipeline is not SIZED
+                return Nodes.collectInt(this, s, true);
+            } else {
+                return new SliceTask<>(this, helper, spliterator, generator, skip, limit).invoke();
+            }
+        }
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+            return new Sink.ChainedInt<Integer>(sink) {
+
+                long n = skip;
+
+                long m = limit >= 0 ? limit : Long.MAX_VALUE;
+
+                @Override
+                public void begin(long size) {
+                    downstream.begin(calcSize(size, skip, m));
+                }
+
+                @Override
+                public void accept(int t) {
+                    if (n == 0) {
+                        if (m > 0) {
+                            m--;
+                            downstream.accept(t);
+                        }
+                    } else {
+                        n--;
+                    }
+                }
+
+                @Override
+                public boolean cancellationRequested() {
+                    return m == 0 || downstream.cancellationRequested();
+                }
+            };
+        }
+    };
+}

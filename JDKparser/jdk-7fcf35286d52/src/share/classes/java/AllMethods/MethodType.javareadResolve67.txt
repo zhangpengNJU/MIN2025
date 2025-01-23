@@ -1,0 +1,14 @@
+/**
+ * Resolves and initializes a {@code MethodType} object
+ * after serialization.
+ * @return the fully initialized {@code MethodType} object
+ */
+private Object readResolve() {
+    // Do not use a trusted path for deserialization:
+    // return makeImpl(rtype, ptypes, true);
+    // Verify all operands, and make sure ptypes is unshared:
+    // Return a new validated MethodType for the rtype and ptypes passed from readObject.
+    MethodType mt = ((MethodType[]) wrapAlt)[0];
+    wrapAlt = null;
+    return mt;
+}

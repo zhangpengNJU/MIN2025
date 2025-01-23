@@ -1,0 +1,28 @@
+// 
+// 
+// java.lang.reflect.Field handling
+// 
+// 
+// Returns an array of "root" fields. These Field objects must NOT
+// be propagated to the outside world, but must instead be copied
+// via ReflectionFactory.copyField.
+private Field[] privateGetDeclaredFields(boolean publicOnly) {
+    checkInitted();
+    Field[] res;
+    ReflectionData<T> rd = reflectionData();
+    if (rd != null) {
+        res = publicOnly ? rd.declaredPublicFields : rd.declaredFields;
+        if (res != null)
+            return res;
+    }
+    // No cached value available; request value from VM
+    res = Reflection.filterFields(this, getDeclaredFields0(publicOnly));
+    if (rd != null) {
+        if (publicOnly) {
+            rd.declaredPublicFields = res;
+        } else {
+            rd.declaredFields = res;
+        }
+    }
+    return res;
+}

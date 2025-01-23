@@ -1,0 +1,21 @@
+/**
+ * Unlinks x.
+ */
+void unlink(Node<E> x) {
+    // assert lock.isHeldByCurrentThread();
+    Node<E> p = x.prev;
+    Node<E> n = x.next;
+    if (p == null) {
+        unlinkFirst();
+    } else if (n == null) {
+        unlinkLast();
+    } else {
+        p.next = n;
+        n.prev = p;
+        x.item = null;
+        // Don't mess with x's links.  They may still be in use by
+        // an iterator.
+        --count;
+        notFull.signal();
+    }
+}

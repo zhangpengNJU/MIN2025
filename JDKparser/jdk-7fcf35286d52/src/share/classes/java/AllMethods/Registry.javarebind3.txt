@@ -1,0 +1,22 @@
+/**
+ * Replaces the binding for the specified <code>name</code> in
+ * this registry with the supplied remote reference.  If there is
+ * an existing binding for the specified <code>name</code>, it is
+ * discarded.
+ *
+ * @param   name the name to associate with the remote reference
+ * @param   obj a reference to a remote object (usually a stub)
+ *
+ * @throws  RemoteException if remote communication with the
+ * registry failed; if exception is a <code>ServerException</code>
+ * containing an <code>AccessException</code>, then the registry
+ * denies the caller access to perform this operation (if
+ * originating from a non-local host, for example)
+ *
+ * @throws  AccessException if this registry is local and it denies
+ * the caller access to perform this operation
+ *
+ * @throws  NullPointerException if <code>name</code> is
+ * <code>null</code>, or if <code>obj</code> is <code>null</code>
+ */
+public void rebind(String name, Remote obj) throws RemoteException, AccessException;

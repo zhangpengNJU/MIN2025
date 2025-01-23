@@ -1,0 +1,24 @@
+/**
+ * Returns the boot class path that is used by the bootstrap class loader
+ * to search for class files.
+ *
+ * <p> Multiple paths in the boot class path are separated by the
+ * path separator character of the platform on which the Java
+ * virtual machine is running.
+ *
+ * <p>A Java virtual machine implementation may not support
+ * the boot class path mechanism for the bootstrap class loader
+ * to search for class files.
+ * The {@link #isBootClassPathSupported} method can be used
+ * to determine if the Java virtual machine supports this method.
+ *
+ * @return the boot class path.
+ *
+ * @throws java.lang.UnsupportedOperationException
+ *     if the Java virtual machine does not support this operation.
+ *
+ * @throws  java.lang.SecurityException
+ *     if a security manager exists and the caller does not have
+ *     ManagementPermission("monitor").
+ */
+public String getBootClassPath();

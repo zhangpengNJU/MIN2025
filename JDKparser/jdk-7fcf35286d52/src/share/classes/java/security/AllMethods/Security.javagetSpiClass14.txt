@@ -1,0 +1,18 @@
+/**
+ * Return the Class object for the given engine type
+ * (e.g. "MessageDigest"). Works for Spis in the java.security package
+ * only.
+ */
+private static Class<?> getSpiClass(String type) {
+    Class<?> clazz = spiMap.get(type);
+    if (clazz != null) {
+        return clazz;
+    }
+    try {
+        clazz = Class.forName("java.security." + type + "Spi");
+        spiMap.put(type, clazz);
+        return clazz;
+    } catch (ClassNotFoundException e) {
+        throw new AssertionError("Spi class not found", e);
+    }
+}

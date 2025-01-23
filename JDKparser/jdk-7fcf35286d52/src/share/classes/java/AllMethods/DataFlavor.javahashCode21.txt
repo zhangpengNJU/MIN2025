@@ -1,0 +1,40 @@
+/**
+ * Returns hash code for this <code>DataFlavor</code>.
+ * For two equal <code>DataFlavor</code>s, hash codes are equal.
+ * For the <code>String</code>
+ * that matches <code>DataFlavor.equals(String)</code>, it is not
+ * guaranteed that <code>DataFlavor</code>'s hash code is equal
+ * to the hash code of the <code>String</code>.
+ *
+ * @return a hash code for this <code>DataFlavor</code>
+ */
+public int hashCode() {
+    int total = 0;
+    if (representationClass != null) {
+        total += representationClass.hashCode();
+    }
+    if (mimeType != null) {
+        String primaryType = mimeType.getPrimaryType();
+        if (primaryType != null) {
+            total += primaryType.hashCode();
+        }
+        // Do not add subType.hashCode() to the total. equals uses
+        // MimeType.match which reports a match if one or both of the
+        // subTypes is '*', regardless of the other subType.
+        if ("text".equals(primaryType)) {
+            if (DataTransferer.doesSubtypeSupportCharset(this) && representationClass != null && !isStandardTextRepresentationClass()) {
+                String charset = DataTransferer.canonicalName(getParameter("charset"));
+                if (charset != null) {
+                    total += charset.hashCode();
+                }
+            }
+            if ("html".equals(getSubType())) {
+                String document = this.getParameter("document");
+                if (document != null) {
+                    total += document.hashCode();
+                }
+            }
+        }
+    }
+    return total;
+}

@@ -1,0 +1,10 @@
+/* Add Methods declared in an interface to this MethodArray.
+         * Static methods declared in interfaces are not inherited.
+         */
+void addInterfaceMethods(Method[] methods) {
+    for (Method candidate : methods) {
+        if (!Modifier.isStatic(candidate.getModifiers())) {
+            add(candidate);
+        }
+    }
+}

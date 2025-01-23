@@ -1,0 +1,21 @@
+/**
+ * Traverses the tree of components and reparents children heavyweight component
+ * to new heavyweight parent.
+ * @since 1.5
+ */
+private void reparentTraverse(ContainerPeer parentPeer, Container child) {
+    checkTreeLock();
+    for (int i = 0; i < child.getComponentCount(); i++) {
+        Component comp = child.getComponent(i);
+        if (comp.isLightweight()) {
+            // If components is lightweight check if it is container
+            // If it is container it might contain heavyweight children we need to reparent
+            if (comp instanceof Container) {
+                reparentTraverse(parentPeer, (Container) comp);
+            }
+        } else {
+            // Q: Need to update NativeInLightFixer?
+            comp.getPeer().reparent(parentPeer);
+        }
+    }
+}

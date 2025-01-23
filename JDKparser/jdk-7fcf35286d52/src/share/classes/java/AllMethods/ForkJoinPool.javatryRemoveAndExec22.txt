@@ -1,0 +1,46 @@
+/**
+ * If present, removes from queue and executes the given task,
+ * or any other cancelled task. Used only by awaitJoin.
+ *
+ * @return true if queue empty and task not known to be done
+ */
+final boolean tryRemoveAndExec(ForkJoinTask<?> task) {
+    ForkJoinTask<?>[] a;
+    int m, s, b, n;
+    if ((a = array) != null && (m = a.length - 1) >= 0 && task != null) {
+        while ((n = (s = top) - (b = base)) > 0) {
+            for (ForkJoinTask<?> t; ; ) {
+                // traverse from s to b
+                long j = ((--s & m) << ASHIFT) + ABASE;
+                if ((t = (ForkJoinTask<?>) U.getObject(a, j)) == null)
+                    // shorter than expected
+                    return s + 1 == top;
+                else if (t == task) {
+                    boolean removed = false;
+                    if (s + 1 == top) {
+                        // pop
+                        if (U.compareAndSwapObject(a, j, task, null)) {
+                            U.putOrderedInt(this, QTOP, s);
+                            removed = true;
+                        }
+                    } else if (// replace with proxy
+                    base == b)
+                        removed = U.compareAndSwapObject(a, j, task, new EmptyTask());
+                    if (removed)
+                        task.doExec();
+                    break;
+                } else if (t.status < 0 && s + 1 == top) {
+                    if (U.compareAndSwapObject(a, j, t, null))
+                        U.putOrderedInt(this, QTOP, s);
+                    // was cancelled
+                    break;
+                }
+                if (--n == 0)
+                    return false;
+            }
+            if (task.status < 0)
+                return false;
+        }
+    }
+    return true;
+}

@@ -1,0 +1,15 @@
+@Override
+public ProtectionDomainCache getProtectionDomainCache() {
+    return new ProtectionDomainCache() {
+
+        private final Map<Key, PermissionCollection> map = Collections.synchronizedMap(new WeakHashMap<Key, PermissionCollection>());
+
+        public void put(ProtectionDomain pd, PermissionCollection pc) {
+            map.put((pd == null ? null : pd.key), pc);
+        }
+
+        public PermissionCollection get(ProtectionDomain pd) {
+            return pd == null ? map.get(null) : map.get(pd.key);
+        }
+    };
+}

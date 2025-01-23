@@ -1,0 +1,25 @@
+/**
+ * Writes a <code>long</code> value, which is
+ * comprised of eight bytes, to the output stream.
+ * The byte values to be written, in the  order
+ * shown, are:
+ * <pre>{@code
+ * (byte)(0xff & (v >> 56))
+ * (byte)(0xff & (v >> 48))
+ * (byte)(0xff & (v >> 40))
+ * (byte)(0xff & (v >> 32))
+ * (byte)(0xff & (v >> 24))
+ * (byte)(0xff & (v >> 16))
+ * (byte)(0xff & (v >>  8))
+ * (byte)(0xff & v)
+ * }</pre><p>
+ * The bytes written by this method may be
+ * read by the <code>readLong</code> method
+ * of interface <code>DataInput</code> , which
+ * will then return a <code>long</code> equal
+ * to <code>v</code>.
+ *
+ * @param      v   the <code>long</code> value to be written.
+ * @throws     IOException  if an I/O error occurs.
+ */
+void writeLong(long v) throws IOException;

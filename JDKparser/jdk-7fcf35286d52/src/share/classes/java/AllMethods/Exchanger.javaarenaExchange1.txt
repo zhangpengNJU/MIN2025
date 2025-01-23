@@ -1,0 +1,104 @@
+/**
+ * Exchange function when arenas enabled. See above for explanation.
+ *
+ * @param item the (non-null) item to exchange
+ * @param timed true if the wait is timed
+ * @param ns if timed, the maximum wait time, else 0L
+ * @return the other thread's item; or null if interrupted; or
+ * TIMED_OUT if timed and timed out
+ */
+private final Object arenaExchange(Object item, boolean timed, long ns) {
+    Node[] a = arena;
+    Node p = participant.get();
+    for (int i = p.index; ; ) {
+        // access slot at i
+        // j is raw array offset
+        int b, m, c;
+        // j is raw array offset
+        long j;
+        Node q = (Node) U.getObjectVolatile(a, j = (i << ASHIFT) + ABASE);
+        if (q != null && U.compareAndSwapObject(a, j, q, null)) {
+            // release
+            Object v = q.item;
+            q.match = item;
+            Thread w = q.parked;
+            if (w != null)
+                U.unpark(w);
+            return v;
+        } else if (i <= (m = (b = bound) & MMASK) && q == null) {
+            // offer
+            p.item = item;
+            if (U.compareAndSwapObject(a, j, null, p)) {
+                long end = (timed && m == 0) ? System.nanoTime() + ns : 0L;
+                // wait
+                Thread t = Thread.currentThread();
+                for (int h = p.hash, spins = SPINS; ; ) {
+                    Object v = p.match;
+                    if (v != null) {
+                        U.putOrderedObject(p, MATCH, null);
+                        // clear for next use
+                        p.item = null;
+                        p.hash = h;
+                        return v;
+                    } else if (spins > 0) {
+                        // xorshift
+                        h ^= h << 1;
+                        // xorshift
+                        h ^= h >>> 3;
+                        // xorshift
+                        h ^= h << 10;
+                        if (// initialize hash
+                        h == 0)
+                            h = SPINS | (int) t.getId();
+                        else if (// approx 50% true
+                        h < 0 && (--spins & ((SPINS >>> 1) - 1)) == 0)
+                            // two yields per wait
+                            Thread.yield();
+                    } else if (U.getObjectVolatile(a, j) != p)
+                        // releaser hasn't set match yet
+                        spins = SPINS;
+                    else if (!t.isInterrupted() && m == 0 && (!timed || (ns = end - System.nanoTime()) > 0L)) {
+                        // emulate LockSupport
+                        U.putObject(t, BLOCKER, this);
+                        // minimize window
+                        p.parked = t;
+                        if (U.getObjectVolatile(a, j) == p)
+                            U.park(false, ns);
+                        p.parked = null;
+                        U.putObject(t, BLOCKER, null);
+                    } else if (U.getObjectVolatile(a, j) == p && U.compareAndSwapObject(a, j, p, null)) {
+                        if (// try to shrink
+                        m != 0)
+                            U.compareAndSwapInt(this, BOUND, b, b + SEQ - 1);
+                        p.item = null;
+                        p.hash = h;
+                        // descend
+                        i = p.index >>>= 1;
+                        if (Thread.interrupted())
+                            return null;
+                        if (timed && m == 0 && ns <= 0L)
+                            return TIMED_OUT;
+                        // expired; restart
+                        break;
+                    }
+                }
+            } else
+                // clear offer
+                p.item = null;
+        } else {
+            if (p.bound != b) {
+                // stale; reset
+                p.bound = b;
+                p.collides = 0;
+                i = (i != m || m == 0) ? m : m - 1;
+            } else if ((c = p.collides) < m || m == FULL || !U.compareAndSwapInt(this, BOUND, b, b + SEQ + 1)) {
+                p.collides = c + 1;
+                // cyclically traverse
+                i = (i == 0) ? m : i - 1;
+            } else
+                // grow
+                i = m + 1;
+            p.index = i;
+        }
+    }
+}

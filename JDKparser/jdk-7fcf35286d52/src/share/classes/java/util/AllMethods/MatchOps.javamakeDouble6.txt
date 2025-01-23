@@ -1,0 +1,27 @@
+/**
+ * Constructs a quantified predicate matcher for a {@code DoubleStream}.
+ *
+ * @param predicate the {@code Predicate} to apply to stream elements
+ * @param matchKind the kind of quantified match (all, any, none)
+ * @return a {@code TerminalOp} implementing the desired quantified match
+ *         criteria
+ */
+public static TerminalOp<Double, Boolean> makeDouble(DoublePredicate predicate, MatchKind matchKind) {
+    Objects.requireNonNull(predicate);
+    Objects.requireNonNull(matchKind);
+    class MatchSink extends BooleanTerminalSink<Double> implements Sink.OfDouble {
+
+        MatchSink() {
+            super(matchKind);
+        }
+
+        @Override
+        public void accept(double t) {
+            if (!stop && predicate.test(t) == matchKind.stopOnPredicateMatches) {
+                stop = true;
+                value = matchKind.shortCircuitResult;
+            }
+        }
+    }
+    return new MatchOp<>(StreamShape.DOUBLE_VALUE, matchKind, MatchSink::new);
+}

@@ -1,0 +1,36 @@
+/**
+ * Acquires a lock on the given region of this channel's file.
+ *
+ * <p> This method initiates an operation to acquire a lock on the given
+ * region of this channel's file.  The method behaves in exactly the same
+ * manner as the {@link #lock(long, long, boolean, Object, CompletionHandler)}
+ * method except that instead of specifying a completion handler, this
+ * method returns a {@code Future} representing the pending result. The
+ * {@code Future}'s {@link Future#get() get} method returns the {@link
+ * FileLock} on successful completion.
+ *
+ * @param   position
+ *          The position at which the locked region is to start; must be
+ *          non-negative
+ * @param   size
+ *          The size of the locked region; must be non-negative, and the sum
+ *          {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
+ * @param   shared
+ *          {@code true} to request a shared lock, in which case this
+ *          channel must be open for reading (and possibly writing);
+ *          {@code false} to request an exclusive lock, in which case this
+ *          channel must be open for writing (and possibly reading)
+ *
+ * @return  a {@code Future} object representing the pending result
+ *
+ * @throws  OverlappingFileLockException
+ *          If a lock is already held by this Java virtual machine, or there
+ *          is already a pending attempt to lock a region
+ * @throws  IllegalArgumentException
+ *          If the preconditions on the parameters do not hold
+ * @throws  NonReadableChannelException
+ *          If {@code shared} is true but this channel was not opened for reading
+ * @throws  NonWritableChannelException
+ *          If {@code shared} is false but this channel was not opened for writing
+ */
+public abstract Future<FileLock> lock(long position, long size, boolean shared);

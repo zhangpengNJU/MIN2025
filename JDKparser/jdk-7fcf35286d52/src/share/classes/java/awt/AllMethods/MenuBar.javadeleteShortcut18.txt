@@ -1,0 +1,11 @@
+/**
+ * Deletes the specified menu shortcut.
+ * @param     s the menu shortcut to delete.
+ * @since     JDK1.1
+ */
+public void deleteShortcut(MenuShortcut s) {
+    int nmenus = getMenuCount();
+    for (int i = 0; i < nmenus; i++) {
+        getMenu(i).deleteShortcut(s);
+    }
+}

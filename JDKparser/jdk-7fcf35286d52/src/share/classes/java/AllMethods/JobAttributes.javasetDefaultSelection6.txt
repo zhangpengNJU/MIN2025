@@ -1,0 +1,16 @@
+/**
+ * Specifies whether, for jobs using these attributes, the application
+ * should print all pages, the range specified by the return value of
+ * <code>getPageRanges</code>, or the current selection. Not specifying
+ * this attribute is equivalent to specifying DefaultSelectionType.ALL.
+ *
+ * @param   defaultSelection DefaultSelectionType.ALL,
+ *          DefaultSelectionType.RANGE, or DefaultSelectionType.SELECTION.
+ * @throws  IllegalArgumentException if defaultSelection is <code>null</code>
+ */
+public void setDefaultSelection(DefaultSelectionType defaultSelection) {
+    if (defaultSelection == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "defaultSelection");
+    }
+    this.defaultSelection = defaultSelection;
+}

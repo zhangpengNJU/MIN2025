@@ -1,0 +1,10 @@
+/**
+ * This method closes the input stream associated
+ * with this stream.
+ */
+public void close() {
+    if (parsingComplete()) {
+        close(this.input.getCharacterStream());
+        close(this.input.getByteStream());
+    }
+}

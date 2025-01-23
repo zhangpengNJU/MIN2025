@@ -1,0 +1,39 @@
+// skipCallSite is true if we are optimizing a ConstantCallSite
+private static LambdaForm callSiteForm(MethodType mtype, boolean skipCallSite) {
+    // normalize Z to I, String to Object, etc.
+    mtype = mtype.basicType();
+    final int which = (skipCallSite ? MethodTypeForm.LF_MH_LINKER : MethodTypeForm.LF_CS_LINKER);
+    LambdaForm lform = mtype.form().cachedLambdaForm(which);
+    if (lform != null)
+        return lform;
+    // exactInvokerForm (Object,Object)Object
+    // link with java.lang.invoke.MethodHandle.invokeBasic(MethodHandle,Object,Object)Object/invokeSpecial
+    final int ARG_BASE = 0;
+    final int OUTARG_LIMIT = ARG_BASE + mtype.parameterCount();
+    final int INARG_LIMIT = OUTARG_LIMIT + 1;
+    int nameCursor = OUTARG_LIMIT;
+    // the last in-argument
+    final int APPENDIX_ARG = nameCursor++;
+    final int CSITE_ARG = skipCallSite ? -1 : APPENDIX_ARG;
+    // result of getTarget
+    final int CALL_MH = skipCallSite ? APPENDIX_ARG : nameCursor++;
+    final int LINKER_CALL = nameCursor++;
+    MethodType invokerFormType = mtype.appendParameterTypes(skipCallSite ? MethodHandle.class : CallSite.class);
+    Name[] names = arguments(nameCursor - INARG_LIMIT, invokerFormType);
+    assert (names.length == nameCursor);
+    assert (names[APPENDIX_ARG] != null);
+    if (!skipCallSite)
+        names[CALL_MH] = new Name(NF_getCallSiteTarget, names[CSITE_ARG]);
+    // (site.)invokedynamic(a*):R => mh = site.getTarget(); mh.invokeBasic(a*)
+    final int PREPEND_MH = 0, PREPEND_COUNT = 1;
+    Object[] outArgs = Arrays.copyOfRange(names, ARG_BASE, OUTARG_LIMIT + PREPEND_COUNT, Object[].class);
+    // prepend MH argument:
+    System.arraycopy(outArgs, 0, outArgs, PREPEND_COUNT, outArgs.length - PREPEND_COUNT);
+    outArgs[PREPEND_MH] = names[CALL_MH];
+    names[LINKER_CALL] = new Name(mtype, outArgs);
+    lform = new LambdaForm((skipCallSite ? "linkToTargetMethod" : "linkToCallSite"), INARG_LIMIT, names);
+    // JVM needs a real methodOop
+    lform.compileToBytecode();
+    lform = mtype.form().setCachedLambdaForm(which, lform);
+    return lform;
+}

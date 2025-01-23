@@ -1,0 +1,20 @@
+/**
+ * Returns an array of all the property change listeners
+ * registered on this keyboard focus manager.
+ *
+ * @return all of this keyboard focus manager's
+ *         <code>PropertyChangeListener</code>s
+ *         or an empty array if no property change
+ *         listeners are currently registered
+ *
+ * @see #addPropertyChangeListener
+ * @see #removePropertyChangeListener
+ * @see #getPropertyChangeListeners(java.lang.String)
+ * @since 1.4
+ */
+public synchronized PropertyChangeListener[] getPropertyChangeListeners() {
+    if (changeSupport == null) {
+        changeSupport = new PropertyChangeSupport(this);
+    }
+    return changeSupport.getPropertyChangeListeners();
+}

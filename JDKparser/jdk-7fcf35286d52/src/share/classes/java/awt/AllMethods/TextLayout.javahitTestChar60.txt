@@ -1,0 +1,15 @@
+/**
+ * Returns a <code>TextHitInfo</code> corresponding to the
+ * specified point.  This method is a convenience overload of
+ * <code>hitTestChar</code> that uses the natural bounds of this
+ * <code>TextLayout</code>.
+ * @param x the x offset from the origin of this
+ *     <code>TextLayout</code>.  This is in standard coordinates.
+ * @param y the y offset from the origin of this
+ *     <code>TextLayout</code>.  This is in standard coordinates.
+ * @return a hit describing the character and edge (leading or trailing)
+ * under the specified point.
+ */
+public TextHitInfo hitTestChar(float x, float y) {
+    return hitTestChar(x, y, getNaturalBounds());
+}

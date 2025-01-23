@@ -1,0 +1,18 @@
+/**
+ * Get the definition of this member name.
+ *  This may be in a super-class of the declaring class of this member.
+ */
+public MemberName getDefinition() {
+    if (!isResolved())
+        throw new IllegalStateException("must be resolved: " + this);
+    if (isType())
+        return this;
+    MemberName res = this.clone();
+    res.clazz = null;
+    res.type = null;
+    res.name = null;
+    res.resolution = res;
+    res.expandFromVM();
+    assert (res.getName().equals(this.getName()));
+    return res;
+}

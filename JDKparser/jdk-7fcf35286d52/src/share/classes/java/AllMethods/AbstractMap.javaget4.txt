@@ -1,0 +1,31 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec
+ * This implementation iterates over <tt>entrySet()</tt> searching
+ * for an entry with the specified key.  If such an entry is found,
+ * the entry's value is returned.  If the iteration terminates without
+ * finding such an entry, <tt>null</tt> is returned.  Note that this
+ * implementation requires linear time in the size of the map; many
+ * implementations will override this method.
+ *
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ */
+public V get(Object key) {
+    Iterator<Entry<K, V>> i = entrySet().iterator();
+    if (key == null) {
+        while (i.hasNext()) {
+            Entry<K, V> e = i.next();
+            if (e.getKey() == null)
+                return e.getValue();
+        }
+    } else {
+        while (i.hasNext()) {
+            Entry<K, V> e = i.next();
+            if (key.equals(e.getKey()))
+                return e.getValue();
+        }
+    }
+    return null;
+}

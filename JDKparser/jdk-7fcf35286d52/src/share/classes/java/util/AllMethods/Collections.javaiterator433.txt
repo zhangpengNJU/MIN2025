@@ -1,0 +1,18 @@
+public Iterator<Map.Entry<K, V>> iterator() {
+    final Iterator<Map.Entry<K, V>> i = s.iterator();
+    final Class<V> valueType = this.valueType;
+    return new Iterator<Map.Entry<K, V>>() {
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        public void remove() {
+            i.remove();
+        }
+
+        public Map.Entry<K, V> next() {
+            return checkedEntry(i.next(), valueType);
+        }
+    };
+}

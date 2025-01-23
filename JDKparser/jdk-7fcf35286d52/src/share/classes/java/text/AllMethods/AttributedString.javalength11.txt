@@ -1,0 +1,7 @@
+// all (with the exception of length) reading operations are private,
+// since AttributedString instances are accessed through iterators.
+// length is package private so that CharacterIteratorFieldDelegate can
+// access it without creating an AttributedCharacterIterator.
+int length() {
+    return text.length();
+}

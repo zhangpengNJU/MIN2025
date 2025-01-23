@@ -1,0 +1,24 @@
+// Overrides
+/**
+ * Returns true if this Locale is equal to another object.  A Locale is
+ * deemed equal to another Locale with identical language, script, country,
+ * variant and extensions, and unequal to all other objects.
+ *
+ * @return true if this Locale is equal to the specified object.
+ */
+@Override
+public boolean equals(Object obj) {
+    if (// quick check
+    this == obj)
+        return true;
+    if (!(obj instanceof Locale))
+        return false;
+    BaseLocale otherBase = ((Locale) obj).baseLocale;
+    if (!baseLocale.equals(otherBase)) {
+        return false;
+    }
+    if (localeExtensions == null) {
+        return ((Locale) obj).localeExtensions == null;
+    }
+    return localeExtensions.equals(((Locale) obj).localeExtensions);
+}

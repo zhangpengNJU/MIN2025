@@ -1,0 +1,6 @@
+static BigDecimal zeroValueOf(int scale) {
+    if (scale >= 0 && scale < ZERO_SCALED_BY.length)
+        return ZERO_SCALED_BY[scale];
+    else
+        return new BigDecimal(BigInteger.ZERO, 0, scale, 1);
+}

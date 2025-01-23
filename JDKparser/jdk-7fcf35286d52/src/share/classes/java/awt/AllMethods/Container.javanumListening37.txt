@@ -1,0 +1,35 @@
+// Should only be called while holding tree lock
+int numListening(long mask) {
+    int superListening = super.numListening(mask);
+    if (mask == AWTEvent.HIERARCHY_EVENT_MASK) {
+        if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+            // Verify listeningChildren is correct
+            int sum = 0;
+            for (Component comp : component) {
+                sum += comp.numListening(mask);
+            }
+            if (listeningChildren != sum) {
+                eventLog.fine("Assertion (listeningChildren == sum) failed");
+            }
+        }
+        return listeningChildren + superListening;
+    } else if (mask == AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) {
+        if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+            // Verify listeningBoundsChildren is correct
+            int sum = 0;
+            for (Component comp : component) {
+                sum += comp.numListening(mask);
+            }
+            if (listeningBoundsChildren != sum) {
+                eventLog.fine("Assertion (listeningBoundsChildren == sum) failed");
+            }
+        }
+        return listeningBoundsChildren + superListening;
+    } else {
+        // assert false;
+        if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+            eventLog.fine("This code must never be reached");
+        }
+        return superListening;
+    }
+}

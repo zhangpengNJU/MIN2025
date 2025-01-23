@@ -1,0 +1,67 @@
+/**
+ * Look-up the value through the cache. This always evaluates the
+ * {@code subKeyFactory} function and optionally evaluates
+ * {@code valueFactory} function if there is no entry in the cache for given
+ * pair of (key, subKey) or the entry has already been cleared.
+ *
+ * @param key       possibly null key
+ * @param parameter parameter used together with key to create sub-key and
+ *                  value (should not be null)
+ * @return the cached value (never null)
+ * @throws NullPointerException if {@code parameter} passed in or
+ *                              {@code sub-key} calculated by
+ *                              {@code subKeyFactory} or {@code value}
+ *                              calculated by {@code valueFactory} is null.
+ */
+public V get(K key, P parameter) {
+    Objects.requireNonNull(parameter);
+    expungeStaleEntries();
+    Object cacheKey = CacheKey.valueOf(key, refQueue);
+    // lazily install the 2nd level valuesMap for the particular cacheKey
+    ConcurrentMap<Object, Supplier<V>> valuesMap = map.get(cacheKey);
+    if (valuesMap == null) {
+        ConcurrentMap<Object, Supplier<V>> oldValuesMap = map.putIfAbsent(cacheKey, valuesMap = new ConcurrentHashMap<>());
+        if (oldValuesMap != null) {
+            valuesMap = oldValuesMap;
+        }
+    }
+    // create subKey and retrieve the possible Supplier<V> stored by that
+    // subKey from valuesMap
+    Object subKey = Objects.requireNonNull(subKeyFactory.apply(key, parameter));
+    Supplier<V> supplier = valuesMap.get(subKey);
+    Factory factory = null;
+    while (true) {
+        if (supplier != null) {
+            // supplier might be a Factory or a CacheValue<V> instance
+            V value = supplier.get();
+            if (value != null) {
+                return value;
+            }
+        }
+        // else no supplier in cache
+        // or a supplier that returned null (could be a cleared CacheValue
+        // or a Factory that wasn't successful in installing the CacheValue)
+        // lazily construct a Factory
+        if (factory == null) {
+            factory = new Factory(key, parameter, subKey, valuesMap);
+        }
+        if (supplier == null) {
+            supplier = valuesMap.putIfAbsent(subKey, factory);
+            if (supplier == null) {
+                // successfully installed Factory
+                supplier = factory;
+            }
+        // else retry with winning supplier
+        } else {
+            if (valuesMap.replace(subKey, supplier, factory)) {
+                // successfully replaced
+                // cleared CacheEntry / unsuccessful Factory
+                // with our Factory
+                supplier = factory;
+            } else {
+                // retry with current supplier
+                supplier = valuesMap.get(subKey);
+            }
+        }
+    }
+}

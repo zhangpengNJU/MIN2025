@@ -1,0 +1,19 @@
+/**
+ * Returns the bounding box of the transformed destination.  Since
+ * this is not a geometric operation, the bounding box is the same for
+ * the source and destination.
+ * An <CODE>IllegalArgumentException</CODE> may be thrown if the number of
+ * bands in the source is incompatible with the matrix.  See
+ * the class comments for more details.
+ *
+ * @param src The <CODE>Raster</CODE> to be filtered.
+ *
+ * @return The <CODE>Rectangle2D</CODE> representing the destination
+ * image's bounding box.
+ *
+ * @throws IllegalArgumentException If the number of bands in the source
+ * is incompatible with the matrix.
+ */
+public final Rectangle2D getBounds2D(Raster src) {
+    return src.getBounds();
+}

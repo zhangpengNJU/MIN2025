@@ -1,0 +1,52 @@
+/**
+ * Complete the character class being parsed and add a set
+ * of alternations to it that will match the canonical equivalences
+ * of the characters within the class.
+ */
+private int normalizeCharClass(StringBuilder newPattern, int i) {
+    StringBuilder charClass = new StringBuilder();
+    StringBuilder eq = null;
+    int lastCodePoint = -1;
+    String result;
+    i++;
+    if (i == normalizedPattern.length())
+        throw error("Unclosed character class");
+    charClass.append("[");
+    while (true) {
+        int c = normalizedPattern.codePointAt(i);
+        StringBuilder sequenceBuffer;
+        if (c == ']' && lastCodePoint != '\\') {
+            charClass.append((char) c);
+            break;
+        } else if (Character.getType(c) == Character.NON_SPACING_MARK) {
+            sequenceBuffer = new StringBuilder();
+            sequenceBuffer.appendCodePoint(lastCodePoint);
+            while (Character.getType(c) == Character.NON_SPACING_MARK) {
+                sequenceBuffer.appendCodePoint(c);
+                i += Character.charCount(c);
+                if (i >= normalizedPattern.length())
+                    break;
+                c = normalizedPattern.codePointAt(i);
+            }
+            String ea = produceEquivalentAlternation(sequenceBuffer.toString());
+            charClass.setLength(charClass.length() - Character.charCount(lastCodePoint));
+            if (eq == null)
+                eq = new StringBuilder();
+            eq.append('|');
+            eq.append(ea);
+        } else {
+            charClass.appendCodePoint(c);
+            i++;
+        }
+        if (i == normalizedPattern.length())
+            throw error("Unclosed character class");
+        lastCodePoint = c;
+    }
+    if (eq != null) {
+        result = "(?:" + charClass.toString() + eq.toString() + ")";
+    } else {
+        result = charClass.toString();
+    }
+    newPattern.append(result);
+    return i;
+}

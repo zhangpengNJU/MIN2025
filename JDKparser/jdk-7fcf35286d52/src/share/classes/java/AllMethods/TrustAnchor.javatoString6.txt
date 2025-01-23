@@ -1,0 +1,18 @@
+/**
+ * Returns a formatted string describing the {@code TrustAnchor}.
+ *
+ * @return a formatted string describing the {@code TrustAnchor}
+ */
+public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("[\n");
+    if (pubKey != null) {
+        sb.append("  Trusted CA Public Key: " + pubKey.toString() + "\n");
+        sb.append("  Trusted CA Issuer Name: " + String.valueOf(caName) + "\n");
+    } else {
+        sb.append("  Trusted CA cert: " + trustedCert.toString() + "\n");
+    }
+    if (nc != null)
+        sb.append("  Name Constraints: " + nc.toString() + "\n");
+    return sb.toString();
+}

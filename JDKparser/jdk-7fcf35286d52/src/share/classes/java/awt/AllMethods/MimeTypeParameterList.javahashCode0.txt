@@ -1,0 +1,12 @@
+public int hashCode() {
+    // "random" value for empty lists
+    int code = Integer.MAX_VALUE / 45;
+    String paramName = null;
+    Enumeration<String> enum_ = this.getNames();
+    while (enum_.hasMoreElements()) {
+        paramName = enum_.nextElement();
+        code += paramName.hashCode();
+        code += this.get(paramName).hashCode();
+    }
+    return code;
+}

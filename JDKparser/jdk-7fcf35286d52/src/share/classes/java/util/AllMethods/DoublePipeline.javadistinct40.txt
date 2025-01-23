@@ -1,0 +1,6 @@
+@Override
+public final DoubleStream distinct() {
+    // While functional and quick to implement, this approach is not very efficient.
+    // An efficient version requires a double-specific map/set implementation.
+    return boxed().distinct().mapToDouble(i -> (double) i);
+}

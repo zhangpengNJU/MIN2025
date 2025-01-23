@@ -1,0 +1,18 @@
+/*
+     * Automatic determination of the ClassLoader to be used to load
+     * resources on behalf of the client.
+     */
+private static ClassLoader getLoader(Class<?> caller) {
+    ClassLoader cl = caller == null ? null : caller.getClassLoader();
+    if (cl == null) {
+        // When the caller's loader is the boot class loader, cl is null
+        // here. In that case, ClassLoader.getSystemClassLoader() may
+        // return the same class loader that the application is
+        // using. We therefore use a wrapper ClassLoader to create a
+        // separate scope for bundles loaded on behalf of the Java
+        // runtime so that these bundles cannot be returned from the
+        // cache to the application (5048280).
+        cl = RBClassLoader.INSTANCE;
+    }
+    return cl;
+}

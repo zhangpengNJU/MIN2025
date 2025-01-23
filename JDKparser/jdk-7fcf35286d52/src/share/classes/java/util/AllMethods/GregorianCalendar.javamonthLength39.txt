@@ -1,0 +1,13 @@
+/**
+ * Returns the length of the specified month in the year provided
+ * by internalGet(YEAR).
+ *
+ * @see #isLeapYear(int)
+ */
+private int monthLength(int month) {
+    int year = internalGet(YEAR);
+    if (internalGetEra() == BCE) {
+        year = 1 - year;
+    }
+    return monthLength(month, year);
+}

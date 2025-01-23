@@ -1,0 +1,4 @@
+final void checkForComodification() {
+    if (expectedModCount != ArrayList.this.modCount)
+        throw new ConcurrentModificationException();
+}

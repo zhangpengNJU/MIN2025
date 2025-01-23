@@ -1,0 +1,20 @@
+public CoreMetrics getCoreMetricsAt(int logicalIndex) {
+    if (logicalIndex < 0) {
+        throw new IllegalArgumentException("Negative logicalIndex.");
+    }
+    if (logicalIndex > fCharsLimit - fCharsStart) {
+        throw new IllegalArgumentException("logicalIndex too large.");
+    }
+    int currentTlc = 0;
+    int tlcStart = 0;
+    int tlcLimit = 0;
+    do {
+        tlcLimit += fComponents[currentTlc].getNumCharacters();
+        if (tlcLimit > logicalIndex) {
+            break;
+        }
+        ++currentTlc;
+        tlcStart = tlcLimit;
+    } while (currentTlc < fComponents.length);
+    return fComponents[currentTlc].getCoreMetrics();
+}

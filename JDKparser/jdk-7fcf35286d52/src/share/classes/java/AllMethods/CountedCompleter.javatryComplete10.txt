@@ -1,0 +1,19 @@
+/**
+ * If the pending count is nonzero, decrements the count;
+ * otherwise invokes {@link #onCompletion(CountedCompleter)}
+ * and then similarly tries to complete this task's completer,
+ * if one exists, else marks this task as complete.
+ */
+public final void tryComplete() {
+    CountedCompleter<?> a = this, s = a;
+    for (int c; ; ) {
+        if ((c = a.pending) == 0) {
+            a.onCompletion(s);
+            if ((a = (s = a).completer) == null) {
+                s.quietlyComplete();
+                return;
+            }
+        } else if (U.compareAndSwapInt(a, PENDING, c, c - 1))
+            return;
+    }
+}

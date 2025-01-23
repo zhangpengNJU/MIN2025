@@ -1,0 +1,22 @@
+/**
+ * Assuming that mouse location is stored in PointerInfo passed
+ * to this method, it finds a Component that is in the same
+ * Window as this Component and is located under the mouse pointer.
+ * If no such Component exists, null is returned.
+ * NOTE: this method should be called under the protection of
+ * tree lock, as it is done in Component.getMousePosition() and
+ * Container.getMousePosition(boolean).
+ */
+Component findUnderMouseInWindow(PointerInfo pi) {
+    if (!isShowing()) {
+        return null;
+    }
+    Window win = getContainingWindow();
+    if (!Toolkit.getDefaultToolkit().getMouseInfoPeer().isWindowUnderMouse(win)) {
+        return null;
+    }
+    final boolean INCLUDE_DISABLED = true;
+    Point relativeToWindow = win.pointRelativeToComponent(pi.getLocation());
+    Component inTheSameWindow = win.findComponentAt(relativeToWindow.x, relativeToWindow.y, INCLUDE_DISABLED);
+    return inTheSameWindow;
+}

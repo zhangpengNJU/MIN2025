@@ -1,0 +1,21 @@
+/**
+ * Check a scale for Underflow or Overflow.  If this BigDecimal is
+ * nonzero, throw an exception if the scale is outof range. If this
+ * is zero, saturate the scale to the extreme value of the right
+ * sign if the scale is out of range.
+ *
+ * @param val The new scale.
+ * @throws ArithmeticException (overflow or underflow) if the new
+ *         scale is out of range.
+ * @return validated scale as an int.
+ */
+private int checkScale(long val) {
+    int asInt = (int) val;
+    if (asInt != val) {
+        asInt = val > Integer.MAX_VALUE ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        BigInteger b;
+        if (intCompact != 0 && ((b = intVal) == null || b.signum() != 0))
+            throw new ArithmeticException(asInt > 0 ? "Underflow" : "Overflow");
+    }
+    return asInt;
+}

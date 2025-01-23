@@ -1,0 +1,26 @@
+/**
+ * Causes this piped reader to be connected
+ * to the piped  writer <code>src</code>.
+ * If this object is already connected to some
+ * other piped writer, an <code>IOException</code>
+ * is thrown.
+ * <p>
+ * If <code>src</code> is an
+ * unconnected piped writer and <code>snk</code>
+ * is an unconnected piped reader, they
+ * may be connected by either the call:
+ *
+ * <pre><code>snk.connect(src)</code> </pre>
+ * <p>
+ * or the call:
+ *
+ * <pre><code>src.connect(snk)</code> </pre>
+ * <p>
+ * The two calls have the same effect.
+ *
+ * @param      src   The piped writer to connect to.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public void connect(PipedWriter src) throws IOException {
+    src.connect(this);
+}

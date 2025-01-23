@@ -1,0 +1,13 @@
+public S next() {
+    if (acc == null) {
+        return nextService();
+    } else {
+        PrivilegedAction<S> action = new PrivilegedAction<S>() {
+
+            public S run() {
+                return nextService();
+            }
+        };
+        return AccessController.doPrivileged(action, acc);
+    }
+}

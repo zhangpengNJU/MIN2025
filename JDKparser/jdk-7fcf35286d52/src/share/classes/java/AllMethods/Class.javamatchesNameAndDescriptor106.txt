@@ -1,0 +1,4 @@
+private boolean matchesNameAndDescriptor(Method m1, Method m2) {
+    return m1.getReturnType() == m2.getReturnType() && // name is guaranteed to be interned
+    m1.getName() == m2.getName() && arrayContentsEq(m1.getParameterTypes(), m2.getParameterTypes());
+}

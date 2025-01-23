@@ -1,0 +1,21 @@
+// Bulk Operations
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec
+ * This implementation iterates over the specified map's
+ * <tt>entrySet()</tt> collection, and calls this map's <tt>put</tt>
+ * operation once for each entry returned by the iteration.
+ *
+ * <p>Note that this implementation throws an
+ * <tt>UnsupportedOperationException</tt> if this map does not support
+ * the <tt>put</tt> operation and the specified map is nonempty.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ */
+public void putAll(Map<? extends K, ? extends V> m) {
+    for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) put(e.getKey(), e.getValue());
+}

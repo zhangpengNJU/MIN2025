@@ -1,0 +1,6 @@
+/* ----------------  Map API methods -------------- */
+public boolean containsKey(Object key) {
+    if (key == null)
+        throw new NullPointerException();
+    return inBounds(key, m.comparator) && m.containsKey(key);
+}

@@ -1,0 +1,11 @@
+/**
+ * The bulk collection methods are overridden to protect
+ * against an unscrupulous collection whose contains(Object o)
+ * method senses when o is a Map.Entry, and calls o.setValue.
+ */
+public boolean containsAll(Collection<?> c) {
+    for (Object o : c) if (// Invokes safe contains() above
+    !contains(o))
+        return false;
+    return true;
+}

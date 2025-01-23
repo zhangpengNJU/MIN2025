@@ -1,0 +1,19 @@
+/**
+ * Shutdown the connection for reading without closing the channel.
+ *
+ * <p> Once shutdown for reading then further reads on the channel will
+ * return {@code -1}, the end-of-stream indication. If the input side of the
+ * connection is already shutdown then invoking this method has no effect.
+ *
+ * @return  The channel
+ *
+ * @throws  NotYetConnectedException
+ *          If this channel is not yet connected
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IOException
+ *          If some other I/O error occurs
+ *
+ * @since 1.7
+ */
+public abstract SocketChannel shutdownInput() throws IOException;

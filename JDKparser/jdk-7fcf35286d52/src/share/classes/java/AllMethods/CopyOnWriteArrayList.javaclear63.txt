@@ -1,0 +1,12 @@
+public void clear() {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        l.removeRange(offset, offset + size);
+        expectedArray = l.getArray();
+        size = 0;
+    } finally {
+        lock.unlock();
+    }
+}

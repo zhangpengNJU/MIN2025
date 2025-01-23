@@ -1,0 +1,10 @@
+static boolean atBugLevel(String bl) {
+    // package-private
+    String level = bugLevel;
+    if (level == null) {
+        if (!sun.misc.VM.isBooted())
+            return false;
+        bugLevel = level = AccessController.doPrivileged(new GetPropertyAction("sun.nio.cs.bugLevel", ""));
+    }
+    return level.equals(bl);
+}

@@ -1,0 +1,16 @@
+public String toString() {
+    StringBuilder sb = new StringBuilder("%");
+    // Flags.UPPERCASE is set internally for legal conversions.
+    Flags dupf = f.dup().remove(Flags.UPPERCASE);
+    sb.append(dupf.toString());
+    if (index > 0)
+        sb.append(index).append('$');
+    if (width != -1)
+        sb.append(width);
+    if (precision != -1)
+        sb.append('.').append(precision);
+    if (dt)
+        sb.append(f.contains(Flags.UPPERCASE) ? 'T' : 't');
+    sb.append(f.contains(Flags.UPPERCASE) ? Character.toUpperCase(c) : c);
+    return sb.toString();
+}

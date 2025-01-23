@@ -1,0 +1,24 @@
+/**
+ * Constructs an ICC_Profile for which the actual loading of the
+ * profile data from a file and the initialization of the CMM should
+ * be deferred as long as possible.
+ * Deferral is only used for standard profiles.
+ * If deferring is disabled, then getStandardProfile() ensures
+ * that all of the appropriate access privileges are granted
+ * when loading this profile.
+ * If deferring is enabled, then the deferred activation
+ * code will take care of access privileges.
+ * @see activateDeferredProfile()
+ */
+static ICC_Profile getDeferredInstance(ProfileDeferralInfo pdi) {
+    if (!ProfileDeferralMgr.deferring) {
+        return getStandardProfile(pdi.filename);
+    }
+    if (pdi.colorSpaceType == ColorSpace.TYPE_RGB) {
+        return new ICC_ProfileRGB(pdi);
+    } else if (pdi.colorSpaceType == ColorSpace.TYPE_GRAY) {
+        return new ICC_ProfileGray(pdi);
+    } else {
+        return new ICC_Profile(pdi);
+    }
+}

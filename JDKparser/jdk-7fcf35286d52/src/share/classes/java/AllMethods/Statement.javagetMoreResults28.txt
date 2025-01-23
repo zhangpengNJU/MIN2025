@@ -1,0 +1,38 @@
+/**
+ *  Moves to this <code>Statement</code> object's next result, deals with
+ *  any current <code>ResultSet</code> object(s) according  to the instructions
+ *  specified by the given flag, and returns
+ *  <code>true</code> if the next result is a <code>ResultSet</code> object.
+ *
+ *  <P>There are no more results when the following is true:
+ *  <PRE>{@code
+ *      // stmt is a Statement object
+ *      ((stmt.getMoreResults(current) == false) && (stmt.getUpdateCount() == -1))
+ *  }</PRE>
+ *
+ *  @param current one of the following <code>Statement</code>
+ *         constants indicating what should happen to current
+ *         <code>ResultSet</code> objects obtained using the method
+ *         <code>getResultSet</code>:
+ *         <code>Statement.CLOSE_CURRENT_RESULT</code>,
+ *         <code>Statement.KEEP_CURRENT_RESULT</code>, or
+ *         <code>Statement.CLOSE_ALL_RESULTS</code>
+ *  @return <code>true</code> if the next result is a <code>ResultSet</code>
+ *          object; <code>false</code> if it is an update count or there are no
+ *          more results
+ *  @exception SQLException if a database access error occurs,
+ *  this method is called on a closed <code>Statement</code> or the argument
+ *          supplied is not one of the following:
+ *         <code>Statement.CLOSE_CURRENT_RESULT</code>,
+ *         <code>Statement.KEEP_CURRENT_RESULT</code> or
+ *         <code>Statement.CLOSE_ALL_RESULTS</code>
+ * @exception SQLFeatureNotSupportedException if
+ *  <code>DatabaseMetaData.supportsMultipleOpenResults</code> returns
+ *  <code>false</code> and either
+ *         <code>Statement.KEEP_CURRENT_RESULT</code> or
+ *         <code>Statement.CLOSE_ALL_RESULTS</code> are supplied as
+ *  the argument.
+ *  @since 1.4
+ *  @see #execute
+ */
+boolean getMoreResults(int current) throws SQLException;

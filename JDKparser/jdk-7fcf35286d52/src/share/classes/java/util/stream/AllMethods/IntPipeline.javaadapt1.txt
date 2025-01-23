@@ -1,0 +1,16 @@
+/**
+ * Adapt a {@code Spliterator<Integer>} to a {@code Spliterator.OfInt}.
+ *
+ * @implNote
+ * The implementation attempts to cast to a Spliterator.OfInt, and throws an
+ * exception if this cast is not possible.
+ */
+private static Spliterator.OfInt adapt(Spliterator<Integer> s) {
+    if (s instanceof Spliterator.OfInt) {
+        return (Spliterator.OfInt) s;
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(AbstractPipeline.class, "using IntStream.adapt(Spliterator<Integer> s)");
+        throw new UnsupportedOperationException("IntStream.adapt(Spliterator<Integer> s)");
+    }
+}

@@ -1,0 +1,6 @@
+@Override
+public boolean hasNext() {
+    if (!valueReady)
+        spliterator.tryAdvance(this);
+    return valueReady;
+}

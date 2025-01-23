@@ -1,0 +1,15 @@
+// ****************************************************************
+// ****************************************************************
+void addNotify() throws AWTException {
+    synchronized (this) {
+        if (peer == null) {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            if (toolkit instanceof SunToolkit) {
+                peer = ((SunToolkit) Toolkit.getDefaultToolkit()).createTrayIcon(this);
+            } else if (toolkit instanceof HeadlessToolkit) {
+                peer = ((HeadlessToolkit) Toolkit.getDefaultToolkit()).createTrayIcon(this);
+            }
+        }
+    }
+    peer.setToolTip(tooltip);
+}

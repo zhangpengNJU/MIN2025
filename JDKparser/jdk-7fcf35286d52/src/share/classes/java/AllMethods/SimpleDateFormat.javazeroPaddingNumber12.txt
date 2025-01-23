@@ -1,0 +1,46 @@
+/**
+ * Formats a number with the specified minimum and maximum number of digits.
+ */
+private void zeroPaddingNumber(int value, int minDigits, int maxDigits, StringBuffer buffer) {
+    // Optimization for 1, 2 and 4 digit numbers. This should
+    // cover most cases of formatting date/time related items.
+    // Note: This optimization code assumes that maxDigits is
+    // either 2 or Integer.MAX_VALUE (maxIntCount in format()).
+    try {
+        if (zeroDigit == 0) {
+            zeroDigit = ((DecimalFormat) numberFormat).getDecimalFormatSymbols().getZeroDigit();
+        }
+        if (value >= 0) {
+            if (value < 100 && minDigits >= 1 && minDigits <= 2) {
+                if (value < 10) {
+                    if (minDigits == 2) {
+                        buffer.append(zeroDigit);
+                    }
+                    buffer.append((char) (zeroDigit + value));
+                } else {
+                    buffer.append((char) (zeroDigit + value / 10));
+                    buffer.append((char) (zeroDigit + value % 10));
+                }
+                return;
+            } else if (value >= 1000 && value < 10000) {
+                if (minDigits == 4) {
+                    buffer.append((char) (zeroDigit + value / 1000));
+                    value %= 1000;
+                    buffer.append((char) (zeroDigit + value / 100));
+                    value %= 100;
+                    buffer.append((char) (zeroDigit + value / 10));
+                    buffer.append((char) (zeroDigit + value % 10));
+                    return;
+                }
+                if (minDigits == 2 && maxDigits == 2) {
+                    zeroPaddingNumber(value % 100, 2, 2, buffer);
+                    return;
+                }
+            }
+        }
+    } catch (Exception e) {
+    }
+    numberFormat.setMinimumIntegerDigits(minDigits);
+    numberFormat.setMaximumIntegerDigits(maxDigits);
+    numberFormat.format((long) value, buffer, DontCareFieldPosition.INSTANCE);
+}

@@ -1,0 +1,37 @@
+/**
+ * Sets the sequence of images to be displayed as the icon
+ * for this window. Subsequent calls to {@code getIconImages} will
+ * always return a copy of the {@code icons} list.
+ * <p>
+ * Depending on the platform capabilities one or several images
+ * of different dimensions will be used as the window's icon.
+ * <p>
+ * The {@code icons} list is scanned for the images of most
+ * appropriate dimensions from the beginning. If the list contains
+ * several images of the same size, the first will be used.
+ * <p>
+ * Ownerless windows with no icon specified use platfrom-default icon.
+ * The icon of an owned window may be inherited from the owner
+ * unless explicitly overridden.
+ * Setting the icon to {@code null} or empty list restores
+ * the default behavior.
+ * <p>
+ * Note : Native windowing systems may use different images of differing
+ * dimensions to represent a window, depending on the context (e.g.
+ * window decoration, window list, taskbar, etc.). They could also use
+ * just a single image for all contexts or no image at all.
+ *
+ * @param     icons the list of icon images to be displayed.
+ * @see       #getIconImages()
+ * @see       #setIconImage(Image)
+ * @since     1.6
+ */
+public synchronized void setIconImages(java.util.List<? extends Image> icons) {
+    this.icons = (icons == null) ? new ArrayList<Image>() : new ArrayList<Image>(icons);
+    WindowPeer peer = (WindowPeer) this.peer;
+    if (peer != null) {
+        peer.updateIconImages();
+    }
+    // Always send a property change event
+    firePropertyChange("iconImage", null, null);
+}

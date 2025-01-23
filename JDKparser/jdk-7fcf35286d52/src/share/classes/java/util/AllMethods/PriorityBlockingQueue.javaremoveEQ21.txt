@@ -1,0 +1,18 @@
+/**
+ * Identity-based version for use in Itr.remove
+ */
+void removeEQ(Object o) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] array = queue;
+        for (int i = 0, n = size; i < n; i++) {
+            if (o == array[i]) {
+                removeAt(i);
+                break;
+            }
+        }
+    } finally {
+        lock.unlock();
+    }
+}

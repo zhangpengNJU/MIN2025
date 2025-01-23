@@ -1,0 +1,20 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * If the action is an instance of {@code IntConsumer} then it is cast
+ * to {@code IntConsumer} and passed to
+ * {@link #forEachRemaining(java.util.function.IntConsumer)}; otherwise
+ * the action is adapted to an instance of {@code IntConsumer}, by
+ * boxing the argument of {@code IntConsumer}, and then passed to
+ * {@link #forEachRemaining(java.util.function.IntConsumer)}.
+ */
+@Override
+default void forEachRemaining(Consumer<? super Integer> action) {
+    if (action instanceof IntConsumer) {
+        forEachRemaining((IntConsumer) action);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling Spliterator.OfInt.forEachRemaining((IntConsumer) action::accept)");
+        forEachRemaining((IntConsumer) action::accept);
+    }
+}

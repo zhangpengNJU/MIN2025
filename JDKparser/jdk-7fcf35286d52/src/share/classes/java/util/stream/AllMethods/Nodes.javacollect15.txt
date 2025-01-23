@@ -1,0 +1,35 @@
+// Parallel evaluation of pipelines to nodes
+/**
+ * Collect, in parallel, elements output from a pipeline and describe those
+ * elements with a {@link Node}.
+ *
+ * @implSpec
+ * If the exact size of the output from the pipeline is known and the source
+ * {@link Spliterator} has the {@link Spliterator#SUBSIZED} characteristic,
+ * then a flat {@link Node} will be returned whose content is an array,
+ * since the size is known the array can be constructed in advance and
+ * output elements can be placed into the array concurrently by leaf
+ * tasks at the correct offsets.  If the exact size is not known, output
+ * elements are collected into a conc-node whose shape mirrors that
+ * of the computation. This conc-node can then be flattened in
+ * parallel to produce a flat {@code Node} if desired.
+ *
+ * @param helper the pipeline helper describing the pipeline
+ * @param flattenTree whether a conc node should be flattened into a node
+ *                    describing an array before returning
+ * @param generator the array generator
+ * @return a {@link Node} describing the output elements
+ */
+public static <P_IN, P_OUT> Node<P_OUT> collect(PipelineHelper<P_OUT> helper, Spliterator<P_IN> spliterator, boolean flattenTree, IntFunction<P_OUT[]> generator) {
+    long size = helper.exactOutputSizeIfKnown(spliterator);
+    if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+        if (size >= MAX_ARRAY_SIZE)
+            throw new IllegalArgumentException(BAD_SIZE);
+        P_OUT[] array = generator.apply((int) size);
+        new SizedCollectorTask.OfRef<>(spliterator, helper, array).invoke();
+        return node(array);
+    } else {
+        Node<P_OUT> node = new CollectorTask.OfRef<>(helper, generator, spliterator).invoke();
+        return flattenTree ? flatten(node, generator) : node;
+    }
+}

@@ -1,0 +1,31 @@
+/**
+ * Returns a {@link Set} view of the mappings contained in this map.
+ *
+ * <p>The set's iterator returns the entries in ascending key order.  The
+ * set's spliterator additionally reports {@link Spliterator#CONCURRENT},
+ * {@link Spliterator#NONNULL}, {@link Spliterator#SORTED} and
+ * {@link Spliterator#ORDERED}, with an encounter order that is ascending
+ * key order.
+ *
+ * <p>The set is backed by the map, so changes to the map are
+ * reflected in the set, and vice-versa.  The set supports element
+ * removal, which removes the corresponding mapping from the map,
+ * via the {@code Iterator.remove}, {@code Set.remove},
+ * {@code removeAll}, {@code retainAll} and {@code clear}
+ * operations.  It does not support the {@code add} or
+ * {@code addAll} operations.
+ *
+ * <p>The view's iterators and spliterators are
+ * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
+ *
+ * <p>The {@code Map.Entry} elements traversed by the {@code iterator}
+ * or {@code spliterator} do <em>not</em> support the {@code setValue}
+ * operation.
+ *
+ * @return a set view of the mappings contained in this map,
+ *         sorted in ascending key order
+ */
+public Set<Map.Entry<K, V>> entrySet() {
+    EntrySet<K, V> es = entrySet;
+    return (es != null) ? es : (entrySet = new EntrySet<K, V>(this));
+}

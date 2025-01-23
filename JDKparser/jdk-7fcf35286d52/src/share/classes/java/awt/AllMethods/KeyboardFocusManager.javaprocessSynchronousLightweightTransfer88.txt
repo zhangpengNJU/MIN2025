@@ -1,0 +1,62 @@
+static boolean processSynchronousLightweightTransfer(Component heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time) {
+    Window parentWindow = SunToolkit.getContainingWindow(heavyweight);
+    if (parentWindow == null || !parentWindow.syncLWRequests) {
+        return false;
+    }
+    if (descendant == null) {
+        // Focus transfers from a lightweight child back to the
+        // heavyweight Container should be treated like lightweight
+        // focus transfers.
+        descendant = heavyweight;
+    }
+    KeyboardFocusManager manager = getCurrentKeyboardFocusManager(SunToolkit.targetToAppContext(descendant));
+    FocusEvent currentFocusOwnerEvent = null;
+    FocusEvent newFocusOwnerEvent = null;
+    Component currentFocusOwner = manager.getGlobalFocusOwner();
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getLastHWRequest();
+        if (hwFocusRequest == null && heavyweight == manager.getNativeFocusOwner() && allowSyncFocusRequests) {
+            if (descendant == currentFocusOwner) {
+                // Redundant request.
+                return true;
+            }
+            // 'heavyweight' owns the native focus and there are no pending
+            // requests. 'heavyweight' must be a Container and
+            // 'descendant' must not be the focus owner. Otherwise,
+            // we would never have gotten this far.
+            manager.enqueueKeyEvents(time, descendant);
+            hwFocusRequest = new HeavyweightFocusRequest(heavyweight, descendant, temporary, CausedFocusEvent.Cause.UNKNOWN);
+            heavyweightRequests.add(hwFocusRequest);
+            if (currentFocusOwner != null) {
+                currentFocusOwnerEvent = new FocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, temporary, descendant);
+            }
+            newFocusOwnerEvent = new FocusEvent(descendant, FocusEvent.FOCUS_GAINED, temporary, currentFocusOwner);
+        }
+    }
+    boolean result = false;
+    final boolean clearing = clearingCurrentLightweightRequests;
+    Throwable caughtEx = null;
+    try {
+        clearingCurrentLightweightRequests = false;
+        synchronized (Component.LOCK) {
+            if (currentFocusOwnerEvent != null && currentFocusOwner != null) {
+                ((AWTEvent) currentFocusOwnerEvent).isPosted = true;
+                caughtEx = dispatchAndCatchException(caughtEx, currentFocusOwner, currentFocusOwnerEvent);
+                result = true;
+            }
+            if (newFocusOwnerEvent != null && descendant != null) {
+                ((AWTEvent) newFocusOwnerEvent).isPosted = true;
+                caughtEx = dispatchAndCatchException(caughtEx, descendant, newFocusOwnerEvent);
+                result = true;
+            }
+        }
+    } finally {
+        clearingCurrentLightweightRequests = clearing;
+    }
+    if (caughtEx instanceof RuntimeException) {
+        throw (RuntimeException) caughtEx;
+    } else if (caughtEx instanceof Error) {
+        throw (Error) caughtEx;
+    }
+    return result;
+}

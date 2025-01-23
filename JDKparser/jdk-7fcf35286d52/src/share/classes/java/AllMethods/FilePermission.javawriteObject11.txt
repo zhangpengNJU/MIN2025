@@ -1,0 +1,12 @@
+/**
+ * WriteObject is called to save the state of the FilePermission
+ * to a stream. The actions are serialized, and the superclass
+ * takes care of the name.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    // Write out the actions. The superclass takes care of the name
+    // call getActions to make sure actions field is initialized
+    if (actions == null)
+        getActions();
+    s.defaultWriteObject();
+}

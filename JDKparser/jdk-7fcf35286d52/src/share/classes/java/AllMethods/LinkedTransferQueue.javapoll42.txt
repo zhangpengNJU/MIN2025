@@ -1,0 +1,6 @@
+public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    E e = xfer(null, false, TIMED, unit.toNanos(timeout));
+    if (e != null || !Thread.interrupted())
+        return e;
+    throw new InterruptedException();
+}

@@ -1,0 +1,16 @@
+/**
+ * Returns a copy of this date with the year-of-era altered.
+ * <p>
+ * This method changes the year-of-era of the date.
+ * If the month-day is invalid for the year, then the previous valid day
+ * will be selected instead.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param year  the year to set in the returned date
+ * @return a {@code JapaneseDate} based on this date with the requested year-of-era, never null
+ * @throws DateTimeException if {@code year} is invalid
+ */
+private JapaneseDate withYear(int year) {
+    return withYear(getEra(), year);
+}

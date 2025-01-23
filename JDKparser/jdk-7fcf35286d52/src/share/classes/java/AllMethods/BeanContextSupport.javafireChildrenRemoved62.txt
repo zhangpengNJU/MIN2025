@@ -1,0 +1,11 @@
+/**
+ * Fire a BeanContextshipEvent on the BeanContextMembershipListener interface
+ * @param bcme the event to fire
+ */
+protected final void fireChildrenRemoved(BeanContextMembershipEvent bcme) {
+    Object[] copy;
+    synchronized (bcmListeners) {
+        copy = bcmListeners.toArray();
+    }
+    for (int i = 0; i < copy.length; i++) ((BeanContextMembershipListener) copy[i]).childrenRemoved(bcme);
+}

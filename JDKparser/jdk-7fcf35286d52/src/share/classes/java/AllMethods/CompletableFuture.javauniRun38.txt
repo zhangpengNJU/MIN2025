@@ -1,0 +1,20 @@
+final boolean uniRun(CompletableFuture<?> a, Runnable f, UniRun<?> c) {
+    Object r;
+    Throwable x;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    if (result == null) {
+        if (r instanceof AltResult && (x = ((AltResult) r).ex) != null)
+            completeThrowable(x, r);
+        else
+            try {
+                if (c != null && !c.claim())
+                    return false;
+                f.run();
+                completeNull();
+            } catch (Throwable ex) {
+                completeThrowable(ex);
+            }
+    }
+    return true;
+}

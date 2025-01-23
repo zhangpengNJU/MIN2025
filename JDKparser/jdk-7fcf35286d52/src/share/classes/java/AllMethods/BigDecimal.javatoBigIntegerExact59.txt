@@ -1,0 +1,14 @@
+/**
+ * Converts this {@code BigDecimal} to a {@code BigInteger},
+ * checking for lost information.  An exception is thrown if this
+ * {@code BigDecimal} has a nonzero fractional part.
+ *
+ * @return this {@code BigDecimal} converted to a {@code BigInteger}.
+ * @throws ArithmeticException if {@code this} has a nonzero
+ *         fractional part.
+ * @since  1.5
+ */
+public BigInteger toBigIntegerExact() {
+    // round to an integer, with Exception if decimal part non-0
+    return this.setScale(0, ROUND_UNNECESSARY).inflated();
+}

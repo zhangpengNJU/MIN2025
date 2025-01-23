@@ -1,0 +1,6 @@
+/**
+ * Look in the cache, at the home location for the given ClassValue.
+ */
+static <T> Entry<T> probeHomeLocation(Entry<?>[] cache, ClassValue<T> classValue) {
+    return classValue.castEntry(loadFromCache(cache, classValue.hashCodeForCache));
+}

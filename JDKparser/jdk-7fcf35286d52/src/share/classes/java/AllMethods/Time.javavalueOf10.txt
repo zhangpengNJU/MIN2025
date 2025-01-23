@@ -1,0 +1,14 @@
+/**
+ * Obtains an instance of {@code Time} from a {@link LocalTime} object
+ * with the same hour, minute and second time value as the given
+ * {@code LocalTime}.
+ *
+ * @param time a {@code LocalTime} to convert
+ * @return a {@code Time} object
+ * @exception NullPointerException if {@code time} is null
+ * @since 1.8
+ */
+@SuppressWarnings("deprecation")
+public static Time valueOf(LocalTime time) {
+    return new Time(time.getHour(), time.getMinute(), time.getSecond());
+}

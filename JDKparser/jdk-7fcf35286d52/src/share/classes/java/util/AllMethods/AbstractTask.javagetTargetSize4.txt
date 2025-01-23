@@ -1,0 +1,8 @@
+/**
+ * Returns the targetSize, initializing it via the supplied
+ * size estimate if not already initialized.
+ */
+protected final long getTargetSize(long sizeEstimate) {
+    long s;
+    return ((s = targetSize) != 0 ? s : (targetSize = suggestTargetSize(sizeEstimate)));
+}

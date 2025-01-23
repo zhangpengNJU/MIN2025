@@ -1,0 +1,23 @@
+/**
+ * Returns the {@code char} value in this sequence at the specified index.
+ * The first {@code char} value is at index {@code 0}, the next at index
+ * {@code 1}, and so on, as in array indexing.
+ * <p>
+ * The index argument must be greater than or equal to
+ * {@code 0}, and less than the length of this sequence.
+ *
+ * <p>If the {@code char} value specified by the index is a
+ * <a href="Character.html#unicode">surrogate</a>, the surrogate
+ * value is returned.
+ *
+ * @param      index   the index of the desired {@code char} value.
+ * @return     the {@code char} value at the specified index.
+ * @throws     IndexOutOfBoundsException  if {@code index} is
+ *             negative or greater than or equal to {@code length()}.
+ */
+@Override
+public char charAt(int index) {
+    if ((index < 0) || (index >= count))
+        throw new StringIndexOutOfBoundsException(index);
+    return value[index];
+}

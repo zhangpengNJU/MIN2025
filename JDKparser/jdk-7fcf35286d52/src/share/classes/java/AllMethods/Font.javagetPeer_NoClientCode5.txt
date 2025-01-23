@@ -1,0 +1,12 @@
+// NOTE: This method is called by privileged threads.
+// We implement this functionality in a package-private method
+// to insure that it cannot be overridden by client subclasses.
+// DO NOT INVOKE CLIENT CODE ON THIS THREAD!
+@SuppressWarnings("deprecation")
+final FontPeer getPeer_NoClientCode() {
+    if (peer == null) {
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        this.peer = tk.getFontPeer(name, style);
+    }
+    return peer;
+}

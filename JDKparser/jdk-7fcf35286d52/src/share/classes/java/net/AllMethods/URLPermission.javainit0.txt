@@ -1,0 +1,22 @@
+private void init(String actions) {
+    parseURI(getName());
+    int colon = actions.indexOf(':');
+    if (actions.lastIndexOf(':') != colon) {
+        throw new IllegalArgumentException("Invalid actions string: \"" + actions + "\"");
+    }
+    String methods, headers;
+    if (colon == -1) {
+        methods = actions;
+        headers = "";
+    } else {
+        methods = actions.substring(0, colon);
+        headers = actions.substring(colon + 1);
+    }
+    List<String> l = normalizeMethods(methods);
+    Collections.sort(l);
+    this.methods = Collections.unmodifiableList(l);
+    l = normalizeHeaders(headers);
+    Collections.sort(l);
+    this.requestHeaders = Collections.unmodifiableList(l);
+    this.actions = actions();
+}

@@ -1,0 +1,60 @@
+/**
+ * Writes default serializable fields to stream.  Writes
+ * a list of serializable {@code WindowListener}s and
+ * {@code WindowFocusListener}s as optional data.
+ * Writes a list of child windows as optional data.
+ * Writes a list of icon images as optional data
+ *
+ * @param s the {@code ObjectOutputStream} to write
+ * @serialData {@code null} terminated sequence of
+ *    0 or more pairs; the pair consists of a {@code String}
+ *    and {@code Object}; the {@code String}
+ *    indicates the type of object and is one of the following:
+ *    {@code windowListenerK} indicating a
+ *      {@code WindowListener} object;
+ *    {@code windowFocusWindowK} indicating a
+ *      {@code WindowFocusListener} object;
+ *    {@code ownedWindowK} indicating a child
+ *      {@code Window} object
+ *
+ * @see AWTEventMulticaster#save(java.io.ObjectOutputStream, java.lang.String, java.util.EventListener)
+ * @see Component#windowListenerK
+ * @see Component#windowFocusListenerK
+ * @see Component#ownedWindowK
+ * @see #readObject(ObjectInputStream)
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    synchronized (this) {
+        // Update old focusMgr fields so that our object stream can be read
+        // by previous releases
+        focusMgr = new FocusManager();
+        focusMgr.focusRoot = this;
+        focusMgr.focusOwner = getMostRecentFocusOwner();
+        s.defaultWriteObject();
+        // Clear fields so that we don't keep extra references around
+        focusMgr = null;
+        AWTEventMulticaster.save(s, windowListenerK, windowListener);
+        AWTEventMulticaster.save(s, windowFocusListenerK, windowFocusListener);
+        AWTEventMulticaster.save(s, windowStateListenerK, windowStateListener);
+    }
+    s.writeObject(null);
+    synchronized (ownedWindowList) {
+        for (int i = 0; i < ownedWindowList.size(); i++) {
+            Window child = ownedWindowList.elementAt(i).get();
+            if (child != null) {
+                s.writeObject(ownedWindowK);
+                s.writeObject(child);
+            }
+        }
+    }
+    s.writeObject(null);
+    // write icon array
+    if (icons != null) {
+        for (Image i : icons) {
+            if (i instanceof Serializable) {
+                s.writeObject(i);
+            }
+        }
+    }
+    s.writeObject(null);
+}

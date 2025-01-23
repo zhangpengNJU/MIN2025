@@ -1,0 +1,12 @@
+// Range-check everything.
+private static void implMontgomeryMultiplyChecks(int[] a, int[] b, int[] n, int len, int[] product) throws RuntimeException {
+    if (len % 2 != 0) {
+        throw new IllegalArgumentException("input array length must be even: " + len);
+    }
+    if (len < 1) {
+        throw new IllegalArgumentException("invalid input length: " + len);
+    }
+    if (len > a.length || len > b.length || len > n.length || (product != null && len > product.length)) {
+        throw new IllegalArgumentException("input array length out of bound: " + len);
+    }
+}

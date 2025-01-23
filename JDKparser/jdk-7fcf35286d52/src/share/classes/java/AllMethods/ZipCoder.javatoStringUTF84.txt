@@ -1,0 +1,7 @@
+String toStringUTF8(byte[] ba, int len) {
+    if (isUTF8)
+        return toString(ba, len);
+    if (utf8 == null)
+        utf8 = new ZipCoder(StandardCharsets.UTF_8);
+    return utf8.toString(ba, len);
+}

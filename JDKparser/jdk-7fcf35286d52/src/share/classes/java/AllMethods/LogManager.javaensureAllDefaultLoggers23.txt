@@ -1,0 +1,17 @@
+// This method is called before adding a logger to the
+// context.
+// 'logger' is the context that will be added.
+// This method will ensure that the defaults loggers are added
+// before adding 'logger'.
+// 
+private void ensureAllDefaultLoggers(Logger logger) {
+    if (requiresDefaultLoggers()) {
+        final String name = logger.getName();
+        if (!name.isEmpty()) {
+            ensureDefaultLogger(getRootLogger());
+            if (!Logger.GLOBAL_LOGGER_NAME.equals(name)) {
+                ensureDefaultLogger(getGlobalLogger());
+            }
+        }
+    }
+}

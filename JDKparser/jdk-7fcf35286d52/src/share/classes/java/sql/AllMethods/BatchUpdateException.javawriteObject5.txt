@@ -1,0 +1,10 @@
+/**
+ * writeObject is called to save the state of the {@code BatchUpdateException}
+ * to a stream.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException, ClassNotFoundException {
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("updateCounts", updateCounts);
+    fields.put("longUpdateCounts", longUpdateCounts);
+    s.writeFields();
+}

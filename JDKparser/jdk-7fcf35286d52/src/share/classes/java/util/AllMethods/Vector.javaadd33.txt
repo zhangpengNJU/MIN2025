@@ -1,0 +1,13 @@
+/**
+ * Appends the specified element to the end of this Vector.
+ *
+ * @param e element to be appended to this Vector
+ * @return {@code true} (as specified by {@link Collection#add})
+ * @since 1.2
+ */
+public synchronized boolean add(E e) {
+    modCount++;
+    ensureCapacityHelper(elementCount + 1);
+    elementData[elementCount++] = e;
+    return true;
+}

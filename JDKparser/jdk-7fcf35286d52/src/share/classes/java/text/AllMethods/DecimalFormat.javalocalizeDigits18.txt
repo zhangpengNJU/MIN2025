@@ -1,0 +1,31 @@
+/**
+ * Converts digit chars from {@code digitsBuffer} to current locale.
+ *
+ * Must be called before adding affixes since we refer to
+ * {@code fastPathData.firstUsedIndex} and {@code fastPathData.lastFreeIndex},
+ * and do not support affixes (for speed reason).
+ *
+ * We loop backward starting from last used index in {@code fastPathData}.
+ *
+ * @param digitsBuffer The char array container where the digits are stored.
+ */
+private void localizeDigits(char[] digitsBuffer) {
+    // We will localize only the digits, using the groupingSize,
+    // and taking into account fractional part.
+    // First take into account fractional part.
+    int digitsCounter = fastPathData.lastFreeIndex - fastPathData.fractionalFirstIndex;
+    // The case when there is no fractional digits.
+    if (digitsCounter < 0)
+        digitsCounter = groupingSize;
+    // Only the digits remains to localize.
+    for (int cursor = fastPathData.lastFreeIndex - 1; cursor >= fastPathData.firstUsedIndex; cursor--) {
+        if (digitsCounter != 0) {
+            // This is a digit char, we must localize it.
+            digitsBuffer[cursor] += fastPathData.zeroDelta;
+            digitsCounter--;
+        } else {
+            // Decimal separator or grouping char. Reinit counter only.
+            digitsCounter = groupingSize;
+        }
+    }
+}

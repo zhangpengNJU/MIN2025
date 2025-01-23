@@ -1,0 +1,11 @@
+/**
+ * Throws {@code UnsupportedOperationException}.  Setting seeds in
+ * this generator is not supported.
+ *
+ * @throws UnsupportedOperationException always
+ */
+public void setSeed(long seed) {
+    // only allow call from super() constructor
+    if (initialized)
+        throw new UnsupportedOperationException();
+}

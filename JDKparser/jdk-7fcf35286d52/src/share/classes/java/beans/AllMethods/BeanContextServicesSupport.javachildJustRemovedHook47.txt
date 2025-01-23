@@ -1,0 +1,14 @@
+/**
+ * called from superclass child removal operations after a child
+ * has been successfully removed. called with child synchronized.
+ *
+ * This subclass uses this hook to immediately revoke any services
+ * being used by this child if it is a BeanContextChild.
+ *
+ * subclasses may envelope this method in order to implement their
+ * own child removal side-effects.
+ */
+protected void childJustRemovedHook(Object child, BCSChild bcsc) {
+    BCSSChild bcssc = (BCSSChild) bcsc;
+    bcssc.cleanupReferences();
+}

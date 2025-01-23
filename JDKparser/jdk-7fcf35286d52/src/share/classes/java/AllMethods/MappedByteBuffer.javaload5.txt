@@ -1,0 +1,33 @@
+/**
+ * Loads this buffer's content into physical memory.
+ *
+ * <p> This method makes a best effort to ensure that, when it returns,
+ * this buffer's content is resident in physical memory.  Invoking this
+ * method may cause some number of page faults and I/O operations to
+ * occur. </p>
+ *
+ * @return  This buffer
+ */
+public final MappedByteBuffer load() {
+    checkMapped();
+    if ((address == 0) || (capacity() == 0))
+        return this;
+    long offset = mappingOffset();
+    long length = mappingLength(offset);
+    load0(mappingAddress(offset), length);
+    // Read a byte from each page to bring it into memory. A checksum
+    // is computed as we go along to prevent the compiler from otherwise
+    // considering the loop as dead code.
+    Unsafe unsafe = Unsafe.getUnsafe();
+    int ps = Bits.pageSize();
+    int count = Bits.pageCount(length);
+    long a = mappingAddress(offset);
+    byte x = 0;
+    for (int i = 0; i < count; i++) {
+        x ^= unsafe.getByte(a);
+        a += ps;
+    }
+    if (unused != 0)
+        unused = x;
+    return this;
+}

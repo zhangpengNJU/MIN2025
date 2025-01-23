@@ -1,0 +1,112 @@
+// !Double.isInfinite(value) && !Double.isNaN(value)
+private void print(StringBuilder sb, double value, Locale l, Flags f, char c, int precision, boolean neg) throws IOException {
+    if (c == Conversion.SCIENTIFIC) {
+        // Create a new FormattedFloatingDecimal with the desired
+        // precision.
+        int prec = (precision == -1 ? 6 : precision);
+        FormattedFloatingDecimal fd = FormattedFloatingDecimal.valueOf(value, prec, FormattedFloatingDecimal.Form.SCIENTIFIC);
+        char[] mant = addZeros(fd.getMantissa(), prec);
+        // If the precision is zero and the '#' flag is set, add the
+        // requested decimal point.
+        if (f.contains(Flags.ALTERNATE) && (prec == 0))
+            mant = addDot(mant);
+        char[] exp = (value == 0.0) ? new char[] { '+', '0', '0' } : fd.getExponent();
+        int newW = width;
+        if (width != -1)
+            newW = adjustWidth(width - exp.length - 1, f, neg);
+        localizedMagnitude(sb, mant, f, newW, l);
+        sb.append(f.contains(Flags.UPPERCASE) ? 'E' : 'e');
+        Flags flags = f.dup().remove(Flags.GROUP);
+        char sign = exp[0];
+        assert (sign == '+' || sign == '-');
+        sb.append(sign);
+        char[] tmp = new char[exp.length - 1];
+        System.arraycopy(exp, 1, tmp, 0, exp.length - 1);
+        sb.append(localizedMagnitude(null, tmp, flags, -1, l));
+    } else if (c == Conversion.DECIMAL_FLOAT) {
+        // Create a new FormattedFloatingDecimal with the desired
+        // precision.
+        int prec = (precision == -1 ? 6 : precision);
+        FormattedFloatingDecimal fd = FormattedFloatingDecimal.valueOf(value, prec, FormattedFloatingDecimal.Form.DECIMAL_FLOAT);
+        char[] mant = addZeros(fd.getMantissa(), prec);
+        // If the precision is zero and the '#' flag is set, add the
+        // requested decimal point.
+        if (f.contains(Flags.ALTERNATE) && (prec == 0))
+            mant = addDot(mant);
+        int newW = width;
+        if (width != -1)
+            newW = adjustWidth(width, f, neg);
+        localizedMagnitude(sb, mant, f, newW, l);
+    } else if (c == Conversion.GENERAL) {
+        int prec = precision;
+        if (precision == -1)
+            prec = 6;
+        else if (precision == 0)
+            prec = 1;
+        char[] exp;
+        char[] mant;
+        int expRounded;
+        if (value == 0.0) {
+            exp = null;
+            mant = new char[] { '0' };
+            expRounded = 0;
+        } else {
+            FormattedFloatingDecimal fd = FormattedFloatingDecimal.valueOf(value, prec, FormattedFloatingDecimal.Form.GENERAL);
+            exp = fd.getExponent();
+            mant = fd.getMantissa();
+            expRounded = fd.getExponentRounded();
+        }
+        if (exp != null) {
+            prec -= 1;
+        } else {
+            prec -= expRounded + 1;
+        }
+        mant = addZeros(mant, prec);
+        // If the precision is zero and the '#' flag is set, add the
+        // requested decimal point.
+        if (f.contains(Flags.ALTERNATE) && (prec == 0))
+            mant = addDot(mant);
+        int newW = width;
+        if (width != -1) {
+            if (exp != null)
+                newW = adjustWidth(width - exp.length - 1, f, neg);
+            else
+                newW = adjustWidth(width, f, neg);
+        }
+        localizedMagnitude(sb, mant, f, newW, l);
+        if (exp != null) {
+            sb.append(f.contains(Flags.UPPERCASE) ? 'E' : 'e');
+            Flags flags = f.dup().remove(Flags.GROUP);
+            char sign = exp[0];
+            assert (sign == '+' || sign == '-');
+            sb.append(sign);
+            char[] tmp = new char[exp.length - 1];
+            System.arraycopy(exp, 1, tmp, 0, exp.length - 1);
+            sb.append(localizedMagnitude(null, tmp, flags, -1, l));
+        }
+    } else if (c == Conversion.HEXADECIMAL_FLOAT) {
+        int prec = precision;
+        if (precision == -1)
+            // assume that we want all of the digits
+            prec = 0;
+        else if (precision == 0)
+            prec = 1;
+        String s = hexDouble(value, prec);
+        char[] va;
+        boolean upper = f.contains(Flags.UPPERCASE);
+        sb.append(upper ? "0X" : "0x");
+        if (f.contains(Flags.ZERO_PAD))
+            for (int i = 0; i < width - s.length() - 2; i++) sb.append('0');
+        int idx = s.indexOf('p');
+        va = s.substring(0, idx).toCharArray();
+        if (upper) {
+            String tmp = new String(va);
+            // don't localize hex
+            tmp = tmp.toUpperCase(Locale.US);
+            va = tmp.toCharArray();
+        }
+        sb.append(prec != 0 ? addZeros(va, prec) : va);
+        sb.append(upper ? 'P' : 'p');
+        sb.append(s.substring(idx + 1));
+    }
+}

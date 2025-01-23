@@ -1,0 +1,11 @@
+@Override
+public void remove() {
+    if (lastReturned == 0)
+        throw new IllegalStateException();
+    final long oldElements = elements[lastReturnedIndex];
+    elements[lastReturnedIndex] &= ~lastReturned;
+    if (oldElements != elements[lastReturnedIndex]) {
+        size--;
+    }
+    lastReturned = 0;
+}

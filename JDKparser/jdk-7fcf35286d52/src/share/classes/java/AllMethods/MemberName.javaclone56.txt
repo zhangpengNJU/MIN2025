@@ -1,0 +1,9 @@
+// locally useful cloner
+@Override
+protected MemberName clone() {
+    try {
+        return (MemberName) super.clone();
+    } catch (CloneNotSupportedException ex) {
+        throw newInternalError(ex);
+    }
+}

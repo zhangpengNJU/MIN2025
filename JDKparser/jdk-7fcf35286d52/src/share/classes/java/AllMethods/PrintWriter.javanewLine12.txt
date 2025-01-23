@@ -1,0 +1,14 @@
+private void newLine() {
+    try {
+        synchronized (lock) {
+            ensureOpen();
+            out.write(lineSeparator);
+            if (autoFlush)
+                out.flush();
+        }
+    } catch (InterruptedIOException x) {
+        Thread.currentThread().interrupt();
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

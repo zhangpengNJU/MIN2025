@@ -1,0 +1,16 @@
+/**
+ * Returns the ending point of the arc.  This point is the
+ * intersection of the ray from the center defined by the
+ * starting angle plus the angular extent of the arc and the
+ * elliptical boundary of the arc.
+ *
+ * @return A <CODE>Point2D</CODE> object representing the
+ * x,y coordinates  of the ending point of the arc.
+ * @since 1.2
+ */
+public Point2D getEndPoint() {
+    double angle = Math.toRadians(-getAngleStart() - getAngleExtent());
+    double x = getX() + (Math.cos(angle) * 0.5 + 0.5) * getWidth();
+    double y = getY() + (Math.sin(angle) * 0.5 + 0.5) * getHeight();
+    return new Point2D.Double(x, y);
+}

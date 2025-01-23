@@ -1,0 +1,9 @@
+private static void warnUnsupportedCharset(String csn) {
+    if (warnUnsupportedCharset) {
+        // Use sun.misc.MessageUtils rather than the Logging API or
+        // System.err since this method may be called during VM
+        // initialization before either is available.
+        MessageUtils.err("WARNING: Default charset " + csn + " not supported, using ISO-8859-1 instead");
+        warnUnsupportedCharset = false;
+    }
+}

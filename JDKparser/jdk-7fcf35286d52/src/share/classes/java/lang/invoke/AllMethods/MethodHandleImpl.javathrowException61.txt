@@ -1,0 +1,10 @@
+static MethodHandle throwException(MethodType type) {
+    assert (Throwable.class.isAssignableFrom(type.parameterType(0)));
+    int arity = type.parameterCount();
+    if (arity > 1) {
+        MethodHandle mh = throwException(type.dropParameterTypes(1, arity));
+        mh = MethodHandles.dropArguments(mh, 1, type.parameterList().subList(1, arity));
+        return mh;
+    }
+    return makePairwiseConvert(Lazy.NF_throwException.resolvedHandle(), type, false, true);
+}

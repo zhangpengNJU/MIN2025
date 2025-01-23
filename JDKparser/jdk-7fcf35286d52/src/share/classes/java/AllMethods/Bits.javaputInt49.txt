@@ -1,0 +1,6 @@
+static void putInt(ByteBuffer bb, int bi, int x, boolean bigEndian) {
+    if (bigEndian)
+        putIntB(bb, bi, x);
+    else
+        putIntL(bb, bi, x);
+}

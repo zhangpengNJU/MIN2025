@@ -1,0 +1,44 @@
+/**
+ * Set the digit list to a representation of the given long value.
+ * @param isNegative Boolean value indicating whether the number is negative.
+ * @param source Value to be converted; must be >= 0 or ==
+ * Long.MIN_VALUE.
+ * @param maximumDigits The most digits which should be converted.
+ * If maximumDigits is lower than the number of significant digits
+ * in source, the representation will be rounded.  Ignored if <= 0.
+ */
+final void set(boolean isNegative, long source, int maximumDigits) {
+    this.isNegative = isNegative;
+    // This method does not expect a negative number. However,
+    // "source" can be a Long.MIN_VALUE (-9223372036854775808),
+    // if the number being formatted is a Long.MIN_VALUE.  In that
+    // case, it will be formatted as -Long.MIN_VALUE, a number
+    // which is outside the legal range of a long, but which can
+    // be represented by DigitList.
+    if (source <= 0) {
+        if (source == Long.MIN_VALUE) {
+            decimalAt = count = MAX_COUNT;
+            System.arraycopy(LONG_MIN_REP, 0, digits, 0, count);
+        } else {
+            // Values <= 0 format as zero
+            decimalAt = count = 0;
+        }
+    } else {
+        // Rewritten to improve performance.  I used to call
+        // Long.toString(), which was about 4x slower than this code.
+        int left = MAX_COUNT;
+        int right;
+        while (source > 0) {
+            digits[--left] = (char) ('0' + (source % 10));
+            source /= 10;
+        }
+        decimalAt = MAX_COUNT - left;
+        // Don't copy trailing zeros.  We are guaranteed that there is at
+        // least one non-zero digit, so we don't have to check lower bounds.
+        for (right = MAX_COUNT - 1; digits[right] == '0'; --right) ;
+        count = right - left + 1;
+        System.arraycopy(digits, left, digits, 0, count);
+    }
+    if (maximumDigits > 0)
+        round(maximumDigits, false, true);
+}

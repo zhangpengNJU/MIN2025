@@ -1,0 +1,10 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    MatteBorder border = (MatteBorder) oldInstance;
+    Insets insets = border.getBorderInsets();
+    Object object = border.getTileIcon();
+    if (object == null) {
+        object = border.getMatteColor();
+    }
+    Object[] args = new Object[] { insets.top, insets.left, insets.bottom, insets.right, object };
+    return new Expression(border, border.getClass(), "new", args);
+}

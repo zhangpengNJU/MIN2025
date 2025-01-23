@@ -1,0 +1,46 @@
+/**
+ * Deserializes this <code>DragSource</code>. This method first performs
+ * default deserialization. Next, this object's <code>FlavorMap</code> is
+ * deserialized by using the next object in the stream.
+ * If the resulting <code>FlavorMap</code> is <code>null</code>, this
+ * object's <code>FlavorMap</code> is set to the default FlavorMap for
+ * this thread's <code>ClassLoader</code>.
+ * Next, this object's listeners are deserialized by reading a
+ * <code>null</code>-terminated sequence of 0 or more key/value pairs
+ * from the stream:
+ * <ul>
+ * <li>If a key object is a <code>String</code> equal to
+ * <code>dragSourceListenerK</code>, a <code>DragSourceListener</code> is
+ * deserialized using the corresponding value object and added to this
+ * <code>DragSource</code>.
+ * <li>If a key object is a <code>String</code> equal to
+ * <code>dragSourceMotionListenerK</code>, a
+ * <code>DragSourceMotionListener</code> is deserialized using the
+ * corresponding value object and added to this <code>DragSource</code>.
+ * <li>Otherwise, the key/value pair is skipped.
+ * </ul>
+ *
+ * @see java.awt.datatransfer.SystemFlavorMap#getDefaultFlavorMap
+ * @since 1.4
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    s.defaultReadObject();
+    // 'flavorMap' was written explicitly
+    flavorMap = (FlavorMap) s.readObject();
+    // Implementation assumes 'flavorMap' is never null.
+    if (flavorMap == null) {
+        flavorMap = SystemFlavorMap.getDefaultFlavorMap();
+    }
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (dragSourceListenerK == key) {
+            addDragSourceListener((DragSourceListener) (s.readObject()));
+        } else if (dragSourceMotionListenerK == key) {
+            addDragSourceMotionListener((DragSourceMotionListener) (s.readObject()));
+        } else {
+            // skip value for unrecognized key
+            s.readObject();
+        }
+    }
+}

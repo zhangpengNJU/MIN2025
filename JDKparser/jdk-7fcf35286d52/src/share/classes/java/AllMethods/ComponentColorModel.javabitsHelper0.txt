@@ -1,0 +1,8 @@
+private static int bitsHelper(int transferType, ColorSpace colorSpace, boolean hasAlpha) {
+    int numBits = DataBuffer.getDataTypeSize(transferType);
+    int numComponents = colorSpace.getNumComponents();
+    if (hasAlpha) {
+        ++numComponents;
+    }
+    return numBits * numComponents;
+}

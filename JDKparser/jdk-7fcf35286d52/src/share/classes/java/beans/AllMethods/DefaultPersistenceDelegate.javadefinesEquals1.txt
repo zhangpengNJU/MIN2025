@@ -1,0 +1,9 @@
+private boolean definesEquals(Object instance) {
+    if (definesEquals != null) {
+        return (definesEquals == Boolean.TRUE);
+    } else {
+        boolean result = definesEquals(instance.getClass());
+        definesEquals = result ? Boolean.TRUE : Boolean.FALSE;
+        return result;
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Removes all of the elements from this deque.
+ * The deque will be empty after this call returns.
+ */
+public void clear() {
+    int h = head;
+    int t = tail;
+    if (h != t) {
+        // clear all cells
+        head = tail = 0;
+        int i = h;
+        int mask = elements.length - 1;
+        do {
+            elements[i] = null;
+            i = (i + 1) & mask;
+        } while (i != t);
+    }
+}

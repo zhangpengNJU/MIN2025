@@ -1,0 +1,16 @@
+/**
+ * Return the index of the last name which contains n as an argument.
+ *  Return -1 if the name is not used.  Return names.length if it is the return value.
+ */
+int lastUseIndex(Name n) {
+    int ni = n.index, nmax = names.length;
+    assert (names[ni] == n);
+    // live all the way beyond the end
+    if (result == ni)
+        return nmax;
+    for (int i = nmax; --i > ni; ) {
+        if (names[i].lastUseIndex(n) >= 0)
+            return i;
+    }
+    return -1;
+}

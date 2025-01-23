@@ -1,0 +1,8 @@
+// When a modal dialog is hidden its modal filter may not be deleted from
+// EventDispatchThread event filters immediately, so we need to mark the filter
+// as disabled to prevent it from working. Simple checking for visibility of
+// the modalDialog is not enough, as it can be hidden and then shown again
+// with a new event pump and a new filter
+void disable() {
+    disabled = true;
+}

@@ -1,0 +1,14 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>isIndexSelected(int)</code>.
+ */
+@Deprecated
+public boolean isSelected(int index) {
+    int[] sel = getSelectedIndexes();
+    for (int i = 0; i < sel.length; i++) {
+        if (sel[i] == index) {
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,21 @@
+/**
+ * Adds the specified Thread group to this group.
+ * @param g the specified Thread group to be added
+ * @exception IllegalThreadStateException If the Thread group has been destroyed.
+ */
+private final void add(ThreadGroup g) {
+    synchronized (this) {
+        if (destroyed) {
+            throw new IllegalThreadStateException();
+        }
+        if (groups == null) {
+            groups = new ThreadGroup[4];
+        } else if (ngroups == groups.length) {
+            groups = Arrays.copyOf(groups, ngroups * 2);
+        }
+        groups[ngroups] = g;
+        // This is done last so it doesn't matter in case the
+        // thread is killed
+        ngroups++;
+    }
+}

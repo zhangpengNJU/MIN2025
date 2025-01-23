@@ -1,0 +1,28 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getComponentAt(int, int)</code>.
+ */
+@Deprecated
+public Component locate(int x, int y) {
+    if (!contains(x, y)) {
+        return null;
+    }
+    Component lightweight = null;
+    synchronized (getTreeLock()) {
+        // Optimized version of two passes:
+        // see comment in sun.awt.SunGraphicsCallback
+        for (final Component comp : component) {
+            if (comp.contains(x - comp.x, y - comp.y)) {
+                if (!comp.isLightweight()) {
+                    // return heavyweight component as soon as possible
+                    return comp;
+                }
+                if (lightweight == null) {
+                    // save and return later the first lightweight component
+                    lightweight = comp;
+                }
+            }
+        }
+    }
+    return lightweight != null ? lightweight : this;
+}

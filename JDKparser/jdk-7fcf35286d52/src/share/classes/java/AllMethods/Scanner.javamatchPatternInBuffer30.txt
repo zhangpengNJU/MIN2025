@@ -1,0 +1,21 @@
+// Returns a match for the specified input pattern anchored at
+// the current position
+private String matchPatternInBuffer(Pattern pattern) {
+    matchValid = false;
+    matcher.usePattern(pattern);
+    matcher.region(position, buf.limit());
+    if (matcher.lookingAt()) {
+        if (matcher.hitEnd() && (!sourceClosed)) {
+            // Get more input and try again
+            needInput = true;
+            return null;
+        }
+        position = matcher.end();
+        return matcher.group();
+    }
+    if (sourceClosed)
+        return null;
+    // Read more to find pattern
+    needInput = true;
+    return null;
+}

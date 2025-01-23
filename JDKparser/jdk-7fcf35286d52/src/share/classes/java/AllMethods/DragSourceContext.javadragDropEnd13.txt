@@ -1,0 +1,16 @@
+/**
+ * Calls <code>dragDropEnd</code> on the
+ * <code>DragSourceListener</code>s registered with this
+ * <code>DragSourceContext</code> and with the associated
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceDropEvent</code>.
+ *
+ * @param dsde the <code>DragSourceDropEvent</code>
+ */
+public void dragDropEnd(DragSourceDropEvent dsde) {
+    DragSourceListener dsl = listener;
+    if (dsl != null) {
+        dsl.dragDropEnd(dsde);
+    }
+    getDragSource().processDragDropEnd(dsde);
+}

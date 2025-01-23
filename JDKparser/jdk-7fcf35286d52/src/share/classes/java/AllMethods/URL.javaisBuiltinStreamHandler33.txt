@@ -1,0 +1,4 @@
+boolean isBuiltinStreamHandler(URLStreamHandler handler) {
+    Class<?> handlerClass = handler.getClass();
+    return isBuiltinStreamHandler(handlerClass.getName()) || VM.isSystemDomainLoader(handlerClass.getClassLoader());
+}

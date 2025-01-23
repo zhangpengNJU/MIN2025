@@ -1,0 +1,20 @@
+/**
+ * Callback to inform activation system that group is now
+ * active. This call is made internally by the
+ * <code>ActivationGroup.createGroup</code> method to inform
+ * the <code>ActivationSystem</code> that the group is now
+ * active.
+ *
+ * @param id the activation group's identifier
+ * @param group the group's instantiator
+ * @param incarnation the group's incarnation number
+ * @return monitor for activation group
+ * @exception UnknownGroupException if group is not registered
+ * @exception ActivationException if a group for the specified
+ * <code>id</code> is already active and that group is not equal
+ * to the specified <code>group</code> or that group has a different
+ * <code>incarnation</code> than the specified <code>group</code>
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public ActivationMonitor activeGroup(ActivationGroupID id, ActivationInstantiator group, long incarnation) throws UnknownGroupException, ActivationException, RemoteException;

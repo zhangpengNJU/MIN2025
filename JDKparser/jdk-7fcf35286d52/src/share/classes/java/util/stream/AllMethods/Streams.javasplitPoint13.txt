@@ -1,0 +1,5 @@
+private long splitPoint(long size) {
+    long d = (size < BALANCED_SPLIT_THRESHOLD) ? 2 : RIGHT_BALANCED_SPLIT_RATIO;
+    // 2 <= size <= Long.MAX_VALUE
+    return size / d;
+}

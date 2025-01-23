@@ -1,0 +1,5 @@
+public NavigableSet<E> descendingSet() {
+    synchronized (mutex) {
+        return new SynchronizedNavigableSet<>(ns.descendingSet(), mutex);
+    }
+}

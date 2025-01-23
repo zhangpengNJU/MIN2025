@@ -1,0 +1,25 @@
+/**
+ * Checks if this PropertyPermission object "implies" the specified
+ * permission.
+ * <P>
+ * More specifically, this method returns true if:
+ * <ul>
+ * <li> <i>p</i> is an instanceof PropertyPermission,
+ * <li> <i>p</i>'s actions are a subset of this
+ * object's actions, and
+ * <li> <i>p</i>'s name is implied by this object's
+ *      name. For example, "java.*" implies "java.home".
+ * </ul>
+ * @param p the permission to check against.
+ *
+ * @return true if the specified permission is implied by this object,
+ * false if not.
+ */
+public boolean implies(Permission p) {
+    if (!(p instanceof PropertyPermission))
+        return false;
+    PropertyPermission that = (PropertyPermission) p;
+    // we get the effective mask. i.e., the "and" of this and that.
+    // They must be equal to that.mask for implies to return true.
+    return ((this.mask & that.mask) == that.mask) && super.implies(that);
+}

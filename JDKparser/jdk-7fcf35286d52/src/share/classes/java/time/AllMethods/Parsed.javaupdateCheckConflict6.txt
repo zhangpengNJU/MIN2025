@@ -1,0 +1,6 @@
+private void updateCheckConflict(TemporalField targetField, TemporalField changeField, Long changeValue) {
+    Long old = fieldValues.put(changeField, changeValue);
+    if (old != null && old.longValue() != changeValue.longValue()) {
+        throw new DateTimeException("Conflict found: " + changeField + " " + old + " differs from " + changeField + " " + changeValue + " while resolving  " + targetField);
+    }
+}

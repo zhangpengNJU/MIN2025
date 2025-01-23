@@ -1,0 +1,7 @@
+public boolean addAll(Collection<? extends E> coll) {
+    // Doing things this way insulates us from concurrent changes
+    // in the contents of coll and provides all-or-nothing
+    // semantics (which we wouldn't get if we type-checked each
+    // element as we added it)
+    return c.addAll(checkedCopyOf(coll));
+}

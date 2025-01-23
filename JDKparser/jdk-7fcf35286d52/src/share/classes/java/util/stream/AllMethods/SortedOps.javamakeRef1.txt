@@ -1,0 +1,10 @@
+/**
+ * Appends a "sorted" operation to the provided stream.
+ *
+ * @param <T> the type of both input and output elements
+ * @param upstream a reference stream with element type T
+ * @param comparator the comparator to order elements by
+ */
+static <T> Stream<T> makeRef(AbstractPipeline<?, T, ?> upstream, Comparator<? super T> comparator) {
+    return new OfRef<>(upstream, comparator);
+}

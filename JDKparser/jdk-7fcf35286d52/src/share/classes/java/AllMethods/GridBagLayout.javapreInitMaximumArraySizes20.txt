@@ -1,0 +1,56 @@
+/*
+     * Calculate maximum array sizes to allocate arrays without ensureCapacity
+     * we may use preCalculated sizes in whole class because of upper estimation of
+     * maximumArrayXIndex and maximumArrayYIndex.
+     */
+private long[] preInitMaximumArraySizes(Container parent) {
+    Component[] components = parent.getComponents();
+    Component comp;
+    GridBagConstraints constraints;
+    int curX, curY;
+    int curWidth, curHeight;
+    int preMaximumArrayXIndex = 0;
+    int preMaximumArrayYIndex = 0;
+    long[] returnArray = new long[2];
+    for (int compId = 0; compId < components.length; compId++) {
+        comp = components[compId];
+        if (!comp.isVisible()) {
+            continue;
+        }
+        constraints = lookupConstraints(comp);
+        curX = constraints.gridx;
+        curY = constraints.gridy;
+        curWidth = constraints.gridwidth;
+        curHeight = constraints.gridheight;
+        // -1==RELATIVE, means that column|row equals to previously added component,
+        // since each next Component with gridx|gridy == RELATIVE starts from
+        // previous position, so we should start from previous component which
+        // already used in maximumArray[X|Y]Index calculation. We could just increase
+        // maximum by 1 to handle situation when component with gridx=-1 was added.
+        if (curX < 0) {
+            curX = ++preMaximumArrayYIndex;
+        }
+        if (curY < 0) {
+            curY = ++preMaximumArrayXIndex;
+        }
+        // gridwidth|gridheight may be equal to RELATIVE (-1) or REMAINDER (0)
+        // in any case using 1 instead of 0 or -1 should be sufficient to for
+        // correct maximumArraySizes calculation
+        if (curWidth <= 0) {
+            curWidth = 1;
+        }
+        if (curHeight <= 0) {
+            curHeight = 1;
+        }
+        preMaximumArrayXIndex = Math.max(curY + curHeight, preMaximumArrayXIndex);
+        preMaximumArrayYIndex = Math.max(curX + curWidth, preMaximumArrayYIndex);
+    }
+    // for (components) loop
+    // Must specify index++ to allocate well-working arrays.
+    /* fix for 4623196.
+         * now return long array instead of Point
+         */
+    returnArray[0] = preMaximumArrayXIndex;
+    returnArray[1] = preMaximumArrayYIndex;
+    return returnArray;
+}

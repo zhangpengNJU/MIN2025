@@ -1,0 +1,6 @@
+static <K> Object valueOf(K key, ReferenceQueue<K> refQueue) {
+    return key == null ? // null key means we can't weakly reference it,
+    // so we use a NULL_KEY singleton as cache key
+    NULL_KEY : // non-null key requires wrapping with a WeakReference
+    new CacheKey<>(key, refQueue);
+}

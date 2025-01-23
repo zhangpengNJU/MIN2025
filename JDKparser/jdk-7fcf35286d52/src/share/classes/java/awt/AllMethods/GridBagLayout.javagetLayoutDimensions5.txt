@@ -1,0 +1,19 @@
+/**
+ * Determines column widths and row heights for the layout grid.
+ * <p>
+ * Most applications do not call this method directly.
+ * @return     an array of two arrays, containing the widths
+ *                       of the layout columns and
+ *                       the heights of the layout rows
+ * @since      JDK1.1
+ */
+public int[][] getLayoutDimensions() {
+    if (layoutInfo == null)
+        return new int[2][0];
+    int[][] dim = new int[2][];
+    dim[0] = new int[layoutInfo.width];
+    dim[1] = new int[layoutInfo.height];
+    System.arraycopy(layoutInfo.minWidth, 0, dim[0], 0, layoutInfo.width);
+    System.arraycopy(layoutInfo.minHeight, 0, dim[1], 0, layoutInfo.height);
+    return dim;
+}

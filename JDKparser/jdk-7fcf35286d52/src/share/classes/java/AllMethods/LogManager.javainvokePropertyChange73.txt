@@ -1,0 +1,18 @@
+/**
+ * Invokes the given PropertyChangeListener's propertyChange method
+ * with the given event.
+ */
+static void invokePropertyChange(Object listener, Object ev) {
+    try {
+        propertyChangeMethod.invoke(listener, ev);
+    } catch (IllegalAccessException x) {
+        throw new AssertionError(x);
+    } catch (InvocationTargetException x) {
+        Throwable cause = x.getCause();
+        if (cause instanceof Error)
+            throw (Error) cause;
+        if (cause instanceof RuntimeException)
+            throw (RuntimeException) cause;
+        throw new AssertionError(x);
+    }
+}

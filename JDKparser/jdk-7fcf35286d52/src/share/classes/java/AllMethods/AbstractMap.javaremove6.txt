@@ -1,0 +1,45 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec
+ * This implementation iterates over <tt>entrySet()</tt> searching for an
+ * entry with the specified key.  If such an entry is found, its value is
+ * obtained with its <tt>getValue</tt> operation, the entry is removed
+ * from the collection (and the backing map) with the iterator's
+ * <tt>remove</tt> operation, and the saved value is returned.  If the
+ * iteration terminates without finding such an entry, <tt>null</tt> is
+ * returned.  Note that this implementation requires linear time in the
+ * size of the map; many implementations will override this method.
+ *
+ * <p>Note that this implementation throws an
+ * <tt>UnsupportedOperationException</tt> if the <tt>entrySet</tt>
+ * iterator does not support the <tt>remove</tt> method and this map
+ * contains a mapping for the specified key.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ */
+public V remove(Object key) {
+    Iterator<Entry<K, V>> i = entrySet().iterator();
+    Entry<K, V> correctEntry = null;
+    if (key == null) {
+        while (correctEntry == null && i.hasNext()) {
+            Entry<K, V> e = i.next();
+            if (e.getKey() == null)
+                correctEntry = e;
+        }
+    } else {
+        while (correctEntry == null && i.hasNext()) {
+            Entry<K, V> e = i.next();
+            if (key.equals(e.getKey()))
+                correctEntry = e;
+        }
+    }
+    V oldValue = null;
+    if (correctEntry != null) {
+        oldValue = correctEntry.getValue();
+        i.remove();
+    }
+    return oldValue;
+}

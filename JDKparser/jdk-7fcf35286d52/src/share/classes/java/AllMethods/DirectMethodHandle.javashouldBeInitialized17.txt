@@ -1,0 +1,28 @@
+/*non-public*/
+static boolean shouldBeInitialized(MemberName member) {
+    switch(member.getReferenceKind()) {
+        case REF_invokeStatic:
+        case REF_getStatic:
+        case REF_putStatic:
+        case REF_newInvokeSpecial:
+            break;
+        default:
+            // No need to initialize the class on this kind of member.
+            return false;
+    }
+    Class<?> cls = member.getDeclaringClass();
+    if (cls == ValueConversions.class || cls == MethodHandleImpl.class || cls == Invokers.class) {
+        // These guys have lots of <clinit> DMH creation but we know
+        // the MHs will not be used until the system is booted.
+        return false;
+    }
+    if (VerifyAccess.isSamePackage(MethodHandle.class, cls) || VerifyAccess.isSamePackage(ValueConversions.class, cls)) {
+        // It is a system class.  It is probably in the process of
+        // being initialized, but we will help it along just to be safe.
+        if (UNSAFE.shouldBeInitialized(cls)) {
+            UNSAFE.ensureClassInitialized(cls);
+        }
+        return false;
+    }
+    return UNSAFE.shouldBeInitialized(cls);
+}

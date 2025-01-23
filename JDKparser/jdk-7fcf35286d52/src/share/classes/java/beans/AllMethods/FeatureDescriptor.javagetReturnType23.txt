@@ -1,0 +1,16 @@
+/**
+ * Resolves the return type of the method.
+ *
+ * @param base    the class that contains the method in the hierarchy
+ * @param method  the object that represents the method
+ * @return a class identifying the return type of the method
+ *
+ * @see Method#getGenericReturnType
+ * @see Method#getReturnType
+ */
+static Class<?> getReturnType(Class<?> base, Method method) {
+    if (base == null) {
+        base = method.getDeclaringClass();
+    }
+    return TypeResolver.erase(TypeResolver.resolveInClass(base, method.getGenericReturnType()));
+}

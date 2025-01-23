@@ -1,0 +1,8 @@
+static Object interpret_L(MethodHandle mh, Object x1) throws Throwable {
+    Object[] av = { mh, x1 };
+    String sig = null;
+    assert (argumentTypesMatch(sig = "LL_L", av));
+    Object res = mh.form.interpretWithArguments(av);
+    assert (returnTypesMatch(sig, av, res));
+    return res;
+}

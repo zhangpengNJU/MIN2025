@@ -1,0 +1,26 @@
+/**
+ * Remove insignificant trailing zeros from this
+ * {@code BigInteger} value until the preferred scale is reached or no
+ * more zeros can be removed.  If the preferred scale is less than
+ * Integer.MIN_VALUE, all the trailing zeros will be removed.
+ *
+ * @return new {@code BigDecimal} with a scale possibly reduced
+ * to be closed to the preferred scale.
+ */
+private static BigDecimal createAndStripZerosToMatchScale(BigInteger intVal, int scale, long preferredScale) {
+    // quotient-remainder pair
+    BigInteger[] qr;
+    while (intVal.compareMagnitude(BigInteger.TEN) >= 0 && scale > preferredScale) {
+        if (intVal.testBit(0))
+            // odd number cannot end in 0
+            break;
+        qr = intVal.divideAndRemainder(BigInteger.TEN);
+        if (qr[1].signum() != 0)
+            // non-0 remainder
+            break;
+        intVal = qr[0];
+        // could Overflow
+        scale = checkScale(intVal, (long) scale - 1);
+    }
+    return valueOf(intVal, scale, 0);
+}

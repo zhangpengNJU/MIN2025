@@ -1,0 +1,11 @@
+/**
+ * Sets the owner of this encoder to <code>owner</code>.
+ *
+ * @param owner The owner of this encoder.
+ *
+ * @see #getOwner
+ */
+public void setOwner(Object owner) {
+    this.owner = owner;
+    writeExpression(new Expression(this, "getOwner", new Object[0]));
+}

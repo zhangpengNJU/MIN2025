@@ -1,0 +1,14 @@
+/**
+ * Assigns next available handle to given object, and returns handle
+ * value.  Handles are assigned in ascending order starting at 0.
+ */
+int assign(Object obj) {
+    if (size >= next.length) {
+        growEntries();
+    }
+    if (size >= threshold) {
+        growSpine();
+    }
+    insert(obj, size);
+    return size++;
+}

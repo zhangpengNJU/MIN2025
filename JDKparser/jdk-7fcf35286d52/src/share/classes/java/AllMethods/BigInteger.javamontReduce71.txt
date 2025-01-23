@@ -1,0 +1,18 @@
+/**
+ * Montgomery reduce n, modulo mod.  This reduces modulo mod and divides
+ * by 2^(32*mlen). Adapted from Colin Plumb's C library.
+ */
+private static int[] montReduce(int[] n, int[] mod, int mlen, int inv) {
+    int c = 0;
+    int len = mlen;
+    int offset = 0;
+    do {
+        int nEnd = n[n.length - 1 - offset];
+        int carry = mulAdd(n, mod, offset, mlen, inv * nEnd);
+        c += addOne(n, offset, mlen, carry);
+        offset++;
+    } while (--len > 0);
+    while (c > 0) c += subN(n, mod, mlen);
+    while (intArrayCmpToLen(n, mod, mlen) >= 0) subN(n, mod, mlen);
+    return n;
+}

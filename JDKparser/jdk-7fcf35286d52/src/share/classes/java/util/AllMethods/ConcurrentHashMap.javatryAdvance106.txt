@@ -1,0 +1,9 @@
+public boolean tryAdvance(Consumer<? super Map.Entry<K, V>> action) {
+    if (action == null)
+        throw new NullPointerException();
+    Node<K, V> p;
+    if ((p = advance()) == null)
+        return false;
+    action.accept(new MapEntry<K, V>(p.key, p.val, map));
+    return true;
+}

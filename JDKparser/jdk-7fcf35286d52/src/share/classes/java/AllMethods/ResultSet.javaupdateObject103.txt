@@ -1,0 +1,31 @@
+/**
+ *  Updates the designated column with an <code>Object</code> value.
+ *
+ *  The updater methods are used to update column values in the
+ *  current row or the insert row.  The updater methods do not
+ *  update the underlying database; instead the <code>updateRow</code> or
+ *  <code>insertRow</code> methods are called to update the database.
+ * <p>
+ *  If the second argument is an <code>InputStream</code> then the stream must contain
+ *  the number of bytes specified by scaleOrLength.  If the second argument is a
+ *  <code>Reader</code> then the reader must contain the number of characters specified
+ *  by scaleOrLength. If these conditions are not true the driver will generate a
+ *  <code>SQLException</code> when the statement is executed.
+ *
+ *  @param columnLabel the label for the column specified with the SQL AS clause.  If the SQL AS clause was not specified, then the label is the name of the column
+ *  @param x the new column value
+ *  @param scaleOrLength for an object of <code>java.math.BigDecimal</code> ,
+ *           this is the number of digits after the decimal point. For
+ *           Java Object types <code>InputStream</code> and <code>Reader</code>,
+ *           this is the length
+ *           of the data in the stream or reader.  For all other types,
+ *           this value will be ignored.
+ *  @exception SQLException if the columnLabel is not valid;
+ *  if a database access error occurs;
+ *  the result set concurrency is <code>CONCUR_READ_ONLY</code>
+ *  or this method is called on a closed result set
+ *  @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ *  this method
+ *  @since 1.2
+ */
+void updateObject(String columnLabel, Object x, int scaleOrLength) throws SQLException;

@@ -1,0 +1,11 @@
+public synchronized InetAddress anyLocalAddress() {
+    if (anyLocalAddress == null) {
+        if (InetAddress.preferIPv6Address) {
+            anyLocalAddress = new Inet6Address();
+            anyLocalAddress.holder().hostName = "::";
+        } else {
+            anyLocalAddress = (new Inet4AddressImpl()).anyLocalAddress();
+        }
+    }
+    return anyLocalAddress;
+}

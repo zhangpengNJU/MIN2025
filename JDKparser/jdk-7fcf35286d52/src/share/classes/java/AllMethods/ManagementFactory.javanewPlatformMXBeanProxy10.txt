@@ -1,0 +1,119 @@
+/**
+ *  Returns a proxy for a platform MXBean interface of a
+ *  given <a href="#MXBeanNames">MXBean name</a>
+ *  that forwards its method calls through the given
+ *  <tt>MBeanServerConnection</tt>.
+ *
+ *  <p>This method is equivalent to:
+ *  <blockquote>
+ *  {@link java.lang.reflect.Proxy#newProxyInstance
+ *         Proxy.newProxyInstance}<tt>(mxbeanInterface.getClassLoader(),
+ *         new Class[] { mxbeanInterface }, handler)</tt>
+ *  </blockquote>
+ *
+ *  where <tt>handler</tt> is an {@link java.lang.reflect.InvocationHandler
+ *  InvocationHandler} to which method invocations to the MXBean interface
+ *  are dispatched. This <tt>handler</tt> converts an input parameter
+ *  from an MXBean data type to its mapped open type before forwarding
+ *  to the <tt>MBeanServer</tt> and converts a return value from
+ *  an MXBean method call through the <tt>MBeanServer</tt>
+ *  from an open type to the corresponding return type declared in
+ *  the MXBean interface.
+ *
+ *  <p>
+ *  If the MXBean is a notification emitter (i.e.,
+ *  it implements
+ *  {@link javax.management.NotificationEmitter NotificationEmitter}),
+ *  both the <tt>mxbeanInterface</tt> and <tt>NotificationEmitter</tt>
+ *  will be implemented by this proxy.
+ *
+ *  <p>
+ *  <b>Notes:</b>
+ *  <ol>
+ *  <li>Using an MXBean proxy is a convenience remote access to
+ *  a platform MXBean of a running virtual machine.  All method
+ *  calls to the MXBean proxy are forwarded to an
+ *  <tt>MBeanServerConnection</tt> where
+ *  {@link java.io.IOException IOException} may be thrown
+ *  when the communication problem occurs with the connector server.
+ *  An application remotely accesses the platform MXBeans using
+ *  proxy should prepare to catch <tt>IOException</tt> as if
+ *  accessing with the <tt>MBeanServerConnector</tt> interface.</li>
+ *
+ *  <li>When a client application is designed to remotely access MXBeans
+ *  for a running virtual machine whose version is different than
+ *  the version on which the application is running,
+ *  it should prepare to catch
+ *  {@link java.io.InvalidObjectException InvalidObjectException}
+ *  which is thrown when an MXBean proxy receives a name of an
+ *  enum constant which is missing in the enum class loaded in
+ *  the client application. </li>
+ *
+ *  <li>{@link javax.management.MBeanServerInvocationHandler
+ *  MBeanServerInvocationHandler} or its
+ *  {@link javax.management.MBeanServerInvocationHandler#newProxyInstance
+ *  newProxyInstance} method cannot be used to create
+ *  a proxy for a platform MXBean. The proxy object created
+ *  by <tt>MBeanServerInvocationHandler</tt> does not handle
+ *  the properties of the platform MXBeans described in
+ *  the <a href="#MXBean">class specification</a>.
+ * </li>
+ *  </ol>
+ *
+ *  @param connection the <tt>MBeanServerConnection</tt> to forward to.
+ *  @param mxbeanName the name of a platform MXBean within
+ *  <tt>connection</tt> to forward to. <tt>mxbeanName</tt> must be
+ *  in the format of {@link ObjectName ObjectName}.
+ *  @param mxbeanInterface the MXBean interface to be implemented
+ *  by the proxy.
+ *  @param <T> an {@code mxbeanInterface} type parameter
+ *
+ *  @return a proxy for a platform MXBean interface of a
+ *  given <a href="#MXBeanNames">MXBean name</a>
+ *  that forwards its method calls through the given
+ *  <tt>MBeanServerConnection</tt>, or {@code null} if not exist.
+ *
+ *  @throws IllegalArgumentException if
+ *  <ul>
+ *  <li><tt>mxbeanName</tt> is not with a valid
+ *      {@link ObjectName ObjectName} format, or</li>
+ *  <li>the named MXBean in the <tt>connection</tt> is
+ *      not a MXBean provided by the platform, or</li>
+ *  <li>the named MXBean is not registered in the
+ *      <tt>MBeanServerConnection</tt>, or</li>
+ *  <li>the named MXBean is not an instance of the given
+ *      <tt>mxbeanInterface</tt></li>
+ *  </ul>
+ *
+ *  @throws java.io.IOException if a communication problem
+ *  occurred when accessing the <tt>MBeanServerConnection</tt>.
+ */
+public static <T> T newPlatformMXBeanProxy(MBeanServerConnection connection, String mxbeanName, Class<T> mxbeanInterface) throws java.io.IOException {
+    // Only allow MXBean interfaces from rt.jar loaded by the
+    // bootstrap class loader
+    final Class<?> cls = mxbeanInterface;
+    ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+        public ClassLoader run() {
+            return cls.getClassLoader();
+        }
+    });
+    if (!sun.misc.VM.isSystemDomainLoader(loader)) {
+        throw new IllegalArgumentException(mxbeanName + " is not a platform MXBean");
+    }
+    try {
+        final ObjectName objName = new ObjectName(mxbeanName);
+        // skip the isInstanceOf check for LoggingMXBean
+        String intfName = mxbeanInterface.getName();
+        if (!connection.isInstanceOf(objName, intfName)) {
+            throw new IllegalArgumentException(mxbeanName + " is not an instance of " + mxbeanInterface);
+        }
+        final Class[] interfaces;
+        // check if the registered MBean is a notification emitter
+        boolean emitter = connection.isInstanceOf(objName, NOTIF_EMITTER);
+        // create an MXBean proxy
+        return JMX.newMXBeanProxy(connection, objName, mxbeanInterface, emitter);
+    } catch (InstanceNotFoundException | MalformedObjectNameException e) {
+        throw new IllegalArgumentException(e);
+    }
+}

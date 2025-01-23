@@ -1,0 +1,18 @@
+/**
+ * Creates a new <code>MultiPixelPackedSampleModel</code> with the
+ * specified width and height.  The new
+ * <code>MultiPixelPackedSampleModel</code> has the
+ * same storage data type and number of bits per pixel as this
+ * <code>MultiPixelPackedSampleModel</code>.
+ * @param w the specified width
+ * @param h the specified height
+ * @return a {@link SampleModel} with the specified width and height
+ * and with the same storage data type and number of bits per pixel
+ * as this <code>MultiPixelPackedSampleModel</code>.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    SampleModel sampleModel = new MultiPixelPackedSampleModel(dataType, w, h, pixelBitStride);
+    return sampleModel;
+}

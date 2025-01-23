@@ -1,0 +1,7 @@
+// Override default methods in Map
+@Override
+@SuppressWarnings("unchecked")
+public V getOrDefault(Object k, V defaultValue) {
+    // Safe cast as we don't change the value
+    return ((Map<K, V>) m).getOrDefault(k, defaultValue);
+}

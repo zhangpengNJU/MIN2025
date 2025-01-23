@@ -1,0 +1,13 @@
+private BeanInfo getTargetBeanInfo() {
+    if (this.targetBeanInfoRef == null) {
+        return null;
+    }
+    BeanInfo targetBeanInfo = this.targetBeanInfoRef.get();
+    if (targetBeanInfo == null) {
+        targetBeanInfo = ThreadGroupContext.getContext().getBeanInfoFinder().find(this.beanDescriptor.getBeanClass());
+        if (targetBeanInfo != null) {
+            this.targetBeanInfoRef = new SoftReference<>(targetBeanInfo);
+        }
+    }
+    return targetBeanInfo;
+}

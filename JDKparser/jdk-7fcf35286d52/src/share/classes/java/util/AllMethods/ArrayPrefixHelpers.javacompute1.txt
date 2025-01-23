@@ -1,0 +1,119 @@
+public final void compute() {
+    final LongBinaryOperator fn;
+    final long[] a;
+    if ((fn = this.function) == null || (a = this.array) == null)
+        // hoist checks
+        throw new NullPointerException();
+    int th = threshold, org = origin, fnc = fence, l, h;
+    LongCumulateTask t = this;
+    outer: while ((l = t.lo) >= 0 && (h = t.hi) <= a.length) {
+        if (h - l > th) {
+            LongCumulateTask lt = t.left, rt = t.right, f;
+            if (lt == null) {
+                // first pass
+                int mid = (l + h) >>> 1;
+                f = rt = t.right = new LongCumulateTask(t, fn, a, org, fnc, th, mid, h);
+                t = lt = t.left = new LongCumulateTask(t, fn, a, org, fnc, th, l, mid);
+            } else {
+                // possibly refork
+                long pin = t.in;
+                lt.in = pin;
+                f = t = null;
+                if (rt != null) {
+                    long lout = lt.out;
+                    rt.in = (l == org ? lout : fn.applyAsLong(pin, lout));
+                    for (int c; ; ) {
+                        if (((c = rt.getPendingCount()) & CUMULATE) != 0)
+                            break;
+                        if (rt.compareAndSetPendingCount(c, c | CUMULATE)) {
+                            t = rt;
+                            break;
+                        }
+                    }
+                }
+                for (int c; ; ) {
+                    if (((c = lt.getPendingCount()) & CUMULATE) != 0)
+                        break;
+                    if (lt.compareAndSetPendingCount(c, c | CUMULATE)) {
+                        if (t != null)
+                            f = t;
+                        t = lt;
+                        break;
+                    }
+                }
+                if (t == null)
+                    break;
+            }
+            if (f != null)
+                f.fork();
+        } else {
+            // Transition to sum, cumulate, or both
+            int state;
+            for (int b; ; ) {
+                if (((b = t.getPendingCount()) & FINISHED) != 0)
+                    // already done
+                    break outer;
+                state = ((b & CUMULATE) != 0 ? FINISHED : (l > org) ? SUMMED : (SUMMED | FINISHED));
+                if (t.compareAndSetPendingCount(b, b | state))
+                    break;
+            }
+            long sum;
+            if (state != SUMMED) {
+                int first;
+                if (l == org) {
+                    // leftmost; no in
+                    sum = a[org];
+                    first = org + 1;
+                } else {
+                    sum = t.in;
+                    first = l;
+                }
+                for (// cumulate
+                int i = first; // cumulate
+                i < h; // cumulate
+                ++i) a[i] = sum = fn.applyAsLong(sum, a[i]);
+            } else if (h < fnc) {
+                // skip rightmost
+                sum = a[l];
+                for (// sum only
+                int i = l + 1; // sum only
+                i < h; // sum only
+                ++i) sum = fn.applyAsLong(sum, a[i]);
+            } else
+                sum = t.in;
+            t.out = sum;
+            for (LongCumulateTask par; ; ) {
+                // propagate
+                if ((par = (LongCumulateTask) t.getCompleter()) == null) {
+                    if (// enable join
+                    (state & FINISHED) != 0)
+                        t.quietlyComplete();
+                    break outer;
+                }
+                int b = par.getPendingCount();
+                if ((b & state & FINISHED) != 0)
+                    // both done
+                    t = par;
+                else if ((b & state & SUMMED) != 0) {
+                    // both summed
+                    int nextState;
+                    LongCumulateTask lt, rt;
+                    if ((lt = par.left) != null && (rt = par.right) != null) {
+                        long lout = lt.out;
+                        par.out = (rt.hi == fnc ? lout : fn.applyAsLong(lout, rt.out));
+                    }
+                    int refork = (((b & CUMULATE) == 0 && par.lo == org) ? CUMULATE : 0);
+                    if ((nextState = b | state | refork) == b || par.compareAndSetPendingCount(b, nextState)) {
+                        // drop finished
+                        state = SUMMED;
+                        t = par;
+                        if (refork != 0)
+                            par.fork();
+                    }
+                } else if (par.compareAndSetPendingCount(b, b | state))
+                    // sib not ready
+                    break outer;
+            }
+        }
+    }
+}

@@ -1,0 +1,7 @@
+boolean isLoopbackAddress() {
+    byte test = 0x00;
+    for (int i = 0; i < 15; i++) {
+        test |= ipaddress[i];
+    }
+    return (test == 0x00) && (ipaddress[15] == 0x01);
+}

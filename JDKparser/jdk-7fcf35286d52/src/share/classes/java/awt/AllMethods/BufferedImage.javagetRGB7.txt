@@ -1,0 +1,28 @@
+/**
+ * Returns an integer pixel in the default RGB color model
+ * (TYPE_INT_ARGB) and default sRGB colorspace.  Color
+ * conversion takes place if this default model does not match
+ * the image <code>ColorModel</code>.  There are only 8-bits of
+ * precision for each color component in the returned data when using
+ * this method.
+ *
+ * <p>
+ *
+ * An <code>ArrayOutOfBoundsException</code> may be thrown
+ * if the coordinates are not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ *
+ * @param x the X coordinate of the pixel from which to get
+ *          the pixel in the default RGB color model and sRGB
+ *          color space
+ * @param y the Y coordinate of the pixel from which to get
+ *          the pixel in the default RGB color model and sRGB
+ *          color space
+ * @return an integer pixel in the default RGB color model and
+ *          default sRGB colorspace.
+ * @see #setRGB(int, int, int)
+ * @see #setRGB(int, int, int, int, int[], int, int)
+ */
+public int getRGB(int x, int y) {
+    return colorModel.getRGB(raster.getDataElements(x, y, null));
+}

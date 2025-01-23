@@ -1,0 +1,19 @@
+/**
+ * Returns the distance from a point to this line segment.
+ * The distance measured is the distance between the specified
+ * point and the closest point between the current line's end points.
+ * If the specified point intersects the line segment in between the
+ * end points, this method returns 0.0.
+ *
+ * @param px the X coordinate of the specified point being
+ *           measured against this line segment
+ * @param py the Y coordinate of the specified point being
+ *           measured against this line segment
+ * @return a double value that is the distance from the specified
+ *                  point to the current line segment.
+ * @see #ptLineDist(double, double)
+ * @since 1.2
+ */
+public double ptSegDist(double px, double py) {
+    return ptSegDist(getX1(), getY1(), getX2(), getY2(), px, py);
+}

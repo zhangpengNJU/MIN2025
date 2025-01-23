@@ -1,0 +1,8 @@
+/**
+ * Sets the int at index+offset in this MutableBigInteger to val.
+ * This does not get inlined on all platforms so it is not used
+ * as often as originally intended.
+ */
+void setInt(int index, int val) {
+    value[offset + index] = val;
+}

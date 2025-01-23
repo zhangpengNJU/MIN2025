@@ -1,0 +1,18 @@
+private void implRemoveService(Service s) {
+    if ((s == null) || (serviceMap == null)) {
+        return;
+    }
+    String type = s.getType();
+    String algorithm = s.getAlgorithm();
+    ServiceKey key = new ServiceKey(type, algorithm, false);
+    Service oldService = serviceMap.get(key);
+    if (s != oldService) {
+        return;
+    }
+    servicesChanged = true;
+    serviceMap.remove(key);
+    for (String alias : s.getAliases()) {
+        serviceMap.remove(new ServiceKey(type, alias, false));
+    }
+    removePropertyStrings(s);
+}

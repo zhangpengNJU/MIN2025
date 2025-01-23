@@ -1,0 +1,37 @@
+/**
+ * Check if the target range is within the policy range
+ * together with the ephemeral range for this platform
+ * (if policy includes ephemeral range)
+ */
+private static boolean inRange(int policyLow, int policyHigh, int targetLow, int targetHigh) {
+    final int ephemeralLow = EphemeralRange.low;
+    final int ephemeralHigh = EphemeralRange.high;
+    if (targetLow == 0) {
+        // check policy includes ephemeral range
+        if (!inRange(policyLow, policyHigh, ephemeralLow, ephemeralHigh)) {
+            return false;
+        }
+        if (targetHigh == 0) {
+            // nothing left to do
+            return true;
+        }
+        // continue check with first real port number
+        targetLow = 1;
+    }
+    if (policyLow == 0 && policyHigh == 0) {
+        // ephemeral range only
+        return targetLow >= ephemeralLow && targetHigh <= ephemeralHigh;
+    }
+    if (policyLow != 0) {
+        // simple check of policy only
+        return targetLow >= policyLow && targetHigh <= policyHigh;
+    }
+    // policyLow == 0 which means possibly two ranges to check
+    // first check if policy and ephem range overlap/contiguous
+    if (policyHigh >= ephemeralLow - 1) {
+        return targetHigh <= ephemeralHigh;
+    }
+    // policy and ephem range do not overlap
+    // target range must lie entirely inside policy range or eph range
+    return (targetLow <= policyHigh && targetHigh <= policyHigh) || (targetLow >= ephemeralLow && targetHigh <= ephemeralHigh);
+}

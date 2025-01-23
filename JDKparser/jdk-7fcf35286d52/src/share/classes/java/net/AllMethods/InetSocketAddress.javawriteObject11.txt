@@ -1,0 +1,8 @@
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // Don't call defaultWriteObject()
+    ObjectOutputStream.PutField pfields = out.putFields();
+    pfields.put("hostname", holder.hostname);
+    pfields.put("addr", holder.addr);
+    pfields.put("port", holder.port);
+    out.writeFields();
+}

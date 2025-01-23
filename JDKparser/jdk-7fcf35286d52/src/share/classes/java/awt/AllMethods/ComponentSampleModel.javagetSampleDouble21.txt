@@ -1,0 +1,20 @@
+/**
+ * Returns the sample in a specified band
+ * for a pixel located at (x,y) as a double.
+ * An <code>ArrayIndexOutOfBoundsException</code> might be
+ * thrown if the coordinates are not in bounds.
+ * @param x         The X coordinate of the pixel location
+ * @param y         The Y coordinate of the pixel location
+ * @param b         The band to return
+ * @param data      The DataBuffer containing the image data
+ * @return a double value representing the sample in the specified
+ * band for the specified pixel.
+ */
+public double getSampleDouble(int x, int y, int b, DataBuffer data) {
+    // Bounds check for 'b' will be performed automatically
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    double sample = data.getElemDouble(bankIndices[b], y * scanlineStride + x * pixelStride + bandOffsets[b]);
+    return sample;
+}

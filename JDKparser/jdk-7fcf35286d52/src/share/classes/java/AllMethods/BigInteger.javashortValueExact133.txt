@@ -1,0 +1,20 @@
+/**
+ * Converts this {@code BigInteger} to a {@code short}, checking
+ * for lost information.  If the value of this {@code BigInteger}
+ * is out of the range of the {@code short} type, then an
+ * {@code ArithmeticException} is thrown.
+ *
+ * @return this {@code BigInteger} converted to a {@code short}.
+ * @throws ArithmeticException if the value of {@code this} will
+ * not exactly fit in a {@code short}.
+ * @see BigInteger#shortValue
+ * @since  1.8
+ */
+public short shortValueExact() {
+    if (mag.length <= 1 && bitLength() <= 31) {
+        int value = intValue();
+        if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)
+            return shortValue();
+    }
+    throw new ArithmeticException("BigInteger out of short range");
+}

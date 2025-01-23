@@ -1,0 +1,9 @@
+@Override
+public MethodHandle asCollector(Class<?> arrayType, int arrayLength) {
+    if (intrinsicName == Intrinsic.IDENTITY) {
+        MethodType resultType = type().asCollectorType(arrayType, arrayLength);
+        MethodHandle newArray = MethodHandleImpl.varargsArray(arrayType, arrayLength);
+        return newArray.asType(resultType);
+    }
+    return super.asCollector(arrayType, arrayLength);
+}

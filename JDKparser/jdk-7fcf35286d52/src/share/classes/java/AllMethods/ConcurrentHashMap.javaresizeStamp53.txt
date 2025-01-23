@@ -1,0 +1,8 @@
+/* ---------------- Table Initialization and Resizing -------------- */
+/**
+ * Returns the stamp bits for resizing a table of size n.
+ * Must be negative when shifted left by RESIZE_STAMP_SHIFT.
+ */
+static final int resizeStamp(int n) {
+    return Integer.numberOfLeadingZeros(n) | (1 << (RESIZE_STAMP_BITS - 1));
+}

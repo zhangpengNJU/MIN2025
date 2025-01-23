@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> lastEntry() {
+    Entry<K, V> last = (Entry<K, V>) nm.lastEntry();
+    return (null != last) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(last) : null;
+}

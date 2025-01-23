@@ -1,0 +1,17 @@
+/**
+ * Closes the input stream. Must be called to release any resources
+ * associated with the stream.
+ *
+ * @throws  IOException If an I/O error has occurred.
+ */
+public void close() throws IOException {
+    /*
+         * Even if stream already closed, propagate redundant close to
+         * underlying stream to stay consistent with previous implementations.
+         */
+    closed = true;
+    if (depth == 0) {
+        clear();
+    }
+    bin.close();
+}

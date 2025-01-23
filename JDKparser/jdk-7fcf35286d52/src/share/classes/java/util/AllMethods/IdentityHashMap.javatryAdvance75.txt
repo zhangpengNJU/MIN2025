@@ -1,0 +1,18 @@
+@SuppressWarnings("unchecked")
+public boolean tryAdvance(Consumer<? super K> action) {
+    if (action == null)
+        throw new NullPointerException();
+    Object[] a = map.table;
+    int hi = getFence();
+    while (index < hi) {
+        Object key = a[index];
+        index += 2;
+        if (key != null) {
+            action.accept((K) unmaskNull(key));
+            if (map.modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+            return true;
+        }
+    }
+    return false;
+}

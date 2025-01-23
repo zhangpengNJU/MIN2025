@@ -1,0 +1,15 @@
+/*
+     * A utility to return the path bounding the area to the left (top) of the
+     * layout.
+     * Shape is never outside of bounds.
+     */
+private GeneralPath leftShape(Rectangle2D bounds) {
+    double[] path0;
+    if (isVerticalLine) {
+        path0 = new double[] { bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() };
+    } else {
+        path0 = new double[] { bounds.getX(), bounds.getY() + bounds.getHeight(), bounds.getX(), bounds.getY() };
+    }
+    double[] path1 = getCaretPath(0, bounds, true);
+    return boundingShape(path0, path1);
+}

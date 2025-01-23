@@ -1,0 +1,26 @@
+/**
+ * Submap version of ConcurrentSkipListMap.getNearEntry
+ */
+Map.Entry<K, V> getNearEntry(K key, int rel) {
+    Comparator<? super K> cmp = m.comparator;
+    if (isDescending) {
+        // adjust relation for direction
+        if ((rel & LT) == 0)
+            rel |= LT;
+        else
+            rel &= ~LT;
+    }
+    if (tooLow(key, cmp))
+        return ((rel & LT) != 0) ? null : lowestEntry();
+    if (tooHigh(key, cmp))
+        return ((rel & LT) != 0) ? highestEntry() : null;
+    for (; ; ) {
+        Node<K, V> n = m.findNear(key, rel, cmp);
+        if (n == null || !inBounds(n.key, cmp))
+            return null;
+        K k = n.key;
+        V v = n.getValidValue();
+        if (v != null)
+            return new AbstractMap.SimpleImmutableEntry<K, V>(k, v);
+    }
+}

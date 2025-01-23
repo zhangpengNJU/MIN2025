@@ -1,0 +1,26 @@
+/**
+ * Hide this Window, its subcomponents, and all of its owned children.
+ * The Window and its subcomponents can be made visible again
+ * with a call to {@code show}.
+ * @see #show
+ * @see #dispose
+ * @deprecated As of JDK version 1.5, replaced by
+ * {@link #setVisible(boolean)}.
+ */
+@Deprecated
+public void hide() {
+    synchronized (ownedWindowList) {
+        for (int i = 0; i < ownedWindowList.size(); i++) {
+            Window child = ownedWindowList.elementAt(i).get();
+            if ((child != null) && child.visible) {
+                child.hide();
+                child.showWithParent = true;
+            }
+        }
+    }
+    if (isModalBlocked()) {
+        modalBlocker.unblockWindow(this);
+    }
+    super.hide();
+    locationByPlatform = false;
+}

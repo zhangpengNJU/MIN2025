@@ -1,0 +1,20 @@
+/**
+ * Marshals a binary representation of this <code>ObjID</code> to
+ * an <code>ObjectOutput</code> instance.
+ *
+ * <p>Specifically, this method first invokes the given stream's
+ * {@link ObjectOutput#writeLong(long)} method with this object
+ * identifier's object number, and then it writes its address
+ * space identifier by invoking its {@link UID#write(DataOutput)}
+ * method with the stream.
+ *
+ * @param   out the <code>ObjectOutput</code> instance to write
+ * this <code>ObjID</code> to
+ *
+ * @throws  IOException if an I/O error occurs while performing
+ * this operation
+ */
+public void write(ObjectOutput out) throws IOException {
+    out.writeLong(objNum);
+    space.write(out);
+}

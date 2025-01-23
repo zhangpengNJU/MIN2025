@@ -1,0 +1,7 @@
+public E set(int index, E e) {
+    rangeCheck(index);
+    checkForComodification();
+    E oldValue = ArrayList.this.elementData(offset + index);
+    ArrayList.this.elementData[offset + index] = e;
+    return oldValue;
+}

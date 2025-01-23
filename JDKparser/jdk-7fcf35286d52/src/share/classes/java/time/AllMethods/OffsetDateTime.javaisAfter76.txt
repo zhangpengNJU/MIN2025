@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if the instant of this date-time is after that of the specified date-time.
+ * <p>
+ * This method differs from the comparison in {@link #compareTo} and {@link #equals} in that it
+ * only compares the instant of the date-time. This is equivalent to using
+ * {@code dateTime1.toInstant().isAfter(dateTime2.toInstant());}.
+ *
+ * @param other  the other date-time to compare to, not null
+ * @return true if this is after the instant of the specified date-time
+ */
+public boolean isAfter(OffsetDateTime other) {
+    long thisEpochSec = toEpochSecond();
+    long otherEpochSec = other.toEpochSecond();
+    return thisEpochSec > otherEpochSec || (thisEpochSec == otherEpochSec && toLocalTime().getNano() > other.toLocalTime().getNano());
+}

@@ -1,0 +1,12 @@
+public void close() throws IOException {
+    // Prevent recursion. See BugId 4484411
+    if (closing)
+        return;
+    closing = true;
+    if (socket != null) {
+        if (!socket.isClosed())
+            socket.close();
+    } else
+        impl.close();
+    closing = false;
+}

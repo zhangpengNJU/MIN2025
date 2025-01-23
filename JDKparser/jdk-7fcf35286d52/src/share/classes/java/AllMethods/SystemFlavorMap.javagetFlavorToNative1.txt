@@ -1,0 +1,13 @@
+/**
+ * Accessor to flavorToNative map.  Since we use lazy initialization we must
+ * use this accessor instead of direct access to the field which may not be
+ * initialized yet.  This method will initialize the field if needed.
+ *
+ * @return flavorToNative
+ */
+private synchronized Map<DataFlavor, LinkedHashSet<String>> getFlavorToNative() {
+    if (!isMapInitialized) {
+        initSystemFlavorMap();
+    }
+    return flavorToNative;
+}

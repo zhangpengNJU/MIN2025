@@ -1,0 +1,50 @@
+// Remove "." segments from the given path, and remove segment pairs
+// consisting of a non-".." segment followed by a ".." segment.
+// 
+private static void removeDots(char[] path, int[] segs) {
+    int ns = segs.length;
+    int end = path.length - 1;
+    for (int i = 0; i < ns; i++) {
+        // Number of dots found (0, 1, or 2)
+        int dots = 0;
+        // Find next occurrence of "." or ".."
+        do {
+            int p = segs[i];
+            if (path[p] == '.') {
+                if (p == end) {
+                    dots = 1;
+                    break;
+                } else if (path[p + 1] == '\0') {
+                    dots = 1;
+                    break;
+                } else if ((path[p + 1] == '.') && ((p + 1 == end) || (path[p + 2] == '\0'))) {
+                    dots = 2;
+                    break;
+                }
+            }
+            i++;
+        } while (i < ns);
+        if ((i > ns) || (dots == 0))
+            break;
+        if (dots == 1) {
+            // Remove this occurrence of "."
+            segs[i] = -1;
+        } else {
+            // If there is a preceding non-".." segment, remove both that
+            // segment and this occurrence of ".."; otherwise, leave this
+            // ".." segment as-is.
+            int j;
+            for (j = i - 1; j >= 0; j--) {
+                if (segs[j] != -1)
+                    break;
+            }
+            if (j >= 0) {
+                int q = segs[j];
+                if (!((path[q] == '.') && (path[q + 1] == '.') && (path[q + 2] == '\0'))) {
+                    segs[i] = -1;
+                    segs[j] = -1;
+                }
+            }
+        }
+    }
+}

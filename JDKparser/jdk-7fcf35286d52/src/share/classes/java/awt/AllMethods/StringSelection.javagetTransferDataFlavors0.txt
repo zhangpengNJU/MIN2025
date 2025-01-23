@@ -1,0 +1,15 @@
+/**
+ * Returns an array of flavors in which this <code>Transferable</code>
+ * can provide the data. <code>DataFlavor.stringFlavor</code>
+ * is properly supported.
+ * Support for <code>DataFlavor.plainTextFlavor</code> is
+ * <b>deprecated</b>.
+ *
+ * @return an array of length two, whose elements are <code>DataFlavor.
+ *         stringFlavor</code> and <code>DataFlavor.plainTextFlavor</code>
+ */
+public DataFlavor[] getTransferDataFlavors() {
+    // returning flavors itself would allow client code to modify
+    // our internal behavior
+    return (DataFlavor[]) flavors.clone();
+}

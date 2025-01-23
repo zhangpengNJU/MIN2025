@@ -1,0 +1,16 @@
+/**
+ * Called when the event was dispatched or disposed
+ * @param dispatched true if the event was dispatched
+ *                   false if the event was disposed
+ */
+private void finishedDispatching(boolean dispatched) {
+    this.dispatched = dispatched;
+    if (notifier != null) {
+        synchronized (notifier) {
+            notifier.notifyAll();
+        }
+    }
+    if (listener != null) {
+        listener.run();
+    }
+}

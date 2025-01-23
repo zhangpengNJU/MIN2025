@@ -1,0 +1,19 @@
+static void invokeAndWait(Object source, Runnable runnable) throws InterruptedException, InvocationTargetException {
+    if (EventQueue.isDispatchThread()) {
+        throw new Error("Cannot call invokeAndWait from the event dispatcher thread");
+    }
+    class AWTInvocationLock {
+    }
+    Object lock = new AWTInvocationLock();
+    InvocationEvent event = new InvocationEvent(source, runnable, lock, true);
+    synchronized (lock) {
+        Toolkit.getEventQueue().postEvent(event);
+        while (!event.isDispatched()) {
+            lock.wait();
+        }
+    }
+    Throwable eventThrowable = event.getThrowable();
+    if (eventThrowable != null) {
+        throw new InvocationTargetException(eventThrowable);
+    }
+}

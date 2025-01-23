@@ -1,0 +1,12 @@
+/**
+ * Initiate a stack containing, in left-to-right order, the child nodes
+ * covered by this spliterator
+ */
+@SuppressWarnings("unchecked")
+protected final Deque<N> initStack() {
+    // Bias size to the case where leaf nodes are close to this node
+    // 8 is the minimum initial capacity for the ArrayDeque implementation
+    Deque<N> stack = new ArrayDeque<>(8);
+    for (int i = curNode.getChildCount() - 1; i >= curChildIndex; i--) stack.addFirst((N) curNode.getChild(i));
+    return stack;
+}

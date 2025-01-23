@@ -1,0 +1,11 @@
+void appendTo(StringBuilder sb) {
+    appendTo(sb, "method", this.methodRef.get());
+    if (this.parameterDescriptors != null) {
+        sb.append("; parameterDescriptors={");
+        for (ParameterDescriptor pd : this.parameterDescriptors) {
+            sb.append(pd).append(", ");
+        }
+        sb.setLength(sb.length() - 2);
+        sb.append("}");
+    }
+}

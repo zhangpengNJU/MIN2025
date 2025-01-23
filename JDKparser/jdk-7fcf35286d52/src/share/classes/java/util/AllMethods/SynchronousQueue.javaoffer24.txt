@@ -1,0 +1,18 @@
+/**
+ * Inserts the specified element into this queue, waiting if necessary
+ * up to the specified wait time for another thread to receive it.
+ *
+ * @return {@code true} if successful, or {@code false} if the
+ *         specified waiting time elapses before a consumer appears
+ * @throws InterruptedException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+    if (e == null)
+        throw new NullPointerException();
+    if (transferer.transfer(e, true, unit.toNanos(timeout)) != null)
+        return true;
+    if (!Thread.interrupted())
+        return false;
+    throw new InterruptedException();
+}

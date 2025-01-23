@@ -1,0 +1,41 @@
+/**
+ * Produce a resolved version of the given member.
+ *  Super types are searched (for inherited members) if {@code searchSupers} is true.
+ *  Access checking is performed on behalf of the given {@code lookupClass}.
+ *  If lookup fails or access is not permitted, null is returned.
+ *  Otherwise a fresh copy of the given member is returned, with modifier bits filled in.
+ */
+private MemberName resolve(byte refKind, MemberName ref, Class<?> lookupClass) {
+    // JVM will side-effect the ref
+    MemberName m = ref.clone();
+    assert (refKind == m.getReferenceKind());
+    try {
+        // There are 4 entities in play here:
+        // * LC: lookupClass
+        // * REFC: symbolic reference class (MN.clazz before resolution);
+        // * DEFC: resolved method holder (MN.clazz after resolution);
+        // * PTYPES: parameter types (MN.type)
+        // 
+        // What we care about when resolving a MemberName is consistency between DEFC and PTYPES.
+        // We do type alias (TA) checks on DEFC to ensure that. DEFC is not known until the JVM
+        // finishes the resolution, so do TA checks right after MHN.resolve() is over.
+        // 
+        // All parameters passed by a caller are checked against MH type (PTYPES) on every invocation,
+        // so it is safe to call a MH from any context.
+        // 
+        // REFC view on PTYPES doesn't matter, since it is used only as a starting point for resolution and doesn't
+        // participate in method selection.
+        m = MethodHandleNatives.resolve(m, lookupClass);
+        m.checkForTypeAlias(m.getDeclaringClass());
+        m.resolution = null;
+    } catch (ClassNotFoundException | LinkageError ex) {
+        // JVM reports that the "bytecode behavior" would get an error
+        assert (!m.isResolved());
+        m.resolution = ex;
+        return m;
+    }
+    assert (m.referenceKindIsConsistent());
+    m.initResolved(true);
+    assert (m.vminfoIsConsistent());
+    return m;
+}

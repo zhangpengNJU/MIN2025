@@ -1,0 +1,12 @@
+/**
+ * Save the state of the {@code BitSet} instance to a stream (i.e.,
+ * serialize it).
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    checkInvariants();
+    if (!sizeIsSticky)
+        trimToSize();
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("bits", words);
+    s.writeFields();
+}

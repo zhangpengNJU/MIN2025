@@ -1,0 +1,11 @@
+/**
+ * Returns a new CompletableFuture that is already completed with
+ * the given value.
+ *
+ * @param value the value
+ * @param <U> the type of the value
+ * @return the completed CompletableFuture
+ */
+public static <U> CompletableFuture<U> completedFuture(U value) {
+    return new CompletableFuture<U>((value == null) ? NIL : value);
+}

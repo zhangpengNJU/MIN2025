@@ -1,0 +1,25 @@
+// Attempt to parse an IPv4 address, returning -1 on failure but
+// allowing the given interval to contain [:<characters>] after
+// the IPv4 address.
+// 
+private int parseIPv4Address(int start, int n) {
+    int p;
+    try {
+        p = scanIPv4Address(start, n, false);
+    } catch (URISyntaxException x) {
+        return -1;
+    } catch (NumberFormatException nfe) {
+        return -1;
+    }
+    if (p > start && p < n) {
+        // IPv4 address is followed by something - check that
+        // it's a ":" as this is the only valid character to
+        // follow an address.
+        if (charAt(p) != ':') {
+            p = -1;
+        }
+    }
+    if (p > start)
+        host = substring(start, p);
+    return p;
+}

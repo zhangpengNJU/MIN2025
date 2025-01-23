@@ -1,0 +1,14 @@
+public final BigDecimal getBigDecimal() {
+    if (count == 0) {
+        if (decimalAt == 0) {
+            return BigDecimal.ZERO;
+        } else {
+            return new BigDecimal("0E" + decimalAt);
+        }
+    }
+    if (decimalAt == count) {
+        return new BigDecimal(digits, 0, count);
+    } else {
+        return new BigDecimal(digits, 0, count).scaleByPowerOfTen(decimalAt - count);
+    }
+}

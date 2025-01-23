@@ -1,0 +1,17 @@
+// -- Accessibility --
+/**
+ * Returns {@code false} if NOFOLLOW_LINKS is present.
+ */
+private static boolean followLinks(LinkOption... options) {
+    boolean followLinks = true;
+    for (LinkOption opt : options) {
+        if (opt == LinkOption.NOFOLLOW_LINKS) {
+            followLinks = false;
+            continue;
+        }
+        if (opt == null)
+            throw new NullPointerException();
+        throw new AssertionError("Should not get here");
+    }
+    return followLinks;
+}

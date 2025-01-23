@@ -1,0 +1,49 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (xs /
+ * ys)}, with rounding according to the context settings.
+ */
+private static BigDecimal divide(final long xs, int xscale, final long ys, int yscale, long preferredScale, MathContext mc) {
+    int mcp = mc.precision;
+    if (xscale <= yscale && yscale < 18 && mcp < 18) {
+        return divideSmallFastPath(xs, xscale, ys, yscale, preferredScale, mc);
+    }
+    if (compareMagnitudeNormalized(xs, xscale, ys, yscale) > 0) {
+        // satisfy constraint (b)
+        // [that is, divisor *= 10]
+        yscale -= 1;
+    }
+    int roundingMode = mc.roundingMode.oldMode;
+    // In order to find out whether the divide generates the exact result,
+    // we avoid calling the above divide method. 'quotient' holds the
+    // return BigDecimal object whose scale will be set to 'scl'.
+    int scl = checkScaleNonZero(preferredScale + yscale - xscale + mcp);
+    BigDecimal quotient;
+    if (checkScaleNonZero((long) mcp + yscale - xscale) > 0) {
+        int raise = checkScaleNonZero((long) mcp + yscale - xscale);
+        long scaledXs;
+        if ((scaledXs = longMultiplyPowerTen(xs, raise)) == INFLATED) {
+            BigInteger rb = bigMultiplyPowerTen(xs, raise);
+            quotient = divideAndRound(rb, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+        } else {
+            quotient = divideAndRound(scaledXs, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+        }
+    } else {
+        int newScale = checkScaleNonZero((long) xscale - mcp);
+        // assert newScale >= yscale
+        if (newScale == yscale) {
+            // easy case
+            quotient = divideAndRound(xs, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+        } else {
+            int raise = checkScaleNonZero((long) newScale - yscale);
+            long scaledYs;
+            if ((scaledYs = longMultiplyPowerTen(ys, raise)) == INFLATED) {
+                BigInteger rb = bigMultiplyPowerTen(ys, raise);
+                quotient = divideAndRound(BigInteger.valueOf(xs), rb, scl, roundingMode, checkScaleNonZero(preferredScale));
+            } else {
+                quotient = divideAndRound(xs, scaledYs, scl, roundingMode, checkScaleNonZero(preferredScale));
+            }
+        }
+    }
+    // doRound, here, only affects 1000000000 case.
+    return doRound(quotient, mc);
+}

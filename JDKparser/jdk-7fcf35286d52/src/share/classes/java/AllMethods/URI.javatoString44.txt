@@ -1,0 +1,10 @@
+private String toString(String scheme, String opaquePart, String authority, String userInfo, String host, int port, String path, String query, String fragment) {
+    StringBuffer sb = new StringBuffer();
+    if (scheme != null) {
+        sb.append(scheme);
+        sb.append(':');
+    }
+    appendSchemeSpecificPart(sb, opaquePart, authority, userInfo, host, port, path, query);
+    appendFragment(sb, fragment);
+    return sb.toString();
+}

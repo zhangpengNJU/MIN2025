@@ -1,0 +1,16 @@
+/**
+ * Writes the object using a
+ * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(4);                 // identifies a JapaneseDate
+ *  out.writeInt(get(YEAR));
+ *  out.writeByte(get(MONTH_OF_YEAR));
+ *  out.writeByte(get(DAY_OF_MONTH));
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.JAPANESE_DATE_TYPE, this);
+}

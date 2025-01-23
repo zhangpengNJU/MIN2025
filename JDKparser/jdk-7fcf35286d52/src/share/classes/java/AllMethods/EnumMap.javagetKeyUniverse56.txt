@@ -1,0 +1,7 @@
+/**
+ * Returns all of the values comprising K.
+ * The result is uncloned, cached, and shared by all callers.
+ */
+private static <K extends Enum<K>> K[] getKeyUniverse(Class<K> keyType) {
+    return SharedSecrets.getJavaLangAccess().getEnumConstantsShared(keyType);
+}

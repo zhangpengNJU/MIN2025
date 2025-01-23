@@ -1,0 +1,14 @@
+private String[][] getZoneStringsImpl(boolean needsCopy) {
+    if (zoneStrings == null) {
+        zoneStrings = TimeZoneNameUtility.getZoneStrings(locale);
+    }
+    if (!needsCopy) {
+        return zoneStrings;
+    }
+    int len = zoneStrings.length;
+    String[][] aCopy = new String[len][];
+    for (int i = 0; i < len; i++) {
+        aCopy[i] = Arrays.copyOf(zoneStrings[i], zoneStrings[i].length);
+    }
+    return aCopy;
+}

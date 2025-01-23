@@ -1,0 +1,31 @@
+static MethodHandle makeArrayElementAccessor(Class<?> arrayClass, boolean isSetter) {
+    if (arrayClass == Object[].class)
+        return (isSetter ? ArrayAccessor.OBJECT_ARRAY_SETTER : ArrayAccessor.OBJECT_ARRAY_GETTER);
+    if (!arrayClass.isArray())
+        throw newIllegalArgumentException("not an array: " + arrayClass);
+    MethodHandle[] cache = ArrayAccessor.TYPED_ACCESSORS.get(arrayClass);
+    int cacheIndex = (isSetter ? ArrayAccessor.SETTER_INDEX : ArrayAccessor.GETTER_INDEX);
+    MethodHandle mh = cache[cacheIndex];
+    if (mh != null)
+        return mh;
+    mh = ArrayAccessor.getAccessor(arrayClass, isSetter);
+    MethodType correctType = ArrayAccessor.correctType(arrayClass, isSetter);
+    if (mh.type() != correctType) {
+        assert (mh.type().parameterType(0) == Object[].class);
+        assert ((isSetter ? mh.type().parameterType(2) : mh.type().returnType()) == Object.class);
+        assert (isSetter || correctType.parameterType(0).getComponentType() == correctType.returnType());
+        // safe to view non-strictly, because element type follows from array type
+        mh = mh.viewAsType(correctType, false);
+    }
+    mh = makeIntrinsic(mh, (isSetter ? Intrinsic.ARRAY_STORE : Intrinsic.ARRAY_LOAD));
+    // Atomically update accessor cache.
+    synchronized (cache) {
+        if (cache[cacheIndex] == null) {
+            cache[cacheIndex] = mh;
+        } else {
+            // Throw away newly constructed accessor and use cached version.
+            mh = cache[cacheIndex];
+        }
+    }
+    return mh;
+}

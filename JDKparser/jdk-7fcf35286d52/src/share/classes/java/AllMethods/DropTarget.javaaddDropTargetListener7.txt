@@ -1,0 +1,19 @@
+/**
+ * Adds a new <code>DropTargetListener</code> (UNICAST SOURCE).
+ * <P>
+ * @param dtl The new <code>DropTargetListener</code>
+ * <P>
+ * @throws TooManyListenersException if a
+ * <code>DropTargetListener</code> is already added to this
+ * <code>DropTarget</code>.
+ */
+public synchronized void addDropTargetListener(DropTargetListener dtl) throws TooManyListenersException {
+    if (dtl == null)
+        return;
+    if (equals(dtl))
+        throw new IllegalArgumentException("DropTarget may not be its own Listener");
+    if (dtListener == null)
+        dtListener = dtl;
+    else
+        throw new TooManyListenersException();
+}

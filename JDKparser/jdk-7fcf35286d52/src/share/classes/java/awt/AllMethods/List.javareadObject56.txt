@@ -1,0 +1,32 @@
+/**
+ * Reads the <code>ObjectInputStream</code> and if it
+ * isn't <code>null</code> adds a listener to receive
+ * both item events and action events (as specified
+ * by the key stored in the stream) fired by the
+ * <code>List</code>.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the <code>ObjectInputStream</code> to write
+ * @exception HeadlessException if
+ *   <code>GraphicsEnvironment.isHeadless</code> returns
+ *   <code>true</code>
+ * @see #removeItemListener(ItemListener)
+ * @see #addItemListener(ItemListener)
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @see #writeObject(ObjectOutputStream)
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    s.defaultReadObject();
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (itemListenerK == key)
+            addItemListener((ItemListener) (s.readObject()));
+        else if (actionListenerK == key)
+            addActionListener((ActionListener) (s.readObject()));
+        else
+            // skip value for unrecognized key
+            s.readObject();
+    }
+}

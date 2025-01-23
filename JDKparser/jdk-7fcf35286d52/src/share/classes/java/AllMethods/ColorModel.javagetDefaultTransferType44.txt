@@ -1,0 +1,11 @@
+static int getDefaultTransferType(int pixel_bits) {
+    if (pixel_bits <= 8) {
+        return DataBuffer.TYPE_BYTE;
+    } else if (pixel_bits <= 16) {
+        return DataBuffer.TYPE_USHORT;
+    } else if (pixel_bits <= 32) {
+        return DataBuffer.TYPE_INT;
+    } else {
+        return DataBuffer.TYPE_UNDEFINED;
+    }
+}

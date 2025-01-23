@@ -1,0 +1,32 @@
+private static InetAddress[] checkLookupTable(String host) {
+    synchronized (lookupTable) {
+        // If the host isn't in the lookupTable, add it in the
+        // lookuptable and return null. The caller should do
+        // the lookup.
+        if (lookupTable.containsKey(host) == false) {
+            lookupTable.put(host, null);
+            return null;
+        }
+        // If the host is in the lookupTable, it means that another
+        // thread is trying to look up the addresses of this host.
+        // This thread should wait.
+        while (lookupTable.containsKey(host)) {
+            try {
+                lookupTable.wait();
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    // The other thread has finished looking up the addresses of
+    // the host. This thread should retry to get the addresses
+    // from the addressCache. If it doesn't get the addresses from
+    // the cache, it will try to look up the addresses itself.
+    InetAddress[] addresses = getCachedAddresses(host);
+    if (addresses == null) {
+        synchronized (lookupTable) {
+            lookupTable.put(host, null);
+            return null;
+        }
+    }
+    return addresses;
+}

@@ -1,0 +1,8 @@
+/**
+ * Restore a persistent object, must wait for subsequent setBeanContext()
+ * to fully restore any resources obtained from the new nesting
+ * BeanContext
+ */
+private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    ois.defaultReadObject();
+}

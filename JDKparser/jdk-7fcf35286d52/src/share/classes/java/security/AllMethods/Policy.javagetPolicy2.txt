@@ -1,0 +1,24 @@
+/**
+ * Returns the installed Policy object. This value should not be cached,
+ * as it may be changed by a call to {@code setPolicy}.
+ * This method first calls
+ * {@code SecurityManager.checkPermission} with a
+ * {@code SecurityPermission("getPolicy")} permission
+ * to ensure it's ok to get the Policy object.
+ *
+ * @return the installed Policy.
+ *
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        {@code checkPermission} method doesn't allow
+ *        getting the Policy object.
+ *
+ * @see SecurityManager#checkPermission(Permission)
+ * @see #setPolicy(java.security.Policy)
+ */
+public static Policy getPolicy() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null)
+        sm.checkPermission(SecurityConstants.GET_POLICY_PERMISSION);
+    return getPolicyNoCheck();
+}

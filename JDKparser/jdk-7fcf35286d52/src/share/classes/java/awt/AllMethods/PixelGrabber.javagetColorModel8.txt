@@ -1,0 +1,20 @@
+/**
+ * Get the ColorModel for the pixels stored in the array.  If the
+ * PixelGrabber was constructed with an explicit pixel buffer then
+ * this method will always return the default RGB ColorModel,
+ * otherwise it may return null until the ColorModel used by the
+ * ImageProducer is known.
+ * Since the PixelGrabber may fall back on accumulating the data
+ * in the default RGB ColorModel at any time if the source image
+ * uses more than one ColorModel to deliver the data, the ColorModel
+ * object returned by this method may change over time until the
+ * image grab is complete and may not reflect any of the ColorModel
+ * objects that was used by the ImageProducer to deliver the pixels.
+ * @return the ColorModel object used for storing the pixels
+ * @see #getStatus
+ * @see ColorModel#getRGBdefault
+ * @see #setColorModel(ColorModel)
+ */
+public synchronized ColorModel getColorModel() {
+    return imageModel;
+}

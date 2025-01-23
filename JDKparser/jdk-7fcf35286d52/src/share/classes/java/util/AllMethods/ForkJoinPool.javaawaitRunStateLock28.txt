@@ -1,0 +1,47 @@
+/**
+ * Spins and/or blocks until runstate lock is available.  See
+ * above for explanation.
+ */
+private int awaitRunStateLock() {
+    Object lock;
+    boolean wasInterrupted = false;
+    for (int spins = SPINS, r = 0, rs, ns; ; ) {
+        if (((rs = runState) & RSLOCK) == 0) {
+            if (U.compareAndSwapInt(this, RUNSTATE, rs, ns = rs | RSLOCK)) {
+                if (wasInterrupted) {
+                    try {
+                        Thread.currentThread().interrupt();
+                    } catch (SecurityException ignore) {
+                    }
+                }
+                return ns;
+            }
+        } else if (r == 0)
+            r = ThreadLocalRandom.nextSecondarySeed();
+        else if (spins > 0) {
+            // xorshift
+            r ^= r << 6;
+            // xorshift
+            r ^= r >>> 21;
+            // xorshift
+            r ^= r << 7;
+            if (r >= 0)
+                --spins;
+        } else if ((rs & STARTED) == 0 || (lock = stealCounter) == null)
+            // initialization race
+            Thread.yield();
+        else if (U.compareAndSwapInt(this, RUNSTATE, rs, rs | RSIGNAL)) {
+            synchronized (lock) {
+                if ((runState & RSIGNAL) != 0) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException ie) {
+                        if (!(Thread.currentThread() instanceof ForkJoinWorkerThread))
+                            wasInterrupted = true;
+                    }
+                } else
+                    lock.notifyAll();
+            }
+        }
+    }
+}

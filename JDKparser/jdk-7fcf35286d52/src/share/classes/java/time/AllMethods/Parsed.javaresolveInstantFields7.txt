@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------
+private void resolveInstantFields() {
+    // resolve parsed instant seconds to date and time if zone available
+    if (fieldValues.containsKey(INSTANT_SECONDS)) {
+        if (zone != null) {
+            resolveInstantFields0(zone);
+        } else {
+            Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+            if (offsetSecs != null) {
+                ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+                resolveInstantFields0(offset);
+            }
+        }
+    }
+}

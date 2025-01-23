@@ -1,0 +1,14 @@
+/**
+ * Converts an angle measured in degrees to an approximately
+ * equivalent angle measured in radians.  The conversion from
+ * degrees to radians is generally inexact.
+ *
+ * @param   angdeg   an angle, in degrees
+ * @return  the measurement of the angle {@code angdeg}
+ *          in radians.
+ */
+public static strictfp double toRadians(double angdeg) {
+    // Do not delegate to Math.toRadians(angdeg) because
+    // this method has the strictfp modifier.
+    return angdeg / 180.0 * PI;
+}

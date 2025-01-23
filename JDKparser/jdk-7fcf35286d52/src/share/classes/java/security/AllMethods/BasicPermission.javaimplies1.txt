@@ -1,0 +1,38 @@
+/**
+ * Checks if the specified permission is "implied" by
+ * this object.
+ * <P>
+ * More specifically, this method returns true if:
+ * <ul>
+ * <li> <i>p</i>'s class is the same as this object's class, and
+ * <li> <i>p</i>'s name equals or (in the case of wildcards)
+ *      is implied by this object's
+ *      name. For example, "a.b.*" implies "a.b.c".
+ * </ul>
+ *
+ * @param p the permission to check against.
+ *
+ * @return true if the passed permission is equal to or
+ * implied by this permission, false otherwise.
+ */
+public boolean implies(Permission p) {
+    if ((p == null) || (p.getClass() != getClass()))
+        return false;
+    BasicPermission that = (BasicPermission) p;
+    if (this.wildcard) {
+        if (that.wildcard) {
+            // one wildcard can imply another
+            return that.path.startsWith(path);
+        } else {
+            // make sure ap.path is longer so a.b.* doesn't imply a.b
+            return (that.path.length() > this.path.length()) && that.path.startsWith(this.path);
+        }
+    } else {
+        if (that.wildcard) {
+            // a non-wildcard can't imply a wildcard
+            return false;
+        } else {
+            return this.path.equals(that.path);
+        }
+    }
+}

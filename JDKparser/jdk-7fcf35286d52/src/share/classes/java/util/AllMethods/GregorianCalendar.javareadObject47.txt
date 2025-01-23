@@ -1,0 +1,11 @@
+/**
+ * Updates internal state.
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    if (gdate == null) {
+        gdate = (BaseCalendar.Date) gcal.newCalendarDate(getZone());
+        cachedFixedDate = Long.MIN_VALUE;
+    }
+    setGregorianChange(gregorianCutover);
+}

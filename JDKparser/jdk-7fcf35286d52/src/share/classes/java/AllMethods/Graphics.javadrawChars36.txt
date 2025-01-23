@@ -1,0 +1,21 @@
+/**
+ * Draws the text given by the specified character array, using this
+ * graphics context's current font and color. The baseline of the
+ * first character is at position (<i>x</i>,&nbsp;<i>y</i>) in this
+ * graphics context's coordinate system.
+ * @param data the array of characters to be drawn
+ * @param offset the start offset in the data
+ * @param length the number of characters to be drawn
+ * @param x the <i>x</i> coordinate of the baseline of the text
+ * @param y the <i>y</i> coordinate of the baseline of the text
+ * @throws NullPointerException if <code>data</code> is <code>null</code>.
+ * @throws IndexOutOfBoundsException if <code>offset</code> or
+ * <code>length</code>is less than zero, or
+ * <code>offset+length</code> is greater than the length of the
+ * <code>data</code> array.
+ * @see         java.awt.Graphics#drawBytes
+ * @see         java.awt.Graphics#drawString
+ */
+public void drawChars(char[] data, int offset, int length, int x, int y) {
+    drawString(new String(data, offset, length), x, y);
+}

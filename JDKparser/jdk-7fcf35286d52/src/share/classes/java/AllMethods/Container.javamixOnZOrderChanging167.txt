@@ -1,0 +1,16 @@
+@Override
+void mixOnZOrderChanging(int oldZorder, int newZorder) {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; oldZ=" + oldZorder + "; newZ=" + newZorder);
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        boolean becameHigher = newZorder < oldZorder;
+        if (becameHigher && isLightweight() && hasHeavyweightDescendants()) {
+            recursiveApplyCurrentShape();
+        }
+        super.mixOnZOrderChanging(oldZorder, newZorder);
+    }
+}

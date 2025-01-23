@@ -1,0 +1,15 @@
+private boolean caretIsValid(int caret) {
+    if (caret == characterCount || caret == 0) {
+        return true;
+    }
+    int offset = textLine.visualToLogical(caret);
+    if (!textLine.isCharLTR(offset)) {
+        offset = textLine.visualToLogical(caret - 1);
+        if (textLine.isCharLTR(offset)) {
+            return true;
+        }
+    }
+    // At this point, the leading edge of the character
+    // at offset is at the given caret.
+    return textLine.caretAtOffsetIsValid(offset);
+}

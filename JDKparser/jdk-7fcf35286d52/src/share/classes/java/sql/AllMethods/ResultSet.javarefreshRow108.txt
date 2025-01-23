@@ -1,0 +1,31 @@
+/**
+ * Refreshes the current row with its most recent value in
+ * the database.  This method cannot be called when
+ * the cursor is on the insert row.
+ *
+ * <P>The <code>refreshRow</code> method provides a way for an
+ * application to
+ * explicitly tell the JDBC driver to refetch a row(s) from the
+ * database.  An application may want to call <code>refreshRow</code> when
+ * caching or prefetching is being done by the JDBC driver to
+ * fetch the latest value of a row from the database.  The JDBC driver
+ * may actually refresh multiple rows at once if the fetch size is
+ * greater than one.
+ *
+ * <P> All values are refetched subject to the transaction isolation
+ * level and cursor sensitivity.  If <code>refreshRow</code> is called after
+ * calling an updater method, but before calling
+ * the method <code>updateRow</code>, then the
+ * updates made to the row are lost.  Calling the method
+ * <code>refreshRow</code> frequently will likely slow performance.
+ *
+ * @exception SQLException if a database access error
+ * occurs; this method is called on a closed result set;
+ * the result set type is <code>TYPE_FORWARD_ONLY</code> or if this
+ * method is called when the cursor is on the insert row
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method or this method is not supported for the specified result
+ * set type and result set concurrency.
+ * @since 1.2
+ */
+void refreshRow() throws SQLException;

@@ -1,0 +1,46 @@
+/**
+ * Multiplies two long values and rounds according {@code MathContext}
+ */
+private static BigDecimal multiplyAndRound(long x, long y, int scale, MathContext mc) {
+    long product = multiply(x, y);
+    if (product != INFLATED) {
+        return doRound(product, scale, mc);
+    }
+    // attempt to do it in 128 bits
+    int rsign = 1;
+    if (x < 0) {
+        x = -x;
+        rsign = -1;
+    }
+    if (y < 0) {
+        y = -y;
+        rsign *= -1;
+    }
+    // multiply dividend0 * dividend1
+    long m0_hi = x >>> 32;
+    long m0_lo = x & LONG_MASK;
+    long m1_hi = y >>> 32;
+    long m1_lo = y & LONG_MASK;
+    product = m0_lo * m1_lo;
+    long m0 = product & LONG_MASK;
+    long m1 = product >>> 32;
+    product = m0_hi * m1_lo + m1;
+    m1 = product & LONG_MASK;
+    long m2 = product >>> 32;
+    product = m0_lo * m1_hi + m1;
+    m1 = product & LONG_MASK;
+    m2 += product >>> 32;
+    long m3 = m2 >>> 32;
+    m2 &= LONG_MASK;
+    product = m0_hi * m1_hi + m2;
+    m2 = product & LONG_MASK;
+    m3 = ((product >>> 32) + m3) & LONG_MASK;
+    final long mHi = make64(m3, m2);
+    final long mLo = make64(m1, m0);
+    BigDecimal res = doRound128(mHi, mLo, rsign, scale, mc);
+    if (res != null) {
+        return res;
+    }
+    res = new BigDecimal(BigInteger.valueOf(x).multiply(y * rsign), INFLATED, scale, 0);
+    return doRound(res, mc);
+}

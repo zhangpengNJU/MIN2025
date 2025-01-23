@@ -1,0 +1,57 @@
+// ======================================================================
+// Package private support methods.
+// ======================================================================
+/**
+ * Internal support for finding a target methodName with a given
+ * parameter list on a given class.
+ */
+private static Method internalFindMethod(Class<?> start, String methodName, int argCount, Class[] args) {
+    // For overriden methods we need to find the most derived version.
+    // So we start with the given class and walk up the superclass chain.
+    Method method = null;
+    for (Class<?> cl = start; cl != null; cl = cl.getSuperclass()) {
+        Method[] methods = getPublicDeclaredMethods(cl);
+        for (int i = 0; i < methods.length; i++) {
+            method = methods[i];
+            if (method == null) {
+                continue;
+            }
+            // make sure method signature matches.
+            if (method.getName().equals(methodName)) {
+                Type[] params = method.getGenericParameterTypes();
+                if (params.length == argCount) {
+                    if (args != null) {
+                        boolean different = false;
+                        if (argCount > 0) {
+                            for (int j = 0; j < argCount; j++) {
+                                if (TypeResolver.erase(TypeResolver.resolveInClass(start, params[j])) != args[j]) {
+                                    different = true;
+                                    continue;
+                                }
+                            }
+                            if (different) {
+                                continue;
+                            }
+                        }
+                    }
+                    return method;
+                }
+            }
+        }
+    }
+    method = null;
+    // Now check any inherited interfaces.  This is necessary both when
+    // the argument class is itself an interface, and when the argument
+    // class is an abstract class.
+    Class[] ifcs = start.getInterfaces();
+    for (int i = 0; i < ifcs.length; i++) {
+        // Note: The original implementation had both methods calling
+        // the 3 arg method. This is preserved but perhaps it should
+        // pass the args array instead of null.
+        method = internalFindMethod(ifcs[i], methodName, argCount, null);
+        if (method != null) {
+            break;
+        }
+    }
+    return method;
+}

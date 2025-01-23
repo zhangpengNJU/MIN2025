@@ -1,0 +1,9 @@
+private static int checkScale(long intCompact, long val) {
+    int asInt = (int) val;
+    if (asInt != val) {
+        asInt = val > Integer.MAX_VALUE ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        if (intCompact != 0)
+            throw new ArithmeticException(asInt > 0 ? "Underflow" : "Overflow");
+    }
+    return asInt;
+}

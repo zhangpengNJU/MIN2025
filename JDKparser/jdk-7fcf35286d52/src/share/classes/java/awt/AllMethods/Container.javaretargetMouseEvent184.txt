@@ -1,0 +1,54 @@
+/**
+ * Sends a mouse event to the current mouse event recipient using
+ * the given event (sent to the windowed host) as a srcEvent.  If
+ * the mouse event target is still in the component tree, the
+ * coordinates of the event are translated to those of the target.
+ * If the target has been removed, we don't bother to send the
+ * message.
+ */
+void retargetMouseEvent(Component target, int id, MouseEvent e) {
+    if (target == null) {
+        // mouse is over another hw component or target is disabled
+        return;
+    }
+    int x = e.getX(), y = e.getY();
+    Component component;
+    for (component = target; component != null && component != nativeContainer; component = component.getParent()) {
+        x -= component.x;
+        y -= component.y;
+    }
+    MouseEvent retargeted;
+    if (component != null) {
+        if (e instanceof SunDropTargetEvent) {
+            retargeted = new SunDropTargetEvent(target, id, x, y, ((SunDropTargetEvent) e).getDispatcher());
+        } else if (id == MouseEvent.MOUSE_WHEEL) {
+            retargeted = new MouseWheelEvent(target, id, e.getWhen(), e.getModifiersEx() | e.getModifiers(), x, y, e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), ((MouseWheelEvent) e).getScrollType(), ((MouseWheelEvent) e).getScrollAmount(), ((MouseWheelEvent) e).getWheelRotation(), ((MouseWheelEvent) e).getPreciseWheelRotation());
+        } else {
+            retargeted = new MouseEvent(target, id, e.getWhen(), e.getModifiersEx() | e.getModifiers(), x, y, e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            MouseEventAccessor meAccessor = AWTAccessor.getMouseEventAccessor();
+            meAccessor.setCausedByTouchEvent(retargeted, meAccessor.isCausedByTouchEvent(e));
+        }
+        ((AWTEvent) e).copyPrivateDataInto(retargeted);
+        if (target == nativeContainer) {
+            // avoid recursively calling LightweightDispatcher...
+            ((Container) target).dispatchEventToSelf(retargeted);
+        } else {
+            assert AppContext.getAppContext() == target.appContext;
+            if (nativeContainer.modalComp != null) {
+                if (((Container) nativeContainer.modalComp).isAncestorOf(target)) {
+                    target.dispatchEvent(retargeted);
+                } else {
+                    e.consume();
+                }
+            } else {
+                target.dispatchEvent(retargeted);
+            }
+        }
+        if (id == MouseEvent.MOUSE_WHEEL && retargeted.isConsumed()) {
+            // An exception for wheel bubbling to the native system.
+            // In "processMouseEvent" total event consuming for wheel events is skipped.
+            // Protection from bubbling of Java-accepted wheel events.
+            e.consume();
+        }
+    }
+}

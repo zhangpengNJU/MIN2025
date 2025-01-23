@@ -1,0 +1,58 @@
+LambdaForm permuteArguments(int skip, int[] reorder, BasicType[] types) {
+    // Note:  When inArg = reorder[outArg], outArg is fed by a copy of inArg.
+    // The types are the types of the new (incoming) arguments.
+    int length = names.length;
+    int inTypes = types.length;
+    int outArgs = reorder.length;
+    assert (skip + outArgs == arity);
+    assert (permutedTypesMatch(reorder, types, names, skip));
+    int pos = 0;
+    // skip trivial first part of reordering:
+    while (pos < outArgs && reorder[pos] == pos) pos += 1;
+    Name[] names2 = new Name[length - outArgs + inTypes];
+    System.arraycopy(names, 0, names2, 0, skip + pos);
+    // copy the body:
+    int bodyLength = length - arity;
+    System.arraycopy(names, skip + outArgs, names2, skip + inTypes, bodyLength);
+    int arity2 = names2.length - bodyLength;
+    int result2 = result;
+    if (result2 >= 0) {
+        if (result2 < skip + outArgs) {
+            // return the corresponding inArg
+            result2 = reorder[result2 - skip];
+        } else {
+            result2 = result2 - outArgs + inTypes;
+        }
+    }
+    // rework names in the body:
+    for (int j = pos; j < outArgs; j++) {
+        Name n = names[skip + j];
+        int i = reorder[j];
+        // replace names[skip+j] by names2[skip+i]
+        Name n2 = names2[skip + i];
+        if (n2 == null)
+            names2[skip + i] = n2 = new Name(types[i]);
+        else
+            assert (n2.type == types[i]);
+        for (int k = arity2; k < names2.length; k++) {
+            names2[k] = names2[k].replaceName(n, n2);
+        }
+    }
+    // some names are unused, but must be filled in
+    for (int i = skip + pos; i < arity2; i++) {
+        if (names2[i] == null)
+            names2[i] = argument(i, types[i - skip]);
+    }
+    for (int j = arity; j < names.length; j++) {
+        int i = j - arity + arity2;
+        // replace names2[i] by names[j]
+        Name n = names[j];
+        Name n2 = names2[i];
+        if (n != n2) {
+            for (int k = i + 1; k < names2.length; k++) {
+                names2[k] = names2[k].replaceName(n, n2);
+            }
+        }
+    }
+    return new LambdaForm(debugName, arity2, names2, result2);
+}

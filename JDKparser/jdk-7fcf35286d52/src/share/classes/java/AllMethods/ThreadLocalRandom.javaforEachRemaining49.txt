@@ -1,0 +1,13 @@
+public void forEachRemaining(DoubleConsumer consumer) {
+    if (consumer == null)
+        throw new NullPointerException();
+    long i = index, f = fence;
+    if (i < f) {
+        index = f;
+        double o = origin, b = bound;
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
+        do {
+            consumer.accept(rng.internalNextDouble(o, b));
+        } while (++i < f);
+    }
+}

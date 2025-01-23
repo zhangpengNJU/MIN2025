@@ -1,0 +1,12 @@
+private static boolean isValid(Constructor<?> constructor, String[] names) {
+    Class[] parameters = constructor.getParameterTypes();
+    if (names.length != parameters.length) {
+        return false;
+    }
+    for (String name : names) {
+        if (name == null) {
+            return false;
+        }
+    }
+    return true;
+}

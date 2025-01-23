@@ -1,0 +1,14 @@
+@Override
+public MethodHandle asTypeUncached(MethodType newType) {
+    MethodHandle newTarget = target.asType(newType);
+    MethodHandle wrapper;
+    if (isCounting) {
+        LambdaForm lform;
+        lform = countingFormProducer.apply(newTarget);
+        wrapper = new CountingWrapper(newTarget, lform, countingFormProducer, nonCountingFormProducer, DONT_INLINE_THRESHOLD);
+    } else {
+        // no need for a counting wrapper anymore
+        wrapper = newTarget;
+    }
+    return (asTypeCache = wrapper);
+}

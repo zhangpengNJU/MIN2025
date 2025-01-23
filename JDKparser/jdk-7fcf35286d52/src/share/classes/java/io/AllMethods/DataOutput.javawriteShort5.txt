@@ -1,0 +1,19 @@
+/**
+ * Writes two bytes to the output
+ * stream to represent the value of the argument.
+ * The byte values to be written, in the  order
+ * shown, are:
+ * <pre>{@code
+ * (byte)(0xff & (v >> 8))
+ * (byte)(0xff & v)
+ * }</pre> <p>
+ * The bytes written by this method may be
+ * read by the <code>readShort</code> method
+ * of interface <code>DataInput</code> , which
+ * will then return a <code>short</code> equal
+ * to <code>(short)v</code>.
+ *
+ * @param      v   the <code>short</code> value to be written.
+ * @throws     IOException  if an I/O error occurs.
+ */
+void writeShort(int v) throws IOException;

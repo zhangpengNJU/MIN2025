@@ -1,0 +1,14 @@
+/**
+ * Specifies whether pages using these attributes will be rendered in
+ * color or monochrome. Not specifying this attribute is equivalent to
+ * specifying ColorType.MONOCHROME.
+ *
+ * @param   color ColorType.COLOR or ColorType.MONOCHROME.
+ * @throws  IllegalArgumentException if color is null.
+ */
+public void setColor(ColorType color) {
+    if (color == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "color");
+    }
+    this.color = color;
+}

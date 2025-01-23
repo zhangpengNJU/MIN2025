@@ -1,0 +1,10 @@
+private void uncacheEQItem(EventQueueItem entry) {
+    int index = eventToCacheIndex(entry.event);
+    if (index != -1 && entry.event.getSource() instanceof Component) {
+        Component source = (Component) entry.event.getSource();
+        if (source.eventCache == null) {
+            return;
+        }
+        source.eventCache[index] = null;
+    }
+}

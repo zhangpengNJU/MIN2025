@@ -1,0 +1,16 @@
+public void forEachRemaining(Consumer<? super E> action) {
+    Node<E> p;
+    if (action == null)
+        throw new NullPointerException();
+    final ConcurrentLinkedQueue<E> q = this.queue;
+    if (!exhausted && ((p = current) != null || (p = q.first()) != null)) {
+        exhausted = true;
+        do {
+            E e = p.item;
+            if (p == (p = p.next))
+                p = q.first();
+            if (e != null)
+                action.accept(e);
+        } while (p != null);
+    }
+}

@@ -1,0 +1,14 @@
+boolean countDown() {
+    if (count <= 0) {
+        // Try to limit number of updates. MethodHandle.updateForm() doesn't guarantee LF update visibility.
+        if (isCounting) {
+            isCounting = false;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        --count;
+        return false;
+    }
+}

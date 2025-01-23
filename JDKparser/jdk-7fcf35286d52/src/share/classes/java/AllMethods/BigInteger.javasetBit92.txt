@@ -1,0 +1,17 @@
+/**
+ * Returns a BigInteger whose value is equivalent to this BigInteger
+ * with the designated bit set.  (Computes {@code (this | (1<<n))}.)
+ *
+ * @param  n index of bit to set.
+ * @return {@code this | (1<<n)}
+ * @throws ArithmeticException {@code n} is negative.
+ */
+public BigInteger setBit(int n) {
+    if (n < 0)
+        throw new ArithmeticException("Negative bit address");
+    int intNum = n >>> 5;
+    int[] result = new int[Math.max(intLength(), intNum + 2)];
+    for (int i = 0; i < result.length; i++) result[result.length - i - 1] = getInt(i);
+    result[result.length - intNum - 1] |= (1 << (n & 31));
+    return valueOf(result);
+}

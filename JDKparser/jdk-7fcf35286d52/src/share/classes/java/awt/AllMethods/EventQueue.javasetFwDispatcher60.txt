@@ -1,0 +1,8 @@
+// The method is used by AWTAccessor for javafx/AWT single threaded mode.
+private void setFwDispatcher(FwDispatcher dispatcher) {
+    if (nextQueue != null) {
+        nextQueue.setFwDispatcher(dispatcher);
+    } else {
+        fwDispatcher = dispatcher;
+    }
+}

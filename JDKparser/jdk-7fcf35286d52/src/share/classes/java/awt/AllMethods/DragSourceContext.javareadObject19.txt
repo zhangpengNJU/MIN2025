@@ -1,0 +1,59 @@
+/**
+ * Deserializes this <code>DragSourceContext</code>. This method first
+ * performs default deserialization for all non-<code>transient</code>
+ * fields. This object's <code>Transferable</code> and
+ * <code>DragSourceListener</code> are then deserialized as well by using
+ * the next two objects in the stream. If the resulting
+ * <code>Transferable</code> is <code>null</code>, this object's
+ * <code>Transferable</code> is set to a dummy <code>Transferable</code>
+ * which supports no <code>DataFlavor</code>s.
+ *
+ * @since 1.4
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    ObjectInputStream.GetField f = s.readFields();
+    DragGestureEvent newTrigger = (DragGestureEvent) f.get("trigger", null);
+    if (newTrigger == null) {
+        throw new InvalidObjectException("Null trigger");
+    }
+    if (newTrigger.getDragSource() == null) {
+        throw new InvalidObjectException("Null DragSource");
+    }
+    if (newTrigger.getComponent() == null) {
+        throw new InvalidObjectException("Null trigger component");
+    }
+    int newSourceActions = f.get("sourceActions", 0) & (DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK);
+    if (newSourceActions == DnDConstants.ACTION_NONE) {
+        throw new InvalidObjectException("Invalid source actions");
+    }
+    int triggerActions = newTrigger.getDragAction();
+    if (triggerActions != DnDConstants.ACTION_COPY && triggerActions != DnDConstants.ACTION_MOVE && triggerActions != DnDConstants.ACTION_LINK) {
+        throw new InvalidObjectException("No drag action");
+    }
+    trigger = newTrigger;
+    cursor = (Cursor) f.get("cursor", null);
+    useCustomCursor = f.get("useCustomCursor", false);
+    sourceActions = newSourceActions;
+    transferable = (Transferable) s.readObject();
+    listener = (DragSourceListener) s.readObject();
+    // Implementation assumes 'transferable' is never null.
+    if (transferable == null) {
+        if (emptyTransferable == null) {
+            emptyTransferable = new Transferable() {
+
+                public DataFlavor[] getTransferDataFlavors() {
+                    return new DataFlavor[0];
+                }
+
+                public boolean isDataFlavorSupported(DataFlavor flavor) {
+                    return false;
+                }
+
+                public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
+                    throw new UnsupportedFlavorException(flavor);
+                }
+            };
+        }
+        transferable = emptyTransferable;
+    }
+}

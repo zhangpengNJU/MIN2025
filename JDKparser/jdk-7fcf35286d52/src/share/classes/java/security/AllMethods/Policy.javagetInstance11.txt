@@ -1,0 +1,47 @@
+/**
+ * Returns a Policy object of the specified type.
+ *
+ * <p> A new Policy object encapsulating the
+ * PolicySpi implementation from the specified Provider
+ * object is returned.  Note that the specified Provider object
+ * does not have to be registered in the provider list.
+ *
+ * @param type the specified Policy type.  See the Policy section in the
+ *    <a href=
+ *    "{@docRoot}/../technotes/guides/security/StandardNames.html#Policy">
+ *    Java Cryptography Architecture Standard Algorithm Name Documentation</a>
+ *    for a list of standard Policy types.
+ *
+ * @param params parameters for the Policy, which may be null.
+ *
+ * @param provider the Provider.
+ *
+ * @return the new Policy object.
+ *
+ * @exception SecurityException if the caller does not have permission
+ *          to get a Policy instance for the specified type.
+ *
+ * @exception NullPointerException if the specified type is null.
+ *
+ * @exception IllegalArgumentException if the specified Provider is null,
+ *          or if the specified parameters are not understood by
+ *          the PolicySpi implementation from the specified Provider.
+ *
+ * @exception NoSuchAlgorithmException if the specified Provider does not
+ *          support a PolicySpi implementation for the specified type.
+ *
+ * @see Provider
+ * @since 1.6
+ */
+public static Policy getInstance(String type, Policy.Parameters params, Provider provider) throws NoSuchAlgorithmException {
+    if (provider == null) {
+        throw new IllegalArgumentException("missing provider");
+    }
+    checkPermission(type);
+    try {
+        GetInstance.Instance instance = GetInstance.getInstance("Policy", PolicySpi.class, type, params, provider);
+        return new PolicyDelegate((PolicySpi) instance.impl, instance.provider, type, params);
+    } catch (NoSuchAlgorithmException nsae) {
+        return handleException(nsae);
+    }
+}

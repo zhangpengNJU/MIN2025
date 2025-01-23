@@ -1,0 +1,16 @@
+/**
+ * Returns the set of the {@link FileAttributeView#name names} of the file
+ * attribute views supported by this {@code FileSystem}.
+ *
+ * <p> The {@link BasicFileAttributeView} is required to be supported and
+ * therefore the set contains at least one element, "basic".
+ *
+ * <p> The {@link FileStore#supportsFileAttributeView(String)
+ * supportsFileAttributeView(String)} method may be used to test if an
+ * underlying {@link FileStore} supports the file attributes identified by a
+ * file attribute view.
+ *
+ * @return  An unmodifiable set of the names of the supported file attribute
+ *          views
+ */
+public abstract Set<String> supportedFileAttributeViews();

@@ -1,0 +1,7 @@
+private static Policy handleException(NoSuchAlgorithmException nsae) throws NoSuchAlgorithmException {
+    Throwable cause = nsae.getCause();
+    if (cause instanceof IllegalArgumentException) {
+        throw (IllegalArgumentException) cause;
+    }
+    throw nsae;
+}

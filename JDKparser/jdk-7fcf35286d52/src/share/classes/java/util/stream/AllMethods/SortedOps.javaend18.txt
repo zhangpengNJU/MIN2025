@@ -1,0 +1,16 @@
+@Override
+public void end() {
+    list.sort(comparator);
+    downstream.begin(list.size());
+    if (!cancellationRequestedCalled) {
+        list.forEach(downstream::accept);
+    } else {
+        for (T t : list) {
+            if (downstream.cancellationRequested())
+                break;
+            downstream.accept(t);
+        }
+    }
+    downstream.end();
+    list = null;
+}

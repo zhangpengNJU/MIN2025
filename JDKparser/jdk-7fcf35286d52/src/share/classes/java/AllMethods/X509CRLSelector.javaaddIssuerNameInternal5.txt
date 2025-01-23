@@ -1,0 +1,20 @@
+/**
+ * A private method that adds a name (String or byte array) to the
+ * issuerNames criterion. The issuer distinguished
+ * name in the {@code X509CRL} must match at least one of the specified
+ * distinguished names.
+ *
+ * @param name the name in string or byte array form
+ * @param principal the name in X500Principal form
+ * @throws IOException if a parsing error occurs
+ */
+private void addIssuerNameInternal(Object name, X500Principal principal) {
+    if (issuerNames == null) {
+        issuerNames = new HashSet<Object>();
+    }
+    if (issuerX500Principals == null) {
+        issuerX500Principals = new HashSet<X500Principal>();
+    }
+    issuerNames.add(name);
+    issuerX500Principals.add(principal);
+}

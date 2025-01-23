@@ -1,0 +1,19 @@
+@Override
+public String getDisplayName(int field, int style, Locale locale) {
+    if (!checkDisplayNameParams(field, style, SHORT, NARROW_FORMAT, locale, ERA_MASK | YEAR_MASK | MONTH_MASK | DAY_OF_WEEK_MASK | AM_PM_MASK)) {
+        return null;
+    }
+    int fieldValue = get(field);
+    // "GanNen" is supported only in the LONG style.
+    if (field == YEAR && (getBaseStyle(style) != LONG || fieldValue != 1 || get(ERA) == 0)) {
+        return null;
+    }
+    String name = CalendarDataUtility.retrieveFieldValueName(getCalendarType(), field, fieldValue, style, locale);
+    // If the ERA value is null or empty, then
+    // try to get its name or abbreviation from the Era instance.
+    if ((name == null || name.isEmpty()) && field == ERA && fieldValue < eras.length) {
+        Era era = eras[fieldValue];
+        name = (style == SHORT) ? era.getAbbreviation() : era.getName();
+    }
+    return name;
+}

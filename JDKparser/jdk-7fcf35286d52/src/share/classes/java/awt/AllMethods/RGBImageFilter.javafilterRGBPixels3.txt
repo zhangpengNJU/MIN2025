@@ -1,0 +1,27 @@
+/**
+ * Filters a buffer of pixels in the default RGB ColorModel by passing
+ * them one by one through the filterRGB method.
+ * @param x the X coordinate of the upper-left corner of the region
+ *          of pixels
+ * @param y the Y coordinate of the upper-left corner of the region
+ *          of pixels
+ * @param w the width of the region of pixels
+ * @param h the height of the region of pixels
+ * @param pixels the array of pixels
+ * @param off the offset into the <code>pixels</code> array
+ * @param scansize the distance from one row of pixels to the next
+ *        in the array
+ * @see ColorModel#getRGBdefault
+ * @see #filterRGB
+ */
+public void filterRGBPixels(int x, int y, int w, int h, int[] pixels, int off, int scansize) {
+    int index = off;
+    for (int cy = 0; cy < h; cy++) {
+        for (int cx = 0; cx < w; cx++) {
+            pixels[index] = filterRGB(x + cx, y + cy, pixels[index]);
+            index++;
+        }
+        index += scansize - w;
+    }
+    consumer.setPixels(x, y, w, h, ColorModel.getRGBdefault(), pixels, off, scansize);
+}

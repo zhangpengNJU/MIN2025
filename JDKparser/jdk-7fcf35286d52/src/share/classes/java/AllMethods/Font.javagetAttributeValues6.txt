@@ -1,0 +1,31 @@
+/**
+ * Return the AttributeValues object associated with this
+ * font.  Most of the time, the internal object is null.
+ * If required, it will be created from the 'standard'
+ * state on the font.  Only non-default values will be
+ * set in the AttributeValues object.
+ *
+ * <p>Since the AttributeValues object is mutable, and it
+ * is cached in the font, care must be taken to ensure that
+ * it is not mutated.
+ */
+private AttributeValues getAttributeValues() {
+    if (values == null) {
+        AttributeValues valuesTmp = new AttributeValues();
+        valuesTmp.setFamily(name);
+        // expects the float value.
+        valuesTmp.setSize(pointSize);
+        if ((style & BOLD) != 0) {
+            // WEIGHT_BOLD
+            valuesTmp.setWeight(2);
+        }
+        if ((style & ITALIC) != 0) {
+            // POSTURE_OBLIQUE
+            valuesTmp.setPosture(.2f);
+        }
+        // for streaming compatibility
+        valuesTmp.defineAll(PRIMARY_MASK);
+        values = valuesTmp;
+    }
+    return values;
+}

@@ -1,0 +1,11 @@
+@Override
+public void accept(T t) {
+    if (n == 0) {
+        if (m > 0) {
+            m--;
+            downstream.accept(t);
+        }
+    } else {
+        n--;
+    }
+}

@@ -1,0 +1,10 @@
+synchronized void addNotify() {
+    if (peer == null) {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        if (toolkit instanceof SunToolkit) {
+            peer = ((SunToolkit) Toolkit.getDefaultToolkit()).createSystemTray(this);
+        } else if (toolkit instanceof HeadlessToolkit) {
+            peer = ((HeadlessToolkit) Toolkit.getDefaultToolkit()).createSystemTray(this);
+        }
+    }
+}

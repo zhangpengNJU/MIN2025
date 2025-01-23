@@ -1,0 +1,6 @@
+/* check if the given device is a screen device */
+private void checkIsScreenDevice(GraphicsDevice device) {
+    if (device == null || device.getType() != GraphicsDevice.TYPE_RASTER_SCREEN) {
+        throw new IllegalArgumentException("not a valid screen device");
+    }
+}

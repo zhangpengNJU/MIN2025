@@ -1,0 +1,9 @@
+@Override
+public synchronized PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+    PropertyChangeSupport pcs = (PropertyChangeSupport) AppContext.getAppContext().get(PROP_CHANGE_SUPPORT_KEY);
+    if (null != pcs) {
+        return pcs.getPropertyChangeListeners(propertyName);
+    } else {
+        return new PropertyChangeListener[0];
+    }
+}

@@ -1,0 +1,17 @@
+/**
+ * Returns the "restart" mode of the object associated with
+ * this activation descriptor.
+ *
+ * @return true if the activatable object associated with this
+ * activation descriptor is restarted via the activation
+ * daemon when either the daemon comes up or the object's group
+ * is restarted after an unexpected crash; otherwise it returns false,
+ * meaning that the object is only activated on demand via a
+ * method call.  Note that if the restart mode is <code>true</code>, the
+ * activator does not force an initial immediate activation of
+ * a newly registered object;  initial activation is lazy.
+ * @since 1.2
+ */
+public boolean getRestartMode() {
+    return restart;
+}

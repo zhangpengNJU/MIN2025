@@ -1,0 +1,13 @@
+/**
+ * Calculates the slice fence, which is one past the index of the slice
+ * range
+ * @param skip the number of elements to skip, assumed to be >= 0
+ * @param limit the number of elements to limit, assumed to be >= 0, with
+ *        a value of {@code Long.MAX_VALUE} if there is no limit
+ * @return the slice fence.
+ */
+private static long calcSliceFence(long skip, long limit) {
+    long sliceFence = limit >= 0 ? skip + limit : Long.MAX_VALUE;
+    // Check for overflow
+    return (sliceFence >= 0) ? sliceFence : Long.MAX_VALUE;
+}

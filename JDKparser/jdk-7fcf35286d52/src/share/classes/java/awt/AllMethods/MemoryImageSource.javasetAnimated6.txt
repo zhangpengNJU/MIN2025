@@ -1,0 +1,27 @@
+/**
+ * Changes this memory image into a multi-frame animation or a
+ * single-frame static image depending on the animated parameter.
+ * <p>This method should be called immediately after the
+ * MemoryImageSource is constructed and before an image is
+ * created with it to ensure that all ImageConsumers will
+ * receive the correct multi-frame data.  If an ImageConsumer
+ * is added to this ImageProducer before this flag is set then
+ * that ImageConsumer will see only a snapshot of the pixel
+ * data that was available when it connected.
+ * @param animated <code>true</code> if the image is a
+ *       multi-frame animation
+ */
+public synchronized void setAnimated(boolean animated) {
+    this.animating = animated;
+    if (!animating) {
+        Enumeration enum_ = theConsumers.elements();
+        while (enum_.hasMoreElements()) {
+            ImageConsumer ic = (ImageConsumer) enum_.nextElement();
+            ic.imageComplete(ImageConsumer.STATICIMAGEDONE);
+            if (isConsumer(ic)) {
+                ic.imageComplete(ImageConsumer.IMAGEERROR);
+            }
+        }
+        theConsumers.removeAllElements();
+    }
+}

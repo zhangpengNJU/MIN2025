@@ -1,0 +1,11 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> action) {
+    while (s.tryAdvance(this)) {
+        if (seen.putIfAbsent(mapNull(tmpSlot), Boolean.TRUE) == null) {
+            action.accept(tmpSlot);
+            tmpSlot = null;
+            return true;
+        }
+    }
+    return false;
+}

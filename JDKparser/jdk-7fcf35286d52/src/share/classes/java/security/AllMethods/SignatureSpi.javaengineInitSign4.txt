@@ -1,0 +1,28 @@
+/**
+ * Initializes this signature object with the specified
+ * private key and source of randomness for signing operations.
+ *
+ * <p>This concrete method has been added to this previously-defined
+ * abstract class. (For backwards compatibility, it cannot be abstract.)
+ *
+ * @param privateKey the private key of the identity whose signature
+ * will be generated.
+ * @param params the parameters for generating this signature
+ * @param random the source of randomness
+ *
+ * @exception InvalidKeyException if the key is improperly
+ * encoded, parameters are missing, and so on.
+ * @exception InvalidAlgorithmParameterException if the parameters is
+ * invalid.
+ */
+void engineInitSign(PrivateKey privateKey, AlgorithmParameterSpec params, SecureRandom random) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    if (params != null) {
+        try {
+            engineSetParameter(params);
+        } catch (UnsupportedOperationException usoe) {
+            // error out if not overrridden
+            throw new InvalidAlgorithmParameterException(usoe);
+        }
+    }
+    engineInitSign(privateKey, random);
+}

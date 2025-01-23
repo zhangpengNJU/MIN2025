@@ -1,0 +1,10 @@
+private static int getKeyFromMask(int mask) {
+    int key = 0;
+    while (key < NUM_KEYS && ((mask & (1 << key)) == 0)) {
+        ++key;
+    }
+    if (key == NUM_KEYS || ((mask & ~(1 << key)) != 0)) {
+        throw new IllegalArgumentException("invalid shaper: " + Integer.toHexString(mask));
+    }
+    return key;
+}

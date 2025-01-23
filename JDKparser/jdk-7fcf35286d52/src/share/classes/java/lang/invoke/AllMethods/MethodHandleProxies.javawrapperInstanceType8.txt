@@ -1,0 +1,11 @@
+/**
+ * Recovers the unique single-method interface type for which this wrapper instance was created.
+ * The object {@code x} must have been produced by a call to {@link #asInterfaceInstance asInterfaceInstance}.
+ * This requirement may be tested via {@link #isWrapperInstance isWrapperInstance}.
+ * @param x any reference
+ * @return the single-method interface type for which the wrapper was created
+ * @throws IllegalArgumentException if the reference x is not to a wrapper instance
+ */
+public static Class<?> wrapperInstanceType(Object x) {
+    return asWrapperInstance(x).getWrapperInstanceType();
+}

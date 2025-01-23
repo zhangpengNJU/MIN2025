@@ -1,0 +1,7 @@
+private static Class<?> getClass(String name) {
+    try {
+        return Class.forName(name, true, Beans.class.getClassLoader());
+    } catch (ClassNotFoundException e) {
+        return null;
+    }
+}

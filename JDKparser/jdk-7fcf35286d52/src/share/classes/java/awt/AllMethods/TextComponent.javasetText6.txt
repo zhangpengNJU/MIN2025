@@ -1,0 +1,19 @@
+/**
+ * Sets the text that is presented by this
+ * text component to be the specified text.
+ * @param       t   the new text;
+ *                  if this parameter is <code>null</code> then
+ *                  the text is set to the empty string ""
+ * @see         java.awt.TextComponent#getText
+ */
+public synchronized void setText(String t) {
+    boolean skipTextEvent = (text == null || text.isEmpty()) && (t == null || t.isEmpty());
+    text = (t != null) ? t : "";
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    // Please note that we do not want to post an event
+    // if TextArea.setText() or TextField.setText() replaces an empty text
+    // by an empty text, that is, if component's text remains unchanged.
+    if (peer != null && !skipTextEvent) {
+        peer.setText(text);
+    }
+}

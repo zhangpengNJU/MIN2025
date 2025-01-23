@@ -1,0 +1,10 @@
+/*non-public*/
+static String addTypeString(Object obj, MethodHandle target) {
+    String str = String.valueOf(obj);
+    if (target == null)
+        return str;
+    int paren = str.indexOf('(');
+    if (paren >= 0)
+        str = str.substring(0, paren);
+    return str + target.type();
+}

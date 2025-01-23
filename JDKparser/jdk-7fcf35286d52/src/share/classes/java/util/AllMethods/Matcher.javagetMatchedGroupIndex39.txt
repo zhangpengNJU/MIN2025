@@ -1,0 +1,13 @@
+/**
+ * Returns the group index of the matched capturing group.
+ *
+ * @return the index of the named-capturing group
+ */
+int getMatchedGroupIndex(String name) {
+    Objects.requireNonNull(name, "Group name");
+    if (first < 0)
+        throw new IllegalStateException("No match found");
+    if (!parentPattern.namedGroups().containsKey(name))
+        throw new IllegalArgumentException("No group with name <" + name + ">");
+    return parentPattern.namedGroups().get(name);
+}

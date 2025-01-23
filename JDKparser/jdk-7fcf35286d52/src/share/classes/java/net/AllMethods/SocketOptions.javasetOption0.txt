@@ -1,0 +1,42 @@
+/**
+ *  Enable/disable the option specified by <I>optID</I>.  If the option
+ *  is to be enabled, and it takes an option-specific "value",  this is
+ *  passed in <I>value</I>.  The actual type of value is option-specific,
+ *  and it is an error to pass something that isn't of the expected type:
+ *  <BR><PRE>
+ *  SocketImpl s;
+ *  ...
+ *  s.setOption(SO_LINGER, new Integer(10));
+ *     // OK - set SO_LINGER w/ timeout of 10 sec.
+ *  s.setOption(SO_LINGER, new Double(10));
+ *     // ERROR - expects java.lang.Integer
+ * </PRE>
+ *  If the requested option is binary, it can be set using this method by
+ *  a java.lang.Boolean:
+ *  <BR><PRE>
+ *  s.setOption(TCP_NODELAY, new Boolean(true));
+ *     // OK - enables TCP_NODELAY, a binary option
+ *  </PRE>
+ *  <BR>
+ *  Any option can be disabled using this method with a Boolean(false):
+ *  <BR><PRE>
+ *  s.setOption(TCP_NODELAY, new Boolean(false));
+ *     // OK - disables TCP_NODELAY
+ *  s.setOption(SO_LINGER, new Boolean(false));
+ *     // OK - disables SO_LINGER
+ *  </PRE>
+ *  <BR>
+ *  For an option that has a notion of on and off, and requires
+ *  a non-boolean parameter, setting its value to anything other than
+ *  <I>Boolean(false)</I> implicitly enables it.
+ *  <BR>
+ *  Throws SocketException if the option is unrecognized,
+ *  the socket is closed, or some low-level error occurred
+ *  <BR>
+ *  @param optID identifies the option
+ *  @param value the parameter of the socket option
+ *  @throws SocketException if the option is unrecognized,
+ *  the socket is closed, or some low-level error occurred
+ *  @see #getOption(int)
+ */
+public void setOption(int optID, Object value) throws SocketException;

@@ -1,0 +1,21 @@
+/**
+ * A <code>BeanContextChild</code>, or any arbitrary object
+ * associated with a <code>BeanContextChild</code>, may obtain
+ * a reference to a currently registered service from its
+ * nesting <code>BeanContextServices</code>
+ * via invocation of this method. When invoked, this method
+ * gets the service by calling the getService() method on the
+ * underlying <code>BeanContextServiceProvider</code>.
+ * @param child the <code>BeanContextChild</code>
+ * associated with this request
+ * @param requestor the object requesting the service
+ * @param serviceClass class of the requested service
+ * @param serviceSelector the service dependent parameter
+ * @param bcsrl the
+ * <code>BeanContextServiceRevokedListener</code> to notify
+ * if the service should later become revoked
+ * @throws TooManyListenersException if there are too many listeners
+ * @return a reference to this context's named
+ * Service as requested or <code>null</code>
+ */
+Object getService(BeanContextChild child, Object requestor, Class serviceClass, Object serviceSelector, BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException;

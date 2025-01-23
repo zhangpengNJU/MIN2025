@@ -1,0 +1,82 @@
+/**
+ *  Converts a {@link java.nio.ByteBuffer <tt>ByteBuffer</tt>}
+ *  into an instance of class <tt>Class</tt>,
+ *  with an optional <tt>ProtectionDomain</tt>.  If the domain is
+ *  <tt>null</tt>, then a default domain will be assigned to the class as
+ *  specified in the documentation for {@link #defineClass(String, byte[],
+ *  int, int)}.  Before the class can be used it must be resolved.
+ *
+ *  <p>The rules about the first class defined in a package determining the
+ *  set of certificates for the package, and the restrictions on class names
+ *  are identical to those specified in the documentation for {@link
+ *  #defineClass(String, byte[], int, int, ProtectionDomain)}.
+ *
+ *  <p> An invocation of this method of the form
+ *  <i>cl</i><tt>.defineClass(</tt><i>name</i><tt>,</tt>
+ *  <i>bBuffer</i><tt>,</tt> <i>pd</i><tt>)</tt> yields exactly the same
+ *  result as the statements
+ *
+ * <p> <tt>
+ *  ...<br>
+ *  byte[] temp = new byte[bBuffer.{@link
+ *  java.nio.ByteBuffer#remaining remaining}()];<br>
+ *      bBuffer.{@link java.nio.ByteBuffer#get(byte[])
+ *  get}(temp);<br>
+ *      return {@link #defineClass(String, byte[], int, int, ProtectionDomain)
+ *  cl.defineClass}(name, temp, 0,
+ *  temp.length, pd);<br>
+ *  </tt></p>
+ *
+ *  @param  name
+ *          The expected <a href="#name">binary name</a>. of the class, or
+ *          <tt>null</tt> if not known
+ *
+ *  @param  b
+ *          The bytes that make up the class data. The bytes from positions
+ *          <tt>b.position()</tt> through <tt>b.position() + b.limit() -1
+ *          </tt> should have the format of a valid class file as defined by
+ *          <cite>The Java&trade; Virtual Machine Specification</cite>.
+ *
+ *  @param  protectionDomain
+ *          The ProtectionDomain of the class, or <tt>null</tt>.
+ *
+ *  @return  The <tt>Class</tt> object created from the data,
+ *           and optional <tt>ProtectionDomain</tt>.
+ *
+ *  @throws  ClassFormatError
+ *           If the data did not contain a valid class.
+ *
+ *  @throws  NoClassDefFoundError
+ *           If <tt>name</tt> is not equal to the <a href="#name">binary
+ *           name</a> of the class specified by <tt>b</tt>
+ *
+ *  @throws  SecurityException
+ *           If an attempt is made to add this class to a package that
+ *           contains classes that were signed by a different set of
+ *           certificates than this class, or if <tt>name</tt> begins with
+ *           "<tt>java.</tt>".
+ *
+ *  @see      #defineClass(String, byte[], int, int, ProtectionDomain)
+ *
+ *  @since  1.5
+ */
+protected final Class<?> defineClass(String name, java.nio.ByteBuffer b, ProtectionDomain protectionDomain) throws ClassFormatError {
+    int len = b.remaining();
+    // Use byte[] if not a direct ByteBufer:
+    if (!b.isDirect()) {
+        if (b.hasArray()) {
+            return defineClass(name, b.array(), b.position() + b.arrayOffset(), len, protectionDomain);
+        } else {
+            // no array, or read-only array
+            byte[] tb = new byte[len];
+            // get bytes out of byte buffer.
+            b.get(tb);
+            return defineClass(name, tb, 0, len, protectionDomain);
+        }
+    }
+    protectionDomain = preDefineClass(name, protectionDomain);
+    String source = defineClassSourceLocation(protectionDomain);
+    Class<?> c = defineClass2(name, b, b.position(), len, protectionDomain, source);
+    postDefineClass(c, protectionDomain);
+    return c;
+}

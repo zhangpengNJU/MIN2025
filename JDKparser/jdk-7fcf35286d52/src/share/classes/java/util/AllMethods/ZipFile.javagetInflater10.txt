@@ -1,0 +1,15 @@
+/*
+     * Gets an inflater from the list of available inflaters or allocates
+     * a new one.
+     */
+private Inflater getInflater() {
+    Inflater inf;
+    synchronized (inflaterCache) {
+        while (null != (inf = inflaterCache.poll())) {
+            if (false == inf.ended()) {
+                return inf;
+            }
+        }
+    }
+    return new Inflater(true);
+}

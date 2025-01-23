@@ -1,0 +1,14 @@
+Map.Entry<K, V> removeLowest() {
+    Comparator<? super K> cmp = m.comparator;
+    for (; ; ) {
+        Node<K, V> n = loNode(cmp);
+        if (n == null)
+            return null;
+        K k = n.key;
+        if (!inBounds(k, cmp))
+            return null;
+        V v = m.doRemove(k, null);
+        if (v != null)
+            return new AbstractMap.SimpleImmutableEntry<K, V>(k, v);
+    }
+}

@@ -1,0 +1,16 @@
+/**
+ * @throws NullPointerException {@inheritDoc}
+ * @throws InterruptedException {@inheritDoc}
+ */
+public void putLast(E e) throws InterruptedException {
+    if (e == null)
+        throw new NullPointerException();
+    Node<E> node = new Node<E>(e);
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        while (!linkLast(node)) notFull.await();
+    } finally {
+        lock.unlock();
+    }
+}

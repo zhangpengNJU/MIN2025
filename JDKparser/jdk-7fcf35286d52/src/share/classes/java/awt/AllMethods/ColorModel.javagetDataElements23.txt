@@ -1,0 +1,40 @@
+/**
+ * Returns a data element array representation of a pixel in this
+ * <code>ColorModel</code>, given an integer pixel representation in
+ * the default RGB color model.
+ * This array can then be passed to the
+ * {@link WritableRaster#setDataElements} method of
+ * a {@link WritableRaster} object.  If the pixel variable is
+ * <code>null</code>, a new array will be allocated.  If
+ * <code>pixel</code> is not
+ * <code>null</code>, it must be a primitive array of type
+ * <code>transferType</code>; otherwise, a
+ * <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if
+ * <code>pixel</code> is
+ * not large enough to hold a pixel value for this
+ * <code>ColorModel</code>. The pixel array is returned.
+ * If this <code>transferType</code> is not supported, a
+ * <code>UnsupportedOperationException</code> will be
+ * thrown.  Since <code>ColorModel</code> is an abstract class,
+ * any instance is an instance of a subclass.  Subclasses must
+ * override this method since the implementation in this abstract
+ * class throws an <code>UnsupportedOperationException</code>.
+ * @param rgb the integer pixel representation in the default RGB
+ * color model
+ * @param pixel the specified pixel
+ * @return an array representation of the specified pixel in this
+ *  <code>ColorModel</code>.
+ * @throws ClassCastException if <code>pixel</code>
+ *  is not a primitive array of type <code>transferType</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *  <code>pixel</code> is not large enough to hold a pixel value
+ *  for this <code>ColorModel</code>
+ * @throws UnsupportedOperationException if this
+ *  method is not supported by this <code>ColorModel</code>
+ * @see WritableRaster#setDataElements
+ * @see SampleModel#setDataElements
+ */
+public Object getDataElements(int rgb, Object pixel) {
+    throw new UnsupportedOperationException("This method is not supported by this color model.");
+}

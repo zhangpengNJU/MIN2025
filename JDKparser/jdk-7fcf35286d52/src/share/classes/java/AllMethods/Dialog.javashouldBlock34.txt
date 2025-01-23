@@ -1,0 +1,52 @@
+/*
+     * Returns whether the given top-level window should be blocked by
+     * this dialog. Note, that the given window can be also a modal dialog
+     * and it should block this dialog, but this method do not take such
+     * situations into consideration (such checks are performed in the
+     * modalShow() and modalHide() methods).
+     *
+     * This method should be called on the getTreeLock() lock.
+     */
+boolean shouldBlock(Window w) {
+    if (!isVisible_NoClientCode() || (!w.isVisible_NoClientCode() && !w.isInShow) || isInHide || (w == this) || !isModal_NoClientCode()) {
+        return false;
+    }
+    if ((w instanceof Dialog) && ((Dialog) w).isInHide) {
+        return false;
+    }
+    // check if w is from children hierarchy
+    // fix for 6271546: we should also take into consideration child hierarchies
+    // of this dialog's blockers
+    Window blockerToCheck = this;
+    while (blockerToCheck != null) {
+        Component c = w;
+        while ((c != null) && (c != blockerToCheck)) {
+            c = c.getParent_NoClientCode();
+        }
+        if (c == blockerToCheck) {
+            return false;
+        }
+        blockerToCheck = blockerToCheck.getModalBlocker();
+    }
+    switch(modalityType) {
+        case MODELESS:
+            return false;
+        case DOCUMENT_MODAL:
+            if (w.isModalExcluded(ModalExclusionType.APPLICATION_EXCLUDE)) {
+                // application- and toolkit-excluded windows are not blocked by
+                // document-modal dialogs from outside their children hierarchy
+                Component c = this;
+                while ((c != null) && (c != w)) {
+                    c = c.getParent_NoClientCode();
+                }
+                return c == w;
+            } else {
+                return getDocumentRoot() == w.getDocumentRoot();
+            }
+        case APPLICATION_MODAL:
+            return !w.isModalExcluded(ModalExclusionType.APPLICATION_EXCLUDE) && (appContext == w.appContext);
+        case TOOLKIT_MODAL:
+            return !w.isModalExcluded(ModalExclusionType.TOOLKIT_EXCLUDE);
+    }
+    return false;
+}

@@ -1,0 +1,23 @@
+/**
+ * Add a <code>DragSourceListener</code> to this
+ * <code>DragSourceContext</code> if one has not already been added.
+ * If a <code>DragSourceListener</code> already exists,
+ * this method throws a <code>TooManyListenersException</code>.
+ * <P>
+ * @param dsl the <code>DragSourceListener</code> to add.
+ * Note that while <code>null</code> is not prohibited,
+ * it is not acceptable as a parameter.
+ * <P>
+ * @throws TooManyListenersException if
+ * a <code>DragSourceListener</code> has already been added
+ */
+public synchronized void addDragSourceListener(DragSourceListener dsl) throws TooManyListenersException {
+    if (dsl == null)
+        return;
+    if (equals(dsl))
+        throw new IllegalArgumentException("DragSourceContext may not be its own listener");
+    if (listener != null)
+        throw new TooManyListenersException();
+    else
+        listener = dsl;
+}

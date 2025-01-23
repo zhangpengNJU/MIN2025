@@ -1,0 +1,12 @@
+/**
+ * Checks if this unit represents a component of a time.
+ * <p>
+ * A unit is time-based if it can be used to imply meaning from a time.
+ * It must have a {@linkplain #getDuration() duration} that divides into
+ * the length of a standard day without remainder.
+ * Note that it is valid for both {@code isDateBased()} and {@code isTimeBased()}
+ * to return false, such as when representing a unit like 36 hours.
+ *
+ * @return true if this unit is a component of a time
+ */
+boolean isTimeBased();

@@ -1,0 +1,7 @@
+public Future<V> submit(Runnable task, V result) {
+    if (task == null)
+        throw new NullPointerException();
+    RunnableFuture<V> f = newTaskFor(task, result);
+    executor.execute(new QueueingFuture(f));
+    return f;
+}

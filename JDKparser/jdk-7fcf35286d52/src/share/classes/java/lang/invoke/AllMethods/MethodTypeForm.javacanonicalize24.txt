@@ -1,0 +1,55 @@
+/**
+ * Canonicalize the given return or param type.
+ *  Return null if the type is already canonicalized.
+ */
+static Class<?> canonicalize(Class<?> t, int how) {
+    Class<?> ct;
+    if (t == Object.class) {
+    // no change, ever
+    } else if (!t.isPrimitive()) {
+        switch(how) {
+            case UNWRAP:
+                ct = Wrapper.asPrimitiveType(t);
+                if (ct != t)
+                    return ct;
+                break;
+            case RAW_RETURN:
+            case ERASE:
+                return Object.class;
+        }
+    } else if (t == void.class) {
+        // no change, usually
+        switch(how) {
+            case RAW_RETURN:
+                return int.class;
+            case WRAP:
+                return Void.class;
+        }
+    } else {
+        // non-void primitive
+        switch(how) {
+            case WRAP:
+                return Wrapper.asWrapperType(t);
+            case INTS:
+                if (t == int.class || t == long.class)
+                    // no change
+                    return null;
+                if (t == double.class)
+                    return long.class;
+                return int.class;
+            case LONGS:
+                if (t == long.class)
+                    // no change
+                    return null;
+                return long.class;
+            case RAW_RETURN:
+                if (t == int.class || t == long.class || t == float.class || t == double.class)
+                    // no change
+                    return null;
+                // everything else returns as an int
+                return int.class;
+        }
+    }
+    // no change; return null to signify
+    return null;
+}

@@ -1,0 +1,5 @@
+@Override
+public ChronoPeriod minus(TemporalAmount amountToSubtract) {
+    ChronoPeriodImpl amount = validateAmount(amountToSubtract);
+    return new ChronoPeriodImpl(chrono, Math.subtractExact(years, amount.years), Math.subtractExact(months, amount.months), Math.subtractExact(days, amount.days));
+}

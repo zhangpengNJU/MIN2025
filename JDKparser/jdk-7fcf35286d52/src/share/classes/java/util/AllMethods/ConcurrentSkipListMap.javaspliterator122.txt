@@ -1,0 +1,7 @@
+@SuppressWarnings("unchecked")
+public Spliterator<E> spliterator() {
+    if (m instanceof ConcurrentSkipListMap)
+        return ((ConcurrentSkipListMap<?, E>) m).valueSpliterator();
+    else
+        return (Spliterator<E>) ((SubMap<?, E>) m).valueIterator();
+}

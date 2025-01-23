@@ -1,0 +1,13 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Chronology chrono = context.getValue(TemporalQueries.chronology());
+    if (chrono == null) {
+        return false;
+    }
+    if (textStyle == null) {
+        buf.append(chrono.getId());
+    } else {
+        buf.append(getChronologyName(chrono, context.getLocale()));
+    }
+    return true;
+}

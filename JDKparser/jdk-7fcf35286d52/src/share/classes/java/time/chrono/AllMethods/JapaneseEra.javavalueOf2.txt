@@ -1,0 +1,19 @@
+/**
+ * Returns the {@code JapaneseEra} with the name.
+ * <p>
+ * The string must match exactly the name of the era.
+ * (Extraneous whitespace characters are not permitted.)
+ *
+ * @param japaneseEra  the japaneseEra name; non-null
+ * @return the {@code JapaneseEra} singleton, never null
+ * @throws IllegalArgumentException if there is not JapaneseEra with the specified name
+ */
+public static JapaneseEra valueOf(String japaneseEra) {
+    Objects.requireNonNull(japaneseEra, "japaneseEra");
+    for (JapaneseEra era : KNOWN_ERAS) {
+        if (era.getName().equals(japaneseEra)) {
+            return era;
+        }
+    }
+    throw new IllegalArgumentException("japaneseEra is invalid");
+}

@@ -1,0 +1,14 @@
+/**
+ * Returns a copy of this <code>AffineTransform</code> object.
+ * @return an <code>Object</code> that is a copy of this
+ * <code>AffineTransform</code> object.
+ * @since 1.2
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

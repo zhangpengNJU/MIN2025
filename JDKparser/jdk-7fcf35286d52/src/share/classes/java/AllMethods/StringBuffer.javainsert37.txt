@@ -1,0 +1,12 @@
+/**
+ * @throws IndexOutOfBoundsException {@inheritDoc}
+ * @since      1.5
+ */
+@Override
+public StringBuffer insert(int dstOffset, CharSequence s) {
+    // Note, synchronization achieved via invocations of other StringBuffer methods
+    // after narrowing of s to specific type
+    // Ditto for toStringCache clearing
+    super.insert(dstOffset, s);
+    return this;
+}

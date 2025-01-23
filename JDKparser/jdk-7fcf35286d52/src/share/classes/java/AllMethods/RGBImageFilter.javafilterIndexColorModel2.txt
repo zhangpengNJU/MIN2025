@@ -1,0 +1,38 @@
+/**
+ * Filters an IndexColorModel object by running each entry in its
+ * color tables through the filterRGB function that RGBImageFilter
+ * subclasses must provide.  Uses coordinates of -1 to indicate that
+ * a color table entry is being filtered rather than an actual
+ * pixel value.
+ * @param icm the IndexColorModel object to be filtered
+ * @exception NullPointerException if <code>icm</code> is null
+ * @return a new IndexColorModel representing the filtered colors
+ */
+public IndexColorModel filterIndexColorModel(IndexColorModel icm) {
+    int mapsize = icm.getMapSize();
+    byte[] r = new byte[mapsize];
+    byte[] g = new byte[mapsize];
+    byte[] b = new byte[mapsize];
+    byte[] a = new byte[mapsize];
+    icm.getReds(r);
+    icm.getGreens(g);
+    icm.getBlues(b);
+    icm.getAlphas(a);
+    int trans = icm.getTransparentPixel();
+    boolean needalpha = false;
+    for (int i = 0; i < mapsize; i++) {
+        int rgb = filterRGB(-1, -1, icm.getRGB(i));
+        a[i] = (byte) (rgb >> 24);
+        if (a[i] != ((byte) 0xff) && i != trans) {
+            needalpha = true;
+        }
+        r[i] = (byte) (rgb >> 16);
+        g[i] = (byte) (rgb >> 8);
+        b[i] = (byte) (rgb >> 0);
+    }
+    if (needalpha) {
+        return new IndexColorModel(icm.getPixelSize(), mapsize, r, g, b, a);
+    } else {
+        return new IndexColorModel(icm.getPixelSize(), mapsize, r, g, b, trans);
+    }
+}

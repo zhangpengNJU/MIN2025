@@ -1,0 +1,25 @@
+/**
+ * Removes the first occurrence of <code>item</code>
+ * from the <code>Choice</code> menu.  If the item
+ * being removed is the currently selected item,
+ * then the first item in the choice becomes the
+ * selected item.  Otherwise, the currently selected
+ * item remains selected (and the selected index is
+ * updated accordingly).
+ * @param      item  the item to remove from this <code>Choice</code> menu
+ * @exception  IllegalArgumentException  if the item doesn't
+ *                     exist in the choice menu
+ * @since      JDK1.1
+ */
+public void remove(String item) {
+    synchronized (this) {
+        int index = pItems.indexOf(item);
+        if (index < 0) {
+            throw new IllegalArgumentException("item " + item + " not found in choice");
+        } else {
+            removeNoInvalidate(index);
+        }
+    }
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

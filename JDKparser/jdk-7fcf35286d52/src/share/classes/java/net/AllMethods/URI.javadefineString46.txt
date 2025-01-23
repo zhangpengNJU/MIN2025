@@ -1,0 +1,44 @@
+private void defineString() {
+    if (string != null)
+        return;
+    StringBuffer sb = new StringBuffer();
+    if (scheme != null) {
+        sb.append(scheme);
+        sb.append(':');
+    }
+    if (isOpaque()) {
+        sb.append(schemeSpecificPart);
+    } else {
+        if (host != null) {
+            sb.append("//");
+            if (userInfo != null) {
+                sb.append(userInfo);
+                sb.append('@');
+            }
+            boolean needBrackets = ((host.indexOf(':') >= 0) && !host.startsWith("[") && !host.endsWith("]"));
+            if (needBrackets)
+                sb.append('[');
+            sb.append(host);
+            if (needBrackets)
+                sb.append(']');
+            if (port != -1) {
+                sb.append(':');
+                sb.append(port);
+            }
+        } else if (authority != null) {
+            sb.append("//");
+            sb.append(authority);
+        }
+        if (path != null)
+            sb.append(path);
+        if (query != null) {
+            sb.append('?');
+            sb.append(query);
+        }
+    }
+    if (fragment != null) {
+        sb.append('#');
+        sb.append(fragment);
+    }
+    string = sb.toString();
+}

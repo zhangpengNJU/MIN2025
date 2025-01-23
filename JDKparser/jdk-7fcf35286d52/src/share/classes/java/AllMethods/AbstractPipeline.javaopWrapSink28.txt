@@ -1,0 +1,20 @@
+/**
+ * Accepts a {@code Sink} which will receive the results of this operation,
+ * and return a {@code Sink} which accepts elements of the input type of
+ * this operation and which performs the operation, passing the results to
+ * the provided {@code Sink}.
+ *
+ * @apiNote
+ * The implementation may use the {@code flags} parameter to optimize the
+ * sink wrapping.  For example, if the input is already {@code DISTINCT},
+ * the implementation for the {@code Stream#distinct()} method could just
+ * return the sink it was passed.
+ *
+ * @param flags The combined stream and operation flags up to, but not
+ *        including, this operation
+ * @param sink sink to which elements should be sent after processing
+ * @return a sink which accepts elements, perform the operation upon
+ *         each element, and passes the results (if any) to the provided
+ *         {@code Sink}.
+ */
+abstract Sink<E_IN> opWrapSink(int flags, Sink<E_OUT> sink);

@@ -1,0 +1,7 @@
+/**
+ * Determines if the specified code point is a supplementary
+ * character or unpaired surrogate.
+ */
+private static final boolean isSupplementary(int ch) {
+    return ch >= Character.MIN_SUPPLEMENTARY_CODE_POINT || Character.isSurrogate((char) ch);
+}

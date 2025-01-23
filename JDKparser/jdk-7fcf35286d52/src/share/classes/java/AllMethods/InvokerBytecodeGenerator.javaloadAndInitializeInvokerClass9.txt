@@ -1,0 +1,9 @@
+/**
+ * Define a given class as anonymous class in the runtime system.
+ */
+private static Class<?> loadAndInitializeInvokerClass(byte[] classBytes, Object[] patches) {
+    Class<?> invokerClass = UNSAFE.defineAnonymousClass(HOST_CLASS, classBytes, patches);
+    // Make sure the class is initialized; VM might complain.
+    UNSAFE.ensureClassInitialized(invokerClass);
+    return invokerClass;
+}

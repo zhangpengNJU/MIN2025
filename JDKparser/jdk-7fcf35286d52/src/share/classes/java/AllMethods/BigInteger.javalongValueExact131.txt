@@ -1,0 +1,18 @@
+/**
+ * Converts this {@code BigInteger} to a {@code long}, checking
+ * for lost information.  If the value of this {@code BigInteger}
+ * is out of the range of the {@code long} type, then an
+ * {@code ArithmeticException} is thrown.
+ *
+ * @return this {@code BigInteger} converted to a {@code long}.
+ * @throws ArithmeticException if the value of {@code this} will
+ * not exactly fit in a {@code long}.
+ * @see BigInteger#longValue
+ * @since  1.8
+ */
+public long longValueExact() {
+    if (mag.length <= 2 && bitLength() <= 63)
+        return longValue();
+    else
+        throw new ArithmeticException("BigInteger out of long range");
+}

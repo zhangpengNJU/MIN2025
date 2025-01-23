@@ -1,0 +1,21 @@
+/**
+ * Specifies, for jobs using these attributes, the first page to be
+ * printed, if a range of pages is to be printed. If this attribute is not
+ * specified, then the values from the pageRanges attribute are used. If
+ * pageRanges and either or both of fromPage and toPage are specified,
+ * pageRanges takes precedence. Specifying none of pageRanges, fromPage,
+ * or toPage is equivalent to calling
+ * setPageRanges(new int[][] { new int[] { <i>minPage</i> } });
+ *
+ * @param   fromPage an integer greater than zero and less than or equal to
+ *          <i>toPage</i> and greater than or equal to <i>minPage</i> and
+ *          less than or equal to <i>maxPage</i>.
+ * @throws  IllegalArgumentException if one or more of the above
+ *          conditions is violated.
+ */
+public void setFromPage(int fromPage) {
+    if (fromPage <= 0 || (toPage != 0 && fromPage > toPage) || fromPage < minPage || fromPage > maxPage) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "fromPage");
+    }
+    this.fromPage = fromPage;
+}

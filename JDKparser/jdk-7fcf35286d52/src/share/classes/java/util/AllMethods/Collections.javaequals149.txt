@@ -1,0 +1,11 @@
+public boolean equals(Object o) {
+    if (o == this)
+        return true;
+    if (!(o instanceof Set))
+        return false;
+    Set<?> s = (Set<?>) o;
+    if (s.size() != c.size())
+        return false;
+    // Invokes safe containsAll() above
+    return containsAll(s);
+}

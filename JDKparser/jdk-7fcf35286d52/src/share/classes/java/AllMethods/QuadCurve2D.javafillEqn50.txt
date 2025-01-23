@@ -1,0 +1,19 @@
+/**
+ * Fill an array with the coefficients of the parametric equation
+ * in t, ready for solving against val with solveQuadratic.
+ * We currently have:
+ *     val = Py(t) = C1*(1-t)^2 + 2*CP*t*(1-t) + C2*t^2
+ *                 = C1 - 2*C1*t + C1*t^2 + 2*CP*t - 2*CP*t^2 + C2*t^2
+ *                 = C1 + (2*CP - 2*C1)*t + (C1 - 2*CP + C2)*t^2
+ *               0 = (C1 - val) + (2*CP - 2*C1)*t + (C1 - 2*CP + C2)*t^2
+ *               0 = C + Bt + At^2
+ *     C = C1 - val
+ *     B = 2*CP - 2*C1
+ *     A = C1 - 2*CP + C2
+ */
+private static void fillEqn(double[] eqn, double val, double c1, double cp, double c2) {
+    eqn[0] = c1 - val;
+    eqn[1] = cp + cp - c1 - c1;
+    eqn[2] = c1 - cp - cp + c2;
+    return;
+}

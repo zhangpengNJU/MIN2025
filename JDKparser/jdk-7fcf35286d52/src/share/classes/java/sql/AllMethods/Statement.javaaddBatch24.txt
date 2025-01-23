@@ -1,0 +1,18 @@
+/**
+ *  Adds the given SQL command to the current list of commands for this
+ *  <code>Statement</code> object. The commands in this list can be
+ *  executed as a batch by calling the method <code>executeBatch</code>.
+ *  <P>
+ * <strong>Note:</strong>This method cannot be called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>.
+ *  @param sql typically this is a SQL <code>INSERT</code> or
+ *  <code>UPDATE</code> statement
+ *  @exception SQLException if a database access error occurs,
+ *  this method is called on a closed <code>Statement</code>, the
+ *  driver does not support batch updates, the method is called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>
+ *  @see #executeBatch
+ *  @see DatabaseMetaData#supportsBatchUpdates
+ *  @since 1.2
+ */
+void addBatch(String sql) throws SQLException;

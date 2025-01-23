@@ -1,0 +1,6 @@
+/**
+ * CAS waitStatus field of a node.
+ */
+private static final boolean compareAndSetWaitStatus(Node node, int expect, int update) {
+    return unsafe.compareAndSwapInt(node, waitStatusOffset, expect, update);
+}

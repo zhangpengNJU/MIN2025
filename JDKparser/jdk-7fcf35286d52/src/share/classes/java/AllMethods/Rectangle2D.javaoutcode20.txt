@@ -1,0 +1,22 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public int outcode(double x, double y) {
+    int out = 0;
+    if (this.width <= 0) {
+        out |= OUT_LEFT | OUT_RIGHT;
+    } else if (x < this.x) {
+        out |= OUT_LEFT;
+    } else if (x > this.x + this.width) {
+        out |= OUT_RIGHT;
+    }
+    if (this.height <= 0) {
+        out |= OUT_TOP | OUT_BOTTOM;
+    } else if (y < this.y) {
+        out |= OUT_TOP;
+    } else if (y > this.y + this.height) {
+        out |= OUT_BOTTOM;
+    }
+    return out;
+}

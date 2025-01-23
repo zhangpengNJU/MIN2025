@@ -1,0 +1,29 @@
+/**
+ * Gets the certificate constraints path length from the
+ * critical {@code BasicConstraints} extension, (OID = 2.5.29.19).
+ * <p>
+ * The basic constraints extension identifies whether the subject
+ * of the certificate is a Certificate Authority (CA) and
+ * how deep a certification path may exist through that CA. The
+ * {@code pathLenConstraint} field (see below) is meaningful
+ * only if {@code cA} is set to TRUE. In this case, it gives the
+ * maximum number of CA certificates that may follow this certificate in a
+ * certification path. A value of zero indicates that only an end-entity
+ * certificate may follow in the path.
+ * <p>
+ * The ASN.1 definition for this is:
+ * <pre>
+ * BasicConstraints ::= SEQUENCE {
+ *     cA                  BOOLEAN DEFAULT FALSE,
+ *     pathLenConstraint   INTEGER (0..MAX) OPTIONAL }
+ * </pre>
+ *
+ * @return the value of {@code pathLenConstraint} if the
+ * BasicConstraints extension is present in the certificate and the
+ * subject of the certificate is a CA, otherwise -1.
+ * If the subject of the certificate is a CA and
+ * {@code pathLenConstraint} does not appear,
+ * {@code Integer.MAX_VALUE} is returned to indicate that there is no
+ * limit to the allowed length of the certification path.
+ */
+public abstract int getBasicConstraints();

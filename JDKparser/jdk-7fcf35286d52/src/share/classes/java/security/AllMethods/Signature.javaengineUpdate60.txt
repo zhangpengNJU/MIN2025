@@ -1,0 +1,10 @@
+protected void engineUpdate(byte[] b, int off, int len) throws SignatureException {
+    if (data != null) {
+        data.write(b, off, len);
+        return;
+    }
+    byte[] out = cipher.update(b, off, len);
+    if ((out != null) && (out.length != 0)) {
+        throw new SignatureException("Cipher unexpectedly returned data");
+    }
+}

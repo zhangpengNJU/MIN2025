@@ -1,0 +1,70 @@
+/**
+ * Preprocess any \Q...\E sequences in `temp', meta-quoting them.
+ * See the description of `quotemeta' in perlfunc(1).
+ */
+private void RemoveQEQuoting() {
+    final int pLen = patternLength;
+    int i = 0;
+    while (i < pLen - 1) {
+        if (temp[i] != '\\')
+            i += 1;
+        else if (temp[i + 1] != 'Q')
+            i += 2;
+        else
+            break;
+    }
+    if (// No \Q sequence found
+    i >= pLen - 1)
+        return;
+    int j = i;
+    i += 2;
+    int[] newtemp = new int[j + 3 * (pLen - i) + 2];
+    System.arraycopy(temp, 0, newtemp, 0, j);
+    boolean inQuote = true;
+    boolean beginQuote = true;
+    while (i < pLen) {
+        int c = temp[i++];
+        if (!ASCII.isAscii(c) || ASCII.isAlpha(c)) {
+            newtemp[j++] = c;
+        } else if (ASCII.isDigit(c)) {
+            if (beginQuote) {
+                /*
+                     * A unicode escape \[0xu] could be before this quote,
+                     * and we don't want this numeric char to processed as
+                     * part of the escape.
+                     */
+                newtemp[j++] = '\\';
+                newtemp[j++] = 'x';
+                newtemp[j++] = '3';
+            }
+            newtemp[j++] = c;
+        } else if (c != '\\') {
+            if (inQuote)
+                newtemp[j++] = '\\';
+            newtemp[j++] = c;
+        } else if (inQuote) {
+            if (temp[i] == 'E') {
+                i++;
+                inQuote = false;
+            } else {
+                newtemp[j++] = '\\';
+                newtemp[j++] = '\\';
+            }
+        } else {
+            if (temp[i] == 'Q') {
+                i++;
+                inQuote = true;
+                beginQuote = true;
+                continue;
+            } else {
+                newtemp[j++] = c;
+                if (i != pLen)
+                    newtemp[j++] = temp[i++];
+            }
+        }
+        beginQuote = false;
+    }
+    patternLength = j;
+    // double zero termination
+    temp = Arrays.copyOf(newtemp, j + 2);
+}

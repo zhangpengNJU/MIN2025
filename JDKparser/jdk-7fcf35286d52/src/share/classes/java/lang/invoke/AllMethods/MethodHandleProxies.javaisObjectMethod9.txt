@@ -1,0 +1,11 @@
+private static boolean isObjectMethod(Method m) {
+    switch(m.getName()) {
+        case "toString":
+            return (m.getReturnType() == String.class && m.getParameterTypes().length == 0);
+        case "hashCode":
+            return (m.getReturnType() == int.class && m.getParameterTypes().length == 0);
+        case "equals":
+            return (m.getReturnType() == boolean.class && m.getParameterTypes().length == 1 && m.getParameterTypes()[0] == Object.class);
+    }
+    return false;
+}

@@ -1,0 +1,18 @@
+/**
+ * Activates the input method for immediate input processing.
+ * <p>
+ * If an input method provides its own windows, it should make sure
+ * at this point that all necessary windows are open and visible.
+ * <p>
+ * This method is called
+ * <ul>
+ * <li>by {@link java.awt.im.InputContext#dispatchEvent InputContext.dispatchEvent}
+ *     when a client component receives a FOCUS_GAINED event,
+ * <li>when switching to this input method from a different one using the
+ *     user interface or
+ *     {@link java.awt.im.InputContext#selectInputMethod InputContext.selectInputMethod}.
+ * </ul>
+ * The method is only called when the input method is inactive.
+ * A newly instantiated input method is assumed to be inactive.
+ */
+public void activate();

@@ -1,0 +1,12 @@
+/*
+     * Exports this UnicastRemoteObject using its initialized fields because
+     * its creation bypassed running its constructors (via deserialization
+     * or cloning, for example).
+     */
+private void reexport() throws RemoteException {
+    if (csf == null && ssf == null) {
+        exportObject((Remote) this, port);
+    } else {
+        exportObject((Remote) this, port, csf, ssf);
+    }
+}

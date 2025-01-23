@@ -1,0 +1,25 @@
+/**
+ * Registers the given driver with the {@code DriverManager}.
+ * A newly-loaded driver class should call
+ * the method {@code registerDriver} to make itself
+ * known to the {@code DriverManager}. If the driver is currently
+ * registered, no action is taken.
+ *
+ * @param driver the new JDBC Driver that is to be registered with the
+ *               {@code DriverManager}
+ * @param da     the {@code DriverAction} implementation to be used when
+ *               {@code DriverManager#deregisterDriver} is called
+ * @exception SQLException if a database access error occurs
+ * @exception NullPointerException if {@code driver} is null
+ * @since 1.8
+ */
+public static synchronized void registerDriver(java.sql.Driver driver, DriverAction da) throws SQLException {
+    /* Register the driver if it has not already been added to our list */
+    if (driver != null) {
+        registeredDrivers.addIfAbsent(new DriverInfo(driver, da));
+    } else {
+        // This is for compatibility with the original DriverManager
+        throw new NullPointerException();
+    }
+    println("registerDriver: " + driver);
+}

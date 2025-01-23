@@ -1,0 +1,23 @@
+// Multiply x array times word y in place, and add word z
+private static void destructiveMulAdd(int[] x, int y, int z) {
+    // Perform the multiplication word by word
+    long ylong = y & LONG_MASK;
+    long zlong = z & LONG_MASK;
+    int len = x.length;
+    long product = 0;
+    long carry = 0;
+    for (int i = len - 1; i >= 0; i--) {
+        product = ylong * (x[i] & LONG_MASK) + carry;
+        x[i] = (int) product;
+        carry = product >>> 32;
+    }
+    // Perform the addition
+    long sum = (x[len - 1] & LONG_MASK) + zlong;
+    x[len - 1] = (int) sum;
+    carry = sum >>> 32;
+    for (int i = len - 2; i >= 0; i--) {
+        sum = (x[i] & LONG_MASK) + carry;
+        x[i] = (int) sum;
+        carry = sum >>> 32;
+    }
+}

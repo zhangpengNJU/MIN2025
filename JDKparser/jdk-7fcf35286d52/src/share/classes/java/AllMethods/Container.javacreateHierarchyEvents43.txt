@@ -1,0 +1,8 @@
+final int createHierarchyEvents(int id, Component changed, Container changedParent, long changeFlags, boolean enabledOnToolkit) {
+    checkTreeLock();
+    int listeners = getListenersCount(id, enabledOnToolkit);
+    for (int count = listeners, i = 0; count > 0; i++) {
+        count -= component.get(i).createHierarchyEvents(id, changed, changedParent, changeFlags, enabledOnToolkit);
+    }
+    return listeners + super.createHierarchyEvents(id, changed, changedParent, changeFlags, enabledOnToolkit);
+}

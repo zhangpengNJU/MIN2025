@@ -1,0 +1,25 @@
+/**
+ * Returns true if <CODE>raster</CODE> is compatible with this
+ * <CODE>ColorModel</CODE>; false if it is not.
+ *
+ * @param raster The <CODE>Raster</CODE> object to test for compatibility.
+ *
+ * @return <CODE>true</CODE> if <CODE>raster</CODE> is compatible with this
+ * <CODE>ColorModel</CODE>, <CODE>false</CODE> if it is not.
+ */
+public boolean isCompatibleRaster(Raster raster) {
+    SampleModel sm = raster.getSampleModel();
+    if (sm instanceof ComponentSampleModel) {
+        if (sm.getNumBands() != getNumComponents()) {
+            return false;
+        }
+        for (int i = 0; i < nBits.length; i++) {
+            if (sm.getSampleSize(i) < nBits[i]) {
+                return false;
+            }
+        }
+        return (raster.getTransferType() == transferType);
+    } else {
+        return false;
+    }
+}

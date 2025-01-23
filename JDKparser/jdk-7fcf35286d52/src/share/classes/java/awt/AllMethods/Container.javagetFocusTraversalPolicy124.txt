@@ -1,0 +1,29 @@
+/**
+ * Returns the focus traversal policy that will manage keyboard traversal
+ * of this Container's children, or null if this Container is not a focus
+ * cycle root. If no traversal policy has been explicitly set for this
+ * Container, then this Container's focus-cycle-root ancestor's policy is
+ * returned.
+ *
+ * @return this Container's focus traversal policy, or null if this
+ *         Container is not a focus cycle root.
+ * @see #setFocusTraversalPolicy
+ * @see #setFocusCycleRoot
+ * @see #isFocusCycleRoot
+ * @since 1.4
+ */
+public FocusTraversalPolicy getFocusTraversalPolicy() {
+    if (!isFocusTraversalPolicyProvider() && !isFocusCycleRoot()) {
+        return null;
+    }
+    FocusTraversalPolicy policy = this.focusTraversalPolicy;
+    if (policy != null) {
+        return policy;
+    }
+    Container rootAncestor = getFocusCycleRootAncestor();
+    if (rootAncestor != null) {
+        return rootAncestor.getFocusTraversalPolicy();
+    } else {
+        return KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalPolicy();
+    }
+}

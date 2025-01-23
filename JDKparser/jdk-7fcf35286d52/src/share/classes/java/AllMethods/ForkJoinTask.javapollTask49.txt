@@ -1,0 +1,18 @@
+/**
+ * If the current thread is operating in a ForkJoinPool,
+ * unschedules and returns, without executing, the next task
+ * queued by the current thread but not yet executed, if one is
+ * available, or if not available, a task that was forked by some
+ * other thread, if available. Availability may be transient, so a
+ * {@code null} result does not necessarily imply quiescence of
+ * the pool this task is operating in.  This method is designed
+ * primarily to support extensions, and is unlikely to be useful
+ * otherwise.
+ *
+ * @return a task, or {@code null} if none are available
+ */
+protected static ForkJoinTask<?> pollTask() {
+    Thread t;
+    ForkJoinWorkerThread wt;
+    return ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread) ? (wt = (ForkJoinWorkerThread) t).pool.nextTaskFor(wt.workQueue) : null;
+}

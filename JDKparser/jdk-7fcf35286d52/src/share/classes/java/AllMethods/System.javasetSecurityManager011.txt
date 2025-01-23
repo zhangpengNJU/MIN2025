@@ -1,0 +1,26 @@
+private static synchronized void setSecurityManager0(final SecurityManager s) {
+    SecurityManager sm = getSecurityManager();
+    if (sm != null) {
+        // ask the currently installed security manager if we
+        // can replace it.
+        sm.checkPermission(new RuntimePermission("setSecurityManager"));
+    }
+    if ((s != null) && (s.getClass().getClassLoader() != null)) {
+        // New security manager class is not on bootstrap classpath.
+        // Cause policy to get initialized before we install the new
+        // security manager, in order to prevent infinite loops when
+        // trying to initialize the policy (which usually involves
+        // accessing some security and/or system properties, which in turn
+        // calls the installed security manager's checkPermission method
+        // which will loop infinitely if there is a non-system class
+        // (in this case: the new security manager class) on the stack).
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+            public Object run() {
+                s.getClass().getProtectionDomain().implies(SecurityConstants.ALL_PERMISSION);
+                return null;
+            }
+        });
+    }
+    security = s;
+}

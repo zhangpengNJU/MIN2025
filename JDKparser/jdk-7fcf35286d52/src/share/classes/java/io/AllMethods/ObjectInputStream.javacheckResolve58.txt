@@ -1,0 +1,27 @@
+/**
+ * If resolveObject has been enabled and given object does not have an
+ * exception associated with it, calls resolveObject to determine
+ * replacement for object, and updates handle table accordingly.  Returns
+ * replacement object, or echoes provided object if no replacement
+ * occurred.  Expects that passHandle is set to given object's handle prior
+ * to calling this method.
+ */
+private Object checkResolve(Object obj) throws IOException {
+    if (!enableResolve || handles.lookupException(passHandle) != null) {
+        return obj;
+    }
+    Object rep = resolveObject(obj);
+    if (rep != obj) {
+        // The type of the original object has been filtered but resolveObject
+        // may have replaced it;  filter the replacement's type
+        if (rep != null) {
+            if (rep.getClass().isArray()) {
+                filterCheck(rep.getClass(), Array.getLength(rep));
+            } else {
+                filterCheck(rep.getClass(), -1);
+            }
+        }
+        handles.setObject(passHandle, rep);
+    }
+    return rep;
+}

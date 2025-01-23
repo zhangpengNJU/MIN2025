@@ -1,0 +1,22 @@
+// Decimal Point Motion Operations
+/**
+ * Returns a {@code BigDecimal} which is equivalent to this one
+ * with the decimal point moved {@code n} places to the left.  If
+ * {@code n} is non-negative, the call merely adds {@code n} to
+ * the scale.  If {@code n} is negative, the call is equivalent
+ * to {@code movePointRight(-n)}.  The {@code BigDecimal}
+ * returned by this call has value <tt>(this &times;
+ * 10<sup>-n</sup>)</tt> and scale {@code max(this.scale()+n,
+ * 0)}.
+ *
+ * @param  n number of places to move the decimal point to the left.
+ * @return a {@code BigDecimal} which is equivalent to this one with the
+ *         decimal point moved {@code n} places to the left.
+ * @throws ArithmeticException if scale overflows.
+ */
+public BigDecimal movePointLeft(int n) {
+    // Cannot use movePointRight(-n) in case of n==Integer.MIN_VALUE
+    int newScale = checkScale((long) scale + n);
+    BigDecimal num = new BigDecimal(intVal, intCompact, newScale, 0);
+    return num.scale < 0 ? num.setScale(0, ROUND_UNNECESSARY) : num;
+}

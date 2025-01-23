@@ -1,0 +1,19 @@
+/**
+ * Returns the sequence of images to be displayed as the icon for this window.
+ * <p>
+ * This method returns a copy of the internally stored list, so all operations
+ * on the returned object will not affect the window's behavior.
+ *
+ * @return    the copy of icon images' list for this window, or
+ *            empty list if this window doesn't have icon images.
+ * @see       #setIconImages
+ * @see       #setIconImage(Image)
+ * @since     1.6
+ */
+public java.util.List<Image> getIconImages() {
+    java.util.List<Image> icons = this.icons;
+    if (icons == null || icons.size() == 0) {
+        return new ArrayList<Image>();
+    }
+    return new ArrayList<Image>(icons);
+}

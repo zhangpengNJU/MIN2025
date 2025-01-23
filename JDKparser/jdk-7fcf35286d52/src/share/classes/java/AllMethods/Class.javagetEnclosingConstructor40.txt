@@ -1,0 +1,73 @@
+/**
+ * If this {@code Class} object represents a local or anonymous
+ * class within a constructor, returns a {@link
+ * java.lang.reflect.Constructor Constructor} object representing
+ * the immediately enclosing constructor of the underlying
+ * class. Returns {@code null} otherwise.  In particular, this
+ * method returns {@code null} if the underlying class is a local
+ * or anonymous class immediately enclosed by a type declaration,
+ * instance initializer or static initializer.
+ *
+ * @return the immediately enclosing constructor of the underlying class, if
+ *     that class is a local or anonymous class; otherwise {@code null}.
+ * @throws SecurityException
+ *         If a security manager, <i>s</i>, is present and any of the
+ *         following conditions is met:
+ *
+ *         <ul>
+ *
+ *         <li> the caller's class loader is not the same as the
+ *         class loader of the enclosing class and invocation of
+ *         {@link SecurityManager#checkPermission
+ *         s.checkPermission} method with
+ *         {@code RuntimePermission("accessDeclaredMembers")}
+ *         denies access to the constructors within the enclosing class
+ *
+ *         <li> the caller's class loader is not the same as or an
+ *         ancestor of the class loader for the enclosing class and
+ *         invocation of {@link SecurityManager#checkPackageAccess
+ *         s.checkPackageAccess()} denies access to the package
+ *         of the enclosing class
+ *
+ *         </ul>
+ * @since 1.5
+ */
+@CallerSensitive
+public Constructor<?> getEnclosingConstructor() throws SecurityException {
+    EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
+    if (enclosingInfo == null)
+        return null;
+    else {
+        if (!enclosingInfo.isConstructor())
+            return null;
+        ConstructorRepository typeInfo = ConstructorRepository.make(enclosingInfo.getDescriptor(), getFactory());
+        Type[] parameterTypes = typeInfo.getParameterTypes();
+        Class<?>[] parameterClasses = new Class<?>[parameterTypes.length];
+        // Convert Types to Classes; returned types *should*
+        // be class objects since the methodDescriptor's used
+        // don't have generics information
+        for (int i = 0; i < parameterClasses.length; i++) parameterClasses[i] = toClass(parameterTypes[i]);
+        // Perform access check
+        Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
+        enclosingCandidate.checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+        /*
+             * Loop over all declared constructors; match number
+             * of and type of parameters.
+             */
+        for (Constructor<?> c : enclosingCandidate.getDeclaredConstructors()) {
+            Class<?>[] candidateParamClasses = c.getParameterTypes();
+            if (candidateParamClasses.length == parameterClasses.length) {
+                boolean matches = true;
+                for (int i = 0; i < candidateParamClasses.length; i++) {
+                    if (!candidateParamClasses[i].equals(parameterClasses[i])) {
+                        matches = false;
+                        break;
+                    }
+                }
+                if (matches)
+                    return c;
+            }
+        }
+        throw new InternalError("Enclosing constructor not found");
+    }
+}

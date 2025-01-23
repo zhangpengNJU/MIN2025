@@ -1,0 +1,10 @@
+/**
+ * Inserts mapping object -> handle mapping into table.  Assumes table
+ * is large enough to accommodate new mapping.
+ */
+private void insert(Object obj, int handle) {
+    int index = hash(obj) % spine.length;
+    objs[handle] = obj;
+    next[handle] = spine[index];
+    spine[index] = handle;
+}

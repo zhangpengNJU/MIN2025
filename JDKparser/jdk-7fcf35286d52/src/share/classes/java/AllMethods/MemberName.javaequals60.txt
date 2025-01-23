@@ -1,0 +1,13 @@
+/**
+ * Decide if two member names have exactly the same symbolic content.
+ *  Does not take into account any actual class members, so even if
+ *  two member names resolve to the same actual member, they may
+ *  be distinct references.
+ */
+public boolean equals(MemberName that) {
+    if (this == that)
+        return true;
+    if (that == null)
+        return false;
+    return this.clazz == that.clazz && this.getReferenceKind() == that.getReferenceKind() && Objects.equals(this.name, that.name) && Objects.equals(this.getType(), that.getType());
+}

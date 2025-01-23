@@ -1,0 +1,75 @@
+static void processCurrentLightweightRequests() {
+    KeyboardFocusManager manager = getCurrentKeyboardFocusManager();
+    LinkedList<LightweightFocusRequest> localLightweightRequests = null;
+    Component globalFocusOwner = manager.getGlobalFocusOwner();
+    if ((globalFocusOwner != null) && (globalFocusOwner.appContext != AppContext.getAppContext())) {
+        // The current app context differs from the app context of a focus
+        // owner (and all pending lightweight requests), so we do nothing
+        // now and wait for a next event.
+        return;
+    }
+    synchronized (heavyweightRequests) {
+        if (currentLightweightRequests != null) {
+            clearingCurrentLightweightRequests = true;
+            disableRestoreFocus = true;
+            localLightweightRequests = currentLightweightRequests;
+            allowSyncFocusRequests = (localLightweightRequests.size() < 2);
+            currentLightweightRequests = null;
+        } else {
+            // do nothing
+            return;
+        }
+    }
+    Throwable caughtEx = null;
+    try {
+        if (localLightweightRequests != null) {
+            Component lastFocusOwner = null;
+            Component currentFocusOwner = null;
+            for (Iterator<KeyboardFocusManager.LightweightFocusRequest> iter = localLightweightRequests.iterator(); iter.hasNext(); ) {
+                currentFocusOwner = manager.getGlobalFocusOwner();
+                LightweightFocusRequest lwFocusRequest = iter.next();
+                /*
+                     * WARNING: This is based on DKFM's logic solely!
+                     *
+                     * We allow to trigger restoreFocus() in the dispatching process
+                     * only if we have the last request to dispatch. If the last request
+                     * fails, focus will be restored to either the component of the last
+                     * previously succedded request, or to to the focus owner that was
+                     * before this clearing process.
+                     */
+                if (!iter.hasNext()) {
+                    disableRestoreFocus = false;
+                }
+                FocusEvent currentFocusOwnerEvent = null;
+                /*
+                     * We're not dispatching FOCUS_LOST while the current focus owner is null.
+                     * But regardless of whether it's null or not, we're clearing ALL the local
+                     * lw requests.
+                     */
+                if (currentFocusOwner != null) {
+                    currentFocusOwnerEvent = new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, lwFocusRequest.temporary, lwFocusRequest.component, lwFocusRequest.cause);
+                }
+                FocusEvent newFocusOwnerEvent = new CausedFocusEvent(lwFocusRequest.component, FocusEvent.FOCUS_GAINED, lwFocusRequest.temporary, currentFocusOwner == null ? lastFocusOwner : currentFocusOwner, lwFocusRequest.cause);
+                if (currentFocusOwner != null) {
+                    ((AWTEvent) currentFocusOwnerEvent).isPosted = true;
+                    caughtEx = dispatchAndCatchException(caughtEx, currentFocusOwner, currentFocusOwnerEvent);
+                }
+                ((AWTEvent) newFocusOwnerEvent).isPosted = true;
+                caughtEx = dispatchAndCatchException(caughtEx, lwFocusRequest.component, newFocusOwnerEvent);
+                if (manager.getGlobalFocusOwner() == lwFocusRequest.component) {
+                    lastFocusOwner = lwFocusRequest.component;
+                }
+            }
+        }
+    } finally {
+        clearingCurrentLightweightRequests = false;
+        disableRestoreFocus = false;
+        localLightweightRequests = null;
+        allowSyncFocusRequests = true;
+    }
+    if (caughtEx instanceof RuntimeException) {
+        throw (RuntimeException) caughtEx;
+    } else if (caughtEx instanceof Error) {
+        throw (Error) caughtEx;
+    }
+}

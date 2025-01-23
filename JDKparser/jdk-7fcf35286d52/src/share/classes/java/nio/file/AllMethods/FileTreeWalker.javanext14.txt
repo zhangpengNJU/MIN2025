@@ -1,0 +1,46 @@
+/**
+ * Returns the next Event or {@code null} if there are no more events or
+ * the walker is closed.
+ */
+Event next() {
+    DirectoryNode top = stack.peek();
+    if (top == null)
+        // stack is empty, we are done
+        return null;
+    // continue iteration of the directory at the top of the stack
+    Event ev;
+    do {
+        Path entry = null;
+        IOException ioe = null;
+        // get next entry in the directory
+        if (!top.skipped()) {
+            Iterator<Path> iterator = top.iterator();
+            try {
+                if (iterator.hasNext()) {
+                    entry = iterator.next();
+                }
+            } catch (DirectoryIteratorException x) {
+                ioe = x.getCause();
+            }
+        }
+        // no next entry so close and pop directory, creating corresponding event
+        if (entry == null) {
+            try {
+                top.stream().close();
+            } catch (IOException e) {
+                if (ioe != null) {
+                    ioe = e;
+                } else {
+                    ioe.addSuppressed(e);
+                }
+            }
+            stack.pop();
+            return new Event(EventType.END_DIRECTORY, top.directory(), ioe);
+        }
+        // visit the entry
+        ev = visit(entry, // ignoreSecurityException
+        true, // canUseCached
+        true);
+    } while (ev == null);
+    return ev;
+}

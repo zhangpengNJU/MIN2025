@@ -1,0 +1,10 @@
+static Locale getInstance(String language, String script, String country, String variant, LocaleExtensions extensions) {
+    if (language == null || script == null || country == null || variant == null) {
+        throw new NullPointerException();
+    }
+    if (extensions == null) {
+        extensions = getCompatibilityExtensions(language, script, country, variant);
+    }
+    BaseLocale baseloc = BaseLocale.getInstance(language, script, country, variant);
+    return getInstance(baseloc, extensions);
+}

@@ -1,0 +1,38 @@
+/**
+ * Enables or disables input method support for this component. If input
+ * method support is enabled and the component also processes key events,
+ * incoming events are offered to
+ * the current input method and will only be processed by the component or
+ * dispatched to its listeners if the input method does not consume them.
+ * By default, input method support is enabled.
+ *
+ * @param enable true to enable, false to disable
+ * @see #processKeyEvent
+ * @since 1.2
+ */
+public void enableInputMethods(boolean enable) {
+    if (enable) {
+        if ((eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0)
+            return;
+        // If this component already has focus, then activate the
+        // input method by dispatching a synthesized focus gained
+        // event.
+        if (isFocusOwner()) {
+            InputContext inputContext = getInputContext();
+            if (inputContext != null) {
+                FocusEvent focusGainedEvent = new FocusEvent(this, FocusEvent.FOCUS_GAINED);
+                inputContext.dispatchEvent(focusGainedEvent);
+            }
+        }
+        eventMask |= AWTEvent.INPUT_METHODS_ENABLED_MASK;
+    } else {
+        if ((eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0) {
+            InputContext inputContext = getInputContext();
+            if (inputContext != null) {
+                inputContext.endComposition();
+                inputContext.removeNotify(this);
+            }
+        }
+        eventMask &= ~AWTEvent.INPUT_METHODS_ENABLED_MASK;
+    }
+}

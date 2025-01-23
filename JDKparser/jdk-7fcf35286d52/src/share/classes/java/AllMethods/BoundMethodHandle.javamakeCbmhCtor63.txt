@@ -1,0 +1,7 @@
+static MethodHandle makeCbmhCtor(Class<? extends BoundMethodHandle> cbmh, String types) {
+    try {
+        return LOOKUP.findStatic(cbmh, "make", MethodType.fromMethodDescriptorString(makeSignature(types, false), null));
+    } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | TypeNotPresentException e) {
+        throw newInternalError(e);
+    }
+}

@@ -1,0 +1,4 @@
+@Override
+public int getOpFlags() {
+    return collector.characteristics().contains(Collector.Characteristics.UNORDERED) ? StreamOpFlag.NOT_ORDERED : 0;
+}

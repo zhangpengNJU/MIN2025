@@ -1,0 +1,17 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implNote This implementation assumes that the ConcurrentMap cannot
+ * contain null values and {@code get()} returning null unambiguously means
+ * the key is absent. Implementations which support null values
+ * <strong>must</strong> override this default implementation.
+ *
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+default V getOrDefault(Object key, V defaultValue) {
+    V v;
+    return ((v = get(key)) != null) ? v : defaultValue;
+}

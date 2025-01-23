@@ -1,0 +1,23 @@
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    java.io.ObjectInputStream.GetField fields = s.readFields();
+    ModalityType localModalityType = (ModalityType) fields.get("modalityType", null);
+    try {
+        checkModalityPermission(localModalityType);
+    } catch (AccessControlException ace) {
+        localModalityType = DEFAULT_MODALITY_TYPE;
+    }
+    // in 1.5 or earlier modalityType was absent, so use "modal" instead
+    if (localModalityType == null) {
+        this.modal = fields.get("modal", false);
+        setModal(modal);
+    } else {
+        this.modalityType = localModalityType;
+    }
+    this.resizable = fields.get("resizable", true);
+    this.undecorated = fields.get("undecorated", false);
+    this.title = (String) fields.get("title", "");
+    blockedWindows = new IdentityArrayList<>();
+    SunToolkit.checkAndSetPolicy(this);
+    initialized = true;
+}

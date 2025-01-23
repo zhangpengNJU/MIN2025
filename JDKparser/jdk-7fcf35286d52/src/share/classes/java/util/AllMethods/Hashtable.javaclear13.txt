@@ -1,0 +1,9 @@
+/**
+ * Clears this hashtable so that it contains no keys.
+ */
+public synchronized void clear() {
+    Entry<?, ?>[] tab = table;
+    modCount++;
+    for (int index = tab.length; --index >= 0; ) tab[index] = null;
+    count = 0;
+}

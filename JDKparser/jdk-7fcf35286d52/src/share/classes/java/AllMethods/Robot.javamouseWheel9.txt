@@ -1,0 +1,13 @@
+/**
+ * Rotates the scroll wheel on wheel-equipped mice.
+ *
+ * @param wheelAmt  number of "notches" to move the mouse wheel
+ *                  Negative values indicate movement up/away from the user,
+ *                  positive values indicate movement down/towards the user.
+ *
+ * @since 1.4
+ */
+public synchronized void mouseWheel(int wheelAmt) {
+    peer.mouseWheel(wheelAmt);
+    afterEvent();
+}

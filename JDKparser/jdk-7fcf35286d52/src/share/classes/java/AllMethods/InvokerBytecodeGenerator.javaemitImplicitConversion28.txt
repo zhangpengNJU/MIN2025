@@ -1,0 +1,30 @@
+/**
+ * Emit an implicit conversion for an argument which must be of the given pclass.
+ * This is usually a no-op, except when pclass is a subword type or a reference other than Object or an interface.
+ *
+ * @param ptype type of value present on stack
+ * @param pclass type of value required on stack
+ * @param arg compile-time representation of value on stack (Node, constant) or null if none
+ */
+private void emitImplicitConversion(BasicType ptype, Class<?> pclass, Object arg) {
+    // boxing/unboxing handled by caller
+    assert (basicType(pclass) == ptype);
+    if (pclass == ptype.basicTypeClass() && ptype != L_TYPE)
+        // nothing to do
+        return;
+    switch(ptype) {
+        case L_TYPE:
+            if (VerifyType.isNullConversion(Object.class, pclass, false)) {
+                if (PROFILE_LEVEL > 0)
+                    emitReferenceCast(Object.class, arg);
+                return;
+            }
+            emitReferenceCast(pclass, arg);
+            return;
+        case I_TYPE:
+            if (!VerifyType.isNullConversion(int.class, pclass, false))
+                emitPrimCast(ptype.basicTypeWrapper(), Wrapper.forPrimitiveType(pclass));
+            return;
+    }
+    throw newInternalError("bad implicit conversion: tc=" + ptype + ": " + pclass);
+}

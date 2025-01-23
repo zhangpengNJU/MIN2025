@@ -1,0 +1,4 @@
+private static boolean returnTypesMatch(String sig, Object[] av, Object res) {
+    MethodHandle mh = (MethodHandle) av[0];
+    return valueMatches(signatureReturn(sig), mh.type().returnType(), res);
+}

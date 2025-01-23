@@ -1,0 +1,14 @@
+void applyCurrentShape() {
+    checkTreeLock();
+    if (!areBoundsValid()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; areBoundsValid = " + areBoundsValid());
+        }
+        // Because applyCompoundShape() ignores such components anyway
+        return;
+    }
+    if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+        mixingLog.fine("this = " + this);
+    }
+    applyCompoundShape(calculateCurrentShape());
+}

@@ -1,0 +1,11 @@
+// The following are predefined NamedFunction invokers.  The system must build
+// a separate invoker for each distinct signature.
+/**
+ * void return type invokers.
+ */
+@Hidden
+static Object invoke__V(MethodHandle mh, Object[] a) throws Throwable {
+    assert (arityCheck(0, void.class, mh, a));
+    mh.invokeBasic();
+    return null;
+}

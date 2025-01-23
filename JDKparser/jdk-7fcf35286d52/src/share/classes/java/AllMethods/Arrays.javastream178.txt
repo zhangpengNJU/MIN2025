@@ -1,0 +1,12 @@
+/**
+ * Returns a sequential {@link Stream} with the specified array as its
+ * source.
+ *
+ * @param <T> The type of the array elements
+ * @param array The array, assumed to be unmodified during use
+ * @return a {@code Stream} for the array
+ * @since 1.8
+ */
+public static <T> Stream<T> stream(T[] array) {
+    return stream(array, 0, array.length);
+}

@@ -1,0 +1,22 @@
+/**
+ * Retrieves the value of the designated JDBC <code>CHAR</code>,
+ * <code>VARCHAR</code>, or <code>LONGVARCHAR</code> parameter as a
+ * <code>String</code> in the Java programming language.
+ * <p>
+ * For the fixed-length type JDBC <code>CHAR</code>,
+ * the <code>String</code> object
+ * returned has exactly the same value the SQL
+ * <code>CHAR</code> value had in the
+ * database, including any padding added by the database.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ * and so on
+ * @return the parameter value. If the value is SQL <code>NULL</code>,
+ *         the result
+ *         is <code>null</code>.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @see #setString
+ */
+String getString(int parameterIndex) throws SQLException;

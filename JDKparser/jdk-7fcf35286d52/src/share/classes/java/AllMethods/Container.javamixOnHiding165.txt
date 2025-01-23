@@ -1,0 +1,12 @@
+@Override
+void mixOnHiding(boolean isLightweight) {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; isLightweight=" + isLightweight);
+        }
+        if (isLightweight) {
+            recursiveHideHeavyweightChildren();
+        }
+        super.mixOnHiding(isLightweight);
+    }
+}

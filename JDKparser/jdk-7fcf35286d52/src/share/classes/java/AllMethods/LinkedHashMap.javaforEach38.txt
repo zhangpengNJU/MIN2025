@@ -1,0 +1,8 @@
+public final void forEach(Consumer<? super Map.Entry<K, V>> action) {
+    if (action == null)
+        throw new NullPointerException();
+    int mc = modCount;
+    for (LinkedHashMap.Entry<K, V> e = head; e != null; e = e.after) action.accept(e);
+    if (modCount != mc)
+        throw new ConcurrentModificationException();
+}

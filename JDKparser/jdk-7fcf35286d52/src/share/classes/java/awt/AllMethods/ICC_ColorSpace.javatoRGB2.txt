@@ -1,0 +1,45 @@
+/**
+ * Transforms a color value assumed to be in this ColorSpace
+ * into a value in the default CS_sRGB color space.
+ * <p>
+ * This method transforms color values using algorithms designed
+ * to produce the best perceptual match between input and output
+ * colors.  In order to do colorimetric conversion of color values,
+ * you should use the <code>toCIEXYZ</code>
+ * method of this color space to first convert from the input
+ * color space to the CS_CIEXYZ color space, and then use the
+ * <code>fromCIEXYZ</code> method of the CS_sRGB color space to
+ * convert from CS_CIEXYZ to the output color space.
+ * See {@link #toCIEXYZ(float[]) toCIEXYZ} and
+ * {@link #fromCIEXYZ(float[]) fromCIEXYZ} for further information.
+ * <p>
+ * @param colorvalue a float array with length of at least the number
+ *      of components in this ColorSpace.
+ * @return a float array of length 3.
+ * @throws ArrayIndexOutOfBoundsException if array length is not
+ * at least the number of components in this ColorSpace.
+ */
+public float[] toRGB(float[] colorvalue) {
+    if (this2srgb == null) {
+        ColorTransform[] transformList = new ColorTransform[2];
+        ICC_ColorSpace srgbCS = (ICC_ColorSpace) ColorSpace.getInstance(CS_sRGB);
+        PCMM mdl = CMSManager.getModule();
+        transformList[0] = mdl.createTransform(thisProfile, ColorTransform.Any, ColorTransform.In);
+        transformList[1] = mdl.createTransform(srgbCS.getProfile(), ColorTransform.Any, ColorTransform.Out);
+        this2srgb = mdl.createTransform(transformList);
+        if (needScaleInit) {
+            setComponentScaling();
+        }
+    }
+    int nc = this.getNumComponents();
+    short[] tmp = new short[nc];
+    for (int i = 0; i < nc; i++) {
+        tmp[i] = (short) ((colorvalue[i] - minVal[i]) * invDiffMinMax[i] + 0.5f);
+    }
+    tmp = this2srgb.colorConvert(tmp, null);
+    float[] result = new float[3];
+    for (int i = 0; i < 3; i++) {
+        result[i] = ((float) (tmp[i] & 0xffff)) / 65535.0f;
+    }
+    return result;
+}

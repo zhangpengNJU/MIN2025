@@ -1,0 +1,27 @@
+/**
+ * Converts the time value (millisecond offset from the <a
+ * href="Calendar.html#Epoch">Epoch</a>) to calendar field values.
+ * The time is <em>not</em>
+ * recomputed first; to recompute the time, then the fields, call the
+ * <code>complete</code> method.
+ *
+ * @see Calendar#complete
+ */
+protected void computeFields() {
+    int mask = 0;
+    if (isPartiallyNormalized()) {
+        // Determine which calendar fields need to be computed.
+        mask = getSetStateFields();
+        int fieldMask = ~mask & ALL_FIELDS;
+        if (fieldMask != 0 || cachedFixedDate == Long.MIN_VALUE) {
+            mask |= computeFields(fieldMask, mask & (ZONE_OFFSET_MASK | DST_OFFSET_MASK));
+            assert mask == ALL_FIELDS;
+        }
+    } else {
+        // Specify all fields
+        mask = ALL_FIELDS;
+        computeFields(mask, 0);
+    }
+    // After computing all the fields, set the field state to `COMPUTED'.
+    setFieldsComputed(mask);
+}

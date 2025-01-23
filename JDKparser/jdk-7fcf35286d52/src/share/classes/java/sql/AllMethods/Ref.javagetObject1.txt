@@ -1,0 +1,19 @@
+/**
+ * Retrieves the referenced object and maps it to a Java type
+ * using the given type map.
+ *
+ * @param map a <code>java.util.Map</code> object that contains
+ *        the mapping to use (the fully-qualified name of the SQL
+ *        structured type being referenced and the class object for
+ *        <code>SQLData</code> implementation to which the SQL
+ *        structured type will be mapped)
+ * @return  a Java <code>Object</code> that is the custom mapping for
+ *          the SQL structured type to which this <code>Ref</code>
+ *          object refers
+ * @exception SQLException if a database access error occurs
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.4
+ * @see #setObject
+ */
+Object getObject(java.util.Map<String, Class<?>> map) throws SQLException;

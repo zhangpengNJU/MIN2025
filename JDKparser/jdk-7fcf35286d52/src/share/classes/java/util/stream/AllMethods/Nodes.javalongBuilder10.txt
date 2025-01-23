@@ -1,0 +1,11 @@
+/**
+ * Produces a {@link Node.Builder.OfLong}.
+ *
+ * @param exactSizeIfKnown -1 if a variable size builder is requested,
+ * otherwise the exact capacity desired.  A fixed capacity builder will
+ * fail if the wrong number of elements are added to the builder.
+ * @return a {@code Node.Builder.OfLong}
+ */
+static Node.Builder.OfLong longBuilder(long exactSizeIfKnown) {
+    return (exactSizeIfKnown >= 0 && exactSizeIfKnown < MAX_ARRAY_SIZE) ? new LongFixedNodeBuilder(exactSizeIfKnown) : longBuilder();
+}

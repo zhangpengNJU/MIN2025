@@ -1,0 +1,4 @@
+@Override
+public LambdaForm apply(MethodHandle target) {
+    return DelegatingMethodHandle.makeReinvokerForm(target, MethodTypeForm.LF_DELEGATE_BLOCK_INLINING, CountingWrapper.class, "reinvoker.dontInline", false, DelegatingMethodHandle.NF_getTarget, CountingWrapper.NF_maybeStopCounting);
+}

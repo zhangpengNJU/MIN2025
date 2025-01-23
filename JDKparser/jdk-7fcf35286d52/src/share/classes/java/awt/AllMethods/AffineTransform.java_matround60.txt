@@ -1,0 +1,5 @@
+// Round values to sane precision for printing
+// Note that Math.sin(Math.PI) has an error of about 10^-16
+private static double _matround(double matval) {
+    return Math.rint(matval * 1E15) / 1E15;
+}

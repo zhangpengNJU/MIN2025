@@ -1,0 +1,8 @@
+private static char getZero(Locale l) {
+    if ((l != null) && !l.equals(Locale.US)) {
+        DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(l);
+        return dfs.getZeroDigit();
+    } else {
+        return '0';
+    }
+}

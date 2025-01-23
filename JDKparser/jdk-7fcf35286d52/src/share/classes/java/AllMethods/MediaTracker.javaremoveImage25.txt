@@ -1,0 +1,21 @@
+/**
+ * Removes the specified image with the specified
+ * width, height, and ID from this media tracker.
+ * Only the specified instance (with any duplicates) is removed.
+ * @param   image the image to be removed
+ * @param   id the tracking ID from which to remove the image
+ * @param   width the width to remove (-1 for unscaled)
+ * @param   height the height to remove (-1 for unscaled)
+ * @see     java.awt.MediaTracker#removeImage(java.awt.Image)
+ * @see     java.awt.MediaTracker#removeImage(java.awt.Image, int)
+ * @since   JDK1.1
+ */
+public synchronized void removeImage(Image image, int id, int width, int height) {
+    removeImageImpl(image, id, width, height);
+    Image rvImage = getResolutionVariant(image);
+    if (rvImage != null) {
+        removeImageImpl(rvImage, id, width == -1 ? -1 : 2 * width, height == -1 ? -1 : 2 * height);
+    }
+    // Notify in case remaining images are "done".
+    notifyAll();
+}

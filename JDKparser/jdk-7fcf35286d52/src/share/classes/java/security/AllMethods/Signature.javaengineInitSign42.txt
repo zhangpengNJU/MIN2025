@@ -1,0 +1,12 @@
+protected void engineInitSign(PrivateKey privateKey) throws InvalidKeyException {
+    if (sigSpi != null) {
+        sigSpi.engineInitSign(privateKey);
+    } else {
+        try {
+            chooseProvider(I_PRIV, privateKey, null, null);
+        } catch (InvalidAlgorithmParameterException iape) {
+            // should not happen, re-throw as IKE just in case
+            throw new InvalidKeyException(iape);
+        }
+    }
+}

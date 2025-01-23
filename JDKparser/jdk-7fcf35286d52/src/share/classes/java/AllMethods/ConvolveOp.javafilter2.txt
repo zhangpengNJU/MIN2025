@@ -1,0 +1,67 @@
+/**
+ * Performs a convolution on BufferedImages.  Each component of the
+ * source image will be convolved (including the alpha component, if
+ * present).
+ * If the color model in the source image is not the same as that
+ * in the destination image, the pixels will be converted
+ * in the destination.  If the destination image is null,
+ * a BufferedImage will be created with the source ColorModel.
+ * The IllegalArgumentException may be thrown if the source is the
+ * same as the destination.
+ * @param src the source <code>BufferedImage</code> to filter
+ * @param dst the destination <code>BufferedImage</code> for the
+ *        filtered <code>src</code>
+ * @return the filtered <code>BufferedImage</code>
+ * @throws NullPointerException if <code>src</code> is <code>null</code>
+ * @throws IllegalArgumentException if <code>src</code> equals
+ *         <code>dst</code>
+ * @throws ImagingOpException if <code>src</code> cannot be filtered
+ */
+public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
+    if (src == null) {
+        throw new NullPointerException("src image is null");
+    }
+    if (src == dst) {
+        throw new IllegalArgumentException("src image cannot be the " + "same as the dst image");
+    }
+    boolean needToConvert = false;
+    ColorModel srcCM = src.getColorModel();
+    ColorModel dstCM;
+    BufferedImage origDst = dst;
+    // Can't convolve an IndexColorModel.  Need to expand it
+    if (srcCM instanceof IndexColorModel) {
+        IndexColorModel icm = (IndexColorModel) srcCM;
+        src = icm.convertToIntDiscrete(src.getRaster(), false);
+        srcCM = src.getColorModel();
+    }
+    if (dst == null) {
+        dst = createCompatibleDestImage(src, null);
+        dstCM = srcCM;
+        origDst = dst;
+    } else {
+        dstCM = dst.getColorModel();
+        if (srcCM.getColorSpace().getType() != dstCM.getColorSpace().getType()) {
+            needToConvert = true;
+            dst = createCompatibleDestImage(src, null);
+            dstCM = dst.getColorModel();
+        } else if (dstCM instanceof IndexColorModel) {
+            dst = createCompatibleDestImage(src, null);
+            dstCM = dst.getColorModel();
+        }
+    }
+    if (ImagingLib.filter(this, src, dst) == null) {
+        throw new ImagingOpException("Unable to convolve src image");
+    }
+    if (needToConvert) {
+        ColorConvertOp ccop = new ColorConvertOp(hints);
+        ccop.filter(dst, origDst);
+    } else if (origDst != dst) {
+        java.awt.Graphics2D g = origDst.createGraphics();
+        try {
+            g.drawImage(dst, 0, 0, null);
+        } finally {
+            g.dispose();
+        }
+    }
+    return origDst;
+}

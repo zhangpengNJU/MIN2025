@@ -1,0 +1,47 @@
+/**
+ * Returns a <code>Font</code> appropriate to the attributes.
+ * If <code>attributes</code>contains a <code>FONT</code> attribute
+ * with a valid <code>Font</code> as its value, it will be
+ * merged with any remaining attributes.  See
+ * {@link java.awt.font.TextAttribute#FONT} for more
+ * information.
+ *
+ * @param attributes the attributes to assign to the new
+ *          <code>Font</code>
+ * @return a new <code>Font</code> created with the specified
+ *          attributes
+ * @throws NullPointerException if <code>attributes</code> is null.
+ * @since 1.2
+ * @see java.awt.font.TextAttribute
+ */
+public static Font getFont(Map<? extends Attribute, ?> attributes) {
+    // optimize for two cases:
+    // 1) FONT attribute, and nothing else
+    // 2) attributes, but no FONT
+    // avoid turning the attributemap into a regular map for no reason
+    if (attributes instanceof AttributeMap && ((AttributeMap) attributes).getValues() != null) {
+        AttributeValues values = ((AttributeMap) attributes).getValues();
+        if (values.isNonDefault(EFONT)) {
+            Font font = values.getFont();
+            if (!values.anyDefined(SECONDARY_MASK)) {
+                return font;
+            }
+            // merge
+            values = font.getAttributeValues().clone();
+            values.merge(attributes, SECONDARY_MASK);
+            return new Font(values, font.name, font.style, font.createdFont, font.font2DHandle);
+        }
+        return new Font(attributes);
+    }
+    Font font = (Font) attributes.get(TextAttribute.FONT);
+    if (font != null) {
+        if (attributes.size() > 1) {
+            // oh well, check for anything else
+            AttributeValues values = font.getAttributeValues().clone();
+            values.merge(attributes, SECONDARY_MASK);
+            return new Font(values, font.name, font.style, font.createdFont, font.font2DHandle);
+        }
+        return font;
+    }
+    return new Font(attributes);
+}

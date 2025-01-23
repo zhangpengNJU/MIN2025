@@ -1,0 +1,19 @@
+/**
+ * Reconstitutes the {@code PriorityQueue} instance from a stream
+ * (that is, deserializes it).
+ *
+ * @param s the stream
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Read in size, and any hidden stuff
+    s.defaultReadObject();
+    // Read in (and discard) array length
+    s.readInt();
+    SharedSecrets.getJavaOISAccess().checkArray(s, Object[].class, size);
+    queue = new Object[size];
+    // Read in all elements.
+    for (int i = 0; i < size; i++) queue[i] = s.readObject();
+    // Elements are guaranteed to be in "proper order", but the
+    // spec has never explained what that might be.
+    heapify();
+}

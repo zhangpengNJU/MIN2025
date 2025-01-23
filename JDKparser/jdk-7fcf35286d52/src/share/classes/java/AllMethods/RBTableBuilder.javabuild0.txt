@@ -1,0 +1,92 @@
+/**
+ * Create a table-based collation object with the given rules.
+ * This is the main function that actually builds the tables and
+ * stores them back in the RBCollationTables object.  It is called
+ * ONLY by the RBCollationTables constructor.
+ * @see RuleBasedCollator#RuleBasedCollator
+ * @exception ParseException If the rules format is incorrect.
+ */
+public void build(String pattern, int decmp) throws ParseException {
+    boolean isSource = true;
+    int i = 0;
+    String expChars;
+    String groupChars;
+    if (pattern.length() == 0)
+        throw new ParseException("Build rules empty.", 0);
+    // This array maps Unicode characters to their collation ordering
+    mapping = new UCompactIntArray(RBCollationTables.UNMAPPED);
+    // Normalize the build rules.  Find occurances of all decomposed characters
+    // and normalize the rules before feeding into the builder.  By "normalize",
+    // we mean that all precomposed Unicode characters must be converted into
+    // a base character and one or more combining characters (such as accents).
+    // When there are multiple combining characters attached to a base character,
+    // the combining characters must be in their canonical order
+    // 
+    // sherman/Note:
+    // (1)decmp will be NO_DECOMPOSITION only in ko locale to prevent decompose
+    // hangual syllables to jamos, so we can actually just call decompose with
+    // normalizer's IGNORE_HANGUL option turned on
+    // 
+    // (2)just call the "special version" in NormalizerImpl directly
+    // pattern = Normalizer.decompose(pattern, false, Normalizer.IGNORE_HANGUL, true);
+    // 
+    // Normalizer.Mode mode = CollatorUtilities.toNormalizerMode(decmp);
+    // pattern = Normalizer.normalize(pattern, mode, 0, true);
+    pattern = NormalizerImpl.canonicalDecomposeWithSingleQuotation(pattern);
+    // Build the merged collation entries
+    // Since rules can be specified in any order in the string
+    // (e.g. "c , C < d , D < e , E .... C < CH")
+    // this splits all of the rules in the string out into separate
+    // objects and then sorts them.  In the above example, it merges the
+    // "C < CH" rule in just before the "C < D" rule.
+    // 
+    mPattern = new MergeCollation(pattern);
+    int order = 0;
+    // Now walk though each entry and add it to my own tables
+    for (i = 0; i < mPattern.getCount(); ++i) {
+        PatternEntry entry = mPattern.getItemAt(i);
+        if (entry != null) {
+            groupChars = entry.getChars();
+            if (groupChars.length() > 1) {
+                switch(groupChars.charAt(groupChars.length() - 1)) {
+                    case '@':
+                        frenchSec = true;
+                        groupChars = groupChars.substring(0, groupChars.length() - 1);
+                        break;
+                    case '!':
+                        seAsianSwapping = true;
+                        groupChars = groupChars.substring(0, groupChars.length() - 1);
+                        break;
+                }
+            }
+            order = increment(entry.getStrength(), order);
+            expChars = entry.getExtension();
+            if (expChars.length() != 0) {
+                addExpandOrder(groupChars, expChars, order);
+            } else if (groupChars.length() > 1) {
+                char ch = groupChars.charAt(0);
+                if (Character.isHighSurrogate(ch) && groupChars.length() == 2) {
+                    addOrder(Character.toCodePoint(ch, groupChars.charAt(1)), order);
+                } else {
+                    addContractOrder(groupChars, order);
+                }
+            } else {
+                char ch = groupChars.charAt(0);
+                addOrder(ch, order);
+            }
+        }
+    }
+    addComposedChars();
+    commit();
+    mapping.compact();
+    /*
+        System.out.println("mappingSize=" + mapping.getKSize());
+        for (int j = 0; j < 0xffff; j++) {
+            int value = mapping.elementAt(j);
+            if (value != RBCollationTables.UNMAPPED)
+                System.out.println("index=" + Integer.toString(j, 16)
+                           + ", value=" + Integer.toString(value, 16));
+        }
+        */
+    tables.fillInTables(frenchSec, seAsianSwapping, mapping, contractTable, expandTable, contractFlags, maxSecOrder, maxTerOrder);
+}

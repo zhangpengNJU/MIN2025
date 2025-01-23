@@ -1,0 +1,17 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    ZoneId zone = context.getValue(TemporalQueries.zoneId());
+    if (zone == null) {
+        return false;
+    }
+    String zname = zone.getId();
+    if (!(zone instanceof ZoneOffset)) {
+        TemporalAccessor dt = context.getTemporal();
+        String name = getDisplayName(zname, dt.isSupported(ChronoField.INSTANT_SECONDS) ? (zone.getRules().isDaylightSavings(Instant.from(dt)) ? DST : STD) : GENERIC, context.getLocale());
+        if (name != null) {
+            zname = name;
+        }
+    }
+    buf.append(zname);
+    return true;
+}

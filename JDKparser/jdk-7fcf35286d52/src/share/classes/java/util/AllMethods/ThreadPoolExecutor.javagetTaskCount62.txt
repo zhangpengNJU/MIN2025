@@ -1,0 +1,23 @@
+/**
+ * Returns the approximate total number of tasks that have ever been
+ * scheduled for execution. Because the states of tasks and
+ * threads may change dynamically during computation, the returned
+ * value is only an approximation.
+ *
+ * @return the number of tasks
+ */
+public long getTaskCount() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        long n = completedTaskCount;
+        for (Worker w : workers) {
+            n += w.completedTasks;
+            if (w.isLocked())
+                ++n;
+        }
+        return n + workQueue.size();
+    } finally {
+        mainLock.unlock();
+    }
+}

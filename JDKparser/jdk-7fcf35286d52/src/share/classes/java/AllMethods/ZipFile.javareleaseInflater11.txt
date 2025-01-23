@@ -1,0 +1,11 @@
+/*
+     * Releases the specified inflater to the list of available inflaters.
+     */
+private void releaseInflater(Inflater inf) {
+    if (false == inf.ended()) {
+        inf.reset();
+        synchronized (inflaterCache) {
+            inflaterCache.add(inf);
+        }
+    }
+}

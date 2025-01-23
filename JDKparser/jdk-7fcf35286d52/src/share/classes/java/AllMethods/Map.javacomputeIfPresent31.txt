@@ -1,0 +1,62 @@
+/**
+ * If the value for the specified key is present and non-null, attempts to
+ * compute a new mapping given the key and its current mapped value.
+ *
+ * <p>If the function returns {@code null}, the mapping is removed.  If the
+ * function itself throws an (unchecked) exception, the exception is
+ * rethrown, and the current mapping is left unchanged.
+ *
+ * @implSpec
+ * The default implementation is equivalent to performing the following
+ * steps for this {@code map}, then returning the current value or
+ * {@code null} if now absent:
+ *
+ * <pre> {@code
+ * if (map.get(key) != null) {
+ *     V oldValue = map.get(key);
+ *     V newValue = remappingFunction.apply(key, oldValue);
+ *     if (newValue != null)
+ *         map.put(key, newValue);
+ *     else
+ *         map.remove(key);
+ * }
+ * }</pre>
+ *
+ * <p>The default implementation makes no guarantees about synchronization
+ * or atomicity properties of this method. Any implementation providing
+ * atomicity guarantees must override this method and document its
+ * concurrency properties. In particular, all implementations of
+ * subinterface {@link java.util.concurrent.ConcurrentMap} must document
+ * whether the function is applied once atomically only if the value is not
+ * present.
+ *
+ * @param key key with which the specified value is to be associated
+ * @param remappingFunction the function to compute a value
+ * @return the new value associated with the specified key, or null if none
+ * @throws NullPointerException if the specified key is null and
+ *         this map does not support null keys, or the
+ *         remappingFunction is null
+ * @throws UnsupportedOperationException if the {@code put} operation
+ *         is not supported by this map
+ *         (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
+ * @throws ClassCastException if the class of the specified key or value
+ *         prevents it from being stored in this map
+ *         (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
+ * @since 1.8
+ */
+default V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    V oldValue;
+    if ((oldValue = get(key)) != null) {
+        V newValue = remappingFunction.apply(key, oldValue);
+        if (newValue != null) {
+            put(key, newValue);
+            return newValue;
+        } else {
+            remove(key);
+            return null;
+        }
+    } else {
+        return null;
+    }
+}

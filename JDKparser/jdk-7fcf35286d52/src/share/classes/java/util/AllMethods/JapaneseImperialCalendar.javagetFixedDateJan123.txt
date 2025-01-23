@@ -1,0 +1,25 @@
+/**
+ * Returns the fixed date of the first day of the year (usually
+ * January 1) before the specified date.
+ *
+ * @param date the date for which the first day of the year is
+ * calculated. The date has to be in the cut-over year.
+ * @param fixedDate the fixed date representation of the date
+ */
+private long getFixedDateJan1(LocalGregorianCalendar.Date date, long fixedDate) {
+    Era era = date.getEra();
+    if (date.getEra() != null && date.getYear() == 1) {
+        for (int eraIndex = getEraIndex(date); eraIndex > 0; eraIndex--) {
+            CalendarDate d = eras[eraIndex].getSinceDate();
+            long fd = gcal.getFixedDate(d);
+            // There might be multiple era transitions in a year.
+            if (fd > fixedDate) {
+                continue;
+            }
+            return fd;
+        }
+    }
+    CalendarDate d = gcal.newCalendarDate(TimeZone.NO_TIMEZONE);
+    d.setDate(date.getNormalizedYear(), Gregorian.JANUARY, 1);
+    return gcal.getFixedDate(d);
+}

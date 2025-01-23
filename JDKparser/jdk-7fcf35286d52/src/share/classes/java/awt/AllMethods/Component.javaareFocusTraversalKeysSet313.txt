@@ -1,0 +1,24 @@
+/**
+ * Returns whether the Set of focus traversal keys for the given focus
+ * traversal operation has been explicitly defined for this Component. If
+ * this method returns <code>false</code>, this Component is inheriting the
+ * Set from an ancestor, or from the current KeyboardFocusManager.
+ *
+ * @param id one of KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *        KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, or
+ *        KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS
+ * @return <code>true</code> if the the Set of focus traversal keys for the
+ *         given focus traversal operation has been explicitly defined for
+ *         this Component; <code>false</code> otherwise.
+ * @throws IllegalArgumentException if id is not one of
+ *         KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, or
+ *         KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS
+ * @since 1.4
+ */
+public boolean areFocusTraversalKeysSet(int id) {
+    if (id < 0 || id >= KeyboardFocusManager.TRAVERSAL_KEY_LENGTH - 1) {
+        throw new IllegalArgumentException("invalid focus traversal key identifier");
+    }
+    return (focusTraversalKeys != null && focusTraversalKeys[id] != null);
+}

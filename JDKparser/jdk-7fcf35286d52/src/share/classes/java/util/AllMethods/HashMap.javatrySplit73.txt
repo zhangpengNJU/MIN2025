@@ -1,0 +1,4 @@
+public KeySpliterator<K, V> trySplit() {
+    int hi = getFence(), lo = index, mid = (lo + hi) >>> 1;
+    return (lo >= mid || current != null) ? null : new KeySpliterator<>(map, lo, index = mid, est >>>= 1, expectedModCount);
+}

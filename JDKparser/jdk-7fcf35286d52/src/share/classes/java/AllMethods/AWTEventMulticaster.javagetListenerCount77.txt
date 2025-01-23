@@ -1,0 +1,15 @@
+/*
+     * Recursive method which returns a count of the number of listeners in
+     * EventListener, handling the (common) case of l actually being an
+     * AWTEventMulticaster.  Additionally, only listeners of type listenerType
+     * are counted.  Method modified to fix bug 4513402.  -bchristi
+     */
+private static int getListenerCount(EventListener l, Class<?> listenerType) {
+    if (l instanceof AWTEventMulticaster) {
+        AWTEventMulticaster mc = (AWTEventMulticaster) l;
+        return getListenerCount(mc.a, listenerType) + getListenerCount(mc.b, listenerType);
+    } else {
+        // Only count listeners of correct type
+        return listenerType.isInstance(l) ? 1 : 0;
+    }
+}

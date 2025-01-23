@@ -1,0 +1,8 @@
+/**
+ * Insert a fresh expression.
+ */
+LambdaFormBuffer insertExpression(int pos, Name expr) {
+    assert (!expr.isParam());
+    insertName(pos, expr, false);
+    return this;
+}

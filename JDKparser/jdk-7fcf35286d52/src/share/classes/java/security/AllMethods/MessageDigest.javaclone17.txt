@@ -1,0 +1,22 @@
+/**
+ * Returns a clone if the delegate is cloneable.
+ *
+ * @return a clone if the delegate is cloneable.
+ *
+ * @exception CloneNotSupportedException if this is called on a
+ * delegate that does not support {@code Cloneable}.
+ */
+public Object clone() throws CloneNotSupportedException {
+    if (digestSpi instanceof Cloneable) {
+        MessageDigestSpi digestSpiClone = (MessageDigestSpi) digestSpi.clone();
+        // Because 'algorithm', 'provider', and 'state' are private
+        // members of our supertype, we must perform a cast to
+        // access them.
+        MessageDigest that = new Delegate(digestSpiClone, ((MessageDigest) this).algorithm);
+        that.provider = ((MessageDigest) this).provider;
+        that.state = ((MessageDigest) this).state;
+        return that;
+    } else {
+        throw new CloneNotSupportedException();
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Initialize the standard Font fields from the values object.
+ */
+private void initFromValues(AttributeValues values) {
+    this.values = values;
+    // for 1.5 streaming compatibility
+    values.defineAll(PRIMARY_MASK);
+    this.name = values.getFamily();
+    this.pointSize = values.getSize();
+    this.size = (int) (values.getSize() + 0.5);
+    // not == 2f
+    if (values.getWeight() >= 2f)
+        this.style |= BOLD;
+    // not  == .2f
+    if (values.getPosture() >= .2f)
+        this.style |= ITALIC;
+    this.nonIdentityTx = values.anyNonDefault(EXTRA_MASK);
+    this.hasLayoutAttributes = values.anyNonDefault(LAYOUT_MASK);
+}

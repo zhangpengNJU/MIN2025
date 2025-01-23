@@ -1,0 +1,11 @@
+/*
+     * Returns the number of the META-INF/MANIFEST.MF entries, case insensitive.
+     * When this number is greater than 1, JarVerifier will treat a file as
+     * unsigned.
+     */
+private int getManifestNum() {
+    synchronized (this) {
+        ensureOpen();
+        return manifestNum;
+    }
+}

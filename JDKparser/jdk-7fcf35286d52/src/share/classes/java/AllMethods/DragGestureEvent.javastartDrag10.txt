@@ -1,0 +1,23 @@
+/**
+ * Starts the drag given the initial <code>Cursor</code> to display,
+ * the <code>Transferable</code> object,
+ * and the <code>DragSourceListener</code> to use.
+ * <P>
+ * @param dragCursor     The initial {@code Cursor} for this drag operation
+ *                       or {@code null} for the default cursor handling;
+ *                       see
+ *                       <a href="DragSourceContext.html#defaultCursor">DragSourceContext</a>
+ *                       for more details on the cursor handling mechanism
+ *                       during drag and drop
+ * @param transferable The source's Transferable
+ * @param dsl          The source's DragSourceListener
+ * <P>
+ * @throws InvalidDnDOperationException if
+ * the Drag and Drop system is unable to
+ * initiate a drag operation, or if the user
+ * attempts to start a drag while an existing
+ * drag operation is still executing.
+ */
+public void startDrag(Cursor dragCursor, Transferable transferable, DragSourceListener dsl) throws InvalidDnDOperationException {
+    dragSource.startDrag(this, dragCursor, transferable, dsl);
+}

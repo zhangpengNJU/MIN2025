@@ -1,0 +1,83 @@
+/**
+ * Returns the Component that should receive the focus before aComponent.
+ * aContainer must be a focus cycle root of aComponent or a <a
+ * href="doc-files/FocusSpec.html#FocusTraversalPolicyProviders">focus traversal policy
+ * provider</a>.
+ *
+ * @param aContainer a focus cycle root of aComponent or focus traversal policy provider
+ * @param aComponent a (possibly indirect) child of aContainer, or
+ *        aContainer itself
+ * @return the Component that should receive the focus before aComponent,
+ *         or null if no suitable Component can be found
+ * @throws IllegalArgumentException if aContainer is not a focus cycle
+ *         root of aComponent or focus traversal policy provider, or if either aContainer or
+ *         aComponent is null
+ */
+public Component getComponentBefore(Container aContainer, Component aComponent) {
+    if (aContainer == null || aComponent == null) {
+        throw new IllegalArgumentException("aContainer and aComponent cannot be null");
+    }
+    if (!aContainer.isFocusTraversalPolicyProvider() && !aContainer.isFocusCycleRoot()) {
+        throw new IllegalArgumentException("aContainer should be focus cycle root or focus traversal policy provider");
+    } else if (aContainer.isFocusCycleRoot() && !aComponent.isFocusCycleRoot(aContainer)) {
+        throw new IllegalArgumentException("aContainer is not a focus cycle root of aComponent");
+    }
+    synchronized (aContainer.getTreeLock()) {
+        if (!(aContainer.isVisible() && aContainer.isDisplayable())) {
+            return null;
+        }
+        // See if the component is inside of policy provider.
+        Container provider = getTopmostProvider(aContainer, aComponent);
+        if (provider != null) {
+            if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                log.fine("### Asking FTP " + provider + " for component after " + aComponent);
+            }
+            // FTP knows how to find component after the given. We don't.
+            FocusTraversalPolicy policy = provider.getFocusTraversalPolicy();
+            Component beforeComp = policy.getComponentBefore(provider, aComponent);
+            // Null result means that we overstepped the limit of the FTP's cycle.
+            // In that case we must quit the cycle, otherwise return the component found.
+            if (beforeComp != null) {
+                if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                    log.fine("### FTP returned " + beforeComp);
+                }
+                return beforeComp;
+            }
+            aComponent = provider;
+            // If the provider is traversable it's returned.
+            if (accept(aComponent)) {
+                return aComponent;
+            }
+        }
+        List<Component> cycle = getFocusTraversalCycle(aContainer);
+        if (log.isLoggable(PlatformLogger.Level.FINE)) {
+            log.fine("### Cycle is " + cycle + ", component is " + aComponent);
+        }
+        int index = getComponentIndex(cycle, aComponent);
+        if (index < 0) {
+            if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                log.fine("### Didn't find component " + aComponent + " in a cycle " + aContainer);
+            }
+            return getLastComponent(aContainer);
+        }
+        Component comp = null;
+        Component tryComp = null;
+        for (index--; index >= 0; index--) {
+            comp = cycle.get(index);
+            if (comp != aContainer && (tryComp = getComponentDownCycle(comp, BACKWARD_TRAVERSAL)) != null) {
+                return tryComp;
+            } else if (accept(comp)) {
+                return comp;
+            }
+        }
+        if (aContainer.isFocusCycleRoot()) {
+            this.cachedRoot = aContainer;
+            this.cachedCycle = cycle;
+            comp = getLastComponent(aContainer);
+            this.cachedRoot = null;
+            this.cachedCycle = null;
+            return comp;
+        }
+    }
+    return null;
+}

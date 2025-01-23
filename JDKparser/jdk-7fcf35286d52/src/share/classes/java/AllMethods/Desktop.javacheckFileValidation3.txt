@@ -1,0 +1,14 @@
+/**
+ * Checks if the file is a valid file and readable.
+ *
+ * @throws SecurityException If a security manager exists and its
+ *         {@link SecurityManager#checkRead(java.lang.String)} method
+ *         denies read access to the file
+ * @throws NullPointerException if file is null
+ * @throws IllegalArgumentException if file doesn't exist
+ */
+private static void checkFileValidation(File file) {
+    if (!file.exists()) {
+        throw new IllegalArgumentException("The file: " + file.getPath() + " doesn't exist.");
+    }
+}

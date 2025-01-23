@@ -1,0 +1,20 @@
+private static final int parseInt(char[] str, int offset, int strLen) {
+    char c;
+    boolean positive = true;
+    if ((c = str[offset]) == '-') {
+        positive = false;
+        offset++;
+    } else if (c == '+') {
+        offset++;
+    }
+    int value = 0;
+    while (offset < strLen) {
+        c = str[offset++];
+        if (c >= '0' && c <= '9') {
+            value = value * 10 + (c - '0');
+        } else {
+            break;
+        }
+    }
+    return positive ? value : -value;
+}

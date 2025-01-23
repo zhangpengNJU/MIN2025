@@ -1,0 +1,9 @@
+/**
+ * Convenience method to park and then check if interrupted
+ *
+ * @return {@code true} if interrupted
+ */
+private final boolean parkAndCheckInterrupt() {
+    LockSupport.park(this);
+    return Thread.interrupted();
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns the FieldPositions of the fields in the suffix used for
+ * negative numbers. This is not used if the user has explicitly set
+ * a negative suffix via <code>setNegativeSuffix</code>. This is
+ * lazily created.
+ *
+ * @return FieldPositions in positive prefix
+ */
+private FieldPosition[] getNegativeSuffixFieldPositions() {
+    if (negativeSuffixFieldPositions == null) {
+        if (negSuffixPattern != null) {
+            negativeSuffixFieldPositions = expandAffix(negSuffixPattern);
+        } else {
+            negativeSuffixFieldPositions = EmptyFieldPositionArray;
+        }
+    }
+    return negativeSuffixFieldPositions;
+}

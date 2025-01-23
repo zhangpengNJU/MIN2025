@@ -1,0 +1,25 @@
+/**
+ * Checks whether this container can contain component which is focus owner.
+ * Verifies that container is enable and showing, and if it is focus cycle root
+ * its FTP allows component to be focus owner
+ * @since 1.5
+ */
+boolean canContainFocusOwner(Component focusOwnerCandidate) {
+    if (!(isEnabled() && isDisplayable() && isVisible() && isFocusable())) {
+        return false;
+    }
+    if (isFocusCycleRoot()) {
+        FocusTraversalPolicy policy = getFocusTraversalPolicy();
+        if (policy instanceof DefaultFocusTraversalPolicy) {
+            if (!((DefaultFocusTraversalPolicy) policy).accept(focusOwnerCandidate)) {
+                return false;
+            }
+        }
+    }
+    synchronized (getTreeLock()) {
+        if (parent != null) {
+            return parent.canContainFocusOwner(focusOwnerCandidate);
+        }
+    }
+    return true;
+}

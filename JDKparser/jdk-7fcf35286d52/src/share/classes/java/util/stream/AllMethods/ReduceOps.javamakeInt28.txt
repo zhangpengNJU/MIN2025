@@ -1,0 +1,49 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a functional reduce on
+ * {@code int} values, producing an optional integer result.
+ *
+ * @param operator the combining function
+ * @return a {@code TerminalOp} implementing the reduction
+ */
+public static TerminalOp<Integer, OptionalInt> makeInt(IntBinaryOperator operator) {
+    Objects.requireNonNull(operator);
+    class ReducingSink implements AccumulatingSink<Integer, OptionalInt, ReducingSink>, Sink.OfInt {
+
+        private boolean empty;
+
+        private int state;
+
+        public void begin(long size) {
+            empty = true;
+            state = 0;
+        }
+
+        @Override
+        public void accept(int t) {
+            if (empty) {
+                empty = false;
+                state = t;
+            } else {
+                state = operator.applyAsInt(state, t);
+            }
+        }
+
+        @Override
+        public OptionalInt get() {
+            return empty ? OptionalInt.empty() : OptionalInt.of(state);
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            if (!other.empty)
+                accept(other.state);
+        }
+    }
+    return new ReduceOp<Integer, OptionalInt, ReducingSink>(StreamShape.INT_VALUE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

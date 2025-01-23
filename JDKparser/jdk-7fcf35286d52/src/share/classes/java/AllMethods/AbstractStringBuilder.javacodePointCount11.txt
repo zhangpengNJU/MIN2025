@@ -1,0 +1,26 @@
+/**
+ * Returns the number of Unicode code points in the specified text
+ * range of this sequence. The text range begins at the specified
+ * {@code beginIndex} and extends to the {@code char} at
+ * index {@code endIndex - 1}. Thus the length (in
+ * {@code char}s) of the text range is
+ * {@code endIndex-beginIndex}. Unpaired surrogates within
+ * this sequence count as one code point each.
+ *
+ * @param beginIndex the index to the first {@code char} of
+ * the text range.
+ * @param endIndex the index after the last {@code char} of
+ * the text range.
+ * @return the number of Unicode code points in the specified text
+ * range
+ * @exception IndexOutOfBoundsException if the
+ * {@code beginIndex} is negative, or {@code endIndex}
+ * is larger than the length of this sequence, or
+ * {@code beginIndex} is larger than {@code endIndex}.
+ */
+public int codePointCount(int beginIndex, int endIndex) {
+    if (beginIndex < 0 || endIndex > count || beginIndex > endIndex) {
+        throw new IndexOutOfBoundsException();
+    }
+    return Character.codePointCountImpl(value, beginIndex, endIndex - beginIndex);
+}

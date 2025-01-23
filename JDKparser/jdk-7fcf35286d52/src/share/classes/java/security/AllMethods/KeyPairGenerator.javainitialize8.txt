@@ -1,0 +1,26 @@
+/**
+ * Initializes the key pair generator for a certain keysize with
+ * the given source of randomness (and a default parameter set).
+ *
+ * @param keysize the keysize. This is an
+ * algorithm-specific metric, such as modulus length, specified in
+ * number of bits.
+ * @param random the source of randomness.
+ *
+ * @exception InvalidParameterException if the {@code keysize} is not
+ * supported by this KeyPairGenerator object.
+ *
+ * @since 1.2
+ */
+public void initialize(int keysize, SecureRandom random) {
+// This does nothing, because either
+// 1. the implementation object returned by getInstance() is an
+// instance of KeyPairGenerator which has its own
+// initialize(keysize, random) method, so the application would
+// be calling that method directly, or
+// 2. the implementation returned by getInstance() is an instance
+// of Delegate, in which case initialize(keysize, random) is
+// overridden to call the corresponding SPI method.
+// (This is a special case, because the API and SPI method have the
+// same name.)
+}

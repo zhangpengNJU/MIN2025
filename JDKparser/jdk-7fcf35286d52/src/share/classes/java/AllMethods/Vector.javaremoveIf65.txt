@@ -1,0 +1,42 @@
+@Override
+@SuppressWarnings("unchecked")
+public synchronized boolean removeIf(Predicate<? super E> filter) {
+    Objects.requireNonNull(filter);
+    // figure out which elements are to be removed
+    // any exception thrown from the filter predicate at this stage
+    // will leave the collection unmodified
+    int removeCount = 0;
+    final int size = elementCount;
+    final BitSet removeSet = new BitSet(size);
+    final int expectedModCount = modCount;
+    for (int i = 0; modCount == expectedModCount && i < size; i++) {
+        @SuppressWarnings("unchecked")
+        final E element = (E) elementData[i];
+        if (filter.test(element)) {
+            removeSet.set(i);
+            removeCount++;
+        }
+    }
+    if (modCount != expectedModCount) {
+        throw new ConcurrentModificationException();
+    }
+    // shift surviving elements left over the spaces left by removed elements
+    final boolean anyToRemove = removeCount > 0;
+    if (anyToRemove) {
+        final int newSize = size - removeCount;
+        for (int i = 0, j = 0; (i < size) && (j < newSize); i++, j++) {
+            i = removeSet.nextClearBit(i);
+            elementData[j] = elementData[i];
+        }
+        for (int k = newSize; k < size; k++) {
+            // Let gc do its work
+            elementData[k] = null;
+        }
+        elementCount = newSize;
+        if (modCount != expectedModCount) {
+            throw new ConcurrentModificationException();
+        }
+        modCount++;
+    }
+    return anyToRemove;
+}

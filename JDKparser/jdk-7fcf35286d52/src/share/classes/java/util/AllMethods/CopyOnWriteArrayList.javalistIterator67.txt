@@ -1,0 +1,12 @@
+public ListIterator<E> listIterator(int index) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        if (index < 0 || index > size)
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        return new COWSubListIterator<E>(l, index, offset, size);
+    } finally {
+        lock.unlock();
+    }
+}

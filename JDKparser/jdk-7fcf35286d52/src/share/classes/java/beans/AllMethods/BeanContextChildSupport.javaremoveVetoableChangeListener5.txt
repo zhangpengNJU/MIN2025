@@ -1,0 +1,16 @@
+/**
+ * Removes a <code>VetoableChangeListener</code>.
+ * If <code>pcl</code> was added more than once to the same event
+ * source for the specified property, it will be notified one less time
+ * after being removed.
+ * If <code>name</code> is null, no exception is thrown
+ * and no action is taken.
+ * If <code>vcl</code> is null, or was never added for the specified
+ * property, no exception is thrown and no action is taken.
+ *
+ * @param name The name of the property that was listened on
+ * @param vcl The <code>VetoableChangeListener</code> to be removed
+ */
+public void removeVetoableChangeListener(String name, VetoableChangeListener vcl) {
+    vcSupport.removeVetoableChangeListener(name, vcl);
+}

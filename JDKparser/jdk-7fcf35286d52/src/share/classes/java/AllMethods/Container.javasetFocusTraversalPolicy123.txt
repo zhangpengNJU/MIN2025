@@ -1,0 +1,29 @@
+/**
+ * Sets the focus traversal policy that will manage keyboard traversal of
+ * this Container's children, if this Container is a focus cycle root. If
+ * the argument is null, this Container inherits its policy from its focus-
+ * cycle-root ancestor. If the argument is non-null, this policy will be
+ * inherited by all focus-cycle-root children that have no keyboard-
+ * traversal policy of their own (as will, recursively, their focus-cycle-
+ * root children).
+ * <p>
+ * If this Container is not a focus cycle root, the policy will be
+ * remembered, but will not be used or inherited by this or any other
+ * Containers until this Container is made a focus cycle root.
+ *
+ * @param policy the new focus traversal policy for this Container
+ * @see #getFocusTraversalPolicy
+ * @see #setFocusCycleRoot
+ * @see #isFocusCycleRoot
+ * @since 1.4
+ * @beaninfo
+ *       bound: true
+ */
+public void setFocusTraversalPolicy(FocusTraversalPolicy policy) {
+    FocusTraversalPolicy oldPolicy;
+    synchronized (this) {
+        oldPolicy = this.focusTraversalPolicy;
+        this.focusTraversalPolicy = policy;
+    }
+    firePropertyChange("focusTraversalPolicy", oldPolicy, policy);
+}

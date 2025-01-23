@@ -1,0 +1,13 @@
+/**
+ * Returns the context for the event.
+ *
+ * <p> In the case of {@link StandardWatchEventKinds#ENTRY_CREATE ENTRY_CREATE},
+ * {@link StandardWatchEventKinds#ENTRY_DELETE ENTRY_DELETE}, and {@link
+ * StandardWatchEventKinds#ENTRY_MODIFY ENTRY_MODIFY} events the context is
+ * a {@code Path} that is the {@link Path#relativize relative} path between
+ * the directory registered with the watch service, and the entry that is
+ * created, deleted, or modified.
+ *
+ * @return  the event context; may be {@code null}
+ */
+T context();

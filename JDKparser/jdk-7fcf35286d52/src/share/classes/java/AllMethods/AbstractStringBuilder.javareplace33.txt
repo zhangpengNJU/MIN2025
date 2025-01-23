@@ -1,0 +1,36 @@
+/**
+ * Replaces the characters in a substring of this sequence
+ * with characters in the specified {@code String}. The substring
+ * begins at the specified {@code start} and extends to the character
+ * at index {@code end - 1} or to the end of the
+ * sequence if no such character exists. First the
+ * characters in the substring are removed and then the specified
+ * {@code String} is inserted at {@code start}. (This
+ * sequence will be lengthened to accommodate the
+ * specified String if necessary.)
+ *
+ * @param      start    The beginning index, inclusive.
+ * @param      end      The ending index, exclusive.
+ * @param      str   String that will replace previous contents.
+ * @return     This object.
+ * @throws     StringIndexOutOfBoundsException  if {@code start}
+ *             is negative, greater than {@code length()}, or
+ *             greater than {@code end}.
+ */
+public AbstractStringBuilder replace(int start, int end, String str) {
+    if (start < 0)
+        throw new StringIndexOutOfBoundsException(start);
+    if (start > count)
+        throw new StringIndexOutOfBoundsException("start > length()");
+    if (start > end)
+        throw new StringIndexOutOfBoundsException("start > end");
+    if (end > count)
+        end = count;
+    int len = str.length();
+    int newCount = count + len - (end - start);
+    ensureCapacityInternal(newCount);
+    System.arraycopy(value, end, value, start + len, count - end);
+    str.getChars(value, start);
+    count = newCount;
+    return this;
+}

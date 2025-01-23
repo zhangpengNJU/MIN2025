@@ -1,0 +1,15 @@
+// Terminal evaluation methods
+/**
+ * Evaluate the pipeline with a terminal operation to produce a result.
+ *
+ * @param <R> the type of result
+ * @param terminalOp the terminal operation to be applied to the pipeline.
+ * @return the result
+ */
+final <R> R evaluate(TerminalOp<E_OUT, R> terminalOp) {
+    assert getOutputShape() == terminalOp.inputShape();
+    if (linkedOrConsumed)
+        throw new IllegalStateException(MSG_STREAM_LINKED);
+    linkedOrConsumed = true;
+    return isParallel() ? terminalOp.evaluateParallel(this, sourceSpliterator(terminalOp.getOpFlags())) : terminalOp.evaluateSequential(this, sourceSpliterator(terminalOp.getOpFlags()));
+}

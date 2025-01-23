@@ -1,0 +1,18 @@
+/**
+ * Determines whether the specified code point is a valid
+ * <a href="http://www.unicode.org/glossary/#code_point">
+ * Unicode code point value</a>.
+ *
+ * @param  codePoint the Unicode code point to be tested
+ * @return {@code true} if the specified code point value is between
+ *         {@link #MIN_CODE_POINT} and
+ *         {@link #MAX_CODE_POINT} inclusive;
+ *         {@code false} otherwise.
+ * @since  1.5
+ */
+public static boolean isValidCodePoint(int codePoint) {
+    // Optimized form of:
+    // codePoint >= MIN_CODE_POINT && codePoint <= MAX_CODE_POINT
+    int plane = codePoint >>> 16;
+    return plane < ((MAX_CODE_POINT + 1) >>> 16);
+}

@@ -1,0 +1,5 @@
+private List<Map.Entry<K, V>> deepCopy() {
+    List<Map.Entry<K, V>> list = new ArrayList<>(size());
+    for (Map.Entry<K, V> e : this) list.add(new AbstractMap.SimpleEntry<>(e));
+    return list;
+}

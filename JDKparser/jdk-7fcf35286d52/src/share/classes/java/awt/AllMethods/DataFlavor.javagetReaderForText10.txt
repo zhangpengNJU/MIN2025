@@ -1,0 +1,76 @@
+/**
+ * Gets a Reader for a text flavor, decoded, if necessary, for the expected
+ * charset (encoding). The supported representation classes are
+ * <code>java.io.Reader</code>, <code>java.lang.String</code>,
+ * <code>java.nio.CharBuffer</code>, <code>[C</code>,
+ * <code>java.io.InputStream</code>, <code>java.nio.ByteBuffer</code>,
+ * and <code>[B</code>.
+ * <p>
+ * Because text flavors which do not support the charset parameter are
+ * encoded in a non-standard format, this method should not be called for
+ * such flavors. However, in order to maintain backward-compatibility,
+ * if this method is called for such a flavor, this method will treat the
+ * flavor as though it supports the charset parameter and attempt to
+ * decode it accordingly. See <code>selectBestTextFlavor</code> for a list
+ * of text flavors which do not support the charset parameter.
+ *
+ * @param transferable the <code>Transferable</code> whose data will be
+ *        requested in this flavor
+ *
+ * @return a <code>Reader</code> to read the <code>Transferable</code>'s
+ *         data
+ *
+ * @exception IllegalArgumentException if the representation class
+ *            is not one of the seven listed above
+ * @exception IllegalArgumentException if the <code>Transferable</code>
+ *            has <code>null</code> data
+ * @exception NullPointerException if the <code>Transferable</code> is
+ *            <code>null</code>
+ * @exception UnsupportedEncodingException if this flavor's representation
+ *            is <code>java.io.InputStream</code>,
+ *            <code>java.nio.ByteBuffer</code>, or <code>[B</code> and
+ *            this flavor's encoding is not supported by this
+ *            implementation of the Java platform
+ * @exception UnsupportedFlavorException if the <code>Transferable</code>
+ *            does not support this flavor
+ * @exception IOException if the data cannot be read because of an
+ *            I/O error
+ * @see #selectBestTextFlavor
+ * @since 1.3
+ */
+public Reader getReaderForText(Transferable transferable) throws UnsupportedFlavorException, IOException {
+    Object transferObject = transferable.getTransferData(this);
+    if (transferObject == null) {
+        throw new IllegalArgumentException("getTransferData() returned null");
+    }
+    if (transferObject instanceof Reader) {
+        return (Reader) transferObject;
+    } else if (transferObject instanceof String) {
+        return new StringReader((String) transferObject);
+    } else if (transferObject instanceof CharBuffer) {
+        CharBuffer buffer = (CharBuffer) transferObject;
+        int size = buffer.remaining();
+        char[] chars = new char[size];
+        buffer.get(chars, 0, size);
+        return new CharArrayReader(chars);
+    } else if (transferObject instanceof char[]) {
+        return new CharArrayReader((char[]) transferObject);
+    }
+    InputStream stream = null;
+    if (transferObject instanceof InputStream) {
+        stream = (InputStream) transferObject;
+    } else if (transferObject instanceof ByteBuffer) {
+        ByteBuffer buffer = (ByteBuffer) transferObject;
+        int size = buffer.remaining();
+        byte[] bytes = new byte[size];
+        buffer.get(bytes, 0, size);
+        stream = new ByteArrayInputStream(bytes);
+    } else if (transferObject instanceof byte[]) {
+        stream = new ByteArrayInputStream((byte[]) transferObject);
+    }
+    if (stream == null) {
+        throw new IllegalArgumentException("transfer data is not Reader, String, CharBuffer, char array, InputStream, ByteBuffer, or byte array");
+    }
+    String encoding = getParameter("charset");
+    return (encoding == null) ? new InputStreamReader(stream) : new InputStreamReader(stream, encoding);
+}

@@ -1,0 +1,13 @@
+@Override
+public <P_IN> Node<T> opEvaluateParallel(PipelineHelper<T> helper, Spliterator<P_IN> spliterator, IntFunction<T[]> generator) {
+    // If the input is already naturally sorted and this operation
+    // naturally sorts then collect the output
+    if (StreamOpFlag.SORTED.isKnown(helper.getStreamAndOpFlags()) && isNaturalSort) {
+        return helper.evaluate(spliterator, false, generator);
+    } else {
+        // @@@ Weak two-pass parallel implementation; parallel collect, parallel sort
+        T[] flattenedData = helper.evaluate(spliterator, true, generator).asArray(generator);
+        Arrays.parallelSort(flattenedData, comparator);
+        return Nodes.node(flattenedData);
+    }
+}

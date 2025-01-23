@@ -1,0 +1,47 @@
+/**
+ * Main implementation for methods arrive and arriveAndDeregister.
+ * Manually tuned to speed up and minimize race windows for the
+ * common case of just decrementing unarrived field.
+ *
+ * @param adjust value to subtract from state;
+ *               ONE_ARRIVAL for arrive,
+ *               ONE_DEREGISTER for arriveAndDeregister
+ */
+private int doArrive(int adjust) {
+    final Phaser root = this.root;
+    for (; ; ) {
+        long s = (root == this) ? state : reconcileState();
+        int phase = (int) (s >>> PHASE_SHIFT);
+        if (phase < 0)
+            return phase;
+        int counts = (int) s;
+        int unarrived = (counts == EMPTY) ? 0 : (counts & UNARRIVED_MASK);
+        if (unarrived <= 0)
+            throw new IllegalStateException(badArrive(s));
+        if (UNSAFE.compareAndSwapLong(this, stateOffset, s, s -= adjust)) {
+            if (unarrived == 1) {
+                // base of next state
+                long n = s & PARTIES_MASK;
+                int nextUnarrived = (int) n >>> PARTIES_SHIFT;
+                if (root == this) {
+                    if (onAdvance(phase, nextUnarrived))
+                        n |= TERMINATION_BIT;
+                    else if (nextUnarrived == 0)
+                        n |= EMPTY;
+                    else
+                        n |= nextUnarrived;
+                    int nextPhase = (phase + 1) & MAX_PHASE;
+                    n |= (long) nextPhase << PHASE_SHIFT;
+                    UNSAFE.compareAndSwapLong(this, stateOffset, s, n);
+                    releaseWaiters(phase);
+                } else if (nextUnarrived == 0) {
+                    // propagate deregistration
+                    phase = parent.doArrive(ONE_DEREGISTER);
+                    UNSAFE.compareAndSwapLong(this, stateOffset, s, s | EMPTY);
+                } else
+                    phase = parent.doArrive(ONE_ARRIVAL);
+            }
+            return phase;
+        }
+    }
+}

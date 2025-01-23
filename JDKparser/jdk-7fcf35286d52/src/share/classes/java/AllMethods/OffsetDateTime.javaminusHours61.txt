@@ -1,0 +1,12 @@
+/**
+ * Returns a copy of this {@code OffsetDateTime} with the specified number of hours subtracted.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param hours  the hours to subtract, may be negative
+ * @return an {@code OffsetDateTime} based on this date-time with the hours subtracted, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+public OffsetDateTime minusHours(long hours) {
+    return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
+}

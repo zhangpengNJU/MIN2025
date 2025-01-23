@@ -1,0 +1,26 @@
+/**
+ * A version of addIfAbsent using the strong hint that given
+ * recent snapshot does not contain e.
+ */
+private boolean addIfAbsent(E e, Object[] snapshot) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] current = getArray();
+        int len = current.length;
+        if (snapshot != current) {
+            // Optimize for lost race to another addXXX operation
+            int common = Math.min(snapshot.length, len);
+            for (int i = 0; i < common; i++) if (current[i] != snapshot[i] && eq(e, current[i]))
+                return false;
+            if (indexOf(e, current, common, len) >= 0)
+                return false;
+        }
+        Object[] newElements = Arrays.copyOf(current, len + 1);
+        newElements[len] = e;
+        setArray(newElements);
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}

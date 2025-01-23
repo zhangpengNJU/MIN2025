@@ -1,0 +1,13 @@
+/**
+ * Post-processing after successful BiCompletion tryFire.
+ */
+final CompletableFuture<T> postFire(CompletableFuture<?> a, CompletableFuture<?> b, int mode) {
+    if (b != null && b.stack != null) {
+        // clean second source
+        if (mode < 0 || b.result == null)
+            b.cleanStack();
+        else
+            b.postComplete();
+    }
+    return postFire(a, mode);
+}

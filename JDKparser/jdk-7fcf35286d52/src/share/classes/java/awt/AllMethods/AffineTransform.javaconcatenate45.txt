@@ -1,0 +1,198 @@
+/**
+ * Concatenates an <code>AffineTransform</code> <code>Tx</code> to
+ * this <code>AffineTransform</code> Cx in the most commonly useful
+ * way to provide a new user space
+ * that is mapped to the former user space by <code>Tx</code>.
+ * Cx is updated to perform the combined transformation.
+ * Transforming a point p by the updated transform Cx' is
+ * equivalent to first transforming p by <code>Tx</code> and then
+ * transforming the result by the original transform Cx like this:
+ * Cx'(p) = Cx(Tx(p))
+ * In matrix notation, if this transform Cx is
+ * represented by the matrix [this] and <code>Tx</code> is represented
+ * by the matrix [Tx] then this method does the following:
+ * <pre>
+ *          [this] = [this] x [Tx]
+ * </pre>
+ * @param Tx the <code>AffineTransform</code> object to be
+ * concatenated with this <code>AffineTransform</code> object.
+ * @see #preConcatenate
+ * @since 1.2
+ */
+@SuppressWarnings("fallthrough")
+public void concatenate(AffineTransform Tx) {
+    double M0, M1;
+    double T00, T01, T10, T11;
+    double T02, T12;
+    int mystate = state;
+    int txstate = Tx.state;
+    switch((txstate << HI_SHIFT) | mystate) {
+        /* ---------- Tx == IDENTITY cases ---------- */
+        case (HI_IDENTITY | APPLY_IDENTITY):
+        case (HI_IDENTITY | APPLY_TRANSLATE):
+        case (HI_IDENTITY | APPLY_SCALE):
+        case (HI_IDENTITY | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_IDENTITY | APPLY_SHEAR):
+        case (HI_IDENTITY | APPLY_SHEAR | APPLY_TRANSLATE):
+        case (HI_IDENTITY | APPLY_SHEAR | APPLY_SCALE):
+        case (HI_IDENTITY | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            return;
+        /* ---------- this == IDENTITY cases ---------- */
+        case (HI_SHEAR | HI_SCALE | HI_TRANSLATE | APPLY_IDENTITY):
+            m01 = Tx.m01;
+            m10 = Tx.m10;
+        /* NOBREAK */
+        case (HI_SCALE | HI_TRANSLATE | APPLY_IDENTITY):
+            m00 = Tx.m00;
+            m11 = Tx.m11;
+        /* NOBREAK */
+        case (HI_TRANSLATE | APPLY_IDENTITY):
+            m02 = Tx.m02;
+            m12 = Tx.m12;
+            state = txstate;
+            type = Tx.type;
+            return;
+        case (HI_SHEAR | HI_SCALE | APPLY_IDENTITY):
+            m01 = Tx.m01;
+            m10 = Tx.m10;
+        /* NOBREAK */
+        case (HI_SCALE | APPLY_IDENTITY):
+            m00 = Tx.m00;
+            m11 = Tx.m11;
+            state = txstate;
+            type = Tx.type;
+            return;
+        case (HI_SHEAR | HI_TRANSLATE | APPLY_IDENTITY):
+            m02 = Tx.m02;
+            m12 = Tx.m12;
+        /* NOBREAK */
+        case (HI_SHEAR | APPLY_IDENTITY):
+            m01 = Tx.m01;
+            m10 = Tx.m10;
+            m00 = m11 = 0.0;
+            state = txstate;
+            type = Tx.type;
+            return;
+        /* ---------- Tx == TRANSLATE cases ---------- */
+        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_SCALE):
+        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_TRANSLATE):
+        case (HI_TRANSLATE | APPLY_SHEAR):
+        case (HI_TRANSLATE | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_TRANSLATE | APPLY_SCALE):
+        case (HI_TRANSLATE | APPLY_TRANSLATE):
+            translate(Tx.m02, Tx.m12);
+            return;
+        /* ---------- Tx == SCALE cases ---------- */
+        case (HI_SCALE | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_SCALE | APPLY_SHEAR | APPLY_SCALE):
+        case (HI_SCALE | APPLY_SHEAR | APPLY_TRANSLATE):
+        case (HI_SCALE | APPLY_SHEAR):
+        case (HI_SCALE | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_SCALE | APPLY_SCALE):
+        case (HI_SCALE | APPLY_TRANSLATE):
+            scale(Tx.m00, Tx.m11);
+            return;
+        /* ---------- Tx == SHEAR cases ---------- */
+        case (HI_SHEAR | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_SHEAR | APPLY_SHEAR | APPLY_SCALE):
+            T01 = Tx.m01;
+            T10 = Tx.m10;
+            M0 = m00;
+            m00 = m01 * T10;
+            m01 = M0 * T01;
+            M0 = m10;
+            m10 = m11 * T10;
+            m11 = M0 * T01;
+            type = TYPE_UNKNOWN;
+            return;
+        case (HI_SHEAR | APPLY_SHEAR | APPLY_TRANSLATE):
+        case (HI_SHEAR | APPLY_SHEAR):
+            m00 = m01 * Tx.m10;
+            m01 = 0.0;
+            m11 = m10 * Tx.m01;
+            m10 = 0.0;
+            state = mystate ^ (APPLY_SHEAR | APPLY_SCALE);
+            type = TYPE_UNKNOWN;
+            return;
+        case (HI_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (HI_SHEAR | APPLY_SCALE):
+            m01 = m00 * Tx.m01;
+            m00 = 0.0;
+            m10 = m11 * Tx.m10;
+            m11 = 0.0;
+            state = mystate ^ (APPLY_SHEAR | APPLY_SCALE);
+            type = TYPE_UNKNOWN;
+            return;
+        case (HI_SHEAR | APPLY_TRANSLATE):
+            m00 = 0.0;
+            m01 = Tx.m01;
+            m10 = Tx.m10;
+            m11 = 0.0;
+            state = APPLY_TRANSLATE | APPLY_SHEAR;
+            type = TYPE_UNKNOWN;
+            return;
+    }
+    // If Tx has more than one attribute, it is not worth optimizing
+    // all of those cases...
+    T00 = Tx.m00;
+    T01 = Tx.m01;
+    T02 = Tx.m02;
+    T10 = Tx.m10;
+    T11 = Tx.m11;
+    T12 = Tx.m12;
+    switch(mystate) {
+        default:
+            stateError();
+        /* NOTREACHED */
+        case (APPLY_SHEAR | APPLY_SCALE):
+            state = mystate | txstate;
+        /* NOBREAK */
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            M0 = m00;
+            M1 = m01;
+            m00 = T00 * M0 + T10 * M1;
+            m01 = T01 * M0 + T11 * M1;
+            m02 += T02 * M0 + T12 * M1;
+            M0 = m10;
+            M1 = m11;
+            m10 = T00 * M0 + T10 * M1;
+            m11 = T01 * M0 + T11 * M1;
+            m12 += T02 * M0 + T12 * M1;
+            type = TYPE_UNKNOWN;
+            return;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            M0 = m01;
+            m00 = T10 * M0;
+            m01 = T11 * M0;
+            m02 += T12 * M0;
+            M0 = m10;
+            m10 = T00 * M0;
+            m11 = T01 * M0;
+            m12 += T02 * M0;
+            break;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            M0 = m00;
+            m00 = T00 * M0;
+            m01 = T01 * M0;
+            m02 += T02 * M0;
+            M0 = m11;
+            m10 = T10 * M0;
+            m11 = T11 * M0;
+            m12 += T12 * M0;
+            break;
+        case (APPLY_TRANSLATE):
+            m00 = T00;
+            m01 = T01;
+            m02 += T02;
+            m10 = T10;
+            m11 = T11;
+            m12 += T12;
+            state = txstate | APPLY_TRANSLATE;
+            type = TYPE_UNKNOWN;
+            return;
+    }
+    updateState();
+}

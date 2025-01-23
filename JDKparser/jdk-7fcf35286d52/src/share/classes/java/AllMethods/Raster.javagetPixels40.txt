@@ -1,0 +1,19 @@
+/**
+ * Returns a double array containing all samples for a rectangle of pixels,
+ * one sample per array element.
+ * An ArrayIndexOutOfBoundsException may be thrown
+ * if the coordinates are not in bounds.  However, explicit bounds
+ * checking is not guaranteed.
+ * @param x        The X coordinate of the upper-left pixel location
+ * @param y        The Y coordinate of the upper-left pixel location
+ * @param w        Width of the pixel rectangle
+ * @param h        Height of the pixel rectangle
+ * @param dArray   An optionally pre-allocated double array
+ * @return the samples for the specified rectangle of pixels.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are not
+ * in bounds, or if dArray is too small to hold the output.
+ */
+public double[] getPixels(int x, int y, int w, int h, double[] dArray) {
+    return sampleModel.getPixels(x - sampleModelTranslateX, y - sampleModelTranslateY, w, h, dArray, dataBuffer);
+}

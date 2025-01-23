@@ -1,0 +1,4 @@
+public Spliterator<E> spliterator() {
+    checkForComodification();
+    return new ArrayListSpliterator<E>(ArrayList.this, offset, offset + this.size, this.modCount);
+}

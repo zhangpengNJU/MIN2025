@@ -1,0 +1,17 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by {@code setBounds(int, int, int, int)}.
+ */
+@Deprecated
+public void reshape(int x, int y, int width, int height) {
+    if (isMinimumSizeSet()) {
+        Dimension minSize = getMinimumSize();
+        if (width < minSize.width) {
+            width = minSize.width;
+        }
+        if (height < minSize.height) {
+            height = minSize.height;
+        }
+    }
+    super.reshape(x, y, width, height);
+}

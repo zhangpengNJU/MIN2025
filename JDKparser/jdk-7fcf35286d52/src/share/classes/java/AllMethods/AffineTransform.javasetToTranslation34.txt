@@ -1,0 +1,29 @@
+/**
+ * Sets this transform to a translation transformation.
+ * The matrix representing this transform becomes:
+ * <pre>
+ *          [   1    0    tx  ]
+ *          [   0    1    ty  ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param tx the distance by which coordinates are translated in the
+ * X axis direction
+ * @param ty the distance by which coordinates are translated in the
+ * Y axis direction
+ * @since 1.2
+ */
+public void setToTranslation(double tx, double ty) {
+    m00 = 1.0;
+    m10 = 0.0;
+    m01 = 0.0;
+    m11 = 1.0;
+    m02 = tx;
+    m12 = ty;
+    if (tx != 0.0 || ty != 0.0) {
+        state = APPLY_TRANSLATE;
+        type = TYPE_TRANSLATION;
+    } else {
+        state = APPLY_IDENTITY;
+        type = TYPE_IDENTITY;
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * Closes this file system.
+ *
+ * <p> After a file system is closed then all subsequent access to the file
+ * system, either by methods defined by this class or on objects associated
+ * with this file system, throw {@link ClosedFileSystemException}. If the
+ * file system is already closed then invoking this method has no effect.
+ *
+ * <p> Closing a file system will close all open {@link
+ * java.nio.channels.Channel channels}, {@link DirectoryStream directory-streams},
+ * {@link WatchService watch-service}, and other closeable objects associated
+ * with this file system. The {@link FileSystems#getDefault default} file
+ * system cannot be closed.
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ * @throws  UnsupportedOperationException
+ *          Thrown in the case of the default file system
+ */
+@Override
+public abstract void close() throws IOException;

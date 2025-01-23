@@ -1,0 +1,21 @@
+/**
+ * Creates a <code>Color</code> object based on the specified values
+ * for the HSB color model.
+ * <p>
+ * The <code>s</code> and <code>b</code> components should be
+ * floating-point values between zero and one
+ * (numbers in the range 0.0-1.0).  The <code>h</code> component
+ * can be any floating-point number.  The floor of this number is
+ * subtracted from it to create a fraction between 0 and 1.  This
+ * fractional number is then multiplied by 360 to produce the hue
+ * angle in the HSB color model.
+ * @param  h   the hue component
+ * @param  s   the saturation of the color
+ * @param  b   the brightness of the color
+ * @return  a <code>Color</code> object with the specified hue,
+ *                                 saturation, and brightness.
+ * @since   JDK1.0
+ */
+public static Color getHSBColor(float h, float s, float b) {
+    return new Color(HSBtoRGB(h, s, b));
+}

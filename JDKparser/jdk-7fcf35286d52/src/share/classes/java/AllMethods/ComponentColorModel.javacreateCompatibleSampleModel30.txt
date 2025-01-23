@@ -1,0 +1,25 @@
+/**
+ * Creates a <CODE>SampleModel</CODE> with the specified width and height,
+ * that  has a data layout compatible with this <CODE>ColorModel</CODE>.
+ *
+ * @param w The width of the <CODE>SampleModel</CODE> you want to create.
+ * @param h The height of the <CODE>SampleModel</CODE> you want to create.
+ *
+ * @return A <CODE>SampleModel</CODE> that is compatible with this
+ * <CODE>ColorModel</CODE>.
+ *
+ * @see SampleModel
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    int[] bandOffsets = new int[numComponents];
+    for (int i = 0; i < numComponents; i++) {
+        bandOffsets[i] = i;
+    }
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+        case DataBuffer.TYPE_USHORT:
+            return new PixelInterleavedSampleModel(transferType, w, h, numComponents, w * numComponents, bandOffsets);
+        default:
+            return new ComponentSampleModel(transferType, w, h, numComponents, w * numComponents, bandOffsets);
+    }
+}

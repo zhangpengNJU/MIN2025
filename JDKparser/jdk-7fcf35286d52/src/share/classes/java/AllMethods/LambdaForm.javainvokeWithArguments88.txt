@@ -1,0 +1,9 @@
+@Hidden
+Object invokeWithArguments(Object... arguments) throws Throwable {
+    // If we have a cached invoker, call it right away.
+    // NOTE: The invoker always returns a reference value.
+    if (TRACE_INTERPRETER)
+        return invokeWithArgumentsTracing(arguments);
+    assert (checkArgumentTypes(arguments, methodType()));
+    return invoker().invokeBasic(resolvedHandle(), arguments);
+}

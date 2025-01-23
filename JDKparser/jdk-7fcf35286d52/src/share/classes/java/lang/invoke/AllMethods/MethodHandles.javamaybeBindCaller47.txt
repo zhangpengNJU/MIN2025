@@ -1,0 +1,12 @@
+private MethodHandle maybeBindCaller(MemberName method, MethodHandle mh, Class<?> callerClass) throws IllegalAccessException {
+    if (allowedModes == TRUSTED || !MethodHandleNatives.isCallerSensitive(method))
+        return mh;
+    Class<?> hostClass = lookupClass;
+    if (// caller must have private access
+    !hasPrivateAccess())
+        // callerClass came from a security manager style stack walk
+        hostClass = callerClass;
+    MethodHandle cbmh = MethodHandleImpl.bindCaller(mh, hostClass);
+    // Note: caller will apply varargs after this step happens.
+    return cbmh;
+}

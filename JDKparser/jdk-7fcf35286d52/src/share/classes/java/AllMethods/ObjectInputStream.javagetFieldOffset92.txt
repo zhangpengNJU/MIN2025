@@ -1,0 +1,19 @@
+/**
+ * Returns offset of field with given name and type.  A specified type
+ * of null matches all types, Object.class matches all non-primitive
+ * types, and any other non-null type matches assignable types only.
+ * If no matching field is found in the (incoming) class
+ * descriptor but a matching field is present in the associated local
+ * class descriptor, returns -1.  Throws IllegalArgumentException if
+ * neither incoming nor local class descriptor contains a match.
+ */
+private int getFieldOffset(String name, Class<?> type) {
+    ObjectStreamField field = desc.getField(name, type);
+    if (field != null) {
+        return field.getOffset();
+    } else if (desc.getLocalDesc().getField(name, type) != null) {
+        return -1;
+    } else {
+        throw new IllegalArgumentException("no such field " + name + " with type " + type);
+    }
+}

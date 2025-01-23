@@ -1,0 +1,146 @@
+/**
+ * Inverse transforms an array of double precision coordinates by
+ * this transform.
+ * The two coordinate array sections can be exactly the same or
+ * can be overlapping sections of the same array without affecting the
+ * validity of the results.
+ * This method ensures that no source coordinates are
+ * overwritten by a previous operation before they can be transformed.
+ * The coordinates are stored in the arrays starting at the specified
+ * offset in the order <code>[x0, y0, x1, y1, ..., xn, yn]</code>.
+ * @param srcPts the array containing the source point coordinates.
+ * Each point is stored as a pair of x,&nbsp;y coordinates.
+ * @param dstPts the array into which the transformed point
+ * coordinates are returned.  Each point is stored as a pair of
+ * x,&nbsp;y coordinates.
+ * @param srcOff the offset to the first point to be transformed
+ * in the source array
+ * @param dstOff the offset to the location of the first
+ * transformed point that is stored in the destination array
+ * @param numPts the number of point objects to be transformed
+ * @exception NoninvertibleTransformException  if the matrix cannot be
+ *                                         inverted.
+ * @since 1.2
+ */
+public void inverseTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int numPts) throws NoninvertibleTransformException {
+    // For caching
+    double M00, M01, M02, M10, M11, M12;
+    double det;
+    if (dstPts == srcPts && dstOff > srcOff && dstOff < srcOff + numPts * 2) {
+        // If the arrays overlap partially with the destination higher
+        // than the source and we transform the coordinates normally
+        // we would overwrite some of the later source coordinates
+        // with results of previous transformations.
+        // To get around this we use arraycopy to copy the points
+        // to their final destination with correct overwrite
+        // handling and then transform them in place in the new
+        // safer location.
+        System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);
+        // srcPts = dstPts;         // They are known to be equal.
+        srcOff = dstOff;
+    }
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            M00 = m00;
+            M01 = m01;
+            M02 = m02;
+            M10 = m10;
+            M11 = m11;
+            M12 = m12;
+            det = M00 * M11 - M01 * M10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++] - M02;
+                double y = srcPts[srcOff++] - M12;
+                dstPts[dstOff++] = (x * M11 - y * M01) / det;
+                dstPts[dstOff++] = (y * M00 - x * M10) / det;
+            }
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE):
+            M00 = m00;
+            M01 = m01;
+            M10 = m10;
+            M11 = m11;
+            det = M00 * M11 - M01 * M10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++];
+                double y = srcPts[srcOff++];
+                dstPts[dstOff++] = (x * M11 - y * M01) / det;
+                dstPts[dstOff++] = (y * M00 - x * M10) / det;
+            }
+            return;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            M01 = m01;
+            M02 = m02;
+            M10 = m10;
+            M12 = m12;
+            if (M01 == 0.0 || M10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++] - M02;
+                dstPts[dstOff++] = (srcPts[srcOff++] - M12) / M10;
+                dstPts[dstOff++] = x / M01;
+            }
+            return;
+        case (APPLY_SHEAR):
+            M01 = m01;
+            M10 = m10;
+            if (M01 == 0.0 || M10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++];
+                dstPts[dstOff++] = srcPts[srcOff++] / M10;
+                dstPts[dstOff++] = x / M01;
+            }
+            return;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            M00 = m00;
+            M02 = m02;
+            M11 = m11;
+            M12 = m12;
+            if (M00 == 0.0 || M11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            while (--numPts >= 0) {
+                dstPts[dstOff++] = (srcPts[srcOff++] - M02) / M00;
+                dstPts[dstOff++] = (srcPts[srcOff++] - M12) / M11;
+            }
+            return;
+        case (APPLY_SCALE):
+            M00 = m00;
+            M11 = m11;
+            if (M00 == 0.0 || M11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            while (--numPts >= 0) {
+                dstPts[dstOff++] = srcPts[srcOff++] / M00;
+                dstPts[dstOff++] = srcPts[srcOff++] / M11;
+            }
+            return;
+        case (APPLY_TRANSLATE):
+            M02 = m02;
+            M12 = m12;
+            while (--numPts >= 0) {
+                dstPts[dstOff++] = srcPts[srcOff++] - M02;
+                dstPts[dstOff++] = srcPts[srcOff++] - M12;
+            }
+            return;
+        case (APPLY_IDENTITY):
+            if (srcPts != dstPts || srcOff != dstOff) {
+                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);
+            }
+            return;
+    }
+/* NOTREACHED */
+}

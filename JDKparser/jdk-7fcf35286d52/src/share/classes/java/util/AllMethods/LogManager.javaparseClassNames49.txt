@@ -1,0 +1,30 @@
+// get a list of whitespace separated classnames from a property.
+private String[] parseClassNames(String propertyName) {
+    String hands = getProperty(propertyName);
+    if (hands == null) {
+        return new String[0];
+    }
+    hands = hands.trim();
+    int ix = 0;
+    final List<String> result = new ArrayList<>();
+    while (ix < hands.length()) {
+        int end = ix;
+        while (end < hands.length()) {
+            if (Character.isWhitespace(hands.charAt(end))) {
+                break;
+            }
+            if (hands.charAt(end) == ',') {
+                break;
+            }
+            end++;
+        }
+        String word = hands.substring(ix, end);
+        ix = end + 1;
+        word = word.trim();
+        if (word.length() == 0) {
+            continue;
+        }
+        result.add(word);
+    }
+    return result.toArray(new String[result.size()]);
+}

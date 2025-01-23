@@ -1,0 +1,13 @@
+private int width(String s) {
+    width = -1;
+    if (s != null) {
+        try {
+            width = Integer.parseInt(s);
+            if (width < 0)
+                throw new IllegalFormatWidthException(width);
+        } catch (NumberFormatException x) {
+            assert (false);
+        }
+    }
+    return width;
+}

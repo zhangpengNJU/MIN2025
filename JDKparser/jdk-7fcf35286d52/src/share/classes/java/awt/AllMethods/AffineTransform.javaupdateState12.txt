@@ -1,0 +1,61 @@
+/**
+ * Manually recalculates the state of the transform when the matrix
+ * changes too much to predict the effects on the state.
+ * The following table specifies what the various settings of the
+ * state field say about the values of the corresponding matrix
+ * element fields.
+ * Note that the rules governing the SCALE fields are slightly
+ * different depending on whether the SHEAR flag is also set.
+ * <pre>
+ *                     SCALE            SHEAR          TRANSLATE
+ *                    m00/m11          m01/m10          m02/m12
+ *
+ * IDENTITY             1.0              0.0              0.0
+ * TRANSLATE (TR)       1.0              0.0          not both 0.0
+ * SCALE (SC)       not both 1.0         0.0              0.0
+ * TR | SC          not both 1.0         0.0          not both 0.0
+ * SHEAR (SH)           0.0          not both 0.0         0.0
+ * TR | SH              0.0          not both 0.0     not both 0.0
+ * SC | SH          not both 0.0     not both 0.0         0.0
+ * TR | SC | SH     not both 0.0     not both 0.0     not both 0.0
+ * </pre>
+ */
+void updateState() {
+    if (m01 == 0.0 && m10 == 0.0) {
+        if (m00 == 1.0 && m11 == 1.0) {
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_IDENTITY;
+                type = TYPE_IDENTITY;
+            } else {
+                state = APPLY_TRANSLATE;
+                type = TYPE_TRANSLATION;
+            }
+        } else {
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SCALE;
+                type = TYPE_UNKNOWN;
+            } else {
+                state = (APPLY_SCALE | APPLY_TRANSLATE);
+                type = TYPE_UNKNOWN;
+            }
+        }
+    } else {
+        if (m00 == 0.0 && m11 == 0.0) {
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SHEAR;
+                type = TYPE_UNKNOWN;
+            } else {
+                state = (APPLY_SHEAR | APPLY_TRANSLATE);
+                type = TYPE_UNKNOWN;
+            }
+        } else {
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = (APPLY_SHEAR | APPLY_SCALE);
+                type = TYPE_UNKNOWN;
+            } else {
+                state = (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE);
+                type = TYPE_UNKNOWN;
+            }
+        }
+    }
+}

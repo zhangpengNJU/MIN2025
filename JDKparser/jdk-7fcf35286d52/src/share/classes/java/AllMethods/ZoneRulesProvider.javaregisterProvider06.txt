@@ -1,0 +1,15 @@
+/**
+ * Registers the provider.
+ *
+ * @param provider  the provider to register, not null
+ * @throws ZoneRulesException if unable to complete the registration
+ */
+private static void registerProvider0(ZoneRulesProvider provider) {
+    for (String zoneId : provider.provideZoneIds()) {
+        Objects.requireNonNull(zoneId, "zoneId");
+        ZoneRulesProvider old = ZONES.putIfAbsent(zoneId, provider);
+        if (old != null) {
+            throw new ZoneRulesException("Unable to register zone as one already registered with that ID: " + zoneId + ", currently loading from provider: " + provider);
+        }
+    }
+}

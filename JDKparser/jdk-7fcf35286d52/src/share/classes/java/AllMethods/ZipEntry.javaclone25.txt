@@ -1,0 +1,13 @@
+/**
+ * Returns a copy of this entry.
+ */
+public Object clone() {
+    try {
+        ZipEntry e = (ZipEntry) super.clone();
+        e.extra = (extra == null) ? null : extra.clone();
+        return e;
+    } catch (CloneNotSupportedException e) {
+        // This should never happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

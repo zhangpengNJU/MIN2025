@@ -1,0 +1,12 @@
+/**
+ * Creates a TransferableProxy to proxy for the specified
+ * Transferable.
+ *
+ * @param t the <tt>Transferable</tt> to be proxied
+ * @param local <tt>true</tt> if <tt>t</tt> represents
+ *        the result of a local drag-n-drop operation.
+ * @return the new <tt>TransferableProxy</tt> instance.
+ */
+protected Transferable createTransferableProxy(Transferable t, boolean local) {
+    return new TransferableProxy(t, local);
+}

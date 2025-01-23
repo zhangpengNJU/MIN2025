@@ -1,0 +1,63 @@
+public void remove() {
+    if (lastReturnedIndex == -1)
+        throw new IllegalStateException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    expectedModCount = ++modCount;
+    int deletedSlot = lastReturnedIndex;
+    lastReturnedIndex = -1;
+    // back up index to revisit new contents after deletion
+    index = deletedSlot;
+    indexValid = false;
+    // Removal code proceeds as in closeDeletion except that
+    // it must catch the rare case where an element already
+    // seen is swapped into a vacant slot that will be later
+    // traversed by this iterator. We cannot allow future
+    // next() calls to return it again.  The likelihood of
+    // this occurring under 2/3 load factor is very slim, but
+    // when it does happen, we must make a copy of the rest of
+    // the table to use for the rest of the traversal. Since
+    // this can only happen when we are near the end of the table,
+    // even in these rare cases, this is not very expensive in
+    // time or space.
+    Object[] tab = traversalTable;
+    int len = tab.length;
+    int d = deletedSlot;
+    Object key = tab[d];
+    // vacate the slot
+    tab[d] = null;
+    tab[d + 1] = null;
+    // If traversing a copy, remove in real table.
+    // We can skip gap-closure on copy.
+    if (tab != IdentityHashMap.this.table) {
+        IdentityHashMap.this.remove(key);
+        expectedModCount = modCount;
+        return;
+    }
+    size--;
+    Object item;
+    for (int i = nextKeyIndex(d, len); (item = tab[i]) != null; i = nextKeyIndex(i, len)) {
+        int r = hash(item, len);
+        // See closeDeletion for explanation of this conditional
+        if ((i < r && (r <= d || d <= i)) || (r <= d && d <= i)) {
+            // If we are about to swap an already-seen element
+            // into a slot that may later be returned by next(),
+            // then clone the rest of table for use in future
+            // next() calls. It is OK that our copy will have
+            // a gap in the "wrong" place, since it will never
+            // be used for searching anyway.
+            if (i < deletedSlot && d >= deletedSlot && traversalTable == IdentityHashMap.this.table) {
+                int remaining = len - deletedSlot;
+                Object[] newTable = new Object[remaining];
+                System.arraycopy(tab, deletedSlot, newTable, 0, remaining);
+                traversalTable = newTable;
+                index = 0;
+            }
+            tab[d] = item;
+            tab[d + 1] = tab[i + 1];
+            tab[i] = null;
+            tab[i + 1] = null;
+            d = i;
+        }
+    }
+}

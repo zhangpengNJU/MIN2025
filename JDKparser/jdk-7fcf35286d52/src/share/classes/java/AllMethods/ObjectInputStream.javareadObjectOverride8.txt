@@ -1,0 +1,20 @@
+/**
+ * This method is called by trusted subclasses of ObjectOutputStream that
+ * constructed ObjectOutputStream using the protected no-arg constructor.
+ * The subclass is expected to provide an override method with the modifier
+ * "final".
+ *
+ * @return  the Object read from the stream.
+ * @throws  ClassNotFoundException Class definition of a serialized object
+ *          cannot be found.
+ * @throws  OptionalDataException Primitive data was found in the stream
+ *          instead of objects.
+ * @throws  IOException if I/O errors occurred while reading from the
+ *          underlying stream
+ * @see #ObjectInputStream()
+ * @see #readObject()
+ * @since 1.2
+ */
+protected Object readObjectOverride() throws IOException, ClassNotFoundException {
+    return null;
+}

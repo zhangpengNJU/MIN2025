@@ -1,0 +1,14 @@
+/**
+ * Removes the specified <code>DragSourceListener</code>
+ * from  this <code>DragSourceContext</code>.
+ *
+ * @param dsl the <code>DragSourceListener</code> to remove;
+ *     note that while <code>null</code> is not prohibited,
+ *     it is not acceptable as a parameter
+ */
+public synchronized void removeDragSourceListener(DragSourceListener dsl) {
+    if (listener != null && listener.equals(dsl)) {
+        listener = null;
+    } else
+        throw new IllegalArgumentException();
+}

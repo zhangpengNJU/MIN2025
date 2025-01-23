@@ -1,0 +1,65 @@
+/**
+ * Returns a path enclosing the visual selection in the specified range,
+ * extended to <code>bounds</code>.
+ * <p>
+ * If the selection includes the leftmost (topmost) position, the selection
+ * is extended to the left (top) of <code>bounds</code>.  If the
+ * selection includes the rightmost (bottommost) position, the selection
+ * is extended to the right (bottom) of the bounds.  The height
+ * (width on vertical lines) of the selection is always extended to
+ * <code>bounds</code>.
+ * <p>
+ * Although the selection is always contiguous, the logically selected
+ * text can be discontiguous on lines with mixed-direction text.  The
+ * logical ranges of text selected can be retrieved using
+ * <code>getLogicalRangesForVisualSelection</code>.  For example,
+ * consider the text 'ABCdef' where capital letters indicate
+ * right-to-left text, rendered on a right-to-left line, with a visual
+ * selection from 0L (the leading edge of 'A') to 3T (the trailing edge
+ * of 'd').  The text appears as follows, with bold underlined areas
+ * representing the selection:
+ * <br><pre>
+ *    d<u><b>efCBA  </b></u>
+ * </pre>
+ * The logical selection ranges are 0-3, 4-6 (ABC, ef) because the
+ * visually contiguous text is logically discontiguous.  Also note that
+ * since the rightmost position on the layout (to the right of 'A') is
+ * selected, the selection is extended to the right of the bounds.
+ * @param firstEndpoint one end of the visual selection
+ * @param secondEndpoint the other end of the visual selection
+ * @param bounds the bounding rectangle to which to extend the selection.
+ *     This is in baseline-relative coordinates.
+ * @return a <code>Shape</code> enclosing the selection.  This is in
+ *     standard coordinates.
+ * @see #getLogicalRangesForVisualSelection(TextHitInfo, TextHitInfo)
+ * @see #getLogicalHighlightShape(int, int, Rectangle2D)
+ */
+public Shape getVisualHighlightShape(TextHitInfo firstEndpoint, TextHitInfo secondEndpoint, Rectangle2D bounds) {
+    ensureCache();
+    checkTextHit(firstEndpoint);
+    checkTextHit(secondEndpoint);
+    if (bounds == null) {
+        throw new IllegalArgumentException("Null Rectangle2D passed to TextLayout.getVisualHighlightShape()");
+    }
+    GeneralPath result = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+    int firstCaret = hitToCaret(firstEndpoint);
+    int secondCaret = hitToCaret(secondEndpoint);
+    result.append(caretBoundingShape(firstCaret, secondCaret, bounds), false);
+    if (firstCaret == 0 || secondCaret == 0) {
+        GeneralPath ls = leftShape(bounds);
+        if (!ls.getBounds().isEmpty())
+            result.append(ls, false);
+    }
+    if (firstCaret == characterCount || secondCaret == characterCount) {
+        GeneralPath rs = rightShape(bounds);
+        if (!rs.getBounds().isEmpty()) {
+            result.append(rs, false);
+        }
+    }
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    if (lp != null) {
+        // dlf cast safe?
+        result = (GeneralPath) lp.mapShape(result);
+    }
+    return result;
+}

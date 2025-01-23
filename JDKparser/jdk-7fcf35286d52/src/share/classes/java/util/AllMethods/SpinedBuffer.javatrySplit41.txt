@@ -1,0 +1,23 @@
+@Override
+public T_SPLITR trySplit() {
+    if (splSpineIndex < lastSpineIndex) {
+        // split just before last chunk (if it is full this means 50:50 split)
+        T_SPLITR ret = newSpliterator(splSpineIndex, lastSpineIndex - 1, splElementIndex, arrayLength(spine[lastSpineIndex - 1]));
+        // position us to start of last chunk
+        splSpineIndex = lastSpineIndex;
+        splElementIndex = 0;
+        splChunk = spine[splSpineIndex];
+        return ret;
+    } else if (splSpineIndex == lastSpineIndex) {
+        int t = (lastSpineElementFence - splElementIndex) / 2;
+        if (t == 0)
+            return null;
+        else {
+            T_SPLITR ret = arraySpliterator(splChunk, splElementIndex, t);
+            splElementIndex += t;
+            return ret;
+        }
+    } else {
+        return null;
+    }
+}

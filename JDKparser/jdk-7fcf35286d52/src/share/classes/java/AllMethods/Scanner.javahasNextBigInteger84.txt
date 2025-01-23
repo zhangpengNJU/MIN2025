@@ -1,0 +1,25 @@
+/**
+ * Returns true if the next token in this scanner's input can be
+ * interpreted as a <code>BigInteger</code> in the specified radix using
+ * the {@link #nextBigInteger} method. The scanner does not advance past
+ * any input.
+ *
+ * @param radix the radix used to interpret the token as an integer
+ * @return true if and only if this scanner's next token is a valid
+ *         <code>BigInteger</code>
+ * @throws IllegalStateException if this scanner is closed
+ */
+public boolean hasNextBigInteger(int radix) {
+    setRadix(radix);
+    boolean result = hasNext(integerPattern());
+    if (result) {
+        // Cache it
+        try {
+            String s = (matcher.group(SIMPLE_GROUP_INDEX) == null) ? processIntegerToken(hasNextResult) : hasNextResult;
+            typeCache = new BigInteger(s, radix);
+        } catch (NumberFormatException nfe) {
+            result = false;
+        }
+    }
+    return result;
+}

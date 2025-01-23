@@ -1,0 +1,15 @@
+/**
+ * deserialize contents ... if this instance has a distinct peer the
+ * children are *not* serialized here, the peer's readObject() must call
+ * readChildren() after deserializing this instance.
+ */
+private synchronized void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    synchronized (BeanContext.globalHierarchyLock) {
+        ois.defaultReadObject();
+        initialize();
+        bcsPreDeserializationHook(ois);
+        if (serializable > 0 && this.equals(getBeanContextPeer()))
+            readChildren(ois);
+        deserialize(ois, bcmListeners = new ArrayList(1));
+    }
+}

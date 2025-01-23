@@ -1,0 +1,19 @@
+/**
+ * Accepts a connection.
+ *
+ * <p> This method initiates an asynchronous operation to accept a
+ * connection made to this channel's socket. The method behaves in exactly
+ * the same manner as the {@link #accept(Object, CompletionHandler)} method
+ * except that instead of specifying a completion handler, this method
+ * returns a {@code Future} representing the pending result. The {@code
+ * Future}'s {@link Future#get() get} method returns the {@link
+ * AsynchronousSocketChannel} to the new connection on successful completion.
+ *
+ * @return  a {@code Future} object representing the pending result
+ *
+ * @throws  AcceptPendingException
+ *          If an accept operation is already in progress on this channel
+ * @throws  NotYetBoundException
+ *          If this channel's socket has not yet been bound
+ */
+public abstract Future<AsynchronousSocketChannel> accept();

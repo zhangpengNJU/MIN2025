@@ -1,0 +1,18 @@
+/**
+ * Writes the default serializable fields to the
+ * <code>ObjectOutputStream</code> followed by a byte
+ * indicating the arc type of this <code>Arc2D</code>
+ * instance.
+ *
+ * @serialData
+ * <ol>
+ * <li>The default serializable fields.
+ * <li>
+ * followed by a <code>byte</code> indicating the arc type
+ * {@link #OPEN}, {@link #CHORD}, or {@link #PIE}.
+ * </ol>
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    s.defaultWriteObject();
+    s.writeByte(getArcType());
+}

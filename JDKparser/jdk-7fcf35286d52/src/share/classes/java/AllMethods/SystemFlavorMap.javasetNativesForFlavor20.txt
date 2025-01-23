@@ -1,0 +1,38 @@
+/**
+ * Discards the current mappings for the specified <code>DataFlavor</code>
+ * and all <code>DataFlavor</code>s equal to the specified
+ * <code>DataFlavor</code>, and creates new mappings to the
+ * specified <code>String</code> natives.
+ * Unlike <code>getNativesForFlavor</code>, the mappings will only be
+ * established in one direction, and the natives will not be encoded. To
+ * establish two-way mappings, call <code>setFlavorsForNative</code>
+ * as well. The first native in the array will represent the highest
+ * priority mapping. Subsequent natives will represent mappings of
+ * decreasing priority.
+ * <p>
+ * If the array contains several elements that reference equal
+ * <code>String</code> natives, this method will establish new mappings
+ * for the first of those elements and ignore the rest of them.
+ * <p>
+ * It is recommended that client code not reset mappings established by the
+ * data transfer subsystem. This method should only be used for
+ * application-level mappings.
+ *
+ * @param flav the <code>DataFlavor</code> key for the mappings
+ * @param natives the <code>String</code> native values for the mappings
+ * @throws NullPointerException if flav or natives is <code>null</code>
+ *         or if natives contains <code>null</code> elements
+ *
+ * @see #setFlavorsForNative
+ * @since 1.4
+ */
+public synchronized void setNativesForFlavor(DataFlavor flav, String[] natives) {
+    Objects.requireNonNull(natives, "Null natives not permitted");
+    Objects.requireNonNull(flav, "Null flavors not permitted");
+    getFlavorToNative().remove(flav);
+    for (String aNative : natives) {
+        addUnencodedNativeForFlavor(flav, aNative);
+    }
+    disabledMappingGenerationKeys.add(flav);
+    nativesForFlavorCache.remove(flav);
+}

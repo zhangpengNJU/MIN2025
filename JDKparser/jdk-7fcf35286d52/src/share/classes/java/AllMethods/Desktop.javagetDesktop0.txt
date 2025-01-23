@@ -1,0 +1,27 @@
+/**
+ * Returns the <code>Desktop</code> instance of the current
+ * browser context.  On some platforms the Desktop API may not be
+ * supported; use the {@link #isDesktopSupported} method to
+ * determine if the current desktop is supported.
+ * @return the Desktop instance of the current browser context
+ * @throws HeadlessException if {@link
+ * GraphicsEnvironment#isHeadless()} returns {@code true}
+ * @throws UnsupportedOperationException if this class is not
+ * supported on the current platform
+ * @see #isDesktopSupported()
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+public static synchronized Desktop getDesktop() {
+    if (GraphicsEnvironment.isHeadless())
+        throw new HeadlessException();
+    if (!Desktop.isDesktopSupported()) {
+        throw new UnsupportedOperationException("Desktop API is not " + "supported on the current platform");
+    }
+    sun.awt.AppContext context = sun.awt.AppContext.getAppContext();
+    Desktop desktop = (Desktop) context.get(Desktop.class);
+    if (desktop == null) {
+        desktop = new Desktop();
+        context.put(Desktop.class, desktop);
+    }
+    return desktop;
+}

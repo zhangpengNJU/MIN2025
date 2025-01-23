@@ -1,0 +1,49 @@
+/**
+ * Returns a new <code>Font</code> using the specified font type
+ * and the specified font file.  The new <code>Font</code> is
+ * created with a point size of 1 and style {@link #PLAIN PLAIN}.
+ * This base font can then be used with the <code>deriveFont</code>
+ * methods in this class to derive new <code>Font</code> objects with
+ * varying sizes, styles, transforms and font features.
+ * @param fontFormat the type of the <code>Font</code>, which is
+ * {@link #TRUETYPE_FONT TRUETYPE_FONT} if a TrueType resource is
+ * specified or {@link #TYPE1_FONT TYPE1_FONT} if a Type 1 resource is
+ * specified.
+ * So long as the returned font, or its derived fonts are referenced
+ * the implementation may continue to access <code>fontFile</code>
+ * to retrieve font data. Thus the results are undefined if the file
+ * is changed, or becomes inaccessible.
+ * <p>
+ * To make the <code>Font</code> available to Font constructors the
+ * returned <code>Font</code> must be registered in the
+ * <code>GraphicsEnviroment</code> by calling
+ * {@link GraphicsEnvironment#registerFont(Font) registerFont(Font)}.
+ * @param fontFile a <code>File</code> object representing the
+ * input data for the font.
+ * @return a new <code>Font</code> created with the specified font type.
+ * @throws IllegalArgumentException if <code>fontFormat</code> is not
+ *     <code>TRUETYPE_FONT</code>or<code>TYPE1_FONT</code>.
+ * @throws NullPointerException if <code>fontFile</code> is null.
+ * @throws IOException if the <code>fontFile</code> cannot be read.
+ * @throws FontFormatException if <code>fontFile</code> does
+ *     not contain the required font tables for the specified format.
+ * @throws SecurityException if the executing code does not have
+ * permission to read from the file.
+ * @see GraphicsEnvironment#registerFont(Font)
+ * @since 1.5
+ */
+public static Font createFont(int fontFormat, File fontFile) throws java.awt.FontFormatException, java.io.IOException {
+    fontFile = new File(fontFile.getPath());
+    if (fontFormat != Font.TRUETYPE_FONT && fontFormat != Font.TYPE1_FONT) {
+        throw new IllegalArgumentException("font format not recognized");
+    }
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        FilePermission filePermission = new FilePermission(fontFile.getPath(), "read");
+        sm.checkPermission(filePermission);
+    }
+    if (!fontFile.canRead()) {
+        throw new IOException("Can't read " + fontFile);
+    }
+    return new Font(fontFile, fontFormat, false, null);
+}

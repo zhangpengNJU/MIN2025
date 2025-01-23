@@ -1,0 +1,4 @@
+public PriorityQueueSpliterator<E> trySplit() {
+    int hi = getFence(), lo = index, mid = (lo + hi) >>> 1;
+    return (lo >= mid) ? null : new PriorityQueueSpliterator<E>(pq, lo, index = mid, expectedModCount);
+}

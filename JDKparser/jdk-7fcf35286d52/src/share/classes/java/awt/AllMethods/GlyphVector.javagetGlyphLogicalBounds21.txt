@@ -1,0 +1,20 @@
+/**
+ * Returns the logical bounds of the specified glyph within this
+ * <code>GlyphVector</code>.
+ * These logical bounds have a total of four edges, with two edges
+ * parallel to the baseline under the glyph's transform and the other two
+ * edges are shared with adjacent glyphs if they are present.  This
+ * method is useful for hit-testing of the specified glyph,
+ * positioning of a caret at the leading or trailing edge of a glyph,
+ * and for drawing a highlight region around the specified glyph.
+ * @param glyphIndex the index into this <code>GlyphVector</code>
+ *   that corresponds to the glyph from which to retrieve its logical
+ *   bounds
+ * @return  a <code>Shape</code> that is the logical bounds of the
+ *   glyph at the specified <code>glyphIndex</code>.
+ * @throws IndexOutOfBoundsException if <code>glyphIndex</code>
+ *   is less than 0 or greater than or equal to the number
+ *   of glyphs in this <code>GlyphVector</code>
+ * @see #getGlyphVisualBounds
+ */
+public abstract Shape getGlyphLogicalBounds(int glyphIndex);

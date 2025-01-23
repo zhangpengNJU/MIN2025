@@ -1,0 +1,20 @@
+// Private method to set a parent on a logger.
+// If necessary, we raise privilege before doing the setParent call.
+private static void doSetParent(final Logger logger, final Logger parent) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm == null) {
+        // There is no security manager, so things are easy.
+        logger.setParent(parent);
+        return;
+    }
+    // There is a security manager.  Raise privilege before
+    // calling setParent.
+    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+        @Override
+        public Object run() {
+            logger.setParent(parent);
+            return null;
+        }
+    });
+}

@@ -1,0 +1,22 @@
+/**
+ * Returns the available chronologies.
+ * <p>
+ * Each returned {@code Chronology} is available for use in the system.
+ * The set of chronologies includes the system chronologies and
+ * any chronologies provided by the application via ServiceLoader
+ * configuration.
+ *
+ * @return the independent, modifiable set of the available chronology IDs, not null
+ */
+static Set<Chronology> getAvailableChronologies() {
+    // force initialization
+    initCache();
+    HashSet<Chronology> chronos = new HashSet<>(CHRONOS_BY_ID.values());
+    // / Add in Chronologies from the ServiceLoader configuration
+    @SuppressWarnings("rawtypes")
+    ServiceLoader<Chronology> loader = ServiceLoader.load(Chronology.class);
+    for (Chronology chrono : loader) {
+        chronos.add(chrono);
+    }
+    return chronos;
+}

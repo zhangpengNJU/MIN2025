@@ -1,0 +1,35 @@
+/**
+ * Creates and returns the common pool, respecting user settings
+ * specified via system properties.
+ */
+private static ForkJoinPool makeCommonPool() {
+    int parallelism = -1;
+    ForkJoinWorkerThreadFactory factory = null;
+    UncaughtExceptionHandler handler = null;
+    try {
+        // ignore exceptions in accessing/parsing properties
+        String pp = System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism");
+        String fp = System.getProperty("java.util.concurrent.ForkJoinPool.common.threadFactory");
+        String hp = System.getProperty("java.util.concurrent.ForkJoinPool.common.exceptionHandler");
+        if (pp != null)
+            parallelism = Integer.parseInt(pp);
+        if (fp != null)
+            factory = ((ForkJoinWorkerThreadFactory) ClassLoader.getSystemClassLoader().loadClass(fp).newInstance());
+        if (hp != null)
+            handler = ((UncaughtExceptionHandler) ClassLoader.getSystemClassLoader().loadClass(hp).newInstance());
+    } catch (Exception ignore) {
+    }
+    if (factory == null) {
+        if (System.getSecurityManager() == null)
+            factory = new DefaultCommonPoolForkJoinWorkerThreadFactory();
+        else
+            // use security-managed default
+            factory = new InnocuousForkJoinWorkerThreadFactory();
+    }
+    if (// default 1 less than #cores
+    parallelism < 0 && (parallelism = Runtime.getRuntime().availableProcessors() - 1) <= 0)
+        parallelism = 1;
+    if (parallelism > MAX_CAP)
+        parallelism = MAX_CAP;
+    return new ForkJoinPool(parallelism, factory, handler, LIFO_QUEUE, "ForkJoinPool.commonPool-worker-");
+}

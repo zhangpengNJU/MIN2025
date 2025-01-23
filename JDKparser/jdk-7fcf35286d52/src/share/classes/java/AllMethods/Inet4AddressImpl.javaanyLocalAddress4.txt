@@ -1,0 +1,8 @@
+public synchronized InetAddress anyLocalAddress() {
+    if (anyLocalAddress == null) {
+        // {0x00,0x00,0x00,0x00}
+        anyLocalAddress = new Inet4Address();
+        anyLocalAddress.holder().hostName = "0.0.0.0";
+    }
+    return anyLocalAddress;
+}

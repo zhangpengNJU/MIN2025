@@ -1,0 +1,18 @@
+/**
+ * Decodes a certificate from an input stream. The format should be
+ * that returned by {@code getFormat} and produced by
+ * {@code encode}.
+ *
+ * @param stream the input stream from which to fetch the data
+ * being decoded.
+ *
+ * @exception KeyException if the certificate is not properly initialized,
+ * or data is missing, etc.
+ *
+ * @exception IOException if an exception occurs while trying to input
+ * the encoded certificate from the input stream.
+ *
+ * @see #encode
+ * @see #getFormat
+ */
+public abstract void decode(InputStream stream) throws KeyException, IOException;

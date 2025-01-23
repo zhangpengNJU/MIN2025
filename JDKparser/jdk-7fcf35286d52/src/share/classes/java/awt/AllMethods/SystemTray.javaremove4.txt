@@ -1,0 +1,33 @@
+/**
+ * Removes the specified <code>TrayIcon</code> from the
+ * <code>SystemTray</code>.
+ *
+ * <p> All icons added by the application are automatically
+ * removed from the <code>SystemTray</code> upon application exit
+ * and also when the desktop system tray becomes unavailable.
+ *
+ * <p> If <code>trayIcon</code> is <code>null</code> or was not
+ * added to the system tray, no exception is thrown and no action
+ * is performed.
+ *
+ * @param trayIcon the <code>TrayIcon</code> to be removed
+ * @see #add(TrayIcon)
+ * @see TrayIcon
+ */
+public void remove(TrayIcon trayIcon) {
+    if (trayIcon == null) {
+        return;
+    }
+    TrayIcon[] oldArray = null, newArray = null;
+    synchronized (this) {
+        oldArray = systemTray.getTrayIcons();
+        Vector<TrayIcon> icons = (Vector<TrayIcon>) AppContext.getAppContext().get(TrayIcon.class);
+        // TrayIcon with no peer is not contained in the array.
+        if (icons == null || !icons.remove(trayIcon)) {
+            return;
+        }
+        trayIcon.removeNotify();
+        newArray = systemTray.getTrayIcons();
+    }
+    firePropertyChange("trayIcons", oldArray, newArray);
+}

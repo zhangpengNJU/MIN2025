@@ -1,0 +1,45 @@
+/**
+ * Left shift this MutableBigInteger n bits.
+ */
+void leftShift(int n) {
+    /*
+         * If there is enough storage space in this MutableBigInteger already
+         * the available space will be used. Space to the right of the used
+         * ints in the value array is faster to utilize, so the extra space
+         * will be taken from the right if possible.
+         */
+    if (intLen == 0)
+        return;
+    int nInts = n >>> 5;
+    int nBits = n & 0x1F;
+    int bitsInHighWord = BigInteger.bitLengthForInt(value[offset]);
+    // If shift can be done without moving words, do so
+    if (n <= (32 - bitsInHighWord)) {
+        primitiveLeftShift(nBits);
+        return;
+    }
+    int newLen = intLen + nInts + 1;
+    if (nBits <= (32 - bitsInHighWord))
+        newLen--;
+    if (value.length < newLen) {
+        // The array must grow
+        int[] result = new int[newLen];
+        for (int i = 0; i < intLen; i++) result[i] = value[offset + i];
+        setValue(result, newLen);
+    } else if (value.length - offset >= newLen) {
+        // Use space on right
+        for (int i = 0; i < newLen - intLen; i++) value[offset + intLen + i] = 0;
+    } else {
+        // Must use space on left
+        for (int i = 0; i < intLen; i++) value[i] = value[offset + i];
+        for (int i = intLen; i < newLen; i++) value[i] = 0;
+        offset = 0;
+    }
+    intLen = newLen;
+    if (nBits == 0)
+        return;
+    if (nBits <= (32 - bitsInHighWord))
+        primitiveLeftShift(nBits);
+    else
+        primitiveRightShift(32 - nBits);
+}

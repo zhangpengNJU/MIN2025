@@ -1,0 +1,8 @@
+// Returns a KnownLevel with the given value.
+static synchronized KnownLevel findByValue(int value) {
+    List<KnownLevel> list = intToLevels.get(value);
+    if (list != null) {
+        return list.get(0);
+    }
+    return null;
+}

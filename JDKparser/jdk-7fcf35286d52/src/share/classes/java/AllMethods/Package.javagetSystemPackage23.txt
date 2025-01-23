@@ -1,0 +1,16 @@
+/*
+     * Returns the loaded system package for the specified name.
+     */
+static Package getSystemPackage(String name) {
+    synchronized (pkgs) {
+        Package pkg = pkgs.get(name);
+        if (pkg == null) {
+            name = name.replace('.', '/').concat("/");
+            String fn = getSystemPackage0(name);
+            if (fn != null) {
+                pkg = defineSystemPackage(name, fn);
+            }
+        }
+        return pkg;
+    }
+}

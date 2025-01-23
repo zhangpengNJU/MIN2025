@@ -1,0 +1,27 @@
+/**
+ * Sets the default FocusTraversalPolicy. Top-level components
+ * use this value on their creation to initialize their own focus traversal
+ * policy by explicit call to Container.setFocusTraversalPolicy.
+ * Note: this call doesn't affect already created components as they have
+ * their policy initialized. Only new components will use this policy as
+ * their default policy.
+ *
+ * @param defaultPolicy the new, default FocusTraversalPolicy
+ * @see #getDefaultFocusTraversalPolicy
+ * @see Container#setFocusTraversalPolicy
+ * @see Container#getFocusTraversalPolicy
+ * @throws IllegalArgumentException if defaultPolicy is null
+ * @beaninfo
+ *       bound: true
+ */
+public void setDefaultFocusTraversalPolicy(FocusTraversalPolicy defaultPolicy) {
+    if (defaultPolicy == null) {
+        throw new IllegalArgumentException("default focus traversal policy cannot be null");
+    }
+    FocusTraversalPolicy oldPolicy;
+    synchronized (this) {
+        oldPolicy = this.defaultPolicy;
+        this.defaultPolicy = defaultPolicy;
+    }
+    firePropertyChange("defaultFocusTraversalPolicy", oldPolicy, defaultPolicy);
+}

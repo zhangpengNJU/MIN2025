@@ -1,0 +1,17 @@
+/**
+ * Return a hashcode for this FontRenderContext.
+ */
+public int hashCode() {
+    int hash = tx == null ? 0 : tx.hashCode();
+    /* SunHints value objects have identity hashcode, so we can rely on
+         * this to ensure that two equal FRC's have the same hashcode.
+         */
+    if (defaulting) {
+        hash += getAntiAliasingHint().hashCode();
+        hash += getFractionalMetricsHint().hashCode();
+    } else {
+        hash += aaHintValue.hashCode();
+        hash += fmHintValue.hashCode();
+    }
+    return hash;
+}

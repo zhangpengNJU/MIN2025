@@ -1,0 +1,30 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Long value = context.getValue(field);
+    if (value == null) {
+        return false;
+    }
+    DecimalStyle decimalStyle = context.getDecimalStyle();
+    BigDecimal fraction = convertToFraction(value);
+    if (fraction.scale() == 0) {
+        // scale is zero if value is zero
+        if (minWidth > 0) {
+            if (decimalPoint) {
+                buf.append(decimalStyle.getDecimalSeparator());
+            }
+            for (int i = 0; i < minWidth; i++) {
+                buf.append(decimalStyle.getZeroDigit());
+            }
+        }
+    } else {
+        int outputScale = Math.min(Math.max(fraction.scale(), minWidth), maxWidth);
+        fraction = fraction.setScale(outputScale, RoundingMode.FLOOR);
+        String str = fraction.toPlainString().substring(2);
+        str = decimalStyle.convertNumberToI18N(str);
+        if (decimalPoint) {
+            buf.append(decimalStyle.getDecimalSeparator());
+        }
+        buf.append(str);
+    }
+    return true;
+}

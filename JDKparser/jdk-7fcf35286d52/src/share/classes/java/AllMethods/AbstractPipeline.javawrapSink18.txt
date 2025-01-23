@@ -1,0 +1,9 @@
+@Override
+@SuppressWarnings("unchecked")
+final <P_IN> Sink<P_IN> wrapSink(Sink<E_OUT> sink) {
+    Objects.requireNonNull(sink);
+    for (@SuppressWarnings("rawtypes") AbstractPipeline p = AbstractPipeline.this; p.depth > 0; p = p.previousStage) {
+        sink = p.opWrapSink(p.previousStage.combinedFlags, sink);
+    }
+    return (Sink<P_IN>) sink;
+}

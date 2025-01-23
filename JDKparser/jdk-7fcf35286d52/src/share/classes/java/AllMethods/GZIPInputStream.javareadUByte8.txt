@@ -1,0 +1,14 @@
+/*
+     * Reads unsigned byte.
+     */
+private int readUByte(InputStream in) throws IOException {
+    int b = in.read();
+    if (b == -1) {
+        throw new EOFException();
+    }
+    if (b < -1 || b > 255) {
+        // Report on this.in, not argument in; see read{Header, Trailer}.
+        throw new IOException(this.in.getClass().getName() + ".read() returned value out of range -1..255: " + b);
+    }
+    return b;
+}

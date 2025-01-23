@@ -1,0 +1,31 @@
+/**
+ * Gets the specified <code>Font</code> from the system properties
+ * list.  As in the <code>getProperty</code> method of
+ * <code>System</code>, the first
+ * argument is treated as the name of a system property to be
+ * obtained.  The <code>String</code> value of this property is then
+ * interpreted as a <code>Font</code> object.
+ * <p>
+ * The property value should be one of the forms accepted by
+ * <code>Font.decode(String)</code>
+ * If the specified property is not found, or the executing code does not
+ * have permission to read the property, the <code>font</code>
+ * argument is returned instead.
+ * @param nm the case-insensitive property name
+ * @param font a default <code>Font</code> to return if property
+ *          <code>nm</code> is not defined
+ * @return    the <code>Font</code> value of the property.
+ * @throws NullPointerException if nm is null.
+ * @see #decode(String)
+ */
+public static Font getFont(String nm, Font font) {
+    String str = null;
+    try {
+        str = System.getProperty(nm);
+    } catch (SecurityException e) {
+    }
+    if (str == null) {
+        return font;
+    }
+    return decode(str);
+}

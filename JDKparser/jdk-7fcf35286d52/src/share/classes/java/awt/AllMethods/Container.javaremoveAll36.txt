@@ -1,0 +1,42 @@
+/**
+ * Removes all the components from this container.
+ * This method also notifies the layout manager to remove the
+ * components from this container's layout via the
+ * <code>removeLayoutComponent</code> method.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * reflect the changes.
+ *
+ * @see #add
+ * @see #remove
+ * @see #invalidate
+ */
+public void removeAll() {
+    synchronized (getTreeLock()) {
+        adjustListeningChildren(AWTEvent.HIERARCHY_EVENT_MASK, -listeningChildren);
+        adjustListeningChildren(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK, -listeningBoundsChildren);
+        adjustDescendants(-descendantsCount);
+        while (!component.isEmpty()) {
+            Component comp = component.remove(component.size() - 1);
+            if (peer != null) {
+                comp.removeNotify();
+            }
+            if (layoutMgr != null) {
+                layoutMgr.removeLayoutComponent(comp);
+            }
+            comp.parent = null;
+            comp.setGraphicsConfiguration(null);
+            if (containerListener != null || (eventMask & AWTEvent.CONTAINER_EVENT_MASK) != 0 || Toolkit.enabledOnToolkit(AWTEvent.CONTAINER_EVENT_MASK)) {
+                ContainerEvent e = new ContainerEvent(this, ContainerEvent.COMPONENT_REMOVED, comp);
+                dispatchEvent(e);
+            }
+            comp.createHierarchyEvents(HierarchyEvent.HIERARCHY_CHANGED, comp, this, HierarchyEvent.PARENT_CHANGED, Toolkit.enabledOnToolkit(AWTEvent.HIERARCHY_EVENT_MASK));
+        }
+        if (peer != null && layoutMgr == null && isVisible()) {
+            updateCursorImmediately();
+        }
+        invalidateIfValid();
+    }
+}

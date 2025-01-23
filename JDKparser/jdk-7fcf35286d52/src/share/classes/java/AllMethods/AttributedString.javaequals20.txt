@@ -1,0 +1,15 @@
+// Object methods. See documentation in that class.
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (!(obj instanceof AttributedStringIterator)) {
+        return false;
+    }
+    AttributedStringIterator that = (AttributedStringIterator) obj;
+    if (AttributedString.this != that.getString())
+        return false;
+    if (currentIndex != that.currentIndex || beginIndex != that.beginIndex || endIndex != that.endIndex)
+        return false;
+    return true;
+}

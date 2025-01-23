@@ -1,0 +1,12 @@
+private ChronoLocalDate resolveYD(JapaneseEra era, int yoe, Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    fieldValues.remove(ERA);
+    fieldValues.remove(YEAR_OF_ERA);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        int y = prolepticYearLenient(era, yoe);
+        long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+        return dateYearDay(y, 1).plus(days, DAYS);
+    }
+    int doy = range(DAY_OF_YEAR).checkValidIntValue(fieldValues.remove(DAY_OF_YEAR), DAY_OF_YEAR);
+    // smart is same as strict
+    return dateYearDay(era, yoe, doy);
+}

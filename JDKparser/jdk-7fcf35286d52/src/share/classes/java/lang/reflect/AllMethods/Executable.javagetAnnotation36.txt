@@ -1,0 +1,8 @@
+/**
+ * {@inheritDoc}
+ * @throws NullPointerException  {@inheritDoc}
+ */
+public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+    Objects.requireNonNull(annotationClass);
+    return annotationClass.cast(declaredAnnotations().get(annotationClass));
+}

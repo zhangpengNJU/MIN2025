@@ -1,0 +1,57 @@
+/**
+ * Reads in and returns array object, or null if array class is
+ * unresolvable.  Sets passHandle to array's assigned handle.
+ */
+private Object readArray(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_ARRAY) {
+        throw new InternalError();
+    }
+    ObjectStreamClass desc = readClassDesc(false);
+    int len = bin.readInt();
+    filterCheck(desc.forClass(), len);
+    Object array = null;
+    Class<?> cl, ccl = null;
+    if ((cl = desc.forClass()) != null) {
+        ccl = cl.getComponentType();
+        array = Array.newInstance(ccl, len);
+    }
+    int arrayHandle = handles.assign(unshared ? unsharedMarker : array);
+    ClassNotFoundException resolveEx = desc.getResolveException();
+    if (resolveEx != null) {
+        handles.markException(arrayHandle, resolveEx);
+    }
+    if (ccl == null) {
+        for (int i = 0; i < len; i++) {
+            readObject0(Object.class, false);
+        }
+    } else if (ccl.isPrimitive()) {
+        if (ccl == Integer.TYPE) {
+            bin.readInts((int[]) array, 0, len);
+        } else if (ccl == Byte.TYPE) {
+            bin.readFully((byte[]) array, 0, len, true);
+        } else if (ccl == Long.TYPE) {
+            bin.readLongs((long[]) array, 0, len);
+        } else if (ccl == Float.TYPE) {
+            bin.readFloats((float[]) array, 0, len);
+        } else if (ccl == Double.TYPE) {
+            bin.readDoubles((double[]) array, 0, len);
+        } else if (ccl == Short.TYPE) {
+            bin.readShorts((short[]) array, 0, len);
+        } else if (ccl == Character.TYPE) {
+            bin.readChars((char[]) array, 0, len);
+        } else if (ccl == Boolean.TYPE) {
+            bin.readBooleans((boolean[]) array, 0, len);
+        } else {
+            throw new InternalError();
+        }
+    } else {
+        Object[] oa = (Object[]) array;
+        for (int i = 0; i < len; i++) {
+            oa[i] = readObject0(Object.class, false);
+            handles.markDependency(arrayHandle, passHandle);
+        }
+    }
+    handles.finish(arrayHandle);
+    passHandle = arrayHandle;
+    return array;
+}

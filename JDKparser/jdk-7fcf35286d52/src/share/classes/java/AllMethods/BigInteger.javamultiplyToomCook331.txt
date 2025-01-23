@@ -1,0 +1,77 @@
+/**
+ * Multiplies two BigIntegers using a 3-way Toom-Cook multiplication
+ * algorithm.  This is a recursive divide-and-conquer algorithm which is
+ * more efficient for large numbers than what is commonly called the
+ * "grade-school" algorithm used in multiplyToLen.  If the numbers to be
+ * multiplied have length n, the "grade-school" algorithm has an
+ * asymptotic complexity of O(n^2).  In contrast, 3-way Toom-Cook has a
+ * complexity of about O(n^1.465).  It achieves this increased asymptotic
+ * performance by breaking each number into three parts and by doing 5
+ * multiplies instead of 9 when evaluating the product.  Due to overhead
+ * (additions, shifts, and one division) in the Toom-Cook algorithm, it
+ * should only be used when both numbers are larger than a certain
+ * threshold (found experimentally).  This threshold is generally larger
+ * than that for Karatsuba multiplication, so this algorithm is generally
+ * only used when numbers become significantly larger.
+ *
+ * The algorithm used is the "optimal" 3-way Toom-Cook algorithm outlined
+ * by Marco Bodrato.
+ *
+ *  See: http://bodrato.it/toom-cook/
+ *       http://bodrato.it/papers/#WAIFI2007
+ *
+ * "Towards Optimal Toom-Cook Multiplication for Univariate and
+ * Multivariate Polynomials in Characteristic 2 and 0." by Marco BODRATO;
+ * In C.Carlet and B.Sunar, Eds., "WAIFI'07 proceedings", p. 116-133,
+ * LNCS #4547. Springer, Madrid, Spain, June 21-22, 2007.
+ */
+private static BigInteger multiplyToomCook3(BigInteger a, BigInteger b) {
+    int alen = a.mag.length;
+    int blen = b.mag.length;
+    int largest = Math.max(alen, blen);
+    // k is the size (in ints) of the lower-order slices.
+    // Equal to ceil(largest/3)
+    int k = (largest + 2) / 3;
+    // r is the size (in ints) of the highest-order slice.
+    int r = largest - 2 * k;
+    // Obtain slices of the numbers. a2 and b2 are the most significant
+    // bits of the numbers a and b, and a0 and b0 the least significant.
+    BigInteger a0, a1, a2, b0, b1, b2;
+    a2 = a.getToomSlice(k, r, 0, largest);
+    a1 = a.getToomSlice(k, r, 1, largest);
+    a0 = a.getToomSlice(k, r, 2, largest);
+    b2 = b.getToomSlice(k, r, 0, largest);
+    b1 = b.getToomSlice(k, r, 1, largest);
+    b0 = b.getToomSlice(k, r, 2, largest);
+    BigInteger v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+    v0 = a0.multiply(b0, true);
+    da1 = a2.add(a0);
+    db1 = b2.add(b0);
+    vm1 = da1.subtract(a1).multiply(db1.subtract(b1), true);
+    da1 = da1.add(a1);
+    db1 = db1.add(b1);
+    v1 = da1.multiply(db1, true);
+    v2 = da1.add(a2).shiftLeft(1).subtract(a0).multiply(db1.add(b2).shiftLeft(1).subtract(b0), true);
+    vinf = a2.multiply(b2, true);
+    // The algorithm requires two divisions by 2 and one by 3.
+    // All divisions are known to be exact, that is, they do not produce
+    // remainders, and all results are positive.  The divisions by 2 are
+    // implemented as right shifts which are relatively efficient, leaving
+    // only an exact division by 3, which is done by a specialized
+    // linear-time algorithm.
+    t2 = v2.subtract(vm1).exactDivideBy3();
+    tm1 = v1.subtract(vm1).shiftRight(1);
+    t1 = v1.subtract(v0);
+    t2 = t2.subtract(t1).shiftRight(1);
+    t1 = t1.subtract(tm1).subtract(vinf);
+    t2 = t2.subtract(vinf.shiftLeft(1));
+    tm1 = tm1.subtract(t2);
+    // Number of bits to shift left.
+    int ss = k * 32;
+    BigInteger result = vinf.shiftLeft(ss).add(t2).shiftLeft(ss).add(t1).shiftLeft(ss).add(tm1).shiftLeft(ss).add(v0);
+    if (a.signum != b.signum) {
+        return result.negate();
+    } else {
+        return result;
+    }
+}

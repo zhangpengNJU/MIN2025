@@ -1,0 +1,4 @@
+@Override
+protected Spliterator<T> makeSpliterator(Spliterator<T> s) {
+    return new UnorderedSliceSpliterator.OfRef<>(s, this);
+}

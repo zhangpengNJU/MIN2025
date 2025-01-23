@@ -1,0 +1,20 @@
+/**
+ * Moves to this <code>Statement</code> object's next result, returns
+ * <code>true</code> if it is a <code>ResultSet</code> object, and
+ * implicitly closes any current <code>ResultSet</code>
+ * object(s) obtained with the method <code>getResultSet</code>.
+ *
+ * <P>There are no more results when the following is true:
+ * <PRE>{@code
+ *     // stmt is a Statement object
+ *     ((stmt.getMoreResults() == false) && (stmt.getUpdateCount() == -1))
+ * }</PRE>
+ *
+ * @return <code>true</code> if the next result is a <code>ResultSet</code>
+ *         object; <code>false</code> if it is an update count or there are
+ *         no more results
+ * @exception SQLException if a database access error occurs or
+ * this method is called on a closed <code>Statement</code>
+ * @see #execute
+ */
+boolean getMoreResults() throws SQLException;

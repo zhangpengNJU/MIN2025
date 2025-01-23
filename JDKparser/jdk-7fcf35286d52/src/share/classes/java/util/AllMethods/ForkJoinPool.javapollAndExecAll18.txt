@@ -1,0 +1,7 @@
+// Specialized execution methods
+/**
+ * Polls and runs tasks until empty.
+ */
+final void pollAndExecAll() {
+    for (ForkJoinTask<?> t; (t = poll()) != null; ) t.doExec();
+}

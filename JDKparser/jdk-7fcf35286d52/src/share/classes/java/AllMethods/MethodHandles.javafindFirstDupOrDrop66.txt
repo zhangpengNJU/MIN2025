@@ -1,0 +1,58 @@
+/**
+ * Return an indication of any duplicate or omission in reorder.
+ * If the reorder contains a duplicate entry, return the index of the second occurrence.
+ * Otherwise, return ~(n), for the first n in [0..newArity-1] that is not present in reorder.
+ * Otherwise, return zero.
+ * If an element not in [0..newArity-1] is encountered, return reorder.length.
+ */
+private static int findFirstDupOrDrop(int[] reorder, int newArity) {
+    // max number of bits in bit mask
+    final int BIT_LIMIT = 63;
+    if (newArity < BIT_LIMIT) {
+        long mask = 0;
+        for (int i = 0; i < reorder.length; i++) {
+            int arg = reorder[i];
+            if (arg >= newArity) {
+                return reorder.length;
+            }
+            long bit = 1L << arg;
+            if ((mask & bit) != 0) {
+                // >0 indicates a dup
+                return i;
+            }
+            mask |= bit;
+        }
+        if (mask == (1L << newArity) - 1) {
+            assert (Long.numberOfTrailingZeros(Long.lowestOneBit(~mask)) == newArity);
+            return 0;
+        }
+        // find first zero
+        long zeroBit = Long.lowestOneBit(~mask);
+        int zeroPos = Long.numberOfTrailingZeros(zeroBit);
+        assert (zeroPos <= newArity);
+        if (zeroPos == newArity) {
+            return 0;
+        }
+        return ~zeroPos;
+    } else {
+        // same algorithm, different bit set
+        BitSet mask = new BitSet(newArity);
+        for (int i = 0; i < reorder.length; i++) {
+            int arg = reorder[i];
+            if (arg >= newArity) {
+                return reorder.length;
+            }
+            if (mask.get(arg)) {
+                // >0 indicates a dup
+                return i;
+            }
+            mask.set(arg);
+        }
+        int zeroPos = mask.nextClearBit(0);
+        assert (zeroPos <= newArity);
+        if (zeroPos == newArity) {
+            return 0;
+        }
+        return ~zeroPos;
+    }
+}

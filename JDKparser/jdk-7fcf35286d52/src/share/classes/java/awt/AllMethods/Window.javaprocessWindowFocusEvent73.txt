@@ -1,0 +1,34 @@
+/**
+ * Processes window focus event occurring on this window by
+ * dispatching them to any registered WindowFocusListener objects.
+ * NOTE: this method will not be called unless window focus events
+ * are enabled for this window. This happens when one of the
+ * following occurs:
+ * <ul>
+ * <li>a WindowFocusListener is registered via
+ *     {@code addWindowFocusListener}
+ * <li>Window focus events are enabled via {@code enableEvents}
+ * </ul>
+ * <p>Note that if the event parameter is {@code null}
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the window focus event
+ * @see Component#enableEvents
+ * @since 1.4
+ */
+protected void processWindowFocusEvent(WindowEvent e) {
+    WindowFocusListener listener = windowFocusListener;
+    if (listener != null) {
+        switch(e.getID()) {
+            case WindowEvent.WINDOW_GAINED_FOCUS:
+                listener.windowGainedFocus(e);
+                break;
+            case WindowEvent.WINDOW_LOST_FOCUS:
+                listener.windowLostFocus(e);
+                break;
+            default:
+                break;
+        }
+    }
+}

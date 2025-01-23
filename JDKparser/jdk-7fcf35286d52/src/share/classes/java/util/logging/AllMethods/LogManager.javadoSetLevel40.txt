@@ -1,0 +1,20 @@
+// Private method to set a level on a logger.
+// If necessary, we raise privilege before doing the call.
+private static void doSetLevel(final Logger logger, final Level level) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm == null) {
+        // There is no security manager, so things are easy.
+        logger.setLevel(level);
+        return;
+    }
+    // There is a security manager.  Raise privilege before
+    // calling setLevel.
+    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+        @Override
+        public Object run() {
+            logger.setLevel(level);
+            return null;
+        }
+    });
+}

@@ -1,0 +1,20 @@
+/**
+ * Marks the current position in this input stream. A subsequent
+ * call to the {@code reset} method repositions this stream at
+ * the last marked position so that subsequent reads re-read the same bytes.
+ * <p>
+ * The {@code mark} method of
+ * {@code LineNumberInputStream} remembers the current line
+ * number in a private variable, and then calls the {@code mark}
+ * method of the underlying input stream.
+ *
+ * @param   readlimit   the maximum limit of bytes that can be read before
+ *                      the mark position becomes invalid.
+ * @see     java.io.FilterInputStream#in
+ * @see     java.io.LineNumberInputStream#reset()
+ */
+public void mark(int readlimit) {
+    markLineNumber = lineNumber;
+    markPushBack = pushBack;
+    in.mark(readlimit);
+}

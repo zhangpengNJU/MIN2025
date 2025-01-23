@@ -1,0 +1,15 @@
+// 
+// search dots in a string and return the index of that character;
+// or if there is no dots, return the length of input string
+// dots might be: \u002E (full stop), \u3002 (ideographic full stop), \uFF0E (fullwidth full stop),
+// and \uFF61 (halfwidth ideographic full stop).
+// 
+private static int searchDots(String s, int start) {
+    int i;
+    for (i = start; i < s.length(); i++) {
+        if (isLabelSeparator(s.charAt(i))) {
+            break;
+        }
+    }
+    return i;
+}

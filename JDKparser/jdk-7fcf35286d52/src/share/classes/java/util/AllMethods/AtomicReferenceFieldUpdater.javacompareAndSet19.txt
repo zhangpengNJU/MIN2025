@@ -1,0 +1,5 @@
+public final boolean compareAndSet(T obj, V expect, V update) {
+    accessCheck(obj);
+    valueCheck(update);
+    return U.compareAndSwapObject(obj, offset, expect, update);
+}

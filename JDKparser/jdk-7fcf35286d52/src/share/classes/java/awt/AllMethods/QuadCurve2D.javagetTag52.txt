@@ -1,0 +1,15 @@
+/**
+ * Determine where coord lies with respect to the range from
+ * low to high.  It is assumed that low &lt;= high.  The return
+ * value is one of the 5 values BELOW, LOWEDGE, INSIDE, HIGHEDGE,
+ * or ABOVE.
+ */
+private static int getTag(double coord, double low, double high) {
+    if (coord <= low) {
+        return (coord < low ? BELOW : LOWEDGE);
+    }
+    if (coord >= high) {
+        return (coord > high ? ABOVE : HIGHEDGE);
+    }
+    return INSIDE;
+}

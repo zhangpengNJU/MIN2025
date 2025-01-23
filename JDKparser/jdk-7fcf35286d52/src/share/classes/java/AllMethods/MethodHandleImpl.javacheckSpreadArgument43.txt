@@ -1,0 +1,16 @@
+static void checkSpreadArgument(Object av, int n) {
+    if (av == null) {
+        if (n == 0)
+            return;
+    } else if (av instanceof Object[]) {
+        int len = ((Object[]) av).length;
+        if (len == n)
+            return;
+    } else {
+        int len = java.lang.reflect.Array.getLength(av);
+        if (len == n)
+            return;
+    }
+    // fall through to error:
+    throw newIllegalArgumentException("array is not of length " + n);
+}

@@ -1,0 +1,40 @@
+boolean isAssignable(Method m1, Method m2) {
+    if (m1 == null) {
+        // choose second method
+        return true;
+    }
+    if (m2 == null) {
+        // choose first method
+        return false;
+    }
+    if (!m1.getName().equals(m2.getName())) {
+        // choose second method by default
+        return true;
+    }
+    Class<?> type1 = m1.getDeclaringClass();
+    Class<?> type2 = m2.getDeclaringClass();
+    if (!type1.isAssignableFrom(type2)) {
+        // choose first method: it declared later
+        return false;
+    }
+    type1 = getReturnType(getClass0(), m1);
+    type2 = getReturnType(getClass0(), m2);
+    if (!type1.isAssignableFrom(type2)) {
+        // choose first method: it overrides return type
+        return false;
+    }
+    Class<?>[] args1 = getParameterTypes(getClass0(), m1);
+    Class<?>[] args2 = getParameterTypes(getClass0(), m2);
+    if (args1.length != args2.length) {
+        // choose second method by default
+        return true;
+    }
+    for (int i = 0; i < args1.length; i++) {
+        if (!args1[i].isAssignableFrom(args2[i])) {
+            // choose first method: it overrides parameter
+            return false;
+        }
+    }
+    // choose second method
+    return true;
+}

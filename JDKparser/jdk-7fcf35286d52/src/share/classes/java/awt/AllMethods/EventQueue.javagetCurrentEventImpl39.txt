@@ -1,0 +1,8 @@
+private AWTEvent getCurrentEventImpl() {
+    pushPopLock.lock();
+    try {
+        return (Thread.currentThread() == dispatchThread) ? currentEvent.get() : null;
+    } finally {
+        pushPopLock.unlock();
+    }
+}

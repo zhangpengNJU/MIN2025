@@ -1,0 +1,13 @@
+/**
+ * Returns the first component (the item at index {@code 0}) of
+ * this vector.
+ *
+ * @return     the first component of this vector
+ * @throws NoSuchElementException if this vector has no components
+ */
+public synchronized E firstElement() {
+    if (elementCount == 0) {
+        throw new NoSuchElementException();
+    }
+    return elementData(0);
+}

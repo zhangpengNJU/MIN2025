@@ -1,0 +1,11 @@
+/**
+ * @throws RejectedExecutionException {@inheritDoc}
+ * @throws NullPointerException       {@inheritDoc}
+ */
+public <T> Future<T> submit(Callable<T> task) {
+    if (task == null)
+        throw new NullPointerException();
+    RunnableFuture<T> ftask = newTaskFor(task);
+    execute(ftask);
+    return ftask;
+}

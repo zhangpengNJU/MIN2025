@@ -1,0 +1,8 @@
+/**
+ * @see BigInteger#bitLength()
+ */
+long bitLength() {
+    if (intLen == 0)
+        return 0;
+    return intLen * 32L - Integer.numberOfLeadingZeros(value[offset]);
+}

@@ -1,0 +1,25 @@
+/**
+ * Adds the specified component to the end of this container.
+ * Also notifies the layout manager to add the component to
+ * this container's layout using the specified constraints object.
+ * This is a convenience method for {@link #addImpl}.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * display the added component.
+ *
+ * @param     comp the component to be added
+ * @param     constraints an object expressing
+ *                  layout constraints for this component
+ * @exception NullPointerException if {@code comp} is {@code null}
+ * @see #addImpl
+ * @see #invalidate
+ * @see #validate
+ * @see javax.swing.JComponent#revalidate()
+ * @see       LayoutManager
+ * @since     JDK1.1
+ */
+public void add(Component comp, Object constraints) {
+    addImpl(comp, constraints, -1);
+}

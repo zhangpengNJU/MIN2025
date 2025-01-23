@@ -1,0 +1,15 @@
+/**
+ * @throws NullPointerException {@inheritDoc}
+ */
+public boolean offerFirst(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    Node<E> node = new Node<E>(e);
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return linkFirst(node);
+    } finally {
+        lock.unlock();
+    }
+}

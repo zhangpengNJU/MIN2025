@@ -1,0 +1,11 @@
+final CompletableFuture<Object> tryFire(int mode) {
+    CompletableFuture<Object> d;
+    CompletableFuture<T> a;
+    CompletableFuture<U> b;
+    if ((d = dep) == null || !d.orRelay(a = src, b = snd))
+        return null;
+    src = null;
+    snd = null;
+    dep = null;
+    return d.postFire(a, b, mode);
+}

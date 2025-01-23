@@ -1,0 +1,8 @@
+// Override AbstractExecutorService methods
+/**
+ * @throws RejectedExecutionException {@inheritDoc}
+ * @throws NullPointerException       {@inheritDoc}
+ */
+public Future<?> submit(Runnable task) {
+    return schedule(task, 0, NANOSECONDS);
+}

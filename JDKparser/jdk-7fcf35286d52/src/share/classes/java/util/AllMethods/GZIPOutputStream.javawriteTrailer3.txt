@@ -1,0 +1,10 @@
+/*
+     * Writes GZIP member trailer to a byte array, starting at a given
+     * offset.
+     */
+private void writeTrailer(byte[] buf, int offset) throws IOException {
+    // CRC-32 of uncompr. data
+    writeInt((int) crc.getValue(), buf, offset);
+    // Number of uncompr. bytes
+    writeInt(def.getTotalIn(), buf, offset + 4);
+}

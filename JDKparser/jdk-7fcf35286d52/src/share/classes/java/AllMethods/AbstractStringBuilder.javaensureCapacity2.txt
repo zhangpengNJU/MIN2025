@@ -1,0 +1,20 @@
+/**
+ * Ensures that the capacity is at least equal to the specified minimum.
+ * If the current capacity is less than the argument, then a new internal
+ * array is allocated with greater capacity. The new capacity is the
+ * larger of:
+ * <ul>
+ * <li>The {@code minimumCapacity} argument.
+ * <li>Twice the old capacity, plus {@code 2}.
+ * </ul>
+ * If the {@code minimumCapacity} argument is nonpositive, this
+ * method takes no action and simply returns.
+ * Note that subsequent operations on this object can reduce the
+ * actual capacity below that requested here.
+ *
+ * @param   minimumCapacity   the minimum desired capacity.
+ */
+public void ensureCapacity(int minimumCapacity) {
+    if (minimumCapacity > 0)
+        ensureCapacityInternal(minimumCapacity);
+}

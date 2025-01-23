@@ -1,0 +1,7 @@
+final void modalityPopped() {
+    Toolkit tk = Toolkit.getDefaultToolkit();
+    if (tk instanceof SunToolkit) {
+        SunToolkit stk = (SunToolkit) tk;
+        stk.notifyModalityPopped(this);
+    }
+}

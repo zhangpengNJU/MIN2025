@@ -1,0 +1,8 @@
+/*
+     * Writes short integer in Intel byte order to a byte array, starting
+     * at a given offset
+     */
+private void writeShort(int s, byte[] buf, int offset) throws IOException {
+    buf[offset] = (byte) (s & 0xff);
+    buf[offset + 1] = (byte) ((s >> 8) & 0xff);
+}

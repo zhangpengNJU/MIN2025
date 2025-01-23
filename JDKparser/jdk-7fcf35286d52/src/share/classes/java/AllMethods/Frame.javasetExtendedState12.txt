@@ -1,0 +1,57 @@
+/**
+ * Sets the state of this frame. The state is
+ * represented as a bitwise mask.
+ * <ul>
+ * <li><code>NORMAL</code>
+ * <br>Indicates that no state bits are set.
+ * <li><code>ICONIFIED</code>
+ * <li><code>MAXIMIZED_HORIZ</code>
+ * <li><code>MAXIMIZED_VERT</code>
+ * <li><code>MAXIMIZED_BOTH</code>
+ * <br>Concatenates <code>MAXIMIZED_HORIZ</code>
+ * and <code>MAXIMIZED_VERT</code>.
+ * </ul>
+ * <p>Note that if the state is not supported on a
+ * given platform, neither the state nor the return
+ * value of the {@link #getExtendedState} method will
+ * be changed. The application may determine whether
+ * a specific state is supported via the {@link
+ * java.awt.Toolkit#isFrameStateSupported} method.
+ * <p><b>If the frame is currently visible on the
+ * screen</b> (the {@link #isShowing} method returns
+ * {@code true}), the developer should examine the
+ * return value of the {@link
+ * java.awt.event.WindowEvent#getNewState} method of
+ * the {@code WindowEvent} received through the
+ * {@link java.awt.event.WindowStateListener} to
+ * determine that the state has actually been
+ * changed.
+ * <p><b>If the frame is not visible on the
+ * screen</b>, the events may or may not be
+ * generated.  In this case the developer may assume
+ * that the state changes immediately after this
+ * method returns.  Later, when the {@code
+ * setVisible(true)} method is invoked, the frame
+ * will attempt to apply this state. Receiving any
+ * {@link
+ * java.awt.event.WindowEvent#WINDOW_STATE_CHANGED}
+ * events is not guaranteed in this case also.
+ *
+ * @param state a bitwise mask of frame state constants
+ * @since   1.4
+ * @see java.awt.Window#addWindowStateListener
+ */
+public void setExtendedState(int state) {
+    if (!isFrameStateSupported(state)) {
+        return;
+    }
+    synchronized (getObjectLock()) {
+        this.state = state;
+    }
+    // peer.setState must be called outside of object lock
+    // synchronization block to avoid possible deadlock
+    FramePeer peer = (FramePeer) this.peer;
+    if (peer != null) {
+        peer.setState(state);
+    }
+}

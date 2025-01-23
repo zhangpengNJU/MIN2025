@@ -1,0 +1,93 @@
+/**
+ * Take the stack-based context (this) and combine it with the
+ * privileged or inherited context, if need be. Any limited
+ * privilege scope is flagged regardless of whether the assigned
+ * context comes from an immediately enclosing limited doPrivileged().
+ * The limited privilege scope can indirectly flow from the inherited
+ * parent thread or an assigned context previously captured by getContext().
+ */
+AccessControlContext optimize() {
+    // the assigned (privileged or inherited) context
+    AccessControlContext acc;
+    DomainCombiner combiner = null;
+    AccessControlContext parent = null;
+    Permission[] permissions = null;
+    if (isPrivileged) {
+        acc = privilegedContext;
+        if (acc != null) {
+            /*
+                 * If the context is from a limited scope doPrivileged() then
+                 * copy the permissions and parent fields out of the wrapper
+                 * context that was created to hold them.
+                 */
+            if (acc.isWrapped) {
+                permissions = acc.permissions;
+                parent = acc.parent;
+            }
+        }
+    } else {
+        acc = AccessController.getInheritedAccessControlContext();
+        if (acc != null) {
+            /*
+                 * If the inherited context is constrained by a limited scope
+                 * doPrivileged() then set it as our parent so we will process
+                 * the non-domain-related state.
+                 */
+            if (acc.isLimited) {
+                parent = acc;
+            }
+        }
+    }
+    // this.context could be null if only system code is on the stack;
+    // in that case, ignore the stack context
+    boolean skipStack = (context == null);
+    // acc.context could be null if only system code was involved;
+    // in that case, ignore the assigned context
+    boolean skipAssigned = (acc == null || acc.context == null);
+    ProtectionDomain[] assigned = (skipAssigned) ? null : acc.context;
+    ProtectionDomain[] pd;
+    // if there is no enclosing limited privilege scope on the stack or
+    // inherited from a parent thread
+    boolean skipLimited = ((acc == null || !acc.isWrapped) && parent == null);
+    if (acc != null && acc.combiner != null) {
+        // let the assigned acc's combiner do its thing
+        if (getDebug() != null) {
+            debug.println("AccessControlContext invoking the Combiner");
+        }
+        // No need to clone current and assigned.context
+        // combine() will not update them
+        combiner = acc.combiner;
+        pd = combiner.combine(context, assigned);
+    } else {
+        if (skipStack) {
+            if (skipAssigned) {
+                calculateFields(acc, parent, permissions);
+                return this;
+            } else if (skipLimited) {
+                return acc;
+            }
+        } else if (assigned != null) {
+            if (skipLimited) {
+                // optimization: if there is a single stack domain and
+                // that domain is already in the assigned context; no
+                // need to combine
+                if (context.length == 1 && context[0] == assigned[0]) {
+                    return acc;
+                }
+            }
+        }
+        pd = combine(context, assigned);
+        if (skipLimited && !skipAssigned && pd == assigned) {
+            return acc;
+        } else if (skipAssigned && pd == context) {
+            calculateFields(acc, parent, permissions);
+            return this;
+        }
+    }
+    // Reuse existing ACC
+    this.context = pd;
+    this.combiner = combiner;
+    this.isPrivileged = false;
+    calculateFields(acc, parent, permissions);
+    return this;
+}

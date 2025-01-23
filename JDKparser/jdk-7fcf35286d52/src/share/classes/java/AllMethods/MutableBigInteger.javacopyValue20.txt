@@ -1,0 +1,12 @@
+/**
+ * Sets this MutableBigInteger's value array to a copy of the specified
+ * array. The intLen is set to the length of the new array.
+ */
+void copyValue(MutableBigInteger src) {
+    int len = src.intLen;
+    if (value.length < len)
+        value = new int[len];
+    System.arraycopy(src.value, src.offset, value, 0, len);
+    intLen = len;
+    offset = 0;
+}

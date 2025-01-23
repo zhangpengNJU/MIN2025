@@ -1,0 +1,32 @@
+private static boolean equal(String s, String t) {
+    if (s == t)
+        return true;
+    if ((s != null) && (t != null)) {
+        if (s.length() != t.length())
+            return false;
+        if (s.indexOf('%') < 0)
+            return s.equals(t);
+        int n = s.length();
+        for (int i = 0; i < n; ) {
+            char c = s.charAt(i);
+            char d = t.charAt(i);
+            if (c != '%') {
+                if (c != d)
+                    return false;
+                i++;
+                continue;
+            }
+            if (d != '%')
+                return false;
+            i++;
+            if (toLower(s.charAt(i)) != toLower(t.charAt(i)))
+                return false;
+            i++;
+            if (toLower(s.charAt(i)) != toLower(t.charAt(i)))
+                return false;
+            i++;
+        }
+        return true;
+    }
+    return false;
+}

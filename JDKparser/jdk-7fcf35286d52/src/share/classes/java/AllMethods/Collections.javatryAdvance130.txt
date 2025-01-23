@@ -1,0 +1,5 @@
+@Override
+public boolean tryAdvance(Consumer<? super Entry<K, V>> action) {
+    Objects.requireNonNull(action);
+    return s.tryAdvance(entryConsumer(action));
+}

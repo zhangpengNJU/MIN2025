@@ -1,0 +1,11 @@
+@Override
+public void forEach(BiConsumer<? super K, ? super V> action) {
+    Objects.requireNonNull(action);
+    int expectedModCount = modCount;
+    for (Entry<K, V> e = getFirstEntry(); e != null; e = successor(e)) {
+        action.accept(e.key, e.value);
+        if (expectedModCount != modCount) {
+            throw new ConcurrentModificationException();
+        }
+    }
+}

@@ -1,0 +1,43 @@
+/**
+ * Format and publish a <tt>LogRecord</tt>.
+ * <p>
+ * The <tt>StreamHandler</tt> first checks if there is an <tt>OutputStream</tt>
+ * and if the given <tt>LogRecord</tt> has at least the required log level.
+ * If not it silently returns.  If so, it calls any associated
+ * <tt>Filter</tt> to check if the record should be published.  If so,
+ * it calls its <tt>Formatter</tt> to format the record and then writes
+ * the result to the current output stream.
+ * <p>
+ * If this is the first <tt>LogRecord</tt> to be written to a given
+ * <tt>OutputStream</tt>, the <tt>Formatter</tt>'s "head" string is
+ * written to the stream before the <tt>LogRecord</tt> is written.
+ *
+ * @param  record  description of the log event. A null record is
+ *                 silently ignored and is not published
+ */
+@Override
+public synchronized void publish(LogRecord record) {
+    if (!isLoggable(record)) {
+        return;
+    }
+    String msg;
+    try {
+        msg = getFormatter().format(record);
+    } catch (Exception ex) {
+        // We don't want to throw an exception here, but we
+        // report the exception to any registered ErrorManager.
+        reportError(null, ex, ErrorManager.FORMAT_FAILURE);
+        return;
+    }
+    try {
+        if (!doneHeader) {
+            writer.write(getFormatter().getHead(this));
+            doneHeader = true;
+        }
+        writer.write(msg);
+    } catch (Exception ex) {
+        // We don't want to throw an exception here, but we
+        // report the exception to any registered ErrorManager.
+        reportError(null, ex, ErrorManager.WRITE_FAILURE);
+    }
+}

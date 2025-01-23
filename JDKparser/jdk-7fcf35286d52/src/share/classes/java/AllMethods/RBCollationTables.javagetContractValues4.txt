@@ -1,0 +1,12 @@
+// ==============================================================
+// internal (for use by CollationElementIterator)
+// ==============================================================
+/**
+ *  Get the entry of hash table of the contracting string in the collation
+ *  table.
+ *  @param ch the starting character of the contracting string
+ */
+Vector<EntryPair> getContractValues(int ch) {
+    int index = mapping.elementAt(ch);
+    return getContractValuesImpl(index - CONTRACTCHARINDEX);
+}

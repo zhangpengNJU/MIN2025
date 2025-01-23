@@ -1,0 +1,14 @@
+/**
+ * Set the stream to which output from this log is sent.
+ * @param out new output stream for this log
+ * @see #getOutputStream
+ * @since JDK1.1
+ * @deprecated no replacement
+ */
+@Deprecated
+public synchronized void setOutputStream(OutputStream out) {
+    logOut = out;
+    // Maintain an OutputStreamWriter with default CharToByteConvertor
+    // (just like new PrintStream) for writing log message prefixes.
+    logWriter = new OutputStreamWriter(logOut);
+}

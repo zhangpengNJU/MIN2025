@@ -1,0 +1,22 @@
+public synchronized Image getImage(URL url) {
+    Object o = imageCache.get(url);
+    if (o != null) {
+        return (Image) o;
+    }
+    try {
+        o = url.getContent();
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof Image) {
+            imageCache.put(url, o);
+            return (Image) o;
+        }
+        // Otherwise it must be an ImageProducer.
+        Image img = target.createImage((java.awt.image.ImageProducer) o);
+        imageCache.put(url, img);
+        return img;
+    } catch (Exception ex) {
+        return null;
+    }
+}

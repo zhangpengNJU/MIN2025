@@ -1,0 +1,31 @@
+/**
+ * Appends the passed {@code suffix} chars to given result
+ * {@code container}.  Updates {@code fastPathData.lastFreeIndex}
+ * accordingly.
+ *
+ * @param suffix The suffix characters to append to result.
+ * @param len The number of chars to append.
+ * @param container Char array container which to append the suffix
+ */
+private void appendSuffix(char[] suffix, int len, char[] container) {
+    int startIndex = fastPathData.lastFreeIndex;
+    // If suffix to append is only 1 char long, just assigns this char.
+    // If suffix is less or equal 4, we use a dedicated algorithm that
+    // has shown to run faster than System.arraycopy.
+    // If more than 4, we use System.arraycopy.
+    if (len == 1)
+        container[startIndex] = suffix[0];
+    else if (len <= 4) {
+        int dstLower = startIndex;
+        int dstUpper = dstLower + len - 1;
+        int srcUpper = len - 1;
+        container[dstLower] = suffix[0];
+        container[dstUpper] = suffix[srcUpper];
+        if (len > 2)
+            container[++dstLower] = suffix[1];
+        if (len == 4)
+            container[--dstUpper] = suffix[2];
+    } else
+        System.arraycopy(suffix, 0, container, startIndex, len);
+    fastPathData.lastFreeIndex += len;
+}

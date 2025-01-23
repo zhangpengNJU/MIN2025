@@ -1,0 +1,13 @@
+/**
+ * Interrupts all threads, even if active. Ignores SecurityExceptions
+ * (in which case some threads may remain uninterrupted).
+ */
+private void interruptWorkers() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        for (Worker w : workers) w.interruptIfStarted();
+    } finally {
+        mainLock.unlock();
+    }
+}

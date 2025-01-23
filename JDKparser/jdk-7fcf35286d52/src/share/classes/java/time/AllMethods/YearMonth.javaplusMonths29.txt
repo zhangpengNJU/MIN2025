@@ -1,0 +1,20 @@
+/**
+ * Returns a copy of this {@code YearMonth} with the specified number of months added.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param monthsToAdd  the months to add, may be negative
+ * @return a {@code YearMonth} based on this year-month with the months added, not null
+ * @throws DateTimeException if the result exceeds the supported range
+ */
+public YearMonth plusMonths(long monthsToAdd) {
+    if (monthsToAdd == 0) {
+        return this;
+    }
+    long monthCount = year * 12L + (month - 1);
+    // safe overflow
+    long calcMonths = monthCount + monthsToAdd;
+    int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
+    int newMonth = (int) Math.floorMod(calcMonths, 12) + 1;
+    return with(newYear, newMonth);
+}

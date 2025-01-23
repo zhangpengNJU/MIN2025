@@ -1,0 +1,11 @@
+public Field run() {
+    try {
+        Field field = Class.forName(className).getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field;
+    } catch (ClassNotFoundException exception) {
+        throw new IllegalStateException("Could not find class", exception);
+    } catch (NoSuchFieldException exception) {
+        throw new IllegalStateException("Could not find field", exception);
+    }
+}

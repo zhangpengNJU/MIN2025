@@ -1,0 +1,20 @@
+/**
+ * Determines the origin of the layout area, in the graphics coordinate
+ * space of the target container.  This value represents the pixel
+ * coordinates of the top-left corner of the layout area regardless of
+ * the <code>ComponentOrientation</code> value of the container.  This
+ * is distinct from the grid origin given by the cell coordinates (0,0).
+ * Most applications do not call this method directly.
+ * @return     the graphics origin of the cell in the top-left
+ *             corner of the layout grid
+ * @see        java.awt.ComponentOrientation
+ * @since      JDK1.1
+ */
+public Point getLayoutOrigin() {
+    Point origin = new Point(0, 0);
+    if (layoutInfo != null) {
+        origin.x = layoutInfo.startx;
+        origin.y = layoutInfo.starty;
+    }
+    return origin;
+}

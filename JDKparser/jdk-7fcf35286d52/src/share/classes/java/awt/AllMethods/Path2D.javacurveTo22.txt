@@ -1,0 +1,14 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final synchronized void curveTo(double x1, double y1, double x2, double y2, double x3, double y3) {
+    needRoom(true, 6);
+    pointTypes[numTypes++] = SEG_CUBICTO;
+    floatCoords[numCoords++] = (float) x1;
+    floatCoords[numCoords++] = (float) y1;
+    floatCoords[numCoords++] = (float) x2;
+    floatCoords[numCoords++] = (float) y2;
+    floatCoords[numCoords++] = (float) x3;
+    floatCoords[numCoords++] = (float) y3;
+}

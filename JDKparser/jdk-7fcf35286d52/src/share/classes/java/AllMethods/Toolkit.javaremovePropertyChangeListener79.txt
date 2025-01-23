@@ -1,0 +1,17 @@
+/**
+ * Removes the specified property change listener for the named
+ * desktop property. When a {@link java.beans.PropertyChangeListenerProxy} object
+ * is removed, its property name is ignored, and
+ * the wrapped listener is removed.
+ * If {@code name} is {@code null} or {@code pcl} is {@code null},
+ * no exception is thrown and no action is performed.
+ *
+ * @param   name The name of the property to remove
+ * @param   pcl The property change listener
+ * @see PropertyChangeSupport#removePropertyChangeListener(String,
+ *                PropertyChangeListener)
+ * @since   1.2
+ */
+public void removePropertyChangeListener(String name, PropertyChangeListener pcl) {
+    desktopPropsSupport.removePropertyChangeListener(name, pcl);
+}

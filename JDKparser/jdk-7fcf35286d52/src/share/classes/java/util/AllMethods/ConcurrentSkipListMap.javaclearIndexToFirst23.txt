@@ -1,0 +1,17 @@
+/**
+ * Clears out index nodes associated with deleted first entry.
+ */
+private void clearIndexToFirst() {
+    for (; ; ) {
+        for (Index<K, V> q = head; ; ) {
+            Index<K, V> r = q.right;
+            if (r != null && r.indexesDeletedNode() && !q.unlink(r))
+                break;
+            if ((q = q.down) == null) {
+                if (head.right == null)
+                    tryReduceLevel();
+                return;
+            }
+        }
+    }
+}

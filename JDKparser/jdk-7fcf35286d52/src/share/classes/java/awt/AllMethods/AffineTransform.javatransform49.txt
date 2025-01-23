@@ -1,0 +1,61 @@
+/**
+ * Transforms the specified <code>ptSrc</code> and stores the result
+ * in <code>ptDst</code>.
+ * If <code>ptDst</code> is <code>null</code>, a new {@link Point2D}
+ * object is allocated and then the result of the transformation is
+ * stored in this object.
+ * In either case, <code>ptDst</code>, which contains the
+ * transformed point, is returned for convenience.
+ * If <code>ptSrc</code> and <code>ptDst</code> are the same
+ * object, the input point is correctly overwritten with
+ * the transformed point.
+ * @param ptSrc the specified <code>Point2D</code> to be transformed
+ * @param ptDst the specified <code>Point2D</code> that stores the
+ * result of transforming <code>ptSrc</code>
+ * @return the <code>ptDst</code> after transforming
+ * <code>ptSrc</code> and storing the result in <code>ptDst</code>.
+ * @since 1.2
+ */
+public Point2D transform(Point2D ptSrc, Point2D ptDst) {
+    if (ptDst == null) {
+        if (ptSrc instanceof Point2D.Double) {
+            ptDst = new Point2D.Double();
+        } else {
+            ptDst = new Point2D.Float();
+        }
+    }
+    // Copy source coords into local variables in case src == dst
+    double x = ptSrc.getX();
+    double y = ptSrc.getY();
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return null;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            ptDst.setLocation(x * m00 + y * m01 + m02, x * m10 + y * m11 + m12);
+            return ptDst;
+        case (APPLY_SHEAR | APPLY_SCALE):
+            ptDst.setLocation(x * m00 + y * m01, x * m10 + y * m11);
+            return ptDst;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            ptDst.setLocation(y * m01 + m02, x * m10 + m12);
+            return ptDst;
+        case (APPLY_SHEAR):
+            ptDst.setLocation(y * m01, x * m10);
+            return ptDst;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            ptDst.setLocation(x * m00 + m02, y * m11 + m12);
+            return ptDst;
+        case (APPLY_SCALE):
+            ptDst.setLocation(x * m00, y * m11);
+            return ptDst;
+        case (APPLY_TRANSLATE):
+            ptDst.setLocation(x + m02, y + m12);
+            return ptDst;
+        case (APPLY_IDENTITY):
+            ptDst.setLocation(x, y);
+            return ptDst;
+    }
+/* NOTREACHED */
+}

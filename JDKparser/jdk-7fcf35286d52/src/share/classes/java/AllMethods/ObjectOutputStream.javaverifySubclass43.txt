@@ -1,0 +1,27 @@
+/**
+ * Verifies that this (possibly subclass) instance can be constructed
+ * without violating security constraints: the subclass must not override
+ * security-sensitive non-final methods, or else the
+ * "enableSubclassImplementation" SerializablePermission is checked.
+ */
+private void verifySubclass() {
+    Class<?> cl = getClass();
+    if (cl == ObjectOutputStream.class) {
+        return;
+    }
+    SecurityManager sm = System.getSecurityManager();
+    if (sm == null) {
+        return;
+    }
+    processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
+    WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
+    Boolean result = Caches.subclassAudits.get(key);
+    if (result == null) {
+        result = Boolean.valueOf(auditSubclass(cl));
+        Caches.subclassAudits.putIfAbsent(key, result);
+    }
+    if (result.booleanValue()) {
+        return;
+    }
+    sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
+}

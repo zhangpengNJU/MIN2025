@@ -1,0 +1,21 @@
+/**
+ * Selects a set of keys whose corresponding channels are ready for I/O
+ * operations.
+ *
+ * <p> This method performs a non-blocking <a href="#selop">selection
+ * operation</a>.  If no channels have become selectable since the previous
+ * selection operation then this method immediately returns zero.
+ *
+ * <p> Invoking this method clears the effect of any previous invocations
+ * of the {@link #wakeup wakeup} method.  </p>
+ *
+ * @return  The number of keys, possibly zero, whose ready-operation sets
+ *          were updated by the selection operation
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @throws  ClosedSelectorException
+ *          If this selector is closed
+ */
+public abstract int selectNow() throws IOException;

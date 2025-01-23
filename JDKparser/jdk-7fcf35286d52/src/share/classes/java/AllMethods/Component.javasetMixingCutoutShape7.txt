@@ -1,0 +1,22 @@
+public void setMixingCutoutShape(Component comp, Shape shape) {
+    Region region = shape == null ? null : Region.getInstance(shape, null);
+    synchronized (comp.getTreeLock()) {
+        boolean needShowing = false;
+        boolean needHiding = false;
+        if (!comp.isNonOpaqueForMixing()) {
+            needHiding = true;
+        }
+        comp.mixingCutoutRegion = region;
+        if (!comp.isNonOpaqueForMixing()) {
+            needShowing = true;
+        }
+        if (comp.isMixingNeeded()) {
+            if (needHiding) {
+                comp.mixOnHiding(comp.isLightweight());
+            }
+            if (needShowing) {
+                comp.mixOnShowing();
+            }
+        }
+    }
+}

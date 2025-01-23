@@ -1,0 +1,11 @@
+public E get(int index) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        rangeCheck(index);
+        checkForComodification();
+        return l.get(index + offset);
+    } finally {
+        lock.unlock();
+    }
+}

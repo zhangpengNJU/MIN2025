@@ -1,0 +1,17 @@
+// -- Serialization support --
+/**
+ * Saves the content of this URI to the given serial stream.
+ *
+ * <p> The only serializable field of a URI instance is its {@code string}
+ * field.  That field is given a value, if it does not have one already,
+ * and then the {@link java.io.ObjectOutputStream#defaultWriteObject()}
+ * method of the given object-output stream is invoked. </p>
+ *
+ * @param  os  The object-output stream to which this object
+ *             is to be written
+ */
+private void writeObject(ObjectOutputStream os) throws IOException {
+    defineString();
+    // Writes the string field only
+    os.defaultWriteObject();
+}

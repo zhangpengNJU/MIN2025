@@ -1,0 +1,42 @@
+/**
+ * Scans the next token of the input as a {@link java.math.BigInteger
+ * BigInteger}.
+ *
+ * <p> If the next token matches the <a
+ * href="#Integer-regex"><i>Integer</i></a> regular expression defined
+ * above then the token is converted into a <tt>BigInteger</tt> value as if
+ * by removing all group separators, mapping non-ASCII digits into ASCII
+ * digits via the {@link Character#digit Character.digit}, and passing the
+ * resulting string to the {@link
+ * java.math.BigInteger#BigInteger(java.lang.String)
+ * BigInteger(String, int)} constructor with the specified radix.
+ *
+ * @param radix the radix used to interpret the token
+ * @return the <tt>BigInteger</tt> scanned from the input
+ * @throws InputMismatchException
+ *         if the next token does not match the <i>Integer</i>
+ *         regular expression, or is out of range
+ * @throws NoSuchElementException if the input is exhausted
+ * @throws IllegalStateException if this scanner is closed
+ */
+public BigInteger nextBigInteger(int radix) {
+    // Check cached result
+    if ((typeCache != null) && (typeCache instanceof BigInteger) && this.radix == radix) {
+        BigInteger val = (BigInteger) typeCache;
+        useTypeCache();
+        return val;
+    }
+    setRadix(radix);
+    clearCaches();
+    // Search for next int
+    try {
+        String s = next(integerPattern());
+        if (matcher.group(SIMPLE_GROUP_INDEX) == null)
+            s = processIntegerToken(s);
+        return new BigInteger(s, radix);
+    } catch (NumberFormatException nfe) {
+        // don't skip bad token
+        position = matcher.start();
+        throw new InputMismatchException(nfe.getMessage());
+    }
+}

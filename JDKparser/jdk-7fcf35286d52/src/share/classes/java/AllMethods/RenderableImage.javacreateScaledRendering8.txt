@@ -1,0 +1,26 @@
+/**
+ * Creates a RenderedImage instance of this image with width w, and
+ * height h in pixels.  The RenderContext is built automatically
+ * with an appropriate usr2dev transform and an area of interest
+ * of the full image.  All the rendering hints come from hints
+ * passed in.
+ *
+ * <p> If w == 0, it will be taken to equal
+ * Math.round(h*(getWidth()/getHeight())).
+ * Similarly, if h == 0, it will be taken to equal
+ * Math.round(w*(getHeight()/getWidth())).  One of
+ * w or h must be non-zero or else an IllegalArgumentException
+ * will be thrown.
+ *
+ * <p> The created RenderedImage may have a property identified
+ * by the String HINTS_OBSERVED to indicate which RenderingHints
+ * were used to create the image.  In addition any RenderedImages
+ * that are obtained via the getSources() method on the created
+ * RenderedImage may have such a property.
+ *
+ * @param w the width of rendered image in pixels, or 0.
+ * @param h the height of rendered image in pixels, or 0.
+ * @param hints a RenderingHints object containing hints.
+ * @return a RenderedImage containing the rendered data.
+ */
+RenderedImage createScaledRendering(int w, int h, RenderingHints hints);

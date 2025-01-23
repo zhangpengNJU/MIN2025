@@ -1,0 +1,16 @@
+/**
+ * Returns a hash code for this shaper.
+ * @return this shaper's hash code.
+ * @see java.lang.Object#hashCode
+ */
+public int hashCode() {
+    int hash = mask;
+    if (rangeSet != null) {
+        // Use the CONTEXTUAL_MASK bit only for the enum-based
+        // NumericShaper. A deserialized NumericShaper might have
+        // bit masks.
+        hash &= CONTEXTUAL_MASK;
+        hash ^= rangeSet.hashCode();
+    }
+    return hash;
+}

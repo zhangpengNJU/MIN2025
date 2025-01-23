@@ -1,0 +1,70 @@
+/**
+ * Acquires a lock on the given region of this channel's file.
+ *
+ * <p> This method initiates an operation to acquire a lock on the given
+ * region of this channel's file. The {@code handler} parameter is a
+ * completion handler that is invoked when the lock is acquired (or the
+ * operation fails). The result passed to the completion handler is the
+ * resulting {@code FileLock}.
+ *
+ * <p> The region specified by the {@code position} and {@code size}
+ * parameters need not be contained within, or even overlap, the actual
+ * underlying file.  Lock regions are fixed in size; if a locked region
+ * initially contains the end of the file and the file grows beyond the
+ * region then the new portion of the file will not be covered by the lock.
+ * If a file is expected to grow in size and a lock on the entire file is
+ * required then a region starting at zero, and no smaller than the
+ * expected maximum size of the file, should be locked.  The two-argument
+ * {@link #lock(Object,CompletionHandler)} method simply locks a region
+ * of size {@link Long#MAX_VALUE}. If a lock that overlaps the requested
+ * region is already held by this Java virtual machine, or this method has
+ * been invoked to lock an overlapping region and that operation has not
+ * completed, then this method throws {@link OverlappingFileLockException}.
+ *
+ * <p> Some operating systems do not support a mechanism to acquire a file
+ * lock in an asynchronous manner. Consequently an implementation may
+ * acquire the file lock in a background thread or from a task executed by
+ * a thread in the associated thread pool. If there are many lock operations
+ * outstanding then it may consume threads in the Java virtual machine for
+ * indefinite periods.
+ *
+ * <p> Some operating systems do not support shared locks, in which case a
+ * request for a shared lock is automatically converted into a request for
+ * an exclusive lock.  Whether the newly-acquired lock is shared or
+ * exclusive may be tested by invoking the resulting lock object's {@link
+ * FileLock#isShared() isShared} method.
+ *
+ * <p> File locks are held on behalf of the entire Java virtual machine.
+ * They are not suitable for controlling access to a file by multiple
+ * threads within the same virtual machine.
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   position
+ *          The position at which the locked region is to start; must be
+ *          non-negative
+ * @param   size
+ *          The size of the locked region; must be non-negative, and the sum
+ *          {@code position}&nbsp;+&nbsp;{@code size} must be non-negative
+ * @param   shared
+ *          {@code true} to request a shared lock, in which case this
+ *          channel must be open for reading (and possibly writing);
+ *          {@code false} to request an exclusive lock, in which case this
+ *          channel must be open for writing (and possibly reading)
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  OverlappingFileLockException
+ *          If a lock that overlaps the requested region is already held by
+ *          this Java virtual machine, or there is already a pending attempt
+ *          to lock an overlapping region
+ * @throws  IllegalArgumentException
+ *          If the preconditions on the parameters do not hold
+ * @throws  NonReadableChannelException
+ *          If {@code shared} is true but this channel was not opened for reading
+ * @throws  NonWritableChannelException
+ *          If {@code shared} is false but this channel was not opened for writing
+ */
+public abstract <A> void lock(long position, long size, boolean shared, A attachment, CompletionHandler<FileLock, ? super A> handler);

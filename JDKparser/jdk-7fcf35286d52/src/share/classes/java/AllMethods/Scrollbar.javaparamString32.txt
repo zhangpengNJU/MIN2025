@@ -1,0 +1,12 @@
+/**
+ * Returns a string representing the state of this <code>Scrollbar</code>.
+ * This method is intended to be used only for debugging purposes, and the
+ * content and format of the returned string may vary between
+ * implementations. The returned string may be empty but may not be
+ * <code>null</code>.
+ *
+ * @return      the parameter string of this scroll bar
+ */
+protected String paramString() {
+    return super.paramString() + ",val=" + value + ",vis=" + visibleAmount + ",min=" + minimum + ",max=" + maximum + ((orientation == VERTICAL) ? ",vert" : ",horz") + ",isAdjusting=" + isAdjusting;
+}

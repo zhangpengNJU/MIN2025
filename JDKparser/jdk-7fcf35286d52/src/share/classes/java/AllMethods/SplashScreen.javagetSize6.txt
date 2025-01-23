@@ -1,0 +1,17 @@
+/**
+ * Returns the size of the splash screen window as a {@link Dimension}.
+ * This may be useful if, for example,
+ * you want to draw on the splash screen overlay surface.
+ * <p>
+ * You cannot control the size or position of the splash screen.
+ * The splash screen size is adjusted automatically when the image changes.
+ * <p>
+ * The image may contain transparent areas, and thus the reported size may
+ * be larger than the visible splash screen image on the screen.
+ *
+ * @return a {@link Dimension} object indicating the splash screen size
+ * @throws IllegalStateException if the splash screen has already been closed
+ */
+public Dimension getSize() throws IllegalStateException {
+    return getBounds().getSize();
+}

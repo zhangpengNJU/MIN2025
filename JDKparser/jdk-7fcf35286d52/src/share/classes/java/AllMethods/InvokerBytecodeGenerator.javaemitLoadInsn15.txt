@@ -1,0 +1,7 @@
+/*
+     * NOTE: These load/store methods use the localsMap to find the correct index!
+     */
+private void emitLoadInsn(BasicType type, int index) {
+    int opcode = loadInsnOpcode(type);
+    mv.visitVarInsn(opcode, localsMap[index]);
+}

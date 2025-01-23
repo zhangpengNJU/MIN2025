@@ -1,0 +1,16 @@
+/**
+ * Returns the default value for a new LogRecord's threadID.
+ */
+private int defaultThreadID() {
+    long tid = Thread.currentThread().getId();
+    if (tid < MIN_SEQUENTIAL_THREAD_ID) {
+        return (int) tid;
+    } else {
+        Integer id = threadIds.get();
+        if (id == null) {
+            id = nextThreadId.getAndIncrement();
+            threadIds.set(id);
+        }
+        return id;
+    }
+}

@@ -1,0 +1,12 @@
+/**
+ * Start walking from the given file.
+ */
+Event walk(Path file) {
+    if (closed)
+        throw new IllegalStateException("Closed");
+    Event ev = visit(file, // ignoreSecurityException
+    false, // canUseCached
+    false);
+    assert ev != null;
+    return ev;
+}

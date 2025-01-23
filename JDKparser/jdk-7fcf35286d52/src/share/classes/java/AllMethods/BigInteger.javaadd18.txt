@@ -1,0 +1,18 @@
+/**
+ * Package private methods used by BigDecimal code to add a BigInteger
+ * with a long. Assumes val is not equal to INFLATED.
+ */
+BigInteger add(long val) {
+    if (val == 0)
+        return this;
+    if (signum == 0)
+        return valueOf(val);
+    if (Long.signum(val) == signum)
+        return new BigInteger(add(mag, Math.abs(val)), signum);
+    int cmp = compareMagnitude(val);
+    if (cmp == 0)
+        return ZERO;
+    int[] resultMag = (cmp > 0 ? subtract(mag, Math.abs(val)) : subtract(Math.abs(val), mag));
+    resultMag = trustedStripLeadingZeroInts(resultMag);
+    return new BigInteger(resultMag, cmp == signum ? 1 : -1);
+}

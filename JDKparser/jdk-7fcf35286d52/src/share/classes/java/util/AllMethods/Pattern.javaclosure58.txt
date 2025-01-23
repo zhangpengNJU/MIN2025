@@ -1,0 +1,82 @@
+/**
+ * Processes repetition. If the next character peeked is a quantifier
+ * then new nodes must be appended to handle the repetition.
+ * Prev could be a single or a group, so it could be a chain of nodes.
+ */
+private Node closure(Node prev) {
+    Node atom;
+    int ch = peek();
+    switch(ch) {
+        case '?':
+            ch = next();
+            if (ch == '?') {
+                next();
+                return new Ques(prev, LAZY);
+            } else if (ch == '+') {
+                next();
+                return new Ques(prev, POSSESSIVE);
+            }
+            return new Ques(prev, GREEDY);
+        case '*':
+            ch = next();
+            if (ch == '?') {
+                next();
+                return new Curly(prev, 0, MAX_REPS, LAZY);
+            } else if (ch == '+') {
+                next();
+                return new Curly(prev, 0, MAX_REPS, POSSESSIVE);
+            }
+            return new Curly(prev, 0, MAX_REPS, GREEDY);
+        case '+':
+            ch = next();
+            if (ch == '?') {
+                next();
+                return new Curly(prev, 1, MAX_REPS, LAZY);
+            } else if (ch == '+') {
+                next();
+                return new Curly(prev, 1, MAX_REPS, POSSESSIVE);
+            }
+            return new Curly(prev, 1, MAX_REPS, GREEDY);
+        case '{':
+            ch = temp[cursor + 1];
+            if (ASCII.isDigit(ch)) {
+                skip();
+                int cmin = 0;
+                do {
+                    cmin = cmin * 10 + (ch - '0');
+                } while (ASCII.isDigit(ch = read()));
+                int cmax = cmin;
+                if (ch == ',') {
+                    ch = read();
+                    cmax = MAX_REPS;
+                    if (ch != '}') {
+                        cmax = 0;
+                        while (ASCII.isDigit(ch)) {
+                            cmax = cmax * 10 + (ch - '0');
+                            ch = read();
+                        }
+                    }
+                }
+                if (ch != '}')
+                    throw error("Unclosed counted closure");
+                if (((cmin) | (cmax) | (cmax - cmin)) < 0)
+                    throw error("Illegal repetition range");
+                Curly curly;
+                ch = peek();
+                if (ch == '?') {
+                    next();
+                    curly = new Curly(prev, cmin, cmax, LAZY);
+                } else if (ch == '+') {
+                    next();
+                    curly = new Curly(prev, cmin, cmax, POSSESSIVE);
+                } else {
+                    curly = new Curly(prev, cmin, cmax, GREEDY);
+                }
+                return curly;
+            } else {
+                throw error("Illegal repetition");
+            }
+        default:
+            return prev;
+    }
+}

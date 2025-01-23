@@ -1,0 +1,25 @@
+// Primitive specialization use co-variant overrides, hence is not final
+@Override
+@SuppressWarnings("unchecked")
+public Spliterator<E_OUT> spliterator() {
+    if (linkedOrConsumed)
+        throw new IllegalStateException(MSG_STREAM_LINKED);
+    linkedOrConsumed = true;
+    if (this == sourceStage) {
+        if (sourceStage.sourceSpliterator != null) {
+            @SuppressWarnings("unchecked")
+            Spliterator<E_OUT> s = (Spliterator<E_OUT>) sourceStage.sourceSpliterator;
+            sourceStage.sourceSpliterator = null;
+            return s;
+        } else if (sourceStage.sourceSupplier != null) {
+            @SuppressWarnings("unchecked")
+            Supplier<Spliterator<E_OUT>> s = (Supplier<Spliterator<E_OUT>>) sourceStage.sourceSupplier;
+            sourceStage.sourceSupplier = null;
+            return lazySpliterator(s);
+        } else {
+            throw new IllegalStateException(MSG_CONSUMED);
+        }
+    } else {
+        return wrap(this, () -> sourceSpliterator(0), isParallel());
+    }
+}

@@ -1,0 +1,38 @@
+/**
+ * Returns {@code true} if the specified object is an instance of
+ * <code>NumericShaper</code> and shapes identically to this one,
+ * regardless of the range representations, the bit mask or the
+ * enum. For example, the following code produces {@code "true"}.
+ * <blockquote><pre>
+ * NumericShaper ns1 = NumericShaper.getShaper(NumericShaper.ARABIC);
+ * NumericShaper ns2 = NumericShaper.getShaper(NumericShaper.Range.ARABIC);
+ * System.out.println(ns1.equals(ns2));
+ * </pre></blockquote>
+ *
+ * @param o the specified object to compare to this
+ *          <code>NumericShaper</code>
+ * @return <code>true</code> if <code>o</code> is an instance
+ *         of <code>NumericShaper</code> and shapes in the same way;
+ *         <code>false</code> otherwise.
+ * @see java.lang.Object#equals(java.lang.Object)
+ */
+public boolean equals(Object o) {
+    if (o != null) {
+        try {
+            NumericShaper rhs = (NumericShaper) o;
+            if (rangeSet != null) {
+                if (rhs.rangeSet != null) {
+                    return isContextual() == rhs.isContextual() && rangeSet.equals(rhs.rangeSet) && shapingRange == rhs.shapingRange;
+                }
+                return isContextual() == rhs.isContextual() && rangeSet.equals(Range.maskToRangeSet(rhs.mask)) && shapingRange == Range.indexToRange(rhs.key);
+            } else if (rhs.rangeSet != null) {
+                Set<Range> rset = Range.maskToRangeSet(mask);
+                Range srange = Range.indexToRange(key);
+                return isContextual() == rhs.isContextual() && rset.equals(rhs.rangeSet) && srange == rhs.shapingRange;
+            }
+            return rhs.mask == mask && rhs.key == key;
+        } catch (ClassCastException e) {
+        }
+    }
+    return false;
+}

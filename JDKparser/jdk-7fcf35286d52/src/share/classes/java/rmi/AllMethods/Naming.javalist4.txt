@@ -1,0 +1,30 @@
+/**
+ * Returns an array of the names bound in the registry.  The names are
+ * URL-formatted (without the scheme component) strings. The array contains
+ * a snapshot of the names present in the registry at the time of the
+ * call.
+ *
+ * @param   name a registry name in URL format (without the scheme
+ *          component)
+ * @return  an array of names (in the appropriate format) bound
+ *          in the registry
+ * @exception MalformedURLException if the name is not an appropriately
+ *  formatted URL
+ * @exception RemoteException if registry could not be contacted.
+ * @since JDK1.1
+ */
+public static String[] list(String name) throws RemoteException, java.net.MalformedURLException {
+    ParsedNamingURL parsed = parseURL(name);
+    Registry registry = getRegistry(parsed);
+    String prefix = "";
+    if (parsed.port > 0 || !parsed.host.equals(""))
+        prefix += "//" + parsed.host;
+    if (parsed.port > 0)
+        prefix += ":" + parsed.port;
+    prefix += "/";
+    String[] names = registry.list();
+    for (int i = 0; i < names.length; i++) {
+        names[i] = prefix + names[i];
+    }
+    return names;
+}

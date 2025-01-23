@@ -1,0 +1,23 @@
+private String createString(String string) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("<string>");
+    int index = 0;
+    while (index < string.length()) {
+        int point = string.codePointAt(index);
+        int count = Character.charCount(point);
+        if (isValidCharCode(point) && this.encoder.canEncode(string.substring(index, index + count))) {
+            String value = quoteCharCode(point);
+            if (value != null) {
+                sb.append(value);
+            } else {
+                sb.appendCodePoint(point);
+            }
+            index += count;
+        } else {
+            sb.append(createString(string.charAt(index)));
+            index++;
+        }
+    }
+    sb.append("</string>");
+    return sb.toString();
+}

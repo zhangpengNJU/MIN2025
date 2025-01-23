@@ -1,0 +1,4 @@
+// Support for resetting lock while deserializing
+private void resetLock() {
+    UNSAFE.putObjectVolatile(this, lockOffset, new ReentrantLock());
+}

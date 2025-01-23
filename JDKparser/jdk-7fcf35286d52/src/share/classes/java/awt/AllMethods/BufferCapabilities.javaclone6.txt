@@ -1,0 +1,11 @@
+/**
+ * @return a copy of this BufferCapabilities object.
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        // Since we implement Cloneable, this should never happen
+        throw new InternalError(e);
+    }
+}

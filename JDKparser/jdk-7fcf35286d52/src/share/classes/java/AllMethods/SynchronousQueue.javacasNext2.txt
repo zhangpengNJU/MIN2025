@@ -1,0 +1,3 @@
+boolean casNext(SNode cmp, SNode val) {
+    return cmp == next && UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
+}

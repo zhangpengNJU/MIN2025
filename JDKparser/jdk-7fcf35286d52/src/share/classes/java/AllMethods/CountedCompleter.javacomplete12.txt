@@ -1,0 +1,27 @@
+/**
+ * Regardless of pending count, invokes
+ * {@link #onCompletion(CountedCompleter)}, marks this task as
+ * complete and further triggers {@link #tryComplete} on this
+ * task's completer, if one exists.  The given rawResult is
+ * used as an argument to {@link #setRawResult} before invoking
+ * {@link #onCompletion(CountedCompleter)} or marking this task
+ * as complete; its value is meaningful only for classes
+ * overriding {@code setRawResult}.  This method does not modify
+ * the pending count.
+ *
+ * <p>This method may be useful when forcing completion as soon as
+ * any one (versus all) of several subtask results are obtained.
+ * However, in the common (and recommended) case in which {@code
+ * setRawResult} is not overridden, this effect can be obtained
+ * more simply using {@code quietlyCompleteRoot();}.
+ *
+ * @param rawResult the raw result
+ */
+public void complete(T rawResult) {
+    CountedCompleter<?> p;
+    setRawResult(rawResult);
+    onCompletion(this);
+    quietlyComplete();
+    if ((p = completer) != null)
+        p.tryComplete();
+}

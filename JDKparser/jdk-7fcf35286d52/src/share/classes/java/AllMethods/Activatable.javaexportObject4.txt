@@ -1,0 +1,43 @@
+/**
+ * Registers an activation descriptor (with the specified location,
+ * data, and restart mode) for the specified object, and exports that
+ * object with the specified port.
+ *
+ * <p><strong>Note:</strong> Using this method (as well as the
+ * <code>Activatable</code> constructors that both register and export
+ * an activatable remote object) is strongly discouraged because the
+ * actions of registering and exporting the remote object are
+ * <i>not</i> guaranteed to be atomic.  Instead, an application should
+ * register an activation descriptor and export a remote object
+ * separately, so that exceptions can be handled properly.
+ *
+ * <p>This method invokes the {@link
+ * #exportObject(Remote,String,MarshalledObject,boolean,int,RMIClientSocketFactory,RMIServerSocketFactory)
+ * exportObject} method with the specified object, location, data,
+ * restart mode, and port, and <code>null</code> for both client and
+ * server socket factories, and then returns the resulting activation
+ * identifier.
+ *
+ * @param obj the object being exported
+ * @param location the object's code location
+ * @param data the object's bootstrapping data
+ * @param restart if true, the object is restarted (reactivated) when
+ * either the activator is restarted or the object's activation group
+ * is restarted after an unexpected crash; if false, the object is only
+ * activated on demand.  Specifying <code>restart</code> to be
+ * <code>true</code> does not force an initial immediate activation of
+ * a newly registered object;  initial activation is lazy.
+ * @param port the port on which the object is exported (an anonymous
+ * port is used if port=0)
+ * @return the activation identifier obtained from registering the
+ * descriptor, <code>desc</code>, with the activation system
+ * the wrong group
+ * @exception ActivationException if activation group is not active
+ * @exception RemoteException if object registration or export fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static ActivationID exportObject(Remote obj, String location, MarshalledObject<?> data, boolean restart, int port) throws ActivationException, RemoteException {
+    return exportObject(obj, location, data, restart, port, null, null);
+}

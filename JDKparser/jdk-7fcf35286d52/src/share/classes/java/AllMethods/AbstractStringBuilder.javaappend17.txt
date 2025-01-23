@@ -1,0 +1,10 @@
+// Documentation in subclasses because of synchro difference
+public AbstractStringBuilder append(StringBuffer sb) {
+    if (sb == null)
+        return appendNull();
+    int len = sb.length();
+    ensureCapacityInternal(count + len);
+    sb.getChars(0, len, value, count);
+    count += len;
+    return this;
+}

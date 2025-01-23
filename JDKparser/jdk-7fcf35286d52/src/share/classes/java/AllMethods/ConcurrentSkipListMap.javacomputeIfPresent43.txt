@@ -1,0 +1,32 @@
+/**
+ * If the value for the specified key is present, attempts to
+ * compute a new mapping given the key and its current mapped
+ * value. The function is <em>NOT</em> guaranteed to be applied
+ * once atomically.
+ *
+ * @param key key with which a value may be associated
+ * @param remappingFunction the function to compute a value
+ * @return the new value associated with the specified key, or null if none
+ * @throws NullPointerException if the specified key is null
+ *         or the remappingFunction is null
+ * @since 1.8
+ */
+public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    if (key == null || remappingFunction == null)
+        throw new NullPointerException();
+    Node<K, V> n;
+    Object v;
+    while ((n = findNode(key)) != null) {
+        if ((v = n.value) != null) {
+            @SuppressWarnings("unchecked")
+            V vv = (V) v;
+            V r = remappingFunction.apply(key, vv);
+            if (r != null) {
+                if (n.casValue(vv, r))
+                    return r;
+            } else if (doRemove(key, vv) != null)
+                break;
+        }
+    }
+    return null;
+}

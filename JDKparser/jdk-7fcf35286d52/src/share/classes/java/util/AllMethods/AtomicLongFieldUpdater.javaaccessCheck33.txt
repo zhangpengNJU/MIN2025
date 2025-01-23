@@ -1,0 +1,8 @@
+/**
+ * Checks that target argument is instance of cclass.  On
+ * failure, throws cause.
+ */
+private final void accessCheck(T obj) {
+    if (!cclass.isInstance(obj))
+        throw accessCheckException(obj);
+}

@@ -1,0 +1,22 @@
+final void decreaseComponentCount(Component c) {
+    synchronized (getTreeLock()) {
+        if (!c.isDisplayable()) {
+            throw new IllegalStateException("Peer does not exist while invoking the decreaseComponentCount() method");
+        }
+        int subHW = 0;
+        int subLW = 0;
+        if (c instanceof Container) {
+            subLW = ((Container) c).numOfLWComponents;
+            subHW = ((Container) c).numOfHWComponents;
+        }
+        if (c.isLightweight()) {
+            subLW++;
+        } else {
+            subHW++;
+        }
+        for (Container cont = this; cont != null; cont = cont.getContainer()) {
+            cont.numOfLWComponents -= subLW;
+            cont.numOfHWComponents -= subHW;
+        }
+    }
+}

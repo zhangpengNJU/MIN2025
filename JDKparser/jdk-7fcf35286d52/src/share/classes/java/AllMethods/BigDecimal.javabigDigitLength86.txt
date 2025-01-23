@@ -1,0 +1,18 @@
+/**
+ * Returns the length of the absolute value of a BigInteger, in
+ * decimal digits.
+ *
+ * @param b the BigInteger
+ * @return the length of the unscaled value, in decimal digits
+ */
+private static int bigDigitLength(BigInteger b) {
+    /*
+         * Same idea as the long version, but we need a better
+         * approximation of log10(2). Using 646456993/2^31
+         * is accurate up to max possible reported bitLength.
+         */
+    if (b.signum == 0)
+        return 1;
+    int r = (int) ((((long) b.bitLength() + 1) * 646456993) >>> 31);
+    return b.compareMagnitude(bigTenToThe(r)) < 0 ? r : r + 1;
+}

@@ -1,0 +1,11 @@
+/*
+     * Clean up any resources allocated when dispatcher was created;
+     * should be called from Container.removeNotify
+     */
+void dispose() {
+    // System.out.println("Disposing lw dispatcher");
+    stopListeningForOtherDrags();
+    mouseEventTarget.clear();
+    targetLastEntered.clear();
+    targetLastEnteredDT.clear();
+}

@@ -1,0 +1,15 @@
+/**
+ * Adds a <code>Rectangle2D</code> object to this
+ * <code>Rectangle2D</code>.  The resulting <code>Rectangle2D</code>
+ * is the union of the two <code>Rectangle2D</code> objects.
+ * @param r the <code>Rectangle2D</code> to add to this
+ * <code>Rectangle2D</code>.
+ * @since 1.2
+ */
+public void add(Rectangle2D r) {
+    double x1 = Math.min(getMinX(), r.getMinX());
+    double x2 = Math.max(getMaxX(), r.getMaxX());
+    double y1 = Math.min(getMinY(), r.getMinY());
+    double y2 = Math.max(getMaxY(), r.getMaxY());
+    setRect(x1, y1, x2 - x1, y2 - y1);
+}

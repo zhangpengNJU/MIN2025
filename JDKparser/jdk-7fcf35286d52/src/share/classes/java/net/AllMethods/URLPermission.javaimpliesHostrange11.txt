@@ -1,0 +1,22 @@
+private boolean impliesHostrange(Authority that) {
+    String thishost = this.p.hostname();
+    String thathost = that.p.hostname();
+    if (p.wildcard() && thishost.equals("")) {
+        // this "*" implies all others
+        return true;
+    }
+    if (that.p.wildcard() && thathost.equals("")) {
+        // that "*" can only be implied by this "*"
+        return false;
+    }
+    if (thishost.equals(thathost)) {
+        // covers all cases of literal IP addresses and fixed
+        // domain names.
+        return true;
+    }
+    if (this.p.wildcard()) {
+        // this "*.foo.com" implies "bub.bar.foo.com"
+        return thathost.endsWith(thishost);
+    }
+    return false;
+}

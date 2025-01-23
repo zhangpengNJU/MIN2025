@@ -1,0 +1,30 @@
+// Character <= 0xff (basic latin) is handled by internal fast-path
+// to avoid initializing large tables.
+// Note: performance of this "fast-path" code may be sub-optimal
+// in negative cases for some accessors due to complicated ranges.
+// Should revisit after optimization of table initialization.
+static final CharacterData of(int ch) {
+    if (ch >>> 8 == 0) {
+        // fast-path
+        return CharacterDataLatin1.instance;
+    } else {
+        switch(// plane 00-16
+        ch >>> 16) {
+            case (0):
+                return CharacterData00.instance;
+            case (1):
+                return CharacterData01.instance;
+            case (2):
+                return CharacterData02.instance;
+            case (14):
+                return CharacterData0E.instance;
+            // Private Use
+            case (15):
+            case // Private Use
+            (16):
+                return CharacterDataPrivateUse.instance;
+            default:
+                return CharacterDataUndefined.instance;
+        }
+    }
+}

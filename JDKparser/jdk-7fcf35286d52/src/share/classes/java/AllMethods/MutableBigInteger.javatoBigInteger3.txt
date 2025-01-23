@@ -1,0 +1,8 @@
+/**
+ * Convert this MutableBigInteger to a BigInteger object.
+ */
+BigInteger toBigInteger(int sign) {
+    if (intLen == 0 || sign == 0)
+        return BigInteger.ZERO;
+    return new BigInteger(getMagnitudeArray(), sign);
+}

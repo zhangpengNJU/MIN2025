@@ -1,0 +1,11 @@
+/**
+ * Returns the monitor for the activation group.
+ */
+private ActivationMonitor getMonitor() throws RemoteException {
+    synchronized (ActivationGroup.class) {
+        if (monitor != null) {
+            return monitor;
+        }
+    }
+    throw new RemoteException("monitor not received");
+}

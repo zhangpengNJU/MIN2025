@@ -1,0 +1,24 @@
+/**
+ * If the lock state matches the given stamp, releases the
+ * non-exclusive lock.
+ *
+ * @param stamp a stamp returned by a read-lock operation
+ * @throws IllegalMonitorStateException if the stamp does
+ * not match the current state of this lock
+ */
+public void unlockRead(long stamp) {
+    long s, m;
+    WNode h;
+    for (; ; ) {
+        if (((s = state) & SBITS) != (stamp & SBITS) || (stamp & ABITS) == 0L || (m = s & ABITS) == 0L || m == WBIT)
+            throw new IllegalMonitorStateException();
+        if (m < RFULL) {
+            if (U.compareAndSwapLong(this, STATE, s, s - RUNIT)) {
+                if (m == RUNIT && (h = whead) != null && h.status != 0)
+                    release(h);
+                break;
+            }
+        } else if (tryDecReaderOverflow(s) != 0L)
+            break;
+    }
+}

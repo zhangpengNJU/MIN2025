@@ -1,0 +1,12 @@
+/**
+ * Dumps the list of focus requests to stderr
+ */
+void dumpRequests() {
+    System.err.println(">>> Requests dump, time: " + System.currentTimeMillis());
+    synchronized (heavyweightRequests) {
+        for (HeavyweightFocusRequest req : heavyweightRequests) {
+            System.err.println(">>> Req: " + req);
+        }
+    }
+    System.err.println("");
+}

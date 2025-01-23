@@ -1,0 +1,9 @@
+@Override
+public void accept(T t) {
+    if (present) {
+        value = op.apply(value, t);
+    } else {
+        value = t;
+        present = true;
+    }
+}

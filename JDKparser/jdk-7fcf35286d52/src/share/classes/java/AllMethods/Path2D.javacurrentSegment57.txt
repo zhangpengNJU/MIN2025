@@ -1,0 +1,10 @@
+public int currentSegment(float[] coords) {
+    int type = path.pointTypes[typeIdx];
+    int numCoords = curvecoords[type];
+    if (numCoords > 0) {
+        for (int i = 0; i < numCoords; i++) {
+            coords[i] = (float) doubleCoords[pointIdx + i];
+        }
+    }
+    return type;
+}

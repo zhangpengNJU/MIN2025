@@ -1,0 +1,37 @@
+/**
+ * Initiate a query.  Store a promise (placeholder) if there is no value yet.
+ */
+synchronized <T> Entry<T> startEntry(ClassValue<T> classValue) {
+    // one map has entries for all value types <T>
+    @SuppressWarnings("unchecked")
+    Entry<T> e = (Entry<T>) get(classValue.identity);
+    Version<T> v = classValue.version();
+    if (e == null) {
+        e = v.promise();
+        // The presence of a promise means that a value is pending for v.
+        // Eventually, finishEntry will overwrite the promise.
+        put(classValue.identity, e);
+        // Note that the promise is never entered into the cache!
+        return e;
+    } else if (e.isPromise()) {
+        // Somebody else has asked the same question.
+        // Let the races begin!
+        if (e.version() != v) {
+            e = v.promise();
+            put(classValue.identity, e);
+        }
+        return e;
+    } else {
+        // there is already a completed entry here; report it
+        if (e.version() != v) {
+            // There is a stale but valid entry here; make it fresh again.
+            // Once an entry is in the hash table, we don't care what its version is.
+            e = e.refreshVersion(v);
+            put(classValue.identity, e);
+        }
+        // Add to the cache, to enable the fast path, next time.
+        checkCacheLoad();
+        addToCache(classValue, e);
+        return e;
+    }
+}

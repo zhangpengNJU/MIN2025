@@ -1,0 +1,10 @@
+/**
+ * Completes this builder by creating the formatter.
+ * This uses the default locale.
+ *
+ * @param resolverStyle  the resolver style to use, not null
+ * @return the created formatter, not null
+ */
+DateTimeFormatter toFormatter(ResolverStyle resolverStyle, Chronology chrono) {
+    return toFormatter(Locale.getDefault(Locale.Category.FORMAT), resolverStyle, chrono);
+}

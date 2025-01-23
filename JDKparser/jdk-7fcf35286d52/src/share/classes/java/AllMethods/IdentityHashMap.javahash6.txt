@@ -1,0 +1,8 @@
+/**
+ * Returns index for Object x.
+ */
+private static int hash(Object x, int length) {
+    int h = System.identityHashCode(x);
+    // Multiply by -127, and left-shift to use least bit as part of hash
+    return ((h << 1) - (h << 8)) & (length - 1);
+}

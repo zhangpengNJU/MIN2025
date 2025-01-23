@@ -1,0 +1,32 @@
+/**
+ * Return a {@code Path} object by converting the given {@link URI}. The
+ * resulting {@code Path} is associated with a {@link FileSystem} that
+ * already exists or is constructed automatically.
+ *
+ * <p> The exact form of the URI is file system provider dependent. In the
+ * case of the default provider, the URI scheme is {@code "file"} and the
+ * given URI has a non-empty path component, and undefined query, and
+ * fragment components. The resulting {@code Path} is associated with the
+ * default {@link FileSystems#getDefault default} {@code FileSystem}.
+ *
+ * <p> If a security manager is installed then a provider implementation
+ * may require to check a permission. In the case of the {@link
+ * FileSystems#getDefault default} file system, no permission check is
+ * required.
+ *
+ * @param   uri
+ *          The URI to convert
+ *
+ * @return  The resulting {@code Path}
+ *
+ * @throws  IllegalArgumentException
+ *          If the URI scheme does not identify this provider or other
+ *          preconditions on the uri parameter do not hold
+ * @throws  FileSystemNotFoundException
+ *          The file system, identified by the URI, does not exist and
+ *          cannot be created automatically
+ * @throws  SecurityException
+ *          If a security manager is installed and it denies an unspecified
+ *          permission.
+ */
+public abstract Path getPath(URI uri);

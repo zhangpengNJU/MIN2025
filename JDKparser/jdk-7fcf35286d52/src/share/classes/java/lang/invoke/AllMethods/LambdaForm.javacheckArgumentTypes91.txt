@@ -1,0 +1,18 @@
+private static boolean checkArgumentTypes(Object[] arguments, MethodType methodType) {
+    // FIXME
+    if (true)
+        return true;
+    MethodType dstType = methodType.form().erasedType();
+    MethodType srcType = dstType.basicType().wrap();
+    Class<?>[] ptypes = new Class<?>[arguments.length];
+    for (int i = 0; i < arguments.length; i++) {
+        Object arg = arguments[i];
+        Class<?> ptype = arg == null ? Object.class : arg.getClass();
+        // If the dest. type is a primitive we keep the
+        // argument type.
+        ptypes[i] = dstType.parameterType(i).isPrimitive() ? ptype : Object.class;
+    }
+    MethodType argType = MethodType.methodType(srcType.returnType(), ptypes).wrap();
+    assert (argType.isConvertibleTo(srcType)) : "wrong argument types: cannot convert " + argType + " to " + srcType;
+    return true;
+}

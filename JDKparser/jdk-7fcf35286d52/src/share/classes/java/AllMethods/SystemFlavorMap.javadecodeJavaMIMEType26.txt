@@ -1,0 +1,10 @@
+/**
+ * Decodes a <code>String</code> native for use as a Java MIME type.
+ *
+ * @param nat the <code>String</code> to decode
+ * @return the decoded Java MIME type, or <code>null</code> if nat is not
+ *         an encoded <code>String</code> native
+ */
+public static String decodeJavaMIMEType(String nat) {
+    return (isJavaMIMEType(nat)) ? nat.substring(JavaMIME.length(), nat.length()).trim() : null;
+}

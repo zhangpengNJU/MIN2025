@@ -1,0 +1,23 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to write to the file specified by
+ * the string argument.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>FilePermission(file,"write")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkWrite</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      file   the system-dependent filename.
+ * @exception  SecurityException  if the calling thread does not
+ *             have permission to access the specified file.
+ * @exception  NullPointerException if the <code>file</code> argument is
+ *             <code>null</code>.
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkWrite(String file) {
+    checkPermission(new FilePermission(file, SecurityConstants.FILE_WRITE_ACTION));
+}

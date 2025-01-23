@@ -1,0 +1,45 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case WINDOW_OPENED:
+            typeStr = "WINDOW_OPENED";
+            break;
+        case WINDOW_CLOSING:
+            typeStr = "WINDOW_CLOSING";
+            break;
+        case WINDOW_CLOSED:
+            typeStr = "WINDOW_CLOSED";
+            break;
+        case WINDOW_ICONIFIED:
+            typeStr = "WINDOW_ICONIFIED";
+            break;
+        case WINDOW_DEICONIFIED:
+            typeStr = "WINDOW_DEICONIFIED";
+            break;
+        case WINDOW_ACTIVATED:
+            typeStr = "WINDOW_ACTIVATED";
+            break;
+        case WINDOW_DEACTIVATED:
+            typeStr = "WINDOW_DEACTIVATED";
+            break;
+        case WINDOW_GAINED_FOCUS:
+            typeStr = "WINDOW_GAINED_FOCUS";
+            break;
+        case WINDOW_LOST_FOCUS:
+            typeStr = "WINDOW_LOST_FOCUS";
+            break;
+        case WINDOW_STATE_CHANGED:
+            typeStr = "WINDOW_STATE_CHANGED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    typeStr += ",opposite=" + getOppositeWindow() + ",oldState=" + oldState + ",newState=" + newState;
+    return typeStr;
+}

@@ -1,0 +1,11 @@
+final int getFence() {
+    // initialize fence and size on first use
+    int hi;
+    if ((hi = fence) < 0) {
+        WeakHashMap<K, V> m = map;
+        est = m.size();
+        expectedModCount = m.modCount;
+        hi = fence = m.table.length;
+    }
+    return hi;
+}

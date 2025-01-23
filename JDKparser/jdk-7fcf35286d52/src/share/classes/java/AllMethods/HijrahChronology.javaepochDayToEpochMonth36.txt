@@ -1,0 +1,16 @@
+/**
+ * Returns the epochMonth found by locating the epochDay in the table. The
+ * epochMonth is the index in the table
+ *
+ * @param epochDay
+ * @return The index of the element of the start of the month containing the
+ * epochDay.
+ */
+private int epochDayToEpochMonth(int epochDay) {
+    // binary search
+    int ndx = Arrays.binarySearch(hijrahEpochMonthStartDays, epochDay);
+    if (ndx < 0) {
+        ndx = -ndx - 2;
+    }
+    return ndx;
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the action listeners
+ * registered on this <code>TrayIcon</code>.
+ *
+ * @return all of the <code>ActionListeners</code> registered on
+ * this <code>TrayIcon</code> or an empty array if no action
+ * listeners are currently registered
+ *
+ * @see      #addActionListener(ActionListener)
+ * @see      #removeActionListener(ActionListener)
+ * @see      java.awt.event.ActionListener
+ */
+public synchronized ActionListener[] getActionListeners() {
+    return AWTEventMulticaster.getListeners(actionListener, ActionListener.class);
+}

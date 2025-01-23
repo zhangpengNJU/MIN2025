@@ -1,0 +1,19 @@
+public int read(byte[] b, int off, int len) throws IOException {
+    int avail = count - pos;
+    if (avail <= 0) {
+        if (len >= buf.length) {
+            return in.read(b, off, len);
+        }
+        fill();
+        avail = count - pos;
+        if (avail <= 0) {
+            return -1;
+        }
+    }
+    if (len > avail) {
+        len = avail;
+    }
+    System.arraycopy(buf, pos, b, off, len);
+    pos += len;
+    return len;
+}

@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ */
+public int getModifiersEx() {
+    int tmpModifiers = modifiers;
+    if (shouldExcludeButtonFromExtModifiers) {
+        tmpModifiers &= ~(InputEvent.getMaskForButton(getButton()));
+    }
+    return tmpModifiers & ~JDK_1_3_MODIFIERS;
+}

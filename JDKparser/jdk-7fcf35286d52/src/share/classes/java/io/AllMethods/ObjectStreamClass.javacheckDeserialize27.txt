@@ -1,0 +1,11 @@
+/**
+ * Throws an InvalidClassException if object instances referencing this
+ * class descriptor should not be allowed to deserialize.  This method does
+ * not apply to deserialization of enum constants.
+ */
+void checkDeserialize() throws InvalidClassException {
+    requireInitialized();
+    if (deserializeEx != null) {
+        throw deserializeEx.newInvalidClassException();
+    }
+}

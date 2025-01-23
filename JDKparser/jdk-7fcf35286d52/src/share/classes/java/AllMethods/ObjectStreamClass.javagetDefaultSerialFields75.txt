@@ -1,0 +1,18 @@
+/**
+ * Returns array of ObjectStreamFields corresponding to all non-static
+ * non-transient fields declared by given class.  Each ObjectStreamField
+ * contains a Field object for the field it represents.  If no default
+ * serializable fields exist, NO_FIELDS is returned.
+ */
+private static ObjectStreamField[] getDefaultSerialFields(Class<?> cl) {
+    Field[] clFields = cl.getDeclaredFields();
+    ArrayList<ObjectStreamField> list = new ArrayList<>();
+    int mask = Modifier.STATIC | Modifier.TRANSIENT;
+    for (int i = 0; i < clFields.length; i++) {
+        if ((clFields[i].getModifiers() & mask) == 0) {
+            list.add(new ObjectStreamField(clFields[i], false, true));
+        }
+    }
+    int size = list.size();
+    return (size == 0) ? NO_FIELDS : list.toArray(new ObjectStreamField[size]);
+}

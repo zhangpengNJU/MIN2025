@@ -1,0 +1,10 @@
+private void open(File fname, boolean append) throws IOException {
+    int len = 0;
+    if (append) {
+        len = (int) fname.length();
+    }
+    FileOutputStream fout = new FileOutputStream(fname.toString(), append);
+    BufferedOutputStream bout = new BufferedOutputStream(fout);
+    meter = new MeteredStream(bout, len);
+    setOutputStream(meter);
+}

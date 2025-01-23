@@ -1,0 +1,160 @@
+/**
+ * Return true if truncating the representation to the given number
+ * of digits will result in an increment to the last digit.  This
+ * method implements the rounding modes defined in the
+ * java.math.RoundingMode class.
+ * [bnf]
+ * @param maximumDigits the number of digits to keep, from 0 to
+ * <code>count-1</code>.  If 0, then all digits are rounded away, and
+ * this method returns true if a one should be generated (e.g., formatting
+ * 0.09 with "#.#").
+ * @param alreadyRounded whether or not rounding up has already happened.
+ * @param valueExactAsDecimal whether or not collected digits provide
+ * an exact decimal representation of the value.
+ * @exception ArithmeticException if rounding is needed with rounding
+ *            mode being set to RoundingMode.UNNECESSARY
+ * @return true if digit <code>maximumDigits-1</code> should be
+ * incremented
+ */
+private boolean shouldRoundUp(int maximumDigits, boolean alreadyRounded, boolean valueExactAsDecimal) {
+    if (maximumDigits < count) {
+        /*
+             * To avoid erroneous double-rounding or truncation when converting
+             * a binary double value to text, information about the exactness
+             * of the conversion result in FloatingDecimal, as well as any
+             * rounding done, is needed in this class.
+             *
+             * - For the  HALF_DOWN, HALF_EVEN, HALF_UP rounding rules below:
+             *   In the case of formating float or double, We must take into
+             *   account what FloatingDecimal has done in the binary to decimal
+             *   conversion.
+             *
+             *   Considering the tie cases, FloatingDecimal may round up the
+             *   value (returning decimal digits equal to tie when it is below),
+             *   or "truncate" the value to the tie while value is above it,
+             *   or provide the exact decimal digits when the binary value can be
+             *   converted exactly to its decimal representation given formating
+             *   rules of FloatingDecimal ( we have thus an exact decimal
+             *   representation of the binary value).
+             *
+             *   - If the double binary value was converted exactly as a decimal
+             *     value, then DigitList code must apply the expected rounding
+             *     rule.
+             *
+             *   - If FloatingDecimal already rounded up the decimal value,
+             *     DigitList should neither round up the value again in any of
+             *     the three rounding modes above.
+             *
+             *   - If FloatingDecimal has truncated the decimal value to
+             *     an ending '5' digit, DigitList should round up the value in
+             *     all of the three rounding modes above.
+             *
+             *
+             *   This has to be considered only if digit at maximumDigits index
+             *   is exactly the last one in the set of digits, otherwise there are
+             *   remaining digits after that position and we don't have to consider
+             *   what FloatingDecimal did.
+             *
+             * - Other rounding modes are not impacted by these tie cases.
+             *
+             * - For other numbers that are always converted to exact digits
+             *   (like BigInteger, Long, ...), the passed alreadyRounded boolean
+             *   have to be  set to false, and valueExactAsDecimal has to be set to
+             *   true in the upper DigitList call stack, providing the right state
+             *   for those situations..
+             */
+        switch(roundingMode) {
+            case UP:
+                for (int i = maximumDigits; i < count; ++i) {
+                    if (digits[i] != '0') {
+                        return true;
+                    }
+                }
+                break;
+            case DOWN:
+                break;
+            case CEILING:
+                for (int i = maximumDigits; i < count; ++i) {
+                    if (digits[i] != '0') {
+                        return !isNegative;
+                    }
+                }
+                break;
+            case FLOOR:
+                for (int i = maximumDigits; i < count; ++i) {
+                    if (digits[i] != '0') {
+                        return isNegative;
+                    }
+                }
+                break;
+            case HALF_UP:
+            case HALF_DOWN:
+                if (digits[maximumDigits] > '5') {
+                    // Value is above tie ==> must round up
+                    return true;
+                } else if (digits[maximumDigits] == '5') {
+                    // Digit at rounding position is a '5'. Tie cases.
+                    if (maximumDigits != (count - 1)) {
+                        // There are remaining digits. Above tie => must round up
+                        return true;
+                    } else {
+                        // Digit at rounding position is the last one !
+                        if (valueExactAsDecimal) {
+                            // Exact binary representation. On the tie.
+                            // Apply rounding given by roundingMode.
+                            return roundingMode == RoundingMode.HALF_UP;
+                        } else {
+                            // Not an exact binary representation.
+                            // Digit sequence either rounded up or truncated.
+                            // Round up only if it was truncated.
+                            return !alreadyRounded;
+                        }
+                    }
+                }
+                // Digit at rounding position is < '5' ==> no round up.
+                // Just let do the default, which is no round up (thus break).
+                break;
+            case HALF_EVEN:
+                // Implement IEEE half-even rounding
+                if (digits[maximumDigits] > '5') {
+                    return true;
+                } else if (digits[maximumDigits] == '5') {
+                    if (maximumDigits == (count - 1)) {
+                        // the rounding position is exactly the last index :
+                        if (alreadyRounded)
+                            // If FloatingDecimal rounded up (value was below tie),
+                            // then we should not round up again.
+                            return false;
+                        if (!valueExactAsDecimal)
+                            // Otherwise if the digits don't represent exact value,
+                            // value was above tie and FloatingDecimal truncated
+                            // digits to tie. We must round up.
+                            return true;
+                        else {
+                            // This is an exact tie value, and FloatingDecimal
+                            // provided all of the exact digits. We thus apply
+                            // HALF_EVEN rounding rule.
+                            return ((maximumDigits > 0) && (digits[maximumDigits - 1] % 2 != 0));
+                        }
+                    } else {
+                        // Rounds up if it gives a non null digit after '5'
+                        for (int i = maximumDigits + 1; i < count; ++i) {
+                            if (digits[i] != '0')
+                                return true;
+                        }
+                    }
+                }
+                break;
+            case UNNECESSARY:
+                for (int i = maximumDigits; i < count; ++i) {
+                    if (digits[i] != '0') {
+                        throw new ArithmeticException("Rounding needed with the rounding mode being set to RoundingMode.UNNECESSARY");
+                    }
+                }
+                break;
+            default:
+                assert false;
+        }
+    }
+    return false;
+}

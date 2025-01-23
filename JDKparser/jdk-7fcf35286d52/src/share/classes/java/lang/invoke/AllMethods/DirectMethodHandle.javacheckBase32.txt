@@ -1,0 +1,14 @@
+@ForceInline
+static /*non-public*/
+Object checkBase(Object obj) {
+    // Note that the object's class has already been verified,
+    // since the parameter type of the Accessor method handle
+    // is either member.getDeclaringClass or a subclass.
+    // This was verified in DirectMethodHandle.make.
+    // Therefore, the only remaining check is for null.
+    // Since this check is *not* guaranteed by Unsafe.getInt
+    // and its siblings, we need to make an explicit one here.
+    // maybe throw NPE
+    obj.getClass();
+    return obj;
+}

@@ -1,0 +1,47 @@
+/**
+ * Returns two paths corresponding to the strong and weak caret.
+ * @param offset an offset in this <code>TextLayout</code>
+ * @param bounds the bounds to which to extend the carets.  The
+ * bounds is in baseline-relative coordinates.
+ * @param policy the specified <code>CaretPolicy</code>
+ * @return an array of two paths.  Element zero is the strong
+ * caret.  If there are two carets, element one is the weak caret,
+ * otherwise it is <code>null</code>. The returned shapes
+ * are in standard coordinates.
+ */
+public Shape[] getCaretShapes(int offset, Rectangle2D bounds, CaretPolicy policy) {
+    ensureCache();
+    if (offset < 0 || offset > characterCount) {
+        throw new IllegalArgumentException("Offset out of bounds in TextLayout.getCaretShapes()");
+    }
+    if (bounds == null) {
+        throw new IllegalArgumentException("Null Rectangle2D passed to TextLayout.getCaretShapes()");
+    }
+    if (policy == null) {
+        throw new IllegalArgumentException("Null CaretPolicy passed to TextLayout.getCaretShapes()");
+    }
+    Shape[] result = new Shape[2];
+    TextHitInfo hit = TextHitInfo.afterOffset(offset);
+    int hitCaret = hitToCaret(hit);
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    Shape hitShape = pathToShape(getCaretPath(hit, bounds), false, lp);
+    TextHitInfo otherHit = hit.getOtherHit();
+    int otherCaret = hitToCaret(otherHit);
+    if (hitCaret == otherCaret) {
+        result[0] = hitShape;
+    } else {
+        // more than one caret
+        Shape otherShape = pathToShape(getCaretPath(otherHit, bounds), false, lp);
+        TextHitInfo strongHit = policy.getStrongCaret(hit, otherHit, this);
+        boolean hitIsStrong = strongHit.equals(hit);
+        if (hitIsStrong) {
+            // then other is weak
+            result[0] = hitShape;
+            result[1] = otherShape;
+        } else {
+            result[0] = otherShape;
+            result[1] = hitShape;
+        }
+    }
+    return result;
+}

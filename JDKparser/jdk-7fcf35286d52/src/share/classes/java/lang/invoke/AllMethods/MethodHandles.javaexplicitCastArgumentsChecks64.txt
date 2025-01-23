@@ -1,0 +1,5 @@
+private static void explicitCastArgumentsChecks(MethodHandle target, MethodType newType) {
+    if (target.type().parameterCount() != newType.parameterCount()) {
+        throw new WrongMethodTypeException("cannot explicitly cast " + target + " to " + newType);
+    }
+}

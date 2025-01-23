@@ -1,0 +1,34 @@
+/**
+ * Hook called from the JVM (via MethodHandleNatives) to link MH constants:
+ */
+/*non-public*/
+MethodHandle linkMethodHandleConstant(byte refKind, Class<?> defc, String name, Object type) throws ReflectiveOperationException {
+    if (!(type instanceof Class || type instanceof MethodType))
+        throw new InternalError("unresolved MemberName");
+    MemberName member = new MemberName(refKind, defc, name, type);
+    MethodHandle mh = LOOKASIDE_TABLE.get(member);
+    if (mh != null) {
+        checkSymbolicClass(defc);
+        return mh;
+    }
+    // Treat MethodHandle.invoke and invokeExact specially.
+    if (defc == MethodHandle.class && refKind == REF_invokeVirtual) {
+        mh = findVirtualForMH(member.getName(), member.getMethodType());
+        if (mh != null) {
+            return mh;
+        }
+    }
+    MemberName resolved = resolveOrFail(refKind, member);
+    mh = getDirectMethodForConstant(refKind, defc, resolved);
+    if (mh instanceof DirectMethodHandle && canBeCached(refKind, defc, resolved)) {
+        MemberName key = mh.internalMemberName();
+        if (key != null) {
+            key = key.asNormalOriginal();
+        }
+        if (member.equals(key)) {
+            // better safe than sorry
+            LOOKASIDE_TABLE.put(key, (DirectMethodHandle) mh);
+        }
+    }
+    return mh;
+}

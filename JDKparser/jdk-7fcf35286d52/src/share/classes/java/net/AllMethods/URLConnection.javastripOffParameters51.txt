@@ -1,0 +1,14 @@
+/*
+     * Media types are in the format: type/subtype*(; parameter).
+     * For looking up the content handler, we should ignore those
+     * parameters.
+     */
+private String stripOffParameters(String contentType) {
+    if (contentType == null)
+        return null;
+    int index = contentType.indexOf(';');
+    if (index > 0)
+        return contentType.substring(0, index);
+    else
+        return contentType;
+}

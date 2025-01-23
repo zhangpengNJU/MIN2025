@@ -1,0 +1,43 @@
+// Returns a mirrored Level object that matches the given name as
+// specified in the Level.parse method.  Returns null if not found.
+// 
+// It returns the same Level object as the one returned by Level.parse
+// method if the given name is a non-localized name or integer.
+// 
+// If the name is a localized name, findLevel and parse method may
+// return a different level value if there is a custom Level subclass
+// that overrides Level.getLocalizedName() to return a different string
+// than what's returned by the default implementation.
+// 
+static Level findLevel(String name) {
+    if (name == null) {
+        throw new NullPointerException();
+    }
+    KnownLevel level;
+    // Look for a known Level with the given non-localized name.
+    level = KnownLevel.findByName(name);
+    if (level != null) {
+        return level.mirroredLevel;
+    }
+    // Now, check if the given name is an integer.  If so,
+    // first look for a Level with the given value and then
+    // if necessary create one.
+    try {
+        int x = Integer.parseInt(name);
+        level = KnownLevel.findByValue(x);
+        if (level == null) {
+            // add new Level
+            Level levelObject = new Level(name, x);
+            level = KnownLevel.findByValue(x);
+        }
+        return level.mirroredLevel;
+    } catch (NumberFormatException ex) {
+    // Not an integer.
+    // Drop through.
+    }
+    level = KnownLevel.findByLocalizedLevelName(name);
+    if (level != null) {
+        return level.mirroredLevel;
+    }
+    return null;
+}

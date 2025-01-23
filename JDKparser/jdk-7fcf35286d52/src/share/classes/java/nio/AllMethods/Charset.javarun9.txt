@@ -1,0 +1,9 @@
+public Charset run() {
+    for (Iterator<CharsetProvider> i = providers(); i.hasNext(); ) {
+        CharsetProvider cp = i.next();
+        Charset cs = cp.charsetForName(charsetName);
+        if (cs != null)
+            return cs;
+    }
+    return null;
+}

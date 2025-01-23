@@ -1,0 +1,15 @@
+/**
+ * Returns the first boundary following the specified character offset. If the
+ * specified offset equals to the last text boundary, it returns
+ * <code>BreakIterator.DONE</code> and the iterator's current position is unchanged.
+ * Otherwise, the iterator's current position is set to the returned boundary.
+ * The value returned is always greater than the offset or the value
+ * <code>BreakIterator.DONE</code>.
+ * @param offset the character offset to begin scanning.
+ * @return The first boundary after the specified offset or
+ * <code>BreakIterator.DONE</code> if the last text boundary is passed in
+ * as the offset.
+ * @exception  IllegalArgumentException if the specified offset is less than
+ * the first text boundary or greater than the last text boundary.
+ */
+public abstract int following(int offset);

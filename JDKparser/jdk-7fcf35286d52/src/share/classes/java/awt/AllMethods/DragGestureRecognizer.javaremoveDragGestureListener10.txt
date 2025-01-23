@@ -1,0 +1,18 @@
+/**
+ * unregister the current DragGestureListener
+ * <P>
+ * @param dgl the <code>DragGestureListener</code> to unregister
+ * from this <code>DragGestureRecognizer</code>
+ * <P>
+ * @throws IllegalArgumentException if
+ * dgl is not (equal to) the currently registered <code>DragGestureListener</code>.
+ */
+public synchronized void removeDragGestureListener(DragGestureListener dgl) {
+    if (dragGestureListener == null || !dragGestureListener.equals(dgl))
+        throw new IllegalArgumentException();
+    else {
+        dragGestureListener = null;
+        if (component != null)
+            unregisterListeners();
+    }
+}

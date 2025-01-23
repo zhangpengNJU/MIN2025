@@ -1,0 +1,63 @@
+/**
+ * Helper function to index into the gradients array.  This is necessary
+ * because each interval has an array of colors with uniform size 255.
+ * However, the color intervals are not necessarily of uniform length, so
+ * a conversion is required.
+ *
+ * @param position the unmanipulated position, which will be mapped
+ *                 into the range 0 to 1
+ * @returns integer color to display
+ */
+protected final int indexIntoGradientsArrays(float position) {
+    // first, manipulate position value depending on the cycle method
+    if (cycleMethod == CycleMethod.NO_CYCLE) {
+        if (position > 1) {
+            // upper bound is 1
+            position = 1;
+        } else if (position < 0) {
+            // lower bound is 0
+            position = 0;
+        }
+    } else if (cycleMethod == CycleMethod.REPEAT) {
+        // get the fractional part
+        // (modulo behavior discards integer component)
+        position = position - (int) position;
+        // position should now be between -1 and 1
+        if (position < 0) {
+            // force it to be in the range 0-1
+            position = position + 1;
+        }
+    } else {
+        // cycleMethod == CycleMethod.REFLECT
+        if (position < 0) {
+            // take absolute value
+            position = -position;
+        }
+        // get the integer part
+        int part = (int) position;
+        // get the fractional part
+        position = position - part;
+        if ((part & 1) == 1) {
+            // integer part is odd, get reflected color instead
+            position = 1 - position;
+        }
+    }
+    // now, get the color based on this 0-1 position...
+    if (isSimpleLookup) {
+        // easy to compute: just scale index by array size
+        return gradient[(int) (position * fastGradientArraySize)];
+    } else {
+        // more complicated computation, to save space
+        // for all the gradient interval arrays
+        for (int i = 0; i < gradients.length; i++) {
+            if (position < fractions[i + 1]) {
+                // this is the array we want
+                float delta = position - fractions[i];
+                // this is the interval we want
+                int index = (int) ((delta / normalizedIntervals[i]) * (GRADIENT_SIZE_INDEX));
+                return gradients[i][index];
+            }
+        }
+    }
+    return gradients[gradients.length - 1][GRADIENT_SIZE_INDEX];
+}

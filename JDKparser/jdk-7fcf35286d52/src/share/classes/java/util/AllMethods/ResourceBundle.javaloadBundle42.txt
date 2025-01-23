@@ -1,0 +1,32 @@
+private static ResourceBundle loadBundle(CacheKey cacheKey, List<String> formats, Control control, boolean reload) {
+    // Here we actually load the bundle in the order of formats
+    // specified by the getFormats() value.
+    Locale targetLocale = cacheKey.getLocale();
+    ResourceBundle bundle = null;
+    int size = formats.size();
+    for (int i = 0; i < size; i++) {
+        String format = formats.get(i);
+        try {
+            bundle = control.newBundle(cacheKey.getName(), targetLocale, format, cacheKey.getLoader(), reload);
+        } catch (LinkageError error) {
+            // We need to handle the LinkageError case due to
+            // inconsistent case-sensitivity in ClassLoader.
+            // See 6572242 for details.
+            cacheKey.setCause(error);
+        } catch (Exception cause) {
+            cacheKey.setCause(cause);
+        }
+        if (bundle != null) {
+            // Set the format in the cache key so that it can be
+            // used when calling needsReload later.
+            cacheKey.setFormat(format);
+            bundle.name = cacheKey.getName();
+            bundle.locale = targetLocale;
+            // Bundle provider might reuse instances. So we should make
+            // sure to clear the expired flag here.
+            bundle.expired = false;
+            break;
+        }
+    }
+    return bundle;
+}

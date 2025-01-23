@@ -1,0 +1,22 @@
+/**
+ * Returns the unbiased exponent used in the representation of a
+ * {@code float}.  Special cases:
+ *
+ * <ul>
+ * <li>If the argument is NaN or infinite, then the result is
+ * {@link Float#MAX_EXPONENT} + 1.
+ * <li>If the argument is zero or subnormal, then the result is
+ * {@link Float#MIN_EXPONENT} -1.
+ * </ul>
+ * @param f a {@code float} value
+ * @return the unbiased exponent of the argument
+ * @since 1.6
+ */
+public static int getExponent(float f) {
+    /*
+         * Bitwise convert f to integer, mask out exponent bits, shift
+         * to the right and then subtract out float's bias adjust to
+         * get true exponent value
+         */
+    return ((Float.floatToRawIntBits(f) & FloatConsts.EXP_BIT_MASK) >> (FloatConsts.SIGNIFICAND_WIDTH - 1)) - FloatConsts.EXP_BIAS;
+}

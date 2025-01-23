@@ -1,0 +1,20 @@
+/**
+ * Processes events on this menu item. If the event is an
+ * instance of <code>ActionEvent</code>, it invokes
+ * <code>processActionEvent</code>, another method
+ * defined by <code>MenuItem</code>.
+ * <p>
+ * Currently, menu items only support action events.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the event
+ * @see         java.awt.MenuItem#processActionEvent
+ * @since       JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ActionEvent) {
+        processActionEvent((ActionEvent) e);
+    }
+}

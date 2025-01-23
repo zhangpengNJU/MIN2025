@@ -1,0 +1,6 @@
+final void setCurrentSequencedEvent(SequencedEvent current) {
+    synchronized (SequencedEvent.class) {
+        assert (current == null || currentSequencedEvent == null);
+        currentSequencedEvent = current;
+    }
+}

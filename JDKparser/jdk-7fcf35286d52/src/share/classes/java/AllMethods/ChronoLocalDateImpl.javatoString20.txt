@@ -1,0 +1,10 @@
+@Override
+public String toString() {
+    // getLong() reduces chances of exceptions in toString()
+    long yoe = getLong(YEAR_OF_ERA);
+    long moy = getLong(MONTH_OF_YEAR);
+    long dom = getLong(DAY_OF_MONTH);
+    StringBuilder buf = new StringBuilder(30);
+    buf.append(getChronology().toString()).append(" ").append(getEra()).append(" ").append(yoe).append(moy < 10 ? "-0" : "-").append(moy).append(dom < 10 ? "-0" : "-").append(dom);
+    return buf.toString();
+}

@@ -1,0 +1,16 @@
+/* Serialization support.
+     */
+protected void saveInternal(ObjectOutputStream s, String k) throws IOException {
+    if (a instanceof AWTEventMulticaster) {
+        ((AWTEventMulticaster) a).saveInternal(s, k);
+    } else if (a instanceof Serializable) {
+        s.writeObject(k);
+        s.writeObject(a);
+    }
+    if (b instanceof AWTEventMulticaster) {
+        ((AWTEventMulticaster) b).saveInternal(s, k);
+    } else if (b instanceof Serializable) {
+        s.writeObject(k);
+        s.writeObject(b);
+    }
+}

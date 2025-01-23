@@ -1,0 +1,25 @@
+/**
+ * Returns the family name of this <code>Font</code>, localized for
+ * the specified locale.
+ *
+ * <p>The family name of a font is font specific. Two fonts such as
+ * Helvetica Italic and Helvetica Bold have the same family name,
+ * <i>Helvetica</i>, whereas their font face names are
+ * <i>Helvetica Bold</i> and <i>Helvetica Italic</i>. The list of
+ * available family names may be obtained by using the
+ * {@link GraphicsEnvironment#getAvailableFontFamilyNames()} method.
+ *
+ * <p>Use <code>getFontName</code> to get the font face name of the font.
+ * @param l locale for which to get the family name
+ * @return a <code>String</code> representing the family name of the
+ *          font, localized for the specified locale.
+ * @see #getFontName
+ * @see java.util.Locale
+ * @since 1.2
+ */
+public String getFamily(Locale l) {
+    if (l == null) {
+        throw new NullPointerException("null locale doesn't mean default");
+    }
+    return getFont2D().getFamilyName(l);
+}

@@ -1,0 +1,27 @@
+/**
+ * Deletes a directory.
+ *
+ * <p> Unlike the {@link Files#delete delete()} method, this method
+ * does not first examine the file to determine if the file is a directory.
+ * Whether non-directories are deleted by this method is system dependent and
+ * therefore not specified. When the parameter is a relative path then the
+ * directory to delete is relative to this open directory.
+ *
+ * @param   path
+ *          the path of the directory to delete
+ *
+ * @throws  ClosedDirectoryStreamException
+ *          if the directory stream is closed
+ * @throws  NoSuchFileException
+ *          if the directory does not exist <i>(optional specific exception)</i>
+ * @throws  DirectoryNotEmptyException
+ *          if the directory could not otherwise be deleted because it is
+ *          not empty <i>(optional specific exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkDelete(String) checkDelete}
+ *          method is invoked to check delete access to the directory
+ */
+void deleteDirectory(T path) throws IOException;

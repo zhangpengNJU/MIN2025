@@ -1,0 +1,9 @@
+public static boolean isFilterableICM(ColorModel cm) {
+    if (cm instanceof IndexColorModel) {
+        IndexColorModel icm = (IndexColorModel) cm;
+        if (icm.getMapSize() <= 256) {
+            return true;
+        }
+    }
+    return false;
+}

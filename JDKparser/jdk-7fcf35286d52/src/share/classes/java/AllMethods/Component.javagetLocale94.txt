@@ -1,0 +1,23 @@
+/**
+ * Gets the locale of this component.
+ * @return this component's locale; if this component does not
+ *          have a locale, the locale of its parent is returned
+ * @see #setLocale
+ * @exception IllegalComponentStateException if the <code>Component</code>
+ *          does not have its own locale and has not yet been added to
+ *          a containment hierarchy such that the locale can be determined
+ *          from the containing parent
+ * @since  JDK1.1
+ */
+public Locale getLocale() {
+    Locale locale = this.locale;
+    if (locale != null) {
+        return locale;
+    }
+    Container parent = this.parent;
+    if (parent == null) {
+        throw new IllegalComponentStateException("This component must have a parent in order to determine its locale");
+    } else {
+        return parent.getLocale();
+    }
+}

@@ -1,0 +1,12 @@
+/**
+ * Serialize this {@code BigDecimal} to the stream in question
+ *
+ * @param s the stream to serialize to.
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    // Must inflate to maintain compatible serial form.
+    if (this.intVal == null)
+        UnsafeHolder.setIntValVolatile(this, BigInteger.valueOf(this.intCompact));
+    // Could reset intVal back to null if it has to be set.
+    s.defaultWriteObject();
+}

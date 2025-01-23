@@ -1,0 +1,9 @@
+/* Helper for subclasses of Executable.
+     *
+     * Returns an AnnotatedType object that represents the use of a type to
+     * specify the return type of the method/constructor represented by this
+     * Executable.
+     */
+AnnotatedType getAnnotatedReturnType0(Type returnType) {
+    return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().getConstantPool(getDeclaringClass()), this, getDeclaringClass(), returnType, TypeAnnotation.TypeAnnotationTarget.METHOD_RETURN);
+}

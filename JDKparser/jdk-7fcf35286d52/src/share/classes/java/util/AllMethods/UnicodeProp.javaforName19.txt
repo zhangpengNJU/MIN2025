@@ -1,0 +1,11 @@
+public static UnicodeProp forName(String propName) {
+    propName = propName.toUpperCase(Locale.ENGLISH);
+    String alias = aliases.get(propName);
+    if (alias != null)
+        propName = alias;
+    try {
+        return valueOf(propName);
+    } catch (IllegalArgumentException x) {
+    }
+    return null;
+}

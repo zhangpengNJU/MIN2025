@@ -1,0 +1,58 @@
+final void writeObject(java.io.ObjectOutputStream s, boolean isdbl) throws java.io.IOException {
+    s.defaultWriteObject();
+    float[] fCoords;
+    double[] dCoords;
+    if (isdbl) {
+        dCoords = ((Path2D.Double) this).doubleCoords;
+        fCoords = null;
+    } else {
+        fCoords = ((Path2D.Float) this).floatCoords;
+        dCoords = null;
+    }
+    int numTypes = this.numTypes;
+    s.writeByte(isdbl ? SERIAL_STORAGE_DBL_ARRAY : SERIAL_STORAGE_FLT_ARRAY);
+    s.writeInt(numTypes);
+    s.writeInt(numCoords);
+    s.writeByte((byte) windingRule);
+    int cindex = 0;
+    for (int i = 0; i < numTypes; i++) {
+        int npoints;
+        byte serialtype;
+        switch(pointTypes[i]) {
+            case SEG_MOVETO:
+                npoints = 1;
+                serialtype = (isdbl ? SERIAL_SEG_DBL_MOVETO : SERIAL_SEG_FLT_MOVETO);
+                break;
+            case SEG_LINETO:
+                npoints = 1;
+                serialtype = (isdbl ? SERIAL_SEG_DBL_LINETO : SERIAL_SEG_FLT_LINETO);
+                break;
+            case SEG_QUADTO:
+                npoints = 2;
+                serialtype = (isdbl ? SERIAL_SEG_DBL_QUADTO : SERIAL_SEG_FLT_QUADTO);
+                break;
+            case SEG_CUBICTO:
+                npoints = 3;
+                serialtype = (isdbl ? SERIAL_SEG_DBL_CUBICTO : SERIAL_SEG_FLT_CUBICTO);
+                break;
+            case SEG_CLOSE:
+                npoints = 0;
+                serialtype = SERIAL_SEG_CLOSE;
+                break;
+            default:
+                // Should never happen
+                throw new InternalError("unrecognized path type");
+        }
+        s.writeByte(serialtype);
+        while (--npoints >= 0) {
+            if (isdbl) {
+                s.writeDouble(dCoords[cindex++]);
+                s.writeDouble(dCoords[cindex++]);
+            } else {
+                s.writeFloat(fCoords[cindex++]);
+                s.writeFloat(fCoords[cindex++]);
+            }
+        }
+    }
+    s.writeByte(SERIAL_PATH_END);
+}

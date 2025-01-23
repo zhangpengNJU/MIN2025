@@ -1,0 +1,19 @@
+/**
+ * Updates the target method of this call site, according to the
+ * behavior defined by this call site's specific class.
+ * The immediate subclasses of {@code CallSite} document the
+ * class-specific behaviors of this method.
+ * <p>
+ * The type of the new target must be {@linkplain MethodType#equals equal to}
+ * the type of the old target.
+ *
+ * @param newTarget the new target
+ * @throws NullPointerException if the proposed new target is null
+ * @throws WrongMethodTypeException if the proposed new target
+ *         has a method type that differs from the previous target
+ * @see CallSite#getTarget
+ * @see ConstantCallSite#setTarget
+ * @see MutableCallSite#setTarget
+ * @see VolatileCallSite#setTarget
+ */
+public abstract void setTarget(MethodHandle newTarget);

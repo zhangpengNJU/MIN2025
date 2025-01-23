@@ -1,0 +1,12 @@
+/**
+ * Returns the child Component of this Window that has focus if this Window
+ * is focused; returns null otherwise.
+ *
+ * @return the child Component with focus, or null if this Window is not
+ *         focused
+ * @see #getMostRecentFocusOwner
+ * @see #isFocused
+ */
+public Component getFocusOwner() {
+    return (isFocused()) ? KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() : null;
+}

@@ -1,0 +1,17 @@
+/* ----------------- generic input stream methods ------------------ */
+/*
+         * The following methods are equivalent to their counterparts in
+         * InputStream, except that they interpret data block boundaries and
+         * read the requested data from within data blocks when in block data
+         * mode.
+         */
+public int read() throws IOException {
+    if (blkmode) {
+        if (pos == end) {
+            refill();
+        }
+        return (end >= 0) ? (buf[pos++] & 0xFF) : -1;
+    } else {
+        return in.read();
+    }
+}

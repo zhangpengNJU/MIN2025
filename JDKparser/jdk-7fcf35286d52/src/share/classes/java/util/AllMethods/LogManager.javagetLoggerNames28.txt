@@ -1,0 +1,6 @@
+synchronized Enumeration<String> getLoggerNames() {
+    // ensure that this context is properly initialized before
+    // returning logger names.
+    ensureInitialized();
+    return namedLoggers.keys();
+}

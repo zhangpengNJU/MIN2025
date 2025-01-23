@@ -1,0 +1,85 @@
+/**
+ * Checks if this URLPermission implies the given permission.
+ * Specifically, the following checks are done as if in the
+ * following sequence:
+ * <ul>
+ * <li>if 'p' is not an instance of URLPermission return false</li>
+ * <li>if any of p's methods are not in this's method list, and if
+ *     this's method list is not equal to "*", then return false.</li>
+ * <li>if any of p's headers are not in this's request header list, and if
+ *     this's request header list is not equal to "*", then return false.</li>
+ * <li>if this's url scheme is not equal to p's url scheme return false</li>
+ * <li>if the scheme specific part of this's url is '*' return true</li>
+ * <li>if the set of hosts defined by p's url hostrange is not a subset of
+ *     this's url hostrange then return false. For example, "*.foo.oracle.com"
+ *     is a subset of "*.oracle.com". "foo.bar.oracle.com" is not
+ *     a subset of "*.foo.oracle.com"</li>
+ * <li>if the portrange defined by p's url is not a subset of the
+ *     portrange defined by this's url then return false.
+ * <li>if the path or paths specified by p's url are contained in the
+ *     set of paths specified by this's url, then return true
+ * <li>otherwise, return false</li>
+ * </ul>
+ * <p>Some examples of how paths are matched are shown below:
+ * <table border>
+ * <caption>Examples of Path Matching</caption>
+ * <tr><th>this's path</th><th>p's path</th><th>match</th></tr>
+ * <tr><td>/a/b</td><td>/a/b</td><td>yes</td></tr>
+ * <tr><td>/a/b/*</td><td>/a/b/c</td><td>yes</td></tr>
+ * <tr><td>/a/b/*</td><td>/a/b/c/d</td><td>no</td></tr>
+ * <tr><td>/a/b/-</td><td>/a/b/c/d</td><td>yes</td></tr>
+ * <tr><td>/a/b/-</td><td>/a/b/c/d/e</td><td>yes</td></tr>
+ * <tr><td>/a/b/-</td><td>/a/b/c/*</td><td>yes</td></tr>
+ * <tr><td>/a/b/*</td><td>/a/b/c/-</td><td>no</td></tr>
+ * </table>
+ */
+public boolean implies(Permission p) {
+    if (!(p instanceof URLPermission)) {
+        return false;
+    }
+    URLPermission that = (URLPermission) p;
+    if (!this.methods.get(0).equals("*") && Collections.indexOfSubList(this.methods, that.methods) == -1) {
+        return false;
+    }
+    if (this.requestHeaders.isEmpty() && !that.requestHeaders.isEmpty()) {
+        return false;
+    }
+    if (!this.requestHeaders.isEmpty() && !this.requestHeaders.get(0).equals("*") && Collections.indexOfSubList(this.requestHeaders, that.requestHeaders) == -1) {
+        return false;
+    }
+    if (!this.scheme.equals(that.scheme)) {
+        return false;
+    }
+    if (this.ssp.equals("*")) {
+        return true;
+    }
+    if (!this.authority.implies(that.authority)) {
+        return false;
+    }
+    if (this.path == null) {
+        return that.path == null;
+    }
+    if (that.path == null) {
+        return false;
+    }
+    if (this.path.endsWith("/-")) {
+        String thisprefix = this.path.substring(0, this.path.length() - 1);
+        return that.path.startsWith(thisprefix);
+    }
+    if (this.path.endsWith("/*")) {
+        String thisprefix = this.path.substring(0, this.path.length() - 1);
+        if (!that.path.startsWith(thisprefix)) {
+            return false;
+        }
+        String thatsuffix = that.path.substring(thisprefix.length());
+        // suffix must not contain '/' chars
+        if (thatsuffix.indexOf('/') != -1) {
+            return false;
+        }
+        if (thatsuffix.equals("-")) {
+            return false;
+        }
+        return true;
+    }
+    return this.path.equals(that.path);
+}

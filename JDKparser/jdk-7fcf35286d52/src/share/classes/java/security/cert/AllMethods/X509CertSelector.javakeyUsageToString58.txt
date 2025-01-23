@@ -1,0 +1,40 @@
+// Copied from sun.security.x509.KeyUsageExtension
+// (without calling the superclass)
+/**
+ * Returns a printable representation of the KeyUsage.
+ */
+private static String keyUsageToString(boolean[] k) {
+    String s = "KeyUsage [\n";
+    try {
+        if (k[0]) {
+            s += "  DigitalSignature\n";
+        }
+        if (k[1]) {
+            s += "  Non_repudiation\n";
+        }
+        if (k[2]) {
+            s += "  Key_Encipherment\n";
+        }
+        if (k[3]) {
+            s += "  Data_Encipherment\n";
+        }
+        if (k[4]) {
+            s += "  Key_Agreement\n";
+        }
+        if (k[5]) {
+            s += "  Key_CertSign\n";
+        }
+        if (k[6]) {
+            s += "  Crl_Sign\n";
+        }
+        if (k[7]) {
+            s += "  Encipher_Only\n";
+        }
+        if (k[8]) {
+            s += "  Decipher_Only\n";
+        }
+    } catch (ArrayIndexOutOfBoundsException ex) {
+    }
+    s += "]\n";
+    return (s);
+}

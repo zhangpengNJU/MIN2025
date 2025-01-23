@@ -1,0 +1,11 @@
+/**
+ * Returns the length of the epochMonth. It is computed from the start of
+ * the following month minus the start of the requested month.
+ *
+ * @param epochMonth the epochMonth; assumed to be within range
+ * @return the length in days of the epochMonth
+ */
+private int epochMonthLength(int epochMonth) {
+    // The very last entry in the epochMonth table is not the start of a month
+    return hijrahEpochMonthStartDays[epochMonth + 1] - hijrahEpochMonthStartDays[epochMonth];
+}

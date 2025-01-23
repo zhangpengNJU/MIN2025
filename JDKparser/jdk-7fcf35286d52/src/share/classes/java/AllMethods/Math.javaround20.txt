@@ -1,0 +1,46 @@
+/**
+ * Returns the closest {@code long} to the argument, with ties
+ * rounding to positive infinity.
+ *
+ * <p>Special cases:
+ * <ul><li>If the argument is NaN, the result is 0.
+ * <li>If the argument is negative infinity or any value less than or
+ * equal to the value of {@code Long.MIN_VALUE}, the result is
+ * equal to the value of {@code Long.MIN_VALUE}.
+ * <li>If the argument is positive infinity or any value greater than or
+ * equal to the value of {@code Long.MAX_VALUE}, the result is
+ * equal to the value of {@code Long.MAX_VALUE}.</ul>
+ *
+ * @param   a   a floating-point value to be rounded to a
+ *          {@code long}.
+ * @return  the value of the argument rounded to the nearest
+ *          {@code long} value.
+ * @see     java.lang.Long#MAX_VALUE
+ * @see     java.lang.Long#MIN_VALUE
+ */
+public static long round(double a) {
+    long longBits = Double.doubleToRawLongBits(a);
+    long biasedExp = (longBits & DoubleConsts.EXP_BIT_MASK) >> (DoubleConsts.SIGNIFICAND_WIDTH - 1);
+    long shift = (DoubleConsts.SIGNIFICAND_WIDTH - 2 + DoubleConsts.EXP_BIAS) - biasedExp;
+    if ((shift & -64) == 0) {
+        // shift >= 0 && shift < 64
+        // a is a finite number such that pow(2,-64) <= ulp(a) < 1
+        long r = ((longBits & DoubleConsts.SIGNIF_BIT_MASK) | (DoubleConsts.SIGNIF_BIT_MASK + 1));
+        if (longBits < 0) {
+            r = -r;
+        }
+        // In the comments below each Java expression evaluates to the value
+        // the corresponding mathematical expression:
+        // (r) evaluates to a / ulp(a)
+        // (r >> shift) evaluates to floor(a * 2)
+        // ((r >> shift) + 1) evaluates to floor((a + 1/2) * 2)
+        // (((r >> shift) + 1) >> 1) evaluates to floor(a + 1/2)
+        return ((r >> shift) + 1) >> 1;
+    } else {
+        // a is either
+        // - a finite number with abs(a) < exp(2,DoubleConsts.SIGNIFICAND_WIDTH-64) < 1/2
+        // - a finite number with ulp(a) >= 1 and hence a is a mathematical integer
+        // - an infinity or NaN
+        return (long) a;
+    }
+}

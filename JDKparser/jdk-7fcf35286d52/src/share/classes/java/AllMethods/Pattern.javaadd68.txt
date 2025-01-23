@@ -1,0 +1,14 @@
+BitClass add(int c, int flags) {
+    assert c >= 0 && c <= 255;
+    if ((flags & CASE_INSENSITIVE) != 0) {
+        if (ASCII.isAscii(c)) {
+            bits[ASCII.toUpper(c)] = true;
+            bits[ASCII.toLower(c)] = true;
+        } else if ((flags & UNICODE_CASE) != 0) {
+            bits[Character.toLowerCase(c)] = true;
+            bits[Character.toUpperCase(c)] = true;
+        }
+    }
+    bits[c] = true;
+    return this;
+}

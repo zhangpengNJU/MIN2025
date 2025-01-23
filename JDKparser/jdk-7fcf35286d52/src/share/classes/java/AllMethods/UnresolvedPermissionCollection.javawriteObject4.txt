@@ -1,0 +1,31 @@
+/**
+ * @serialData Default field.
+ */
+/*
+     * Writes the contents of the perms field out as a Hashtable
+     * in which the values are Vectors for
+     * serialization compatibility with earlier releases.
+     */
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // Don't call out.defaultWriteObject()
+    // Copy perms into a Hashtable
+    Hashtable<String, Vector<UnresolvedPermission>> permissions = new Hashtable<>(perms.size() * 2);
+    // Convert each entry (List) into a Vector
+    synchronized (this) {
+        Set<Map.Entry<String, List<UnresolvedPermission>>> set = perms.entrySet();
+        for (Map.Entry<String, List<UnresolvedPermission>> e : set) {
+            // Convert list into Vector
+            List<UnresolvedPermission> list = e.getValue();
+            Vector<UnresolvedPermission> vec = new Vector<>(list.size());
+            synchronized (list) {
+                vec.addAll(list);
+            }
+            // Add to Hashtable being serialized
+            permissions.put(e.getKey(), vec);
+        }
+    }
+    // Write out serializable fields
+    ObjectOutputStream.PutField pfields = out.putFields();
+    pfields.put("permissions", permissions);
+    out.writeFields();
+}

@@ -1,0 +1,19 @@
+/*
+     * This method is overriden to handle opaque children in non-opaque
+     * containers.
+     */
+@Override
+final Region getOpaqueShape() {
+    checkTreeLock();
+    if (isLightweight() && isNonOpaqueForMixing() && hasLightweightDescendants()) {
+        Region s = Region.EMPTY_REGION;
+        for (int index = 0; index < getComponentCount(); index++) {
+            Component c = getComponent(index);
+            if (c.isLightweight() && c.isShowing()) {
+                s = s.getUnion(c.getOpaqueShape());
+            }
+        }
+        return s.getIntersection(getNormalShape());
+    }
+    return super.getOpaqueShape();
+}

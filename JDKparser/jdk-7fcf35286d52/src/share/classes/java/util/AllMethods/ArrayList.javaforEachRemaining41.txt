@@ -1,0 +1,21 @@
+@Override
+@SuppressWarnings("unchecked")
+public void forEachRemaining(Consumer<? super E> consumer) {
+    Objects.requireNonNull(consumer);
+    final int size = ArrayList.this.size;
+    int i = cursor;
+    if (i >= size) {
+        return;
+    }
+    final Object[] elementData = ArrayList.this.elementData;
+    if (i >= elementData.length) {
+        throw new ConcurrentModificationException();
+    }
+    while (i != size && modCount == expectedModCount) {
+        consumer.accept((E) elementData[i++]);
+    }
+    // update once at end of iteration to reduce heap write traffic
+    cursor = i;
+    lastRet = i - 1;
+    checkForComodification();
+}

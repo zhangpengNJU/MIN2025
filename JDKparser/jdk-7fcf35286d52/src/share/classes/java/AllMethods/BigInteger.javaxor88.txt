@@ -1,0 +1,13 @@
+/**
+ * Returns a BigInteger whose value is {@code (this ^ val)}.  (This method
+ * returns a negative BigInteger if and only if exactly one of this and
+ * val are negative.)
+ *
+ * @param val value to be XOR'ed with this BigInteger.
+ * @return {@code this ^ val}
+ */
+public BigInteger xor(BigInteger val) {
+    int[] result = new int[Math.max(intLength(), val.intLength())];
+    for (int i = 0; i < result.length; i++) result[i] = (getInt(result.length - i - 1) ^ val.getInt(result.length - i - 1));
+    return valueOf(result);
+}

@@ -1,0 +1,7 @@
+/**
+ * deserialize the instance
+ */
+private synchronized void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    ois.defaultReadObject();
+    deserialize(ois, (Collection) bcsListeners);
+}

@@ -1,0 +1,19 @@
+public void removeNodeChangeListener(NodeChangeListener ncl) {
+    synchronized (lock) {
+        if (removed)
+            throw new IllegalStateException("Node has been removed.");
+        if ((nodeListeners == null) || (nodeListeners.length == 0))
+            throw new IllegalArgumentException("Listener not registered.");
+        // Copy-on-write
+        int i = 0;
+        while (i < nodeListeners.length && nodeListeners[i] != ncl) i++;
+        if (i == nodeListeners.length)
+            throw new IllegalArgumentException("Listener not registered.");
+        NodeChangeListener[] newNl = new NodeChangeListener[nodeListeners.length - 1];
+        if (i != 0)
+            System.arraycopy(nodeListeners, 0, newNl, 0, i);
+        if (i != newNl.length)
+            System.arraycopy(nodeListeners, i + 1, newNl, i, newNl.length - i);
+        nodeListeners = newNl;
+    }
+}

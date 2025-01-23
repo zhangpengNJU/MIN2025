@@ -1,0 +1,14 @@
+/**
+ * This method returns an <code>int</code> representing
+ * the current state of the input device modifiers
+ * associated with the user's gesture. Typically these
+ * would be mouse buttons or keyboard modifiers.
+ * <P>
+ * If the <code>modifiers</code> passed to the constructor
+ * are invalid, this method returns them unchanged.
+ *
+ * @return the current state of the input device modifiers
+ */
+public int getGestureModifiers() {
+    return invalidModifiers ? gestureModifiers : gestureModifiers & JDK_1_3_MODIFIERS;
+}

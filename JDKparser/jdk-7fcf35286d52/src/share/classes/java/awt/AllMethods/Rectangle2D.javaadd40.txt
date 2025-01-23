@@ -1,0 +1,26 @@
+/**
+ * Adds a point, specified by the double precision arguments
+ * <code>newx</code> and <code>newy</code>, to this
+ * <code>Rectangle2D</code>.  The resulting <code>Rectangle2D</code>
+ * is the smallest <code>Rectangle2D</code> that
+ * contains both the original <code>Rectangle2D</code> and the
+ * specified point.
+ * <p>
+ * After adding a point, a call to <code>contains</code> with the
+ * added point as an argument does not necessarily return
+ * <code>true</code>. The <code>contains</code> method does not
+ * return <code>true</code> for points on the right or bottom
+ * edges of a rectangle. Therefore, if the added point falls on
+ * the left or bottom edge of the enlarged rectangle,
+ * <code>contains</code> returns <code>false</code> for that point.
+ * @param newx the X coordinate of the new point
+ * @param newy the Y coordinate of the new point
+ * @since 1.2
+ */
+public void add(double newx, double newy) {
+    double x1 = Math.min(getMinX(), newx);
+    double x2 = Math.max(getMaxX(), newx);
+    double y1 = Math.min(getMinY(), newy);
+    double y2 = Math.max(getMaxY(), newy);
+    setRect(x1, y1, x2 - x1, y2 - y1);
+}

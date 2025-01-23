@@ -1,0 +1,11 @@
+void set(Method method) {
+    if (method == null) {
+        this.signature = null;
+        this.methodRef = null;
+        this.typeRef = null;
+    } else {
+        this.signature = method.toGenericString();
+        this.methodRef = new SoftReference<>(method);
+        this.typeRef = new WeakReference<Class<?>>(method.getDeclaringClass());
+    }
+}

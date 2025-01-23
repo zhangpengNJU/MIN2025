@@ -1,0 +1,20 @@
+/**
+ * Sets the tooltip string for this <code>TrayIcon</code>. The
+ * tooltip is displayed automatically when the mouse hovers over
+ * the icon.  Setting the tooltip to <code>null</code> removes any
+ * tooltip text.
+ *
+ * When displayed, the tooltip string may be truncated on some platforms;
+ * the number of characters that may be displayed is platform-dependent.
+ *
+ * @param tooltip the string for the tooltip; if the value is
+ * <code>null</code> no tooltip is shown
+ * @see #getToolTip
+ */
+public void setToolTip(String tooltip) {
+    this.tooltip = tooltip;
+    TrayIconPeer peer = this.peer;
+    if (peer != null) {
+        peer.setToolTip(tooltip);
+    }
+}

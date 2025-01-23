@@ -1,0 +1,62 @@
+/**
+ * Returns an Extension object given any X509Certificate and extension oid.
+ * Throw an {@code IOException} if the extension byte value is
+ * malformed.
+ *
+ * @param cert a {@code X509Certificate}
+ * @param extId an {@code integer} which specifies the extension index.
+ * Currently, the supported extensions are as follows:
+ * index 0 - PrivateKeyUsageExtension
+ * index 1 - SubjectAlternativeNameExtension
+ * index 2 - NameConstraintsExtension
+ * index 3 - CertificatePoliciesExtension
+ * index 4 - ExtendedKeyUsageExtension
+ * @return an {@code Extension} object whose real type is as specified
+ * by the extension oid.
+ * @throws IOException if cannot construct the {@code Extension}
+ * object with the extension encoding retrieved from the passed in
+ * {@code X509Certificate}.
+ */
+private static Extension getExtensionObject(X509Certificate cert, int extId) throws IOException {
+    if (cert instanceof X509CertImpl) {
+        X509CertImpl impl = (X509CertImpl) cert;
+        switch(extId) {
+            case PRIVATE_KEY_USAGE_ID:
+                return impl.getPrivateKeyUsageExtension();
+            case SUBJECT_ALT_NAME_ID:
+                return impl.getSubjectAlternativeNameExtension();
+            case NAME_CONSTRAINTS_ID:
+                return impl.getNameConstraintsExtension();
+            case CERT_POLICIES_ID:
+                return impl.getCertificatePoliciesExtension();
+            case EXTENDED_KEY_USAGE_ID:
+                return impl.getExtendedKeyUsageExtension();
+            default:
+                return null;
+        }
+    }
+    byte[] rawExtVal = cert.getExtensionValue(EXTENSION_OIDS[extId]);
+    if (rawExtVal == null) {
+        return null;
+    }
+    DerInputStream in = new DerInputStream(rawExtVal);
+    byte[] encoded = in.getOctetString();
+    switch(extId) {
+        case PRIVATE_KEY_USAGE_ID:
+            try {
+                return new PrivateKeyUsageExtension(FALSE, encoded);
+            } catch (CertificateException ex) {
+                throw new IOException(ex.getMessage());
+            }
+        case SUBJECT_ALT_NAME_ID:
+            return new SubjectAlternativeNameExtension(FALSE, encoded);
+        case NAME_CONSTRAINTS_ID:
+            return new NameConstraintsExtension(FALSE, encoded);
+        case CERT_POLICIES_ID:
+            return new CertificatePoliciesExtension(FALSE, encoded);
+        case EXTENDED_KEY_USAGE_ID:
+            return new ExtendedKeyUsageExtension(FALSE, encoded);
+        default:
+            return null;
+    }
+}

@@ -1,0 +1,11 @@
+@Override
+public Event next() {
+    if (!walker.isOpen())
+        throw new IllegalStateException();
+    fetchNextIfNeeded();
+    if (next == null)
+        throw new NoSuchElementException();
+    Event result = next;
+    next = null;
+    return result;
+}

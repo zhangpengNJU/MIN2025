@@ -1,0 +1,27 @@
+/**
+ * Adds a curved segment, defined by two new points, to the path by
+ * drawing a Quadratic curve that intersects both the current
+ * coordinates and the specified coordinates {@code (x2,y2)},
+ * using the specified point {@code (x1,y1)} as a quadratic
+ * parametric control point.
+ * All coordinates are specified in float precision.
+ * <p>
+ * This method provides a single precision variant of
+ * the double precision {@code quadTo()} method on the
+ * base {@code Path2D} class.
+ *
+ * @param x1 the X coordinate of the quadratic control point
+ * @param y1 the Y coordinate of the quadratic control point
+ * @param x2 the X coordinate of the final end point
+ * @param y2 the Y coordinate of the final end point
+ * @see Path2D#quadTo
+ * @since 1.6
+ */
+public final synchronized void quadTo(float x1, float y1, float x2, float y2) {
+    needRoom(true, 4);
+    pointTypes[numTypes++] = SEG_QUADTO;
+    floatCoords[numCoords++] = x1;
+    floatCoords[numCoords++] = y1;
+    floatCoords[numCoords++] = x2;
+    floatCoords[numCoords++] = y2;
+}

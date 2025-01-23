@@ -1,0 +1,21 @@
+/**
+ * Rescales the pixel data in the source Raster.
+ * If the destination Raster is null, a new Raster will be created.
+ * The source and destination must have the same number of bands.
+ * Otherwise, an IllegalArgumentException is thrown.
+ * Note that the number of scaling factors/offsets in this object must
+ * meet the restrictions stated in the class comments above.
+ * Otherwise, an IllegalArgumentException is thrown.
+ * @param src the <code>Raster</code> to be filtered
+ * @param dst the destination for the filtering operation
+ *            or <code>null</code>
+ * @return the filtered <code>WritableRaster</code>.
+ * @throws IllegalArgumentException if <code>src</code> and
+ *         <code>dst</code> do not have the same number of bands,
+ *         or if the number of scaling factors and offsets in this
+ *         <code>RescaleOp</code> do not meet the requirements
+ *         stated in the class comments.
+ */
+public final WritableRaster filter(Raster src, WritableRaster dst) {
+    return filterRasterImpl(src, dst, length, true);
+}

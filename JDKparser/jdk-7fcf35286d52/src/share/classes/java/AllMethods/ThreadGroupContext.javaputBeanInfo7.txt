@@ -1,0 +1,6 @@
+BeanInfo putBeanInfo(Class<?> type, BeanInfo info) {
+    if (this.beanInfoCache == null) {
+        this.beanInfoCache = new WeakHashMap<>();
+    }
+    return this.beanInfoCache.put(type, info);
+}

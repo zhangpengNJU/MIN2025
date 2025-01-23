@@ -1,0 +1,24 @@
+/**
+ * This is a utility method to help in loading icon images.
+ * It takes the name of a resource file associated with the
+ * current object's class file and loads an image object
+ * from that file.  Typically images will be GIFs.
+ * <p>
+ * @param resourceName  A pathname relative to the directory
+ *          holding the class file of the current class.  For example,
+ *          "wombat.gif".
+ * @return  an image object.  May be null if the load failed.
+ */
+public Image loadImage(final String resourceName) {
+    try {
+        final URL url = getClass().getResource(resourceName);
+        if (url != null) {
+            final ImageProducer ip = (ImageProducer) url.getContent();
+            if (ip != null) {
+                return Toolkit.getDefaultToolkit().createImage(ip);
+            }
+        }
+    } catch (final Exception ignored) {
+    }
+    return null;
+}

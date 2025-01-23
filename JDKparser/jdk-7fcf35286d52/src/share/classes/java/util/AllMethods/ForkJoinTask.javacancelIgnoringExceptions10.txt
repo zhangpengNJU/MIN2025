@@ -1,0 +1,14 @@
+/**
+ * Cancels, ignoring any exceptions thrown by cancel. Used during
+ * worker and pool shutdown. Cancel is spec'ed not to throw any
+ * exceptions, but if it does anyway, we have no recourse during
+ * shutdown, so guard against this case.
+ */
+static final void cancelIgnoringExceptions(ForkJoinTask<?> t) {
+    if (t != null && t.status >= 0) {
+        try {
+            t.cancel(false);
+        } catch (Throwable ignore) {
+        }
+    }
+}

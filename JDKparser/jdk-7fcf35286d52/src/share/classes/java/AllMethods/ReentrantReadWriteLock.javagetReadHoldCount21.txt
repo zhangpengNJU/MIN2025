@@ -1,0 +1,14 @@
+final int getReadHoldCount() {
+    if (getReadLockCount() == 0)
+        return 0;
+    Thread current = Thread.currentThread();
+    if (firstReader == current)
+        return firstReaderHoldCount;
+    HoldCounter rh = cachedHoldCounter;
+    if (rh != null && rh.tid == getThreadId(current))
+        return rh.count;
+    int count = readHolds.get().count;
+    if (count == 0)
+        readHolds.remove();
+    return count;
+}

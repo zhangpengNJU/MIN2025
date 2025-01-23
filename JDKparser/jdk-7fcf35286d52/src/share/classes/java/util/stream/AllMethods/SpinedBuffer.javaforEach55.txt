@@ -1,0 +1,10 @@
+@Override
+public void forEach(Consumer<? super Long> consumer) {
+    if (consumer instanceof LongConsumer) {
+        forEach((LongConsumer) consumer);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfLong.forEach(Consumer)");
+        spliterator().forEachRemaining(consumer);
+    }
+}

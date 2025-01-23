@@ -1,0 +1,12 @@
+/**
+ * Equivalent to {@code getRoot().quietlyComplete()}.
+ */
+public final void quietlyCompleteRoot() {
+    for (CountedCompleter<?> a = this, p; ; ) {
+        if ((p = a.completer) == null) {
+            a.quietlyComplete();
+            return;
+        }
+        a = p;
+    }
+}

@@ -1,0 +1,35 @@
+/**
+ * Returns all the interfaces on this machine. The {@code Enumeration}
+ * contains at least one element, possibly representing a loopback
+ * interface that only supports communication between entities on
+ * this machine.
+ *
+ * NOTE: can use getNetworkInterfaces()+getInetAddresses()
+ *       to obtain all IP addresses for this node
+ *
+ * @return an Enumeration of NetworkInterfaces found on this machine
+ * @exception  SocketException  if an I/O error occurs.
+ */
+public static Enumeration<NetworkInterface> getNetworkInterfaces() throws SocketException {
+    final NetworkInterface[] netifs = getAll();
+    // specified to return null if no network interfaces
+    if (netifs == null)
+        return null;
+    return new Enumeration<NetworkInterface>() {
+
+        private int i = 0;
+
+        public NetworkInterface nextElement() {
+            if (netifs != null && i < netifs.length) {
+                NetworkInterface netif = netifs[i++];
+                return netif;
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        public boolean hasMoreElements() {
+            return (netifs != null && i < netifs.length);
+        }
+    };
+}

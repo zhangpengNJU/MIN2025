@@ -1,0 +1,31 @@
+/**
+ * Return true if class a is either equivalent to class b, or
+ * if class a is a subclass of class b, i.e. if a either "extends"
+ * or "implements" b.
+ * Note tht either or both "Class" objects may represent interfaces.
+ */
+static boolean isSubclass(Class<?> a, Class<?> b) {
+    // We rely on the fact that for any given java class or
+    // primtitive type there is a unqiue Class object, so
+    // we can use object equivalence in the comparisons.
+    if (a == b) {
+        return true;
+    }
+    if (a == null || b == null) {
+        return false;
+    }
+    for (Class<?> x = a; x != null; x = x.getSuperclass()) {
+        if (x == b) {
+            return true;
+        }
+        if (b.isInterface()) {
+            Class<?>[] interfaces = x.getInterfaces();
+            for (int i = 0; i < interfaces.length; i++) {
+                if (isSubclass(interfaces[i], b)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

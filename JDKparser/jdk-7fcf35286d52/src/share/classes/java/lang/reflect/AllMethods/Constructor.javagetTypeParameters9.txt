@@ -1,0 +1,13 @@
+/**
+ * {@inheritDoc}
+ * @throws GenericSignatureFormatError {@inheritDoc}
+ * @since 1.5
+ */
+@Override
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public TypeVariable<Constructor<T>>[] getTypeParameters() {
+    if (getSignature() != null) {
+        return (TypeVariable<Constructor<T>>[]) getGenericInfo().getTypeParameters();
+    } else
+        return (TypeVariable<Constructor<T>>[]) new TypeVariable[0];
+}

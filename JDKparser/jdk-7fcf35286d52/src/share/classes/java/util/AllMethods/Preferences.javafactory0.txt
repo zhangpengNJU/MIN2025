@@ -1,0 +1,36 @@
+private static PreferencesFactory factory() {
+    // 1. Try user-specified system property
+    String factoryName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+        public String run() {
+            return System.getProperty("java.util.prefs.PreferencesFactory");
+        }
+    });
+    if (factoryName != null) {
+        // FIXME: This code should be run in a doPrivileged and
+        // not use the context classloader, to avoid being
+        // dependent on the invoking thread.
+        // Checking AllPermission also seems wrong.
+        try {
+            return (PreferencesFactory) Class.forName(factoryName, false, ClassLoader.getSystemClassLoader()).newInstance();
+        } catch (Exception ex) {
+            try {
+                // workaround for javaws, plugin,
+                // load factory class using non-system classloader
+                SecurityManager sm = System.getSecurityManager();
+                if (sm != null) {
+                    sm.checkPermission(new java.security.AllPermission());
+                }
+                return (PreferencesFactory) Class.forName(factoryName, false, Thread.currentThread().getContextClassLoader()).newInstance();
+            } catch (Exception e) {
+                throw new InternalError("Can't instantiate Preferences factory " + factoryName, e);
+            }
+        }
+    }
+    return AccessController.doPrivileged(new PrivilegedAction<PreferencesFactory>() {
+
+        public PreferencesFactory run() {
+            return factory1();
+        }
+    });
+}

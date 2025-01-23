@@ -1,0 +1,22 @@
+/**
+ * Returns an expression whose value is <code>oldInstance</code>.
+ * This method is used to characterize the constructor
+ * or factory method that should be used to create the given object.
+ * For example, the <code>instantiate</code> method of the persistence
+ * delegate for the <code>Field</code> class could be defined as follows:
+ * <pre>
+ * Field f = (Field)oldInstance;
+ * return new Expression(f, f.getDeclaringClass(), "getField", new Object[]{f.getName()});
+ * </pre>
+ * Note that we declare the value of the returned expression so that
+ * the value of the expression (as returned by <code>getValue</code>)
+ * will be identical to <code>oldInstance</code>.
+ *
+ * @param oldInstance The instance that will be created by this expression.
+ * @param out The stream to which this expression will be written.
+ * @return An expression whose value is <code>oldInstance</code>.
+ *
+ * @throws NullPointerException if {@code out} is {@code null}
+ *                              and this value is used in the method
+ */
+protected abstract Expression instantiate(Object oldInstance, Encoder out);

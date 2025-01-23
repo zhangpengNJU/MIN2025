@@ -1,0 +1,25 @@
+/**
+ * Returns a string describing this CodeSource, telling its
+ * URL and certificates.
+ *
+ * @return information about this CodeSource.
+ */
+@Override
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("(");
+    sb.append(this.location);
+    if (this.certs != null && this.certs.length > 0) {
+        for (int i = 0; i < this.certs.length; i++) {
+            sb.append(" " + this.certs[i]);
+        }
+    } else if (this.signers != null && this.signers.length > 0) {
+        for (int i = 0; i < this.signers.length; i++) {
+            sb.append(" " + this.signers[i]);
+        }
+    } else {
+        sb.append(" <no signer certificates>");
+    }
+    sb.append(")");
+    return sb.toString();
+}

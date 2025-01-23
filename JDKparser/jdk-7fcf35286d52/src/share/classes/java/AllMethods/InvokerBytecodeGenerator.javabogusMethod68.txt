@@ -1,0 +1,16 @@
+/**
+ * Emit a bogus method that just loads some string constants. This is to get the constants into the constant pool
+ * for debugging purposes.
+ */
+private void bogusMethod(Object... os) {
+    if (DUMP_CLASS_FILES) {
+        mv = cw.visitMethod(Opcodes.ACC_STATIC, "dummy", "()V", null, null);
+        for (Object o : os) {
+            mv.visitLdcInsn(o.toString());
+            mv.visitInsn(Opcodes.POP);
+        }
+        mv.visitInsn(Opcodes.RETURN);
+        mv.visitMaxs(0, 0);
+        mv.visitEnd();
+    }
+}

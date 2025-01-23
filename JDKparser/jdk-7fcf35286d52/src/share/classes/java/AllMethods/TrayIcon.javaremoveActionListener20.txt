@@ -1,0 +1,19 @@
+/**
+ * Removes the specified action listener.  Calling this method with
+ * <code>null</code> or an invalid value has no effect.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param    listener   the action listener
+ * @see      java.awt.event.ActionEvent
+ * @see      java.awt.event.ActionListener
+ * @see      #addActionListener(ActionListener)
+ * @see      #getActionListeners
+ * @see #setActionCommand(String)
+ */
+public synchronized void removeActionListener(ActionListener listener) {
+    if (listener == null) {
+        return;
+    }
+    actionListener = AWTEventMulticaster.remove(actionListener, listener);
+}

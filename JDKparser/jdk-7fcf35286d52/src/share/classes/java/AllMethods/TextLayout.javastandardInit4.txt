@@ -1,0 +1,32 @@
+/*
+     * the standard init generates multiple glyph sets based on style,
+     * renderable, and baseline runs.
+     * @param chars the text in the iterator, extracted into a char array
+     */
+private void standardInit(AttributedCharacterIterator text, char[] chars, FontRenderContext frc) {
+    characterCount = chars.length;
+    // set paragraph attributes
+    {
+        // If there's an embedded graphic at the start of the
+        // paragraph, look for the first non-graphic character
+        // and use it and its font to initialize the paragraph.
+        // If not, use the first graphic to initialize.
+        Map<? extends Attribute, ?> paragraphAttrs = text.getAttributes();
+        boolean haveFont = TextLine.advanceToFirstFont(text);
+        if (haveFont) {
+            Font defaultFont = TextLine.getFontAtCurrentPos(text);
+            int charsStart = text.getIndex() - text.getBeginIndex();
+            LineMetrics lm = defaultFont.getLineMetrics(chars, charsStart, charsStart + 1, frc);
+            CoreMetrics cm = CoreMetrics.get(lm);
+            paragraphInit((byte) cm.baselineIndex, cm, paragraphAttrs, chars);
+        } else {
+            // hmmm what to do here?  Just try to supply reasonable
+            // values I guess.
+            GraphicAttribute graphic = (GraphicAttribute) paragraphAttrs.get(TextAttribute.CHAR_REPLACEMENT);
+            byte defaultBaseline = getBaselineFromGraphic(graphic);
+            CoreMetrics cm = GraphicComponent.createCoreMetrics(graphic);
+            paragraphInit(defaultBaseline, cm, paragraphAttrs, chars);
+        }
+    }
+    textLine = TextLine.standardCreateTextLine(frc, text, chars, baselineOffsets);
+}

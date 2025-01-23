@@ -1,0 +1,47 @@
+/**
+ * Matches given set of serializable fields with serializable fields
+ * obtained from the given local class descriptor (which contain bindings
+ * to reflective Field objects).  Returns list of ObjectStreamFields in
+ * which each ObjectStreamField whose signature matches that of a local
+ * field contains a Field object for that field; unmatched
+ * ObjectStreamFields contain null Field objects.  Shared/unshared settings
+ * of the returned ObjectStreamFields also reflect those of matched local
+ * ObjectStreamFields.  Throws InvalidClassException if unresolvable type
+ * conflicts exist between the two sets of fields.
+ */
+private static ObjectStreamField[] matchFields(ObjectStreamField[] fields, ObjectStreamClass localDesc) throws InvalidClassException {
+    ObjectStreamField[] localFields = (localDesc != null) ? localDesc.fields : NO_FIELDS;
+    /*
+         * Even if fields == localFields, we cannot simply return localFields
+         * here.  In previous implementations of serialization,
+         * ObjectStreamField.getType() returned Object.class if the
+         * ObjectStreamField represented a non-primitive field and belonged to
+         * a non-local class descriptor.  To preserve this (questionable)
+         * behavior, the ObjectStreamField instances returned by matchFields
+         * cannot report non-primitive types other than Object.class; hence
+         * localFields cannot be returned directly.
+         */
+    ObjectStreamField[] matches = new ObjectStreamField[fields.length];
+    for (int i = 0; i < fields.length; i++) {
+        ObjectStreamField f = fields[i], m = null;
+        for (int j = 0; j < localFields.length; j++) {
+            ObjectStreamField lf = localFields[j];
+            if (f.getName().equals(lf.getName())) {
+                if ((f.isPrimitive() || lf.isPrimitive()) && f.getTypeCode() != lf.getTypeCode()) {
+                    throw new InvalidClassException(localDesc.name, "incompatible types for field " + f.getName());
+                }
+                if (lf.getField() != null) {
+                    m = new ObjectStreamField(lf.getField(), lf.isUnshared(), false);
+                } else {
+                    m = new ObjectStreamField(lf.getName(), lf.getSignature(), lf.isUnshared());
+                }
+            }
+        }
+        if (m == null) {
+            m = new ObjectStreamField(f.getName(), f.getSignature(), false);
+        }
+        m.setOffset(f.getOffset());
+        matches[i] = m;
+    }
+    return matches;
+}

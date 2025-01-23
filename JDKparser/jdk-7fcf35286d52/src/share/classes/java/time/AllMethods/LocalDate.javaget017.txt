@@ -1,0 +1,31 @@
+private int get0(TemporalField field) {
+    switch((ChronoField) field) {
+        case DAY_OF_WEEK:
+            return getDayOfWeek().getValue();
+        case ALIGNED_DAY_OF_WEEK_IN_MONTH:
+            return ((day - 1) % 7) + 1;
+        case ALIGNED_DAY_OF_WEEK_IN_YEAR:
+            return ((getDayOfYear() - 1) % 7) + 1;
+        case DAY_OF_MONTH:
+            return day;
+        case DAY_OF_YEAR:
+            return getDayOfYear();
+        case EPOCH_DAY:
+            throw new UnsupportedTemporalTypeException("Invalid field 'EpochDay' for get() method, use getLong() instead");
+        case ALIGNED_WEEK_OF_MONTH:
+            return ((day - 1) / 7) + 1;
+        case ALIGNED_WEEK_OF_YEAR:
+            return ((getDayOfYear() - 1) / 7) + 1;
+        case MONTH_OF_YEAR:
+            return month;
+        case PROLEPTIC_MONTH:
+            throw new UnsupportedTemporalTypeException("Invalid field 'ProlepticMonth' for get() method, use getLong() instead");
+        case YEAR_OF_ERA:
+            return (year >= 1 ? year : 1 - year);
+        case YEAR:
+            return year;
+        case ERA:
+            return (year >= 1 ? 1 : 0);
+    }
+    throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+}

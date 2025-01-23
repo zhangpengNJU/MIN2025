@@ -1,0 +1,55 @@
+/**
+ * Callback from ForkJoinWorkerThread constructor to establish and
+ * record its WorkQueue.
+ *
+ * @param wt the worker thread
+ * @return the worker's queue
+ */
+final WorkQueue registerWorker(ForkJoinWorkerThread wt) {
+    UncaughtExceptionHandler handler;
+    // configure thread
+    wt.setDaemon(true);
+    if ((handler = ueh) != null)
+        wt.setUncaughtExceptionHandler(handler);
+    WorkQueue w = new WorkQueue(this, wt);
+    // assign a pool index
+    int i = 0;
+    int mode = config & MODE_MASK;
+    int rs = lockRunState();
+    try {
+        // skip if no array
+        WorkQueue[] ws;
+        // skip if no array
+        int n;
+        if ((ws = workQueues) != null && (n = ws.length) > 0) {
+            // unlikely to collide
+            int s = indexSeed += SEED_INCREMENT;
+            int m = n - 1;
+            // odd-numbered indices
+            i = ((s << 1) | 1) & m;
+            if (ws[i] != null) {
+                // collision
+                // step by approx half n
+                int probes = 0;
+                int step = (n <= 4) ? 2 : ((n >>> 1) & EVENMASK) + 2;
+                while (ws[i = (i + step) & m] != null) {
+                    if (++probes >= n) {
+                        workQueues = ws = Arrays.copyOf(ws, n <<= 1);
+                        m = n - 1;
+                        probes = 0;
+                    }
+                }
+            }
+            // use as random seed
+            w.hint = s;
+            w.config = i | mode;
+            // publication fence
+            w.scanState = i;
+            ws[i] = w;
+        }
+    } finally {
+        unlockRunState(rs, rs & ~RSLOCK);
+    }
+    wt.setName(workerNamePrefix.concat(Integer.toString(i >>> 1)));
+    return w;
+}

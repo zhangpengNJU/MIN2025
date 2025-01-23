@@ -1,0 +1,28 @@
+static boolean verifyConstants() {
+    Object[] box = { null };
+    for (int i = 0; ; i++) {
+        box[0] = null;
+        int vmval = getNamedCon(i, box);
+        if (box[0] == null)
+            break;
+        String name = (String) box[0];
+        try {
+            Field con = Constants.class.getDeclaredField(name);
+            int jval = con.getInt(null);
+            if (jval == vmval)
+                continue;
+            String err = (name + ": JVM has " + vmval + " while Java has " + jval);
+            if (name.equals("CONV_OP_LIMIT")) {
+                System.err.println("warning: " + err);
+                continue;
+            }
+            throw new InternalError(err);
+        } catch (NoSuchFieldException | IllegalAccessException ex) {
+            String err = (name + ": JVM has " + vmval + " which Java does not define");
+            // ignore exotic ops the JVM cares about; we just wont issue them
+            // System.err.println("warning: "+err);
+            continue;
+        }
+    }
+    return true;
+}

@@ -1,0 +1,10 @@
+/**
+ * Gets the <code>MethodDescriptor</code>s of the target listener interface.
+ *
+ * @return An array of <code>MethodDescriptor</code> objects for the target methods
+ * within the target listener interface that will get called when
+ * events are fired.
+ */
+public synchronized MethodDescriptor[] getListenerMethodDescriptors() {
+    return (this.listenerMethodDescriptors != null) ? this.listenerMethodDescriptors.clone() : null;
+}

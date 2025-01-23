@@ -1,0 +1,9 @@
+/**
+ * Converts this duration to the total length in seconds and
+ * fractional nanoseconds expressed as a {@code BigDecimal}.
+ *
+ * @return the total length of the duration in seconds, with a scale of 9, not null
+ */
+private BigDecimal toSeconds() {
+    return BigDecimal.valueOf(seconds).add(BigDecimal.valueOf(nanos, 9));
+}

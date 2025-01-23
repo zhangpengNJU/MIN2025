@@ -1,0 +1,45 @@
+/**
+ * Checks if this FilePermission object "implies" the specified permission.
+ * <P>
+ * More specifically, this method returns true if:
+ * <ul>
+ * <li> <i>p</i> is an instanceof FilePermission,
+ * <li> <i>p</i>'s actions are a proper subset of this
+ * object's actions, and
+ * <li> <i>p</i>'s pathname is implied by this object's
+ *      pathname. For example, "/tmp/*" implies "/tmp/foo", since
+ *      "/tmp/*" encompasses all files in the "/tmp" directory,
+ *      including the one named "foo".
+ * </ul>
+ * <P>
+ * Precisely, a simple pathname implies another simple pathname
+ * if and only if they are equal. A simple pathname never implies
+ * a wildcard pathname. A wildcard pathname implies another wildcard
+ * pathname if and only if all simple pathnames implied by the latter
+ * are implied by the former. A wildcard pathname implies a simple
+ * pathname if and only if
+ * <ul>
+ *     <li>if the wildcard flag is "*", the simple pathname's path
+ *     must be right inside the wildcard pathname's path.
+ *     <li>if the wildcard flag is "-", the simple pathname's path
+ *     must be recursively inside the wildcard pathname's path.
+ * </ul>
+ * <P>
+ * {@literal "<<ALL FILES>>"} implies every other pathname. No pathname,
+ * except for {@literal "<<ALL FILES>>"} itself, implies
+ * {@literal "<<ALL FILES>>"}.
+ *
+ * @param p the permission to check against.
+ *
+ * @return <code>true</code> if the specified permission is not
+ *                  <code>null</code> and is implied by this object,
+ *                  <code>false</code> otherwise.
+ */
+public boolean implies(Permission p) {
+    if (!(p instanceof FilePermission))
+        return false;
+    FilePermission that = (FilePermission) p;
+    // we get the effective mask. i.e., the "and" of this and that.
+    // They must be equal to that.mask for implies to return true.
+    return ((this.mask & that.mask) == that.mask) && impliesIgnoreMask(that);
+}

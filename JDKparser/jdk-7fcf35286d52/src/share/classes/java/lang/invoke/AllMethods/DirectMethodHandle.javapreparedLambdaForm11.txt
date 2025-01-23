@@ -1,0 +1,7 @@
+private static LambdaForm preparedLambdaForm(MethodType mtype, int which) {
+    LambdaForm lform = mtype.form().cachedLambdaForm(which);
+    if (lform != null)
+        return lform;
+    lform = makePreparedLambdaForm(mtype, which);
+    return mtype.form().setCachedLambdaForm(which, lform);
+}

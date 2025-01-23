@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if the year is valid for this month-day.
+ * <p>
+ * This method checks whether this month and day and the input year form
+ * a valid date. This can only return false for February 29th.
+ *
+ * @param year  the year to validate
+ * @return true if the year is valid for this month-day
+ * @see Year#isValidMonthDay(MonthDay)
+ */
+public boolean isValidYear(int year) {
+    return (day == 29 && month == 2 && Year.isLeap(year) == false) == false;
+}

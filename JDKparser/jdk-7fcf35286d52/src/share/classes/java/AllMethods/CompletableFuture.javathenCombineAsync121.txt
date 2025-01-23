@@ -1,0 +1,3 @@
+public <U, V> CompletableFuture<V> thenCombineAsync(CompletionStage<? extends U> other, BiFunction<? super T, ? super U, ? extends V> fn) {
+    return biApplyStage(asyncPool, other, fn);
+}

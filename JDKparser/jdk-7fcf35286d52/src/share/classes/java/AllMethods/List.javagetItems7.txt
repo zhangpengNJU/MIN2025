@@ -1,0 +1,13 @@
+/**
+ * Gets the items in the list.
+ * @return       a string array containing items of the list
+ * @see          #select
+ * @see          #deselect
+ * @see          #isIndexSelected
+ * @since        JDK1.1
+ */
+public synchronized String[] getItems() {
+    String[] itemCopies = new String[items.size()];
+    items.copyInto(itemCopies);
+    return itemCopies;
+}

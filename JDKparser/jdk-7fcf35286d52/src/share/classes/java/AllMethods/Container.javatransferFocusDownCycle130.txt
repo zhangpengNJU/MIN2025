@@ -1,0 +1,21 @@
+/**
+ * Transfers the focus down one focus traversal cycle. If this Container is
+ * a focus cycle root, then the focus owner is set to this Container's
+ * default Component to focus, and the current focus cycle root is set to
+ * this Container. If this Container is not a focus cycle root, then no
+ * focus traversal operation occurs.
+ *
+ * @see       Component#requestFocus()
+ * @see       #isFocusCycleRoot
+ * @see       #setFocusCycleRoot
+ * @since     1.4
+ */
+public void transferFocusDownCycle() {
+    if (isFocusCycleRoot()) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().setGlobalCurrentFocusCycleRootPriv(this);
+        Component toFocus = getFocusTraversalPolicy().getDefaultComponent(this);
+        if (toFocus != null) {
+            toFocus.requestFocus(CausedFocusEvent.Cause.TRAVERSAL_DOWN);
+        }
+    }
+}

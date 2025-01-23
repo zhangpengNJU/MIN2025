@@ -1,0 +1,24 @@
+/**
+ * Analyze the negative subpattern of DecimalFormat and set/update values
+ * as necessary.
+ */
+private void checkNegativeNumberExpression() {
+    if ((numberFormat instanceof DecimalFormat) && !numberFormat.equals(originalNumberFormat)) {
+        String numberPattern = ((DecimalFormat) numberFormat).toPattern();
+        if (!numberPattern.equals(originalNumberPattern)) {
+            hasFollowingMinusSign = false;
+            int separatorIndex = numberPattern.indexOf(';');
+            // If the negative subpattern is not absent, we have to analayze
+            // it in order to check if it has a following minus sign.
+            if (separatorIndex > -1) {
+                int minusIndex = numberPattern.indexOf('-', separatorIndex);
+                if ((minusIndex > numberPattern.lastIndexOf('0')) && (minusIndex > numberPattern.lastIndexOf('#'))) {
+                    hasFollowingMinusSign = true;
+                    minusSign = ((DecimalFormat) numberFormat).getDecimalFormatSymbols().getMinusSign();
+                }
+            }
+            originalNumberPattern = numberPattern;
+        }
+        originalNumberFormat = numberFormat;
+    }
+}

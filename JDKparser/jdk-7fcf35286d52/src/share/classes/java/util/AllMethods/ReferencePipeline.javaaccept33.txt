@@ -1,0 +1,14 @@
+@Override
+public void accept(P_OUT u) {
+    try (IntStream result = mapper.apply(u)) {
+        if (result != null) {
+            if (!cancellationRequestedCalled) {
+                result.sequential().forEach(downstreamAsInt);
+            } else {
+                Spliterator.OfInt s = result.sequential().spliterator();
+                do {
+                } while (!downstream.cancellationRequested() && s.tryAdvance(downstreamAsInt));
+            }
+        }
+    }
+}

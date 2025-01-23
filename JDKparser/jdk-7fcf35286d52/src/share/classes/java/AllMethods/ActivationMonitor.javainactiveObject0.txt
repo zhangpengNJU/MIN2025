@@ -1,0 +1,23 @@
+/**
+ * An activation group calls its monitor's
+ * <code>inactiveObject</code> method when an object in its group
+ * becomes inactive (deactivates).  An activation group discovers
+ * that an object (that it participated in activating) in its VM
+ * is no longer active, via calls to the activation group's
+ * <code>inactiveObject</code> method. <p>
+ *
+ * The <code>inactiveObject</code> call informs the
+ * <code>ActivationMonitor</code> that the remote object reference
+ * it holds for the object with the activation identifier,
+ * <code>id</code>, is no longer valid. The monitor considers the
+ * reference associated with <code>id</code> as a stale reference.
+ * Since the reference is considered stale, a subsequent
+ * <code>activate</code> call for the same activation identifier
+ * results in re-activating the remote object.<p>
+ *
+ * @param id the object's activation identifier
+ * @exception UnknownObjectException if object is unknown
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public void inactiveObject(ActivationID id) throws UnknownObjectException, RemoteException;

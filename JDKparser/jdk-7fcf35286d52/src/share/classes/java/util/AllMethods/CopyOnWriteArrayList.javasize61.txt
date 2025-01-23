@@ -1,0 +1,10 @@
+public int size() {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        return size;
+    } finally {
+        lock.unlock();
+    }
+}

@@ -1,0 +1,9 @@
+@Override
+final /*non-public*/
+BoundMethodHandle copyWithExtendD(MethodType mt, LambdaForm lf, double narg) {
+    try {
+        return (BoundMethodHandle) SPECIES_DATA.extendWith(D_TYPE).constructor().invokeBasic(mt, lf, argL0, narg);
+    } catch (Throwable ex) {
+        throw uncaughtException(ex);
+    }
+}

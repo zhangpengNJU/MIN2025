@@ -1,0 +1,14 @@
+/**
+ * Gets the selected item on this scrolling list.
+ *
+ * @return        the selected item on the list;
+ *                if no item is selected, or if multiple items are
+ *                selected, <code>null</code> is returned.
+ * @see           #select
+ * @see           #deselect
+ * @see           #isIndexSelected
+ */
+public synchronized String getSelectedItem() {
+    int index = getSelectedIndex();
+    return (index < 0) ? null : getItem(index);
+}

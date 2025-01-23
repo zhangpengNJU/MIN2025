@@ -1,0 +1,19 @@
+/**
+ * Returns a unique instance of an ImageFilter object which will
+ * actually perform the filtering for the specified ImageConsumer.
+ * The default implementation just clones this object.
+ * <p>
+ * Note: This method is intended to be called by the ImageProducer
+ * of the Image whose pixels are being filtered.  Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @param ic the specified <code>ImageConsumer</code>
+ * @return an <code>ImageFilter</code> used to perform the
+ *         filtering for the specified <code>ImageConsumer</code>.
+ */
+public ImageFilter getFilterInstance(ImageConsumer ic) {
+    ImageFilter instance = (ImageFilter) clone();
+    instance.consumer = ic;
+    return instance;
+}

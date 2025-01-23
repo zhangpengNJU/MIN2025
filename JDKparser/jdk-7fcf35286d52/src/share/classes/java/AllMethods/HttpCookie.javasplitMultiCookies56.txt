@@ -1,0 +1,28 @@
+/*
+     * Split cookie header string according to rfc 2965:
+     *   1) split where it is a comma;
+     *   2) but not the comma surrounding by double-quotes, which is the comma
+     *      inside port list or embeded URIs.
+     *
+     * @param  header
+     *         the cookie header string to split
+     *
+     * @return  list of strings; never null
+     */
+private static List<String> splitMultiCookies(String header) {
+    List<String> cookies = new java.util.ArrayList<String>();
+    int quoteCount = 0;
+    int p, q;
+    for (p = 0, q = 0; p < header.length(); p++) {
+        char c = header.charAt(p);
+        if (c == '"')
+            quoteCount++;
+        if (c == ',' && (quoteCount % 2 == 0)) {
+            // it is comma and not surrounding by double-quotes
+            cookies.add(header.substring(q, p));
+            q = p + 1;
+        }
+    }
+    cookies.add(header.substring(q));
+    return cookies;
+}

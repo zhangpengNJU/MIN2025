@@ -1,0 +1,16 @@
+// / Queries which have to do with the bytecode architecture
+/**
+ * Reports the number of JVM stack slots required to invoke a method
+ * of this type.  Note that (for historical reasons) the JVM requires
+ * a second stack slot to pass long and double arguments.
+ * So this method returns {@link #parameterCount() parameterCount} plus the
+ * number of long and double parameters (if any).
+ * <p>
+ * This method is included for the benefit of applications that must
+ * generate bytecodes that process method handles and invokedynamic.
+ * @return the number of JVM stack slots for this type's parameters
+ */
+/*non-public*/
+int parameterSlotCount() {
+    return form.parameterSlotCount();
+}

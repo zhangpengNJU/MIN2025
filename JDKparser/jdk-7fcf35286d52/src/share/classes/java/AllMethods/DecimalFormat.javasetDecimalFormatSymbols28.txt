@@ -1,0 +1,16 @@
+/**
+ * Sets the decimal format symbols, which is generally not changed
+ * by the programmer or user.
+ * @param newSymbols desired DecimalFormatSymbols
+ * @see java.text.DecimalFormatSymbols
+ */
+public void setDecimalFormatSymbols(DecimalFormatSymbols newSymbols) {
+    try {
+        // don't allow multiple references
+        symbols = (DecimalFormatSymbols) newSymbols.clone();
+        expandAffixes();
+        fastPathCheckNeeded = true;
+    } catch (Exception foo) {
+    // should never happen
+    }
+}

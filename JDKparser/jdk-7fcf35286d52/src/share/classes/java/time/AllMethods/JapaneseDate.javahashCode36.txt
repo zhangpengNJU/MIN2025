@@ -1,0 +1,10 @@
+/**
+ * A hash code for this date.
+ *
+ * @return a suitable hash code based only on the Chronology and the date
+ */
+// override for performance
+@Override
+public int hashCode() {
+    return getChronology().getId().hashCode() ^ isoDate.hashCode();
+}

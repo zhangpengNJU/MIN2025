@@ -1,0 +1,8 @@
+void setGraphicsConfiguration(GraphicsConfiguration gc) {
+    synchronized (getTreeLock()) {
+        if (updateGraphicsData(gc)) {
+            removeNotify();
+            addNotify();
+        }
+    }
+}

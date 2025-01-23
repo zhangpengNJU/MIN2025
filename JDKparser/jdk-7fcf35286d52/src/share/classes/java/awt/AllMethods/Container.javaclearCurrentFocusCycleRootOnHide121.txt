@@ -1,0 +1,7 @@
+void clearCurrentFocusCycleRootOnHide() {
+    KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    Container cont = kfm.getCurrentFocusCycleRoot();
+    if (cont == this || isParentOf(cont)) {
+        kfm.setGlobalCurrentFocusCycleRootPriv(null);
+    }
+}

@@ -1,0 +1,30 @@
+// -------------------------- JDBC 3.0 -----------------------------------
+/**
+ * Writes the given array of bytes to the <code>BLOB</code> value that
+ * this <code>Blob</code> object represents, starting at position
+ * <code>pos</code>, and returns the number of bytes written.
+ * The array of bytes will overwrite the existing bytes
+ * in the <code>Blob</code> object starting at the position
+ * <code>pos</code>.  If the end of the <code>Blob</code> value is reached
+ * while writing the array of bytes, then the length of the <code>Blob</code>
+ * value will be increased to accommodate the extra bytes.
+ * <p>
+ * <b>Note:</b> If the value specified for <code>pos</code>
+ * is greater then the length+1 of the <code>BLOB</code> value then the
+ * behavior is undefined. Some JDBC drivers may throw a
+ * <code>SQLException</code> while other drivers may support this
+ * operation.
+ *
+ * @param pos the position in the <code>BLOB</code> object at which
+ *        to start writing; the first position is 1
+ * @param bytes the array of bytes to be written to the <code>BLOB</code>
+ *        value that this <code>Blob</code> object represents
+ * @return the number of bytes written
+ * @exception SQLException if there is an error accessing the
+ *            <code>BLOB</code> value or if pos is less than 1
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #getBytes
+ * @since 1.4
+ */
+int setBytes(long pos, byte[] bytes) throws SQLException;

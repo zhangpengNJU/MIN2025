@@ -1,0 +1,34 @@
+private boolean contains(double x, double y, double w, double h, Rectangle2D origrect) {
+    if (!(contains(x, y) && contains(x + w, y) && contains(x, y + h) && contains(x + w, y + h))) {
+        return false;
+    }
+    // If the shape is convex then we have done all the testing
+    // we need.  Only PIE arcs can be concave and then only if
+    // the angular extents are greater than 180 degrees.
+    if (type != PIE || Math.abs(getAngleExtent()) <= 180.0) {
+        return true;
+    }
+    // For a PIE shape we have an additional test for the case where
+    // the angular extents are greater than 180 degrees and all four
+    // rectangular corners are inside the shape but one of the
+    // rectangle edges spans across the "missing wedge" of the arc.
+    // We can test for this case by checking if the rectangle intersects
+    // either of the pie angle segments.
+    if (origrect == null) {
+        origrect = new Rectangle2D.Double(x, y, w, h);
+    }
+    double halfW = getWidth() / 2.0;
+    double halfH = getHeight() / 2.0;
+    double xc = getX() + halfW;
+    double yc = getY() + halfH;
+    double angle = Math.toRadians(-getAngleStart());
+    double xe = xc + halfW * Math.cos(angle);
+    double ye = yc + halfH * Math.sin(angle);
+    if (origrect.intersectsLine(xc, yc, xe, ye)) {
+        return false;
+    }
+    angle += Math.toRadians(-getAngleExtent());
+    xe = xc + halfW * Math.cos(angle);
+    ye = yc + halfH * Math.sin(angle);
+    return !origrect.intersectsLine(xc, yc, xe, ye);
+}

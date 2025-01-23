@@ -1,0 +1,30 @@
+/**
+ * Finds format specifiers in the format string.
+ */
+private FormatString[] parse(String s) {
+    ArrayList<FormatString> al = new ArrayList<>();
+    Matcher m = fsPattern.matcher(s);
+    for (int i = 0, len = s.length(); i < len; ) {
+        if (m.find(i)) {
+            // Anything between the start of the string and the beginning
+            // of the format specifier is either fixed text or contains
+            // an invalid format string.
+            if (m.start() != i) {
+                // Make sure we didn't miss any invalid format specifiers
+                checkText(s, i, m.start());
+                // Assume previous characters were fixed text
+                al.add(new FixedString(s.substring(i, m.start())));
+            }
+            al.add(new FormatSpecifier(m));
+            i = m.end();
+        } else {
+            // No more valid format specifiers.  Check for possible invalid
+            // format specifiers.
+            checkText(s, i, len);
+            // The rest of the string is fixed text
+            al.add(new FixedString(s.substring(i)));
+            break;
+        }
+    }
+    return al.toArray(new FormatString[al.size()]);
+}

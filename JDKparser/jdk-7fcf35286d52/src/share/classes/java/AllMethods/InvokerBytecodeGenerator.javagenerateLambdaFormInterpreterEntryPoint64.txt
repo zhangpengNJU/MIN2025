@@ -1,0 +1,12 @@
+/**
+ * Generate bytecode for a LambdaForm.vmentry which calls interpretWithArguments.
+ */
+static MemberName generateLambdaFormInterpreterEntryPoint(String sig) {
+    assert (isValidSignature(sig));
+    String name = "interpret_" + signatureReturn(sig).basicTypeChar();
+    // sig includes leading argument
+    MethodType type = signatureType(sig);
+    type = type.changeParameterType(0, MethodHandle.class);
+    InvokerBytecodeGenerator g = new InvokerBytecodeGenerator("LFI", name, type);
+    return g.loadMethod(g.generateLambdaFormInterpreterEntryPointBytes());
+}

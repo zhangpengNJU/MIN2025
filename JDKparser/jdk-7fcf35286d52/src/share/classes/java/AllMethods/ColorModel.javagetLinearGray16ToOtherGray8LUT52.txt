@@ -1,0 +1,34 @@
+/*
+     * Return a byte LUT that converts 16-bit gray values in the CS_GRAY
+     * linear gray ColorSpace to the appropriate 8-bit value in the
+     * grayCS ColorSpace.  Cache references to any computed LUT in a Map.
+     */
+static byte[] getLinearGray16ToOtherGray8LUT(ICC_ColorSpace grayCS) {
+    if (lg16Toog8Map != null) {
+        byte[] lg16Toog8LUT = lg16Toog8Map.get(grayCS);
+        if (lg16Toog8LUT != null) {
+            return lg16Toog8LUT;
+        }
+    }
+    short[] tmp = new short[65536];
+    for (int i = 0; i <= 65535; i++) {
+        tmp[i] = (short) i;
+    }
+    ColorTransform[] transformList = new ColorTransform[2];
+    PCMM mdl = CMSManager.getModule();
+    ICC_ColorSpace lgCS = (ICC_ColorSpace) ColorSpace.getInstance(ColorSpace.CS_GRAY);
+    transformList[0] = mdl.createTransform(lgCS.getProfile(), ColorTransform.Any, ColorTransform.In);
+    transformList[1] = mdl.createTransform(grayCS.getProfile(), ColorTransform.Any, ColorTransform.Out);
+    ColorTransform t = mdl.createTransform(transformList);
+    tmp = t.colorConvert(tmp, null);
+    byte[] lg16Toog8LUT = new byte[65536];
+    for (int i = 0; i <= 65535; i++) {
+        // scale unsigned short (0 - 65535) to unsigned byte (0 - 255)
+        lg16Toog8LUT[i] = (byte) (((float) (tmp[i] & 0xffff)) * (1.0f / 257.0f) + 0.5f);
+    }
+    if (lg16Toog8Map == null) {
+        lg16Toog8Map = Collections.synchronizedMap(new WeakHashMap<ICC_ColorSpace, byte[]>(2));
+    }
+    lg16Toog8Map.put(grayCS, lg16Toog8LUT);
+    return lg16Toog8LUT;
+}

@@ -1,0 +1,41 @@
+/**
+ * Returns a class loader that loads classes from the given codebase
+ * URL path.
+ *
+ * <p>The class loader returned is the class loader that the
+ * {@link #loadClass(String,String)} method would use to load classes
+ * for the same <code>codebase</code> argument.
+ *
+ * <p>This method delegates to the
+ * {@link RMIClassLoaderSpi#getClassLoader(String)} method
+ * of the provider instance, passing <code>codebase</code> as the argument.
+ *
+ * <p>If there is a security manger, its <code>checkPermission</code>
+ * method will be invoked with a
+ * <code>RuntimePermission("getClassLoader")</code> permission;
+ * this could result in a <code>SecurityException</code>.
+ * The provider implementation of this method may also perform further
+ * security checks to verify that the calling context has permission to
+ * connect to all of the URLs in the codebase URL path.
+ *
+ * @param   codebase the list of URLs (space-separated) from which
+ * the returned class loader will load classes from, or <code>null</code>
+ *
+ * @return a class loader that loads classes from the given codebase URL
+ * path
+ *
+ * @throws  MalformedURLException if <code>codebase</code> is
+ * non-<code>null</code> and contains an invalid URL, or
+ * if <code>codebase</code> is <code>null</code> and a provider-specific
+ * URL used to identify the class loader is invalid
+ *
+ * @throws  SecurityException if there is a security manager and the
+ * invocation of its <code>checkPermission</code> method fails, or
+ * if the caller does not have permission to connect to all of the
+ * URLs in the codebase URL path
+ *
+ * @since   1.3
+ */
+public static ClassLoader getClassLoader(String codebase) throws MalformedURLException, SecurityException {
+    return provider.getClassLoader(codebase);
+}

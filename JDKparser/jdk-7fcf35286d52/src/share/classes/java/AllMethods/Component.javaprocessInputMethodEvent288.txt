@@ -1,0 +1,38 @@
+/**
+ * Processes input method events occurring on this component by
+ * dispatching them to any registered
+ * <code>InputMethodListener</code> objects.
+ * <p>
+ * This method is not called unless input method events
+ * are enabled for this component. Input method events are enabled
+ * when one of the following occurs:
+ * <ul>
+ * <li>An <code>InputMethodListener</code> object is registered
+ * via <code>addInputMethodListener</code>.
+ * <li>Input method events are enabled via <code>enableEvents</code>.
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the input method event
+ * @see         java.awt.event.InputMethodEvent
+ * @see         java.awt.event.InputMethodListener
+ * @see         #addInputMethodListener
+ * @see         #enableEvents
+ * @since       1.2
+ */
+protected void processInputMethodEvent(InputMethodEvent e) {
+    InputMethodListener listener = inputMethodListener;
+    if (listener != null) {
+        int id = e.getID();
+        switch(id) {
+            case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
+                listener.inputMethodTextChanged(e);
+                break;
+            case InputMethodEvent.CARET_POSITION_CHANGED:
+                listener.caretPositionChanged(e);
+                break;
+        }
+    }
+}

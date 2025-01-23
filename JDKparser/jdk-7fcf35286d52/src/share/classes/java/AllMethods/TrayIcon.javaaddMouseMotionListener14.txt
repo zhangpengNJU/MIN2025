@@ -1,0 +1,25 @@
+/**
+ * Adds the specified mouse listener to receive mouse-motion
+ * events from this <code>TrayIcon</code>.  Calling this method
+ * with a <code>null</code> value has no effect.
+ *
+ * <p><b>Note</b>: The {@code MouseEvent}'s coordinates (received
+ * from the {@code TrayIcon}) are relative to the screen, not the
+ * {@code TrayIcon}.
+ *
+ * <p> <b>Note: </b>The <code>MOUSE_DRAGGED</code> mouse event is not supported.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param    listener   the mouse listener
+ * @see      java.awt.event.MouseEvent
+ * @see      java.awt.event.MouseMotionListener
+ * @see      #removeMouseMotionListener(MouseMotionListener)
+ * @see      #getMouseMotionListeners
+ */
+public synchronized void addMouseMotionListener(MouseMotionListener listener) {
+    if (listener == null) {
+        return;
+    }
+    mouseMotionListener = AWTEventMulticaster.add(mouseMotionListener, listener);
+}

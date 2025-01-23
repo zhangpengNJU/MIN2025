@@ -1,0 +1,17 @@
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (!(obj instanceof LocaleKey)) {
+        return false;
+    }
+    LocaleKey other = (LocaleKey) obj;
+    if (hash != other.hash || !base.equals(other.base)) {
+        return false;
+    }
+    if (exts == null) {
+        return other.exts == null;
+    }
+    return exts.equals(other.exts);
+}

@@ -1,0 +1,11 @@
+public final void remove() {
+    Node<K, V> p = current;
+    if (p == null)
+        throw new IllegalStateException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    current = null;
+    K key = p.key;
+    removeNode(hash(key), key, null, false, false);
+    expectedModCount = modCount;
+}

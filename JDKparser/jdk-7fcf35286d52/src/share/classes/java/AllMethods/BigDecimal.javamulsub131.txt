@@ -1,0 +1,4 @@
+private static long mulsub(long u1, long u0, final long v1, final long v0, long q0) {
+    long tmp = u0 - q0 * v0;
+    return make64(u1 + (tmp >>> 32) - q0 * v1, tmp & LONG_MASK);
+}

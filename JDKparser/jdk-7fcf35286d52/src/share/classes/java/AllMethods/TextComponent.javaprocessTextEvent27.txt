@@ -1,0 +1,30 @@
+/**
+ * Processes text events occurring on this text component by
+ * dispatching them to any registered <code>TextListener</code> objects.
+ * <p>
+ * NOTE: This method will not be called unless text events
+ * are enabled for this component. This happens when one of the
+ * following occurs:
+ * <ul>
+ * <li>A <code>TextListener</code> object is registered
+ * via <code>addTextListener</code>
+ * <li>Text events are enabled via <code>enableEvents</code>
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the text event
+ * @see Component#enableEvents
+ */
+protected void processTextEvent(TextEvent e) {
+    TextListener listener = textListener;
+    if (listener != null) {
+        int id = e.getID();
+        switch(id) {
+            case TextEvent.TEXT_VALUE_CHANGED:
+                listener.textValueChanged(e);
+                break;
+        }
+    }
+}

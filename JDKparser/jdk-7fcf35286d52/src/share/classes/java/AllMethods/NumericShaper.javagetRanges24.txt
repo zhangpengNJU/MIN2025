@@ -1,0 +1,18 @@
+/**
+ * Returns an <code>int</code> that ORs together the values for
+ * all the ranges that will be shaped.
+ * <p>
+ * For example, to check if a shaper shapes to Arabic, you would use the
+ * following:
+ * <blockquote>
+ *   {@code if ((shaper.getRanges() & shaper.ARABIC) != 0) &#123; ... }
+ * </blockquote>
+ *
+ * <p>Note that this method supports only the bit mask-based
+ * ranges. Call {@link #getRangeSet()} for the enum-based ranges.
+ *
+ * @return the values for all the ranges to be shaped.
+ */
+public int getRanges() {
+    return mask & ~CONTEXTUAL_MASK;
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns the samples for the specified pixel in an array of double.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param dArray    If non-null, returns the samples in this array.
+ * @param data      The DataBuffer containing the image data.
+ * @return the samples for the specified pixel.
+ * @see #setPixel(int, int, double[], DataBuffer)
+ *
+ * @throws NullPointerException if data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if dArray is too small to hold the output.
+ */
+public double[] getPixel(int x, int y, double[] dArray, DataBuffer data) {
+    double[] pixels;
+    if (dArray != null)
+        pixels = dArray;
+    else
+        pixels = new double[numBands];
+    for (int i = 0; i < numBands; i++) pixels[i] = getSampleDouble(x, y, i, data);
+    return pixels;
+}

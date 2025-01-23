@@ -1,0 +1,32 @@
+/**
+ * Returns this element's annotation for the specified type if
+ * such an annotation is <em>directly present</em>, else null.
+ *
+ * This method ignores inherited annotations. (Returns null if no
+ * annotations are directly present on this element.)
+ *
+ * @implSpec The default implementation first performs a null check
+ * and then loops over the results of {@link
+ * #getDeclaredAnnotations} returning the first annotation whose
+ * annotation type matches the argument type.
+ *
+ * @param <T> the type of the annotation to query for and return if directly present
+ * @param annotationClass the Class object corresponding to the
+ *        annotation type
+ * @return this element's annotation for the specified annotation type if
+ *     directly present on this element, else null
+ * @throws NullPointerException if the given annotation class is null
+ * @since 1.8
+ */
+default <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
+    Objects.requireNonNull(annotationClass);
+    // Loop over all directly-present annotations looking for a matching one
+    for (Annotation annotation : getDeclaredAnnotations()) {
+        if (annotationClass.equals(annotation.annotationType())) {
+            // More robust to do a dynamic cast at runtime instead
+            // of compile-time only.
+            return annotationClass.cast(annotation);
+        }
+    }
+    return null;
+}

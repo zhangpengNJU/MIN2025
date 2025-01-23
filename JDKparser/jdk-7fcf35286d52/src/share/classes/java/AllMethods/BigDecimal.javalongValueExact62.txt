@@ -1,0 +1,33 @@
+/**
+ * Converts this {@code BigDecimal} to a {@code long}, checking
+ * for lost information.  If this {@code BigDecimal} has a
+ * nonzero fractional part or is out of the possible range for a
+ * {@code long} result then an {@code ArithmeticException} is
+ * thrown.
+ *
+ * @return this {@code BigDecimal} converted to a {@code long}.
+ * @throws ArithmeticException if {@code this} has a nonzero
+ *         fractional part, or will not fit in a {@code long}.
+ * @since  1.5
+ */
+public long longValueExact() {
+    if (intCompact != INFLATED && scale == 0)
+        return intCompact;
+    // Fastpath zero
+    if (this.signum() == 0)
+        return 0;
+    // Fastpath numbers less than 1.0 (the latter can be very slow
+    // to round if very small)
+    if (fractionOnly())
+        throw new ArithmeticException("Rounding necessary");
+    // If more than 19 digits in integer part it cannot possibly fit
+    if (// [OK for negative scale too]
+    (precision() - scale) > 19)
+        throw new java.lang.ArithmeticException("Overflow");
+    // round to an integer, with Exception if decimal part non-0
+    BigDecimal num = this.setScale(0, ROUND_UNNECESSARY);
+    if (// need to check carefully
+    num.precision() >= 19)
+        LongOverflow.check(num);
+    return num.inflated().longValue();
+}

@@ -1,0 +1,49 @@
+/**
+ * Returns serializable fields of given class as defined explicitly by a
+ * "serialPersistentFields" field, or null if no appropriate
+ * "serialPersistentFields" field is defined.  Serializable fields backed
+ * by an actual field of the class are represented by ObjectStreamFields
+ * with corresponding non-null Field objects.  For compatibility with past
+ * releases, a "serialPersistentFields" field with a null value is
+ * considered equivalent to not declaring "serialPersistentFields".  Throws
+ * InvalidClassException if the declared serializable fields are
+ * invalid--e.g., if multiple fields share the same name.
+ */
+private static ObjectStreamField[] getDeclaredSerialFields(Class<?> cl) throws InvalidClassException {
+    ObjectStreamField[] serialPersistentFields = null;
+    try {
+        Field f = cl.getDeclaredField("serialPersistentFields");
+        int mask = Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL;
+        if ((f.getModifiers() & mask) == mask) {
+            f.setAccessible(true);
+            serialPersistentFields = (ObjectStreamField[]) f.get(null);
+        }
+    } catch (Exception ex) {
+    }
+    if (serialPersistentFields == null) {
+        return null;
+    } else if (serialPersistentFields.length == 0) {
+        return NO_FIELDS;
+    }
+    ObjectStreamField[] boundFields = new ObjectStreamField[serialPersistentFields.length];
+    Set<String> fieldNames = new HashSet<>(serialPersistentFields.length);
+    for (int i = 0; i < serialPersistentFields.length; i++) {
+        ObjectStreamField spf = serialPersistentFields[i];
+        String fname = spf.getName();
+        if (fieldNames.contains(fname)) {
+            throw new InvalidClassException("multiple serializable fields named " + fname);
+        }
+        fieldNames.add(fname);
+        try {
+            Field f = cl.getDeclaredField(fname);
+            if ((f.getType() == spf.getType()) && ((f.getModifiers() & Modifier.STATIC) == 0)) {
+                boundFields[i] = new ObjectStreamField(f, spf.isUnshared(), true);
+            }
+        } catch (NoSuchFieldException ex) {
+        }
+        if (boundFields[i] == null) {
+            boundFields[i] = new ObjectStreamField(fname, spf.getType(), spf.isUnshared());
+        }
+    }
+    return boundFields;
+}

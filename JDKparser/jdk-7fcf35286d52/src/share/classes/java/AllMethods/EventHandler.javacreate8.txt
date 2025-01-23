@@ -1,0 +1,38 @@
+/**
+ *  Creates an implementation of <code>listenerInterface</code> in which
+ *  <em>all</em> of the methods in the listener interface apply
+ *  the handler's <code>action</code> to the <code>target</code>. This
+ *  method is implemented by calling the other, more general,
+ *  implementation of the <code>create</code> method with both
+ *  the <code>eventPropertyName</code> and the <code>listenerMethodName</code>
+ *  taking the value <code>null</code>. Refer to
+ *  {@link java.beans.EventHandler#create(Class, Object, String, String)
+ *  the general version of create} for a complete description of
+ *  the <code>action</code> parameter.
+ *  <p>
+ *  To create an <code>ActionListener</code> that shows a
+ *  <code>JDialog</code> with <code>dialog.show()</code>,
+ *  one can write:
+ *
+ * <blockquote>
+ * <pre>
+ * EventHandler.create(ActionListener.class, dialog, "show")
+ * </pre>
+ * </blockquote>
+ *
+ *  @param <T> the type to create
+ *  @param listenerInterface the listener interface to create a proxy for
+ *  @param target the object that will perform the action
+ *  @param action the name of a (possibly qualified) property or method on
+ *         the target
+ *  @return an object that implements <code>listenerInterface</code>
+ *
+ *  @throws NullPointerException if <code>listenerInterface</code> is null
+ *  @throws NullPointerException if <code>target</code> is null
+ *  @throws NullPointerException if <code>action</code> is null
+ *
+ *  @see #create(Class, Object, String, String)
+ */
+public static <T> T create(Class<T> listenerInterface, Object target, String action) {
+    return create(listenerInterface, target, action, null, null);
+}

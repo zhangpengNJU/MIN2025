@@ -1,0 +1,13 @@
+/**
+ * A hash code for this date.
+ *
+ * @return a suitable hash code based only on the Chronology and the date
+ */
+// override for performance
+@Override
+public int hashCode() {
+    int yearValue = prolepticYear;
+    int monthValue = monthOfYear;
+    int dayValue = dayOfMonth;
+    return getChronology().getId().hashCode() ^ (yearValue & 0xFFFFF800) ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
+}

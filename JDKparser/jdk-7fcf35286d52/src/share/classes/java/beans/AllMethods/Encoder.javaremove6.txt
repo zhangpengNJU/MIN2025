@@ -1,0 +1,12 @@
+/**
+ * Removes the entry for this instance, returning the old entry.
+ *
+ * @param oldInstance The entry that should be removed.
+ * @return The entry that was removed.
+ *
+ * @see #get
+ */
+public Object remove(Object oldInstance) {
+    Expression exp = bindings.remove(oldInstance);
+    return getValue(exp);
+}

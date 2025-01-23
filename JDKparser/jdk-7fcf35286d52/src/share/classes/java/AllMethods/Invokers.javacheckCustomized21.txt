@@ -1,0 +1,8 @@
+/*non-public*/
+@ForceInline
+static void checkCustomized(Object o) {
+    MethodHandle mh = (MethodHandle) o;
+    if (mh.form.customized == null) {
+        maybeCustomize(mh);
+    }
+}

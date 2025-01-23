@@ -1,0 +1,6 @@
+@Override
+default void accept(Double i) {
+    if (Tripwire.ENABLED)
+        Tripwire.trip(getClass(), "{0} calling Sink.OfDouble.accept(Double)");
+    accept(i.doubleValue());
+}

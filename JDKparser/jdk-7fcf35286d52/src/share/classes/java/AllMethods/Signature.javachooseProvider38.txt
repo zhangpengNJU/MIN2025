@@ -1,0 +1,55 @@
+// Used by engineSetParameter/engineInitSign/engineInitVerify() to
+// find the right provider with the supplied key, parameters, random source
+private void chooseProvider(int type, Key key, AlgorithmParameterSpec params, SecureRandom random) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    synchronized (lock) {
+        if (sigSpi != null) {
+            return;
+        }
+        Exception lastException = null;
+        while ((firstService != null) || serviceIterator.hasNext()) {
+            Service s;
+            if (firstService != null) {
+                s = firstService;
+                firstService = null;
+            } else {
+                s = serviceIterator.next();
+            }
+            // if provider says it does not support this key, ignore it
+            if (key != null && s.supportsParameter(key) == false) {
+                continue;
+            }
+            // if instance is not a SignatureSpi, ignore it
+            if (isSpi(s) == false) {
+                continue;
+            }
+            try {
+                SignatureSpi spi = newInstance(s);
+                tryOperation(spi, type, key, params, random);
+                provider = s.getProvider();
+                sigSpi = spi;
+                firstService = null;
+                serviceIterator = null;
+                return;
+            } catch (Exception e) {
+                // NoSuchAlgorithmException from newInstance()
+                // InvalidKeyException from init()
+                // RuntimeException (ProviderException) from init()
+                if (lastException == null) {
+                    lastException = e;
+                }
+            }
+        }
+        // no working provider found, fail
+        if (lastException instanceof InvalidKeyException) {
+            throw (InvalidKeyException) lastException;
+        }
+        if (lastException instanceof RuntimeException) {
+            throw (RuntimeException) lastException;
+        }
+        if (lastException instanceof InvalidAlgorithmParameterException) {
+            throw (InvalidAlgorithmParameterException) lastException;
+        }
+        String k = (key != null) ? key.getClass().getName() : "(null)";
+        throw new InvalidKeyException("No installed provider supports this key: " + k, lastException);
+    }
+}

@@ -1,0 +1,19 @@
+/* ------------- Control and status methods -------------- */
+/**
+ * If not already completed, completes this CompletableFuture with
+ * a {@link CancellationException}. Dependent CompletableFutures
+ * that have not already completed will also complete
+ * exceptionally, with a {@link CompletionException} caused by
+ * this {@code CancellationException}.
+ *
+ * @param mayInterruptIfRunning this value has no effect in this
+ * implementation because interrupts are not used to control
+ * processing.
+ *
+ * @return {@code true} if this task is now cancelled
+ */
+public boolean cancel(boolean mayInterruptIfRunning) {
+    boolean cancelled = (result == null) && internalComplete(new AltResult(new CancellationException()));
+    postComplete();
+    return cancelled || isCancelled();
+}

@@ -1,0 +1,16 @@
+/**
+ * Sets the name of the component to the specified string.
+ * @param name  the string that is to be this
+ *           component's name
+ * @see #getName
+ * @since JDK1.1
+ */
+public void setName(String name) {
+    String oldName;
+    synchronized (getObjectLock()) {
+        oldName = this.name;
+        this.name = name;
+        nameExplicitlySet = true;
+    }
+    firePropertyChange("name", oldName, name);
+}

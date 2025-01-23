@@ -1,0 +1,7 @@
+@Override
+BoundMethodHandle rebind() {
+    if (!tooComplex()) {
+        return this;
+    }
+    return makeReinvoker(this);
+}

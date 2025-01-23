@@ -1,0 +1,180 @@
+private final BufferedImage nonICCBIFilter(BufferedImage src, ColorSpace srcColorSpace, BufferedImage dst, ColorSpace dstColorSpace) {
+    int w = src.getWidth();
+    int h = src.getHeight();
+    ICC_ColorSpace ciespace = (ICC_ColorSpace) ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
+    if (dst == null) {
+        dst = createCompatibleDestImage(src, null);
+        dstColorSpace = dst.getColorModel().getColorSpace();
+    } else {
+        if ((h != dst.getHeight()) || (w != dst.getWidth())) {
+            throw new IllegalArgumentException("Width or height of BufferedImages do not match");
+        }
+    }
+    Raster srcRas = src.getRaster();
+    WritableRaster dstRas = dst.getRaster();
+    ColorModel srcCM = src.getColorModel();
+    ColorModel dstCM = dst.getColorModel();
+    int srcNumComp = srcCM.getNumColorComponents();
+    int dstNumComp = dstCM.getNumColorComponents();
+    boolean dstHasAlpha = dstCM.hasAlpha();
+    boolean needSrcAlpha = srcCM.hasAlpha() && dstHasAlpha;
+    ColorSpace[] list;
+    if ((CSList == null) && (profileList.length != 0)) {
+        /* possible non-ICC src, some profiles, possible non-ICC dst */
+        boolean nonICCSrc, nonICCDst;
+        ICC_Profile srcProfile, dstProfile;
+        if (!(srcColorSpace instanceof ICC_ColorSpace)) {
+            nonICCSrc = true;
+            srcProfile = ciespace.getProfile();
+        } else {
+            nonICCSrc = false;
+            srcProfile = ((ICC_ColorSpace) srcColorSpace).getProfile();
+        }
+        if (!(dstColorSpace instanceof ICC_ColorSpace)) {
+            nonICCDst = true;
+            dstProfile = ciespace.getProfile();
+        } else {
+            nonICCDst = false;
+            dstProfile = ((ICC_ColorSpace) dstColorSpace).getProfile();
+        }
+        /* make a new transform if needed */
+        if ((thisTransform == null) || (thisSrcProfile != srcProfile) || (thisDestProfile != dstProfile)) {
+            updateBITransform(srcProfile, dstProfile);
+        }
+        // process per scanline
+        // use 16-bit precision in CMM
+        float maxNum = 65535.0f;
+        ColorSpace cs;
+        int iccSrcNumComp;
+        if (nonICCSrc) {
+            cs = ciespace;
+            iccSrcNumComp = 3;
+        } else {
+            cs = srcColorSpace;
+            iccSrcNumComp = srcNumComp;
+        }
+        float[] srcMinVal = new float[iccSrcNumComp];
+        float[] srcInvDiffMinMax = new float[iccSrcNumComp];
+        for (int i = 0; i < srcNumComp; i++) {
+            srcMinVal[i] = cs.getMinValue(i);
+            srcInvDiffMinMax[i] = maxNum / (cs.getMaxValue(i) - srcMinVal[i]);
+        }
+        int iccDstNumComp;
+        if (nonICCDst) {
+            cs = ciespace;
+            iccDstNumComp = 3;
+        } else {
+            cs = dstColorSpace;
+            iccDstNumComp = dstNumComp;
+        }
+        float[] dstMinVal = new float[iccDstNumComp];
+        float[] dstDiffMinMax = new float[iccDstNumComp];
+        for (int i = 0; i < dstNumComp; i++) {
+            dstMinVal[i] = cs.getMinValue(i);
+            dstDiffMinMax[i] = (cs.getMaxValue(i) - dstMinVal[i]) / maxNum;
+        }
+        float[] dstColor;
+        if (dstHasAlpha) {
+            int size = ((dstNumComp + 1) > 3) ? (dstNumComp + 1) : 3;
+            dstColor = new float[size];
+        } else {
+            int size = (dstNumComp > 3) ? dstNumComp : 3;
+            dstColor = new float[size];
+        }
+        short[] srcLine = new short[w * iccSrcNumComp];
+        short[] dstLine = new short[w * iccDstNumComp];
+        Object pixel;
+        float[] color;
+        float[] alpha = null;
+        if (needSrcAlpha) {
+            alpha = new float[w];
+        }
+        int idx;
+        // process each scanline
+        for (int y = 0; y < h; y++) {
+            // convert src scanline
+            pixel = null;
+            color = null;
+            idx = 0;
+            for (int x = 0; x < w; x++) {
+                pixel = srcRas.getDataElements(x, y, pixel);
+                color = srcCM.getNormalizedComponents(pixel, color, 0);
+                if (needSrcAlpha) {
+                    alpha[x] = color[srcNumComp];
+                }
+                if (nonICCSrc) {
+                    color = srcColorSpace.toCIEXYZ(color);
+                }
+                for (int i = 0; i < iccSrcNumComp; i++) {
+                    srcLine[idx++] = (short) ((color[i] - srcMinVal[i]) * srcInvDiffMinMax[i] + 0.5f);
+                }
+            }
+            // color convert srcLine to dstLine
+            thisTransform.colorConvert(srcLine, dstLine);
+            // convert dst scanline
+            pixel = null;
+            idx = 0;
+            for (int x = 0; x < w; x++) {
+                for (int i = 0; i < iccDstNumComp; i++) {
+                    dstColor[i] = ((float) (dstLine[idx++] & 0xffff)) * dstDiffMinMax[i] + dstMinVal[i];
+                }
+                if (nonICCDst) {
+                    color = srcColorSpace.fromCIEXYZ(dstColor);
+                    for (int i = 0; i < dstNumComp; i++) {
+                        dstColor[i] = color[i];
+                    }
+                }
+                if (needSrcAlpha) {
+                    dstColor[dstNumComp] = alpha[x];
+                } else if (dstHasAlpha) {
+                    dstColor[dstNumComp] = 1.0f;
+                }
+                pixel = dstCM.getDataElements(dstColor, 0, pixel);
+                dstRas.setDataElements(x, y, pixel);
+            }
+        }
+    } else {
+        /* possible non-ICC src, possible CSList, possible non-ICC dst */
+        // process per pixel
+        int numCS;
+        if (CSList == null) {
+            numCS = 0;
+        } else {
+            numCS = CSList.length;
+        }
+        float[] dstColor;
+        if (dstHasAlpha) {
+            dstColor = new float[dstNumComp + 1];
+        } else {
+            dstColor = new float[dstNumComp];
+        }
+        Object spixel = null;
+        Object dpixel = null;
+        float[] color = null;
+        float[] tmpColor;
+        // process each pixel
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                spixel = srcRas.getDataElements(x, y, spixel);
+                color = srcCM.getNormalizedComponents(spixel, color, 0);
+                tmpColor = srcColorSpace.toCIEXYZ(color);
+                for (int i = 0; i < numCS; i++) {
+                    tmpColor = CSList[i].fromCIEXYZ(tmpColor);
+                    tmpColor = CSList[i].toCIEXYZ(tmpColor);
+                }
+                tmpColor = dstColorSpace.fromCIEXYZ(tmpColor);
+                for (int i = 0; i < dstNumComp; i++) {
+                    dstColor[i] = tmpColor[i];
+                }
+                if (needSrcAlpha) {
+                    dstColor[dstNumComp] = color[srcNumComp];
+                } else if (dstHasAlpha) {
+                    dstColor[dstNumComp] = 1.0f;
+                }
+                dpixel = dstCM.getDataElements(dstColor, 0, dpixel);
+                dstRas.setDataElements(x, y, dpixel);
+            }
+        }
+    }
+    return dst;
+}

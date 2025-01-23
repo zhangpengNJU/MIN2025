@@ -1,0 +1,114 @@
+@SuppressWarnings("fallthrough")
+private /**
+ * Parsing of sequences between alternations.
+ */
+Node sequence(Node end) {
+    Node head = null;
+    Node tail = null;
+    Node node = null;
+    LOOP: for (; ; ) {
+        int ch = peek();
+        switch(ch) {
+            case '(':
+                // Because group handles its own closure,
+                // we need to treat it differently
+                node = group0();
+                // Check for comment or flag group
+                if (node == null)
+                    continue;
+                if (head == null)
+                    head = node;
+                else
+                    tail.next = node;
+                // Double return: Tail was returned in root
+                tail = root;
+                continue;
+            case '[':
+                node = clazz(true);
+                break;
+            case '\\':
+                ch = nextEscaped();
+                if (ch == 'p' || ch == 'P') {
+                    boolean oneLetter = true;
+                    boolean comp = (ch == 'P');
+                    // Consume { if present
+                    ch = next();
+                    if (ch != '{') {
+                        unread();
+                    } else {
+                        oneLetter = false;
+                    }
+                    node = family(oneLetter, comp);
+                } else {
+                    unread();
+                    node = atom();
+                }
+                break;
+            case '^':
+                next();
+                if (has(MULTILINE)) {
+                    if (has(UNIX_LINES))
+                        node = new UnixCaret();
+                    else
+                        node = new Caret();
+                } else {
+                    node = new Begin();
+                }
+                break;
+            case '$':
+                next();
+                if (has(UNIX_LINES))
+                    node = new UnixDollar(has(MULTILINE));
+                else
+                    node = new Dollar(has(MULTILINE));
+                break;
+            case '.':
+                next();
+                if (has(DOTALL)) {
+                    node = new All();
+                } else {
+                    if (has(UNIX_LINES))
+                        node = new UnixDot();
+                    else {
+                        node = new Dot();
+                    }
+                }
+                break;
+            case '|':
+            case ')':
+                break LOOP;
+            // Now interpreting dangling ] and } as literals
+            case ']':
+            case '}':
+                node = atom();
+                break;
+            case '?':
+            case '*':
+            case '+':
+                next();
+                throw error("Dangling meta character '" + ((char) ch) + "'");
+            case 0:
+                if (cursor >= patternLength) {
+                    break LOOP;
+                }
+            // Fall through
+            default:
+                node = atom();
+                break;
+        }
+        node = closure(node);
+        if (head == null) {
+            head = tail = node;
+        } else {
+            tail.next = node;
+            tail = node;
+        }
+    }
+    if (head == null) {
+        return end;
+    }
+    tail.next = end;
+    // double return
+    root = tail;
+    return head;
+}

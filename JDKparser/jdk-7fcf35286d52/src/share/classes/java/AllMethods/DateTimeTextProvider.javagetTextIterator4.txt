@@ -1,0 +1,23 @@
+/**
+ * Gets an iterator of text to field for the specified field, locale and style
+ * for the purpose of parsing.
+ * <p>
+ * The iterator must be returned in order from the longest text to the shortest.
+ * <p>
+ * The null return value should be used if there is no applicable parsable text, or
+ * if the text would be a numeric representation of the value.
+ * Text can only be parsed if all the values for that field-style-locale combination are unique.
+ *
+ * @param field  the field to get text for, not null
+ * @param style  the style to get text for, null for all parsable text
+ * @param locale  the locale to get text for, not null
+ * @return the iterator of text to field pairs, in order from longest text to shortest text,
+ *  null if the field or style is not parsable
+ */
+public Iterator<Entry<String, Long>> getTextIterator(TemporalField field, TextStyle style, Locale locale) {
+    Object store = findStore(field, locale);
+    if (store instanceof LocaleStore) {
+        return ((LocaleStore) store).getTextIterator(style);
+    }
+    return null;
+}

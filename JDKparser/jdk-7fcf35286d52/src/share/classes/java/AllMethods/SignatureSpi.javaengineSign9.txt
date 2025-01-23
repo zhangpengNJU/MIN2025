@@ -1,0 +1,51 @@
+/**
+ * Finishes this signature operation and stores the resulting signature
+ * bytes in the provided buffer {@code outbuf}, starting at
+ * {@code offset}.
+ * The format of the signature depends on the underlying
+ * signature scheme.
+ *
+ * <p>The signature implementation is reset to its initial state
+ * (the state it was in after a call to one of the
+ * {@code engineInitSign} methods)
+ * and can be reused to generate further signatures with the same private
+ * key.
+ *
+ * This method should be abstract, but we leave it concrete for
+ * binary compatibility.  Knowledgeable providers should override this
+ * method.
+ *
+ * @param outbuf buffer for the signature result.
+ *
+ * @param offset offset into {@code outbuf} where the signature is
+ * stored.
+ *
+ * @param len number of bytes within {@code outbuf} allotted for the
+ * signature.
+ * Both this default implementation and the SUN provider do not
+ * return partial digests. If the value of this parameter is less
+ * than the actual signature length, this method will throw a
+ * SignatureException.
+ * This parameter is ignored if its value is greater than or equal to
+ * the actual signature length.
+ *
+ * @return the number of bytes placed into {@code outbuf}
+ *
+ * @exception SignatureException if the engine is not
+ * initialized properly, if this signature algorithm is unable to
+ * process the input data provided, or if {@code len} is less
+ * than the actual signature length.
+ *
+ * @since 1.2
+ */
+protected int engineSign(byte[] outbuf, int offset, int len) throws SignatureException {
+    byte[] sig = engineSign();
+    if (len < sig.length) {
+        throw new SignatureException("partial signatures not returned");
+    }
+    if (outbuf.length - offset < sig.length) {
+        throw new SignatureException("insufficient space in the output buffer to store the " + "signature");
+    }
+    System.arraycopy(sig, 0, outbuf, offset, sig.length);
+    return sig.length;
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns a {@code Collector} that produces the arithmetic mean of an integer-valued
+ * function applied to the input elements.  If no elements are present,
+ * the result is 0.
+ *
+ * @param <T> the type of the input elements
+ * @param mapper a function extracting the property to be summed
+ * @return a {@code Collector} that produces the sum of a derived property
+ */
+public static <T> Collector<T, ?, Double> averagingInt(ToIntFunction<? super T> mapper) {
+    return new CollectorImpl<>(() -> new long[2], (a, t) -> {
+        a[0] += mapper.applyAsInt(t);
+        a[1]++;
+    }, (a, b) -> {
+        a[0] += b[0];
+        a[1] += b[1];
+        return a;
+    }, a -> (a[1] == 0) ? 0.0d : (double) a[0] / a[1], CH_NOID);
+}

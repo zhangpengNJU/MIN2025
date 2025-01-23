@@ -1,0 +1,19 @@
+@Override
+public void onCompletion(CountedCompleter<?> caller) {
+    if (node != null) {
+        // Dump buffered elements from this leaf into the sink
+        node.forEach(action);
+        node = null;
+    } else if (spliterator != null) {
+        // Dump elements output from this leaf's pipeline into the sink
+        helper.wrapAndCopyInto(action, spliterator);
+        spliterator = null;
+    }
+    // The completion of this task *and* the dumping of elements
+    // "happens-before" completion of the associated left-most leaf task
+    // of right subtree (if any, which can be this task's right sibling)
+    // 
+    ForEachOrderedTask<S, T> leftDescendant = completionMap.remove(this);
+    if (leftDescendant != null)
+        leftDescendant.tryComplete();
+}

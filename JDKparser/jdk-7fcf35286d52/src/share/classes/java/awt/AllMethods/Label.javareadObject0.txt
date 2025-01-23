@@ -1,0 +1,13 @@
+/**
+ * Read a label from an object input stream.
+ * @exception HeadlessException if
+ * <code>GraphicsEnvironment.isHeadless()</code> returns
+ * <code>true</code>
+ * @serial
+ * @since 1.4
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    s.defaultReadObject();
+}

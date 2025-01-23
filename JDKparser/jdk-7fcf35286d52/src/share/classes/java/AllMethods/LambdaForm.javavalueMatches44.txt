@@ -1,0 +1,30 @@
+private static boolean valueMatches(BasicType tc, Class<?> type, Object x) {
+    // The following line is needed because (...)void method handles can use non-void invokers
+    // can drop any kind of value
+    if (type == void.class)
+        tc = V_TYPE;
+    assert tc == basicType(type) : tc + " == basicType(" + type + ")=" + basicType(type);
+    switch(tc) {
+        case I_TYPE:
+            assert checkInt(type, x) : "checkInt(" + type + "," + x + ")";
+            break;
+        case J_TYPE:
+            assert x instanceof Long : "instanceof Long: " + x;
+            break;
+        case F_TYPE:
+            assert x instanceof Float : "instanceof Float: " + x;
+            break;
+        case D_TYPE:
+            assert x instanceof Double : "instanceof Double: " + x;
+            break;
+        case L_TYPE:
+            assert checkRef(type, x) : "checkRef(" + type + "," + x + ")";
+            break;
+        // allow anything here; will be dropped
+        case V_TYPE:
+            break;
+        default:
+            assert (false);
+    }
+    return true;
+}

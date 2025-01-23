@@ -1,0 +1,20 @@
+/**
+ * Gets the <code>Accessible</code> parent of this object.
+ * If the parent of this object implements <code>Accessible</code>,
+ * this method should simply return <code>getParent</code>.
+ *
+ * @return the <code>Accessible</code> parent of this object -- can
+ *    be <code>null</code> if this object does not have an
+ *    <code>Accessible</code> parent
+ */
+public Accessible getAccessibleParent() {
+    if (accessibleParent != null) {
+        return accessibleParent;
+    } else {
+        MenuContainer parent = MenuComponent.this.getParent();
+        if (parent instanceof Accessible) {
+            return (Accessible) parent;
+        }
+    }
+    return null;
+}

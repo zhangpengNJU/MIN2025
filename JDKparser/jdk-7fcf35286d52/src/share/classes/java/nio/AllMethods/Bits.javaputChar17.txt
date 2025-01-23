@@ -1,0 +1,6 @@
+static void putChar(ByteBuffer bb, int bi, char x, boolean bigEndian) {
+    if (bigEndian)
+        putCharB(bb, bi, x);
+    else
+        putCharL(bb, bi, x);
+}

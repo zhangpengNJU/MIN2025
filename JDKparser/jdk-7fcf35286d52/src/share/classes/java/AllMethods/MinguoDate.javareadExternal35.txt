@@ -1,0 +1,6 @@
+static MinguoDate readExternal(DataInput in) throws IOException {
+    int year = in.readInt();
+    int month = in.readByte();
+    int dayOfMonth = in.readByte();
+    return MinguoChronology.INSTANCE.date(year, month, dayOfMonth);
+}

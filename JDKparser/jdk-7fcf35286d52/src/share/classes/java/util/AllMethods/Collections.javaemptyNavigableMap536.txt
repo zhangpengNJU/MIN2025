@@ -1,0 +1,20 @@
+/**
+ * Returns an empty navigable map (immutable).  This map is serializable.
+ *
+ * <p>This example illustrates the type-safe way to obtain an empty map:
+ * <pre> {@code
+ *     NavigableMap<String, Date> s = Collections.emptyNavigableMap();
+ * }</pre>
+ *
+ * @implNote Implementations of this method need not create a separate
+ * {@code NavigableMap} object for each call.
+ *
+ * @param <K> the class of the map keys
+ * @param <V> the class of the map values
+ * @return an empty navigable map
+ * @since 1.8
+ */
+@SuppressWarnings("unchecked")
+public static final <K, V> NavigableMap<K, V> emptyNavigableMap() {
+    return (NavigableMap<K, V>) UnmodifiableNavigableMap.EMPTY_NAVIGABLE_MAP;
+}

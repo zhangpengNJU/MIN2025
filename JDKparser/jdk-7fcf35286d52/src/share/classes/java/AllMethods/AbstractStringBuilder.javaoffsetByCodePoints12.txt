@@ -1,0 +1,25 @@
+/**
+ * Returns the index within this sequence that is offset from the
+ * given {@code index} by {@code codePointOffset} code
+ * points. Unpaired surrogates within the text range given by
+ * {@code index} and {@code codePointOffset} count as
+ * one code point each.
+ *
+ * @param index the index to be offset
+ * @param codePointOffset the offset in code points
+ * @return the index within this sequence
+ * @exception IndexOutOfBoundsException if {@code index}
+ *   is negative or larger then the length of this sequence,
+ *   or if {@code codePointOffset} is positive and the subsequence
+ *   starting with {@code index} has fewer than
+ *   {@code codePointOffset} code points,
+ *   or if {@code codePointOffset} is negative and the subsequence
+ *   before {@code index} has fewer than the absolute value of
+ *   {@code codePointOffset} code points.
+ */
+public int offsetByCodePoints(int index, int codePointOffset) {
+    if (index < 0 || index > count) {
+        throw new IndexOutOfBoundsException();
+    }
+    return Character.offsetByCodePointsImpl(value, 0, count, index, codePointOffset);
+}

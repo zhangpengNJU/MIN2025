@@ -1,0 +1,22 @@
+/**
+ * Replaces an entry in the list of source with a new source.
+ * If the index lies beyond the current source list,
+ * the list is extended with nulls as needed.
+ * @param source the specified source image
+ * @param index the index into the <code>sources</code>
+ *              <code>Vector</code> at which to
+ *              insert the specified <code>source</code>
+ * @return a new <code>ParameterBlock</code> that contains the
+ *         specified <code>source</code> at the specified
+ *         <code>index</code>.
+ * @see #getSource(int)
+ */
+public ParameterBlock setSource(Object source, int index) {
+    int oldSize = sources.size();
+    int newSize = index + 1;
+    if (oldSize < newSize) {
+        sources.setSize(newSize);
+    }
+    sources.setElementAt(source, index);
+    return this;
+}

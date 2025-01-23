@@ -1,0 +1,41 @@
+// note usage of service per requestor, per service
+synchronized void usingService(Object requestor, Object service, Class serviceClass, BeanContextServiceProvider bcsp, boolean isDelegated, BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException, UnsupportedOperationException {
+    // first, process mapping from serviceClass to requestor(s)
+    BCSSCServiceClassRef serviceClassRef = null;
+    if (serviceClasses == null)
+        serviceClasses = new HashMap(1);
+    else
+        serviceClassRef = (BCSSCServiceClassRef) serviceClasses.get(serviceClass);
+    if (serviceClassRef == null) {
+        // new service being used ...
+        serviceClassRef = new BCSSCServiceClassRef(serviceClass, bcsp, isDelegated);
+        serviceClasses.put(serviceClass, serviceClassRef);
+    } else {
+        // existing service ...
+        // throws
+        serviceClassRef.verifyAndMaybeSetProvider(bcsp, isDelegated);
+        // throws
+        serviceClassRef.verifyRequestor(requestor, bcsrl);
+    }
+    serviceClassRef.addRequestor(requestor, bcsrl);
+    serviceClassRef.addRef(isDelegated);
+    // now handle mapping from requestor to service(s)
+    BCSSCServiceRef serviceRef = null;
+    Map services = null;
+    if (serviceRequestors == null) {
+        serviceRequestors = new HashMap(1);
+    } else {
+        services = (Map) serviceRequestors.get(requestor);
+    }
+    if (services == null) {
+        services = new HashMap(1);
+        serviceRequestors.put(requestor, services);
+    } else
+        serviceRef = (BCSSCServiceRef) services.get(service);
+    if (serviceRef == null) {
+        serviceRef = new BCSSCServiceRef(serviceClassRef, isDelegated);
+        services.put(service, serviceRef);
+    } else {
+        serviceRef.addRef();
+    }
+}

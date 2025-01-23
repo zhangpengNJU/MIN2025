@@ -1,0 +1,21 @@
+// -----------------------------------------------------------------------
+@Override
+public String toString() {
+    StringBuilder buf = new StringBuilder(64);
+    buf.append(fieldValues).append(',').append(chrono);
+    if (zone != null) {
+        buf.append(',').append(zone);
+    }
+    if (date != null || time != null) {
+        buf.append(" resolved to ");
+        if (date != null) {
+            buf.append(date);
+            if (time != null) {
+                buf.append('T').append(time);
+            }
+        } else {
+            buf.append(time);
+        }
+    }
+    return buf.toString();
+}

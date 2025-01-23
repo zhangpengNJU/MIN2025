@@ -1,0 +1,29 @@
+/**
+ * Currently, we support Spliterator-based versions only for the
+ * full map, in either plain of descending form, otherwise relying
+ * on defaults because size estimation for submaps would dominate
+ * costs. The type tests needed to check these for key views are
+ * not very nice but avoid disrupting existing class
+ * structures. Callers must use plain default spliterators if this
+ * returns null.
+ */
+static <K> Spliterator<K> keySpliteratorFor(NavigableMap<K, ?> m) {
+    if (m instanceof TreeMap) {
+        @SuppressWarnings("unchecked")
+        TreeMap<K, Object> t = (TreeMap<K, Object>) m;
+        return t.keySpliterator();
+    }
+    if (m instanceof DescendingSubMap) {
+        @SuppressWarnings("unchecked")
+        DescendingSubMap<K, ?> dm = (DescendingSubMap<K, ?>) m;
+        TreeMap<K, ?> tm = dm.m;
+        if (dm == tm.descendingMap) {
+            @SuppressWarnings("unchecked")
+            TreeMap<K, Object> t = (TreeMap<K, Object>) tm;
+            return t.descendingKeySpliterator();
+        }
+    }
+    @SuppressWarnings("unchecked")
+    NavigableSubMap<K, ?> sm = (NavigableSubMap<K, ?>) m;
+    return sm.keySpliterator();
+}

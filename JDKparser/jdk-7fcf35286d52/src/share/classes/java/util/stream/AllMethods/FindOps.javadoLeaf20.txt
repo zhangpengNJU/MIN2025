@@ -1,0 +1,15 @@
+@Override
+protected O doLeaf() {
+    O result = helper.wrapAndCopyInto(op.sinkSupplier.get(), spliterator).get();
+    if (!op.mustFindFirst) {
+        if (result != null)
+            shortCircuit(result);
+        return null;
+    } else {
+        if (result != null) {
+            foundResult(result);
+            return result;
+        } else
+            return null;
+    }
+}

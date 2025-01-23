@@ -1,0 +1,51 @@
+/**
+ * Returns a {@code Field} object that reflects the specified public member
+ * field of the class or interface represented by this {@code Class}
+ * object. The {@code name} parameter is a {@code String} specifying the
+ * simple name of the desired field.
+ *
+ * <p> The field to be reflected is determined by the algorithm that
+ * follows.  Let C be the class or interface represented by this object:
+ *
+ * <OL>
+ * <LI> If C declares a public field with the name specified, that is the
+ *      field to be reflected.</LI>
+ * <LI> If no field was found in step 1 above, this algorithm is applied
+ *      recursively to each direct superinterface of C. The direct
+ *      superinterfaces are searched in the order they were declared.</LI>
+ * <LI> If no field was found in steps 1 and 2 above, and C has a
+ *      superclass S, then this algorithm is invoked recursively upon S.
+ *      If C has no superclass, then a {@code NoSuchFieldException}
+ *      is thrown.</LI>
+ * </OL>
+ *
+ * <p> If this {@code Class} object represents an array type, then this
+ * method does not find the {@code length} field of the array type.
+ *
+ * @param name the field name
+ * @return the {@code Field} object of this class specified by
+ *         {@code name}
+ * @throws NoSuchFieldException if a field with the specified name is
+ *         not found.
+ * @throws NullPointerException if {@code name} is {@code null}
+ * @throws SecurityException
+ *         If a security manager, <i>s</i>, is present and
+ *         the caller's class loader is not the same as or an
+ *         ancestor of the class loader for the current class and
+ *         invocation of {@link SecurityManager#checkPackageAccess
+ *         s.checkPackageAccess()} denies access to the package
+ *         of this class.
+ *
+ * @since JDK1.1
+ * @jls 8.2 Class Members
+ * @jls 8.3 Field Declarations
+ */
+@CallerSensitive
+public Field getField(String name) throws NoSuchFieldException, SecurityException {
+    checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
+    Field field = getField0(name);
+    if (field == null) {
+        throw new NoSuchFieldException(name);
+    }
+    return field;
+}

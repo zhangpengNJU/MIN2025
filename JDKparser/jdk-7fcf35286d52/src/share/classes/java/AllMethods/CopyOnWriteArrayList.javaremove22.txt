@@ -1,0 +1,36 @@
+/**
+ * A version of remove(Object) using the strong hint that given
+ * recent snapshot contains o at the given index.
+ */
+private boolean remove(Object o, Object[] snapshot, int index) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] current = getArray();
+        int len = current.length;
+        if (snapshot != current)
+            findIndex: {
+                int prefix = Math.min(index, len);
+                for (int i = 0; i < prefix; i++) {
+                    if (current[i] != snapshot[i] && eq(o, current[i])) {
+                        index = i;
+                        break findIndex;
+                    }
+                }
+                if (index >= len)
+                    return false;
+                if (current[index] == o)
+                    break findIndex;
+                index = indexOf(o, current, index, len);
+                if (index < 0)
+                    return false;
+            }
+        Object[] newElements = new Object[len - 1];
+        System.arraycopy(current, 0, newElements, 0, index);
+        System.arraycopy(current, index + 1, newElements, index, len - index - 1);
+        setArray(newElements);
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}

@@ -1,0 +1,30 @@
+/**
+ * Processes adjustment events occurring on this
+ * scrollbar by dispatching them to any registered
+ * <code>AdjustmentListener</code> objects.
+ * <p>
+ * This method is not called unless adjustment events are
+ * enabled for this component. Adjustment events are enabled
+ * when one of the following occurs:
+ * <ul>
+ * <li>An <code>AdjustmentListener</code> object is registered
+ * via <code>addAdjustmentListener</code>.
+ * <li>Adjustment events are enabled via <code>enableEvents</code>.
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the adjustment event
+ * @see         java.awt.event.AdjustmentEvent
+ * @see         java.awt.event.AdjustmentListener
+ * @see         java.awt.Scrollbar#addAdjustmentListener
+ * @see         java.awt.Component#enableEvents
+ * @since       JDK1.1
+ */
+protected void processAdjustmentEvent(AdjustmentEvent e) {
+    AdjustmentListener listener = adjustmentListener;
+    if (listener != null) {
+        listener.adjustmentValueChanged(e);
+    }
+}

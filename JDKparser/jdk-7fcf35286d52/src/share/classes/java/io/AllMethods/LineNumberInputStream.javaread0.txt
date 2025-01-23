@@ -1,0 +1,43 @@
+/**
+ * Reads the next byte of data from this input stream. The value
+ * byte is returned as an {@code int} in the range
+ * {@code 0} to {@code 255}. If no byte is available
+ * because the end of the stream has been reached, the value
+ * {@code -1} is returned. This method blocks until input data
+ * is available, the end of the stream is detected, or an exception
+ * is thrown.
+ * <p>
+ * The {@code read} method of
+ * {@code LineNumberInputStream} calls the {@code read}
+ * method of the underlying input stream. It checks for carriage
+ * returns and newline characters in the input, and modifies the
+ * current line number as appropriate. A carriage-return character or
+ * a carriage return followed by a newline character are both
+ * converted into a single newline character.
+ *
+ * @return     the next byte of data, or {@code -1} if the end of this
+ *             stream is reached.
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.FilterInputStream#in
+ * @see        java.io.LineNumberInputStream#getLineNumber()
+ */
+@SuppressWarnings("fallthrough")
+public int read() throws IOException {
+    int c = pushBack;
+    if (c != -1) {
+        pushBack = -1;
+    } else {
+        c = in.read();
+    }
+    switch(c) {
+        case '\r':
+            pushBack = in.read();
+            if (pushBack == '\n') {
+                pushBack = -1;
+            }
+        case '\n':
+            lineNumber++;
+            return '\n';
+    }
+    return c;
+}

@@ -1,0 +1,20 @@
+static boolean removeFirstRequest() {
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getFirstHWRequest();
+        if (hwFocusRequest != null) {
+            heavyweightRequests.removeFirst();
+            if (hwFocusRequest.lightweightRequests != null) {
+                for (Iterator<KeyboardFocusManager.LightweightFocusRequest> lwIter = hwFocusRequest.lightweightRequests.iterator(); lwIter.hasNext(); ) {
+                    manager.dequeueKeyEvents(-1, lwIter.next().component);
+                }
+            }
+        }
+        // Fix for 4799136 - clear type-ahead markers if requests queue is empty
+        // We do it here because this method is called only when problems happen
+        if (heavyweightRequests.size() == 0) {
+            manager.clearMarkers();
+        }
+        return (heavyweightRequests.size() > 0);
+    }
+}

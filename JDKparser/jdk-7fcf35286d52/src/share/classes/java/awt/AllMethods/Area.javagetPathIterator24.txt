@@ -1,0 +1,14 @@
+/**
+ * Creates a {@link PathIterator} for the outline of this
+ * <code>Area</code> object.  This <code>Area</code> object is unchanged.
+ * @param at an optional <code>AffineTransform</code> to be applied to
+ * the coordinates as they are returned in the iteration, or
+ * <code>null</code> if untransformed coordinates are desired
+ * @return    the <code>PathIterator</code> object that returns the
+ *          geometry of the outline of this <code>Area</code>, one
+ *          segment at a time.
+ * @since 1.2
+ */
+public PathIterator getPathIterator(AffineTransform at) {
+    return new AreaIterator(curves, at);
+}

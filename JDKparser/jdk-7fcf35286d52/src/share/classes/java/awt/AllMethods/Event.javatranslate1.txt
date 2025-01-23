@@ -1,0 +1,20 @@
+/**
+ * <b>NOTE:</b> The <code>Event</code> class is obsolete and is
+ * available only for backwards compatibility.  It has been replaced
+ * by the <code>AWTEvent</code> class and its subclasses.
+ * <p>
+ * Translates this event so that its <i>x</i> and <i>y</i>
+ * coordinates are increased by <i>dx</i> and <i>dy</i>,
+ * respectively.
+ * <p>
+ * This method translates an event relative to the given component.
+ * This involves, at a minimum, translating the coordinates into the
+ * local coordinate system of the given component. It may also involve
+ * translating a region in the case of an expose event.
+ * @param     dx     the distance to translate the <i>x</i> coordinate.
+ * @param     dy     the distance to translate the <i>y</i> coordinate.
+ */
+public void translate(int dx, int dy) {
+    this.x += dx;
+    this.y += dy;
+}

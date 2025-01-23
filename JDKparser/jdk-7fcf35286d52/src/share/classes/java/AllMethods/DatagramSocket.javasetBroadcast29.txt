@@ -1,0 +1,22 @@
+/**
+ * Enable/disable SO_BROADCAST.
+ *
+ * <p> Some operating systems may require that the Java virtual machine be
+ * started with implementation specific privileges to enable this option or
+ * send broadcast datagrams.
+ *
+ * @param  on
+ *         whether or not to have broadcast turned on.
+ *
+ * @throws  SocketException
+ *          if there is an error in the underlying protocol, such as an UDP
+ *          error.
+ *
+ * @since 1.4
+ * @see #getBroadcast()
+ */
+public synchronized void setBroadcast(boolean on) throws SocketException {
+    if (isClosed())
+        throw new SocketException("Socket is closed");
+    getImpl().setOption(SocketOptions.SO_BROADCAST, Boolean.valueOf(on));
+}

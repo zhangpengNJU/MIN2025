@@ -1,0 +1,26 @@
+/**
+ * Constructs an ICC_Profile corresponding to the data in an InputStream.
+ * This method throws an IllegalArgumentException if the stream does not
+ * contain valid ICC Profile data.  It throws an IOException if an I/O
+ * error occurs while reading the stream.
+ * @param s The input stream from which to read the profile data.
+ *
+ * @return an <CODE>ICC_Profile</CODE> object corresponding to the
+ *     data in the specified <code>InputStream</code>.
+ *
+ * @exception IOException If an I/O error occurs while reading the stream.
+ *
+ * @exception IllegalArgumentException If the stream does not
+ * contain valid ICC Profile data.
+ */
+public static ICC_Profile getInstance(InputStream s) throws IOException {
+    byte[] profileData;
+    if (s instanceof ProfileDeferralInfo) {
+        /* hack to detect profiles whose loading can be deferred */
+        return getDeferredInstance((ProfileDeferralInfo) s);
+    }
+    if ((profileData = getProfileDataFromStream(s)) == null) {
+        throw new IllegalArgumentException("Invalid ICC Profile Data");
+    }
+    return getInstance(profileData);
+}

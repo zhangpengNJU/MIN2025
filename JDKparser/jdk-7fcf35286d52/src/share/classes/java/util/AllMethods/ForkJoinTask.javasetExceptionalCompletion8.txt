@@ -1,0 +1,11 @@
+/**
+ * Records exception and possibly propagates.
+ *
+ * @return status on exit
+ */
+private int setExceptionalCompletion(Throwable ex) {
+    int s = recordExceptionalCompletion(ex);
+    if ((s & DONE_MASK) == EXCEPTIONAL)
+        internalPropagateException(ex);
+    return s;
+}

@@ -1,0 +1,41 @@
+/**
+ * Concatenates this transform with a rotation transformation.
+ * This is equivalent to calling concatenate(R), where R is an
+ * <code>AffineTransform</code> represented by the following matrix:
+ * <pre>
+ *          [   cos(theta)    -sin(theta)    0   ]
+ *          [   sin(theta)     cos(theta)    0   ]
+ *          [       0              0         1   ]
+ * </pre>
+ * Rotating by a positive angle theta rotates points on the positive
+ * X axis toward the positive Y axis.
+ * Note also the discussion of
+ * <a href="#quadrantapproximation">Handling 90-Degree Rotations</a>
+ * above.
+ * @param theta the angle of rotation measured in radians
+ * @since 1.2
+ */
+public void rotate(double theta) {
+    double sin = Math.sin(theta);
+    if (sin == 1.0) {
+        rotate90();
+    } else if (sin == -1.0) {
+        rotate270();
+    } else {
+        double cos = Math.cos(theta);
+        if (cos == -1.0) {
+            rotate180();
+        } else if (cos != 1.0) {
+            double M0, M1;
+            M0 = m00;
+            M1 = m01;
+            m00 = cos * M0 + sin * M1;
+            m01 = -sin * M0 + cos * M1;
+            M0 = m10;
+            M1 = m11;
+            m10 = cos * M0 + sin * M1;
+            m11 = -sin * M0 + cos * M1;
+            updateState();
+        }
+    }
+}

@@ -1,0 +1,5 @@
+static MethodHandle makeWrappedMember(MethodHandle target, MemberName member, boolean isInvokeSpecial) {
+    if (member.equals(target.internalMemberName()) && isInvokeSpecial == target.isInvokeSpecial())
+        return target;
+    return new WrappedMember(target, target.type(), member, isInvokeSpecial, null);
+}

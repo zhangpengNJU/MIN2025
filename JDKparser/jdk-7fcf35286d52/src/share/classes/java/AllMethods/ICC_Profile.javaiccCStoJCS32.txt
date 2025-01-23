@@ -1,0 +1,84 @@
+/* convert an ICC color space signature into a Java color space type */
+static int iccCStoJCS(int theColorSpaceSig) {
+    int theColorSpace;
+    switch(theColorSpaceSig) {
+        case icSigXYZData:
+            theColorSpace = ColorSpace.TYPE_XYZ;
+            break;
+        case icSigLabData:
+            theColorSpace = ColorSpace.TYPE_Lab;
+            break;
+        case icSigLuvData:
+            theColorSpace = ColorSpace.TYPE_Luv;
+            break;
+        case icSigYCbCrData:
+            theColorSpace = ColorSpace.TYPE_YCbCr;
+            break;
+        case icSigYxyData:
+            theColorSpace = ColorSpace.TYPE_Yxy;
+            break;
+        case icSigRgbData:
+            theColorSpace = ColorSpace.TYPE_RGB;
+            break;
+        case icSigGrayData:
+            theColorSpace = ColorSpace.TYPE_GRAY;
+            break;
+        case icSigHsvData:
+            theColorSpace = ColorSpace.TYPE_HSV;
+            break;
+        case icSigHlsData:
+            theColorSpace = ColorSpace.TYPE_HLS;
+            break;
+        case icSigCmykData:
+            theColorSpace = ColorSpace.TYPE_CMYK;
+            break;
+        case icSigCmyData:
+            theColorSpace = ColorSpace.TYPE_CMY;
+            break;
+        case icSigSpace2CLR:
+            theColorSpace = ColorSpace.TYPE_2CLR;
+            break;
+        case icSigSpace3CLR:
+            theColorSpace = ColorSpace.TYPE_3CLR;
+            break;
+        case icSigSpace4CLR:
+            theColorSpace = ColorSpace.TYPE_4CLR;
+            break;
+        case icSigSpace5CLR:
+            theColorSpace = ColorSpace.TYPE_5CLR;
+            break;
+        case icSigSpace6CLR:
+            theColorSpace = ColorSpace.TYPE_6CLR;
+            break;
+        case icSigSpace7CLR:
+            theColorSpace = ColorSpace.TYPE_7CLR;
+            break;
+        case icSigSpace8CLR:
+            theColorSpace = ColorSpace.TYPE_8CLR;
+            break;
+        case icSigSpace9CLR:
+            theColorSpace = ColorSpace.TYPE_9CLR;
+            break;
+        case icSigSpaceACLR:
+            theColorSpace = ColorSpace.TYPE_ACLR;
+            break;
+        case icSigSpaceBCLR:
+            theColorSpace = ColorSpace.TYPE_BCLR;
+            break;
+        case icSigSpaceCCLR:
+            theColorSpace = ColorSpace.TYPE_CCLR;
+            break;
+        case icSigSpaceDCLR:
+            theColorSpace = ColorSpace.TYPE_DCLR;
+            break;
+        case icSigSpaceECLR:
+            theColorSpace = ColorSpace.TYPE_ECLR;
+            break;
+        case icSigSpaceFCLR:
+            theColorSpace = ColorSpace.TYPE_FCLR;
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown color space");
+    }
+    return theColorSpace;
+}

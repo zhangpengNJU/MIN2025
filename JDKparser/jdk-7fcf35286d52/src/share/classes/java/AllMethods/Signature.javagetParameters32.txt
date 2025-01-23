@@ -1,0 +1,19 @@
+/**
+ * Returns the parameters used with this signature object.
+ *
+ * <p> If this signature has been previously initialized with parameters
+ * (by calling the {@code setParameter} method), this method returns
+ * the same parameters. If this signature has not been initialized with
+ * parameters, this method may return a combination of default and
+ * randomly generated parameter values if the underlying
+ * signature implementation supports it and can successfully generate
+ * them. Otherwise, {@code null} is returned.
+ *
+ * @return the parameters used with this signature, or {@code null}
+ *
+ * @see #setParameter(AlgorithmParameterSpec)
+ * @since 1.4
+ */
+public final AlgorithmParameters getParameters() {
+    return engineGetParameters();
+}

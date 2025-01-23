@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> higherEntry(K key) {
+    Entry<K, V> higher = (Entry<K, V>) nm.higherEntry(key);
+    return (null != higher) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(higher) : null;
+}

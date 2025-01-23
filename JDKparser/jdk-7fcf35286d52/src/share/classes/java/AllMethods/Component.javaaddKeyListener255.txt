@@ -1,0 +1,26 @@
+/**
+ * Adds the specified key listener to receive key events from
+ * this component.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param    l   the key listener.
+ * @see      java.awt.event.KeyEvent
+ * @see      java.awt.event.KeyListener
+ * @see      #removeKeyListener
+ * @see      #getKeyListeners
+ * @since    JDK1.1
+ */
+public synchronized void addKeyListener(KeyListener l) {
+    if (l == null) {
+        return;
+    }
+    keyListener = AWTEventMulticaster.add(keyListener, l);
+    newEventsOnly = true;
+    // if this is a lightweight component, enable key events
+    // in the native container.
+    if (peer instanceof LightweightPeer) {
+        parent.proxyEnableEvents(AWTEvent.KEY_EVENT_MASK);
+    }
+}

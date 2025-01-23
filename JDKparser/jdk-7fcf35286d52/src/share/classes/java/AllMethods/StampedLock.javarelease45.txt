@@ -1,0 +1,20 @@
+/**
+ * Wakes up the successor of h (normally whead). This is normally
+ * just h.next, but may require traversal from wtail if next
+ * pointers are lagging. This may fail to wake up an acquiring
+ * thread when one or more have been cancelled, but the cancel
+ * methods themselves provide extra safeguards to ensure liveness.
+ */
+private void release(WNode h) {
+    if (h != null) {
+        WNode q;
+        Thread w;
+        U.compareAndSwapInt(h, WSTATUS, WAITING, 0);
+        if ((q = h.next) == null || q.status == CANCELLED) {
+            for (WNode t = wtail; t != null && t != h; t = t.prev) if (t.status <= 0)
+                q = t;
+        }
+        if (q != null && (w = q.thread) != null)
+            U.unpark(w);
+    }
+}

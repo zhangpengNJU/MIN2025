@@ -1,0 +1,9 @@
+/**
+ * Returns a sequential {@code LongStream} containing a single element.
+ *
+ * @param t the single element
+ * @return a singleton sequential stream
+ */
+public static LongStream of(long t) {
+    return StreamSupport.longStream(new Streams.LongStreamBuilderImpl(t), false);
+}

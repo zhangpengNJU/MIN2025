@@ -1,0 +1,10 @@
+/**
+ * Constructs a {@code TerminalOp} for streams of ints.
+ *
+ * @param mustFindFirst whether the {@code TerminalOp} must produce the
+ *        first element in the encounter order
+ * @return a {@code TerminalOp} implementing the find operation
+ */
+public static TerminalOp<Integer, OptionalInt> makeInt(boolean mustFindFirst) {
+    return new FindOp<>(mustFindFirst, StreamShape.INT_VALUE, OptionalInt.empty(), OptionalInt::isPresent, FindSink.OfInt::new);
+}

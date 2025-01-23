@@ -1,0 +1,21 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (+this)},
+ * with rounding according to the context settings.
+ *
+ * <p>The effect of this method is identical to that of the {@link
+ * #round(MathContext)} method.
+ *
+ * @param mc the context to use.
+ * @return {@code this}, rounded as necessary.  A zero result will
+ *         have a scale of 0.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}.
+ * @see    #round(MathContext)
+ * @since  1.5
+ */
+public BigDecimal plus(MathContext mc) {
+    if (// no rounding please
+    mc.precision == 0)
+        return this;
+    return doRound(this, mc);
+}

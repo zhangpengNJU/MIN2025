@@ -1,0 +1,35 @@
+/**
+ * Returns an array of all {@code Window}s created by this application
+ * that have no owner. They include {@code Frame}s and ownerless
+ * {@code Dialog}s and {@code Window}s.
+ * If called from an applet, the array includes only the {@code Window}s
+ * accessible by that applet.
+ * <p>
+ * <b>Warning:</b> this method may return system created windows, such
+ * as a print dialog. Applications should not assume the existence of
+ * these dialogs, nor should an application assume anything about these
+ * dialogs such as component positions, {@code LayoutManager}s
+ * or serialization.
+ *
+ * @see Frame#getFrames
+ * @see Window#getWindows()
+ *
+ * @since 1.6
+ */
+public static Window[] getOwnerlessWindows() {
+    Window[] allWindows = Window.getWindows();
+    int ownerlessCount = 0;
+    for (Window w : allWindows) {
+        if (w.getOwner() == null) {
+            ownerlessCount++;
+        }
+    }
+    Window[] ownerless = new Window[ownerlessCount];
+    int c = 0;
+    for (Window w : allWindows) {
+        if (w.getOwner() == null) {
+            ownerless[c++] = w;
+        }
+    }
+    return ownerless;
+}

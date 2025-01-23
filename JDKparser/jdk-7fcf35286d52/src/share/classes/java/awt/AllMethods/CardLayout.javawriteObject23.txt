@@ -1,0 +1,18 @@
+/**
+ * Writes serializable fields to stream.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    Hashtable<String, Component> tab = new Hashtable<>();
+    int ncomponents = vector.size();
+    for (int i = 0; i < ncomponents; i++) {
+        Card card = (Card) vector.get(i);
+        tab.put(card.name, card.comp);
+    }
+    ObjectOutputStream.PutField f = s.putFields();
+    f.put("hgap", hgap);
+    f.put("vgap", vgap);
+    f.put("vector", vector);
+    f.put("currentCard", currentCard);
+    f.put("tab", tab);
+    s.writeFields();
+}

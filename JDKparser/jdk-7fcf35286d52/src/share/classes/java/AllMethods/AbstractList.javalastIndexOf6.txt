@@ -1,0 +1,22 @@
+/**
+ * {@inheritDoc}
+ *
+ * <p>This implementation first gets a list iterator that points to the end
+ * of the list (with {@code listIterator(size())}).  Then, it iterates
+ * backwards over the list until the specified element is found, or the
+ * beginning of the list is reached.
+ *
+ * @throws ClassCastException   {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public int lastIndexOf(Object o) {
+    ListIterator<E> it = listIterator(size());
+    if (o == null) {
+        while (it.hasPrevious()) if (it.previous() == null)
+            return it.nextIndex();
+    } else {
+        while (it.hasPrevious()) if (o.equals(it.previous()))
+            return it.nextIndex();
+    }
+    return -1;
+}

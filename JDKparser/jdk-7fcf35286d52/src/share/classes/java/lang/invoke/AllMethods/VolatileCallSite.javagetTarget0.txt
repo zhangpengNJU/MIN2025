@@ -1,0 +1,18 @@
+/**
+ * Returns the target method of the call site, which behaves
+ * like a {@code volatile} field of the {@code VolatileCallSite}.
+ * <p>
+ * The interactions of {@code getTarget} with memory are the same
+ * as of a read from a {@code volatile} field.
+ * <p>
+ * In particular, the current thread is required to issue a fresh
+ * read of the target from memory, and must not fail to see
+ * a recent update to the target by another thread.
+ *
+ * @return the linkage state of this call site, a method handle which can change over time
+ * @see #setTarget
+ */
+@Override
+public final MethodHandle getTarget() {
+    return getTargetVolatile();
+}

@@ -1,0 +1,17 @@
+/**
+ * Returns a cached <code>Locale</code> instance equivalent to
+ * the deserialized <code>Locale</code>. When serialized
+ * language, country and variant fields read from the object data stream
+ * are exactly "ja", "JP", "JP" or "th", "TH", "TH" and script/extensions
+ * fields are empty, this method supplies <code>UNICODE_LOCALE_EXTENSION</code>
+ * "ca"/"japanese" (calendar type is "japanese") or "nu"/"thai" (number script
+ * type is "thai"). See <a href="Locale.html#special_cases_constructor">Special Cases</a>
+ * for more information.
+ *
+ * @return an instance of <code>Locale</code> equivalent to
+ * the deserialized <code>Locale</code>.
+ * @throws java.io.ObjectStreamException
+ */
+private Object readResolve() throws java.io.ObjectStreamException {
+    return getInstance(baseLocale.getLanguage(), baseLocale.getScript(), baseLocale.getRegion(), baseLocale.getVariant(), localeExtensions);
+}

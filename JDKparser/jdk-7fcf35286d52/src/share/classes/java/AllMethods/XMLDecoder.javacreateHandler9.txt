@@ -1,0 +1,29 @@
+/**
+ * Creates a new handler for SAX parser
+ * that can be used to parse embedded XML archives
+ * created by the {@code XMLEncoder} class.
+ *
+ * The {@code owner} should be used if parsed XML document contains
+ * the method call within context of the &lt;java&gt; element.
+ * The {@code null} value may cause illegal parsing in such case.
+ * The same problem may occur, if the {@code owner} class
+ * does not contain expected method to call. See details <a
+ * href="http://java.sun.com/products/jfc/tsc/articles/persistence3/">here</a>.
+ *
+ * @param owner  the owner of the default handler
+ *               that can be used as a value of &lt;java&gt; element
+ * @param el     the exception handler for the parser,
+ *               or {@code null} to use the default exception handler
+ * @param cl     the class loader used for instantiating objects,
+ *               or {@code null} to use the default class loader
+ * @return an instance of {@code DefaultHandler} for SAX parser
+ *
+ * @since 1.7
+ */
+public static DefaultHandler createHandler(Object owner, ExceptionListener el, ClassLoader cl) {
+    DocumentHandler handler = new DocumentHandler();
+    handler.setOwner(owner);
+    handler.setExceptionListener(el);
+    handler.setClassLoader(cl);
+    return handler;
+}

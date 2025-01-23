@@ -1,0 +1,12 @@
+/**
+ * Returns the multiplicative inverse of val mod 2^32.  Assumes val is odd.
+ */
+static int inverseMod32(int val) {
+    // Newton's iteration!
+    int t = val;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    return t;
+}

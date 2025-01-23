@@ -1,0 +1,6 @@
+public IllegalAccessException makeAccessException(String message, Object from) {
+    message = message + ": " + toString();
+    if (from != null)
+        message += ", from " + from;
+    return new IllegalAccessException(message);
+}

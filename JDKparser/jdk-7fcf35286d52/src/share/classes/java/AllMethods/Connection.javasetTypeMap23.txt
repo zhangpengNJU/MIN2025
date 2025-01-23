@@ -1,0 +1,27 @@
+/**
+ *  Installs the given <code>TypeMap</code> object as the type map for
+ *  this <code>Connection</code> object.  The type map will be used for the
+ *  custom mapping of SQL structured types and distinct types.
+ * <p>
+ *  You must set the the values for the <code>TypeMap</code> prior to
+ *  callng <code>setMap</code> as a JDBC driver may create an internal copy
+ *  of the <code>TypeMap</code>:
+ *
+ *  <pre>
+ *       Map myMap&lt;String,Class&lt;?&gt;&gt; = new HashMap&lt;String,Class&lt;?&gt;&gt;();
+ *       myMap.put("mySchemaName.ATHLETES", Athletes.class);
+ *       con.setTypeMap(myMap);
+ *  </pre>
+ *  @param map the <code>java.util.Map</code> object to install
+ *         as the replacement for this <code>Connection</code>
+ *         object's default type map
+ *  @exception SQLException if a database access error occurs, this
+ *  method is called on a closed connection or
+ *         the given parameter is not a <code>java.util.Map</code>
+ *         object
+ *  @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ *  this method
+ *  @since 1.2
+ *  @see #getTypeMap
+ */
+void setTypeMap(java.util.Map<String, Class<?>> map) throws SQLException;

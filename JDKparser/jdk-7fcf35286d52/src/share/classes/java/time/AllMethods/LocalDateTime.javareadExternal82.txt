@@ -1,0 +1,5 @@
+static LocalDateTime readExternal(DataInput in) throws IOException {
+    LocalDate date = LocalDate.readExternal(in);
+    LocalTime time = LocalTime.readExternal(in);
+    return LocalDateTime.of(date, time);
+}

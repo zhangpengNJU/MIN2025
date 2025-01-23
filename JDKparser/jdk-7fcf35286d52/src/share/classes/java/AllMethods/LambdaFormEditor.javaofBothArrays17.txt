@@ -1,0 +1,16 @@
+private static Transform ofBothArrays(Kind k, int[] b123, byte[] b456) {
+    byte[] fullBytes = new byte[1 + b123.length + b456.length];
+    int i = 0;
+    fullBytes[i++] = bval(k);
+    for (int bv : b123) {
+        fullBytes[i++] = bval(bv);
+    }
+    for (byte bv : b456) {
+        fullBytes[i++] = bv;
+    }
+    long packedBytes = packedBytes(fullBytes);
+    if (packedBytes != 0)
+        return new Transform(packedBytes);
+    else
+        return new Transform(fullBytes);
+}

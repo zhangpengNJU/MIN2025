@@ -1,0 +1,17 @@
+/**
+ * Returns a transferable object representing the current contents
+ * of the clipboard.  If the clipboard currently has no contents,
+ * it returns <code>null</code>. The parameter Object requestor is
+ * not currently used.  The method throws
+ * <code>IllegalStateException</code> if the clipboard is currently
+ * unavailable.  For example, on some platforms, the system clipboard is
+ * unavailable while it is accessed by another application.
+ *
+ * @param requestor the object requesting the clip data  (not used)
+ * @return the current transferable object on the clipboard
+ * @throws IllegalStateException if the clipboard is currently unavailable
+ * @see java.awt.Toolkit#getSystemClipboard
+ */
+public synchronized Transferable getContents(Object requestor) {
+    return contents;
+}

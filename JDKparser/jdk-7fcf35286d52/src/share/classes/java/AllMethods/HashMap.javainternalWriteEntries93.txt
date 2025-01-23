@@ -1,0 +1,12 @@
+// Called only from writeObject, to ensure compatible ordering.
+void internalWriteEntries(java.io.ObjectOutputStream s) throws IOException {
+    Node<K, V>[] tab;
+    if (size > 0 && (tab = table) != null) {
+        for (int i = 0; i < tab.length; ++i) {
+            for (Node<K, V> e = tab[i]; e != null; e = e.next) {
+                s.writeObject(e.key);
+                s.writeObject(e.value);
+            }
+        }
+    }
+}

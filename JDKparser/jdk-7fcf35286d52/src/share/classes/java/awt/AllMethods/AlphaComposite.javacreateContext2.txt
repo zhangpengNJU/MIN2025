@@ -1,0 +1,12 @@
+/**
+ * Creates a context for the compositing operation.
+ * The context contains state that is used in performing
+ * the compositing operation.
+ * @param srcColorModel  the {@link ColorModel} of the source
+ * @param dstColorModel  the <code>ColorModel</code> of the destination
+ * @return the <code>CompositeContext</code> object to be used to perform
+ * compositing operations.
+ */
+public CompositeContext createContext(ColorModel srcColorModel, ColorModel dstColorModel, RenderingHints hints) {
+    return new SunCompositeContext(this, srcColorModel, dstColorModel);
+}

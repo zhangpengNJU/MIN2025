@@ -1,0 +1,11 @@
+protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+    if (!super.mutatesTo(oldInstance, newInstance)) {
+        return false;
+    }
+    if ((oldInstance instanceof List) || (oldInstance instanceof Set) || (oldInstance instanceof Map)) {
+        return oldInstance.equals(newInstance);
+    }
+    Collection<?> oldC = (Collection<?>) oldInstance;
+    Collection<?> newC = (Collection<?>) newInstance;
+    return (oldC.size() == newC.size()) && oldC.containsAll(newC);
+}

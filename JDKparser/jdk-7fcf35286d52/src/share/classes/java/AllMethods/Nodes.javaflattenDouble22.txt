@@ -1,0 +1,25 @@
+/**
+ * Flatten, in parallel, a {@link Node.OfDouble}.  A flattened node is one that
+ * has no children.  If the node is already flat, it is simply returned.
+ *
+ * @implSpec
+ * If a new node is to be created, a new double[] array is created whose length
+ * is {@link Node#count()}.  Then the node tree is traversed and leaf node
+ * elements are placed in the array concurrently by leaf tasks at the
+ * correct offsets.
+ *
+ * @param node the node to flatten
+ * @return a flat {@code Node.OfDouble}
+ */
+public static Node.OfDouble flattenDouble(Node.OfDouble node) {
+    if (node.getChildCount() > 0) {
+        long size = node.count();
+        if (size >= MAX_ARRAY_SIZE)
+            throw new IllegalArgumentException(BAD_SIZE);
+        double[] array = new double[(int) size];
+        new ToArrayTask.OfDouble(node, array, 0).invoke();
+        return node(array);
+    } else {
+        return node;
+    }
+}

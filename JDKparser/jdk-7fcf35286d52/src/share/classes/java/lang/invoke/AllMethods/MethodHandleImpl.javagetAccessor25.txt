@@ -1,0 +1,9 @@
+static MethodHandle getAccessor(Class<?> arrayClass, boolean isSetter) {
+    String name = name(arrayClass, isSetter);
+    MethodType type = type(arrayClass, isSetter);
+    try {
+        return IMPL_LOOKUP.findStatic(ArrayAccessor.class, name, type);
+    } catch (ReflectiveOperationException ex) {
+        throw uncaughtException(ex);
+    }
+}

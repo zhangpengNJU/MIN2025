@@ -1,0 +1,9 @@
+private static ProtectionDomain getCallerPD(final Class<?> caller) {
+    ProtectionDomain callerPd = doPrivileged(new PrivilegedAction<ProtectionDomain>() {
+
+        public ProtectionDomain run() {
+            return caller.getProtectionDomain();
+        }
+    });
+    return callerPd;
+}

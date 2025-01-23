@@ -1,0 +1,41 @@
+/**
+ * If the lock state matches the given stamp then, if the stamp
+ * represents holding a lock, releases it and returns an
+ * observation stamp.  Or, if an optimistic read, returns it if
+ * validated. This method returns zero in all other cases, and so
+ * may be useful as a form of "tryUnlock".
+ *
+ * @param stamp a stamp
+ * @return a valid optimistic read stamp, or zero on failure
+ */
+public long tryConvertToOptimisticRead(long stamp) {
+    long a = stamp & ABITS, m, s, next;
+    WNode h;
+    U.loadFence();
+    for (; ; ) {
+        if (((s = state) & SBITS) != (stamp & SBITS))
+            break;
+        if ((m = s & ABITS) == 0L) {
+            if (a != 0L)
+                break;
+            return s;
+        } else if (m == WBIT) {
+            if (a != m)
+                break;
+            state = next = (s += WBIT) == 0L ? ORIGIN : s;
+            if ((h = whead) != null && h.status != 0)
+                release(h);
+            return next;
+        } else if (a == 0L || a >= WBIT)
+            break;
+        else if (m < RFULL) {
+            if (U.compareAndSwapLong(this, STATE, s, next = s - RUNIT)) {
+                if (m == RUNIT && (h = whead) != null && h.status != 0)
+                    release(h);
+                return next & SBITS;
+            }
+        } else if ((next = tryDecReaderOverflow(s)) != 0L)
+            return next & SBITS;
+    }
+    return 0L;
+}

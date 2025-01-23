@@ -1,0 +1,22 @@
+/**
+ * Read a class descriptor from the serialization stream.  This method is
+ * called when the ObjectInputStream expects a class descriptor as the next
+ * item in the serialization stream.  Subclasses of ObjectInputStream may
+ * override this method to read in class descriptors that have been written
+ * in non-standard formats (by subclasses of ObjectOutputStream which have
+ * overridden the <code>writeClassDescriptor</code> method).  By default,
+ * this method reads class descriptors according to the format defined in
+ * the Object Serialization specification.
+ *
+ * @return  the class descriptor read
+ * @throws  IOException If an I/O error has occurred.
+ * @throws  ClassNotFoundException If the Class of a serialized object used
+ *          in the class descriptor representation cannot be found
+ * @see java.io.ObjectOutputStream#writeClassDescriptor(java.io.ObjectStreamClass)
+ * @since 1.3
+ */
+protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
+    ObjectStreamClass desc = new ObjectStreamClass();
+    desc.readNonProxy(this);
+    return desc;
+}

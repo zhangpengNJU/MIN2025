@@ -1,0 +1,47 @@
+/**
+ * Renumber and/or replace params so that they are interned and canonically numbered.
+ *  @return maximum argument list length among the names (since we have to pass over them anyway)
+ */
+private int normalize() {
+    Name[] oldNames = null;
+    int maxOutArity = 0;
+    int changesStart = 0;
+    for (int i = 0; i < names.length; i++) {
+        Name n = names[i];
+        if (!n.initIndex(i)) {
+            if (oldNames == null) {
+                oldNames = names.clone();
+                changesStart = i;
+            }
+            names[i] = n.cloneWithIndex(i);
+        }
+        if (n.arguments != null && maxOutArity < n.arguments.length)
+            maxOutArity = n.arguments.length;
+    }
+    if (oldNames != null) {
+        int startFixing = arity;
+        if (startFixing <= changesStart)
+            startFixing = changesStart + 1;
+        for (int i = startFixing; i < names.length; i++) {
+            Name fixed = names[i].replaceNames(oldNames, names, changesStart, i);
+            names[i] = fixed.newIndex(i);
+        }
+    }
+    assert (nameRefsAreLegal());
+    int maxInterned = Math.min(arity, INTERNED_ARGUMENT_LIMIT);
+    boolean needIntern = false;
+    for (int i = 0; i < maxInterned; i++) {
+        Name n = names[i], n2 = internArgument(n);
+        if (n != n2) {
+            names[i] = n2;
+            needIntern = true;
+        }
+    }
+    if (needIntern) {
+        for (int i = arity; i < names.length; i++) {
+            names[i].internArguments();
+        }
+    }
+    assert (nameRefsAreLegal());
+    return maxOutArity;
+}

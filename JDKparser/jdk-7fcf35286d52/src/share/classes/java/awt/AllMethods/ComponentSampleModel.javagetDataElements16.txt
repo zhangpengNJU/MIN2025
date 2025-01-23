@@ -1,0 +1,115 @@
+/**
+ * Returns data for a single pixel in a primitive array of type
+ * <code>TransferType</code>.  For a <code>ComponentSampleModel</code>,
+ * this is the same as the data type, and samples are returned
+ * one per array element.  Generally, <code>obj</code> should
+ * be passed in as <code>null</code>, so that the <code>Object</code>
+ * is created automatically and is the right primitive data type.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * <code>DataBuffer</code> <code>db1</code>, whose storage layout is
+ * described by <code>ComponentSampleModel</code> <code>csm1</code>,
+ * to <code>DataBuffer</code> <code>db2</code>, whose storage layout
+ * is described by <code>ComponentSampleModel</code> <code>csm2</code>.
+ * The transfer is usually more efficient than using
+ * <code>getPixel</code> and <code>setPixel</code>.
+ * <pre>
+ *       ComponentSampleModel csm1, csm2;
+ *       DataBufferInt db1, db2;
+ *       csm2.setDataElements(x, y,
+ *                            csm1.getDataElements(x, y, null, db1), db2);
+ * </pre>
+ *
+ * Using <code>getDataElements</code> and <code>setDataElements</code>
+ * to transfer between two <code>DataBuffer/SampleModel</code>
+ * pairs is legitimate if the <code>SampleModel</code> objects have
+ * the same number of bands, corresponding bands have the same number of
+ * bits per sample, and the <code>TransferType</code>s are the same.
+ * <p>
+ * If <code>obj</code> is not <code>null</code>, it should be a
+ * primitive array of type <code>TransferType</code>.
+ * Otherwise, a <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> might be thrown if the
+ * coordinates are not in bounds, or if <code>obj</code> is not
+ * <code>null</code> and is not large enough to hold
+ * the pixel data.
+ *
+ * @param x         the X coordinate of the pixel location
+ * @param y         the Y coordinate of the pixel location
+ * @param obj       if non-<code>null</code>, a primitive array
+ *                  in which to return the pixel data
+ * @param data      the <code>DataBuffer</code> containing the image data
+ * @return the data of the specified pixel
+ * @see #setDataElements(int, int, Object, DataBuffer)
+ *
+ * @throws NullPointerException if data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if obj is too small to hold the output.
+ */
+public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int type = getTransferType();
+    int numDataElems = getNumDataElements();
+    int pixelOffset = y * scanlineStride + x * pixelStride;
+    switch(type) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bdata;
+            if (obj == null)
+                bdata = new byte[numDataElems];
+            else
+                bdata = (byte[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                bdata[i] = (byte) data.getElem(bankIndices[i], pixelOffset + bandOffsets[i]);
+            }
+            obj = (Object) bdata;
+            break;
+        case DataBuffer.TYPE_USHORT:
+        case DataBuffer.TYPE_SHORT:
+            short[] sdata;
+            if (obj == null)
+                sdata = new short[numDataElems];
+            else
+                sdata = (short[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                sdata[i] = (short) data.getElem(bankIndices[i], pixelOffset + bandOffsets[i]);
+            }
+            obj = (Object) sdata;
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] idata;
+            if (obj == null)
+                idata = new int[numDataElems];
+            else
+                idata = (int[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                idata[i] = data.getElem(bankIndices[i], pixelOffset + bandOffsets[i]);
+            }
+            obj = (Object) idata;
+            break;
+        case DataBuffer.TYPE_FLOAT:
+            float[] fdata;
+            if (obj == null)
+                fdata = new float[numDataElems];
+            else
+                fdata = (float[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                fdata[i] = data.getElemFloat(bankIndices[i], pixelOffset + bandOffsets[i]);
+            }
+            obj = (Object) fdata;
+            break;
+        case DataBuffer.TYPE_DOUBLE:
+            double[] ddata;
+            if (obj == null)
+                ddata = new double[numDataElems];
+            else
+                ddata = (double[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                ddata[i] = data.getElemDouble(bankIndices[i], pixelOffset + bandOffsets[i]);
+            }
+            obj = (Object) ddata;
+            break;
+    }
+    return obj;
+}

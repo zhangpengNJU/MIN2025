@@ -1,0 +1,11 @@
+boolean checkDisplayNameParams(int field, int style, int minStyle, int maxStyle, Locale locale, int fieldMask) {
+    // Ignore the standalone mask
+    int baseStyle = getBaseStyle(style);
+    if (field < 0 || field >= fields.length || baseStyle < minStyle || baseStyle > maxStyle) {
+        throw new IllegalArgumentException();
+    }
+    if (locale == null) {
+        throw new NullPointerException();
+    }
+    return isFieldSet(fieldMask, field);
+}

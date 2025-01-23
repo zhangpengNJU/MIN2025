@@ -1,0 +1,28 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns an array containing the Hijrah year, month and day
+ * computed from the epoch day.
+ *
+ * @param epochDay  the EpochDay
+ * @return int[0] = YEAR, int[1] = MONTH, int[2] = DATE
+ */
+int[] getHijrahDateInfo(int epochDay) {
+    // ensure that the chronology is initialized
+    checkCalendarInit();
+    if (epochDay < minEpochDay || epochDay >= maxEpochDay) {
+        throw new DateTimeException("Hijrah date out of range");
+    }
+    int epochMonth = epochDayToEpochMonth(epochDay);
+    int year = epochMonthToYear(epochMonth);
+    int month = epochMonthToMonth(epochMonth);
+    int day1 = epochMonthToEpochDay(epochMonth);
+    // epochDay - dayOfEpoch(year, month);
+    int date = epochDay - day1;
+    int[] dateInfo = new int[3];
+    dateInfo[0] = year;
+    // change to 1-based.
+    dateInfo[1] = month + 1;
+    // change to 1-based.
+    dateInfo[2] = date + 1;
+    return dateInfo;
+}

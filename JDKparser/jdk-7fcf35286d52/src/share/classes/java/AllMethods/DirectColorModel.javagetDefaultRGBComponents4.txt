@@ -1,0 +1,11 @@
+/*
+     * Given an int pixel in this ColorModel's ColorSpace, converts
+     * it to the default sRGB ColorSpace and returns the R, G, and B
+     * components as float values between 0.0 and 1.0.
+     */
+private float[] getDefaultRGBComponents(int pixel) {
+    int[] components = getComponents(pixel, null, 0);
+    float[] norm = getNormalizedComponents(components, 0, null, 0);
+    // Note that getNormalizedComponents returns non-premultiplied values
+    return colorSpace.toRGB(norm);
+}

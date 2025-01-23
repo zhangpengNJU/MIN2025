@@ -1,0 +1,5 @@
+private int localizedDayOfWeek(TemporalAccessor temporal) {
+    int sow = weekDef.getFirstDayOfWeek().getValue();
+    int isoDow = temporal.get(DAY_OF_WEEK);
+    return Math.floorMod(isoDow - sow, 7) + 1;
+}

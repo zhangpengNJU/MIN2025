@@ -1,0 +1,6 @@
+static Name[] arguments(int extra, char... types) {
+    int length = types.length;
+    Name[] names = new Name[length + extra];
+    for (int i = 0; i < length; i++) names[i] = argument(i, types[i]);
+    return names;
+}

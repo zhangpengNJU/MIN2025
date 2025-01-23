@@ -1,0 +1,6 @@
+private MemberName changeReferenceKind(byte refKind, byte oldKind) {
+    assert (getReferenceKind() == oldKind);
+    assert (MethodHandleNatives.refKindIsValid(refKind));
+    flags += (((int) refKind - oldKind) << MN_REFERENCE_KIND_SHIFT);
+    return this;
+}

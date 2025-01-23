@@ -1,0 +1,11 @@
+/**
+ * Incorporate a new double value using Kahan summation /
+ * compensated summation.
+ */
+private void sumWithCompensation(double value) {
+    double tmp = value - sumCompensation;
+    // Little wolf of rounding error
+    double velvel = sum + tmp;
+    sumCompensation = (velvel - sum) - tmp;
+    sum = velvel;
+}

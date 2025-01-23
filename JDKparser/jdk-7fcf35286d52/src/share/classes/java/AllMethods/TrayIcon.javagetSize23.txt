@@ -1,0 +1,14 @@
+/**
+ * Returns the size, in pixels, of the space that the tray icon
+ * occupies in the system tray.  For the tray icon that is not yet
+ * added to the system tray, the returned size is equal to the
+ * result of the {@link SystemTray#getTrayIconSize}.
+ *
+ * @return the size of the tray icon, in pixels
+ * @see TrayIcon#setImageAutoSize(boolean)
+ * @see java.awt.Image
+ * @see TrayIcon#getSize()
+ */
+public Dimension getSize() {
+    return SystemTray.getSystemTray().getTrayIconSize();
+}

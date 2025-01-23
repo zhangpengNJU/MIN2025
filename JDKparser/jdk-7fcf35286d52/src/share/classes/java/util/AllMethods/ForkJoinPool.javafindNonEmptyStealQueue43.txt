@@ -1,0 +1,30 @@
+// Specialized scanning
+/**
+ * Returns a (probably) non-empty steal queue, if one is found
+ * during a scan, else null.  This method must be retried by
+ * caller if, by the time it tries to use the queue, it is empty.
+ */
+private WorkQueue findNonEmptyStealQueue() {
+    // one-shot version of scan loop
+    WorkQueue[] ws;
+    // one-shot version of scan loop
+    int m;
+    int r = ThreadLocalRandom.nextSecondarySeed();
+    if ((ws = workQueues) != null && (m = ws.length - 1) >= 0) {
+        for (int origin = r & m, k = origin, oldSum = 0, checkSum = 0; ; ) {
+            WorkQueue q;
+            int b;
+            if ((q = ws[k]) != null) {
+                if ((b = q.base) - q.top < 0)
+                    return q;
+                checkSum += b;
+            }
+            if ((k = (k + 1) & m) == origin) {
+                if (oldSum == (oldSum = checkSum))
+                    break;
+                checkSum = 0;
+            }
+        }
+    }
+    return null;
+}

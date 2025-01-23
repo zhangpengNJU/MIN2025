@@ -1,0 +1,14 @@
+/**
+ * Resets the cursor to the beginning of the string.  The next call
+ * to next() will return the first collation element in the string.
+ */
+public void reset() {
+    if (text != null) {
+        text.reset();
+        NormalizerBase.Mode mode = CollatorUtilities.toNormalizerMode(owner.getDecomposition());
+        text.setMode(mode);
+    }
+    buffer = null;
+    expIndex = 0;
+    swapOrder = 0;
+}

@@ -1,0 +1,18 @@
+/**
+ * Creates a matcher that will match the given input against this pattern.
+ *
+ * @param  input
+ *         The character sequence to be matched
+ *
+ * @return  A new matcher for this pattern
+ */
+public Matcher matcher(CharSequence input) {
+    if (!compiled) {
+        synchronized (this) {
+            if (!compiled)
+                compile();
+        }
+    }
+    Matcher m = new Matcher(this, input);
+    return m;
+}

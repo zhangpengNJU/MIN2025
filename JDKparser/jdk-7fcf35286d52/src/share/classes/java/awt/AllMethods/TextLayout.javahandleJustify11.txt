@@ -1,0 +1,24 @@
+/**
+ * Justify this layout.  Overridden by subclassers to control justification
+ * (if there were subclassers, that is...)
+ *
+ * The layout will only justify if the paragraph attributes (from the
+ * source text, possibly defaulted by the layout attributes) indicate a
+ * non-zero justification ratio.  The text will be justified to the
+ * indicated width.  The current implementation also adjusts hanging
+ * punctuation and trailing whitespace to overhang the justification width.
+ * Once justified, the layout may not be rejustified.
+ * <p>
+ * Some code may rely on immutablity of layouts.  Subclassers should not
+ * call this directly, but instead should call getJustifiedLayout, which
+ * will call this method on a clone of this layout, preserving
+ * the original.
+ *
+ * @param justificationWidth the width to use when justifying the line.
+ * For best results, it should not be too different from the current
+ * advance of the line.
+ * @see #getJustifiedLayout(float)
+ */
+protected void handleJustify(float justificationWidth) {
+// never called
+}

@@ -1,0 +1,12 @@
+/**
+ * Balancing operations.
+ *
+ * Implementations of rebalancings during insertion and deletion are
+ * slightly different than the CLR version.  Rather than using dummy
+ * nilnodes, we use a set of accessors that deal properly with null.  They
+ * are used to avoid messiness surrounding nullness checks in the main
+ * algorithms.
+ */
+private static <K, V> boolean colorOf(Entry<K, V> p) {
+    return (p == null ? BLACK : p.color);
+}

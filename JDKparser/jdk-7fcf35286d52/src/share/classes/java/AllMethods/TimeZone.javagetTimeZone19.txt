@@ -1,0 +1,10 @@
+private static TimeZone getTimeZone(String ID, boolean fallback) {
+    TimeZone tz = ZoneInfo.getTimeZone(ID);
+    if (tz == null) {
+        tz = parseCustomTimeZone(ID);
+        if (tz == null && fallback) {
+            tz = new ZoneInfo(GMT_ID, 0);
+        }
+    }
+    return tz;
+}

@@ -1,0 +1,13 @@
+private int u() {
+    int n = uxxxx();
+    if (Character.isHighSurrogate((char) n)) {
+        int cur = cursor();
+        if (read() == '\\' && read() == 'u') {
+            int n2 = uxxxx();
+            if (Character.isLowSurrogate((char) n2))
+                return Character.toCodePoint((char) n, (char) n2);
+        }
+        setcursor(cur);
+    }
+    return n;
+}

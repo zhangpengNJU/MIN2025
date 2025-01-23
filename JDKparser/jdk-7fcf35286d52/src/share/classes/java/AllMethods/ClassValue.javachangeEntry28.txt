@@ -1,0 +1,21 @@
+/**
+ * Change the value for an entry.
+ */
+synchronized <T> void changeEntry(ClassValue<T> classValue, T value) {
+    // one map has entries for all value types <T>
+    @SuppressWarnings("unchecked")
+    Entry<T> e0 = (Entry<T>) get(classValue.identity);
+    Version<T> version = classValue.version();
+    if (e0 != null) {
+        if (e0.version() == version && e0.value() == value)
+            // no value change => no version change needed
+            return;
+        classValue.bumpVersion();
+        removeStaleEntries(classValue);
+    }
+    Entry<T> e = makeEntry(version, value);
+    put(classValue.identity, e);
+    // Add to the cache, to enable the fast path, next time.
+    checkCacheLoad();
+    addToCache(classValue, e);
+}

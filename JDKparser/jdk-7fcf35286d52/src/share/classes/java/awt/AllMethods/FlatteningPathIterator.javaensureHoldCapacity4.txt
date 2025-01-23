@@ -1,0 +1,15 @@
+/*
+     * Ensures that the hold array can hold up to (want) more values.
+     * It is currently holding (hold.length - holdIndex) values.
+     */
+void ensureHoldCapacity(int want) {
+    if (holdIndex - want < 0) {
+        int have = hold.length - holdIndex;
+        int newsize = hold.length + GROW_SIZE;
+        double[] newhold = new double[newsize];
+        System.arraycopy(hold, holdIndex, newhold, holdIndex + GROW_SIZE, have);
+        hold = newhold;
+        holdIndex += GROW_SIZE;
+        holdEnd += GROW_SIZE;
+    }
+}

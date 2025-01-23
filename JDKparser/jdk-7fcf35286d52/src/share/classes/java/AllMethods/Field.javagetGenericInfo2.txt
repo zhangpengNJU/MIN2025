@@ -1,0 +1,10 @@
+// Accessor for generic info repository
+private FieldRepository getGenericInfo() {
+    // lazily initialize repository if necessary
+    if (genericInfo == null) {
+        // create and cache generic info repository
+        genericInfo = FieldRepository.make(getGenericSignature(), getFactory());
+    }
+    // return cached repository
+    return genericInfo;
+}

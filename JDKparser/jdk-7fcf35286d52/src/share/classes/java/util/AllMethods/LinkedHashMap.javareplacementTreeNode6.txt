@@ -1,0 +1,6 @@
+TreeNode<K, V> replacementTreeNode(Node<K, V> p, Node<K, V> next) {
+    LinkedHashMap.Entry<K, V> q = (LinkedHashMap.Entry<K, V>) p;
+    TreeNode<K, V> t = new TreeNode<K, V>(q.hash, q.key, q.value, next);
+    transferLinks(q, t);
+    return t;
+}

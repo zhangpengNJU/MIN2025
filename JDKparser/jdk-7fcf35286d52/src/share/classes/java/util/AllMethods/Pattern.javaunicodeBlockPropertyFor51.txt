@@ -1,0 +1,12 @@
+/**
+ * Returns a CharProperty matching all characters in a UnicodeBlock.
+ */
+private CharProperty unicodeBlockPropertyFor(String name) {
+    final Character.UnicodeBlock block;
+    try {
+        block = Character.UnicodeBlock.forName(name);
+    } catch (IllegalArgumentException iae) {
+        throw error("Unknown character block name {" + name + "}");
+    }
+    return new Block(block);
+}

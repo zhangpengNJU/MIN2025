@@ -1,0 +1,326 @@
+/**
+ * Forces the raster data to match the state specified in the
+ * <CODE>isAlphaPremultiplied</CODE> variable, assuming the data
+ * is currently correctly described by this <CODE>ColorModel</CODE>.
+ * It may multiply or divide the color raster data by alpha, or
+ * do nothing if the data is in the correct state.  If the data needs
+ * to be coerced, this method also returns an instance of
+ * this <CODE>ColorModel</CODE> with
+ * the <CODE>isAlphaPremultiplied</CODE> flag set appropriately.
+ * Since <code>ColorModel</code> can be subclassed, subclasses inherit
+ * the implementation of this method and if they don't override it
+ * then they throw an exception if they use an unsupported
+ * <code>transferType</code>.
+ *
+ * @throws NullPointerException if <code>raster</code> is
+ * <code>null</code> and data coercion is required.
+ * @throws UnsupportedOperationException if the transfer type of
+ * this <CODE>ComponentColorModel</CODE>
+ * is not one of the supported transfer types:
+ * <CODE>DataBuffer.TYPE_BYTE</CODE>, <CODE>DataBuffer.TYPE_USHORT</CODE>,
+ * <CODE>DataBuffer.TYPE_INT</CODE>, <CODE>DataBuffer.TYPE_SHORT</CODE>,
+ * <CODE>DataBuffer.TYPE_FLOAT</CODE>, or <CODE>DataBuffer.TYPE_DOUBLE</CODE>.
+ */
+public ColorModel coerceData(WritableRaster raster, boolean isAlphaPremultiplied) {
+    if ((supportsAlpha == false) || (this.isAlphaPremultiplied == isAlphaPremultiplied)) {
+        // Nothing to do
+        return this;
+    }
+    int w = raster.getWidth();
+    int h = raster.getHeight();
+    int aIdx = raster.getNumBands() - 1;
+    float normAlpha;
+    int rminX = raster.getMinX();
+    int rY = raster.getMinY();
+    int rX;
+    if (isAlphaPremultiplied) {
+        switch(transferType) {
+            case DataBuffer.TYPE_BYTE:
+                {
+                    byte[] pixel = null;
+                    byte[] zpixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (byte[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = (pixel[aIdx] & 0xff) * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (byte) ((pixel[c] & 0xff) * normAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new byte[numComponents];
+                                    java.util.Arrays.fill(zpixel, (byte) 0);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_USHORT:
+                {
+                    short[] pixel = null;
+                    short[] zpixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (short[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = (pixel[aIdx] & 0xffff) * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (short) ((pixel[c] & 0xffff) * normAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new short[numComponents];
+                                    java.util.Arrays.fill(zpixel, (short) 0);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_INT:
+                {
+                    int[] pixel = null;
+                    int[] zpixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (int[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * normAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new int[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_SHORT:
+                {
+                    short[] pixel = null;
+                    short[] zpixel = null;
+                    float alphaScale = 1.0f / 32767.0f;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (short[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (short) (pixel[c] * normAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new short[numComponents];
+                                    java.util.Arrays.fill(zpixel, (short) 0);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_FLOAT:
+                {
+                    float[] pixel = null;
+                    float[] zpixel = null;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (float[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx];
+                            if (normAlpha != 0.0f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] *= normAlpha;
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new float[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0.0f);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_DOUBLE:
+                {
+                    double[] pixel = null;
+                    double[] zpixel = null;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (double[]) raster.getDataElements(rX, rY, pixel);
+                            double dnormAlpha = pixel[aIdx];
+                            if (dnormAlpha != 0.0) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] *= dnormAlpha;
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new double[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0.0);
+                                }
+                                raster.setDataElements(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+        }
+    } else {
+        // We are premultiplied and want to divide it out
+        switch(transferType) {
+            case DataBuffer.TYPE_BYTE:
+                {
+                    byte[] pixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (byte[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = (pixel[aIdx] & 0xff) * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (byte) ((pixel[c] & 0xff) * invAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_USHORT:
+                {
+                    short[] pixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (short[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = (pixel[aIdx] & 0xffff) * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (short) ((pixel[c] & 0xffff) * invAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_INT:
+                {
+                    int[] pixel = null;
+                    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (int[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * invAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_SHORT:
+                {
+                    short[] pixel = null;
+                    float alphaScale = 1.0f / 32767.0f;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (short[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (short) (pixel[c] * invAlpha + 0.5f);
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_FLOAT:
+                {
+                    float[] pixel = null;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (float[]) raster.getDataElements(rX, rY, pixel);
+                            normAlpha = pixel[aIdx];
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] *= invAlpha;
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_DOUBLE:
+                {
+                    double[] pixel = null;
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = (double[]) raster.getDataElements(rX, rY, pixel);
+                            double dnormAlpha = pixel[aIdx];
+                            if (dnormAlpha != 0.0) {
+                                double invAlpha = 1.0 / dnormAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] *= invAlpha;
+                                }
+                                raster.setDataElements(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+        }
+    }
+    // Return a new color model
+    if (!signed) {
+        return new ComponentColorModel(colorSpace, nBits, supportsAlpha, isAlphaPremultiplied, transparency, transferType);
+    } else {
+        return new ComponentColorModel(colorSpace, supportsAlpha, isAlphaPremultiplied, transparency, transferType);
+    }
+}

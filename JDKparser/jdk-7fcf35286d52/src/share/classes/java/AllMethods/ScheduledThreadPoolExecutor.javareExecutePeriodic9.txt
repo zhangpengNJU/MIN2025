@@ -1,0 +1,15 @@
+/**
+ * Requeues a periodic task unless current run state precludes it.
+ * Same idea as delayedExecute except drops task rather than rejecting.
+ *
+ * @param task the task
+ */
+void reExecutePeriodic(RunnableScheduledFuture<?> task) {
+    if (canRunInCurrentRunState(true)) {
+        super.getQueue().add(task);
+        if (!canRunInCurrentRunState(true) && remove(task))
+            task.cancel(false);
+        else
+            ensurePrestart();
+    }
+}

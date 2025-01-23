@@ -1,0 +1,14 @@
+public void add(int index, E element) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        if (index < 0 || index > size)
+            throw new IndexOutOfBoundsException();
+        l.add(index + offset, element);
+        expectedArray = l.getArray();
+        size++;
+    } finally {
+        lock.unlock();
+    }
+}

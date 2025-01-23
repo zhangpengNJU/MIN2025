@@ -1,0 +1,6 @@
+void checkKeyBounds(K key, Comparator<? super K> cmp) {
+    if (key == null)
+        throw new NullPointerException();
+    if (!inBounds(key, cmp))
+        throw new IllegalArgumentException("key out of range");
+}

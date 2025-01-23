@@ -1,0 +1,82 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (xs /
+ * ys)}, with rounding according to the context settings.
+ *
+ * Fast path - used only when (xscale <= yscale && yscale < 18
+ *  && mc.presision<18) {
+ */
+private static BigDecimal divideSmallFastPath(final long xs, int xscale, final long ys, int yscale, long preferredScale, MathContext mc) {
+    int mcp = mc.precision;
+    int roundingMode = mc.roundingMode.oldMode;
+    assert (xscale <= yscale) && (yscale < 18) && (mcp < 18);
+    // xraise >=0
+    int xraise = yscale - xscale;
+    long scaledX = (xraise == 0) ? xs : // can't overflow here!
+    longMultiplyPowerTen(xs, xraise);
+    BigDecimal quotient;
+    int cmp = longCompareMagnitude(scaledX, ys);
+    if (cmp > 0) {
+        // satisfy constraint (b)
+        // [that is, divisor *= 10]
+        yscale -= 1;
+        int scl = checkScaleNonZero(preferredScale + yscale - xscale + mcp);
+        if (checkScaleNonZero((long) mcp + yscale - xscale) > 0) {
+            // assert newScale >= xscale
+            int raise = checkScaleNonZero((long) mcp + yscale - xscale);
+            long scaledXs;
+            if ((scaledXs = longMultiplyPowerTen(xs, raise)) == INFLATED) {
+                quotient = null;
+                if ((mcp - 1) >= 0 && (mcp - 1) < LONG_TEN_POWERS_TABLE.length) {
+                    quotient = multiplyDivideAndRound(LONG_TEN_POWERS_TABLE[mcp - 1], scaledX, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+                }
+                if (quotient == null) {
+                    BigInteger rb = bigMultiplyPowerTen(scaledX, mcp - 1);
+                    quotient = divideAndRound(rb, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+                }
+            } else {
+                quotient = divideAndRound(scaledXs, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+            }
+        } else {
+            int newScale = checkScaleNonZero((long) xscale - mcp);
+            // assert newScale >= yscale
+            if (newScale == yscale) {
+                // easy case
+                quotient = divideAndRound(xs, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+            } else {
+                int raise = checkScaleNonZero((long) newScale - yscale);
+                long scaledYs;
+                if ((scaledYs = longMultiplyPowerTen(ys, raise)) == INFLATED) {
+                    BigInteger rb = bigMultiplyPowerTen(ys, raise);
+                    quotient = divideAndRound(BigInteger.valueOf(xs), rb, scl, roundingMode, checkScaleNonZero(preferredScale));
+                } else {
+                    quotient = divideAndRound(xs, scaledYs, scl, roundingMode, checkScaleNonZero(preferredScale));
+                }
+            }
+        }
+    } else {
+        // abs(scaledX) <= abs(ys)
+        // result is "scaledX * 10^msp / ys"
+        int scl = checkScaleNonZero(preferredScale + yscale - xscale + mcp);
+        if (cmp == 0) {
+            // abs(scaleX)== abs(ys) => result will be scaled 10^mcp + correct sign
+            quotient = roundedTenPower(((scaledX < 0) == (ys < 0)) ? 1 : -1, mcp, scl, checkScaleNonZero(preferredScale));
+        } else {
+            // abs(scaledX) < abs(ys)
+            long scaledXs;
+            if ((scaledXs = longMultiplyPowerTen(scaledX, mcp)) == INFLATED) {
+                quotient = null;
+                if (mcp < LONG_TEN_POWERS_TABLE.length) {
+                    quotient = multiplyDivideAndRound(LONG_TEN_POWERS_TABLE[mcp], scaledX, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+                }
+                if (quotient == null) {
+                    BigInteger rb = bigMultiplyPowerTen(scaledX, mcp);
+                    quotient = divideAndRound(rb, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+                }
+            } else {
+                quotient = divideAndRound(scaledXs, ys, scl, roundingMode, checkScaleNonZero(preferredScale));
+            }
+        }
+    }
+    // doRound, here, only affects 1000000000 case.
+    return doRound(quotient, mc);
+}

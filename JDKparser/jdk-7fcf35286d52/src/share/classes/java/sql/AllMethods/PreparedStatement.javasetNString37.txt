@@ -1,0 +1,19 @@
+/**
+ * Sets the designated parameter to the given <code>String</code> object.
+ * The driver converts this to a SQL <code>NCHAR</code> or
+ * <code>NVARCHAR</code> or <code>LONGNVARCHAR</code> value
+ * (depending on the argument's
+ * size relative to the driver's limits on <code>NVARCHAR</code> values)
+ * when it sends it to the database.
+ *
+ * @param parameterIndex of the first parameter is 1, the second is 2, ...
+ * @param value the parameter value
+ * @throws SQLException if parameterIndex does not correspond to a parameter
+ * marker in the SQL statement; if the driver does not support national
+ *         character sets;  if the driver can detect that a data conversion
+ *  error could occur; if a database access error occurs; or
+ * this method is called on a closed <code>PreparedStatement</code>
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ * @since 1.6
+ */
+void setNString(int parameterIndex, String value) throws SQLException;

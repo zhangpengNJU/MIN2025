@@ -1,0 +1,31 @@
+/**
+ * Helper method: recursively stops or suspends (as directed by the
+ * boolean argument) all of the threads in this thread group and its
+ * subgroups, except the current thread.  This method returns true
+ * if (and only if) the current thread is found to be in this thread
+ * group or one of its subgroups.
+ */
+@SuppressWarnings("deprecation")
+private boolean stopOrSuspend(boolean suspend) {
+    boolean suicide = false;
+    Thread us = Thread.currentThread();
+    int ngroupsSnapshot;
+    ThreadGroup[] groupsSnapshot = null;
+    synchronized (this) {
+        checkAccess();
+        for (int i = 0; i < nthreads; i++) {
+            if (threads[i] == us)
+                suicide = true;
+            else if (suspend)
+                threads[i].suspend();
+            else
+                threads[i].stop();
+        }
+        ngroupsSnapshot = ngroups;
+        if (groups != null) {
+            groupsSnapshot = Arrays.copyOf(groups, ngroupsSnapshot);
+        }
+    }
+    for (int i = 0; i < ngroupsSnapshot; i++) suicide = groupsSnapshot[i].stopOrSuspend(suspend) || suicide;
+    return suicide;
+}

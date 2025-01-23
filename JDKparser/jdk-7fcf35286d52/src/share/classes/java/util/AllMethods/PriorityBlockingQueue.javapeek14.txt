@@ -1,0 +1,9 @@
+public E peek() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return (size == 0) ? null : (E) queue[0];
+    } finally {
+        lock.unlock();
+    }
+}

@@ -1,0 +1,6 @@
+private static LambdaForm chooseDelegatingForm(MethodHandle target) {
+    if (target instanceof SimpleMethodHandle)
+        // no need for an indirection
+        return target.internalForm();
+    return makeReinvokerForm(target, MethodTypeForm.LF_DELEGATE, DelegatingMethodHandle.class, NF_getTarget);
+}

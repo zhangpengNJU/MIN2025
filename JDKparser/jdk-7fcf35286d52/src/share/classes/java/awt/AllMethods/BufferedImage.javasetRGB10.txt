@@ -1,0 +1,42 @@
+/**
+ * Sets an array of integer pixels in the default RGB color model
+ * (TYPE_INT_ARGB) and default sRGB color space,
+ * into a portion of the image data.  Color conversion takes place
+ * if the default model does not match the image
+ * <code>ColorModel</code>.  There are only 8-bits of precision for
+ * each color component in the returned data when
+ * using this method.  With a specified coordinate (x,&nbsp;y) in the
+ * this image, the ARGB pixel can be accessed in this way:
+ * <pre>
+ *    pixel   = rgbArray[offset + (y-startY)*scansize + (x-startX)];
+ * </pre>
+ * WARNING: No dithering takes place.
+ *
+ * <p>
+ *
+ * An <code>ArrayOutOfBoundsException</code> may be thrown
+ * if the region is not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ *
+ * @param startX      the starting X coordinate
+ * @param startY      the starting Y coordinate
+ * @param w           width of the region
+ * @param h           height of the region
+ * @param rgbArray    the rgb pixels
+ * @param offset      offset into the <code>rgbArray</code>
+ * @param scansize    scanline stride for the <code>rgbArray</code>
+ * @see #getRGB(int, int)
+ * @see #getRGB(int, int, int, int, int[], int, int)
+ */
+public void setRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
+    int yoff = offset;
+    int off;
+    Object pixel = null;
+    for (int y = startY; y < startY + h; y++, yoff += scansize) {
+        off = yoff;
+        for (int x = startX; x < startX + w; x++) {
+            pixel = colorModel.getDataElements(rgbArray[off++], pixel);
+            raster.setDataElements(x, y, pixel);
+        }
+    }
+}

@@ -1,0 +1,9 @@
+/**
+ * Construct a name for this MenuComponent.  Called by getName() when
+ * the name is null.
+ */
+String constructComponentName() {
+    synchronized (Menu.class) {
+        return base + nameCounter++;
+    }
+}

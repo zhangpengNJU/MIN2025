@@ -1,0 +1,17 @@
+/**
+ * Gets the provider for the zone ID.
+ *
+ * @param zoneId  the zone ID as defined by {@code ZoneId}, not null
+ * @return the provider, not null
+ * @throws ZoneRulesException if the zone ID is unknown
+ */
+private static ZoneRulesProvider getProvider(String zoneId) {
+    ZoneRulesProvider provider = ZONES.get(zoneId);
+    if (provider == null) {
+        if (ZONES.isEmpty()) {
+            throw new ZoneRulesException("No time-zone data files registered");
+        }
+        throw new ZoneRulesException("Unknown time-zone ID: " + zoneId);
+    }
+    return provider;
+}

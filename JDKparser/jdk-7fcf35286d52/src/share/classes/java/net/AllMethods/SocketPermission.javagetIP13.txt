@@ -1,0 +1,29 @@
+/**
+ * get IP addresses. Sets invalid to true if we can't get them.
+ */
+void getIP() throws UnknownHostException {
+    if (addresses != null || wildcard || invalid)
+        return;
+    try {
+        // now get all the IP addresses
+        String host;
+        if (getName().charAt(0) == '[') {
+            // Literal IPv6 address
+            host = getName().substring(1, getName().indexOf(']'));
+        } else {
+            int i = getName().indexOf(":");
+            if (i == -1)
+                host = getName();
+            else {
+                host = getName().substring(0, i);
+            }
+        }
+        addresses = new InetAddress[] { InetAddress.getAllByName0(host, false)[0] };
+    } catch (UnknownHostException uhe) {
+        invalid = true;
+        throw uhe;
+    } catch (IndexOutOfBoundsException iobe) {
+        invalid = true;
+        throw new UnknownHostException(getName());
+    }
+}

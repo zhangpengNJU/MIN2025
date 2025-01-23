@@ -1,0 +1,19 @@
+private static NumberFormat getInstance(LocaleProviderAdapter adapter, Locale locale, int choice) {
+    NumberFormatProvider provider = adapter.getNumberFormatProvider();
+    NumberFormat numberFormat = null;
+    switch(choice) {
+        case NUMBERSTYLE:
+            numberFormat = provider.getNumberInstance(locale);
+            break;
+        case PERCENTSTYLE:
+            numberFormat = provider.getPercentInstance(locale);
+            break;
+        case CURRENCYSTYLE:
+            numberFormat = provider.getCurrencyInstance(locale);
+            break;
+        case INTEGERSTYLE:
+            numberFormat = provider.getIntegerInstance(locale);
+            break;
+    }
+    return numberFormat;
+}

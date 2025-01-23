@@ -1,0 +1,8 @@
+/**
+ * Check access and get the requested constructor, eliding security manager checks.
+ */
+private MethodHandle getDirectConstructorNoSecurityManager(Class<?> refc, MemberName ctor) throws IllegalAccessException {
+    // not needed for reflection or for linking CONSTANT_MH constants
+    final boolean checkSecurity = false;
+    return getDirectConstructorCommon(refc, ctor, checkSecurity);
+}

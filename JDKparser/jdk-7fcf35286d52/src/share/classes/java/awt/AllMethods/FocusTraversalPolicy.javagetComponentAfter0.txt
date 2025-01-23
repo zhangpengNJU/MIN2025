@@ -1,0 +1,16 @@
+/**
+ * Returns the Component that should receive the focus after aComponent.
+ * aContainer must be a focus cycle root of aComponent or a focus traversal
+ * policy provider.
+ *
+ * @param aContainer a focus cycle root of aComponent or focus traversal
+ *        policy provider
+ * @param aComponent a (possibly indirect) child of aContainer, or
+ *        aContainer itself
+ * @return the Component that should receive the focus after aComponent, or
+ *         null if no suitable Component can be found
+ * @throws IllegalArgumentException if aContainer is not a focus cycle
+ *         root of aComponent or a focus traversal policy provider, or if
+ *         either aContainer or aComponent is null
+ */
+public abstract Component getComponentAfter(Container aContainer, Component aComponent);

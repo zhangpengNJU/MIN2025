@@ -1,0 +1,14 @@
+/**
+ * Returns a reference to the default socket factory used
+ * by this RMI implementation.  This will be the factory used
+ * by the RMI runtime when <code>getSocketFactory</code>
+ * returns <code>null</code>.
+ * @return the default RMI socket factory
+ * @since JDK1.1
+ */
+public synchronized static RMISocketFactory getDefaultSocketFactory() {
+    if (defaultSocketFactory == null) {
+        defaultSocketFactory = new sun.rmi.transport.proxy.RMIMasterSocketFactory();
+    }
+    return defaultSocketFactory;
+}

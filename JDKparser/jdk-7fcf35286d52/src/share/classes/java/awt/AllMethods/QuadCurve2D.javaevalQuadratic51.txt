@@ -1,0 +1,20 @@
+/**
+ * Evaluate the t values in the first num slots of the vals[] array
+ * and place the evaluated values back into the same array.  Only
+ * evaluate t values that are within the range &lt;0, 1&gt;, including
+ * the 0 and 1 ends of the range iff the include0 or include1
+ * booleans are true.  If an "inflection" equation is handed in,
+ * then any points which represent a point of inflection for that
+ * quadratic equation are also ignored.
+ */
+private static int evalQuadratic(double[] vals, int num, boolean include0, boolean include1, double[] inflect, double c1, double ctrl, double c2) {
+    int j = 0;
+    for (int i = 0; i < num; i++) {
+        double t = vals[i];
+        if ((include0 ? t >= 0 : t > 0) && (include1 ? t <= 1 : t < 1) && (inflect == null || inflect[1] + 2 * inflect[2] * t != 0)) {
+            double u = 1 - t;
+            vals[j++] = c1 * u * u + 2 * ctrl * t * u + c2 * t * t;
+        }
+    }
+    return j;
+}

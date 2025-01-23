@@ -1,0 +1,10 @@
+// REMIND: remove when filtering is done at lower level
+boolean eventEnabled(AWTEvent e) {
+    if (e.id == ItemEvent.ITEM_STATE_CHANGED) {
+        if ((eventMask & AWTEvent.ITEM_EVENT_MASK) != 0 || itemListener != null) {
+            return true;
+        }
+        return false;
+    }
+    return super.eventEnabled(e);
+}

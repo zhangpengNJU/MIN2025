@@ -1,0 +1,85 @@
+/**
+ * Emit a type conversion bytecode casting from "from" to "to".
+ */
+private void emitPrimCast(Wrapper from, Wrapper to) {
+    // Here's how.
+    // -   indicates forbidden
+    // <-> indicates implicit
+    // to ----> boolean  byte     short    char     int      long     float    double
+    // from boolean    <->        -        -        -        -        -        -        -
+    // byte        -       <->       i2s      i2c      <->      i2l      i2f      i2d
+    // short       -       i2b       <->      i2c      <->      i2l      i2f      i2d
+    // char        -       i2b       i2s      <->      <->      i2l      i2f      i2d
+    // int         -       i2b       i2s      i2c      <->      i2l      i2f      i2d
+    // long        -     l2i,i2b   l2i,i2s  l2i,i2c    l2i      <->      l2f      l2d
+    // float       -     f2i,i2b   f2i,i2s  f2i,i2c    f2i      f2l      <->      f2d
+    // double      -     d2i,i2b   d2i,i2s  d2i,i2c    d2i      d2l      d2f      <->
+    if (from == to) {
+        // no cast required, should be dead code anyway
+        return;
+    }
+    if (from.isSubwordOrInt()) {
+        // cast from {byte,short,char,int} to anything
+        emitI2X(to);
+    } else {
+        // cast from {long,float,double} to anything
+        if (to.isSubwordOrInt()) {
+            // cast to {byte,short,char,int}
+            emitX2I(from);
+            if (to.bitWidth() < 32) {
+                // targets other than int require another conversion
+                emitI2X(to);
+            }
+        } else {
+            // cast to {long,float,double} - this is verbose
+            boolean error = false;
+            switch(from) {
+                case LONG:
+                    switch(to) {
+                        case FLOAT:
+                            mv.visitInsn(Opcodes.L2F);
+                            break;
+                        case DOUBLE:
+                            mv.visitInsn(Opcodes.L2D);
+                            break;
+                        default:
+                            error = true;
+                            break;
+                    }
+                    break;
+                case FLOAT:
+                    switch(to) {
+                        case LONG:
+                            mv.visitInsn(Opcodes.F2L);
+                            break;
+                        case DOUBLE:
+                            mv.visitInsn(Opcodes.F2D);
+                            break;
+                        default:
+                            error = true;
+                            break;
+                    }
+                    break;
+                case DOUBLE:
+                    switch(to) {
+                        case LONG:
+                            mv.visitInsn(Opcodes.D2L);
+                            break;
+                        case FLOAT:
+                            mv.visitInsn(Opcodes.D2F);
+                            break;
+                        default:
+                            error = true;
+                            break;
+                    }
+                    break;
+                default:
+                    error = true;
+                    break;
+            }
+            if (error) {
+                throw new IllegalStateException("unhandled prim cast: " + from + "2" + to);
+            }
+        }
+    }
+}

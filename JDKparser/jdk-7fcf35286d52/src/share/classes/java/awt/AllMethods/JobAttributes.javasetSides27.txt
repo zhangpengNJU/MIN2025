@@ -1,0 +1,26 @@
+/**
+ * Specifies how consecutive pages should be imposed upon the sides of the
+ * print medium for jobs using these attributes. SidesType.ONE_SIDED
+ * imposes each consecutive page upon the same side of consecutive media
+ * sheets. This imposition is sometimes called <i>simplex</i>.
+ * SidesType.TWO_SIDED_LONG_EDGE imposes each consecutive pair of pages
+ * upon front and back sides of consecutive media sheets, such that the
+ * orientation of each pair of pages on the medium would be correct for
+ * the reader as if for binding on the long edge. This imposition is
+ * sometimes called <i>duplex</i>. SidesType.TWO_SIDED_SHORT_EDGE imposes
+ * each consecutive pair of pages upon front and back sides of consecutive
+ * media sheets, such that the orientation of each pair of pages on the
+ * medium would be correct for the reader as if for binding on the short
+ * edge. This imposition is sometimes called <i>tumble</i>. Not specifying
+ * this attribute is equivalent to specifying SidesType.ONE_SIDED.
+ *
+ * @param   sides SidesType.ONE_SIDED, SidesType.TWO_SIDED_LONG_EDGE, or
+ *          SidesType.TWO_SIDED_SHORT_EDGE.
+ * @throws  IllegalArgumentException if sides is null.
+ */
+public void setSides(SidesType sides) {
+    if (sides == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "sides");
+    }
+    this.sides = sides;
+}

@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code Instant} using seconds and nanoseconds.
+ *
+ * @param seconds  the length of the duration in seconds
+ * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
+ * @throws DateTimeException if the instant exceeds the maximum or minimum instant
+ */
+private static Instant create(long seconds, int nanoOfSecond) {
+    if ((seconds | nanoOfSecond) == 0) {
+        return EPOCH;
+    }
+    if (seconds < MIN_SECOND || seconds > MAX_SECOND) {
+        throw new DateTimeException("Instant exceeds minimum or maximum instant");
+    }
+    return new Instant(seconds, nanoOfSecond);
+}

@@ -1,0 +1,17 @@
+/**
+ * Depth first search, in left-to-right order, of the node tree, using
+ * an explicit stack, to find the next non-empty leaf node.
+ */
+@SuppressWarnings("unchecked")
+protected final N findNextLeafNode(Deque<N> stack) {
+    N n = null;
+    while ((n = stack.pollFirst()) != null) {
+        if (n.getChildCount() == 0) {
+            if (n.count() > 0)
+                return n;
+        } else {
+            for (int i = n.getChildCount() - 1; i >= 0; i--) stack.addFirst((N) n.getChild(i));
+        }
+    }
+    return null;
+}

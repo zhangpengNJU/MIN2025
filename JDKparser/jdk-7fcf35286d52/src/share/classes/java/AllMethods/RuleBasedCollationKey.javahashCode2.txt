@@ -1,0 +1,11 @@
+/**
+ * Creates a hash code for this RuleBasedCollationKey. The hash value is calculated on the
+ * key itself, not the String from which the key was created.  Thus
+ * if x and y are RuleBasedCollationKeys, then x.hashCode(x) == y.hashCode() if
+ * x.equals(y) is true.  This allows language-sensitive comparison in a hash table.
+ * See the CollatinKey class description for an example.
+ * @return the hash value based on the string's collation order.
+ */
+public int hashCode() {
+    return (key.hashCode());
+}

@@ -1,0 +1,10 @@
+/**
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if {@code fromKey} is null
+ * @throws IllegalArgumentException {@inheritDoc}
+ */
+public ConcurrentNavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+    if (fromKey == null)
+        throw new NullPointerException();
+    return new SubMap<K, V>(this, fromKey, inclusive, null, false, false);
+}

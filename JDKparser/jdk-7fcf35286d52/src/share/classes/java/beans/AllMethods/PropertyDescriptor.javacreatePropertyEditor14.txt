@@ -1,0 +1,37 @@
+/**
+ * Constructs an instance of a property editor using the current
+ * property editor class.
+ * <p>
+ * If the property editor class has a public constructor that takes an
+ * Object argument then it will be invoked using the bean parameter
+ * as the argument. Otherwise, the default constructor will be invoked.
+ *
+ * @param bean the source object
+ * @return a property editor instance or null if a property editor has
+ *         not been defined or cannot be created
+ * @since 1.5
+ */
+public PropertyEditor createPropertyEditor(Object bean) {
+    Object editor = null;
+    final Class<?> cls = getPropertyEditorClass();
+    if (cls != null && PropertyEditor.class.isAssignableFrom(cls) && ReflectUtil.isPackageAccessible(cls)) {
+        Constructor<?> ctor = null;
+        if (bean != null) {
+            try {
+                ctor = cls.getConstructor(new Class<?>[] { Object.class });
+            } catch (Exception ex) {
+            // Fall through
+            }
+        }
+        try {
+            if (ctor == null) {
+                editor = cls.newInstance();
+            } else {
+                editor = ctor.newInstance(new Object[] { bean });
+            }
+        } catch (Exception ex) {
+        // Fall through
+        }
+    }
+    return (PropertyEditor) editor;
+}

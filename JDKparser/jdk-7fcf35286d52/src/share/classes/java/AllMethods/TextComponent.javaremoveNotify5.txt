@@ -1,0 +1,17 @@
+/**
+ * Removes the <code>TextComponent</code>'s peer.
+ * The peer allows us to modify the appearance of the
+ * <code>TextComponent</code> without changing its
+ * functionality.
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        TextComponentPeer peer = (TextComponentPeer) this.peer;
+        if (peer != null) {
+            text = peer.getText();
+            selectionStart = peer.getSelectionStart();
+            selectionEnd = peer.getSelectionEnd();
+        }
+        super.removeNotify();
+    }
+}

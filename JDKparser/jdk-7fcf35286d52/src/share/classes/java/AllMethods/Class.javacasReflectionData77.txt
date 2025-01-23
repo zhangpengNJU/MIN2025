@@ -1,0 +1,3 @@
+static <T> boolean casReflectionData(Class<?> clazz, SoftReference<ReflectionData<T>> oldData, SoftReference<ReflectionData<T>> newData) {
+    return unsafe.compareAndSwapObject(clazz, reflectionDataOffset, oldData, newData);
+}

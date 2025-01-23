@@ -1,0 +1,20 @@
+/**
+ * Retrieves the value of the designated column in the current row
+ * of this <code>ResultSet</code> object as a <code>java.sql.Timestamp</code> object
+ * in the Java programming language.
+ * This method uses the given calendar to construct an appropriate millisecond
+ * value for the timestamp if the underlying database does not store
+ * timezone information.
+ *
+ * @param columnIndex the first column is 1, the second is 2, ...
+ * @param cal the <code>java.util.Calendar</code> object
+ * to use in constructing the timestamp
+ * @return the column value as a <code>java.sql.Timestamp</code> object;
+ * if the value is SQL <code>NULL</code>,
+ * the value returned is <code>null</code> in the Java programming language
+ * @exception SQLException if the columnIndex is not valid;
+ * if a database access error occurs
+ * or this method is called on a closed result set
+ * @since 1.2
+ */
+java.sql.Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException;

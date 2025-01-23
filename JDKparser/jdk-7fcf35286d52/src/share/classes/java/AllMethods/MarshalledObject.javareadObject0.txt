@@ -1,0 +1,13 @@
+/**
+ * Reads in the state of the object and saves the stream's
+ * serialization filter to be used when the object is deserialized.
+ *
+ * @param stream the stream
+ * @throws IOException if an I/O error occurs
+ * @throws ClassNotFoundException if a class cannot be found
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    // read in all fields
+    stream.defaultReadObject();
+    objectInputFilter = ObjectInputFilter.Config.getObjectInputFilter(stream);
+}

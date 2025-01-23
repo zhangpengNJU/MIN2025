@@ -1,0 +1,56 @@
+/**
+ * This method is used for division of an n word dividend by a one word
+ * divisor. The quotient is placed into quotient. The one word divisor is
+ * specified by divisor.
+ *
+ * @return the remainder of the division is returned.
+ */
+int divideOneWord(int divisor, MutableBigInteger quotient) {
+    long divisorLong = divisor & LONG_MASK;
+    // Special case of one word dividend
+    if (intLen == 1) {
+        long dividendValue = value[offset] & LONG_MASK;
+        int q = (int) (dividendValue / divisorLong);
+        int r = (int) (dividendValue - q * divisorLong);
+        quotient.value[0] = q;
+        quotient.intLen = (q == 0) ? 0 : 1;
+        quotient.offset = 0;
+        return r;
+    }
+    if (quotient.value.length < intLen)
+        quotient.value = new int[intLen];
+    quotient.offset = 0;
+    quotient.intLen = intLen;
+    // Normalize the divisor
+    int shift = Integer.numberOfLeadingZeros(divisor);
+    int rem = value[offset];
+    long remLong = rem & LONG_MASK;
+    if (remLong < divisorLong) {
+        quotient.value[0] = 0;
+    } else {
+        quotient.value[0] = (int) (remLong / divisorLong);
+        rem = (int) (remLong - (quotient.value[0] * divisorLong));
+        remLong = rem & LONG_MASK;
+    }
+    int xlen = intLen;
+    while (--xlen > 0) {
+        long dividendEstimate = (remLong << 32) | (value[offset + intLen - xlen] & LONG_MASK);
+        int q;
+        if (dividendEstimate >= 0) {
+            q = (int) (dividendEstimate / divisorLong);
+            rem = (int) (dividendEstimate - q * divisorLong);
+        } else {
+            long tmp = divWord(dividendEstimate, divisor);
+            q = (int) (tmp & LONG_MASK);
+            rem = (int) (tmp >>> 32);
+        }
+        quotient.value[intLen - xlen] = q;
+        remLong = rem & LONG_MASK;
+    }
+    quotient.normalize();
+    // Unnormalize
+    if (shift > 0)
+        return rem % divisor;
+    else
+        return rem;
+}

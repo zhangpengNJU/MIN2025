@@ -1,0 +1,25 @@
+/**
+ * Returns a pixel value represented as an <code>int</code> in this
+ * <code>ColorModel</code>, given an array of unnormalized color/alpha
+ * components.   An <code>ArrayIndexOutOfBoundsException</code> is
+ * thrown if the <code>components</code> array is
+ * not large enough to hold all the color and alpha components, starting
+ * at <code>offset</code>.
+ * @param components an array of unnormalized color and alpha
+ * components
+ * @param offset the index into <code>components</code> at which to
+ * begin retrieving the color and alpha components
+ * @return an <code>int</code> pixel value in this
+ * <code>ColorModel</code> corresponding to the specified components.
+ * @exception ArrayIndexOutOfBoundsException if
+ *  the <code>components</code> array is not large enough to
+ *  hold all of the color and alpha components starting at
+ *  <code>offset</code>
+ */
+public int getDataElement(int[] components, int offset) {
+    int pixel = 0;
+    for (int i = 0; i < numComponents; i++) {
+        pixel |= ((components[offset + i] << maskOffsets[i]) & maskArray[i]);
+    }
+    return pixel;
+}

@@ -1,0 +1,14 @@
+private void hideAndDisposePreHandler() {
+    isInHide = true;
+    synchronized (getTreeLock()) {
+        if (secondaryLoop != null) {
+            modalHide();
+            // dialog can be shown and then disposed before its
+            // modal filter is created
+            if (modalFilter != null) {
+                modalFilter.disable();
+            }
+            modalDialogs.remove(this);
+        }
+    }
+}

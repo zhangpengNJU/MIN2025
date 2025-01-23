@@ -1,0 +1,16 @@
+void createImpl() throws SocketException {
+    if (impl == null) {
+        if (factory != null) {
+            impl = factory.createDatagramSocketImpl();
+            checkOldImpl();
+        } else {
+            boolean isMulticast = (this instanceof MulticastSocket) ? true : false;
+            impl = DefaultDatagramSocketImplFactory.createDatagramSocketImpl(isMulticast);
+            checkOldImpl();
+        }
+    }
+    // creates a udp socket
+    impl.create();
+    impl.setDatagramSocket(this);
+    created = true;
+}

@@ -1,0 +1,16 @@
+/**
+ * Sets the position to the specified position in the text and returns that
+ * character.
+ * @param position the position within the text.  Valid values range from
+ * getBeginIndex() to getEndIndex().  An IllegalArgumentException is thrown
+ * if an invalid value is supplied.
+ * @return the character at the specified position or DONE if the specified position is equal to getEndIndex()
+ */
+public char setIndex(int position) {
+    position -= begin;
+    if (position < 0 || position > chars.length) {
+        throw new IllegalArgumentException("Invalid index");
+    }
+    pos = position;
+    return current();
+}

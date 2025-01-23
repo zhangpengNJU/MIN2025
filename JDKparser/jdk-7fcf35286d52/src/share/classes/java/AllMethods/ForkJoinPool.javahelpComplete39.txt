@@ -1,0 +1,70 @@
+// Joining tasks
+/**
+ * Tries to steal and run tasks within the target's computation.
+ * Uses a variant of the top-level algorithm, restricted to tasks
+ * with the given task as ancestor: It prefers taking and running
+ * eligible tasks popped from the worker's own queue (via
+ * popCC). Otherwise it scans others, randomly moving on
+ * contention or execution, deciding to give up based on a
+ * checksum (via return codes frob pollAndExecCC). The maxTasks
+ * argument supports external usages; internal calls use zero,
+ * allowing unbounded steps (external calls trap non-positive
+ * values).
+ *
+ * @param w caller
+ * @param maxTasks if non-zero, the maximum number of other tasks to run
+ * @return task status on exit
+ */
+final int helpComplete(WorkQueue w, CountedCompleter<?> task, int maxTasks) {
+    WorkQueue[] ws;
+    int s = 0, m;
+    if ((ws = workQueues) != null && (m = ws.length - 1) >= 0 && task != null && w != null) {
+        // for popCC
+        int mode = w.config;
+        // arbitrary seed for origin
+        int r = w.hint ^ w.top;
+        // first queue to scan
+        int origin = r & m;
+        // 1:ran, >1:contended, <0:hash
+        int h = 1;
+        for (int k = origin, oldSum = 0, checkSum = 0; ; ) {
+            CountedCompleter<?> p;
+            WorkQueue q;
+            if ((s = task.status) < 0)
+                break;
+            if (h == 1 && (p = w.popCC(task, mode)) != null) {
+                // run local task
+                p.doExec();
+                if (maxTasks != 0 && --maxTasks == 0)
+                    break;
+                // reset
+                origin = k;
+                oldSum = checkSum = 0;
+            } else {
+                // poll other queues
+                if ((q = ws[k]) == null)
+                    h = 0;
+                else if ((h = q.pollAndExecCC(task)) < 0)
+                    checkSum += h;
+                if (h > 0) {
+                    if (h == 1 && maxTasks != 0 && --maxTasks == 0)
+                        break;
+                    // xorshift
+                    r ^= r << 13;
+                    // xorshift
+                    r ^= r >>> 17;
+                    // xorshift
+                    r ^= r << 5;
+                    // move and restart
+                    origin = k = r & m;
+                    oldSum = checkSum = 0;
+                } else if ((k = (k + 1) & m) == origin) {
+                    if (oldSum == (oldSum = checkSum))
+                        break;
+                    checkSum = 0;
+                }
+            }
+        }
+    }
+    return s;
+}

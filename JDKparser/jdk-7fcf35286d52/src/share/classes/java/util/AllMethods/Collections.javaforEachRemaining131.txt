@@ -1,0 +1,5 @@
+@Override
+public void forEachRemaining(Consumer<? super Entry<K, V>> action) {
+    Objects.requireNonNull(action);
+    s.forEachRemaining(entryConsumer(action));
+}

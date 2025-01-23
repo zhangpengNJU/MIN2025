@@ -1,0 +1,20 @@
+/**
+ * Tries to match node s to this node, if so, waking up thread.
+ * Fulfillers call tryMatch to identify their waiters.
+ * Waiters block until they have been matched.
+ *
+ * @param s the node to match
+ * @return true if successfully matched to s
+ */
+boolean tryMatch(SNode s) {
+    if (match == null && UNSAFE.compareAndSwapObject(this, matchOffset, null, s)) {
+        Thread w = waiter;
+        if (w != null) {
+            // waiters need at most one unpark
+            waiter = null;
+            LockSupport.unpark(w);
+        }
+        return true;
+    }
+    return match == s;
+}

@@ -1,0 +1,8 @@
+/**
+ * Looks up and returns replacement for given object.  If no
+ * replacement is found, returns the lookup object itself.
+ */
+Object lookup(Object obj) {
+    int index = htab.lookup(obj);
+    return (index >= 0) ? reps[index] : obj;
+}

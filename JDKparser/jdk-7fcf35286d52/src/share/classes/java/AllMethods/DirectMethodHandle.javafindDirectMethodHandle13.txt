@@ -1,0 +1,7 @@
+static Object findDirectMethodHandle(Name name) {
+    if (name.function == Lazy.NF_internalMemberName || name.function == Lazy.NF_internalMemberNameEnsureInit || name.function == Lazy.NF_constructorMethod) {
+        assert (name.arguments.length == 1);
+        return name.arguments[0];
+    }
+    return null;
+}

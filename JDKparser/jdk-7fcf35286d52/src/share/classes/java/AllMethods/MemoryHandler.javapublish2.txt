@@ -1,0 +1,32 @@
+/**
+ * Store a <tt>LogRecord</tt> in an internal buffer.
+ * <p>
+ * If there is a <tt>Filter</tt>, its <tt>isLoggable</tt>
+ * method is called to check if the given log record is loggable.
+ * If not we return.  Otherwise the given record is copied into
+ * an internal circular buffer.  Then the record's level property is
+ * compared with the <tt>pushLevel</tt>. If the given level is
+ * greater than or equal to the <tt>pushLevel</tt> then <tt>push</tt>
+ * is called to write all buffered records to the target output
+ * <tt>Handler</tt>.
+ *
+ * @param  record  description of the log event. A null record is
+ *                 silently ignored and is not published
+ */
+@Override
+public synchronized void publish(LogRecord record) {
+    if (!isLoggable(record)) {
+        return;
+    }
+    int ix = (start + count) % buffer.length;
+    buffer[ix] = record;
+    if (count < buffer.length) {
+        count++;
+    } else {
+        start++;
+        start %= buffer.length;
+    }
+    if (record.getLevel().intValue() >= pushLevel.intValue()) {
+        push();
+    }
+}

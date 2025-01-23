@@ -1,0 +1,17 @@
+/**
+ * Returns a copy of this date with the specified number of days subtracted.
+ * <p>
+ * This subtracts the specified period in days to the date.
+ * <p>
+ * The default implementation uses {@link #plusDays(long)}.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param daysToSubtract  the days to subtract, may be negative
+ * @return a date based on this one with the days subtracted, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+@SuppressWarnings("unchecked")
+D minusDays(long daysToSubtract) {
+    return (daysToSubtract == Long.MIN_VALUE ? ((ChronoLocalDateImpl<D>) plusDays(Long.MAX_VALUE)).plusDays(1) : plusDays(-daysToSubtract));
+}

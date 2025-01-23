@@ -1,0 +1,9 @@
+/**
+ * Constructs a name for this component.  Called by
+ * <code>getName</code> when the name is <code>null</code>.
+ */
+String constructComponentName() {
+    synchronized (Choice.class) {
+        return base + nameCounter++;
+    }
+}

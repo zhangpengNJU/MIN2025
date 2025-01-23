@@ -1,0 +1,6 @@
+/**
+ * Tries to cancel by CAS'ing ref to this as item.
+ */
+void tryCancel(Object cmp) {
+    UNSAFE.compareAndSwapObject(this, itemOffset, cmp, this);
+}

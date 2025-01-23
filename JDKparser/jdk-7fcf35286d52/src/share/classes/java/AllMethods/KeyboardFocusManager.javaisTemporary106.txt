@@ -1,0 +1,14 @@
+private static boolean isTemporary(Component to, Component from) {
+    Window wto = SunToolkit.getContainingWindow(to);
+    Window wfrom = SunToolkit.getContainingWindow(from);
+    if (wto == null && wfrom == null) {
+        return false;
+    }
+    if (wto == null) {
+        return true;
+    }
+    if (wfrom == null) {
+        return false;
+    }
+    return (wto != wfrom);
+}

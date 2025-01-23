@@ -1,0 +1,6 @@
+/**
+ * Completes with the null value, unless already completed.
+ */
+final boolean completeNull() {
+    return UNSAFE.compareAndSwapObject(this, RESULT, null, NIL);
+}

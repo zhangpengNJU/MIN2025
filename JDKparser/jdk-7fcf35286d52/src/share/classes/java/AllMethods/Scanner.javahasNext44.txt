@@ -1,0 +1,20 @@
+/**
+ * Returns true if this scanner has another token in its input.
+ * This method may block while waiting for input to scan.
+ * The scanner does not advance past any input.
+ *
+ * @return true if and only if this scanner has another token
+ * @throws IllegalStateException if this scanner is closed
+ * @see java.util.Iterator
+ */
+public boolean hasNext() {
+    ensureOpen();
+    saveState();
+    while (!sourceClosed) {
+        if (hasTokenInBuffer())
+            return revertState(true);
+        readInput();
+    }
+    boolean result = hasTokenInBuffer();
+    return revertState(result);
+}

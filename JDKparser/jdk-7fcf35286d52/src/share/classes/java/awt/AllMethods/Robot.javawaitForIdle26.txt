@@ -1,0 +1,24 @@
+/**
+ * Waits until all events currently on the event queue have been processed.
+ * @throws  IllegalThreadStateException if called on the AWT event dispatching thread
+ */
+public synchronized void waitForIdle() {
+    checkNotDispatchThread();
+    // post a dummy event to the queue so we know when
+    // all the events before it have been processed
+    try {
+        SunToolkit.flushPendingEvents();
+        EventQueue.invokeAndWait(new Runnable() {
+
+            public void run() {
+            // dummy implementation
+            }
+        });
+    } catch (InterruptedException ite) {
+        System.err.println("Robot.waitForIdle, non-fatal exception caught:");
+        ite.printStackTrace();
+    } catch (InvocationTargetException ine) {
+        System.err.println("Robot.waitForIdle, non-fatal exception caught:");
+        ine.printStackTrace();
+    }
+}

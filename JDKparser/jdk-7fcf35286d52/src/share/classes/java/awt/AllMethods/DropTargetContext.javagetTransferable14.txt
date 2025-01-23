@@ -1,0 +1,24 @@
+/**
+ * get the Transferable (proxy) operand of this operation
+ * <P>
+ * @throws InvalidDnDOperationException if a drag is not outstanding/extant
+ * <P>
+ * @return the <code>Transferable</code>
+ */
+protected Transferable getTransferable() throws InvalidDnDOperationException {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    if (peer == null) {
+        throw new InvalidDnDOperationException();
+    } else {
+        if (transferable == null) {
+            Transferable t = peer.getTransferable();
+            boolean isLocal = peer.isTransferableJVMLocal();
+            synchronized (this) {
+                if (transferable == null) {
+                    transferable = createTransferableProxy(t, isLocal);
+                }
+            }
+        }
+        return transferable;
+    }
+}

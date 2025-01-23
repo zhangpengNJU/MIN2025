@@ -1,0 +1,18 @@
+/**
+ * Convert a point in user space to a location relative to the
+ * path. The location is chosen so as to minimize the distance
+ * from the point to the path (e.g., the magnitude of the offset
+ * will be smallest).  If there is more than one such location,
+ * the location with the smallest advance is chosen.
+ * @param point the point to convert.  If it is not the same
+ * object as location, point will remain unmodified by this call.
+ * @param location a <code>Point2D</code> to hold the returned location.
+ * It can be the same object as point.
+ * @return true if the point is associated with the portion of the
+ * path preceding the location, false if it is associated with
+ * the portion following.  The default, if the location is not at
+ * a break or sharp bend in the path, is to return true.
+ * @throws NullPointerException if point or location is null
+ * @since 1.6
+ */
+public abstract boolean pointToPath(Point2D point, Point2D location);

@@ -1,0 +1,23 @@
+/**
+ * Prints the component in this scroll pane.
+ * @param g the specified Graphics window
+ * @see Component#print
+ * @see Component#printAll
+ */
+public void printComponents(Graphics g) {
+    if (getComponentCount() == 0) {
+        return;
+    }
+    Component c = getComponent(0);
+    Point p = c.getLocation();
+    Dimension vs = getViewportSize();
+    Insets i = getInsets();
+    Graphics cg = g.create();
+    try {
+        cg.clipRect(i.left, i.top, vs.width, vs.height);
+        cg.translate(p.x, p.y);
+        c.printAll(cg);
+    } finally {
+        cg.dispose();
+    }
+}

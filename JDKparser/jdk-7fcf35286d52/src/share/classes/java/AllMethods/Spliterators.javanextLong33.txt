@@ -1,0 +1,9 @@
+@Override
+public long nextLong() {
+    if (!valueReady && !hasNext())
+        throw new NoSuchElementException();
+    else {
+        valueReady = false;
+        return nextElement;
+    }
+}

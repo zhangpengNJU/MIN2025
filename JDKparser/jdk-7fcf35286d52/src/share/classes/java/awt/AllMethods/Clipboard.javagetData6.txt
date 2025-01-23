@@ -1,0 +1,32 @@
+/**
+ * Returns an object representing the current contents of this clipboard
+ * in the specified <code>DataFlavor</code>.
+ * The class of the object returned is defined by the representation
+ * class of <code>flavor</code>.
+ *
+ * @param flavor the requested <code>DataFlavor</code> for the contents
+ *
+ * @return an object representing the current contents of this clipboard
+ *         in the specified <code>DataFlavor</code>
+ *
+ * @throws NullPointerException if <code>flavor</code> is <code>null</code>
+ * @throws IllegalStateException if this clipboard is currently unavailable
+ * @throws UnsupportedFlavorException if the requested <code>DataFlavor</code>
+ *         is not available
+ * @throws IOException if the data in the requested <code>DataFlavor</code>
+ *         can not be retrieved
+ *
+ * @see DataFlavor#getRepresentationClass
+ *
+ * @since 1.5
+ */
+public Object getData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    if (flavor == null) {
+        throw new NullPointerException("flavor");
+    }
+    Transferable cntnts = getContents(null);
+    if (cntnts == null) {
+        throw new UnsupportedFlavorException(flavor);
+    }
+    return cntnts.getTransferData(flavor);
+}

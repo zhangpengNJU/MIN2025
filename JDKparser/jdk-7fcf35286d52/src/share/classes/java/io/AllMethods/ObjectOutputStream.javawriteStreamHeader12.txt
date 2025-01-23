@@ -1,0 +1,12 @@
+/**
+ * The writeStreamHeader method is provided so subclasses can append or
+ * prepend their own header to the stream.  It writes the magic number and
+ * version to the stream.
+ *
+ * @throws  IOException if I/O errors occur while writing to the underlying
+ *          stream
+ */
+protected void writeStreamHeader() throws IOException {
+    bout.writeShort(STREAM_MAGIC);
+    bout.writeShort(STREAM_VERSION);
+}

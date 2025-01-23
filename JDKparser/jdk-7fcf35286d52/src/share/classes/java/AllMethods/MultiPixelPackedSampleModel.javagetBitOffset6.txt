@@ -1,0 +1,10 @@
+/**
+ *  Returns the offset, in bits, into the data element in which it is
+ *  stored for the <code>x</code>th pixel of a scanline.
+ *  This offset is the same for all scanlines.
+ *  @param x the specified pixel
+ *  @return the bit offset of the specified pixel.
+ */
+public int getBitOffset(int x) {
+    return (x * pixelBitStride + dataBitOffset) % dataElementSize;
+}

@@ -1,0 +1,12 @@
+/**
+ * Used by createDirectories to attempt to create a directory. A no-op
+ * if the directory already exists.
+ */
+private static void createAndCheckIsDirectory(Path dir, FileAttribute<?>... attrs) throws IOException {
+    try {
+        createDirectory(dir, attrs);
+    } catch (FileAlreadyExistsException x) {
+        if (!isDirectory(dir, LinkOption.NOFOLLOW_LINKS))
+            throw x;
+    }
+}

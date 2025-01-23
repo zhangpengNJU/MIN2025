@@ -1,0 +1,12 @@
+/**
+ * Returns a new date-time based on this one, returning {@code this} where possible.
+ *
+ * @param dateTime  the date-time to create with, not null
+ * @param offset  the zone offset to create with, not null
+ */
+private OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
+    if (this.dateTime == dateTime && this.offset.equals(offset)) {
+        return this;
+    }
+    return new OffsetDateTime(dateTime, offset);
+}

@@ -1,0 +1,9 @@
+private static final BaseCalendar getCalendarSystem(BaseCalendar.Date cdate) {
+    if (jcal == null) {
+        return gcal;
+    }
+    if (cdate.getEra() != null) {
+        return jcal;
+    }
+    return gcal;
+}

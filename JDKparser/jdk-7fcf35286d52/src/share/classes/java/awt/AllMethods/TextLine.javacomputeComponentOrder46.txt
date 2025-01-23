@@ -1,0 +1,27 @@
+/**
+ * Compute the components order from the given components array and
+ * logical-to-visual character mapping.  May return null if canonical.
+ */
+private static int[] computeComponentOrder(TextLineComponent[] components, int[] charsLtoV) {
+    /*
+         * Create a visual ordering for the glyph sets.  The important thing
+         * here is that the values have the proper rank with respect to
+         * each other, not the exact values.  For example, the first glyph
+         * set that appears visually should have the lowest value.  The last
+         * should have the highest value.  The values are then normalized
+         * to map 1-1 with positions in glyphs.
+         *
+         */
+    int[] componentOrder = null;
+    if (charsLtoV != null && components.length > 1) {
+        componentOrder = new int[components.length];
+        int gStart = 0;
+        for (int i = 0; i < components.length; i++) {
+            componentOrder[i] = charsLtoV[gStart];
+            gStart += components[i].getNumCharacters();
+        }
+        componentOrder = BidiUtils.createContiguousOrder(componentOrder);
+        componentOrder = BidiUtils.createInverseMap(componentOrder);
+    }
+    return componentOrder;
+}

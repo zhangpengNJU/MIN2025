@@ -1,0 +1,16 @@
+/**
+ * Returns the human presentable name for this <code>DataFlavor</code>
+ * if <code>paramName</code> equals "humanPresentableName".  Otherwise
+ * returns the MIME type value associated with <code>paramName</code>.
+ *
+ * @param paramName the parameter name requested
+ * @return the value of the name parameter, or <code>null</code>
+ *  if there is no associated value
+ */
+public String getParameter(String paramName) {
+    if (paramName.equals("humanPresentableName")) {
+        return humanPresentableName;
+    } else {
+        return (mimeType != null) ? mimeType.getParameter(paramName) : null;
+    }
+}

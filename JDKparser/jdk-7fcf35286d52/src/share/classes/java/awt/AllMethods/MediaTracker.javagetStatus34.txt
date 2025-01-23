@@ -1,0 +1,7 @@
+synchronized int getStatus(boolean doLoad, boolean doVerify) {
+    if (doLoad && ((status & LOADSTARTED) == 0)) {
+        status = (status & ~ABORTED) | LOADING;
+        startLoad();
+    }
+    return status;
+}

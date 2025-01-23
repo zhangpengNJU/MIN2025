@@ -1,0 +1,53 @@
+/**
+ * Returns the maximum value that the specified calendar field
+ * could have, given the time value of this
+ * <code>Calendar</code>. For example, the actual maximum value of
+ * the <code>MONTH</code> field is 12 in some years, and 13 in
+ * other years in the Hebrew calendar system.
+ *
+ * <p>The default implementation of this method uses an iterative
+ * algorithm to determine the actual maximum value for the
+ * calendar field. Subclasses should, if possible, override this
+ * with a more efficient implementation.
+ *
+ * @param field the calendar field
+ * @return the maximum of the given calendar field for the time
+ * value of this <code>Calendar</code>
+ * @see #getMinimum(int)
+ * @see #getMaximum(int)
+ * @see #getGreatestMinimum(int)
+ * @see #getLeastMaximum(int)
+ * @see #getActualMinimum(int)
+ * @since 1.2
+ */
+public int getActualMaximum(int field) {
+    int fieldValue = getLeastMaximum(field);
+    int endValue = getMaximum(field);
+    // if we know that the maximum value is always the same, just return it.
+    if (fieldValue == endValue) {
+        return fieldValue;
+    }
+    // clone the calendar so we don't mess with the real one, and set it to
+    // accept anything for the field values.
+    Calendar work = (Calendar) this.clone();
+    work.setLenient(true);
+    // if we're counting weeks, set the day of the week to Sunday.  We know the
+    // last week of a month or year will contain the first day of the week.
+    if (field == WEEK_OF_YEAR || field == WEEK_OF_MONTH) {
+        work.set(DAY_OF_WEEK, firstDayOfWeek);
+    }
+    // now try each value from getLeastMaximum() to getMaximum() one by one until
+    // we get a value that normalizes to another value.  The last value that
+    // normalizes to itself is the actual maximum for the current date
+    int result = fieldValue;
+    do {
+        work.set(field, fieldValue);
+        if (work.get(field) != fieldValue) {
+            break;
+        } else {
+            result = fieldValue;
+            fieldValue++;
+        }
+    } while (fieldValue <= endValue);
+    return result;
+}

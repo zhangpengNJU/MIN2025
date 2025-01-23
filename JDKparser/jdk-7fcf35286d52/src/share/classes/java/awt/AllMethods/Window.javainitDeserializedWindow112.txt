@@ -1,0 +1,17 @@
+// 
+// Part of deserialization procedure to be called before
+// user's code.
+// 
+private void initDeserializedWindow() {
+    setWarningString();
+    inputContextLock = new Object();
+    // Deserialized Windows are not yet visible.
+    visible = false;
+    weakThis = new WeakReference<>(this);
+    anchor = new Object();
+    disposerRecord = new WindowDisposerRecord(appContext, this);
+    sun.java2d.Disposer.addRecord(anchor, disposerRecord);
+    addToWindowList();
+    initGC(null);
+    ownedWindowList = new Vector<>();
+}

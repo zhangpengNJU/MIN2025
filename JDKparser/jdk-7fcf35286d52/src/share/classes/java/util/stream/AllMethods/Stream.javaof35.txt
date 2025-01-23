@@ -1,0 +1,13 @@
+/**
+ * Returns a sequential ordered stream whose elements are the specified values.
+ *
+ * @param <T> the type of stream elements
+ * @param values the elements of the new stream
+ * @return the new stream
+ */
+@SafeVarargs
+// Creating a stream from an array is safe
+@SuppressWarnings("varargs")
+public static <T> Stream<T> of(T... values) {
+    return Arrays.stream(values);
+}

@@ -1,0 +1,13 @@
+/**
+ * Notified when a particular region of the String is formatted. This
+ * method will be invoked if there is no corresponding integer field id
+ * matching <code>attr</code>.
+ *
+ * @param attr Identifies the field matched
+ * @param value Value associated with the field
+ * @param start Beginning location of the field, will be >= 0
+ * @param end End of the field, will be >= start and <= buffer.length()
+ * @param buffer Contains current formatted value, receiver should
+ *        NOT modify it.
+ */
+public void formatted(Format.Field attr, Object value, int start, int end, StringBuffer buffer);

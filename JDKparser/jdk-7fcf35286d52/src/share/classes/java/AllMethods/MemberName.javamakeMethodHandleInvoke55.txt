@@ -1,0 +1,7 @@
+static MemberName makeMethodHandleInvoke(String name, MethodType type, int mods) {
+    MemberName mem = new MemberName(MethodHandle.class, name, type, REF_invokeVirtual);
+    // it's not resolved, but add these modifiers anyway
+    mem.flags |= mods;
+    assert (mem.isMethodHandleInvoke()) : mem;
+    return mem;
+}

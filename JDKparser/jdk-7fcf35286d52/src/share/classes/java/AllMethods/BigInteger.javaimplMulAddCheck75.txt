@@ -1,0 +1,17 @@
+/**
+ * Parameters validation.
+ */
+private static void implMulAddCheck(int[] out, int[] in, int offset, int len, int k) {
+    if (len > in.length) {
+        throw new IllegalArgumentException("input length is out of bound: " + len + " > " + in.length);
+    }
+    if (offset < 0) {
+        throw new IllegalArgumentException("input offset is invalid: " + offset);
+    }
+    if (offset > (out.length - 1)) {
+        throw new IllegalArgumentException("input offset is out of bound: " + offset + " > " + (out.length - 1));
+    }
+    if (len > (out.length - offset)) {
+        throw new IllegalArgumentException("input len is out of bound: " + len + " > " + (out.length - offset));
+    }
+}

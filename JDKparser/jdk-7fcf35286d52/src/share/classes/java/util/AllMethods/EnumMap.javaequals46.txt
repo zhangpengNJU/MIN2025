@@ -1,0 +1,10 @@
+public boolean equals(Object o) {
+    if (index < 0)
+        return o == this;
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+    V ourValue = unmaskNull(vals[index]);
+    Object hisValue = e.getValue();
+    return (e.getKey() == keyUniverse[index] && (ourValue == hisValue || (ourValue != null && ourValue.equals(hisValue))));
+}

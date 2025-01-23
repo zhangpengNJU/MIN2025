@@ -1,0 +1,16 @@
+/**
+ * Returns whether this Window is focused. If there exists a focus owner,
+ * the focused Window is the Window that is, or contains, that focus owner.
+ * If there is no focus owner, then no Window is focused.
+ * <p>
+ * If the focused Window is a Frame or a Dialog it is also the active
+ * Window. Otherwise, the active Window is the first Frame or Dialog that
+ * is an owner of the focused Window.
+ *
+ * @return whether this is the focused Window.
+ * @see #isActive
+ * @since 1.4
+ */
+public boolean isFocused() {
+    return (KeyboardFocusManager.getCurrentKeyboardFocusManager().getGlobalFocusedWindow() == this);
+}

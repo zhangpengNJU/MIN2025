@@ -1,0 +1,7 @@
+private MethodHandle asTypeCached(MethodType newType) {
+    MethodHandle atc = asTypeCache;
+    if (atc != null && newType == atc.type) {
+        return atc;
+    }
+    return null;
+}

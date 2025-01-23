@@ -1,0 +1,60 @@
+/**
+ * Transforms the relative distance vector specified by
+ * <code>ptSrc</code> and stores the result in <code>ptDst</code>.
+ * A relative distance vector is transformed without applying the
+ * translation components of the affine transformation matrix
+ * using the following equations:
+ * <pre>
+ *  [  x' ]   [  m00  m01 (m02) ] [  x  ]   [ m00x + m01y ]
+ *  [  y' ] = [  m10  m11 (m12) ] [  y  ] = [ m10x + m11y ]
+ *  [ (1) ]   [  (0)  (0) ( 1 ) ] [ (1) ]   [     (1)     ]
+ * </pre>
+ * If <code>ptDst</code> is <code>null</code>, a new
+ * <code>Point2D</code> object is allocated and then the result of the
+ * transform is stored in this object.
+ * In either case, <code>ptDst</code>, which contains the
+ * transformed point, is returned for convenience.
+ * If <code>ptSrc</code> and <code>ptDst</code> are the same object,
+ * the input point is correctly overwritten with the transformed
+ * point.
+ * @param ptSrc the distance vector to be delta transformed
+ * @param ptDst the resulting transformed distance vector
+ * @return <code>ptDst</code>, which contains the result of the
+ * transformation.
+ * @since 1.2
+ */
+public Point2D deltaTransform(Point2D ptSrc, Point2D ptDst) {
+    if (ptDst == null) {
+        if (ptSrc instanceof Point2D.Double) {
+            ptDst = new Point2D.Double();
+        } else {
+            ptDst = new Point2D.Float();
+        }
+    }
+    // Copy source coords into local variables in case src == dst
+    double x = ptSrc.getX();
+    double y = ptSrc.getY();
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return null;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SHEAR | APPLY_SCALE):
+            ptDst.setLocation(x * m00 + y * m01, x * m10 + y * m11);
+            return ptDst;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            ptDst.setLocation(y * m01, x * m10);
+            return ptDst;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            ptDst.setLocation(x * m00, y * m11);
+            return ptDst;
+        case (APPLY_TRANSLATE):
+        case (APPLY_IDENTITY):
+            ptDst.setLocation(x, y);
+            return ptDst;
+    }
+/* NOTREACHED */
+}

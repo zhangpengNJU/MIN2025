@@ -1,0 +1,38 @@
+/**
+ * Internal method to share logic between floor and ceil.
+ *
+ * @param a the value to be floored or ceiled
+ * @param negativeBoundary result for values in (-1, 0)
+ * @param positiveBoundary result for values in (0, 1)
+ * @param increment value to add when the argument is non-integral
+ */
+private static double floorOrCeil(double a, double negativeBoundary, double positiveBoundary, double sign) {
+    int exponent = Math.getExponent(a);
+    if (exponent < 0) {
+        /*
+             * Absolute value of argument is less than 1.
+             * floorOrceil(-0.0) => -0.0
+             * floorOrceil(+0.0) => +0.0
+             */
+        return ((a == 0.0) ? a : ((a < 0.0) ? negativeBoundary : positiveBoundary));
+    } else if (exponent >= 52) {
+        /*
+             * Infinity, NaN, or a value so large it must be integral.
+             */
+        return a;
+    }
+    // Else the argument is either an integral value already XOR it
+    // has to be rounded to one.
+    assert exponent >= 0 && exponent <= 51;
+    long doppel = Double.doubleToRawLongBits(a);
+    long mask = DoubleConsts.SIGNIF_BIT_MASK >> exponent;
+    if ((mask & doppel) == 0L)
+        // integral value
+        return a;
+    else {
+        double result = Double.longBitsToDouble(doppel & (~mask));
+        if (sign * a > 0.0)
+            result = result + sign;
+        return result;
+    }
+}

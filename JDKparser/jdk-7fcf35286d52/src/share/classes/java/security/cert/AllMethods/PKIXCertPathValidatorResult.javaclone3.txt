@@ -1,0 +1,13 @@
+/**
+ * Returns a copy of this object.
+ *
+ * @return the copy
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        /* Cannot happen */
+        throw new InternalError(e.toString(), e);
+    }
+}

@@ -1,0 +1,11 @@
+@Override
+public final OptionalDouble average() {
+    long[] avg = collect(() -> new long[2], (ll, i) -> {
+        ll[0]++;
+        ll[1] += i;
+    }, (ll, rr) -> {
+        ll[0] += rr[0];
+        ll[1] += rr[1];
+    });
+    return avg[0] > 0 ? OptionalDouble.of((double) avg[1] / avg[0]) : OptionalDouble.empty();
+}

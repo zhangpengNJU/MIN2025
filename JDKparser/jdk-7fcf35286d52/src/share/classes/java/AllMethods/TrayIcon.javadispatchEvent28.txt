@@ -1,0 +1,5 @@
+void dispatchEvent(AWTEvent e) {
+    EventQueue.setCurrentEventAndMostRecentTime(e);
+    Toolkit.getDefaultToolkit().notifyAWTEventListeners(e);
+    processEvent(e);
+}

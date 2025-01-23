@@ -1,0 +1,17 @@
+/**
+ * {@inheritDoc}
+ *
+ * <p>The returned iterator provides a snapshot of the state of the list
+ * when the iterator was constructed. No synchronization is needed while
+ * traversing the iterator. The iterator does <em>NOT</em> support the
+ * {@code remove}, {@code set} or {@code add} methods.
+ *
+ * @throws IndexOutOfBoundsException {@inheritDoc}
+ */
+public ListIterator<E> listIterator(int index) {
+    Object[] elements = getArray();
+    int len = elements.length;
+    if (index < 0 || index > len)
+        throw new IndexOutOfBoundsException("Index: " + index);
+    return new COWIterator<E>(elements, index);
+}

@@ -1,0 +1,14 @@
+final void drainLoggerRefQueueBounded() {
+    for (int i = 0; i < MAX_ITERATIONS; i++) {
+        if (loggerRefQueue == null) {
+            // haven't finished loading LogManager yet
+            break;
+        }
+        LoggerWeakRef ref = (LoggerWeakRef) loggerRefQueue.poll();
+        if (ref == null) {
+            break;
+        }
+        // a Logger object has been GC'ed so clean it up
+        ref.dispose();
+    }
+}

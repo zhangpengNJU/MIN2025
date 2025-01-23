@@ -1,0 +1,21 @@
+/**
+ * Sets input data for compression. This should be called whenever
+ * needsInput() returns true indicating that more input data is required.
+ * @param b the input data bytes
+ * @param off the start offset of the data
+ * @param len the length of the data
+ * @see Deflater#needsInput
+ */
+public void setInput(byte[] b, int off, int len) {
+    if (b == null) {
+        throw new NullPointerException();
+    }
+    if (off < 0 || len < 0 || off > b.length - len) {
+        throw new ArrayIndexOutOfBoundsException();
+    }
+    synchronized (zsRef) {
+        this.buf = b;
+        this.off = off;
+        this.len = len;
+    }
+}

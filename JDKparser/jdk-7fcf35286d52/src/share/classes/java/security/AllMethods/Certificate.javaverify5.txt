@@ -1,0 +1,17 @@
+/**
+ * Verifies that this certificate was signed using the
+ * private key that corresponds to the specified public key.
+ * This method uses the signature verification engine
+ * supplied by the specified provider.
+ *
+ * @param key the PublicKey used to carry out the verification.
+ * @param sigProvider the name of the signature provider.
+ *
+ * @exception NoSuchAlgorithmException on unsupported signature
+ * algorithms.
+ * @exception InvalidKeyException on incorrect key.
+ * @exception NoSuchProviderException on incorrect provider.
+ * @exception SignatureException on signature errors.
+ * @exception CertificateException on encoding errors.
+ */
+public abstract void verify(PublicKey key, String sigProvider) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException;

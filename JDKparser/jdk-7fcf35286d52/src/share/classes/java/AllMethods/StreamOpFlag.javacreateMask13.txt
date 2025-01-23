@@ -1,0 +1,7 @@
+private static int createMask(Type t) {
+    int mask = 0;
+    for (StreamOpFlag flag : StreamOpFlag.values()) {
+        mask |= flag.maskTable.get(t) << flag.bitPosition;
+    }
+    return mask;
+}

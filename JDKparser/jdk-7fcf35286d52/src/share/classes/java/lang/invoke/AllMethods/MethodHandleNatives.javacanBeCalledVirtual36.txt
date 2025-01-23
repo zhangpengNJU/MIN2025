@@ -1,0 +1,10 @@
+static boolean canBeCalledVirtual(MemberName symbolicRef, Class<?> definingClass) {
+    Class<?> symbolicRefClass = symbolicRef.getDeclaringClass();
+    if (symbolicRefClass == definingClass)
+        return true;
+    if (symbolicRef.isStatic() || symbolicRef.isPrivate())
+        return false;
+    return (// Msym overrides Mdef
+    definingClass.isAssignableFrom(symbolicRefClass) || // Mdef implements Msym
+    symbolicRefClass.isInterface());
+}

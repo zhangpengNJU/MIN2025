@@ -1,0 +1,25 @@
+/**
+ * Sets the diagonal of the framing rectangle of this <code>Shape</code>
+ * based on the two specified coordinates.  The framing rectangle is
+ * used by the subclasses of <code>RectangularShape</code> to define
+ * their geometry.
+ *
+ * @param x1 the X coordinate of the start point of the specified diagonal
+ * @param y1 the Y coordinate of the start point of the specified diagonal
+ * @param x2 the X coordinate of the end point of the specified diagonal
+ * @param y2 the Y coordinate of the end point of the specified diagonal
+ * @since 1.2
+ */
+public void setFrameFromDiagonal(double x1, double y1, double x2, double y2) {
+    if (x2 < x1) {
+        double t = x1;
+        x1 = x2;
+        x2 = t;
+    }
+    if (y2 < y1) {
+        double t = y1;
+        y1 = y2;
+        y2 = t;
+    }
+    setFrame(x1, y1, x2 - x1, y2 - y1);
+}

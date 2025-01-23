@@ -1,0 +1,15 @@
+/**
+ * Sets this <code>Timestamp</code> object's <code>nanos</code> field
+ * to the given value.
+ *
+ * @param n the new fractional seconds component
+ * @exception java.lang.IllegalArgumentException if the given argument
+ *            is greater than 999999999 or less than 0
+ * @see #getNanos
+ */
+public void setNanos(int n) {
+    if (n > 999999999 || n < 0) {
+        throw new IllegalArgumentException("nanos > 999999999 or < 0");
+    }
+    nanos = n;
+}

@@ -1,0 +1,10 @@
+/**
+ * @return whether the drawing buffer was lost since the last call to
+ * <code>getDrawGraphics</code>
+ */
+public boolean contentsLost() {
+    if (drawVBuffer == null) {
+        return false;
+    }
+    return drawVBuffer.contentsLost();
+}

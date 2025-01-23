@@ -1,0 +1,14 @@
+/**
+ * Adds a PropertyChangeListener to the listener list.
+ *
+ * @param listener  the PropertyChangeListener to be added
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    if (accessibleContainerHandler == null) {
+        accessibleContainerHandler = new AccessibleContainerHandler();
+    }
+    if (propertyListenersCount++ == 0) {
+        Container.this.addContainerListener(accessibleContainerHandler);
+    }
+    super.addPropertyChangeListener(listener);
+}

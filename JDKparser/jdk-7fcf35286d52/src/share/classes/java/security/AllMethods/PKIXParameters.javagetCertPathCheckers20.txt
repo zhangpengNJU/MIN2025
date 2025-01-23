@@ -1,0 +1,18 @@
+/**
+ * Returns the {@code List} of certification path checkers.
+ * The returned {@code List} is immutable, and each
+ * {@code PKIXCertPathChecker} in the {@code List} is cloned
+ * to protect against subsequent modifications.
+ *
+ * @return an immutable {@code List} of
+ * {@code PKIXCertPathChecker}s (may be empty, but not
+ * {@code null})
+ * @see #setCertPathCheckers
+ */
+public List<PKIXCertPathChecker> getCertPathCheckers() {
+    List<PKIXCertPathChecker> tmpList = new ArrayList<PKIXCertPathChecker>();
+    for (PKIXCertPathChecker ck : certPathCheckers) {
+        tmpList.add((PKIXCertPathChecker) ck.clone());
+    }
+    return Collections.unmodifiableList(tmpList);
+}

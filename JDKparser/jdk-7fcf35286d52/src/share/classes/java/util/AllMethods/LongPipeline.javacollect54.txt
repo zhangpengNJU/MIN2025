@@ -1,0 +1,9 @@
+@Override
+public final <R> R collect(Supplier<R> supplier, ObjLongConsumer<R> accumulator, BiConsumer<R, R> combiner) {
+    Objects.requireNonNull(combiner);
+    BinaryOperator<R> operator = (left, right) -> {
+        combiner.accept(left, right);
+        return left;
+    };
+    return evaluate(ReduceOps.makeLong(supplier, accumulator, operator));
+}

@@ -1,0 +1,12 @@
+private static int parseFraction(CharSequence text, String parsed, int negate) {
+    // regex limits to [0-9]{0,9}
+    if (parsed == null || parsed.length() == 0) {
+        return 0;
+    }
+    try {
+        parsed = (parsed + "000000000").substring(0, 9);
+        return Integer.parseInt(parsed) * negate;
+    } catch (NumberFormatException | ArithmeticException ex) {
+        throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: fraction", text, 0).initCause(ex);
+    }
+}

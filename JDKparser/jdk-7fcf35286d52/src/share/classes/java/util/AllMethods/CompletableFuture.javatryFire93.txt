@@ -1,0 +1,9 @@
+final CompletableFuture<?> tryFire(int ignore) {
+    // no need to atomically claim
+    Thread w;
+    if ((w = thread) != null) {
+        thread = null;
+        LockSupport.unpark(w);
+    }
+    return null;
+}

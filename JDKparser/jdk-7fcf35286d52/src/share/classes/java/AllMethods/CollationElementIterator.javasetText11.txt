@@ -1,0 +1,18 @@
+/**
+ * Set a new string over which to iterate.
+ *
+ * @param source  the new source text.
+ * @since 1.2
+ */
+public void setText(CharacterIterator source) {
+    buffer = null;
+    swapOrder = 0;
+    expIndex = 0;
+    NormalizerBase.Mode mode = CollatorUtilities.toNormalizerMode(owner.getDecomposition());
+    if (text == null) {
+        text = new NormalizerBase(source, mode);
+    } else {
+        text.setMode(mode);
+        text.setText(source);
+    }
+}

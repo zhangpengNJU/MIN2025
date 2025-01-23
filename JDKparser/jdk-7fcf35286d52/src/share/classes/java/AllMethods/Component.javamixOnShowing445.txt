@@ -1,0 +1,15 @@
+void mixOnShowing() {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this);
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        if (isLightweight()) {
+            subtractAndApplyShapeBelowMe();
+        } else {
+            applyCurrentShape();
+        }
+    }
+}

@@ -1,0 +1,49 @@
+/**
+ * Returns the logical bounds of the characters indexed in the
+ * specified {@link CharacterIterator} in the
+ * specified <code>FontRenderContext</code>.  The logical bounds
+ * contains the origin, ascent, advance, and height, which includes
+ * the leading.  The logical bounds does not always enclose all the
+ * text.  For example, in some languages and in some fonts, accent
+ * marks can be positioned above the ascent or below the descent.
+ * To obtain a visual bounding box, which encloses all the text,
+ * use the {@link TextLayout#getBounds() getBounds} method of
+ * <code>TextLayout</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.Font class notes}).
+ * @param ci the specified <code>CharacterIterator</code>
+ * @param beginIndex the initial offset in <code>ci</code>
+ * @param limit the end offset in <code>ci</code>
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>Rectangle2D</code> that is the bounding box of the
+ * characters indexed in the specified <code>CharacterIterator</code>
+ * in the specified <code>FontRenderContext</code>.
+ * @see FontRenderContext
+ * @see Font#createGlyphVector
+ * @since 1.2
+ * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+ *         less than the start index of <code>ci</code>, or
+ *         <code>limit</code> is greater than the end index of
+ *         <code>ci</code>, or <code>beginIndex</code> is greater
+ *         than <code>limit</code>
+ */
+public Rectangle2D getStringBounds(CharacterIterator ci, int beginIndex, int limit, FontRenderContext frc) {
+    int start = ci.getBeginIndex();
+    int end = ci.getEndIndex();
+    if (beginIndex < start) {
+        throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+    }
+    if (limit > end) {
+        throw new IndexOutOfBoundsException("limit: " + limit);
+    }
+    if (beginIndex > limit) {
+        throw new IndexOutOfBoundsException("range length: " + (limit - beginIndex));
+    }
+    char[] arr = new char[limit - beginIndex];
+    ci.setIndex(beginIndex);
+    for (int idx = 0; idx < arr.length; idx++) {
+        arr[idx] = ci.current();
+        ci.next();
+    }
+    return getStringBounds(arr, 0, arr.length, frc);
+}

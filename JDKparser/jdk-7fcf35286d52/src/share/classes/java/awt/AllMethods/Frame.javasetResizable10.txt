@@ -1,0 +1,26 @@
+/**
+ * Sets whether this frame is resizable by the user.
+ * @param    resizable   <code>true</code> if this frame is resizable;
+ *                       <code>false</code> otherwise.
+ * @see      java.awt.Frame#isResizable
+ */
+public void setResizable(boolean resizable) {
+    boolean oldResizable = this.resizable;
+    boolean testvalid = false;
+    synchronized (this) {
+        this.resizable = resizable;
+        FramePeer peer = (FramePeer) this.peer;
+        if (peer != null) {
+            peer.setResizable(resizable);
+            testvalid = true;
+        }
+    }
+    // On some platforms, changing the resizable state affects
+    // the insets of the Frame. If we could, we'd call invalidate()
+    // from the peer, but we need to guarantee that we're not holding
+    // the Frame lock when we call invalidate().
+    if (testvalid) {
+        invalidateIfValid();
+    }
+    firePropertyChange("resizable", oldResizable, resizable);
+}

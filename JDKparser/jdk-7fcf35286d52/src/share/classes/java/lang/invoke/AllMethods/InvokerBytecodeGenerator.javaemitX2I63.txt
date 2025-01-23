@@ -1,0 +1,15 @@
+private void emitX2I(Wrapper type) {
+    switch(type) {
+        case LONG:
+            mv.visitInsn(Opcodes.L2I);
+            break;
+        case FLOAT:
+            mv.visitInsn(Opcodes.F2I);
+            break;
+        case DOUBLE:
+            mv.visitInsn(Opcodes.D2I);
+            break;
+        default:
+            throw new InternalError("unknown type: " + type);
+    }
+}

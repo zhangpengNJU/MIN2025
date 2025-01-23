@@ -1,0 +1,42 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a functional reduce on
+ * {@code long} values.
+ *
+ * @param identity the identity for the combining function
+ * @param operator the combining function
+ * @return a {@code TerminalOp} implementing the reduction
+ */
+public static TerminalOp<Long, Long> makeLong(long identity, LongBinaryOperator operator) {
+    Objects.requireNonNull(operator);
+    class ReducingSink implements AccumulatingSink<Long, Long, ReducingSink>, Sink.OfLong {
+
+        private long state;
+
+        @Override
+        public void begin(long size) {
+            state = identity;
+        }
+
+        @Override
+        public void accept(long t) {
+            state = operator.applyAsLong(state, t);
+        }
+
+        @Override
+        public Long get() {
+            return state;
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            accept(other.state);
+        }
+    }
+    return new ReduceOp<Long, Long, ReducingSink>(StreamShape.LONG_VALUE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

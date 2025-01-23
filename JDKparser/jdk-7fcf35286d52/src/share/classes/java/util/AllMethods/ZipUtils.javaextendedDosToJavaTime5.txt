@@ -1,0 +1,11 @@
+/**
+ * Converts extended DOS time to Java time, where up to 1999 milliseconds
+ * might be encoded into the upper half of the returned long.
+ *
+ * @param xdostime the extended DOS time value
+ * @return milliseconds since epoch
+ */
+public static long extendedDosToJavaTime(long xdostime) {
+    long time = dosToJavaTime(xdostime);
+    return time + (xdostime >> 32);
+}

@@ -1,0 +1,14 @@
+private static int getOpcodeOffset(Class<?> c) {
+    if (c.isPrimitive()) {
+        if (c == Long.TYPE) {
+            return 1;
+        } else if (c == Float.TYPE) {
+            return 2;
+        } else if (c == Double.TYPE) {
+            return 3;
+        }
+        return 0;
+    } else {
+        return 4;
+    }
+}

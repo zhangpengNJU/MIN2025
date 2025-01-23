@@ -1,0 +1,13 @@
+/**
+ * Associates the specified persistence delegate with the given type.
+ *
+ * @param type  the class of objects that the specified persistence delegate applies to
+ * @param delegate  the persistence delegate for instances of the given type
+ *
+ * @see #getPersistenceDelegate
+ * @see java.beans.Introspector#getBeanInfo
+ * @see java.beans.BeanInfo#getBeanDescriptor
+ */
+public void setPersistenceDelegate(Class<?> type, PersistenceDelegate delegate) {
+    this.finder.register(type, delegate);
+}

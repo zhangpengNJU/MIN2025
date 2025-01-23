@@ -1,0 +1,14 @@
+/**
+ * Returns a boolean which indicates whether or not some form of
+ * antialiasing is specified by this <code>FontRenderContext</code>.
+ * Call {@link #getAntiAliasingHint() getAntiAliasingHint()}
+ * for the specific rendering hint value.
+ *   @return    <code>true</code>, if text is anti-aliased in this
+ *   <code>FontRenderContext</code>; <code>false</code> otherwise.
+ *   @see        java.awt.RenderingHints#KEY_TEXT_ANTIALIASING
+ *   @see #FontRenderContext(AffineTransform,boolean,boolean)
+ *   @see #FontRenderContext(AffineTransform,Object,Object)
+ */
+public boolean isAntiAliased() {
+    return !(aaHintValue == VALUE_TEXT_ANTIALIAS_OFF || aaHintValue == VALUE_TEXT_ANTIALIAS_DEFAULT);
+}

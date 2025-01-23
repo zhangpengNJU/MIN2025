@@ -1,0 +1,17 @@
+/**
+ * @return the back buffer currently used by this component's
+ * BufferStrategy.  If there is no BufferStrategy or no
+ * back buffer, this method returns null.
+ */
+Image getBackBuffer() {
+    if (bufferStrategy != null) {
+        if (bufferStrategy instanceof BltBufferStrategy) {
+            BltBufferStrategy bltBS = (BltBufferStrategy) bufferStrategy;
+            return bltBS.getBackBuffer();
+        } else if (bufferStrategy instanceof FlipBufferStrategy) {
+            FlipBufferStrategy flipBS = (FlipBufferStrategy) bufferStrategy;
+            return flipBS.getBackBuffer();
+        }
+    }
+    return null;
+}

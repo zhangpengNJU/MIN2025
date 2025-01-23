@@ -1,0 +1,9 @@
+/**
+ * Resolves the new local date-time using the offset to identify the instant.
+ *
+ * @param newDateTime  the new local date-time, not null
+ * @return the zoned date-time, not null
+ */
+private ZonedDateTime resolveInstant(LocalDateTime newDateTime) {
+    return ofInstant(newDateTime, offset, zone);
+}

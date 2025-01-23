@@ -1,0 +1,32 @@
+/**
+ * Sets the image for this <code>TrayIcon</code>.  The previous
+ * tray icon image is discarded without calling the {@link
+ * java.awt.Image#flush} method &#151; you will need to call it
+ * manually.
+ *
+ * <p> If the image represents an animated image, it will be
+ * animated automatically.
+ *
+ * <p> See the {@link #setImageAutoSize(boolean)} property for
+ * details on the size of the displayed image.
+ *
+ * <p> Calling this method with the same image that is currently
+ * being used has no effect.
+ *
+ * @throws NullPointerException if <code>image</code> is <code>null</code>
+ * @param image the non-null <code>Image</code> to be used
+ * @see #getImage
+ * @see Image
+ * @see SystemTray#add(TrayIcon)
+ * @see TrayIcon#TrayIcon(Image, String)
+ */
+public void setImage(Image image) {
+    if (image == null) {
+        throw new NullPointerException("setting null Image");
+    }
+    this.image = image;
+    TrayIconPeer peer = this.peer;
+    if (peer != null) {
+        peer.updateImage();
+    }
+}

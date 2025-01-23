@@ -1,0 +1,4 @@
+public Entry<K, V> ceilingEntry(K key) {
+    Entry<K, V> ceiling = nm.ceilingEntry(key);
+    return (null != ceiling) ? new CheckedMap.CheckedEntrySet.CheckedEntry<>(ceiling, valueType) : null;
+}

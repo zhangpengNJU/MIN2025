@@ -1,0 +1,22 @@
+/**
+ * Sets the <code>PageFormat</code> and the <code>Painter</code> for a
+ * specified page number.
+ * @param pageIndex the zero based index of the page whose
+ *                  painter and format is altered
+ * @param painter   the <code>Printable</code> instance that
+ *                  renders the page
+ * @param page      the size and orientation of the page
+ * @throws IndexOutOfBoundsException if the specified
+ *          page is not already in this <code>Book</code>
+ * @throws NullPointerException if the <code>painter</code> or
+ *          <code>page</code> argument is <code>null</code>
+ */
+public void setPage(int pageIndex, Printable painter, PageFormat page) throws IndexOutOfBoundsException {
+    if (painter == null) {
+        throw new NullPointerException("painter is null");
+    }
+    if (page == null) {
+        throw new NullPointerException("page is null");
+    }
+    mPages.setElementAt(new BookPage(painter, page), pageIndex);
+}

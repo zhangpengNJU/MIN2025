@@ -1,0 +1,14 @@
+/*
+    * Returns all providers who satisfy the specified
+    * criterion.
+    */
+private static LinkedHashSet<Provider> getAllQualifyingCandidates(String filterKey, String filterValue, Provider[] allProviders) {
+    String[] filterComponents = getFilterComponents(filterKey, filterValue);
+    // The first component is the service name.
+    // The second is the algorithm name.
+    // If the third isn't null, that is the attrinute name.
+    String serviceName = filterComponents[0];
+    String algName = filterComponents[1];
+    String attrName = filterComponents[2];
+    return getProvidersNotUsingCache(serviceName, algName, attrName, filterValue, allProviders);
+}

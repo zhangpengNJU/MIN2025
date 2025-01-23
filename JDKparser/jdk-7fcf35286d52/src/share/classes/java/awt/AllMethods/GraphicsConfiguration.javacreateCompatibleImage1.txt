@@ -1,0 +1,18 @@
+/**
+ * Returns a {@link BufferedImage} with a data layout and color model
+ * compatible with this <code>GraphicsConfiguration</code>.  This
+ * method has nothing to do with memory-mapping
+ * a device.  The returned <code>BufferedImage</code> has
+ * a layout and color model that is closest to this native device
+ * configuration and can therefore be optimally blitted to this
+ * device.
+ * @param width the width of the returned <code>BufferedImage</code>
+ * @param height the height of the returned <code>BufferedImage</code>
+ * @return a <code>BufferedImage</code> whose data layout and color
+ * model is compatible with this <code>GraphicsConfiguration</code>.
+ */
+public BufferedImage createCompatibleImage(int width, int height) {
+    ColorModel model = getColorModel();
+    WritableRaster raster = model.createCompatibleWritableRaster(width, height);
+    return new BufferedImage(model, raster, model.isAlphaPremultiplied(), null);
+}

@@ -1,0 +1,10 @@
+private void setIndexedReadMethod0(Method readMethod) {
+    this.indexedReadMethodRef.set(readMethod);
+    if (readMethod == null) {
+        indexedReadMethodName = null;
+        return;
+    }
+    setClass0(readMethod.getDeclaringClass());
+    indexedReadMethodName = readMethod.getName();
+    setTransient(readMethod.getAnnotation(Transient.class));
+}

@@ -1,0 +1,10 @@
+/**
+ * Atomically sets to the given value and returns the old value.
+ *
+ * @param newValue the new value
+ * @return the previous value
+ */
+@SuppressWarnings("unchecked")
+public final V getAndSet(V newValue) {
+    return (V) unsafe.getAndSetObject(this, valueOffset, newValue);
+}

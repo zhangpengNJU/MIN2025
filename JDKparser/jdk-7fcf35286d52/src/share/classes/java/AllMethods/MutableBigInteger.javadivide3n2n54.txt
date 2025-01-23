@@ -1,0 +1,50 @@
+/**
+ * This method implements algorithm 2 from pg. 5 of the Burnikel-Ziegler paper.
+ * It divides a 3n-digit number by a 2n-digit number.<br/>
+ * The parameter beta is 2<sup>32</sup> so all shifts are multiples of 32 bits.<br/>
+ * <br/>
+ * {@code this} must be a nonnegative number such that {@code 2*this.bitLength() <= 3*b.bitLength()}
+ * @param quotient output parameter for {@code this/b}
+ * @return {@code this%b}
+ */
+private MutableBigInteger divide3n2n(MutableBigInteger b, MutableBigInteger quotient) {
+    // half the length of b in ints
+    int n = b.intLen / 2;
+    // step 1: view this as [a1,a2,a3] where each ai is n ints or less; let a12=[a1,a2]
+    MutableBigInteger a12 = new MutableBigInteger(this);
+    a12.safeRightShift(32 * n);
+    // step 2: view b as [b1,b2] where each bi is n ints or less
+    MutableBigInteger b1 = new MutableBigInteger(b);
+    b1.safeRightShift(n * 32);
+    BigInteger b2 = b.getLower(n);
+    MutableBigInteger r;
+    MutableBigInteger d;
+    if (compareShifted(b, n) < 0) {
+        // step 3a: if a1<b1, let quotient=a12/b1 and r=a12%b1
+        r = a12.divide2n1n(b1, quotient);
+        // step 4: d=quotient*b2
+        d = new MutableBigInteger(quotient.toBigInteger().multiply(b2));
+    } else {
+        // step 3b: if a1>=b1, let quotient=beta^n-1 and r=a12-b1*2^n+b1
+        quotient.ones(n);
+        a12.add(b1);
+        b1.leftShift(32 * n);
+        a12.subtract(b1);
+        r = a12;
+        // step 4: d=quotient*b2=(b2 << 32*n) - b2
+        d = new MutableBigInteger(b2);
+        d.leftShift(32 * n);
+        d.subtract(new MutableBigInteger(b2));
+    }
+    // step 5: r = r*beta^n + a3 - d (paper says a4)
+    // However, don't subtract d until after the while loop so r doesn't become negative
+    r.leftShift(32 * n);
+    r.addLower(this, n);
+    // step 6: add b until r>=d
+    while (r.compare(d) < 0) {
+        r.add(b);
+        quotient.subtract(MutableBigInteger.ONE);
+    }
+    r.subtract(d);
+    return r;
+}

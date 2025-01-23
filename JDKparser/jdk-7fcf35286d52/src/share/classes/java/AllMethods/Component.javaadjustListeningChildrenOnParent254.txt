@@ -1,0 +1,10 @@
+/*
+     * Should only be called while holding the tree lock.
+     * It's added only for overriding in java.awt.Window
+     * because parent in Window is owner.
+     */
+void adjustListeningChildrenOnParent(long mask, int num) {
+    if (parent != null) {
+        parent.adjustListeningChildren(mask, num);
+    }
+}

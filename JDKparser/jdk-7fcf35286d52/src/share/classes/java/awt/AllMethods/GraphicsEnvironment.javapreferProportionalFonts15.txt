@@ -1,0 +1,20 @@
+/**
+ * Indicates a preference for proportional over non-proportional (e.g.
+ * dual-spaced CJK fonts) fonts in the mapping of logical fonts to
+ * physical fonts. If the default mapping contains fonts for which
+ * proportional and non-proportional variants exist, then calling
+ * this method indicates the mapping should use a proportional variant.
+ * <p>
+ * The actual change in font rendering behavior resulting from a call to
+ * this method is implementation dependent; it may have no effect at all.
+ * The behavior may differ between font rendering in lightweight and
+ * peered components. Since calling this method requests a
+ * different font, clients should expect different metrics, and may need
+ * to recalculate window sizes and layout. Therefore this method should
+ * be called before user interface initialisation.
+ * @since 1.5
+ */
+public void preferProportionalFonts() {
+    FontManager fm = FontManagerFactory.getInstance();
+    fm.preferProportionalFonts();
+}

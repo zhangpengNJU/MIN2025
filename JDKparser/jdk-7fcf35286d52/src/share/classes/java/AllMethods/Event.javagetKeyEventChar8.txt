@@ -1,0 +1,16 @@
+/*
+     * <b>NOTE:</b> The <code>Event</code> class is obsolete and is
+     * available only for backwards compatibility.  It has been replaced
+     * by the <code>AWTEvent</code> class and its subclasses.
+     * <p>
+     * Returns a new KeyEvent char which corresponds to the int key
+     * of this old event.
+     */
+char getKeyEventChar() {
+    for (int i = 0; i < actionKeyCodes.length; i++) {
+        if (actionKeyCodes[i][1] == key) {
+            return KeyEvent.CHAR_UNDEFINED;
+        }
+    }
+    return (char) key;
+}

@@ -1,0 +1,94 @@
+/**
+ * Generate an invoker method for the passed {@link LambdaForm}.
+ */
+private byte[] generateCustomizedCodeBytes() {
+    classFilePrologue();
+    // Suppress this method in backtraces displayed to the user.
+    mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Hidden;", true);
+    // Mark this method as a compiled LambdaForm
+    mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Compiled;", true);
+    if (lambdaForm.forceInline) {
+        // Force inlining of this invoker method.
+        mv.visitAnnotation("Ljava/lang/invoke/ForceInline;", true);
+    } else {
+        mv.visitAnnotation("Ljava/lang/invoke/DontInline;", true);
+    }
+    if (lambdaForm.customized != null) {
+        // Since LambdaForm is customized for a particular MethodHandle, it's safe to substitute
+        // receiver MethodHandle (at slot #0) with an embedded constant and use it instead.
+        // It enables more efficient code generation in some situations, since embedded constants
+        // are compile-time constants for JIT compiler.
+        mv.visitLdcInsn(constantPlaceholder(lambdaForm.customized));
+        mv.visitTypeInsn(Opcodes.CHECKCAST, MH);
+        // expects MethodHandle on top of the stack
+        assert (checkActualReceiver());
+        mv.visitVarInsn(Opcodes.ASTORE, localsMap[0]);
+    }
+    // iterate over the form's names, generating bytecode instructions for each
+    // start iterating at the first name following the arguments
+    Name onStack = null;
+    for (int i = lambdaForm.arity; i < lambdaForm.names.length; i++) {
+        Name name = lambdaForm.names[i];
+        emitStoreResult(onStack);
+        // unless otherwise modified below
+        onStack = name;
+        MethodHandleImpl.Intrinsic intr = name.function.intrinsicName();
+        switch(intr) {
+            case SELECT_ALTERNATIVE:
+                assert isSelectAlternative(i);
+                if (PROFILE_GWT) {
+                    assert (name.arguments[0] instanceof Name && nameRefersTo((Name) name.arguments[0], MethodHandleImpl.class, "profileBoolean"));
+                    mv.visitAnnotation("Ljava/lang/invoke/InjectedProfile;", true);
+                }
+                onStack = emitSelectAlternative(name, lambdaForm.names[i + 1]);
+                // skip MH.invokeBasic of the selectAlternative result
+                i++;
+                continue;
+            case GUARD_WITH_CATCH:
+                assert isGuardWithCatch(i);
+                onStack = emitGuardWithCatch(i);
+                // Jump to the end of GWC idiom
+                i = i + 2;
+                continue;
+            case NEW_ARRAY:
+                Class<?> rtype = name.function.methodType().returnType();
+                if (isStaticallyNameable(rtype)) {
+                    emitNewArray(name);
+                    continue;
+                }
+                break;
+            case ARRAY_LOAD:
+                emitArrayLoad(name);
+                continue;
+            case ARRAY_STORE:
+                emitArrayStore(name);
+                continue;
+            case IDENTITY:
+                assert (name.arguments.length == 1);
+                emitPushArguments(name);
+                continue;
+            case ZERO:
+                assert (name.arguments.length == 0);
+                emitConst(name.type.basicTypeWrapper().zero());
+                continue;
+            case NONE:
+                // no intrinsic associated
+                break;
+            default:
+                throw newInternalError("Unknown intrinsic: " + intr);
+        }
+        MemberName member = name.function.member();
+        if (isStaticallyInvocable(member)) {
+            emitStaticInvoke(member, name);
+        } else {
+            emitInvoke(name);
+        }
+    }
+    // return statement
+    emitReturn(onStack);
+    classFileEpilogue();
+    bogusMethod(lambdaForm);
+    final byte[] classFile = cw.toByteArray();
+    maybeDump(className, classFile);
+    return classFile;
+}

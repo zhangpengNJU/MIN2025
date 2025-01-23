@@ -1,0 +1,21 @@
+public boolean tryAdvance(Consumer<? super Map.Entry<K, V>> action) {
+    if (action == null)
+        throw new NullPointerException();
+    Object[] a = map.table;
+    int hi = getFence();
+    while (index < hi) {
+        Object key = a[index];
+        @SuppressWarnings("unchecked")
+        V v = (V) a[index + 1];
+        index += 2;
+        if (key != null) {
+            @SuppressWarnings("unchecked")
+            K k = (K) unmaskNull(key);
+            action.accept(new AbstractMap.SimpleImmutableEntry<K, V>(k, v));
+            if (map.modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+            return true;
+        }
+    }
+    return false;
+}

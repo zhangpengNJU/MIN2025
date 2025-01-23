@@ -1,0 +1,14 @@
+/**
+ * Returns the root preference node for the system.
+ *
+ * @return the root preference node for the system.
+ * @throws SecurityException If a security manager is present and
+ *         it denies <tt>RuntimePermission("preferences")</tt>.
+ * @see    RuntimePermission
+ */
+public static Preferences systemRoot() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null)
+        security.checkPermission(prefsPerm);
+    return factory.systemRoot();
+}

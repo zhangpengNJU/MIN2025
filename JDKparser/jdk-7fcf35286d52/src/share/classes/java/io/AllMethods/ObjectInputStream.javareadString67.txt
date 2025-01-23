@@ -1,0 +1,21 @@
+/**
+ * Reads in and returns new string.  Sets passHandle to new string's
+ * assigned handle.
+ */
+private String readString(boolean unshared) throws IOException {
+    String str;
+    byte tc = bin.readByte();
+    switch(tc) {
+        case TC_STRING:
+            str = bin.readUTF();
+            break;
+        case TC_LONGSTRING:
+            str = bin.readLongUTF();
+            break;
+        default:
+            throw new StreamCorruptedException(String.format("invalid type code: %02X", tc));
+    }
+    passHandle = handles.assign(unshared ? unsharedMarker : str);
+    handles.finish(passHandle);
+    return str;
+}

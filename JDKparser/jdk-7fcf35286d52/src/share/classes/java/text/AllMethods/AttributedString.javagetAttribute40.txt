@@ -1,0 +1,7 @@
+public Object getAttribute(Attribute attribute) {
+    int runIndex = currentRunIndex;
+    if (runIndex < 0) {
+        return null;
+    }
+    return AttributedString.this.getAttributeCheckRange(attribute, runIndex, beginIndex, endIndex);
+}

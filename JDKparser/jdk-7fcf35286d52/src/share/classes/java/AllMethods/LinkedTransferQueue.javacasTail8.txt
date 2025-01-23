@@ -1,0 +1,4 @@
+// CAS methods for fields
+private boolean casTail(Node cmp, Node val) {
+    return UNSAFE.compareAndSwapObject(this, tailOffset, cmp, val);
+}

@@ -1,0 +1,31 @@
+// Add zeros to the requested precision.
+private char[] addZeros(char[] v, int prec) {
+    // Look for the dot.  If we don't find one, the we'll need to add
+    // it before we add the zeros.
+    int i;
+    for (i = 0; i < v.length; i++) {
+        if (v[i] == '.')
+            break;
+    }
+    boolean needDot = false;
+    if (i == v.length) {
+        needDot = true;
+    }
+    // Determine existing precision.
+    int outPrec = v.length - i - (needDot ? 0 : 1);
+    assert (outPrec <= prec);
+    if (outPrec == prec)
+        return v;
+    // Create new array with existing contents.
+    char[] tmp = new char[v.length + prec - outPrec + (needDot ? 1 : 0)];
+    System.arraycopy(v, 0, tmp, 0, v.length);
+    // Add dot if previously determined to be necessary.
+    int start = v.length;
+    if (needDot) {
+        tmp[v.length] = '.';
+        start++;
+    }
+    // Add zeros.
+    for (int j = start; j < tmp.length; j++) tmp[j] = '0';
+    return tmp;
+}

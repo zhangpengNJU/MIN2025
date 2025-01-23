@@ -1,0 +1,19 @@
+/**
+ * Reconstitute the <tt>EnumMap</tt> instance from a stream (i.e.,
+ * deserialize it).
+ */
+@SuppressWarnings("unchecked")
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Read in the key type and any hidden stuff
+    s.defaultReadObject();
+    keyUniverse = getKeyUniverse(keyType);
+    vals = new Object[keyUniverse.length];
+    // Read in size (number of Mappings)
+    int size = s.readInt();
+    // Read the keys and values, and put the mappings in the HashMap
+    for (int i = 0; i < size; i++) {
+        K key = (K) s.readObject();
+        V value = (V) s.readObject();
+        put(key, value);
+    }
+}

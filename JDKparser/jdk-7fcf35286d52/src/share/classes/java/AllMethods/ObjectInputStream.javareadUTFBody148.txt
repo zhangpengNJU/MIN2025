@@ -1,0 +1,38 @@
+/**
+ * Reads in the "body" (i.e., the UTF representation minus the 2-byte
+ * or 8-byte length header) of a UTF encoding, which occupies the next
+ * utflen bytes.
+ */
+private String readUTFBody(long utflen) throws IOException {
+    StringBuilder sbuf;
+    if (utflen > 0 && utflen < Integer.MAX_VALUE) {
+        // a reasonable initial capacity based on the UTF length
+        int initialCapacity = Math.min((int) utflen, 0xFFFF);
+        sbuf = new StringBuilder(initialCapacity);
+    } else {
+        sbuf = new StringBuilder();
+    }
+    if (!blkmode) {
+        end = pos = 0;
+    }
+    while (utflen > 0) {
+        int avail = end - pos;
+        if (avail >= 3 || (long) avail == utflen) {
+            utflen -= readUTFSpan(sbuf, utflen);
+        } else {
+            if (blkmode) {
+                // near block boundary, read one byte at a time
+                utflen -= readUTFChar(sbuf, utflen);
+            } else {
+                // shift and refill buffer manually
+                if (avail > 0) {
+                    System.arraycopy(buf, pos, buf, 0, avail);
+                }
+                pos = 0;
+                end = (int) Math.min(MAX_BLOCK_SIZE, utflen);
+                in.readFully(buf, avail, end - avail);
+            }
+        }
+    }
+    return sbuf.toString();
+}

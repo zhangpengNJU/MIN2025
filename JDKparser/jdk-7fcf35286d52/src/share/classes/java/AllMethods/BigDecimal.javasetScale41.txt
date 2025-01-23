@@ -1,0 +1,32 @@
+/**
+ * Returns a {@code BigDecimal} whose scale is the specified
+ * value, and whose unscaled value is determined by multiplying or
+ * dividing this {@code BigDecimal}'s unscaled value by the
+ * appropriate power of ten to maintain its overall value.  If the
+ * scale is reduced by the operation, the unscaled value must be
+ * divided (rather than multiplied), and the value may be changed;
+ * in this case, the specified rounding mode is applied to the
+ * division.
+ *
+ * <p>Note that since BigDecimal objects are immutable, calls of
+ * this method do <i>not</i> result in the original object being
+ * modified, contrary to the usual convention of having methods
+ * named <tt>set<i>X</i></tt> mutate field <i>{@code X}</i>.
+ * Instead, {@code setScale} returns an object with the proper
+ * scale; the returned object may or may not be newly allocated.
+ *
+ * @param  newScale scale of the {@code BigDecimal} value to be returned.
+ * @param  roundingMode The rounding mode to apply.
+ * @return a {@code BigDecimal} whose scale is the specified value,
+ *         and whose unscaled value is determined by multiplying or
+ *         dividing this {@code BigDecimal}'s unscaled value by the
+ *         appropriate power of ten to maintain its overall value.
+ * @throws ArithmeticException if {@code roundingMode==UNNECESSARY}
+ *         and the specified scaling operation would require
+ *         rounding.
+ * @see    RoundingMode
+ * @since  1.5
+ */
+public BigDecimal setScale(int newScale, RoundingMode roundingMode) {
+    return setScale(newScale, roundingMode.oldMode);
+}

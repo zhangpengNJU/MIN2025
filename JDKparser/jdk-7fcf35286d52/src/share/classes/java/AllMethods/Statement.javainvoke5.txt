@@ -1,0 +1,16 @@
+Object invoke() throws Exception {
+    AccessControlContext acc = this.acc;
+    if ((acc == null) && (System.getSecurityManager() != null)) {
+        throw new SecurityException("AccessControlContext is not set");
+    }
+    try {
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+
+            public Object run() throws Exception {
+                return invokeInternal();
+            }
+        }, acc);
+    } catch (PrivilegedActionException exception) {
+        throw exception.getException();
+    }
+}

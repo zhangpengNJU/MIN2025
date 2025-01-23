@@ -1,0 +1,7 @@
+@Override
+public boolean hasNext() {
+    if (!walker.isOpen())
+        throw new IllegalStateException();
+    fetchNextIfNeeded();
+    return next != null;
+}

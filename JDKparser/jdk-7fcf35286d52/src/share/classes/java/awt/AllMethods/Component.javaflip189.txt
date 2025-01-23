@@ -1,0 +1,21 @@
+/**
+ * Flipping moves the contents of the back buffer to the front buffer,
+ * either by copying or by moving the video pointer.
+ * @param flipAction an integer value describing the flipping action
+ * for the contents of the back buffer.  This should be one of the
+ * values of the <code>BufferCapabilities.FlipContents</code>
+ * property.
+ * @exception IllegalStateException if the buffers have not yet
+ * been created
+ * @see java.awt.BufferCapabilities#getFlipContents()
+ */
+protected void flip(BufferCapabilities.FlipContents flipAction) {
+    if (peer != null) {
+        Image backBuffer = getBackBuffer();
+        if (backBuffer != null) {
+            peer.flip(0, 0, backBuffer.getWidth(null), backBuffer.getHeight(null), flipAction);
+        }
+    } else {
+        throw new IllegalStateException("Component must have a valid peer");
+    }
+}

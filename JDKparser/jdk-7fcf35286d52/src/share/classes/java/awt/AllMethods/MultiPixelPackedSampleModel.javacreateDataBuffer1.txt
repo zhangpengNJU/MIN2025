@@ -1,0 +1,25 @@
+/**
+ * Creates a <code>DataBuffer</code> that corresponds to this
+ * <code>MultiPixelPackedSampleModel</code>.  The
+ * <code>DataBuffer</code> object's data type and size
+ * is consistent with this <code>MultiPixelPackedSampleModel</code>.
+ * The <code>DataBuffer</code> has a single bank.
+ * @return a <code>DataBuffer</code> with the same data type and
+ * size as this <code>MultiPixelPackedSampleModel</code>.
+ */
+public DataBuffer createDataBuffer() {
+    DataBuffer dataBuffer = null;
+    int size = (int) scanlineStride * height;
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            dataBuffer = new DataBufferByte(size + (dataBitOffset + 7) / 8);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            dataBuffer = new DataBufferUShort(size + (dataBitOffset + 15) / 16);
+            break;
+        case DataBuffer.TYPE_INT:
+            dataBuffer = new DataBufferInt(size + (dataBitOffset + 31) / 32);
+            break;
+    }
+    return dataBuffer;
+}

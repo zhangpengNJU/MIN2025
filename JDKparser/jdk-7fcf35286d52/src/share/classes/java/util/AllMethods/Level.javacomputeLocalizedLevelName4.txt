@@ -1,0 +1,21 @@
+private String computeLocalizedLevelName(Locale newLocale) {
+    // If this is a custom Level, load resource bundles on the
+    // classpath and return.
+    if (!defaultBundle.equals(resourceBundleName)) {
+        return ResourceBundle.getBundle(resourceBundleName, newLocale, ClassLoader.getSystemClassLoader()).getString(name);
+    }
+    // The default bundle "sun.util.logging.resources.logging" should only
+    // be loaded from the runtime; so use the extension class loader;
+    final ResourceBundle rb = ResourceBundle.getBundle(defaultBundle, newLocale);
+    final String localizedName = rb.getString(name);
+    // This is a trick to determine whether the name has been translated
+    // or not. If it has not been translated, we need to use Locale.ROOT
+    // when calling toUpperCase().
+    final Locale rbLocale = rb.getLocale();
+    final Locale locale = Locale.ROOT.equals(rbLocale) || name.equals(localizedName.toUpperCase(Locale.ROOT)) ? Locale.ROOT : rbLocale;
+    // ALL CAPS in a resource bundle's message indicates no translation
+    // needed per Oracle translation guideline.  To workaround this
+    // in Oracle JDK implementation, convert the localized level name
+    // to uppercase for compatibility reason.
+    return Locale.ROOT.equals(locale) ? name : localizedName.toUpperCase(locale);
+}

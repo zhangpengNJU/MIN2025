@@ -1,0 +1,18 @@
+/**
+ * Gets the <code>DecimalFormatSymbols</code> instance for the default
+ * locale.  This method provides access to <code>DecimalFormatSymbols</code>
+ * instances for locales supported by the Java runtime itself as well
+ * as for those supported by installed
+ * {@link java.text.spi.DecimalFormatSymbolsProvider
+ * DecimalFormatSymbolsProvider} implementations.
+ * <p>This is equivalent to calling
+ * {@link #getInstance(Locale)
+ *     getInstance(Locale.getDefault(Locale.Category.FORMAT))}.
+ * @see java.util.Locale#getDefault(java.util.Locale.Category)
+ * @see java.util.Locale.Category#FORMAT
+ * @return a <code>DecimalFormatSymbols</code> instance.
+ * @since 1.6
+ */
+public static final DecimalFormatSymbols getInstance() {
+    return getInstance(Locale.getDefault(Locale.Category.FORMAT));
+}

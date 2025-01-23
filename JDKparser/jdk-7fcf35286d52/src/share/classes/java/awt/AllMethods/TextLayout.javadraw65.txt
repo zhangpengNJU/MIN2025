@@ -1,0 +1,19 @@
+/**
+ * Renders this <code>TextLayout</code> at the specified location in
+ * the specified {@link java.awt.Graphics2D Graphics2D} context.
+ * The origin of the layout is placed at x,&nbsp;y.  Rendering may touch
+ * any point within <code>getBounds()</code> of this position.  This
+ * leaves the <code>g2</code> unchanged.  Text is rendered along the
+ * baseline path.
+ * @param g2 the <code>Graphics2D</code> context into which to render
+ *         the layout
+ * @param x the X coordinate of the origin of this <code>TextLayout</code>
+ * @param y the Y coordinate of the origin of this <code>TextLayout</code>
+ * @see #getBounds()
+ */
+public void draw(Graphics2D g2, float x, float y) {
+    if (g2 == null) {
+        throw new IllegalArgumentException("Null Graphics2D passed to TextLayout.draw()");
+    }
+    textLine.draw(g2, x - dx, y - dy);
+}

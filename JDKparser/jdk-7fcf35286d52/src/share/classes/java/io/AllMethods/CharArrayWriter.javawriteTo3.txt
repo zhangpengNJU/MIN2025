@@ -1,0 +1,11 @@
+/**
+ * Writes the contents of the buffer to another character stream.
+ *
+ * @param out       the output stream to write to
+ * @throws IOException If an I/O error occurs.
+ */
+public void writeTo(Writer out) throws IOException {
+    synchronized (lock) {
+        out.write(buf, 0, count);
+    }
+}

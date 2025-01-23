@@ -1,0 +1,85 @@
+/**
+ * Initialize the SocketPermission object. We don't do any DNS lookups
+ * as this point, instead we hold off until the implies method is
+ * called.
+ */
+private void init(String host, int mask) {
+    // Set the integer mask that represents the actions
+    if ((mask & ALL) != mask)
+        throw new IllegalArgumentException("invalid actions mask");
+    // always OR in RESOLVE if we allow any of the others
+    this.mask = mask | RESOLVE;
+    // Parse the host name.  A name has up to three components, the
+    // hostname, a port number, or two numbers representing a port
+    // range.   "www.sun.com:8080-9090" is a valid host name.
+    // With IPv6 an address can be 2010:836B:4179::836B:4179
+    // An IPv6 address needs to be enclose in []
+    // For ex: [2010:836B:4179::836B:4179]:8080-9090
+    // Refer to RFC 2732 for more information.
+    int rb = 0;
+    int start = 0, end = 0;
+    int sep = -1;
+    String hostport = host;
+    if (host.charAt(0) == '[') {
+        start = 1;
+        rb = host.indexOf(']');
+        if (rb != -1) {
+            host = host.substring(start, rb);
+        } else {
+            throw new IllegalArgumentException("invalid host/port: " + host);
+        }
+        sep = hostport.indexOf(':', rb + 1);
+    } else {
+        start = 0;
+        sep = host.indexOf(':', rb);
+        end = sep;
+        if (sep != -1) {
+            host = host.substring(start, end);
+        }
+    }
+    if (sep != -1) {
+        String port = hostport.substring(sep + 1);
+        try {
+            portrange = parsePort(port);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("invalid port range: " + port);
+        }
+    } else {
+        portrange = new int[] { PORT_MIN, PORT_MAX };
+    }
+    hostname = host;
+    // is this a domain wildcard specification
+    if (host.lastIndexOf('*') > 0) {
+        throw new IllegalArgumentException("invalid host wildcard specification");
+    } else if (host.startsWith("*")) {
+        wildcard = true;
+        if (host.equals("*")) {
+            cname = "";
+        } else if (host.startsWith("*.")) {
+            cname = host.substring(1).toLowerCase();
+        } else {
+            throw new IllegalArgumentException("invalid host wildcard specification");
+        }
+        return;
+    } else {
+        if (host.length() > 0) {
+            // see if we are being initialized with an IP address.
+            char ch = host.charAt(0);
+            if (ch == ':' || Character.digit(ch, 16) != -1) {
+                byte[] ip = IPAddressUtil.textToNumericFormatV4(host);
+                if (ip == null) {
+                    ip = IPAddressUtil.textToNumericFormatV6(host);
+                }
+                if (ip != null) {
+                    try {
+                        addresses = new InetAddress[] { InetAddress.getByAddress(ip) };
+                        init_with_ip = true;
+                    } catch (UnknownHostException uhe) {
+                        // this shouldn't happen
+                        invalid = true;
+                    }
+                }
+            }
+        }
+    }
+}

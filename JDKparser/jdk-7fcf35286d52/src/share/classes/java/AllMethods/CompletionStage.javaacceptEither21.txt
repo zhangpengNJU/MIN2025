@@ -1,0 +1,14 @@
+/**
+ * Returns a new CompletionStage that, when either this or the
+ * other given stage complete normally, is executed with the
+ * corresponding result as argument to the supplied action.
+ *
+ * See the {@link CompletionStage} documentation for rules
+ * covering exceptional completion.
+ *
+ * @param other the other CompletionStage
+ * @param action the action to perform before completing the
+ * returned CompletionStage
+ * @return the new CompletionStage
+ */
+public CompletionStage<Void> acceptEither(CompletionStage<? extends T> other, Consumer<? super T> action);

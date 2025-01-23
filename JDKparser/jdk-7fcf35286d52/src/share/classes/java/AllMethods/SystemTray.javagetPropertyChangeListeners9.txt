@@ -1,0 +1,18 @@
+/**
+ * Returns an array of all the listeners that have been associated
+ * with the named property.
+ * <p>
+ * Only the listeners in this context are returned.
+ *
+ * @param propertyName the specified property
+ * @return all of the {@code PropertyChangeListener}s associated with
+ *         the named property; if no such listeners have been added or
+ *         if {@code propertyName} is {@code null} or invalid, an empty
+ *         array is returned
+ *
+ * @see #addPropertyChangeListener
+ * @see #removePropertyChangeListener
+ */
+public synchronized PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+    return getCurrentChangeSupport().getPropertyChangeListeners(propertyName);
+}

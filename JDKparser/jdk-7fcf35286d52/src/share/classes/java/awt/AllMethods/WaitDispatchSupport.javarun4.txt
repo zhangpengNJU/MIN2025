@@ -1,0 +1,6 @@
+@Override
+public void run() {
+    if (keepBlockingEDT.compareAndSet(true, false)) {
+        wakeupEDT();
+    }
+}

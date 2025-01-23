@@ -1,0 +1,11 @@
+/**
+ * Returns the right (bottom) side bearing of the glyph.
+ * <p>
+ * This is the distance from the right (bottom) of the glyph bounds to
+ * the advance. If the bounds of the glyph is to the right of (below)
+ * the advance, the RSB is negative.
+ * @return the right side bearing of the glyph.
+ */
+public float getRSB() {
+    return horizontal ? advanceX - bounds.x - bounds.width : advanceY - bounds.y - bounds.height;
+}

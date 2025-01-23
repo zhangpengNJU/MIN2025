@@ -1,0 +1,15 @@
+/**
+ * This method returns an <code>int</code> representing
+ * the current state of the input device extended modifiers
+ * associated with the user's gesture.
+ * See {@link InputEvent#getModifiersEx}
+ * <P>
+ * If the <code>modifiers</code> passed to the constructor
+ * are invalid, this method returns them unchanged.
+ *
+ * @return the current state of the input device extended modifiers
+ * @since 1.4
+ */
+public int getGestureModifiersEx() {
+    return invalidModifiers ? gestureModifiers : gestureModifiers & JDK_1_4_MODIFIERS;
+}

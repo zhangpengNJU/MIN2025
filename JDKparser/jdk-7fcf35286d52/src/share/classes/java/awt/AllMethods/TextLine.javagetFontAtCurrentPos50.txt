@@ -1,0 +1,15 @@
+static Font getFontAtCurrentPos(AttributedCharacterIterator aci) {
+    Object value = aci.getAttribute(TextAttribute.FONT);
+    if (value != null) {
+        return (Font) value;
+    }
+    if (aci.getAttribute(TextAttribute.FAMILY) != null) {
+        return Font.getFont(aci.getAttributes());
+    }
+    int ch = CodePointIterator.create(aci).next();
+    if (ch != CodePointIterator.DONE) {
+        FontResolver resolver = FontResolver.getInstance();
+        return resolver.getFont(resolver.getFontIndex(ch), aci.getAttributes());
+    }
+    return null;
+}

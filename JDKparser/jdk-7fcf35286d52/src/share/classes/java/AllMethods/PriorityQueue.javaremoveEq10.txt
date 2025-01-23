@@ -1,0 +1,16 @@
+/**
+ * Version of remove using reference equality, not equals.
+ * Needed by iterator.remove.
+ *
+ * @param o element to be removed from this queue, if present
+ * @return {@code true} if removed
+ */
+boolean removeEq(Object o) {
+    for (int i = 0; i < size; i++) {
+        if (o == queue[i]) {
+            removeAt(i);
+            return true;
+        }
+    }
+    return false;
+}

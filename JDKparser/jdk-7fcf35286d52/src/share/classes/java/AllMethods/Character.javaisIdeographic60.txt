@@ -1,0 +1,13 @@
+/**
+ * Determines if the specified character (Unicode code point) is a CJKV
+ * (Chinese, Japanese, Korean and Vietnamese) ideograph, as defined by
+ * the Unicode Standard.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  <code>true</code> if the character is a Unicode ideograph
+ *          character, <code>false</code> otherwise.
+ * @since   1.7
+ */
+public static boolean isIdeographic(int codePoint) {
+    return CharacterData.of(codePoint).isIdeographic(codePoint);
+}

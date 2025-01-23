@@ -1,0 +1,16 @@
+static LambdaForm makeReinvokerForm(MethodHandle target, int whichCache, Object constraint, NamedFunction getTargetFn) {
+    String debugString;
+    switch(whichCache) {
+        case MethodTypeForm.LF_REBIND:
+            debugString = "BMH.reinvoke";
+            break;
+        case MethodTypeForm.LF_DELEGATE:
+            debugString = "MH.delegate";
+            break;
+        default:
+            debugString = "MH.reinvoke";
+            break;
+    }
+    // No pre-action needed.
+    return makeReinvokerForm(target, whichCache, constraint, debugString, true, getTargetFn, null);
+}

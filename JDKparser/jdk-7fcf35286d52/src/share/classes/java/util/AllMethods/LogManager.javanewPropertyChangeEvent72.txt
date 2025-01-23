@@ -1,0 +1,18 @@
+/**
+ * Returns a new PropertyChangeEvent with the given source, property
+ * name, old and new values.
+ */
+static Object newPropertyChangeEvent(Object source, String prop, Object oldValue, Object newValue) {
+    try {
+        return propertyEventCtor.newInstance(source, prop, oldValue, newValue);
+    } catch (InstantiationException | IllegalAccessException x) {
+        throw new AssertionError(x);
+    } catch (InvocationTargetException x) {
+        Throwable cause = x.getCause();
+        if (cause instanceof Error)
+            throw (Error) cause;
+        if (cause instanceof RuntimeException)
+            throw (RuntimeException) cause;
+        throw new AssertionError(x);
+    }
+}

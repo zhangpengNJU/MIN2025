@@ -1,0 +1,15 @@
+/**
+ * Returns a new CompletionStage that, when either this or the
+ * other given stage complete normally, executes the given action
+ * using the supplied executor.
+ *
+ * See the {@link CompletionStage} documentation for rules
+ * covering exceptional completion.
+ *
+ * @param other the other CompletionStage
+ * @param action the action to perform before completing the
+ * returned CompletionStage
+ * @param executor the executor to use for asynchronous execution
+ * @return the new CompletionStage
+ */
+public CompletionStage<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action, Executor executor);

@@ -1,0 +1,6 @@
+/**
+ * Converts FileTime to Windows time.
+ */
+public static final long fileTimeToWinTime(FileTime ftime) {
+    return (ftime.to(TimeUnit.MICROSECONDS) - WINDOWS_EPOCH_IN_MICROSECONDS) * 10;
+}

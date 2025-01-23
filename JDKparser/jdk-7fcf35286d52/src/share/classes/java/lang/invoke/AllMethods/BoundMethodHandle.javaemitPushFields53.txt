@@ -1,0 +1,7 @@
+private static void emitPushFields(String types, String className, MethodVisitor mv) {
+    for (int i = 0; i < types.length(); ++i) {
+        char tc = types.charAt(i);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, className, makeFieldName(types, i), typeSig(tc));
+    }
+}

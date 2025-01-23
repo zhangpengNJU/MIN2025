@@ -1,0 +1,18 @@
+/* Instance Methods */
+/**
+ * Makes a copy of this <code>PageFormat</code> with the same
+ * contents as this <code>PageFormat</code>.
+ * @return a copy of this <code>PageFormat</code>.
+ */
+public Object clone() {
+    PageFormat newPage;
+    try {
+        newPage = (PageFormat) super.clone();
+        newPage.mPaper = (Paper) mPaper.clone();
+    } catch (CloneNotSupportedException e) {
+        e.printStackTrace();
+        // should never happen.
+        newPage = null;
+    }
+    return newPage;
+}

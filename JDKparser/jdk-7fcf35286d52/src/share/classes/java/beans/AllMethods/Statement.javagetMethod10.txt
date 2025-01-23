@@ -1,0 +1,7 @@
+static Method getMethod(Class<?> type, String name, Class<?>... args) {
+    try {
+        return MethodFinder.findMethod(type, name, args);
+    } catch (NoSuchMethodException exception) {
+        return null;
+    }
+}

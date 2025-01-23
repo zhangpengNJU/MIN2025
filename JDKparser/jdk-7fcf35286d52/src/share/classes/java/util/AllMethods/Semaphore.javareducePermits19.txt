@@ -1,0 +1,15 @@
+/**
+ * Shrinks the number of available permits by the indicated
+ * reduction. This method can be useful in subclasses that use
+ * semaphores to track resources that become unavailable. This
+ * method differs from {@code acquire} in that it does not block
+ * waiting for permits to become available.
+ *
+ * @param reduction the number of permits to remove
+ * @throws IllegalArgumentException if {@code reduction} is negative
+ */
+protected void reducePermits(int reduction) {
+    if (reduction < 0)
+        throw new IllegalArgumentException();
+    sync.reducePermits(reduction);
+}

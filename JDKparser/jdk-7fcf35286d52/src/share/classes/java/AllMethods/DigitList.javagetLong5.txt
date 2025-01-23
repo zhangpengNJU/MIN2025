@@ -1,0 +1,22 @@
+/**
+ * Utility routine to get the value of the digit list.
+ * If (count == 0) this returns 0, unlike Long.parseLong().
+ */
+public final long getLong() {
+    // for now, simple implementation; later, do proper IEEE native stuff
+    if (count == 0) {
+        return 0;
+    }
+    // We have to check for this, because this is the one NEGATIVE value
+    // we represent.  If we tried to just pass the digits off to parseLong,
+    // we'd get a parse failure.
+    if (isLongMIN_VALUE()) {
+        return Long.MIN_VALUE;
+    }
+    StringBuffer temp = getStringBuffer();
+    temp.append(digits, 0, count);
+    for (int i = count; i < decimalAt; ++i) {
+        temp.append('0');
+    }
+    return Long.parseLong(temp.toString());
+}

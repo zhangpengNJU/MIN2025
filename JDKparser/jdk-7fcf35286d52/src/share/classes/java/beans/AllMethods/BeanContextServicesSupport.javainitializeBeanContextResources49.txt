@@ -1,0 +1,18 @@
+/**
+ * called from setBeanContext to notify a BeanContextChild
+ * to allocate resources obtained from the nesting BeanContext.
+ *
+ * subclasses may envelope this method to implement their own semantics.
+ */
+protected synchronized void initializeBeanContextResources() {
+    super.initializeBeanContextResources();
+    BeanContext nbc = getBeanContext();
+    if (nbc == null)
+        return;
+    try {
+        BeanContextServices bcs = (BeanContextServices) nbc;
+        proxy = new BCSSProxyServiceProvider(bcs);
+    } catch (ClassCastException cce) {
+    // do nothing ...
+    }
+}

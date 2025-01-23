@@ -1,0 +1,10 @@
+synchronized void loadLibrary0(Class<?> fromClass, String libname) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkLink(libname);
+    }
+    if (libname.indexOf((int) File.separatorChar) != -1) {
+        throw new UnsatisfiedLinkError("Directory separator should not appear in library name: " + libname);
+    }
+    ClassLoader.loadLibrary(fromClass, libname, false);
+}

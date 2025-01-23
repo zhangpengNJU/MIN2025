@@ -1,0 +1,13 @@
+/*
+     * Return an array of loaded system packages.
+     */
+static Package[] getSystemPackages() {
+    // First, update the system package map with new package names
+    String[] names = getSystemPackages0();
+    synchronized (pkgs) {
+        for (int i = 0; i < names.length; i++) {
+            defineSystemPackage(names[i], getSystemPackage0(names[i]));
+        }
+        return pkgs.values().toArray(new Package[pkgs.size()]);
+    }
+}

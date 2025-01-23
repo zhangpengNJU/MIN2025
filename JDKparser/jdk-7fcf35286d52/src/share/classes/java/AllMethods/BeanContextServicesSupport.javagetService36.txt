@@ -1,0 +1,9 @@
+public Object getService(BeanContextServices bcs, Object requestor, Class serviceClass, Object serviceSelector) {
+    Object service = null;
+    try {
+        service = nestingCtxt.getService(bcs, requestor, serviceClass, serviceSelector, this);
+    } catch (TooManyListenersException tmle) {
+        return null;
+    }
+    return service;
+}

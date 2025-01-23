@@ -1,0 +1,21 @@
+/**
+ * Deserializes this <code>DragGestureRecognizer</code>. This method first
+ * performs default deserialization for all non-<code>transient</code>
+ * fields. This object's <code>DragGestureListener</code> is then
+ * deserialized as well by using the next object in the stream.
+ *
+ * @since 1.4
+ */
+@SuppressWarnings("unchecked")
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    ObjectInputStream.GetField f = s.readFields();
+    DragSource newDragSource = (DragSource) f.get("dragSource", null);
+    if (newDragSource == null) {
+        throw new InvalidObjectException("null DragSource");
+    }
+    dragSource = newDragSource;
+    component = (Component) f.get("component", null);
+    sourceActions = f.get("sourceActions", 0) & (DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK);
+    events = (ArrayList<InputEvent>) f.get("events", new ArrayList<>(1));
+    dragGestureListener = (DragGestureListener) s.readObject();
+}

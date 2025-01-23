@@ -1,0 +1,39 @@
+/**
+ * Create an anonymous Logger.  The newly created Logger is not
+ * registered in the LogManager namespace.  There will be no
+ * access checks on updates to the logger.
+ * <p>
+ * This factory method is primarily intended for use from applets.
+ * Because the resulting Logger is anonymous it can be kept private
+ * by the creating class.  This removes the need for normal security
+ * checks, which in turn allows untrusted applet code to update
+ * the control state of the Logger.  For example an applet can do
+ * a setLevel or an addHandler on an anonymous Logger.
+ * <p>
+ * Even although the new logger is anonymous, it is configured
+ * to have the root logger ("") as its parent.  This means that
+ * by default it inherits its effective level and handlers
+ * from the root logger.  Changing its parent via the
+ * {@link #setParent(java.util.logging.Logger) setParent} method
+ * will still require the security permission specified by that method.
+ * <p>
+ * @param   resourceBundleName  name of ResourceBundle to be used for localizing
+ *                          messages for this logger.
+ *          May be null if none of the messages require localization.
+ * @return a newly created private Logger
+ * @throws MissingResourceException if the resourceBundleName is non-null and
+ *             no corresponding resource can be found.
+ */
+// Synchronization is not required here. All synchronization for
+// adding a new anonymous Logger object is handled by doSetParent().
+@CallerSensitive
+public static Logger getAnonymousLogger(String resourceBundleName) {
+    LogManager manager = LogManager.getLogManager();
+    // cleanup some Loggers that have been GC'ed
+    manager.drainLoggerRefQueueBounded();
+    Logger result = new Logger(null, resourceBundleName, Reflection.getCallerClass(), manager, false);
+    result.anonymous = true;
+    Logger root = manager.getLogger("");
+    result.doSetParent(root);
+    return result;
+}

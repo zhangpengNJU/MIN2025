@@ -1,0 +1,36 @@
+/**
+ * Indicates whether or not this <code>Font</code> can display
+ * the characters in the specified <code>text</code>
+ * starting at <code>start</code> and ending at
+ * <code>limit</code>.  This method is a convenience overload.
+ * @param text the specified array of <code>char</code> values
+ * @param start the specified starting offset (in
+ *              <code>char</code>s) into the specified array of
+ *              <code>char</code> values
+ * @param limit the specified ending offset (in
+ *              <code>char</code>s) into the specified array of
+ *              <code>char</code> values
+ * @return an offset into <code>text</code> that points
+ *          to the first character in <code>text</code> that this
+ *          <code>Font</code> cannot display; or <code>-1</code> if
+ *          this <code>Font</code> can display all characters in
+ *          <code>text</code>.
+ * @since 1.2
+ */
+public int canDisplayUpTo(char[] text, int start, int limit) {
+    Font2D font2d = getFont2D();
+    for (int i = start; i < limit; i++) {
+        char c = text[i];
+        if (font2d.canDisplay(c)) {
+            continue;
+        }
+        if (!Character.isHighSurrogate(c)) {
+            return i;
+        }
+        if (!font2d.canDisplay(Character.codePointAt(text, i, limit))) {
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}

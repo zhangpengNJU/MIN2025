@@ -1,0 +1,12 @@
+@Override
+HijrahDate plusMonths(long monthsToAdd) {
+    if (monthsToAdd == 0) {
+        return this;
+    }
+    long monthCount = prolepticYear * 12L + (monthOfYear - 1);
+    // safe overflow
+    long calcMonths = monthCount + monthsToAdd;
+    int newYear = chrono.checkValidYear(Math.floorDiv(calcMonths, 12L));
+    int newMonth = (int) Math.floorMod(calcMonths, 12L) + 1;
+    return resolvePreviousValid(newYear, newMonth, dayOfMonth);
+}

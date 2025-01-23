@@ -1,0 +1,10 @@
+private static Void checkPermission(SocketImpl impl) {
+    if (impl == null) {
+        return null;
+    }
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(SecurityConstants.SET_SOCKETIMPL_PERMISSION);
+    }
+    return null;
+}

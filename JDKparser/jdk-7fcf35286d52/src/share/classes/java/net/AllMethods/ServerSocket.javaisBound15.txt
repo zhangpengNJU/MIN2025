@@ -1,0 +1,10 @@
+/**
+ * Returns the binding state of the ServerSocket.
+ *
+ * @return true if the ServerSocket successfully bound to an address
+ * @since 1.4
+ */
+public boolean isBound() {
+    // Before 1.3 ServerSockets were always bound during creation
+    return bound || oldImpl;
+}

@@ -1,0 +1,34 @@
+/**
+ * Returns a new PermissionCollection object for storing FilePermission
+ * objects.
+ * <p>
+ * FilePermission objects must be stored in a manner that allows them
+ * to be inserted into the collection in any order, but that also enables the
+ * PermissionCollection <code>implies</code>
+ * method to be implemented in an efficient (and consistent) manner.
+ *
+ * <p>For example, if you have two FilePermissions:
+ * <OL>
+ * <LI>  <code>"/tmp/-", "read"</code>
+ * <LI>  <code>"/tmp/scratch/foo", "write"</code>
+ * </OL>
+ *
+ * <p>and you are calling the <code>implies</code> method with the FilePermission:
+ *
+ * <pre>
+ *   "/tmp/scratch/foo", "read,write",
+ * </pre>
+ *
+ * then the <code>implies</code> function must
+ * take into account both the "/tmp/-" and "/tmp/scratch/foo"
+ * permissions, so the effective permission is "read,write",
+ * and <code>implies</code> returns true. The "implies" semantics for
+ * FilePermissions are handled properly by the PermissionCollection object
+ * returned by this <code>newPermissionCollection</code> method.
+ *
+ * @return a new PermissionCollection object suitable for storing
+ * FilePermissions.
+ */
+public PermissionCollection newPermissionCollection() {
+    return new FilePermissionCollection();
+}

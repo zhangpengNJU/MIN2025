@@ -1,0 +1,12 @@
+/**
+ * Disposes the Dialog and then causes show() to return if it is currently
+ * blocked.
+ */
+void doDispose() {
+    // fix for 5048370: set isInDispose flag to true to prevent calling
+    // to hideAndDisposeHandler() from hide()
+    isInDispose = true;
+    super.doDispose();
+    hideAndDisposeHandler();
+    isInDispose = false;
+}

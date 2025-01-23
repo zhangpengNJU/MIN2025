@@ -1,0 +1,6 @@
+private boolean resultCheck(Object[] argumentValues, Object result) {
+    MethodHandle mh = (MethodHandle) argumentValues[0];
+    MethodType mt = mh.type();
+    assert (valueMatches(returnType(), mt.returnType(), result));
+    return true;
+}

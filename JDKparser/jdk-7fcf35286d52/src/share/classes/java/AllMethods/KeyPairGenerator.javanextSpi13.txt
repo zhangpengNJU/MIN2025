@@ -1,0 +1,48 @@
+/**
+ * Update the active spi of this class and return the next
+ * implementation for failover. If no more implemenations are
+ * available, this method returns null. However, the active spi of
+ * this class is never set to null.
+ */
+private KeyPairGeneratorSpi nextSpi(KeyPairGeneratorSpi oldSpi, boolean reinit) {
+    synchronized (lock) {
+        // somebody else did a failover concurrently
+        // try that spi now
+        if ((oldSpi != null) && (oldSpi != spi)) {
+            return spi;
+        }
+        if (serviceIterator == null) {
+            return null;
+        }
+        while (serviceIterator.hasNext()) {
+            Service s = serviceIterator.next();
+            try {
+                Object inst = s.newInstance(null);
+                // ignore non-spis
+                if (inst instanceof KeyPairGeneratorSpi == false) {
+                    continue;
+                }
+                if (inst instanceof KeyPairGenerator) {
+                    continue;
+                }
+                KeyPairGeneratorSpi spi = (KeyPairGeneratorSpi) inst;
+                if (reinit) {
+                    if (initType == I_SIZE) {
+                        spi.initialize(initKeySize, initRandom);
+                    } else if (initType == I_PARAMS) {
+                        spi.initialize(initParams, initRandom);
+                    } else if (initType != I_NONE) {
+                        throw new AssertionError("KeyPairGenerator initType: " + initType);
+                    }
+                }
+                provider = s.getProvider();
+                this.spi = spi;
+                return spi;
+            } catch (Exception e) {
+            // ignore
+            }
+        }
+        disableFailover();
+        return null;
+    }
+}

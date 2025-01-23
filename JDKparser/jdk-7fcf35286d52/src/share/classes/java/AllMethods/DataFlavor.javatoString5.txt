@@ -1,0 +1,17 @@
+/**
+ * String representation of this <code>DataFlavor</code> and its
+ * parameters. The resulting <code>String</code> contains the name of
+ * the <code>DataFlavor</code> class, this flavor's MIME type, and its
+ * representation class. If this flavor has a primary MIME type of "text",
+ * supports the charset parameter, and has an encoded representation, the
+ * flavor's charset is also included. See <code>selectBestTextFlavor</code>
+ * for a list of text flavors which support the charset parameter.
+ *
+ * @return  string representation of this <code>DataFlavor</code>
+ * @see #selectBestTextFlavor
+ */
+public String toString() {
+    String string = getClass().getName();
+    string += "[" + paramString() + "]";
+    return string;
+}

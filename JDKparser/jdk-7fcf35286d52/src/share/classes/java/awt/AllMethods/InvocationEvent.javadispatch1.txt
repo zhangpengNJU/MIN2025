@@ -1,0 +1,24 @@
+/**
+ * Executes the Runnable's <code>run()</code> method and notifies the
+ * notifier (if any) when <code>run()</code> has returned or thrown an exception.
+ *
+ * @see #isDispatched
+ */
+public void dispatch() {
+    try {
+        if (catchExceptions) {
+            try {
+                runnable.run();
+            } catch (Throwable t) {
+                if (t instanceof Exception) {
+                    exception = (Exception) t;
+                }
+                throwable = t;
+            }
+        } else {
+            runnable.run();
+        }
+    } finally {
+        finishedDispatching(true);
+    }
+}

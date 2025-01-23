@@ -1,0 +1,20 @@
+/*
+     * Lookup hostname in cache (positive & negative cache). If
+     * found return addresses, null if not found.
+     */
+private static InetAddress[] getCachedAddresses(String hostname) {
+    hostname = hostname.toLowerCase();
+    // search both positive & negative caches
+    synchronized (addressCache) {
+        cacheInitIfNeeded();
+        CacheEntry entry = addressCache.get(hostname);
+        if (entry == null) {
+            entry = negativeCache.get(hostname);
+        }
+        if (entry != null) {
+            return entry.addresses;
+        }
+    }
+    // not found
+    return null;
+}

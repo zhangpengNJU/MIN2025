@@ -1,0 +1,40 @@
+/**
+ * Create a LF which can invoke the given method.
+ * Cache and share this structure among all methods with
+ * the same basicType and refKind.
+ */
+private static LambdaForm preparedLambdaForm(MemberName m) {
+    // call preparedFieldLambdaForm instead
+    assert (m.isInvocable()) : m;
+    MethodType mtype = m.getInvocationType().basicType();
+    assert (!m.isMethodHandleInvoke()) : m;
+    int which;
+    switch(m.getReferenceKind()) {
+        case REF_invokeVirtual:
+            which = LF_INVVIRTUAL;
+            break;
+        case REF_invokeStatic:
+            which = LF_INVSTATIC;
+            break;
+        case REF_invokeSpecial:
+            which = LF_INVSPECIAL;
+            break;
+        case REF_invokeInterface:
+            which = LF_INVINTERFACE;
+            break;
+        case REF_newInvokeSpecial:
+            which = LF_NEWINVSPECIAL;
+            break;
+        default:
+            throw new InternalError(m.toString());
+    }
+    if (which == LF_INVSTATIC && shouldBeInitialized(m)) {
+        // precompute the barrier-free version:
+        preparedLambdaForm(mtype, which);
+        which = LF_INVSTATIC_INIT;
+    }
+    LambdaForm lform = preparedLambdaForm(mtype, which);
+    maybeCompile(lform, m);
+    assert (lform.methodType().dropParameterTypes(0, 1).equals(m.getInvocationType().basicType())) : Arrays.asList(m, m.getInvocationType().basicType(), lform, lform.methodType());
+    return lform;
+}

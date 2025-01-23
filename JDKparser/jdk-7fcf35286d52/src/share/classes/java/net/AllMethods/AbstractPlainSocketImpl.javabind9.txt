@@ -1,0 +1,17 @@
+/**
+ * Binds the socket to the specified address of the specified local port.
+ * @param address the address
+ * @param lport the port
+ */
+protected synchronized void bind(InetAddress address, int lport) throws IOException {
+    synchronized (fdLock) {
+        if (!closePending && (socket == null || !socket.isBound())) {
+            NetHooks.beforeTcpBind(fd, address, lport);
+        }
+    }
+    socketBind(address, lport);
+    if (socket != null)
+        socket.setBound();
+    if (serverSocket != null)
+        serverSocket.setBound();
+}

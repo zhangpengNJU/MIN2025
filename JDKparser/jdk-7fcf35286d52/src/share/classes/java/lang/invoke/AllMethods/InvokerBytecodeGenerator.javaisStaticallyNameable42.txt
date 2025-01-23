@@ -1,0 +1,23 @@
+static boolean isStaticallyNameable(Class<?> cls) {
+    if (cls == Object.class)
+        return true;
+    while (cls.isArray()) cls = cls.getComponentType();
+    if (cls.isPrimitive())
+        // int[].class, for example
+        return true;
+    if (// FIXME: switch to supported API once it is added
+    ReflectUtil.isVMAnonymousClass(cls))
+        return false;
+    // could use VerifyAccess.isClassAccessible but the following is a safe approximation
+    if (cls.getClassLoader() != Object.class.getClassLoader())
+        return false;
+    if (VerifyAccess.isSamePackage(MethodHandle.class, cls))
+        return true;
+    if (!Modifier.isPublic(cls.getModifiers()))
+        return false;
+    for (Class<?> pkgcls : STATICALLY_INVOCABLE_PACKAGES) {
+        if (VerifyAccess.isSamePackage(pkgcls, cls))
+            return true;
+    }
+    return false;
+}

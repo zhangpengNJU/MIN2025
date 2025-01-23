@@ -1,0 +1,12 @@
+/**
+ * Returns {@code true} if this queue contains no elements.
+ *
+ * @return {@code true} if this queue contains no elements
+ */
+public boolean isEmpty() {
+    for (Node p = head; p != null; p = succ(p)) {
+        if (!p.isMatched())
+            return !p.isData;
+    }
+    return true;
+}

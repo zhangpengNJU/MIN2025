@@ -1,0 +1,24 @@
+/**
+ * Returns a {@link VolatileImage} with a data layout and color model
+ * compatible with this <code>GraphicsConfiguration</code>.
+ * The returned <code>VolatileImage</code>
+ * may have data that is stored optimally for the underlying graphics
+ * device and may therefore benefit from platform-specific rendering
+ * acceleration.
+ * @param width the width of the returned <code>VolatileImage</code>
+ * @param height the height of the returned <code>VolatileImage</code>
+ * @return a <code>VolatileImage</code> whose data layout and color
+ * model is compatible with this <code>GraphicsConfiguration</code>.
+ * @see Component#createVolatileImage(int, int)
+ * @since 1.4
+ */
+public VolatileImage createCompatibleVolatileImage(int width, int height) {
+    VolatileImage vi = null;
+    try {
+        vi = createCompatibleVolatileImage(width, height, null, Transparency.OPAQUE);
+    } catch (AWTException e) {
+        // shouldn't happen: we're passing in null caps
+        assert false;
+    }
+    return vi;
+}

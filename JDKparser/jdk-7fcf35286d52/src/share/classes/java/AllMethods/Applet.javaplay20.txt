@@ -1,0 +1,15 @@
+/**
+ * Plays the audio clip given the URL and a specifier that is
+ * relative to it. Nothing happens if the audio clip cannot be found.
+ *
+ * @param   url    an absolute URL giving the base location of the
+ *                 audio clip.
+ * @param   name   the location of the audio clip, relative to the
+ *                 <code>url</code> argument.
+ */
+public void play(URL url, String name) {
+    AudioClip clip = getAudioClip(url, name);
+    if (clip != null) {
+        clip.play();
+    }
+}

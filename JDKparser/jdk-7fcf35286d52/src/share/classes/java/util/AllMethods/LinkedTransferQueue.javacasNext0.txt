@@ -1,0 +1,4 @@
+// CAS methods for fields
+final boolean casNext(Node cmp, Node val) {
+    return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
+}

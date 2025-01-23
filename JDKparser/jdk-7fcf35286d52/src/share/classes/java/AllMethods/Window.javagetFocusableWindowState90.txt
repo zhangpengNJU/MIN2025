@@ -1,0 +1,23 @@
+/**
+ * Returns whether this Window can become the focused Window if it meets
+ * the other requirements outlined in {@code isFocusableWindow}. If
+ * this method returns {@code false}, then
+ * {@code isFocusableWindow} will return {@code false} as well.
+ * If this method returns {@code true}, then
+ * {@code isFocusableWindow} may return {@code true} or
+ * {@code false} depending upon the other requirements which must be
+ * met in order for a Window to be focusable.
+ * <p>
+ * By default, all Windows have a focusable Window state of
+ * {@code true}.
+ *
+ * @return whether this Window can be the focused Window
+ * @see #isFocusableWindow
+ * @see #setFocusableWindowState
+ * @see #isShowing
+ * @see Component#setFocusable
+ * @since 1.4
+ */
+public boolean getFocusableWindowState() {
+    return focusableWindowState;
+}

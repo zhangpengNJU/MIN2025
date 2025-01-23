@@ -1,0 +1,7 @@
+// called from CertPathHelper
+void setPathToNamesInternal(Set<GeneralNameInterface> names) {
+    // set names to non-null dummy value
+    // this breaks getPathToNames()
+    pathToNames = Collections.<List<?>>emptySet();
+    pathToGeneralNames = names;
+}

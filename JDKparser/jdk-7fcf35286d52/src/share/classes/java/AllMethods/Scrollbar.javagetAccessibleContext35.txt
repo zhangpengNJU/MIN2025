@@ -1,0 +1,20 @@
+// ///////////////
+// Accessibility support
+// //////////////
+/**
+ * Gets the <code>AccessibleContext</code> associated with this
+ * <code>Scrollbar</code>. For scrollbars, the
+ * <code>AccessibleContext</code> takes the form of an
+ * <code>AccessibleAWTScrollBar</code>. A new
+ * <code>AccessibleAWTScrollBar</code> instance is created if necessary.
+ *
+ * @return an <code>AccessibleAWTScrollBar</code> that serves as the
+ *         <code>AccessibleContext</code> of this <code>ScrollBar</code>
+ * @since 1.3
+ */
+public AccessibleContext getAccessibleContext() {
+    if (accessibleContext == null) {
+        accessibleContext = new AccessibleAWTScrollBar();
+    }
+    return accessibleContext;
+}

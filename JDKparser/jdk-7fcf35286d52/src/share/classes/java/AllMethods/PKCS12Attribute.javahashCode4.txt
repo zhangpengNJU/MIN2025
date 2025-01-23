@@ -1,0 +1,13 @@
+/**
+ * Returns the hashcode for this {@code PKCS12Attribute}.
+ * The hash code is computed from its DER encoding.
+ *
+ * @return the hash code
+ */
+@Override
+public int hashCode() {
+    if (hashValue == -1) {
+        Arrays.hashCode(encoded);
+    }
+    return hashValue;
+}

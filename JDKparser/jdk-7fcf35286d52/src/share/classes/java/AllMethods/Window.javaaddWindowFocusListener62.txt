@@ -1,0 +1,19 @@
+/**
+ * Adds the specified window focus listener to receive window events
+ * from this window.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window focus listener
+ * @see #removeWindowFocusListener
+ * @see #getWindowFocusListeners
+ * @since 1.4
+ */
+public synchronized void addWindowFocusListener(WindowFocusListener l) {
+    if (l == null) {
+        return;
+    }
+    windowFocusListener = AWTEventMulticaster.add(windowFocusListener, l);
+    newEventsOnly = true;
+}

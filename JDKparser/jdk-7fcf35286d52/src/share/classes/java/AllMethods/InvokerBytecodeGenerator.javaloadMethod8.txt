@@ -1,0 +1,7 @@
+/**
+ * Extract the MemberName of a newly-defined method.
+ */
+private MemberName loadMethod(byte[] classFile) {
+    Class<?> invokerClass = loadAndInitializeInvokerClass(classFile, cpPatches(classFile));
+    return resolveInvokerMember(invokerClass, invokerName, invokerType);
+}

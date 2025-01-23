@@ -1,0 +1,12 @@
+/**
+ * Sets head of queue to be node, thus dequeuing. Called only by
+ * acquire methods.  Also nulls out unused fields for sake of GC
+ * and to suppress unnecessary signals and traversals.
+ *
+ * @param node the node
+ */
+private void setHead(Node node) {
+    head = node;
+    node.thread = null;
+    node.prev = null;
+}

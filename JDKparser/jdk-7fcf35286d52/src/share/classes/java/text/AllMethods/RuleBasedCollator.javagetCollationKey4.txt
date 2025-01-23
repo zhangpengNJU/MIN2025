@@ -1,0 +1,118 @@
+/**
+ * Transforms the string into a series of characters that can be compared
+ * with CollationKey.compareTo. This overrides java.text.Collator.getCollationKey.
+ * It can be overriden in a subclass.
+ */
+public synchronized CollationKey getCollationKey(String source) {
+    // 
+    // The basic algorithm here is to find all of the collation elements for each
+    // character in the source string, convert them to a char representation,
+    // and put them into the collation key.  But it's trickier than that.
+    // Each collation element in a string has three components: primary (A vs B),
+    // secondary (A vs A-acute), and tertiary (A' vs a); and a primary difference
+    // at the end of a string takes precedence over a secondary or tertiary
+    // difference earlier in the string.
+    // 
+    // To account for this, we put all of the primary orders at the beginning of the
+    // string, followed by the secondary and tertiary orders, separated by nulls.
+    // 
+    // Here's a hypothetical example, with the collation element represented as
+    // a three-digit number, one digit for primary, one for secondary, etc.
+    // 
+    // String:              A     a     B   \u00e9 <--(e-acute)
+    // Collation Elements: 101   100   201  510
+    // 
+    // Collation Key:      1125<null>0001<null>1010
+    // 
+    // To make things even trickier, secondary differences (accent marks) are compared
+    // starting at the *end* of the string in languages with French secondary ordering.
+    // But when comparing the accent marks on a single base character, they are compared
+    // from the beginning.  To handle this, we reverse all of the accents that belong
+    // to each base character, then we reverse the entire string of secondary orderings
+    // at the end.  Taking the same example above, a French collator might return
+    // this instead:
+    // 
+    // Collation Key:      1125<null>1000<null>1010
+    // 
+    if (source == null)
+        return null;
+    if (primResult == null) {
+        primResult = new StringBuffer();
+        secResult = new StringBuffer();
+        terResult = new StringBuffer();
+    } else {
+        primResult.setLength(0);
+        secResult.setLength(0);
+        terResult.setLength(0);
+    }
+    int order = 0;
+    boolean compareSec = (getStrength() >= Collator.SECONDARY);
+    boolean compareTer = (getStrength() >= Collator.TERTIARY);
+    int secOrder = CollationElementIterator.NULLORDER;
+    int terOrder = CollationElementIterator.NULLORDER;
+    int preSecIgnore = 0;
+    if (sourceCursor == null) {
+        sourceCursor = getCollationElementIterator(source);
+    } else {
+        sourceCursor.setText(source);
+    }
+    // walk through each character
+    while ((order = sourceCursor.next()) != CollationElementIterator.NULLORDER) {
+        secOrder = CollationElementIterator.secondaryOrder(order);
+        terOrder = CollationElementIterator.tertiaryOrder(order);
+        if (!CollationElementIterator.isIgnorable(order)) {
+            primResult.append((char) (CollationElementIterator.primaryOrder(order) + COLLATIONKEYOFFSET));
+            if (compareSec) {
+                // 
+                // accumulate all of the ignorable/secondary characters attached
+                // to a given base character
+                // 
+                if (tables.isFrenchSec() && preSecIgnore < secResult.length()) {
+                    // 
+                    // We're doing reversed secondary ordering and we've hit a base
+                    // (non-ignorable) character.  Reverse any secondary orderings
+                    // that applied to the last base character.  (see block comment above.)
+                    // 
+                    RBCollationTables.reverse(secResult, preSecIgnore, secResult.length());
+                }
+                // Remember where we are in the secondary orderings - this is how far
+                // back to go if we need to reverse them later.
+                secResult.append((char) (secOrder + COLLATIONKEYOFFSET));
+                preSecIgnore = secResult.length();
+            }
+            if (compareTer) {
+                terResult.append((char) (terOrder + COLLATIONKEYOFFSET));
+            }
+        } else {
+            if (compareSec && secOrder != 0)
+                secResult.append((char) (secOrder + tables.getMaxSecOrder() + COLLATIONKEYOFFSET));
+            if (compareTer && terOrder != 0)
+                terResult.append((char) (terOrder + tables.getMaxTerOrder() + COLLATIONKEYOFFSET));
+        }
+    }
+    if (tables.isFrenchSec()) {
+        if (preSecIgnore < secResult.length()) {
+            // If we've accumulated any secondary characters after the last base character,
+            // reverse them.
+            RBCollationTables.reverse(secResult, preSecIgnore, secResult.length());
+        }
+        // And now reverse the entire secResult to get French secondary ordering.
+        RBCollationTables.reverse(secResult, 0, secResult.length());
+    }
+    primResult.append((char) 0);
+    secResult.append((char) 0);
+    secResult.append(terResult.toString());
+    primResult.append(secResult.toString());
+    if (getStrength() == IDENTICAL) {
+        primResult.append((char) 0);
+        int mode = getDecomposition();
+        if (mode == CANONICAL_DECOMPOSITION) {
+            primResult.append(Normalizer.normalize(source, Normalizer.Form.NFD));
+        } else if (mode == FULL_DECOMPOSITION) {
+            primResult.append(Normalizer.normalize(source, Normalizer.Form.NFKD));
+        } else {
+            primResult.append(source);
+        }
+    }
+    return new RuleBasedCollationKey(source, primResult.toString());
+}

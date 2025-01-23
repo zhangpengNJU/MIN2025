@@ -1,0 +1,17 @@
+/**
+ * Gets the font used for this menu component.
+ * @return   the font used in this menu component, if there is one;
+ *                  <code>null</code> otherwise
+ * @see     java.awt.MenuComponent#setFont
+ */
+public Font getFont() {
+    Font font = this.font;
+    if (font != null) {
+        return font;
+    }
+    MenuContainer parent = this.parent;
+    if (parent != null) {
+        return parent.getFont();
+    }
+    return null;
+}

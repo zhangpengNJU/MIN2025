@@ -1,0 +1,6 @@
+/**
+ * preserve the combiner across the doPrivileged call
+ */
+private static AccessControlContext preserveCombiner(DomainCombiner combiner, Class<?> caller) {
+    return createWrapper(combiner, caller, null, null, null);
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns true if the calling thread is
+ * {@link Toolkit#getSystemEventQueue the current AWT EventQueue}'s
+ * dispatch thread. Use this method to ensure that a particular
+ * task is being executed (or not being) there.
+ * <p>
+ * Note: use the {@link #invokeLater} or {@link #invokeAndWait}
+ * methods to execute a task in
+ * {@link Toolkit#getSystemEventQueue the current AWT EventQueue}'s
+ * dispatch thread.
+ * <p>
+ *
+ * @return true if running in
+ * {@link Toolkit#getSystemEventQueue the current AWT EventQueue}'s
+ * dispatch thread
+ * @see             #invokeLater
+ * @see             #invokeAndWait
+ * @see             Toolkit#getSystemEventQueue
+ * @since           1.2
+ */
+public static boolean isDispatchThread() {
+    EventQueue eq = Toolkit.getEventQueue();
+    return eq.isDispatchThreadImpl();
+}

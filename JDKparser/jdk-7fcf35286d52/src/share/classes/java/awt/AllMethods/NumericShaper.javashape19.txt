@@ -1,0 +1,24 @@
+/**
+ * Converts the digits in the text that occur between start and
+ * start + count.
+ * @param text an array of characters to convert
+ * @param start the index into <code>text</code> to start
+ *        converting
+ * @param count the number of characters in <code>text</code>
+ *        to convert
+ * @throws IndexOutOfBoundsException if start or start + count is
+ *        out of bounds
+ * @throws NullPointerException if text is null
+ */
+public void shape(char[] text, int start, int count) {
+    checkParams(text, start, count);
+    if (isContextual()) {
+        if (rangeSet == null) {
+            shapeContextually(text, start, count, key);
+        } else {
+            shapeContextually(text, start, count, shapingRange);
+        }
+    } else {
+        shapeNonContextually(text, start, count);
+    }
+}

@@ -1,0 +1,10 @@
+private CodeSource[] mapSignersToCodeSources(URL url, List<CodeSigner[]> signers, boolean unsigned) {
+    List<CodeSource> sources = new ArrayList<>();
+    for (int i = 0; i < signers.size(); i++) {
+        sources.add(mapSignersToCodeSource(url, signers.get(i)));
+    }
+    if (unsigned) {
+        sources.add(mapSignersToCodeSource(url, null));
+    }
+    return sources.toArray(new CodeSource[sources.size()]);
+}

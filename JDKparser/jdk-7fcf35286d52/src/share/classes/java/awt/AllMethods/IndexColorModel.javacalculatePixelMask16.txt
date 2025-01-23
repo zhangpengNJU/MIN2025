@@ -1,0 +1,17 @@
+/**
+ * This method is called from the constructors to set the pixel_mask
+ * value, which is based on the value of pixel_bits.  The pixel_mask
+ * value is used to mask off the pixel parameters for methods such
+ * as getRed(), getGreen(), getBlue(), getAlpha(), and getRGB().
+ */
+private final void calculatePixelMask() {
+    // Note that we adjust the mask so that our masking behavior here
+    // is consistent with that of our native rendering loops.
+    int maskbits = pixel_bits;
+    if (maskbits == 3) {
+        maskbits = 4;
+    } else if (maskbits > 4 && maskbits < 8) {
+        maskbits = 8;
+    }
+    pixel_mask = (1 << maskbits) - 1;
+}

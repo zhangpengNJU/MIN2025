@@ -1,0 +1,13 @@
+/**
+ * Returns a {@link LineMetrics} object created with the specified
+ * <code>String</code> and {@link FontRenderContext}.
+ * @param str the specified <code>String</code>
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>LineMetrics</code> object created with the
+ * specified <code>String</code> and {@link FontRenderContext}.
+ */
+public LineMetrics getLineMetrics(String str, FontRenderContext frc) {
+    FontLineMetrics flm = defaultLineMetrics(frc);
+    flm.numchars = str.length();
+    return flm;
+}

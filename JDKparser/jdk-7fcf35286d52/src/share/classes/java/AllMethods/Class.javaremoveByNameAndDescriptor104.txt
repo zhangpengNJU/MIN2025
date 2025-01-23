@@ -1,0 +1,8 @@
+void removeByNameAndDescriptor(Method toRemove) {
+    for (int i = 0; i < length; i++) {
+        Method m = methods[i];
+        if (m != null && matchesNameAndDescriptor(m, toRemove)) {
+            remove(i);
+        }
+    }
+}

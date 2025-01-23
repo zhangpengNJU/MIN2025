@@ -1,0 +1,65 @@
+// Aggressive group match
+boolean match0(Matcher matcher, int i, int j, CharSequence seq) {
+    // don't back off passing the starting "j"
+    int min = j;
+    int[] groups = matcher.groups;
+    int save0 = 0;
+    int save1 = 0;
+    if (capture) {
+        save0 = groups[groupIndex];
+        save1 = groups[groupIndex + 1];
+    }
+    for (; ; ) {
+        if (j >= cmax)
+            break;
+        if (!atom.match(matcher, i, seq))
+            break;
+        int k = matcher.last - i;
+        if (k <= 0) {
+            if (capture) {
+                groups[groupIndex] = i;
+                groups[groupIndex + 1] = i + k;
+            }
+            i = i + k;
+            break;
+        }
+        for (; ; ) {
+            if (capture) {
+                groups[groupIndex] = i;
+                groups[groupIndex + 1] = i + k;
+            }
+            i = i + k;
+            if (++j >= cmax)
+                break;
+            if (!atom.match(matcher, i, seq))
+                break;
+            if (i + k != matcher.last) {
+                if (match0(matcher, i, j, seq))
+                    return true;
+                break;
+            }
+        }
+        while (j > min) {
+            if (next.match(matcher, i, seq)) {
+                if (capture) {
+                    groups[groupIndex + 1] = i;
+                    groups[groupIndex] = i - k;
+                }
+                return true;
+            }
+            // backing off
+            i = i - k;
+            if (capture) {
+                groups[groupIndex + 1] = i;
+                groups[groupIndex] = i - k;
+            }
+            j--;
+        }
+        break;
+    }
+    if (capture) {
+        groups[groupIndex] = save0;
+        groups[groupIndex + 1] = save1;
+    }
+    return next.match(matcher, i, seq);
+}

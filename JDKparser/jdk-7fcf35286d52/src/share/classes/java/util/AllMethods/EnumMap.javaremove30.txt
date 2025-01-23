@@ -1,0 +1,6 @@
+public boolean remove(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    return removeMapping(entry.getKey(), entry.getValue());
+}

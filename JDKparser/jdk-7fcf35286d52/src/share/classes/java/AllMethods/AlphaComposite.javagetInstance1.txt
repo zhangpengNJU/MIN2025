@@ -1,0 +1,23 @@
+/**
+ * Creates an <code>AlphaComposite</code> object with the specified rule and
+ * the constant alpha to multiply with the alpha of the source.
+ * The source is multiplied with the specified alpha before being composited
+ * with the destination.
+ * @param rule the compositing rule
+ * @param alpha the constant alpha to be multiplied with the alpha of
+ * the source. <code>alpha</code> must be a floating point number in the
+ * inclusive range [0.0,&nbsp;1.0].
+ * @throws IllegalArgumentException if
+ *         <code>alpha</code> is less than 0.0 or greater than 1.0, or if
+ *         <code>rule</code> is not one of
+ *         the following:  {@link #CLEAR}, {@link #SRC}, {@link #DST},
+ *         {@link #SRC_OVER}, {@link #DST_OVER}, {@link #SRC_IN},
+ *         {@link #DST_IN}, {@link #SRC_OUT}, {@link #DST_OUT},
+ *         {@link #SRC_ATOP}, {@link #DST_ATOP}, or {@link #XOR}
+ */
+public static AlphaComposite getInstance(int rule, float alpha) {
+    if (alpha == 1.0f) {
+        return getInstance(rule);
+    }
+    return new AlphaComposite(rule, alpha);
+}

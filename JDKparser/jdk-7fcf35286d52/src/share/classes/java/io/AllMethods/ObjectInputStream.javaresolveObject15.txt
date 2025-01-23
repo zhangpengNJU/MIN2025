@@ -1,0 +1,30 @@
+/**
+ * This method will allow trusted subclasses of ObjectInputStream to
+ * substitute one object for another during deserialization. Replacing
+ * objects is disabled until enableResolveObject is called. The
+ * enableResolveObject method checks that the stream requesting to resolve
+ * object can be trusted. Every reference to serializable objects is passed
+ * to resolveObject.  To insure that the private state of objects is not
+ * unintentionally exposed only trusted streams may use resolveObject.
+ *
+ * <p>This method is called after an object has been read but before it is
+ * returned from readObject.  The default resolveObject method just returns
+ * the same object.
+ *
+ * <p>When a subclass is replacing objects it must insure that the
+ * substituted object is compatible with every field where the reference
+ * will be stored.  Objects whose type is not a subclass of the type of the
+ * field or array element abort the serialization by raising an exception
+ * and the object is not be stored.
+ *
+ * <p>This method is called only once when each object is first
+ * encountered.  All subsequent references to the object will be redirected
+ * to the new object.
+ *
+ * @param   obj object to be substituted
+ * @return  the substituted object
+ * @throws  IOException Any of the usual Input/Output exceptions.
+ */
+protected Object resolveObject(Object obj) throws IOException {
+    return obj;
+}

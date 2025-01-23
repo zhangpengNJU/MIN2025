@@ -1,0 +1,26 @@
+/**
+ * Sets this identity's public key. The old key and all of this
+ * identity's certificates are removed by this operation.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "setIdentityPublicKey"}
+ * as its argument to see if it's ok to set the public key.
+ *
+ * @param key the public key for this identity.
+ *
+ * @exception KeyManagementException if another identity in the
+ * identity's scope has the same public key, or if another exception occurs.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * setting the public key.
+ *
+ * @see #getPublicKey
+ * @see SecurityManager#checkSecurityAccess
+ */
+/* Should we throw an exception if this is already set? */
+public void setPublicKey(PublicKey key) throws KeyManagementException {
+    check("setIdentityPublicKey");
+    this.publicKey = key;
+    certificates = new Vector<Certificate>();
+}

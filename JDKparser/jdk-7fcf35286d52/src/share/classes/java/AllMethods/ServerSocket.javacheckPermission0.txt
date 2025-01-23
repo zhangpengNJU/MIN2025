@@ -1,0 +1,7 @@
+private static Void checkPermission() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(SecurityConstants.SET_SOCKETIMPL_PERMISSION);
+    }
+    return null;
+}

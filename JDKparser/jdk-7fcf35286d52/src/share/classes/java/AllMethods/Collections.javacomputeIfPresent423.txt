@@ -1,0 +1,4 @@
+@Override
+public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    return m.computeIfPresent(key, typeCheck(remappingFunction));
+}

@@ -1,0 +1,8 @@
+/**
+ * Checks for interrupt, returning THROW_IE if interrupted
+ * before signalled, REINTERRUPT if after signalled, or
+ * 0 if not interrupted.
+ */
+private int checkInterruptWhileWaiting(Node node) {
+    return Thread.interrupted() ? (transferAfterCancelledWait(node) ? THROW_IE : REINTERRUPT) : 0;
+}

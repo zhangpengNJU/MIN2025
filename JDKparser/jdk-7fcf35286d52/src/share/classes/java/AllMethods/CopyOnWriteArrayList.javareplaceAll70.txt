@@ -1,0 +1,25 @@
+public void replaceAll(UnaryOperator<E> operator) {
+    if (operator == null)
+        throw new NullPointerException();
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        int lo = offset;
+        int hi = offset + size;
+        Object[] elements = expectedArray;
+        if (l.getArray() != elements)
+            throw new ConcurrentModificationException();
+        int len = elements.length;
+        if (lo < 0 || hi > len)
+            throw new IndexOutOfBoundsException();
+        Object[] newElements = Arrays.copyOf(elements, len);
+        for (int i = lo; i < hi; ++i) {
+            @SuppressWarnings("unchecked")
+            E e = (E) elements[i];
+            newElements[i] = operator.apply(e);
+        }
+        l.setArray(expectedArray = newElements);
+    } finally {
+        lock.unlock();
+    }
+}

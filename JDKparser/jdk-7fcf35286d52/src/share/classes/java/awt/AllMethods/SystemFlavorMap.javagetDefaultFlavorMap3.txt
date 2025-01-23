@@ -1,0 +1,12 @@
+/**
+ * Returns the default FlavorMap for this thread's ClassLoader.
+ */
+public static FlavorMap getDefaultFlavorMap() {
+    AppContext context = AppContext.getAppContext();
+    FlavorMap fm = (FlavorMap) context.get(FLAVOR_MAP_KEY);
+    if (fm == null) {
+        fm = new SystemFlavorMap();
+        context.put(FLAVOR_MAP_KEY, fm);
+    }
+    return fm;
+}

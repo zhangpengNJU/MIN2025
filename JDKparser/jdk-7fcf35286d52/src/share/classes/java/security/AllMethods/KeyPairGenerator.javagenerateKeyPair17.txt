@@ -1,0 +1,19 @@
+// engine method
+public KeyPair generateKeyPair() {
+    if (serviceIterator == null) {
+        return spi.generateKeyPair();
+    }
+    RuntimeException failure = null;
+    KeyPairGeneratorSpi mySpi = spi;
+    do {
+        try {
+            return mySpi.generateKeyPair();
+        } catch (RuntimeException e) {
+            if (failure == null) {
+                failure = e;
+            }
+            mySpi = nextSpi(mySpi, true);
+        }
+    } while (mySpi != null);
+    throw failure;
+}

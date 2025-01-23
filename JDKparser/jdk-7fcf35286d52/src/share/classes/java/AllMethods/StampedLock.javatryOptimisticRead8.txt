@@ -1,0 +1,10 @@
+/**
+ * Returns a stamp that can later be validated, or zero
+ * if exclusively locked.
+ *
+ * @return a stamp, or zero if exclusively locked
+ */
+public long tryOptimisticRead() {
+    long s;
+    return (((s = state) & WBIT) == 0L) ? (s & SBITS) : 0L;
+}

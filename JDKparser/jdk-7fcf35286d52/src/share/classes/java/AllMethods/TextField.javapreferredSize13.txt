@@ -1,0 +1,10 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getPreferredSize()</code>.
+ */
+@Deprecated
+public Dimension preferredSize() {
+    synchronized (getTreeLock()) {
+        return (columns > 0) ? preferredSize(columns) : super.preferredSize();
+    }
+}

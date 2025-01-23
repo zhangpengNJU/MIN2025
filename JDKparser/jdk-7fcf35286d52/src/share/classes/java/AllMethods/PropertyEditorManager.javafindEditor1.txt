@@ -1,0 +1,10 @@
+/**
+ * Locate a value editor for a given target type.
+ *
+ * @param targetType  The Class object for the type to be edited
+ * @return An editor object for the given target class.
+ * The result is null if no suitable editor can be found.
+ */
+public static PropertyEditor findEditor(Class<?> targetType) {
+    return ThreadGroupContext.getContext().getPropertyEditorFinder().find(targetType);
+}

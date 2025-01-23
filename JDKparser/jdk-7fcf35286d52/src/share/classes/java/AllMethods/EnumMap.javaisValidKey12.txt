@@ -1,0 +1,11 @@
+/**
+ * Returns true if key is of the proper type to be a key in this
+ * enum map.
+ */
+private boolean isValidKey(Object key) {
+    if (key == null)
+        return false;
+    // Cheaper than instanceof Enum followed by getDeclaringClass
+    Class<?> keyClass = key.getClass();
+    return keyClass == keyType || keyClass.getSuperclass() == keyType;
+}

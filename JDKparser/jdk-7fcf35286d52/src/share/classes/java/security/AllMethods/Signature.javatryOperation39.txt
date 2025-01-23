@@ -1,0 +1,24 @@
+private void tryOperation(SignatureSpi spi, int type, Key key, AlgorithmParameterSpec params, SecureRandom random) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    switch(type) {
+        case I_PUB:
+            spi.engineInitVerify((PublicKey) key);
+            break;
+        case I_PUB_PARAM:
+            spi.engineInitVerify((PublicKey) key, params);
+            break;
+        case I_PRIV:
+            spi.engineInitSign((PrivateKey) key);
+            break;
+        case I_PRIV_SR:
+            spi.engineInitSign((PrivateKey) key, random);
+            break;
+        case I_PRIV_PARAM_SR:
+            spi.engineInitSign((PrivateKey) key, params, random);
+            break;
+        case S_PARAM:
+            spi.engineSetParameter(params);
+            break;
+        default:
+            throw new AssertionError("Internal error: " + type);
+    }
+}

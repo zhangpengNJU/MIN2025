@@ -1,0 +1,10 @@
+/**
+ * Creates a new soft reference that refers to the given object.
+ *
+ * @return a new soft reference or <code>null</code> if object is <code>null</code>
+ *
+ * @see SoftReference
+ */
+static <T> Reference<T> getSoftReference(T object) {
+    return (object != null) ? new SoftReference<>(object) : null;
+}

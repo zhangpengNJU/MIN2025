@@ -1,0 +1,7 @@
+/**
+ * Completes with r or a copy of r, unless already completed.
+ * If exceptional, r is first coerced to a CompletionException.
+ */
+final boolean completeRelay(Object r) {
+    return UNSAFE.compareAndSwapObject(this, RESULT, null, encodeRelay(r));
+}

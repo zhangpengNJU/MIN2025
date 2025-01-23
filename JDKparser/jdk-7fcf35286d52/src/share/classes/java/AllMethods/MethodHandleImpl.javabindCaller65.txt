@@ -1,0 +1,12 @@
+static MethodHandle bindCaller(MethodHandle mh, Class<?> hostClass) {
+    // Do not use this function to inject calls into system classes.
+    if (hostClass == null || (hostClass.isArray() || hostClass.isPrimitive() || hostClass.getName().startsWith("java.") || hostClass.getName().startsWith("sun."))) {
+        // does not happen, and should not anyway
+        throw new InternalError();
+    }
+    // For simplicity, convert mh to a varargs-like method.
+    MethodHandle vamh = prepareForInvoker(mh);
+    // Cache the result of makeInjectedInvoker once per argument class.
+    MethodHandle bccInvoker = CV_makeInjectedInvoker.get(hostClass);
+    return restoreToType(bccInvoker.bindTo(vamh), mh, hostClass);
+}

@@ -1,0 +1,45 @@
+/**
+ * Does the real work of generating a pattern.
+ */
+private String toPattern(boolean localized) {
+    StringBuffer result = new StringBuffer();
+    for (int j = 1; j >= 0; --j) {
+        if (j == 1)
+            appendAffix(result, posPrefixPattern, positivePrefix, localized);
+        else
+            appendAffix(result, negPrefixPattern, negativePrefix, localized);
+        int i;
+        int digitCount = useExponentialNotation ? getMaximumIntegerDigits() : Math.max(groupingSize, getMinimumIntegerDigits()) + 1;
+        for (i = digitCount; i > 0; --i) {
+            if (i != digitCount && isGroupingUsed() && groupingSize != 0 && i % groupingSize == 0) {
+                result.append(localized ? symbols.getGroupingSeparator() : PATTERN_GROUPING_SEPARATOR);
+            }
+            result.append(i <= getMinimumIntegerDigits() ? (localized ? symbols.getZeroDigit() : PATTERN_ZERO_DIGIT) : (localized ? symbols.getDigit() : PATTERN_DIGIT));
+        }
+        if (getMaximumFractionDigits() > 0 || decimalSeparatorAlwaysShown)
+            result.append(localized ? symbols.getDecimalSeparator() : PATTERN_DECIMAL_SEPARATOR);
+        for (i = 0; i < getMaximumFractionDigits(); ++i) {
+            if (i < getMinimumFractionDigits()) {
+                result.append(localized ? symbols.getZeroDigit() : PATTERN_ZERO_DIGIT);
+            } else {
+                result.append(localized ? symbols.getDigit() : PATTERN_DIGIT);
+            }
+        }
+        if (useExponentialNotation) {
+            result.append(localized ? symbols.getExponentSeparator() : PATTERN_EXPONENT);
+            for (i = 0; i < minExponentDigits; ++i) result.append(localized ? symbols.getZeroDigit() : PATTERN_ZERO_DIGIT);
+        }
+        if (j == 1) {
+            appendAffix(result, posSuffixPattern, positiveSuffix, localized);
+            if ((// n == p == null
+            negSuffixPattern == posSuffixPattern && negativeSuffix.equals(positiveSuffix)) || (negSuffixPattern != null && negSuffixPattern.equals(posSuffixPattern))) {
+                if ((negPrefixPattern != null && posPrefixPattern != null && negPrefixPattern.equals("'-" + posPrefixPattern)) || (// n == p == null
+                negPrefixPattern == posPrefixPattern && negativePrefix.equals(symbols.getMinusSign() + positivePrefix)))
+                    break;
+            }
+            result.append(localized ? symbols.getPatternSeparator() : PATTERN_SEPARATOR);
+        } else
+            appendAffix(result, negSuffixPattern, negativeSuffix, localized);
+    }
+    return result.toString();
+}

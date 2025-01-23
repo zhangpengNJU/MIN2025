@@ -1,0 +1,16 @@
+/**
+ * Check if the file has an invalid path. Currently, the inspection of
+ * a file path is very limited, and it only covers Nul character check.
+ * Returning true means the path is definitely invalid/garbage. But
+ * returning false does not guarantee that the path is valid.
+ *
+ * @return true if the file path is invalid.
+ */
+final boolean isInvalid() {
+    PathStatus s = status;
+    if (s == null) {
+        s = (this.path.indexOf('\u0000') < 0) ? PathStatus.CHECKED : PathStatus.INVALID;
+        status = s;
+    }
+    return s == PathStatus.INVALID;
+}

@@ -1,0 +1,28 @@
+/**
+ * Blocks a non-worker-thread until completion.
+ * @return status upon completion
+ */
+private int externalAwaitDone() {
+    int s = (// try helping
+    (this instanceof CountedCompleter) ? ForkJoinPool.common.externalHelpComplete((CountedCompleter<?>) this, 0) : ForkJoinPool.common.tryExternalUnpush(this) ? doExec() : 0);
+    if (s >= 0 && (s = status) >= 0) {
+        boolean interrupted = false;
+        do {
+            if (U.compareAndSwapInt(this, STATUS, s, s | SIGNAL)) {
+                synchronized (this) {
+                    if (status >= 0) {
+                        try {
+                            wait(0L);
+                        } catch (InterruptedException ie) {
+                            interrupted = true;
+                        }
+                    } else
+                        notifyAll();
+                }
+            }
+        } while ((s = status) >= 0);
+        if (interrupted)
+            Thread.currentThread().interrupt();
+    }
+    return s;
+}

@@ -1,0 +1,14 @@
+/**
+ * adds a pattern to the current one.
+ * @param pattern the new pattern to be added
+ */
+public void addPattern(String pattern) throws ParseException {
+    if (pattern == null)
+        return;
+    PatternEntry.Parser parser = new PatternEntry.Parser(pattern);
+    PatternEntry entry = parser.next();
+    while (entry != null) {
+        fixEntry(entry);
+        entry = parser.next();
+    }
+}

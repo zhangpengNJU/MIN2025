@@ -1,0 +1,14 @@
+/**
+ * Converts combined stream and operation flags to stream flags.
+ *
+ * <p>Each flag injected on the combined stream and operation flags will be
+ * set on the stream flags.
+ *
+ * @param combOpFlags the combined stream and operation flags.
+ * @return the stream flags.
+ */
+static int toStreamFlags(int combOpFlags) {
+    // By flipping the nibbles 0x11 become 0x00 and 0x01 become 0x10
+    // Shift left 1 to restore set flags and mask off anything other than the set flags
+    return ((~combOpFlags) >> 1) & FLAG_MASK_IS & combOpFlags;
+}

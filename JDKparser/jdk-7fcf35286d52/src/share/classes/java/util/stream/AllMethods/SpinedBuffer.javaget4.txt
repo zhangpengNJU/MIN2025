@@ -1,0 +1,20 @@
+/**
+ * Retrieve the element at the specified index.
+ */
+public E get(long index) {
+    // @@@ can further optimize by caching last seen spineIndex,
+    // which is going to be right most of the time
+    // Casts to int are safe since the spine array index is the index minus
+    // the prior element count from the current spine
+    if (spineIndex == 0) {
+        if (index < elementIndex)
+            return curChunk[((int) index)];
+        else
+            throw new IndexOutOfBoundsException(Long.toString(index));
+    }
+    if (index >= count())
+        throw new IndexOutOfBoundsException(Long.toString(index));
+    for (int j = 0; j <= spineIndex; j++) if (index < priorElementCount[j] + spine[j].length)
+        return spine[j][((int) (index - priorElementCount[j]))];
+    throw new IndexOutOfBoundsException(Long.toString(index));
+}

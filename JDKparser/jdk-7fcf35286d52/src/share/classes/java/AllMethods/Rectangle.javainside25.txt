@@ -1,0 +1,32 @@
+/**
+ * Checks whether or not this <code>Rectangle</code> contains the
+ * point at the specified location {@code (X,Y)}.
+ *
+ * @param  X the specified X coordinate
+ * @param  Y the specified Y coordinate
+ * @return    <code>true</code> if the point
+ *            {@code (X,Y)} is inside this
+ *            <code>Rectangle</code>;
+ *            <code>false</code> otherwise.
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>contains(int, int)</code>.
+ */
+@Deprecated
+public boolean inside(int X, int Y) {
+    int w = this.width;
+    int h = this.height;
+    if ((w | h) < 0) {
+        // At least one of the dimensions is negative...
+        return false;
+    }
+    // Note: if either dimension is zero, tests below must return false...
+    int x = this.x;
+    int y = this.y;
+    if (X < x || Y < y) {
+        return false;
+    }
+    w += x;
+    h += y;
+    // overflow || intersect
+    return ((w < x || w > X) && (h < y || h > Y));
+}

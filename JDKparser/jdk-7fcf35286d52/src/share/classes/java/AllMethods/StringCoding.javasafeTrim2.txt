@@ -1,0 +1,8 @@
+// Trim the given byte array to the given length
+// 
+private static byte[] safeTrim(byte[] ba, int len, Charset cs, boolean isTrusted) {
+    if (len == ba.length && (isTrusted || System.getSecurityManager() == null))
+        return ba;
+    else
+        return Arrays.copyOf(ba, len);
+}

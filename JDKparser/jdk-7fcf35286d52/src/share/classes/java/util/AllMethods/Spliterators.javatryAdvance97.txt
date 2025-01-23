@@ -1,0 +1,10 @@
+@Override
+public boolean tryAdvance(LongConsumer action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (it.hasNext()) {
+        action.accept(it.nextLong());
+        return true;
+    }
+    return false;
+}

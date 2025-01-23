@@ -1,0 +1,8 @@
+/**
+ * Returns the current number of cached entries that
+ * can decrease over time when keys/values are GC-ed.
+ */
+public int size() {
+    expungeStaleEntries();
+    return reverseMap.size();
+}

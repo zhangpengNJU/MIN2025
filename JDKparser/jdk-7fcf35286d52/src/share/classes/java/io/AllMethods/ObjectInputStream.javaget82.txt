@@ -1,0 +1,4 @@
+public boolean get(String name, boolean val) throws IOException {
+    int off = getFieldOffset(name, Boolean.TYPE);
+    return (off >= 0) ? Bits.getBoolean(primVals, off) : val;
+}

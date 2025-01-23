@@ -1,0 +1,11 @@
+private boolean isStrongDirectional(char c) {
+    int cachedIndex = stCache;
+    if (c < strongTable[cachedIndex]) {
+        cachedIndex = search(c, strongTable, 0, cachedIndex);
+    } else if (c >= strongTable[cachedIndex + 1]) {
+        cachedIndex = search(c, strongTable, cachedIndex + 1, strongTable.length - cachedIndex - 1);
+    }
+    boolean val = (cachedIndex & 0x1) == 1;
+    stCache = cachedIndex;
+    return val;
+}

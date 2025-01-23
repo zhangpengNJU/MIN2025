@@ -1,0 +1,16 @@
+/**
+ * Exports the remote object to make it available to receive incoming
+ * calls, using the particular supplied port.
+ *
+ * <p>The object is exported with a server socket
+ * created using the {@link RMISocketFactory} class.
+ *
+ * @param obj the remote object to be exported
+ * @param port the port to export the object on
+ * @return remote object stub
+ * @exception RemoteException if export fails
+ * @since 1.2
+ */
+public static Remote exportObject(Remote obj, int port) throws RemoteException {
+    return exportObject(obj, new UnicastServerRef(port));
+}

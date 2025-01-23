@@ -1,0 +1,38 @@
+/**
+ * protected method called from constructor and readObject to initialize
+ * transient state of BeanContextSupport instance.
+ *
+ * This class uses this method to instantiate inner class listeners used
+ * to monitor PropertyChange and VetoableChange events on children.
+ *
+ * subclasses may envelope this method to add their own initialization
+ * behavior
+ */
+protected synchronized void initialize() {
+    children = new HashMap(serializable + 1);
+    bcmListeners = new ArrayList(1);
+    childPCL = new PropertyChangeListener() {
+
+        /*
+             * this adaptor is used by the BeanContextSupport class to forward
+             * property changes from a child to the BeanContext, avoiding
+             * accidential serialization of the BeanContext by a badly
+             * behaved Serializable child.
+             */
+        public void propertyChange(PropertyChangeEvent pce) {
+            BeanContextSupport.this.propertyChange(pce);
+        }
+    };
+    childVCL = new VetoableChangeListener() {
+
+        /*
+             * this adaptor is used by the BeanContextSupport class to forward
+             * vetoable changes from a child to the BeanContext, avoiding
+             * accidential serialization of the BeanContext by a badly
+             * behaved Serializable child.
+             */
+        public void vetoableChange(PropertyChangeEvent pce) throws PropertyVetoException {
+            BeanContextSupport.this.vetoableChange(pce);
+        }
+    };
+}

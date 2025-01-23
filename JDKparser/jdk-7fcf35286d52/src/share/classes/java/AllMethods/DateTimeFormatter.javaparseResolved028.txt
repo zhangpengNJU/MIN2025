@@ -1,0 +1,32 @@
+// -----------------------------------------------------------------------
+/**
+ * Parses and resolves the specified text.
+ * <p>
+ * This parses to a {@code TemporalAccessor} ensuring that the text is fully parsed.
+ *
+ * @param text  the text to parse, not null
+ * @param position  the position to parse from, updated with length parsed
+ *  and the index of any error, null if parsing whole string
+ * @return the resolved result of the parse, not null
+ * @throws DateTimeParseException if the parse fails
+ * @throws DateTimeException if an error occurs while resolving the date or time
+ * @throws IndexOutOfBoundsException if the position is invalid
+ */
+private TemporalAccessor parseResolved0(final CharSequence text, final ParsePosition position) {
+    ParsePosition pos = (position != null ? position : new ParsePosition(0));
+    DateTimeParseContext context = parseUnresolved0(text, pos);
+    if (context == null || pos.getErrorIndex() >= 0 || (position == null && pos.getIndex() < text.length())) {
+        String abbr;
+        if (text.length() > 64) {
+            abbr = text.subSequence(0, 64).toString() + "...";
+        } else {
+            abbr = text.toString();
+        }
+        if (pos.getErrorIndex() >= 0) {
+            throw new DateTimeParseException("Text '" + abbr + "' could not be parsed at index " + pos.getErrorIndex(), text, pos.getErrorIndex());
+        } else {
+            throw new DateTimeParseException("Text '" + abbr + "' could not be parsed, unparsed text found at index " + pos.getIndex(), text, pos.getIndex());
+        }
+    }
+    return context.toResolved(resolverStyle, resolverFields);
+}

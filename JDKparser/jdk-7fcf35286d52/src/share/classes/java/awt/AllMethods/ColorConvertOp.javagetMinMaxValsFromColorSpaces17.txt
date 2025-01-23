@@ -1,0 +1,16 @@
+private void getMinMaxValsFromColorSpaces(ColorSpace srcCspace, ColorSpace dstCspace) {
+    int nc = srcCspace.getNumComponents();
+    srcMinVals = new float[nc];
+    srcMaxVals = new float[nc];
+    for (int i = 0; i < nc; i++) {
+        srcMinVals[i] = srcCspace.getMinValue(i);
+        srcMaxVals[i] = srcCspace.getMaxValue(i);
+    }
+    nc = dstCspace.getNumComponents();
+    dstMinVals = new float[nc];
+    dstMaxVals = new float[nc];
+    for (int i = 0; i < nc; i++) {
+        dstMinVals[i] = dstCspace.getMinValue(i);
+        dstMaxVals[i] = dstCspace.getMaxValue(i);
+    }
+}

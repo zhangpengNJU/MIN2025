@@ -1,0 +1,10 @@
+/**
+ * Removes the old window-state-listener from window-state-listener-l
+ * and returns the resulting multicast listener.
+ * @param l window-state-listener-l
+ * @param oldl the window-state-listener being removed
+ * @since 1.4
+ */
+public static WindowStateListener remove(WindowStateListener l, WindowStateListener oldl) {
+    return (WindowStateListener) removeInternal(l, oldl);
+}

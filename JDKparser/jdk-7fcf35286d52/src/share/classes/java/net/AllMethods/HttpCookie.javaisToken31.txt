@@ -1,0 +1,18 @@
+/*
+     * Tests a string and returns true if the string counts as a token.
+     *
+     * @param  value
+     *         the {@code String} to be tested
+     *
+     * @return  {@code true} if the {@code String} is a token;
+     *          {@code false} if it is not
+     */
+private static boolean isToken(String value) {
+    int len = value.length();
+    for (int i = 0; i < len; i++) {
+        char c = value.charAt(i);
+        if (c < 0x20 || c >= 0x7f || tspecials.indexOf(c) != -1)
+            return false;
+    }
+    return true;
+}

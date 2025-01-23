@@ -1,0 +1,25 @@
+/**
+ * Creates a socket and connects it to the specified port on
+ * the specified host.
+ * @param host the specified host
+ * @param port the specified port
+ */
+protected void connect(String host, int port) throws UnknownHostException, IOException {
+    boolean connected = false;
+    try {
+        InetAddress address = InetAddress.getByName(host);
+        this.port = port;
+        this.address = address;
+        connectToAddress(address, port, timeout);
+        connected = true;
+    } finally {
+        if (!connected) {
+            try {
+                close();
+            } catch (IOException ioe) {
+            /* Do nothing. If connect threw an exception then
+                       it will be passed up the call stack */
+            }
+        }
+    }
+}

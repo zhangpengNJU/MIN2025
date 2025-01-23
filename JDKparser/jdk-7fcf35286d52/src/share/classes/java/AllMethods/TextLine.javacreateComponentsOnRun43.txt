@@ -1,0 +1,30 @@
+/**
+ * Returns an array in logical order of the TextLineComponents on
+ * the text in the given range, with the given attributes.
+ */
+public static TextLineComponent[] createComponentsOnRun(int runStart, int runLimit, char[] chars, int[] charsLtoV, byte[] levels, TextLabelFactory factory, Font font, CoreMetrics cm, FontRenderContext frc, Decoration decorator, TextLineComponent[] components, int numComponents) {
+    int pos = runStart;
+    do {
+        // <= displayLimit
+        int chunkLimit = firstVisualChunk(charsLtoV, levels, pos, runLimit);
+        do {
+            int startPos = pos;
+            int lmCount;
+            if (cm == null) {
+                LineMetrics lineMetrics = font.getLineMetrics(chars, startPos, chunkLimit, frc);
+                cm = CoreMetrics.get(lineMetrics);
+                lmCount = lineMetrics.getNumChars();
+            } else {
+                lmCount = (chunkLimit - startPos);
+            }
+            TextLineComponent nextComponent = factory.createExtended(font, cm, decorator, startPos, startPos + lmCount);
+            ++numComponents;
+            if (numComponents >= components.length) {
+                components = expandArray(components);
+            }
+            components[numComponents - 1] = nextComponent;
+            pos += lmCount;
+        } while (pos < chunkLimit);
+    } while (pos < runLimit);
+    return components;
+}

@@ -1,0 +1,49 @@
+/**
+ * Returns the platform MXBean proxy for
+ * {@code mxbeanInterface} which is specified to have one single
+ * instance in a Java virtual machine and the proxy will
+ * forward the method calls through the given {@code MBeanServerConnection}.
+ * This method may return {@code null} if the management interface
+ * is not implemented in the Java virtual machine being monitored
+ * (for example, a Java virtual machine with no compilation system
+ * does not implement {@link CompilationMXBean});
+ * otherwise, this method is equivalent to calling:
+ * <pre>
+ *     {@link #getPlatformMXBeans(MBeanServerConnection, Class)
+ *        getPlatformMXBeans(connection, mxbeanInterface)}.get(0);
+ * </pre>
+ *
+ * @param connection the {@code MBeanServerConnection} to forward to.
+ * @param mxbeanInterface a management interface for a platform
+ *     MXBean with one single instance in the Java virtual machine
+ *     being monitored, if implemented.
+ * @param <T> an {@code mxbeanInterface} type parameter
+ *
+ * @return the platform MXBean proxy for
+ * forwarding the method calls of the {@code mxbeanInterface}
+ * through the given {@code MBeanServerConnection},
+ * or {@code null} if not exist.
+ *
+ * @throws IllegalArgumentException if {@code mxbeanInterface}
+ * is not a platform management interface or
+ * not a singleton platform MXBean.
+ * @throws java.io.IOException if a communication problem
+ * occurred when accessing the {@code MBeanServerConnection}.
+ *
+ * @see #newPlatformMXBeanProxy
+ * @since 1.7
+ */
+public static <T extends PlatformManagedObject> T getPlatformMXBean(MBeanServerConnection connection, Class<T> mxbeanInterface) throws java.io.IOException {
+    PlatformComponent pc = PlatformComponent.getPlatformComponent(mxbeanInterface);
+    if (pc == null) {
+        T mbean = ExtendedPlatformComponent.getMXBean(mxbeanInterface);
+        if (mbean != null) {
+            ObjectName on = mbean.getObjectName();
+            return ManagementFactory.newPlatformMXBeanProxy(connection, on.getCanonicalName(), mxbeanInterface);
+        }
+        throw new IllegalArgumentException(mxbeanInterface.getName() + " is not a platform management interface");
+    }
+    if (!pc.isSingleton())
+        throw new IllegalArgumentException(mxbeanInterface.getName() + " can have zero or more than one instances");
+    return pc.getSingletonMXBean(connection, mxbeanInterface);
+}

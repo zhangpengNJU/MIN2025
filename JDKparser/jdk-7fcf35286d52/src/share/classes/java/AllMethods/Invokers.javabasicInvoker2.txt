@@ -1,0 +1,19 @@
+/*non-public*/
+MethodHandle basicInvoker() {
+    MethodHandle invoker = cachedInvoker(INV_BASIC);
+    if (invoker != null)
+        return invoker;
+    MethodType basicType = targetType.basicType();
+    if (basicType != targetType) {
+        // double cache; not used significantly
+        return setCachedInvoker(INV_BASIC, basicType.invokers().basicInvoker());
+    }
+    invoker = basicType.form().cachedMethodHandle(MethodTypeForm.MH_BASIC_INV);
+    if (invoker == null) {
+        MemberName method = invokeBasicMethod(basicType);
+        invoker = DirectMethodHandle.make(method);
+        assert (checkInvoker(invoker));
+        invoker = basicType.form().setCachedMethodHandle(MethodTypeForm.MH_BASIC_INV, invoker);
+    }
+    return setCachedInvoker(INV_BASIC, invoker);
+}

@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y, double w, double h) {
+    if (isEmpty() || w <= 0 || h <= 0) {
+        return false;
+    }
+    double x0 = getX();
+    double y0 = getY();
+    return (x >= x0 && y >= y0 && (x + w) <= x0 + getWidth() && (y + h) <= y0 + getHeight());
+}

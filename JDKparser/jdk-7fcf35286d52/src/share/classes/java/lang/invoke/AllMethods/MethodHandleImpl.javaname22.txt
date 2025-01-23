@@ -1,0 +1,6 @@
+static String name(Class<?> arrayClass, boolean isSetter) {
+    Class<?> elemClass = arrayClass.getComponentType();
+    if (elemClass == null)
+        throw newIllegalArgumentException("not an array", arrayClass);
+    return (!isSetter ? "getElement" : "setElement") + Wrapper.basicTypeChar(elemClass);
+}

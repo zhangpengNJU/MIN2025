@@ -1,0 +1,10 @@
+/**
+ * Checks if this flag is cleared on operation flags or combined stream and
+ * operation flags.
+ *
+ * @param flags the operation flags or combined stream and operations flags.
+ * @return true if this flag is preserved, otherwise false.
+ */
+boolean isCleared(int flags) {
+    return (flags & preserve) == clear;
+}

@@ -1,0 +1,13 @@
+public String getParentLoggerName(String loggerName) {
+    Logger l = logManager.getLogger(loggerName);
+    if (l == null) {
+        return null;
+    }
+    Logger p = l.getParent();
+    if (p == null) {
+        // root logger
+        return EMPTY_STRING;
+    } else {
+        return p.getName();
+    }
+}

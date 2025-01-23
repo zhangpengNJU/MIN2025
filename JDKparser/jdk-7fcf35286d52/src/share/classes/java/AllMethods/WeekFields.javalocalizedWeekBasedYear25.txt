@@ -1,0 +1,27 @@
+/**
+ * Returns the year of week-based-year for the temporal.
+ * The year can be the previous year, the current year, or the next year.
+ * @param temporal a date of any chronology, not null
+ * @return the year of week-based-year for the date
+ */
+private int localizedWeekBasedYear(TemporalAccessor temporal) {
+    int dow = localizedDayOfWeek(temporal);
+    int year = temporal.get(YEAR);
+    int doy = temporal.get(DAY_OF_YEAR);
+    int offset = startOfWeekOffset(doy, dow);
+    int week = computeWeek(offset, doy);
+    if (week == 0) {
+        // Day is in end of week of previous year; return the previous year
+        return year - 1;
+    } else {
+        // If getting close to end of year, use higher precision logic
+        // Check if date of year is in partial week associated with next year
+        ValueRange dayRange = temporal.range(DAY_OF_YEAR);
+        int yearLen = (int) dayRange.getMaximum();
+        int newYearWeek = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+        if (week >= newYearWeek) {
+            return year + 1;
+        }
+    }
+    return year;
+}

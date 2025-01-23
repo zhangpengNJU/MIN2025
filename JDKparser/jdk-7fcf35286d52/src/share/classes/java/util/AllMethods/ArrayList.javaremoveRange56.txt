@@ -1,0 +1,6 @@
+protected void removeRange(int fromIndex, int toIndex) {
+    checkForComodification();
+    parent.removeRange(parentOffset + fromIndex, parentOffset + toIndex);
+    this.modCount = parent.modCount;
+    this.size -= toIndex - fromIndex;
+}

@@ -1,0 +1,20 @@
+/**
+ * Gets the state set of the TextComponent.
+ * The AccessibleStateSet of an object is composed of a set of
+ * unique AccessibleStates.  A change in the AccessibleStateSet
+ * of an object will cause a PropertyChangeEvent to be fired
+ * for the AccessibleContext.ACCESSIBLE_STATE_PROPERTY property.
+ *
+ * @return an instance of AccessibleStateSet containing the
+ * current state set of the object
+ * @see AccessibleStateSet
+ * @see AccessibleState
+ * @see #addPropertyChangeListener
+ */
+public AccessibleStateSet getAccessibleStateSet() {
+    AccessibleStateSet states = super.getAccessibleStateSet();
+    if (TextComponent.this.isEditable()) {
+        states.add(AccessibleState.EDITABLE);
+    }
+    return states;
+}

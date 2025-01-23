@@ -1,0 +1,22 @@
+/**
+ * Set the modifiers to indicate additional keys that were held down
+ * (e.g. shift, ctrl, alt, meta) defined as part of InputEvent.
+ * <p>
+ * NOTE:  use of this method is not recommended, because many AWT
+ * implementations do not recognize modifier changes.  This is
+ * especially true for <code>KEY_TYPED</code> events where the shift
+ * modifier is changed.
+ *
+ * @param modifiers an integer combination of the modifier constants.
+ * @see InputEvent
+ * @deprecated as of JDK1.1.4
+ */
+@Deprecated
+public void setModifiers(int modifiers) {
+    this.modifiers = modifiers;
+    if ((getModifiers() != 0) && (getModifiersEx() == 0)) {
+        setNewModifiers();
+    } else if ((getModifiers() == 0) && (getModifiersEx() != 0)) {
+        setOldModifiers();
+    }
+}

@@ -1,0 +1,29 @@
+/**
+ * Returns the certificates associated with this CodeSource.
+ * <p>
+ * If this CodeSource object was created using the
+ * {@link #CodeSource(URL url, CodeSigner[] signers)}
+ * constructor then its certificate chains are extracted and used to
+ * create an array of Certificate objects. Each signer certificate is
+ * followed by its supporting certificate chain (which may be empty).
+ * Each signer certificate and its supporting certificate chain is ordered
+ * bottom-to-top (i.e., with the signer certificate first and the (root)
+ * certificate authority last).
+ *
+ * @return A copy of the certificates array, or null if there is none.
+ */
+public final java.security.cert.Certificate[] getCertificates() {
+    if (certs != null) {
+        return certs.clone();
+    } else if (signers != null) {
+        // Convert the code signers to certs
+        ArrayList<java.security.cert.Certificate> certChains = new ArrayList<>();
+        for (int i = 0; i < signers.length; i++) {
+            certChains.addAll(signers[i].getSignerCertPath().getCertificates());
+        }
+        certs = certChains.toArray(new java.security.cert.Certificate[certChains.size()]);
+        return certs.clone();
+    } else {
+        return null;
+    }
+}

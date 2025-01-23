@@ -1,0 +1,16 @@
+/**
+ * Gets a RenderedImage instance of this image with a default
+ * width and height in pixels.  The RenderContext is built
+ * automatically with an appropriate usr2dev transform and an area
+ * of interest of the full image.  All the rendering hints come
+ * from hints passed in.  Implementors of this interface must be
+ * sure that there is a defined default width and height.
+ *
+ * @return a RenderedImage containing the rendered data.
+ */
+public RenderedImage createDefaultRendering() {
+    // Identity
+    AffineTransform usr2dev = new AffineTransform();
+    RenderContext newRC = new RenderContext(usr2dev);
+    return createRendering(newRC);
+}

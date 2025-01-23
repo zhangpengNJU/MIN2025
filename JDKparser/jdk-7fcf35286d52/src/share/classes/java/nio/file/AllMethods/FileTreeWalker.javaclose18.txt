@@ -1,0 +1,12 @@
+/**
+ * Closes/pops all directories on the stack.
+ */
+@Override
+public void close() {
+    if (!closed) {
+        while (!stack.isEmpty()) {
+            pop();
+        }
+        closed = true;
+    }
+}

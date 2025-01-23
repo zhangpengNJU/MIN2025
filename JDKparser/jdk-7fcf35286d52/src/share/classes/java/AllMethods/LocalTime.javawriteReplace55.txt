@@ -1,0 +1,35 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
+ * @serialData
+ * A twos-complement value indicates the remaining values are not in the stream
+ * and should be set to zero.
+ * <pre>
+ *  out.writeByte(4);  // identifies a LocalTime
+ *  if (nano == 0) {
+ *    if (second == 0) {
+ *      if (minute == 0) {
+ *        out.writeByte(~hour);
+ *      } else {
+ *        out.writeByte(hour);
+ *        out.writeByte(~minute);
+ *      }
+ *    } else {
+ *      out.writeByte(hour);
+ *      out.writeByte(minute);
+ *      out.writeByte(~second);
+ *    }
+ *  } else {
+ *    out.writeByte(hour);
+ *    out.writeByte(minute);
+ *    out.writeByte(second);
+ *    out.writeInt(nano);
+ *  }
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.LOCAL_TIME_TYPE, this);
+}

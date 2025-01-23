@@ -1,0 +1,8 @@
+// check set only contains elements of the given type
+private static void checkSet(Set<?> set, Class<?> type) {
+    for (Object e : set) {
+        if (e == null)
+            throw new NullPointerException();
+        type.cast(e);
+    }
+}

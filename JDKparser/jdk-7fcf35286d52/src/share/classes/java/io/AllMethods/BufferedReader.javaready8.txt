@@ -1,0 +1,30 @@
+/**
+ * Tells whether this stream is ready to be read.  A buffered character
+ * stream is ready if the buffer is not empty, or if the underlying
+ * character stream is ready.
+ *
+ * @exception  IOException  If an I/O error occurs
+ */
+public boolean ready() throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        /*
+             * If newline needs to be skipped and the next char to be read
+             * is a newline character, then just skip it right away.
+             */
+        if (skipLF) {
+            /* Note that in.ready() will return true if and only if the next
+                 * read on the stream will not block.
+                 */
+            if (nextChar >= nChars && in.ready()) {
+                fill();
+            }
+            if (nextChar < nChars) {
+                if (cb[nextChar] == '\n')
+                    nextChar++;
+                skipLF = false;
+            }
+        }
+        return (nextChar < nChars) || in.ready();
+    }
+}

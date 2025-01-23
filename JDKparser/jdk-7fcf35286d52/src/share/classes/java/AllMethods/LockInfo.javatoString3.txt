@@ -1,0 +1,17 @@
+/**
+ * Returns a string representation of a lock.  The returned
+ * string representation consists of the name of the class of the
+ * lock object, the at-sign character `@', and the unsigned
+ * hexadecimal representation of the <em>identity</em> hash code
+ * of the object.  This method returns a string equals to the value of:
+ * <blockquote>
+ * <pre>
+ * lock.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(lock))
+ * </pre></blockquote>
+ * where <tt>lock</tt> is the lock object.
+ *
+ * @return the string representation of a lock.
+ */
+public String toString() {
+    return className + '@' + Integer.toHexString(identityHashCode);
+}

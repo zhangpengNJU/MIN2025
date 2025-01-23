@@ -1,0 +1,6 @@
+static JapaneseDate readExternal(DataInput in) throws IOException {
+    int year = in.readInt();
+    int month = in.readByte();
+    int dayOfMonth = in.readByte();
+    return JapaneseChronology.INSTANCE.date(year, month, dayOfMonth);
+}

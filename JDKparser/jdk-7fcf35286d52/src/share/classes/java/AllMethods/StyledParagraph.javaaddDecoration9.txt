@@ -1,0 +1,20 @@
+/**
+ * Add a new Decoration run with the given Decoration at the
+ * given index.
+ */
+private void addDecoration(Decoration d, int index) {
+    if (decorations != null) {
+        decorationStarts = addToVector(d, index, decorations, decorationStarts);
+    } else if (decoration == null) {
+        decoration = d;
+    } else {
+        if (!decoration.equals(d)) {
+            decorations = new Vector<Decoration>(INITIAL_SIZE);
+            decorations.addElement(decoration);
+            decorations.addElement(d);
+            decorationStarts = new int[INITIAL_SIZE];
+            decorationStarts[0] = 0;
+            decorationStarts[1] = index;
+        }
+    }
+}

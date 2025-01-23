@@ -1,0 +1,24 @@
+/**
+ * Retrieves a result set that contains the elements of the SQL
+ * <code>ARRAY</code> value
+ * designated by this <code>Array</code> object.  If appropriate,
+ * the elements of the array are mapped using the connection's type
+ * map; otherwise, the standard mapping is used.
+ * <p>
+ * The result set contains one row for each array element, with
+ * two columns in each row.  The second column stores the element
+ * value; the first column stores the index into the array for
+ * that element (with the first array element being at index 1).
+ * The rows are in ascending order corresponding to
+ * the order of the indices.
+ *
+ * @return a {@link ResultSet} object containing one row for each
+ * of the elements in the array designated by this <code>Array</code>
+ * object, with the rows in ascending order based on the indices.
+ * @exception SQLException if an error occurs while attempting to
+ * access the array
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+ResultSet getResultSet() throws SQLException;

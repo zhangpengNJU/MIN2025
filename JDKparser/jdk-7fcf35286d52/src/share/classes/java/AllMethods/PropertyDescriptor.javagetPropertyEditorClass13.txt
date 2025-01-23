@@ -1,0 +1,13 @@
+/**
+ * Gets any explicit PropertyEditor Class that has been registered
+ * for this property.
+ *
+ * @return Any explicit PropertyEditor Class that has been registered
+ *          for this property.  Normally this will return "null",
+ *          indicating that no special editor has been registered,
+ *          so the PropertyEditorManager should be used to locate
+ *          a suitable PropertyEditor.
+ */
+public Class<?> getPropertyEditorClass() {
+    return (this.propertyEditorClassRef != null) ? this.propertyEditorClassRef.get() : null;
+}

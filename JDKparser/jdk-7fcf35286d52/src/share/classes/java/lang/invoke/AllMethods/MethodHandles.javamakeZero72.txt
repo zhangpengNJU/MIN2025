@@ -1,0 +1,5 @@
+private static MethodHandle makeZero(Class<?> rtype) {
+    MethodType mtype = MethodType.methodType(rtype);
+    LambdaForm lform = LambdaForm.zeroForm(BasicType.basicType(rtype));
+    return MethodHandleImpl.makeIntrinsic(mtype, lform, Intrinsic.ZERO);
+}

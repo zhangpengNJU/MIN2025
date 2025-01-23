@@ -1,0 +1,15 @@
+private void print(BigDecimal value, Locale l) throws IOException {
+    if (c == Conversion.HEXADECIMAL_FLOAT)
+        failConversion(c, value);
+    StringBuilder sb = new StringBuilder();
+    boolean neg = value.signum() == -1;
+    BigDecimal v = value.abs();
+    // leading sign indicator
+    leadingSign(sb, neg);
+    // the value
+    print(sb, v, l, f, c, precision, neg);
+    // trailing sign indicator
+    trailingSign(sb, neg);
+    // justify based on width
+    a.append(justify(sb.toString()));
+}

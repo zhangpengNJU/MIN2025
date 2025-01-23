@@ -1,0 +1,17 @@
+private Crossings getCrossings(double xlo, double ylo, double xhi, double yhi) {
+    Crossings cross = new Crossings.EvenOdd(xlo, ylo, xhi, yhi);
+    int lastx = xpoints[npoints - 1];
+    int lasty = ypoints[npoints - 1];
+    int curx, cury;
+    // Walk the edges of the polygon
+    for (int i = 0; i < npoints; i++) {
+        curx = xpoints[i];
+        cury = ypoints[i];
+        if (cross.accumulateLine(lastx, lasty, curx, cury)) {
+            return null;
+        }
+        lastx = curx;
+        lasty = cury;
+    }
+    return cross;
+}

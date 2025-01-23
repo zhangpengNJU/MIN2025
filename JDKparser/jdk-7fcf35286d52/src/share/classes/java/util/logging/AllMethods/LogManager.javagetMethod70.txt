@@ -1,0 +1,7 @@
+private static Method getMethod(Class<?> c, String name, Class<?>... types) {
+    try {
+        return (c == null) ? null : c.getMethod(name, types);
+    } catch (NoSuchMethodException e) {
+        throw new AssertionError(e);
+    }
+}

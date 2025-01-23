@@ -1,0 +1,21 @@
+/**
+ * Retrieves the first warning reported by calls on this <code>Statement</code> object.
+ * Subsequent <code>Statement</code> object warnings will be chained to this
+ * <code>SQLWarning</code> object.
+ *
+ * <p>The warning chain is automatically cleared each time
+ * a statement is (re)executed. This method may not be called on a closed
+ * <code>Statement</code> object; doing so will cause an <code>SQLException</code>
+ * to be thrown.
+ *
+ * <P><B>Note:</B> If you are processing a <code>ResultSet</code> object, any
+ * warnings associated with reads on that <code>ResultSet</code> object
+ * will be chained on it rather than on the <code>Statement</code>
+ * object that produced it.
+ *
+ * @return the first <code>SQLWarning</code> object or <code>null</code>
+ *         if there are no warnings
+ * @exception SQLException if a database access error occurs or
+ * this method is called on a closed <code>Statement</code>
+ */
+SQLWarning getWarnings() throws SQLException;

@@ -1,0 +1,9 @@
+public void run() {
+    if (!nativeContainer.isShowing()) {
+        return;
+    }
+    Point ptDstOrigin = nativeContainer.getLocationOnScreen();
+    mouseEvent.translatePoint(ptSrcOrigin.x - ptDstOrigin.x, ptSrcOrigin.y - ptDstOrigin.y);
+    Component targetOver = nativeContainer.getMouseEventTarget(mouseEvent.getX(), mouseEvent.getY(), Container.INCLUDE_SELF);
+    trackMouseEnterExit(targetOver, mouseEvent);
+}

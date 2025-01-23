@@ -1,0 +1,7 @@
+private int hugeCapacity(int minCapacity) {
+    if (Integer.MAX_VALUE - minCapacity < 0) {
+        // overflow
+        throw new OutOfMemoryError();
+    }
+    return (minCapacity > MAX_ARRAY_SIZE) ? minCapacity : MAX_ARRAY_SIZE;
+}

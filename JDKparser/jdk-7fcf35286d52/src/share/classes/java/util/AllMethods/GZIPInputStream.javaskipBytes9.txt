@@ -1,0 +1,13 @@
+/*
+     * Skips bytes of input data blocking until all bytes are skipped.
+     * Does not assume that the input stream is capable of seeking.
+     */
+private void skipBytes(InputStream in, int n) throws IOException {
+    while (n > 0) {
+        int len = in.read(tmpbuf, 0, n < tmpbuf.length ? n : tmpbuf.length);
+        if (len == -1) {
+            throw new EOFException();
+        }
+        n -= len;
+    }
+}

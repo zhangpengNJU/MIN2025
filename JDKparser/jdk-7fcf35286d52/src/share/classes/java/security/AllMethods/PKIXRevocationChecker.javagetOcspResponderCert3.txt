@@ -1,0 +1,13 @@
+/**
+ * Gets the OCSP responder's certificate. This overrides the
+ * {@code ocsp.responderCertSubjectName},
+ * {@code ocsp.responderCertIssuerName},
+ * and {@code ocsp.responderCertSerialNumber} security properties. If this
+ * parameter or the aforementioned properties are not set, then the
+ * responder's certificate is determined as specified in RFC 2560.
+ *
+ * @return the responder's certificate, or {@code null} if not set
+ */
+public X509Certificate getOcspResponderCert() {
+    return ocspResponderCert;
+}

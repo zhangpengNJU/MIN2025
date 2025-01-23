@@ -1,0 +1,8 @@
+// Trim the given char array to the given length
+// 
+private static char[] safeTrim(char[] ca, int len, Charset cs, boolean isTrusted) {
+    if (len == ca.length && (isTrusted || System.getSecurityManager() == null))
+        return ca;
+    else
+        return Arrays.copyOf(ca, len);
+}

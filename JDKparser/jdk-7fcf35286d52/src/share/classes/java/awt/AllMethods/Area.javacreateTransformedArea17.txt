@@ -1,0 +1,17 @@
+/**
+ * Creates a new <code>Area</code> object that contains the same
+ * geometry as this <code>Area</code> transformed by the specified
+ * <code>AffineTransform</code>.  This <code>Area</code> object
+ * is unchanged.
+ * @param t  the specified <code>AffineTransform</code> used to transform
+ *           the new <code>Area</code>
+ * @throws NullPointerException if <code>t</code> is null
+ * @return   a new <code>Area</code> object representing the transformed
+ *           geometry.
+ * @since 1.2
+ */
+public Area createTransformedArea(AffineTransform t) {
+    Area a = new Area(this);
+    a.transform(t);
+    return a;
+}

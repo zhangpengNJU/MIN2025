@@ -1,0 +1,16 @@
+/**
+ * Creates a new SinglePixelPackedSampleModel with the specified
+ * width and height.  The new SinglePixelPackedSampleModel will have the
+ * same storage data type and bit masks as this
+ * SinglePixelPackedSampleModel.
+ * @param w the width of the resulting <code>SampleModel</code>
+ * @param h the height of the resulting <code>SampleModel</code>
+ * @return a <code>SinglePixelPackedSampleModel</code> with the
+ *         specified width and height.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    SampleModel sampleModel = new SinglePixelPackedSampleModel(dataType, w, h, bitMasks);
+    return sampleModel;
+}

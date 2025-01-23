@@ -1,0 +1,6 @@
+private RunnableFuture<V> newTaskFor(Callable<V> task) {
+    if (aes == null)
+        return new FutureTask<V>(task);
+    else
+        return aes.newTaskFor(task);
+}

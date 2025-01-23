@@ -1,0 +1,11 @@
+/**
+ * Determines whether or not the specified object
+ * is currently a child of this <tt>BeanContext</tt>.
+ * @param o the Object in question
+ * @return if this object is a child
+ */
+public boolean contains(Object o) {
+    synchronized (children) {
+        return children.containsKey(o);
+    }
+}

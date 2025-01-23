@@ -1,0 +1,6 @@
+@Override
+public void forEachRemaining(Consumer<? super T> consumer) {
+    if (beforeSplit)
+        aSpliterator.forEachRemaining(consumer);
+    bSpliterator.forEachRemaining(consumer);
+}

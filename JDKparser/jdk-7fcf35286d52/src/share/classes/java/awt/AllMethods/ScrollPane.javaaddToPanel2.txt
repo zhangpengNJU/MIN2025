@@ -1,0 +1,10 @@
+// The scrollpane won't work with a windowless child... it assumes
+// it is moving a child window around so the windowless child is
+// wrapped with a window.
+private void addToPanel(Component comp, Object constraints, int index) {
+    Panel child = new Panel();
+    child.setLayout(new BorderLayout());
+    child.add(comp);
+    super.addImpl(child, constraints, index);
+    validate();
+}

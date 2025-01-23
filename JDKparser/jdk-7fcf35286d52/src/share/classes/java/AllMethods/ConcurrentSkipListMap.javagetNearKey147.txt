@@ -1,0 +1,39 @@
+// Almost the same as getNearEntry, except for keys
+K getNearKey(K key, int rel) {
+    Comparator<? super K> cmp = m.comparator;
+    if (isDescending) {
+        // adjust relation for direction
+        if ((rel & LT) == 0)
+            rel |= LT;
+        else
+            rel &= ~LT;
+    }
+    if (tooLow(key, cmp)) {
+        if ((rel & LT) == 0) {
+            ConcurrentSkipListMap.Node<K, V> n = loNode(cmp);
+            if (isBeforeEnd(n, cmp))
+                return n.key;
+        }
+        return null;
+    }
+    if (tooHigh(key, cmp)) {
+        if ((rel & LT) != 0) {
+            ConcurrentSkipListMap.Node<K, V> n = hiNode(cmp);
+            if (n != null) {
+                K last = n.key;
+                if (inBounds(last, cmp))
+                    return last;
+            }
+        }
+        return null;
+    }
+    for (; ; ) {
+        Node<K, V> n = m.findNear(key, rel, cmp);
+        if (n == null || !inBounds(n.key, cmp))
+            return null;
+        K k = n.key;
+        V v = n.getValidValue();
+        if (v != null)
+            return k;
+    }
+}

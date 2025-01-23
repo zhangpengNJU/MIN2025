@@ -1,0 +1,6 @@
+static int getReturnOpcode(Class<?> c) {
+    if (c == Void.TYPE) {
+        return RETURN;
+    }
+    return IRETURN + getOpcodeOffset(c);
+}

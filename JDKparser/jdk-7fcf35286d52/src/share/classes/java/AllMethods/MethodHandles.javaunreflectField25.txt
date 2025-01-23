@@ -1,0 +1,6 @@
+private MethodHandle unreflectField(Field f, boolean isSetter) throws IllegalAccessException {
+    MemberName field = new MemberName(f, isSetter);
+    assert (isSetter ? MethodHandleNatives.refKindIsSetter(field.getReferenceKind()) : MethodHandleNatives.refKindIsGetter(field.getReferenceKind()));
+    Lookup lookup = f.isAccessible() ? IMPL_LOOKUP : this;
+    return lookup.getDirectFieldNoSecurityManager(field.getReferenceKind(), f.getDeclaringClass(), field);
+}

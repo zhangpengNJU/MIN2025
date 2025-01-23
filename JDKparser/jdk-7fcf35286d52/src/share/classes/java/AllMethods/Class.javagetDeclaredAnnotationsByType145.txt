@@ -1,0 +1,9 @@
+/**
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+public <A extends Annotation> A[] getDeclaredAnnotationsByType(Class<A> annotationClass) {
+    Objects.requireNonNull(annotationClass);
+    return AnnotationSupport.getDirectlyAndIndirectlyPresent(annotationData().declaredAnnotations, annotationClass);
+}

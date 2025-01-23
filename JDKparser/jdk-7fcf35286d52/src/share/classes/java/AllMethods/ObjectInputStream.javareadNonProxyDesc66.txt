@@ -1,0 +1,46 @@
+/**
+ * Reads in and returns class descriptor for a class that is not a dynamic
+ * proxy class.  Sets passHandle to class descriptor's assigned handle.  If
+ * class descriptor cannot be resolved to a class in the local VM, a
+ * ClassNotFoundException is associated with the descriptor's handle.
+ */
+private ObjectStreamClass readNonProxyDesc(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_CLASSDESC) {
+        throw new InternalError();
+    }
+    ObjectStreamClass desc = new ObjectStreamClass();
+    int descHandle = handles.assign(unshared ? unsharedMarker : desc);
+    passHandle = NULL_HANDLE;
+    ObjectStreamClass readDesc = null;
+    try {
+        readDesc = readClassDescriptor();
+    } catch (ClassNotFoundException ex) {
+        throw (IOException) new InvalidClassException("failed to read class descriptor").initCause(ex);
+    }
+    Class<?> cl = null;
+    ClassNotFoundException resolveEx = null;
+    bin.setBlockDataMode(true);
+    final boolean checksRequired = isCustomSubclass();
+    try {
+        if ((cl = resolveClass(readDesc)) == null) {
+            resolveEx = new ClassNotFoundException("null class");
+        } else if (checksRequired) {
+            ReflectUtil.checkPackageAccess(cl);
+        }
+    } catch (ClassNotFoundException ex) {
+        resolveEx = ex;
+    }
+    // Call filterCheck on the class before reading anything else
+    filterCheck(cl, -1);
+    skipCustomData();
+    try {
+        totalObjectRefs++;
+        depth++;
+        desc.initNonProxy(readDesc, cl, resolveEx, readClassDesc(false));
+    } finally {
+        depth--;
+    }
+    handles.finish(descHandle);
+    passHandle = descHandle;
+    return desc;
+}

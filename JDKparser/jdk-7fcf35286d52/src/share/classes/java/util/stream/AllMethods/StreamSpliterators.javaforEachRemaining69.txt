@@ -1,0 +1,27 @@
+@Override
+public void forEachRemaining(T_CONS action) {
+    Objects.requireNonNull(action);
+    T_BUFF sb = null;
+    PermitStatus permitStatus;
+    while ((permitStatus = permitStatus()) != PermitStatus.NO_MORE) {
+        if (permitStatus == PermitStatus.MAYBE_MORE) {
+            // Optimistically traverse elements up to a threshold of chunkSize
+            if (sb == null)
+                sb = bufferCreate(chunkSize);
+            else
+                sb.reset();
+            @SuppressWarnings("unchecked")
+            T_CONS sbc = (T_CONS) sb;
+            long permitsRequested = 0;
+            do {
+            } while (s.tryAdvance(sbc) && ++permitsRequested < chunkSize);
+            if (permitsRequested == 0)
+                return;
+            sb.forEach(action, acquirePermits(permitsRequested));
+        } else {
+            // Must be UNLIMITED; let 'er rip
+            s.forEachRemaining(action);
+            return;
+        }
+    }
+}

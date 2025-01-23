@@ -1,0 +1,16 @@
+/**
+ * Appends the string representation of the {@code float}
+ * argument to this sequence.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(float)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   f   a {@code float}.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(float f) {
+    FloatingDecimal.appendTo(f, this);
+    return this;
+}

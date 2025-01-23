@@ -1,0 +1,40 @@
+/**
+ * Checks if the specified <code>SampleModel</code> is compatible
+ * with this <code>ColorModel</code>.  If <code>sm</code> is
+ * <code>null</code>, this method returns <code>false</code>.
+ * @param sm the specified <code>SampleModel</code>,
+ * or <code>null</code>
+ * @return <code>true</code> if the specified <code>SampleModel</code>
+ *         is compatible with this <code>ColorModel</code>;
+ *         <code>false</code> otherwise.
+ * @see SampleModel
+ */
+public boolean isCompatibleSampleModel(SampleModel sm) {
+    if (!(sm instanceof SinglePixelPackedSampleModel)) {
+        return false;
+    }
+    // Must have the same number of components
+    if (numComponents != sm.getNumBands()) {
+        return false;
+    }
+    // Transfer type must be the same
+    if (sm.getTransferType() != transferType) {
+        return false;
+    }
+    SinglePixelPackedSampleModel sppsm = (SinglePixelPackedSampleModel) sm;
+    // Now compare the specific masks
+    int[] bitMasks = sppsm.getBitMasks();
+    if (bitMasks.length != maskArray.length) {
+        return false;
+    }
+    /* compare 'effective' masks only, i.e. only part of the mask
+         * which fits the capacity of the transfer type.
+         */
+    int maxMask = (int) ((1L << DataBuffer.getDataTypeSize(transferType)) - 1);
+    for (int i = 0; i < bitMasks.length; i++) {
+        if ((maxMask & bitMasks[i]) != (maxMask & maskArray[i])) {
+            return false;
+        }
+    }
+    return true;
+}

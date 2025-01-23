@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the state to the stream.
+ *
+ * @param offset  the offset, not null
+ * @param out  the output stream, not null
+ * @throws IOException if an error occurs
+ */
+static void writeOffset(ZoneOffset offset, DataOutput out) throws IOException {
+    final int offsetSecs = offset.getTotalSeconds();
+    // compress to -72 to +72
+    int offsetByte = offsetSecs % 900 == 0 ? offsetSecs / 900 : 127;
+    out.writeByte(offsetByte);
+    if (offsetByte == 127) {
+        out.writeInt(offsetSecs);
+    }
+}

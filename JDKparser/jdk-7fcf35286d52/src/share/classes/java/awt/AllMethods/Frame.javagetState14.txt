@@ -1,0 +1,19 @@
+/**
+ * Gets the state of this frame (obsolete).
+ * <p>
+ * In older versions of JDK a frame state could only be NORMAL or
+ * ICONIFIED.  Since JDK 1.4 set of supported frame states is
+ * expanded and frame state is represented as a bitwise mask.
+ * <p>
+ * For compatibility with old programs this method still returns
+ * <code>Frame.NORMAL</code> and <code>Frame.ICONIFIED</code> but
+ * it only reports the iconic state of the frame, other aspects of
+ * frame state are not reported by this method.
+ *
+ * @return  <code>Frame.NORMAL</code> or <code>Frame.ICONIFIED</code>.
+ * @see     #setState(int)
+ * @see     #getExtendedState
+ */
+public synchronized int getState() {
+    return (getExtendedState() & ICONIFIED) != 0 ? ICONIFIED : NORMAL;
+}

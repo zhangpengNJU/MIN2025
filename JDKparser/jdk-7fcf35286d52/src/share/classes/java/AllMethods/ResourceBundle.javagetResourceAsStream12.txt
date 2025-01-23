@@ -1,0 +1,6 @@
+public InputStream getResourceAsStream(String name) {
+    if (loader != null) {
+        return loader.getResourceAsStream(name);
+    }
+    return ClassLoader.getSystemResourceAsStream(name);
+}

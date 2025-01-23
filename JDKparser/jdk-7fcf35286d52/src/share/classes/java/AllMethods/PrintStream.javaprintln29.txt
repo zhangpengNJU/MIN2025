@@ -1,0 +1,13 @@
+/**
+ * Prints an array of characters and then terminate the line.  This method
+ * behaves as though it invokes <code>{@link #print(char[])}</code> and
+ * then <code>{@link #println()}</code>.
+ *
+ * @param x  an array of chars to print.
+ */
+public void println(char[] x) {
+    synchronized (this) {
+        print(x);
+        newLine();
+    }
+}

@@ -1,0 +1,20 @@
+/**
+ * Sets the number of rows for this text area.
+ * @param       rows   the number of rows
+ * @see         #getRows()
+ * @see         #setColumns(int)
+ * @exception   IllegalArgumentException   if the value
+ *                 supplied for <code>rows</code>
+ *                 is less than <code>0</code>
+ * @since       JDK1.1
+ */
+public void setRows(int rows) {
+    int oldVal = this.rows;
+    if (rows < 0) {
+        throw new IllegalArgumentException("rows less than zero.");
+    }
+    if (rows != oldVal) {
+        this.rows = rows;
+        invalidate();
+    }
+}

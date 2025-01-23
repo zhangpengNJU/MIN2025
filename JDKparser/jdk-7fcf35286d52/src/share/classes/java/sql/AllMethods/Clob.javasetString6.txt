@@ -1,0 +1,30 @@
+// ---------------------------- jdbc 3.0 -----------------------------------
+/**
+ * Writes the given Java <code>String</code> to the <code>CLOB</code>
+ * value that this <code>Clob</code> object designates at the position
+ * <code>pos</code>. The string will overwrite the existing characters
+ * in the <code>Clob</code> object starting at the position
+ * <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ * while writing the given string, then the length of the <code>Clob</code>
+ * value will be increased to accommodate the extra characters.
+ * <p>
+ * <b>Note:</b> If the value specified for <code>pos</code>
+ * is greater then the length+1 of the <code>CLOB</code> value then the
+ * behavior is undefined. Some JDBC drivers may throw a
+ * <code>SQLException</code> while other drivers may support this
+ * operation.
+ *
+ * @param pos the position at which to start writing to the <code>CLOB</code>
+ *         value that this <code>Clob</code> object represents;
+ * The first position is 1
+ * @param str the string to be written to the <code>CLOB</code>
+ *        value that this <code>Clob</code> designates
+ * @return the number of characters written
+ * @exception SQLException if there is an error accessing the
+ *            <code>CLOB</code> value or if pos is less than 1
+ *
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.4
+ */
+int setString(long pos, String str) throws SQLException;

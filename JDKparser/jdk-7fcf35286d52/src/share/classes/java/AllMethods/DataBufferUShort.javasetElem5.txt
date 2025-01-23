@@ -1,0 +1,13 @@
+/**
+ * Sets the requested data array element in the first (default) bank
+ * to the specified value.
+ *
+ * @param i The data array element you want to set.
+ * @param val The integer value to which you want to set the data array element.
+ * @see #getElem(int)
+ * @see #getElem(int, int)
+ */
+public void setElem(int i, int val) {
+    data[i + offset] = (short) (val & 0xffff);
+    theTrackable.markDirty();
+}

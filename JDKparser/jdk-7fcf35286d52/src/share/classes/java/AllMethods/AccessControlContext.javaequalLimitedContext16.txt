@@ -1,0 +1,54 @@
+/*
+     * Compare for equality based on state that is captured during a
+     * call to AccessController.getContext() when a limited privilege
+     * scope is in effect.
+     */
+private boolean equalLimitedContext(AccessControlContext that) {
+    if (that == null)
+        return false;
+    /*
+         * If neither instance has limited privilege scope then we're done.
+         */
+    if (!this.isLimited && !that.isLimited)
+        return true;
+    /*
+         * If only one instance has limited privilege scope then we're done.
+         */
+    if (!(this.isLimited && that.isLimited))
+        return false;
+    /*
+         * Wrapped instances should never escape outside the implementation
+         * this class and AccessController so this will probably never happen
+         * but it only makes any sense to compare if they both have the same
+         * isWrapped state.
+         */
+    if ((this.isWrapped && !that.isWrapped) || (!this.isWrapped && that.isWrapped)) {
+        return false;
+    }
+    if (this.permissions == null && that.permissions != null)
+        return false;
+    if (this.permissions != null && that.permissions == null)
+        return false;
+    if (!(this.containsAllLimits(that) && that.containsAllLimits(this)))
+        return false;
+    /*
+         * Skip through any wrapped contexts.
+         */
+    AccessControlContext thisNextPC = getNextPC(this);
+    AccessControlContext thatNextPC = getNextPC(that);
+    /*
+         * The protection domains and combiner of a privilegedContext are
+         * not relevant because they have already been included in the context
+         * of this instance by optimize() so we only care about any limited
+         * privilege state they may have.
+         */
+    if (thisNextPC == null && thatNextPC != null && thatNextPC.isLimited)
+        return false;
+    if (thisNextPC != null && !thisNextPC.equalLimitedContext(thatNextPC))
+        return false;
+    if (this.parent == null && that.parent != null)
+        return false;
+    if (this.parent != null && !this.parent.equals(that.parent))
+        return false;
+    return true;
+}

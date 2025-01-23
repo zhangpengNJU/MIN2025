@@ -1,0 +1,20 @@
+/**
+ * A routine that knows how to strip the quotes and escape sequences from the given value.
+ */
+private static String unquote(String value) {
+    int valueLength = value.length();
+    StringBuilder buffer = new StringBuilder(valueLength);
+    boolean escaped = false;
+    for (int i = 0; i < valueLength; ++i) {
+        char currentChar = value.charAt(i);
+        if (!escaped && (currentChar != '\\')) {
+            buffer.append(currentChar);
+        } else if (escaped) {
+            buffer.append(currentChar);
+            escaped = false;
+        } else {
+            escaped = true;
+        }
+    }
+    return buffer.toString();
+}

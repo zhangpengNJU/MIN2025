@@ -1,0 +1,15 @@
+/**
+ * Moves the focus up one focus traversal cycle from the current focus
+ * owner. Typically, the new focus owner is set to the current focus
+ * owner's focus cycle root, and the current focus cycle root is set to the
+ * new focus owner's focus cycle root. If, however, the current focus
+ * owner's focus cycle root is a Window, then typically the focus owner is
+ * set to the focus cycle root's default Component to focus, and the
+ * current focus cycle root is unchanged.
+ */
+public final void upFocusCycle() {
+    Component focusOwner = getFocusOwner();
+    if (focusOwner != null) {
+        upFocusCycle(focusOwner);
+    }
+}

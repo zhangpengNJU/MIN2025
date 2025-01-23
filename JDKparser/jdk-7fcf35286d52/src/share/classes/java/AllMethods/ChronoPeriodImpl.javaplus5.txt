@@ -1,0 +1,6 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoPeriod plus(TemporalAmount amountToAdd) {
+    ChronoPeriodImpl amount = validateAmount(amountToAdd);
+    return new ChronoPeriodImpl(chrono, Math.addExact(years, amount.years), Math.addExact(months, amount.months), Math.addExact(days, amount.days));
+}

@@ -1,0 +1,8 @@
+private List<Statement> statementList(Object target) {
+    List<Statement> list = targetToStatementList.get(target);
+    if (list == null) {
+        list = new ArrayList<>();
+        targetToStatementList.put(target, list);
+    }
+    return list;
+}

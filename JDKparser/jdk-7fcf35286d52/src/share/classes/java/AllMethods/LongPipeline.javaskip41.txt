@@ -1,0 +1,9 @@
+@Override
+public final LongStream skip(long n) {
+    if (n < 0)
+        throw new IllegalArgumentException(Long.toString(n));
+    if (n == 0)
+        return this;
+    else
+        return SliceOps.makeLong(this, n, -1);
+}

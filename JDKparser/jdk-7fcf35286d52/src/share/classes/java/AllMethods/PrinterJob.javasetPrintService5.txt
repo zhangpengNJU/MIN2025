@@ -1,0 +1,19 @@
+/**
+ * Associate this PrinterJob with a new PrintService.
+ * This method is overridden by subclasses which support
+ * specifying a Print Service.
+ *
+ * Throws <code>PrinterException</code> if the specified service
+ * cannot support the <code>Pageable</code> and
+ * <code>Printable</code> interfaces necessary to support 2D printing.
+ * @param service a print service that supports 2D printing
+ * @exception PrinterException if the specified service does not support
+ * 2D printing, or this PrinterJob class does not support
+ * setting a 2D print service, or the specified service is
+ * otherwise not a valid print service.
+ * @see #getPrintService
+ * @since     1.4
+ */
+public void setPrintService(PrintService service) throws PrinterException {
+    throw new PrinterException("Setting a service is not supported on this class");
+}

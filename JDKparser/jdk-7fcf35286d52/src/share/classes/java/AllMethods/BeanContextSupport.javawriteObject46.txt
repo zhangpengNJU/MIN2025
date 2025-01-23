@@ -1,0 +1,28 @@
+/**
+ * Serialize the BeanContextSupport, if this instance has a distinct
+ * peer (that is this object is acting as a delegate for another) then
+ * the children of this instance are not serialized here due to a
+ * 'chicken and egg' problem that occurs on deserialization of the
+ * children at the same time as this instance.
+ *
+ * Therefore in situations where there is a distinct peer to this instance
+ * it should always call writeObject() followed by writeChildren() and
+ * readObject() followed by readChildren().
+ *
+ * @param oos the ObjectOutputStream
+ */
+private synchronized void writeObject(ObjectOutputStream oos) throws IOException, ClassNotFoundException {
+    serializing = true;
+    synchronized (BeanContext.globalHierarchyLock) {
+        try {
+            // serialize the BeanContextSupport object
+            oos.defaultWriteObject();
+            bcsPreSerializationHook(oos);
+            if (serializable > 0 && this.equals(getBeanContextPeer()))
+                writeChildren(oos);
+            serialize(oos, (Collection) bcmListeners);
+        } finally {
+            serializing = false;
+        }
+    }
+}

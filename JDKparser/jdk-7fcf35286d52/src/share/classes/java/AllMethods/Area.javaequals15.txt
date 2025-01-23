@@ -1,0 +1,23 @@
+/**
+ * Tests whether the geometries of the two <code>Area</code> objects
+ * are equal.
+ * This method will return false if the argument is null.
+ * @param   other  the <code>Area</code> to be compared to this
+ *          <code>Area</code>
+ * @return  <code>true</code> if the two geometries are equal;
+ *          <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean equals(Area other) {
+    // REMIND: A *much* simpler operation should be possible...
+    // Should be able to do a curve-wise comparison since all Areas
+    // should evaluate their curves in the same top-down order.
+    if (other == this) {
+        return true;
+    }
+    if (other == null) {
+        return false;
+    }
+    Vector c = new AreaOp.XorOp().calculate(this.curves, other.curves);
+    return c.isEmpty();
+}

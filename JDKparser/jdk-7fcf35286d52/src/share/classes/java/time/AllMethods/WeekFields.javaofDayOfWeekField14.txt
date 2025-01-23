@@ -1,0 +1,10 @@
+/**
+ * Returns a field to access the day of week,
+ * computed based on a WeekFields.
+ * <p>
+ * The WeekDefintion of the first day of the week is used with
+ * the ISO DAY_OF_WEEK field to compute week boundaries.
+ */
+static ComputedDayOfField ofDayOfWeekField(WeekFields weekDef) {
+    return new ComputedDayOfField("DayOfWeek", weekDef, DAYS, WEEKS, DAY_OF_WEEK_RANGE);
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the window focus listeners
+ * registered on this window.
+ *
+ * @return all of this window's {@code WindowFocusListener}s
+ *         or an empty array if no window focus
+ *         listeners are currently registered
+ *
+ * @see #addWindowFocusListener
+ * @see #removeWindowFocusListener
+ * @since 1.4
+ */
+public synchronized WindowFocusListener[] getWindowFocusListeners() {
+    return getListeners(WindowFocusListener.class);
+}

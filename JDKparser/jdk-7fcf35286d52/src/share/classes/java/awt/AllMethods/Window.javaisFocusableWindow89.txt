@@ -1,0 +1,44 @@
+/**
+ * Returns whether this Window can become the focused Window, that is,
+ * whether this Window or any of its subcomponents can become the focus
+ * owner. For a Frame or Dialog to be focusable, its focusable Window state
+ * must be set to {@code true}. For a Window which is not a Frame or
+ * Dialog to be focusable, its focusable Window state must be set to
+ * {@code true}, its nearest owning Frame or Dialog must be
+ * showing on the screen, and it must contain at least one Component in
+ * its focus traversal cycle. If any of these conditions is not met, then
+ * neither this Window nor any of its subcomponents can become the focus
+ * owner.
+ *
+ * @return {@code true} if this Window can be the focused Window;
+ *         {@code false} otherwise
+ * @see #getFocusableWindowState
+ * @see #setFocusableWindowState
+ * @see #isShowing
+ * @see Component#isFocusable
+ * @since 1.4
+ */
+public final boolean isFocusableWindow() {
+    // If a Window/Frame/Dialog was made non-focusable, then it is always
+    // non-focusable.
+    if (!getFocusableWindowState()) {
+        return false;
+    }
+    // All other tests apply only to Windows.
+    if (this instanceof Frame || this instanceof Dialog) {
+        return true;
+    }
+    // A Window must have at least one Component in its root focus
+    // traversal cycle to be focusable.
+    if (getFocusTraversalPolicy().getDefaultComponent(this) == null) {
+        return false;
+    }
+    // A Window's nearest owning Frame or Dialog must be showing on the
+    // screen.
+    for (Window owner = getOwner(); owner != null; owner = owner.getOwner()) {
+        if (owner instanceof Frame || owner instanceof Dialog) {
+            return owner.isShowing();
+        }
+    }
+    return false;
+}

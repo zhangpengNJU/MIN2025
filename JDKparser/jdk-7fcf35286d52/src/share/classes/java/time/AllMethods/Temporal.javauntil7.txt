@@ -1,0 +1,75 @@
+// -----------------------------------------------------------------------
+/**
+ * Calculates the amount of time until another temporal in terms of the specified unit.
+ * <p>
+ * This calculates the amount of time between two temporal objects
+ * in terms of a single {@code TemporalUnit}.
+ * The start and end points are {@code this} and the specified temporal.
+ * The end point is converted to be of the same type as the start point if different.
+ * The result will be negative if the end is before the start.
+ * For example, the amount in hours between two temporal objects can be
+ * calculated using {@code startTime.until(endTime, HOURS)}.
+ * <p>
+ * The calculation returns a whole number, representing the number of
+ * complete units between the two temporals.
+ * For example, the amount in hours between the times 11:30 and 13:29
+ * will only be one hour as it is one minute short of two hours.
+ * <p>
+ * There are two equivalent ways of using this method.
+ * The first is to invoke this method directly.
+ * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
+ * <pre>
+ *   // these two lines are equivalent
+ *   temporal = start.until(end, unit);
+ *   temporal = unit.between(start, end);
+ * </pre>
+ * The choice should be made based on which makes the code more readable.
+ * <p>
+ * For example, this method allows the number of days between two dates to
+ * be calculated:
+ * <pre>
+ *  long daysBetween = start.until(end, DAYS);
+ *  // or alternatively
+ *  long daysBetween = DAYS.between(start, end);
+ * </pre>
+ *
+ * @implSpec
+ * Implementations must begin by checking to ensure that the input temporal
+ * object is of the same observable type as the implementation.
+ * They must then perform the calculation for all instances of {@link ChronoUnit}.
+ * An {@code UnsupportedTemporalTypeException} must be thrown for {@code ChronoUnit}
+ * instances that are unsupported.
+ * <p>
+ * If the unit is not a {@code ChronoUnit}, then the result of this method
+ * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
+ * passing {@code this} as the first argument and the converted input temporal as
+ * the second argument.
+ * <p>
+ * In summary, implementations must behave in a manner equivalent to this pseudo-code:
+ * <pre>
+ *  // convert the end temporal to the same type as this class
+ *  if (unit instanceof ChronoUnit) {
+ *    // if unit is supported, then calculate and return result
+ *    // else throw UnsupportedTemporalTypeException for unsupported units
+ *  }
+ *  return unit.between(this, convertedEndTemporal);
+ * </pre>
+ * <p>
+ * Note that the unit's {@code between} method must only be invoked if the
+ * two temporal objects have exactly the same type evaluated by {@code getClass()}.
+ * <p>
+ * Implementations must ensure that no observable state is altered when this
+ * read-only method is invoked.
+ *
+ * @param endExclusive  the end temporal, exclusive, converted to be of the
+ *  same type as this object, not null
+ * @param unit  the unit to measure the amount in, not null
+ * @return the amount of time between this temporal object and the specified one
+ *  in terms of the unit; positive if the specified object is later than this one,
+ *  negative if it is earlier than this one
+ * @throws DateTimeException if the amount cannot be calculated, or the end
+ *  temporal cannot be converted to the same type as this temporal
+ * @throws UnsupportedTemporalTypeException if the unit is not supported
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+long until(Temporal endExclusive, TemporalUnit unit);

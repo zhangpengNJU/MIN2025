@@ -1,0 +1,13 @@
+/**
+ * Gets the BeanContextMembershipListener
+ * (if any) of the specified child
+ * @param child the specified child
+ * @return the BeanContextMembershipListener (if any) of the specified child
+ */
+protected static final BeanContextMembershipListener getChildBeanContextMembershipListener(Object child) {
+    try {
+        return (BeanContextMembershipListener) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

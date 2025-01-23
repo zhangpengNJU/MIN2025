@@ -1,0 +1,13 @@
+/**
+ * Informs that an object is now active. An <code>ActivationGroup</code>
+ * informs its monitor if an object in its group becomes active by
+ * other means than being activated directly (i.e., the object
+ * is registered and "activated" itself).
+ *
+ * @param id the active object's id
+ * @param obj the marshalled form of the object's stub
+ * @exception UnknownObjectException if object is unknown
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public void activeObject(ActivationID id, MarshalledObject<? extends Remote> obj) throws UnknownObjectException, RemoteException;

@@ -1,0 +1,23 @@
+/**
+ * Determines if a character (Unicode code point) is defined in Unicode.
+ * <p>
+ * A character is defined if at least one of the following is true:
+ * <ul>
+ * <li>It has an entry in the UnicodeData file.
+ * <li>It has a value in a range defined by the UnicodeData file.
+ * </ul>
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character has a defined meaning
+ *          in Unicode; {@code false} otherwise.
+ * @see     Character#isDigit(int)
+ * @see     Character#isLetter(int)
+ * @see     Character#isLetterOrDigit(int)
+ * @see     Character#isLowerCase(int)
+ * @see     Character#isTitleCase(int)
+ * @see     Character#isUpperCase(int)
+ * @since   1.5
+ */
+public static boolean isDefined(int codePoint) {
+    return getType(codePoint) != Character.UNASSIGNED;
+}

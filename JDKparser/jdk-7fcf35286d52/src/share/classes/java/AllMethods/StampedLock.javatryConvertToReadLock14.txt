@@ -1,0 +1,37 @@
+/**
+ * If the lock state matches the given stamp, performs one of
+ * the following actions. If the stamp represents holding a write
+ * lock, releases it and obtains a read lock.  Or, if a read lock,
+ * returns it. Or, if an optimistic read, acquires a read lock and
+ * returns a read stamp only if immediately available. This method
+ * returns zero in all other cases.
+ *
+ * @param stamp a stamp
+ * @return a valid read stamp, or zero on failure
+ */
+public long tryConvertToReadLock(long stamp) {
+    long a = stamp & ABITS, m, s, next;
+    WNode h;
+    while (((s = state) & SBITS) == (stamp & SBITS)) {
+        if ((m = s & ABITS) == 0L) {
+            if (a != 0L)
+                break;
+            else if (m < RFULL) {
+                if (U.compareAndSwapLong(this, STATE, s, next = s + RUNIT))
+                    return next;
+            } else if ((next = tryIncReaderOverflow(s)) != 0L)
+                return next;
+        } else if (m == WBIT) {
+            if (a != m)
+                break;
+            state = next = s + (WBIT + RUNIT);
+            if ((h = whead) != null && h.status != 0)
+                release(h);
+            return next;
+        } else if (a != 0L && a < WBIT)
+            return stamp;
+        else
+            break;
+    }
+    return 0L;
+}

@@ -1,0 +1,36 @@
+/**
+ * Collects integral digits from passed {@code number}, while setting
+ * grouping chars as needed. Updates {@code firstUsedIndex} accordingly.
+ *
+ * Loops downward starting from {@code backwardIndex} position (inclusive).
+ *
+ * @param number  The int value from which we collect digits.
+ * @param digitsBuffer The char array container where digits and grouping chars
+ *  are stored.
+ * @param backwardIndex the position from which we start storing digits in
+ *  digitsBuffer.
+ */
+private void collectIntegralDigits(int number, char[] digitsBuffer, int backwardIndex) {
+    int index = backwardIndex;
+    int q;
+    int r;
+    while (number > 999) {
+        // Generates 3 digits per iteration.
+        q = number / 1000;
+        // -1024 +16 +8 = 1000.
+        r = number - (q << 10) + (q << 4) + (q << 3);
+        number = q;
+        digitsBuffer[index--] = DigitArrays.DigitOnes1000[r];
+        digitsBuffer[index--] = DigitArrays.DigitTens1000[r];
+        digitsBuffer[index--] = DigitArrays.DigitHundreds1000[r];
+        digitsBuffer[index--] = fastPathData.groupingChar;
+    }
+    // Collects last 3 or less digits.
+    digitsBuffer[index] = DigitArrays.DigitOnes1000[number];
+    if (number > 9) {
+        digitsBuffer[--index] = DigitArrays.DigitTens1000[number];
+        if (number > 99)
+            digitsBuffer[--index] = DigitArrays.DigitHundreds1000[number];
+    }
+    fastPathData.firstUsedIndex = index;
+}

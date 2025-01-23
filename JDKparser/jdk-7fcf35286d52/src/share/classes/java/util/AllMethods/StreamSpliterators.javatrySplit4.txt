@@ -1,0 +1,9 @@
+@Override
+public Spliterator<P_OUT> trySplit() {
+    if (isParallel && !finished) {
+        init();
+        Spliterator<P_IN> split = spliterator.trySplit();
+        return (split == null) ? null : wrap(split);
+    } else
+        return null;
+}

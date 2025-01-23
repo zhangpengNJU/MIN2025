@@ -1,0 +1,11 @@
+// Return best integer representation for v, clipped to integer
+// range and floor-ed or ceiling-ed, depending on the boolean.
+private static int clip(double v, boolean doceil) {
+    if (v <= Integer.MIN_VALUE) {
+        return Integer.MIN_VALUE;
+    }
+    if (v >= Integer.MAX_VALUE) {
+        return Integer.MAX_VALUE;
+    }
+    return (int) (doceil ? Math.ceil(v) : Math.floor(v));
+}

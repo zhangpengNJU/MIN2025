@@ -1,0 +1,9 @@
+private boolean impliesPortrange(Authority that) {
+    int[] thisrange = this.p.portrange();
+    int[] thatrange = that.p.portrange();
+    if (thisrange[0] == -1) {
+        /* port not specified non http/s URL */
+        return true;
+    }
+    return thisrange[0] <= thatrange[0] && thisrange[1] >= thatrange[1];
+}

@@ -1,0 +1,37 @@
+private int getRGBComponent(int pixel, int idx) {
+    if (numComponents > 1) {
+        throw new IllegalArgumentException("More than one component per pixel");
+    }
+    if (signed) {
+        throw new IllegalArgumentException("Component value is signed");
+    }
+    if (needScaleInit) {
+        initScale();
+    }
+    // Since there is only 1 component, there is no alpha
+    // Normalize the pixel in order to convert it
+    Object opixel = null;
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            {
+                byte[] bpixel = { (byte) pixel };
+                opixel = bpixel;
+            }
+            break;
+        case DataBuffer.TYPE_USHORT:
+            {
+                short[] spixel = { (short) pixel };
+                opixel = spixel;
+            }
+            break;
+        case DataBuffer.TYPE_INT:
+            {
+                int[] ipixel = { pixel };
+                opixel = ipixel;
+            }
+            break;
+    }
+    float[] norm = getNormalizedComponents(opixel, null, 0);
+    float[] rgb = colorSpace.toRGB(norm);
+    return (int) (rgb[idx] * 255.0f + 0.5f);
+}

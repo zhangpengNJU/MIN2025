@@ -1,0 +1,26 @@
+/**
+ * Writes the state to the stream.
+ *
+ * @param out  the output stream, not null
+ * @throws IOException if an error occurs
+ */
+void writeExternal(DataOutput out) throws IOException {
+    out.writeInt(standardTransitions.length);
+    for (long trans : standardTransitions) {
+        Ser.writeEpochSec(trans, out);
+    }
+    for (ZoneOffset offset : standardOffsets) {
+        Ser.writeOffset(offset, out);
+    }
+    out.writeInt(savingsInstantTransitions.length);
+    for (long trans : savingsInstantTransitions) {
+        Ser.writeEpochSec(trans, out);
+    }
+    for (ZoneOffset offset : wallOffsets) {
+        Ser.writeOffset(offset, out);
+    }
+    out.writeByte(lastRules.length);
+    for (ZoneOffsetTransitionRule rule : lastRules) {
+        rule.writeExternal(out);
+    }
+}

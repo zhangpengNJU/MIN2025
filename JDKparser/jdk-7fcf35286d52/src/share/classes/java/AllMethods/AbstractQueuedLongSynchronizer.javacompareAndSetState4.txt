@@ -1,0 +1,15 @@
+/**
+ * Atomically sets synchronization state to the given updated
+ * value if the current state value equals the expected value.
+ * This operation has memory semantics of a {@code volatile} read
+ * and write.
+ *
+ * @param expect the expected value
+ * @param update the new value
+ * @return {@code true} if successful. False return indicates that the actual
+ *         value was not equal to the expected value.
+ */
+protected final boolean compareAndSetState(long expect, long update) {
+    // See below for intrinsics setup to support this
+    return unsafe.compareAndSwapLong(this, stateOffset, expect, update);
+}

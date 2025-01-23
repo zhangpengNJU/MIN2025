@@ -1,0 +1,11 @@
+@Override
+public Instant instant() {
+    if ((tickNanos % 1000_000) == 0) {
+        long millis = baseClock.millis();
+        return Instant.ofEpochMilli(millis - Math.floorMod(millis, tickNanos / 1000_000L));
+    }
+    Instant instant = baseClock.instant();
+    long nanos = instant.getNano();
+    long adjust = Math.floorMod(nanos, tickNanos);
+    return instant.minusNanos(adjust);
+}

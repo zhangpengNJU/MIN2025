@@ -1,0 +1,22 @@
+/**
+ * Appends <code>numPages</code> pages to the end of this
+ * <code>Book</code>.  Each of the pages is associated with
+ * <code>page</code>.
+ * @param painter   the <code>Printable</code> instance that renders
+ *                  the page
+ * @param page      the size and orientation of the page
+ * @param numPages  the number of pages to be added to the
+ *                  this <code>Book</code>.
+ * @throws NullPointerException
+ *          If the <code>painter</code> or <code>page</code>
+ *          argument is <code>null</code>
+ */
+public void append(Printable painter, PageFormat page, int numPages) {
+    BookPage bookPage = new BookPage(painter, page);
+    int pageIndex = mPages.size();
+    int newSize = pageIndex + numPages;
+    mPages.setSize(newSize);
+    for (int i = pageIndex; i < newSize; i++) {
+        mPages.setElementAt(bookPage, i);
+    }
+}

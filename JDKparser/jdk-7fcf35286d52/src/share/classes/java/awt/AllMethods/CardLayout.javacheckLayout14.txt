@@ -1,0 +1,9 @@
+/**
+ * Make sure that the Container really has a CardLayout installed.
+ * Otherwise havoc can ensue!
+ */
+void checkLayout(Container parent) {
+    if (parent.getLayout() != this) {
+        throw new IllegalArgumentException("wrong parent for CardLayout");
+    }
+}

@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+@SuppressWarnings("unchecked")
+@Override
+public ChronoLocalDateTimeImpl<D> with(TemporalAdjuster adjuster) {
+    if (adjuster instanceof ChronoLocalDate) {
+        // The Chronology is checked in with(date,time)
+        return with((ChronoLocalDate) adjuster, time);
+    } else if (adjuster instanceof LocalTime) {
+        return with(date, (LocalTime) adjuster);
+    } else if (adjuster instanceof ChronoLocalDateTimeImpl) {
+        return ChronoLocalDateTimeImpl.ensureValid(date.getChronology(), (ChronoLocalDateTimeImpl<?>) adjuster);
+    }
+    return ChronoLocalDateTimeImpl.ensureValid(date.getChronology(), (ChronoLocalDateTimeImpl<?>) adjuster.adjustInto(this));
+}

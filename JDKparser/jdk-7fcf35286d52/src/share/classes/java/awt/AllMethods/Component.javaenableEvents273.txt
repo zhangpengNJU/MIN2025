@@ -1,0 +1,40 @@
+/**
+ * Enables the events defined by the specified event mask parameter
+ * to be delivered to this component.
+ * <p>
+ * Event types are automatically enabled when a listener for
+ * that event type is added to the component.
+ * <p>
+ * This method only needs to be invoked by subclasses of
+ * <code>Component</code> which desire to have the specified event
+ * types delivered to <code>processEvent</code> regardless of whether
+ * or not a listener is registered.
+ * @param      eventsToEnable   the event mask defining the event types
+ * @see        #processEvent
+ * @see        #disableEvents
+ * @see        AWTEvent
+ * @since      JDK1.1
+ */
+protected final void enableEvents(long eventsToEnable) {
+    long notifyAncestors = 0;
+    synchronized (this) {
+        if ((eventsToEnable & AWTEvent.HIERARCHY_EVENT_MASK) != 0 && hierarchyListener == null && (eventMask & AWTEvent.HIERARCHY_EVENT_MASK) == 0) {
+            notifyAncestors |= AWTEvent.HIERARCHY_EVENT_MASK;
+        }
+        if ((eventsToEnable & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) != 0 && hierarchyBoundsListener == null && (eventMask & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) == 0) {
+            notifyAncestors |= AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK;
+        }
+        eventMask |= eventsToEnable;
+        newEventsOnly = true;
+    }
+    // if this is a lightweight component, enable mouse events
+    // in the native container.
+    if (peer instanceof LightweightPeer) {
+        parent.proxyEnableEvents(eventMask);
+    }
+    if (notifyAncestors != 0) {
+        synchronized (getTreeLock()) {
+            adjustListeningChildrenOnParent(notifyAncestors, 1);
+        }
+    }
+}

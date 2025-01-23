@@ -1,0 +1,8 @@
+private boolean canConvertParameters(Class<?>[] srcTypes, Class<?>[] dstTypes) {
+    for (int i = 0; i < srcTypes.length; i++) {
+        if (!canConvert(srcTypes[i], dstTypes[i])) {
+            return false;
+        }
+    }
+    return true;
+}

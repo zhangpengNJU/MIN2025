@@ -1,0 +1,31 @@
+/**
+ * Draws a 3-D highlighted outline of the specified rectangle.
+ * The edges of the rectangle are highlighted so that they
+ * appear to be beveled and lit from the upper left corner.
+ * <p>
+ * The colors used for the highlighting effect are determined
+ * based on the current color.
+ * The resulting rectangle covers an area that is
+ * <code>width&nbsp;+&nbsp;1</code> pixels wide
+ * by <code>height&nbsp;+&nbsp;1</code> pixels tall.
+ * @param       x the <i>x</i> coordinate of the rectangle to be drawn.
+ * @param       y the <i>y</i> coordinate of the rectangle to be drawn.
+ * @param       width the width of the rectangle to be drawn.
+ * @param       height the height of the rectangle to be drawn.
+ * @param       raised a boolean that determines whether the rectangle
+ *                      appears to be raised above the surface
+ *                      or sunk into the surface.
+ * @see         java.awt.Graphics#fill3DRect
+ */
+public void draw3DRect(int x, int y, int width, int height, boolean raised) {
+    Color c = getColor();
+    Color brighter = c.brighter();
+    Color darker = c.darker();
+    setColor(raised ? brighter : darker);
+    drawLine(x, y, x, y + height);
+    drawLine(x + 1, y, x + width - 1, y);
+    setColor(raised ? darker : brighter);
+    drawLine(x + 1, y + height, x + width, y + height);
+    drawLine(x + width, y, x + width, y + height - 1);
+    setColor(c);
+}

@@ -1,0 +1,22 @@
+/**
+ * The integer token must be stripped of prefixes, group separators,
+ * and suffixes, non ascii digits must be converted into ascii digits
+ * before parse will accept it.
+ */
+private String processIntegerToken(String token) {
+    String result = token.replaceAll("" + groupSeparator, "");
+    boolean isNegative = false;
+    int preLen = negativePrefix.length();
+    if ((preLen > 0) && result.startsWith(negativePrefix)) {
+        isNegative = true;
+        result = result.substring(preLen);
+    }
+    int sufLen = negativeSuffix.length();
+    if ((sufLen > 0) && result.endsWith(negativeSuffix)) {
+        isNegative = true;
+        result = result.substring(result.length() - sufLen, result.length());
+    }
+    if (isNegative)
+        result = "-" + result;
+    return result;
+}

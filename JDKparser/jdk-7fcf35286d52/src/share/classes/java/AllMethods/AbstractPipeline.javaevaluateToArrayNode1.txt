@@ -1,0 +1,24 @@
+/**
+ * Collect the elements output from the pipeline stage.
+ *
+ * @param generator the array generator to be used to create array instances
+ * @return a flat array-backed Node that holds the collected output elements
+ */
+@SuppressWarnings("unchecked")
+final Node<E_OUT> evaluateToArrayNode(IntFunction<E_OUT[]> generator) {
+    if (linkedOrConsumed)
+        throw new IllegalStateException(MSG_STREAM_LINKED);
+    linkedOrConsumed = true;
+    // If the last intermediate operation is stateful then
+    // evaluate directly to avoid an extra collection step
+    if (isParallel() && previousStage != null && opIsStateful()) {
+        // Set the depth of this, last, pipeline stage to zero to slice the
+        // pipeline such that this operation will not be included in the
+        // upstream slice and upstream operations will not be included
+        // in this slice
+        depth = 0;
+        return opEvaluateParallel(previousStage, previousStage.sourceSpliterator(0), generator);
+    } else {
+        return evaluate(sourceSpliterator(0), true, generator);
+    }
+}

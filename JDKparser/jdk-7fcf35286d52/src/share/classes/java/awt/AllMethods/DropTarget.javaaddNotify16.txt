@@ -1,0 +1,29 @@
+/**
+ *  Notify the DropTarget that it has been associated with a Component
+ *
+ * *********************************************************************
+ *  This method is usually called from java.awt.Component.addNotify() of
+ *  the Component associated with this DropTarget to notify the DropTarget
+ *  that a ComponentPeer has been associated with that Component.
+ *
+ *  Calling this method, other than to notify this DropTarget of the
+ *  association of the ComponentPeer with the Component may result in
+ *  a malfunction of the DnD system.
+ * *********************************************************************
+ *  <P>
+ *  @param peer The Peer of the Component we are associated with!
+ */
+public void addNotify(ComponentPeer peer) {
+    if (peer == componentPeer)
+        return;
+    componentPeer = peer;
+    for (Component c = component; c != null && peer instanceof LightweightPeer; c = c.getParent()) {
+        peer = c.getPeer();
+    }
+    if (peer instanceof DropTargetPeer) {
+        nativePeer = peer;
+        ((DropTargetPeer) peer).addDropTarget(this);
+    } else {
+        nativePeer = null;
+    }
+}

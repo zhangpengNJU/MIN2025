@@ -1,0 +1,11 @@
+/**
+ * @return direct access to the back buffer, as an image.
+ * If there is no back buffer, returns null.
+ */
+Image getBackBuffer() {
+    if (backBuffers != null) {
+        return backBuffers[backBuffers.length - 1];
+    } else {
+        return null;
+    }
+}

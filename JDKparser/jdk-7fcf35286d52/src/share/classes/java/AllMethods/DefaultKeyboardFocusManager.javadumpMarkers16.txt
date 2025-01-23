@@ -1,0 +1,17 @@
+/**
+ * Dumps the list of type-ahead queue markers to stderr
+ */
+void dumpMarkers() {
+    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        focusLog.finest(">>> Markers dump, time: {0}", System.currentTimeMillis());
+        synchronized (this) {
+            if (typeAheadMarkers.size() != 0) {
+                Iterator<TypeAheadMarker> iter = typeAheadMarkers.iterator();
+                while (iter.hasNext()) {
+                    TypeAheadMarker marker = iter.next();
+                    focusLog.finest("    {0}", marker);
+                }
+            }
+        }
+    }
+}

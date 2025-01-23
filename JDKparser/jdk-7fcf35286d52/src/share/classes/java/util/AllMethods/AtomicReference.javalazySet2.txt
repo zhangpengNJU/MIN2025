@@ -1,0 +1,9 @@
+/**
+ * Eventually sets to the given value.
+ *
+ * @param newValue the new value
+ * @since 1.6
+ */
+public final void lazySet(V newValue) {
+    unsafe.putOrderedObject(this, valueOffset, newValue);
+}

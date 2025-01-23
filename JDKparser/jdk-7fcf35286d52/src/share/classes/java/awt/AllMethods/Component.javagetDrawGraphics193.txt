@@ -1,0 +1,10 @@
+/**
+ * @return the graphics on the drawing buffer.  This method may not
+ * be synchronized for performance reasons; use of this method by multiple
+ * threads should be handled at the application level.  Disposal of the
+ * graphics object must be handled by the application.
+ */
+public Graphics getDrawGraphics() {
+    revalidate();
+    return drawBuffer.getGraphics();
+}

@@ -1,0 +1,36 @@
+/**
+ * Returns a <tt>Package</tt> that has been defined by this class loader
+ * or any of its ancestors.
+ *
+ * @param  name
+ *         The package name
+ *
+ * @return  The <tt>Package</tt> corresponding to the given name, or
+ *          <tt>null</tt> if not found
+ *
+ * @since  1.2
+ */
+protected Package getPackage(String name) {
+    Package pkg;
+    synchronized (packages) {
+        pkg = packages.get(name);
+    }
+    if (pkg == null) {
+        if (parent != null) {
+            pkg = parent.getPackage(name);
+        } else {
+            pkg = Package.getSystemPackage(name);
+        }
+        if (pkg != null) {
+            synchronized (packages) {
+                Package pkg2 = packages.get(name);
+                if (pkg2 == null) {
+                    packages.put(name, pkg);
+                } else {
+                    pkg = pkg2;
+                }
+            }
+        }
+    }
+    return pkg;
+}

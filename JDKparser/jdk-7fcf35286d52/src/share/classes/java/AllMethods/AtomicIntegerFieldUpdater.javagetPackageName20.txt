@@ -1,0 +1,5 @@
+private static String getPackageName(Class<?> cls) {
+    String cn = cls.getName();
+    int dot = cn.lastIndexOf('.');
+    return (dot != -1) ? cn.substring(0, dot) : "";
+}

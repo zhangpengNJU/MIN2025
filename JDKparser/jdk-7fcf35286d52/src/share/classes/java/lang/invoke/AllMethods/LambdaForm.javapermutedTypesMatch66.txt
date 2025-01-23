@@ -1,0 +1,9 @@
+static boolean permutedTypesMatch(int[] reorder, BasicType[] types, Name[] names, int skip) {
+    int inTypes = types.length;
+    int outArgs = reorder.length;
+    for (int i = 0; i < outArgs; i++) {
+        assert (names[skip + i].isParam());
+        assert (names[skip + i].type == types[reorder[i]]);
+    }
+    return true;
+}

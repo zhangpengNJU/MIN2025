@@ -1,0 +1,10 @@
+/**
+ * Static wrapper for DirectMethodHandle.internalMemberName.
+ * This one also forces initialization.
+ */
+/*non-public*/
+static Object internalMemberNameEnsureInit(Object mh) {
+    DirectMethodHandle dmh = (DirectMethodHandle) mh;
+    dmh.ensureInitialized();
+    return dmh.member;
+}

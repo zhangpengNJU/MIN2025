@@ -1,0 +1,31 @@
+/**
+ * Returns a BigInteger whose value is {@code (this<sup>2</sup>)}. If
+ * the invocation is recursive certain overflow checks are skipped.
+ *
+ * @param isRecursion whether this is a recursive invocation
+ * @return {@code this<sup>2</sup>}
+ */
+private BigInteger square(boolean isRecursion) {
+    if (signum == 0) {
+        return ZERO;
+    }
+    int len = mag.length;
+    if (len < KARATSUBA_SQUARE_THRESHOLD) {
+        int[] z = squareToLen(mag, len, null);
+        return new BigInteger(trustedStripLeadingZeroInts(z), 1);
+    } else {
+        if (len < TOOM_COOK_SQUARE_THRESHOLD) {
+            return squareKaratsuba();
+        } else {
+            // 
+            // For a discussion of overflow detection see multiply()
+            // 
+            if (!isRecursion) {
+                if (bitLength(mag, mag.length) > 16L * MAX_MAG_LENGTH) {
+                    reportOverflow();
+                }
+            }
+            return squareToomCook3();
+        }
+    }
+}

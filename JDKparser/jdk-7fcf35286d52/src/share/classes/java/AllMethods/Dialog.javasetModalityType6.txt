@@ -1,0 +1,36 @@
+/**
+ * Sets the modality type for this dialog. See {@link
+ * java.awt.Dialog.ModalityType ModalityType} for possible modality types.
+ * <p>
+ * If the given modality type is not supported, <code>MODELESS</code>
+ * is used. You may want to call <code>getModalityType()</code> after calling
+ * this method to ensure that the modality type has been set.
+ * <p>
+ * Note: changing modality of the visible dialog may have no effect
+ * until it is hidden and then shown again.
+ *
+ * @param type specifies whether dialog blocks input to other
+ *     windows when shown. <code>null</code> value and unsupported modality
+ *     types are equivalent to <code>MODELESS</code>
+ * @exception SecurityException if the calling thread does not have permission
+ *     to create modal dialogs with the given <code>modalityType</code>
+ *
+ * @see       java.awt.Dialog#getModalityType
+ * @see       java.awt.Toolkit#isModalityTypeSupported
+ *
+ * @since     1.6
+ */
+public void setModalityType(ModalityType type) {
+    if (type == null) {
+        type = Dialog.ModalityType.MODELESS;
+    }
+    if (!Toolkit.getDefaultToolkit().isModalityTypeSupported(type)) {
+        type = Dialog.ModalityType.MODELESS;
+    }
+    if (modalityType == type) {
+        return;
+    }
+    checkModalityPermission(type);
+    modalityType = type;
+    modal = (modalityType != ModalityType.MODELESS);
+}

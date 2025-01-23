@@ -1,0 +1,35 @@
+/**
+ * Returns true iff this BigInteger passes the specified number of
+ * Miller-Rabin tests. This test is taken from the DSA spec (NIST FIPS
+ * 186-2).
+ *
+ * The following assumptions are made:
+ * This BigInteger is a positive, odd number greater than 2.
+ * iterations<=50.
+ */
+private boolean passesMillerRabin(int iterations, Random rnd) {
+    // Find a and m such that m is odd and this == 1 + 2**a * m
+    BigInteger thisMinusOne = this.subtract(ONE);
+    BigInteger m = thisMinusOne;
+    int a = m.getLowestSetBit();
+    m = m.shiftRight(a);
+    // Do the tests
+    if (rnd == null) {
+        rnd = ThreadLocalRandom.current();
+    }
+    for (int i = 0; i < iterations; i++) {
+        // Generate a uniform random on (1, this)
+        BigInteger b;
+        do {
+            b = new BigInteger(this.bitLength(), rnd);
+        } while (b.compareTo(ONE) <= 0 || b.compareTo(this) >= 0);
+        int j = 0;
+        BigInteger z = b.modPow(m, this);
+        while (!((j == 0 && z.equals(ONE)) || z.equals(thisMinusOne))) {
+            if (j > 0 && z.equals(ONE) || ++j == a)
+                return false;
+            z = z.modPow(TWO, this);
+        }
+    }
+    return true;
+}

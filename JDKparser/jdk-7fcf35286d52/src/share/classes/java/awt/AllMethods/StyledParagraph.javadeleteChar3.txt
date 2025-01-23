@@ -1,0 +1,35 @@
+/**
+ * Return a StyledParagraph reflecting the insertion of a single character
+ * into the text.  This method will attempt to reuse the given paragraph,
+ * but may create a new paragraph.
+ * @param aci an iterator over the text.  The text should be the same as the
+ *     text used to create (or most recently update) oldParagraph, with
+ *     the exception of deleting a single character at deletePos.
+ * @param chars the characters in aci
+ * @param deletePos the index where a character was removed
+ * @param oldParagraph a StyledParagraph for the text in aci before the
+ *     insertion
+ */
+public static StyledParagraph deleteChar(AttributedCharacterIterator aci, char[] chars, int deletePos, StyledParagraph oldParagraph) {
+    // We will reuse oldParagraph unless there was a length-1 run
+    // at deletePos.  We could do more work and check the individual
+    // Font and Decoration runs, but we don't right now...
+    deletePos -= aci.getBeginIndex();
+    if (oldParagraph.decorations == null && oldParagraph.fonts == null) {
+        oldParagraph.length -= 1;
+        return oldParagraph;
+    }
+    if (oldParagraph.getRunLimit(deletePos) == deletePos + 1) {
+        if (deletePos == 0 || oldParagraph.getRunLimit(deletePos - 1) == deletePos) {
+            return new StyledParagraph(aci, chars);
+        }
+    }
+    oldParagraph.length -= 1;
+    if (oldParagraph.decorations != null) {
+        deleteFrom(deletePos, oldParagraph.decorationStarts, oldParagraph.decorations.size());
+    }
+    if (oldParagraph.fonts != null) {
+        deleteFrom(deletePos, oldParagraph.fontStarts, oldParagraph.fonts.size());
+    }
+    return oldParagraph;
+}

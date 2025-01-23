@@ -1,0 +1,4 @@
+public Set<Map.Entry<K, V>> entrySet() {
+    EntrySetView es = entrySetView;
+    return (es != null) ? es : (entrySetView = new AscendingEntrySetView());
+}

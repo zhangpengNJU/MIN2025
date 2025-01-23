@@ -1,0 +1,56 @@
+static Rectangle computePixelBounds(BufferedImage im) {
+    int w = im.getWidth();
+    int h = im.getHeight();
+    int l = -1, t = -1, r = w, b = h;
+    {
+        // get top
+        int[] buf = new int[w];
+        loop: while (++t < h) {
+            // w ignored
+            im.getRGB(0, t, buf.length, 1, buf, 0, w);
+            for (int i = 0; i < buf.length; i++) {
+                if (buf[i] != -1) {
+                    break loop;
+                }
+            }
+        }
+    }
+    // get bottom
+    {
+        int[] buf = new int[w];
+        loop: while (--b > t) {
+            // w ignored
+            im.getRGB(0, b, buf.length, 1, buf, 0, w);
+            for (int i = 0; i < buf.length; ++i) {
+                if (buf[i] != -1) {
+                    break loop;
+                }
+            }
+        }
+        ++b;
+    }
+    // get left
+    {
+        loop: while (++l < r) {
+            for (int i = t; i < b; ++i) {
+                int v = im.getRGB(l, i);
+                if (v != -1) {
+                    break loop;
+                }
+            }
+        }
+    }
+    // get right
+    {
+        loop: while (--r > l) {
+            for (int i = t; i < b; ++i) {
+                int v = im.getRGB(r, i);
+                if (v != -1) {
+                    break loop;
+                }
+            }
+        }
+        ++r;
+    }
+    return new Rectangle(l, t, r - l, b - t);
+}

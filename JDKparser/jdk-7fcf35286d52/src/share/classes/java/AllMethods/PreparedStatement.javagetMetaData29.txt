@@ -1,0 +1,27 @@
+/**
+ * Retrieves a <code>ResultSetMetaData</code> object that contains
+ * information about the columns of the <code>ResultSet</code> object
+ * that will be returned when this <code>PreparedStatement</code> object
+ * is executed.
+ * <P>
+ * Because a <code>PreparedStatement</code> object is precompiled, it is
+ * possible to know about the <code>ResultSet</code> object that it will
+ * return without having to execute it.  Consequently, it is possible
+ * to invoke the method <code>getMetaData</code> on a
+ * <code>PreparedStatement</code> object rather than waiting to execute
+ * it and then invoking the <code>ResultSet.getMetaData</code> method
+ * on the <code>ResultSet</code> object that is returned.
+ * <P>
+ * <B>NOTE:</B> Using this method may be expensive for some drivers due
+ * to the lack of underlying DBMS support.
+ *
+ * @return the description of a <code>ResultSet</code> object's columns or
+ *         <code>null</code> if the driver cannot return a
+ *         <code>ResultSetMetaData</code> object
+ * @exception SQLException if a database access error occurs or
+ * this method is called on a closed <code>PreparedStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+ResultSetMetaData getMetaData() throws SQLException;

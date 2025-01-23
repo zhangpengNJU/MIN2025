@@ -1,0 +1,76 @@
+/**
+ * Sets the data for a single pixel in the specified DataBuffer from a
+ * primitive array of type TransferType.  For a BandedSampleModel,
+ * this will be the same as the data type, and samples are transferred
+ * one per array element.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * DataBuffer <code>db1</code>, whose storage layout is described by
+ * BandedSampleModel <code>bsm1</code>, to DataBuffer <code>db2</code>,
+ * whose storage layout is described by
+ * BandedSampleModel <code>bsm2</code>.
+ * The transfer will generally be more efficient than using
+ * getPixel/setPixel.
+ * <pre>
+ *       BandedSampleModel bsm1, bsm2;
+ *       DataBufferInt db1, db2;
+ *       bsm2.setDataElements(x, y, bsm1.getDataElements(x, y, null, db1),
+ *                            db2);
+ * </pre>
+ * Using getDataElements/setDataElements to transfer between two
+ * DataBuffer/SampleModel pairs is legitimate if the SampleModels have
+ * the same number of bands, corresponding bands have the same number of
+ * bits per sample, and the TransferTypes are the same.
+ * <p>
+ * obj must be a primitive array of type TransferType.  Otherwise,
+ * a ClassCastException is thrown.  An
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds, or if obj is not large enough to hold the pixel data.
+ * @param x         The X coordinate of the pixel location
+ * @param y         The Y coordinate of the pixel location
+ * @param obj       If non-null, returns the primitive array in this
+ *                  object
+ * @param data      The DataBuffer containing the image data
+ * @see #getDataElements(int, int, Object, DataBuffer)
+ */
+public void setDataElements(int x, int y, Object obj, DataBuffer data) {
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int type = getTransferType();
+    int numDataElems = getNumDataElements();
+    int pixelOffset = y * scanlineStride + x;
+    switch(type) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] barray = (byte[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                data.setElem(bankIndices[i], pixelOffset + bandOffsets[i], barray[i] & 0xff);
+            }
+            break;
+        case DataBuffer.TYPE_USHORT:
+        case DataBuffer.TYPE_SHORT:
+            short[] sarray = (short[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                data.setElem(bankIndices[i], pixelOffset + bandOffsets[i], sarray[i] & 0xffff);
+            }
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] iarray = (int[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                data.setElem(bankIndices[i], pixelOffset + bandOffsets[i], iarray[i]);
+            }
+            break;
+        case DataBuffer.TYPE_FLOAT:
+            float[] farray = (float[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                data.setElemFloat(bankIndices[i], pixelOffset + bandOffsets[i], farray[i]);
+            }
+            break;
+        case DataBuffer.TYPE_DOUBLE:
+            double[] darray = (double[]) obj;
+            for (int i = 0; i < numDataElems; i++) {
+                data.setElemDouble(bankIndices[i], pixelOffset + bandOffsets[i], darray[i]);
+            }
+            break;
+    }
+}

@@ -1,0 +1,8 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoPeriod multipliedBy(int scalar) {
+    if (this.isZero() || scalar == 1) {
+        return this;
+    }
+    return new ChronoPeriodImpl(chrono, Math.multiplyExact(years, scalar), Math.multiplyExact(months, scalar), Math.multiplyExact(days, scalar));
+}

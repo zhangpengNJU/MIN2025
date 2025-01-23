@@ -1,0 +1,21 @@
+/**
+ * Transfers the element to a consumer if it is possible to do so
+ * before the timeout elapses.
+ *
+ * <p>More precisely, transfers the specified element immediately
+ * if there exists a consumer already waiting to receive it (in
+ * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+ * else inserts the specified element at the tail of this queue
+ * and waits until the element is received by a consumer,
+ * returning {@code false} if the specified wait time elapses
+ * before the element can be transferred.
+ *
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean tryTransfer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+    if (xfer(e, true, TIMED, unit.toNanos(timeout)) == null)
+        return true;
+    if (!Thread.interrupted())
+        return false;
+    throw new InterruptedException();
+}

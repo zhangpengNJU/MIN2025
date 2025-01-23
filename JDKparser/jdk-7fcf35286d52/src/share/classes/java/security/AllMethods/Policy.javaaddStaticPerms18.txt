@@ -1,0 +1,13 @@
+/**
+ * add static permissions to provided permission collection
+ */
+private void addStaticPerms(PermissionCollection perms, PermissionCollection statics) {
+    if (statics != null) {
+        synchronized (statics) {
+            Enumeration<Permission> e = statics.elements();
+            while (e.hasMoreElements()) {
+                perms.add(e.nextElement());
+            }
+        }
+    }
+}

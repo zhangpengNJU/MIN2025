@@ -1,0 +1,49 @@
+/**
+ * Returns an array containing {@code Class} objects representing all
+ * the public classes and interfaces that are members of the class
+ * represented by this {@code Class} object.  This includes public
+ * class and interface members inherited from superclasses and public class
+ * and interface members declared by the class.  This method returns an
+ * array of length 0 if this {@code Class} object has no public member
+ * classes or interfaces.  This method also returns an array of length 0 if
+ * this {@code Class} object represents a primitive type, an array
+ * class, or void.
+ *
+ * @return the array of {@code Class} objects representing the public
+ *         members of this class
+ * @throws SecurityException
+ *         If a security manager, <i>s</i>, is present and
+ *         the caller's class loader is not the same as or an
+ *         ancestor of the class loader for the current class and
+ *         invocation of {@link SecurityManager#checkPackageAccess
+ *         s.checkPackageAccess()} denies access to the package
+ *         of this class.
+ *
+ * @since JDK1.1
+ */
+@CallerSensitive
+public Class<?>[] getClasses() {
+    checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), false);
+    // Privileged so this implementation can look at DECLARED classes,
+    // something the caller might not have privilege to do.  The code here
+    // is allowed to look at DECLARED classes because (1) it does not hand
+    // out anything other than public members and (2) public member access
+    // has already been ok'd by the SecurityManager.
+    return java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Class<?>[]>() {
+
+        public Class<?>[] run() {
+            List<Class<?>> list = new ArrayList<>();
+            Class<?> currentClass = Class.this;
+            while (currentClass != null) {
+                Class<?>[] members = currentClass.getDeclaredClasses();
+                for (int i = 0; i < members.length; i++) {
+                    if (Modifier.isPublic(members[i].getModifiers())) {
+                        list.add(members[i]);
+                    }
+                }
+                currentClass = currentClass.getSuperclass();
+            }
+            return list.toArray(new Class<?>[0]);
+        }
+    });
+}

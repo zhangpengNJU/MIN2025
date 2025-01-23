@@ -1,0 +1,14 @@
+@SuppressWarnings("unchecked")
+public boolean tryAdvance(Consumer<? super E> action) {
+    int i;
+    if (action == null)
+        throw new NullPointerException();
+    if (getFence() > (i = index)) {
+        index = i + 1;
+        action.accept((E) array[i]);
+        if (list.modCount != expectedModCount)
+            throw new ConcurrentModificationException();
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,12 @@
+/**
+ * Returns a file object corresponding to a built-in profile
+ * specified by fileName.
+ * If there is no built-in profile with such name, then the method
+ * returns null.
+ */
+private static File getStandardProfileFile(String fileName) {
+    String dir = System.getProperty("java.home") + File.separatorChar + "lib" + File.separatorChar + "cmm";
+    String fullPath = dir + File.separatorChar + fileName;
+    File f = new File(fullPath);
+    return (f.isFile() && isChildOf(f, dir)) ? f : null;
+}

@@ -1,0 +1,6 @@
+static void putFloat(ByteBuffer bb, int bi, float x, boolean bigEndian) {
+    if (bigEndian)
+        putFloatB(bb, bi, x);
+    else
+        putFloatL(bb, bi, x);
+}

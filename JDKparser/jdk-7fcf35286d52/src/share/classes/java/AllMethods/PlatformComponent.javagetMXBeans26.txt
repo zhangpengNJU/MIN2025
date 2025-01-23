@@ -1,0 +1,7 @@
+<T extends PlatformManagedObject> List<T> getMXBeans(MBeanServerConnection mbs, Class<T> mxbeanInterface) throws java.io.IOException {
+    List<T> result = new ArrayList<>();
+    for (ObjectName on : getObjectNames(mbs)) {
+        result.add(ManagementFactory.newPlatformMXBeanProxy(mbs, on.getCanonicalName(), mxbeanInterface));
+    }
+    return result;
+}

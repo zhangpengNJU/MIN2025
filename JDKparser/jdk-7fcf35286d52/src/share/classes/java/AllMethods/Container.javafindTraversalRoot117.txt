@@ -1,0 +1,22 @@
+private Container findTraversalRoot() {
+    // I potentially have two roots, myself and my root parent
+    // If I am the current root, then use me
+    // If none of my parents are roots, then use me
+    // If my root parent is the current root, then use my root parent
+    // If neither I nor my root parent is the current root, then
+    // use my root parent (a guess)
+    Container currentFocusCycleRoot = KeyboardFocusManager.getCurrentKeyboardFocusManager().getCurrentFocusCycleRoot();
+    Container root;
+    if (currentFocusCycleRoot == this) {
+        root = this;
+    } else {
+        root = getFocusCycleRootAncestor();
+        if (root == null) {
+            root = this;
+        }
+    }
+    if (root != currentFocusCycleRoot) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().setGlobalCurrentFocusCycleRootPriv(root);
+    }
+    return root;
+}

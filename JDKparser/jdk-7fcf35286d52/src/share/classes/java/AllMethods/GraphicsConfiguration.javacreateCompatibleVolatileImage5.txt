@@ -1,0 +1,24 @@
+/**
+ * Returns a {@link VolatileImage} with a data layout and color model
+ * compatible with this <code>GraphicsConfiguration</code>, using
+ * the specified image capabilities.
+ * If the <code>caps</code> parameter is null, it is effectively ignored
+ * and this method will create a VolatileImage without regard to
+ * <code>ImageCapabilities</code> constraints.
+ *
+ * The returned <code>VolatileImage</code> has
+ * a layout and color model that is closest to this native device
+ * configuration and can therefore be optimally blitted to this
+ * device.
+ * @return a <code>VolatileImage</code> whose data layout and color
+ * model is compatible with this <code>GraphicsConfiguration</code>.
+ * @param width the width of the returned <code>VolatileImage</code>
+ * @param height the height of the returned <code>VolatileImage</code>
+ * @param caps the image capabilities
+ * @exception AWTException if the supplied image capabilities could not
+ * be met by this graphics configuration
+ * @since 1.4
+ */
+public VolatileImage createCompatibleVolatileImage(int width, int height, ImageCapabilities caps) throws AWTException {
+    return createCompatibleVolatileImage(width, height, caps, Transparency.OPAQUE);
+}

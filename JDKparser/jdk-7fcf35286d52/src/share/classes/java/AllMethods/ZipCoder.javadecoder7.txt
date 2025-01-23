@@ -1,0 +1,6 @@
+private CharsetDecoder decoder() {
+    if (dec == null) {
+        dec = cs.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
+    }
+    return dec;
+}

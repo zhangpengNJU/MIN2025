@@ -1,0 +1,25 @@
+/**
+ * Checks if the specified <code>SampleModel</code> is compatible
+ * with this <code>ColorModel</code>.  If <code>sm</code> is
+ * <code>null</code>, this method returns <code>false</code>.
+ * @param sm the specified <code>SampleModel</code>,
+ *           or <code>null</code>
+ * @return <code>true</code> if the specified <code>SampleModel</code>
+ * is compatible with this <code>ColorModel</code>; <code>false</code>
+ * otherwise.
+ * @see SampleModel
+ */
+public boolean isCompatibleSampleModel(SampleModel sm) {
+    // fix 4238629
+    if (!(sm instanceof ComponentSampleModel) && !(sm instanceof MultiPixelPackedSampleModel)) {
+        return false;
+    }
+    // Transfer type must be the same
+    if (sm.getTransferType() != transferType) {
+        return false;
+    }
+    if (sm.getNumBands() != 1) {
+        return false;
+    }
+    return true;
+}

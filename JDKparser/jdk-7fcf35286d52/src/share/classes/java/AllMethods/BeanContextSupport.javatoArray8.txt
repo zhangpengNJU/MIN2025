@@ -1,0 +1,13 @@
+/**
+ * Gets an array containing all children of
+ * this <tt>BeanContext</tt> that match
+ * the types contained in arry.
+ * @param arry The array of object
+ * types that are of interest.
+ * @return an array of children
+ */
+public Object[] toArray(Object[] arry) {
+    synchronized (children) {
+        return children.keySet().toArray(arry);
+    }
+}

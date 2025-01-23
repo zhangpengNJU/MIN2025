@@ -1,0 +1,7 @@
+@Override
+public boolean isSupported(TemporalField field) {
+    if (effectiveDate != null && field.isDateBased()) {
+        return effectiveDate.isSupported(field);
+    }
+    return temporal.isSupported(field);
+}

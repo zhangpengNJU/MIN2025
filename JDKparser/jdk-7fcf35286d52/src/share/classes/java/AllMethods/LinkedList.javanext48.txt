@@ -1,0 +1,9 @@
+public E next() {
+    checkForComodification();
+    if (!hasNext())
+        throw new NoSuchElementException();
+    lastReturned = next;
+    next = next.next;
+    nextIndex++;
+    return lastReturned.item;
+}

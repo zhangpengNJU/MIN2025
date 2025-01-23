@@ -1,0 +1,19 @@
+/**
+ * Returns the focused Window, even if the calling thread is in a different
+ * context than the focused Window. The focused Window is the Window that
+ * is or contains the focus owner.
+ *
+ * @return the focused Window
+ * @see #getFocusedWindow
+ * @see #setGlobalFocusedWindow
+ * @throws SecurityException if this KeyboardFocusManager is not the
+ *         current KeyboardFocusManager for the calling thread's context
+ *         and if the calling thread does not have "replaceKeyboardFocusManager"
+ *         permission
+ */
+protected Window getGlobalFocusedWindow() throws SecurityException {
+    synchronized (KeyboardFocusManager.class) {
+        checkKFMSecurity();
+        return focusedWindow;
+    }
+}

@@ -1,0 +1,17 @@
+public String exprString() {
+    if (function == null)
+        return toString();
+    StringBuilder buf = new StringBuilder(function.toString());
+    buf.append("(");
+    String cma = "";
+    for (Object a : arguments) {
+        buf.append(cma);
+        cma = ",";
+        if (a instanceof Name || a instanceof Integer)
+            buf.append(a);
+        else
+            buf.append("(").append(a).append(")");
+    }
+    buf.append(")");
+    return buf.toString();
+}

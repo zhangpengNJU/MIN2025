@@ -1,0 +1,58 @@
+/**
+ * Computes Jacobi(p,n).
+ * Assumes n positive, odd, n>=3.
+ */
+private static int jacobiSymbol(int p, BigInteger n) {
+    if (p == 0)
+        return 0;
+    // Algorithm and comments adapted from Colin Plumb's C library.
+    int j = 1;
+    int u = n.mag[n.mag.length - 1];
+    // Make p positive
+    if (p < 0) {
+        p = -p;
+        int n8 = u & 7;
+        if ((n8 == 3) || (n8 == 7))
+            // 3 (011) or 7 (111) mod 8
+            j = -j;
+    }
+    // Get rid of factors of 2 in p
+    while ((p & 3) == 0) p >>= 2;
+    if ((p & 1) == 0) {
+        p >>= 1;
+        if (((u ^ (u >> 1)) & 2) != 0)
+            // 3 (011) or 5 (101) mod 8
+            j = -j;
+    }
+    if (p == 1)
+        return j;
+    // Then, apply quadratic reciprocity
+    if (// p = u = 3 (mod 4)?
+    (p & u & 2) != 0)
+        j = -j;
+    // And reduce u mod p
+    u = n.mod(BigInteger.valueOf(p)).intValue();
+    // Now compute Jacobi(u,p), u < p
+    while (u != 0) {
+        while ((u & 3) == 0) u >>= 2;
+        if ((u & 1) == 0) {
+            u >>= 1;
+            if (((p ^ (p >> 1)) & 2) != 0)
+                // 3 (011) or 5 (101) mod 8
+                j = -j;
+        }
+        if (u == 1)
+            return j;
+        // Now both u and p are odd, so use quadratic reciprocity
+        assert (u < p);
+        int t = u;
+        u = p;
+        p = t;
+        if (// u = p = 3 (mod 4)?
+        (u & p & 2) != 0)
+            j = -j;
+        // Now u >= p, so it can be reduced
+        u %= p;
+    }
+    return 0;
+}

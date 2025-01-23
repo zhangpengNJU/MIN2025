@@ -1,0 +1,6 @@
+private void processException(Throwable e) {
+    if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+        eventLog.fine("Processing exception: " + e);
+    }
+    getUncaughtExceptionHandler().uncaughtException(this, e);
+}

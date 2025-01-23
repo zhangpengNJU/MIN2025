@@ -1,0 +1,14 @@
+private final void createRunAttributeDataVectors() {
+    // use temporary variables so things remain consistent in case of an exception
+    int[] newRunStarts = new int[ARRAY_SIZE_INCREMENT];
+    @SuppressWarnings("unchecked")
+    Vector<Attribute>[] newRunAttributes = (Vector<Attribute>[]) new Vector<?>[ARRAY_SIZE_INCREMENT];
+    @SuppressWarnings("unchecked")
+    Vector<Object>[] newRunAttributeValues = (Vector<Object>[]) new Vector<?>[ARRAY_SIZE_INCREMENT];
+    runStarts = newRunStarts;
+    runAttributes = newRunAttributes;
+    runAttributeValues = newRunAttributeValues;
+    runArraySize = ARRAY_SIZE_INCREMENT;
+    // assume initial run starting at index 0
+    runCount = 1;
+}

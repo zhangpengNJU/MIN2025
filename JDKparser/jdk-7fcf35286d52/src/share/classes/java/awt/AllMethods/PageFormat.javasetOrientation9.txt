@@ -1,0 +1,16 @@
+/**
+ * Sets the page orientation. <code>orientation</code> must be
+ * one of the constants: PORTRAIT, LANDSCAPE,
+ * or REVERSE_LANDSCAPE.
+ * @param orientation the new orientation for the page
+ * @throws IllegalArgumentException if
+ *          an unknown orientation was requested
+ * @see #getOrientation
+ */
+public void setOrientation(int orientation) throws IllegalArgumentException {
+    if (0 <= orientation && orientation <= REVERSE_LANDSCAPE) {
+        mOrientation = orientation;
+    } else {
+        throw new IllegalArgumentException();
+    }
+}

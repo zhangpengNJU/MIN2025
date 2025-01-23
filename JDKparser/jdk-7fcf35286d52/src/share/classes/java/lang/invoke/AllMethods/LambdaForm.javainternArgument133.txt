@@ -1,0 +1,7 @@
+static Name internArgument(Name n) {
+    assert (n.isParam()) : "not param: " + n;
+    assert (n.index < INTERNED_ARGUMENT_LIMIT);
+    if (n.constraint != null)
+        return n;
+    return argument(n.index, n.type);
+}

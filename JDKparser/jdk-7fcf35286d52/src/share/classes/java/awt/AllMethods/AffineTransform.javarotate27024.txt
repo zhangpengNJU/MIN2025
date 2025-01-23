@@ -1,0 +1,14 @@
+private final void rotate270() {
+    double M0 = m00;
+    m00 = -m01;
+    m01 = M0;
+    M0 = m10;
+    m10 = -m11;
+    m11 = M0;
+    int state = rot90conversion[this.state];
+    if ((state & (APPLY_SHEAR | APPLY_SCALE)) == APPLY_SCALE && m00 == 1.0 && m11 == 1.0) {
+        state -= APPLY_SCALE;
+    }
+    this.state = state;
+    type = TYPE_UNKNOWN;
+}

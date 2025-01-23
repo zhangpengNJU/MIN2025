@@ -1,0 +1,68 @@
+/**
+ * Performs a lookup operation on a <code>Raster</code>.
+ * If the destination <code>Raster</code> is <code>null</code>,
+ * a new <code>Raster</code> will be created.
+ * The <code>IllegalArgumentException</code> might be thrown
+ * if the source <code>Raster</code> and the destination
+ * <code>Raster</code> do not have the same
+ * number of bands or if the number of arrays in the
+ * <code>LookupTable</code> does not meet the
+ * restrictions stated in the class comment above.
+ * @param src the source <code>Raster</code> to filter
+ * @param dst the destination <code>WritableRaster</code> for the
+ *            filtered <code>src</code>
+ * @return the filtered <code>WritableRaster</code>.
+ * @throws IllegalArgumentException if the source and destinations
+ *         rasters do not have the same number of bands, or the
+ *         number of arrays in the <code>LookupTable</code> does
+ *         not meet the restrictions described in the class comments.
+ */
+public final WritableRaster filter(Raster src, WritableRaster dst) {
+    int numBands = src.getNumBands();
+    int dstLength = dst.getNumBands();
+    int height = src.getHeight();
+    int width = src.getWidth();
+    int[] srcPix = new int[numBands];
+    // Create a new destination Raster, if needed
+    if (dst == null) {
+        dst = createCompatibleDestRaster(src);
+    } else if (height != dst.getHeight() || width != dst.getWidth()) {
+        throw new IllegalArgumentException("Width or height of Rasters do not " + "match");
+    }
+    dstLength = dst.getNumBands();
+    if (numBands != dstLength) {
+        throw new IllegalArgumentException("Number of channels in the src (" + numBands + ") does not match number of channels" + " in the destination (" + dstLength + ")");
+    }
+    int numComponents = ltable.getNumComponents();
+    if (numComponents != 1 && numComponents != src.getNumBands()) {
+        throw new IllegalArgumentException("Number of arrays in the " + " lookup table (" + numComponents + " is not compatible with the " + " src Raster: " + src);
+    }
+    if (ImagingLib.filter(this, src, dst) != null) {
+        return dst;
+    }
+    // Optimize for cases we know about
+    if (ltable instanceof ByteLookupTable) {
+        byteFilter((ByteLookupTable) ltable, src, dst, width, height, numBands);
+    } else if (ltable instanceof ShortLookupTable) {
+        shortFilter((ShortLookupTable) ltable, src, dst, width, height, numBands);
+    } else {
+        // Not one we recognize so do it slowly
+        int sminX = src.getMinX();
+        int sY = src.getMinY();
+        int dminX = dst.getMinX();
+        int dY = dst.getMinY();
+        for (int y = 0; y < height; y++, sY++, dY++) {
+            int sX = sminX;
+            int dX = dminX;
+            for (int x = 0; x < width; x++, sX++, dX++) {
+                // Find data for all bands at this x,y position
+                src.getPixel(sX, sY, srcPix);
+                // Lookup the data for all bands at this x,y position
+                ltable.lookupPixel(srcPix, srcPix);
+                // Put it back for all bands
+                dst.setPixel(dX, dY, srcPix);
+            }
+        }
+    }
+    return dst;
+}

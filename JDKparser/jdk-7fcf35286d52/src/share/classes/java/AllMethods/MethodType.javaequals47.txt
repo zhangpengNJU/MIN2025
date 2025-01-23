@@ -1,0 +1,11 @@
+/**
+ * Compares the specified object with this type for equality.
+ * That is, it returns <tt>true</tt> if and only if the specified object
+ * is also a method type with exactly the same parameters and return type.
+ * @param x object to compare
+ * @see Object#equals(Object)
+ */
+@Override
+public boolean equals(Object x) {
+    return this == x || x instanceof MethodType && equals((MethodType) x);
+}

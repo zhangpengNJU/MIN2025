@@ -1,0 +1,20 @@
+/**
+ * Returns the pseudo-randomly initialized or updated secondary seed.
+ */
+static final int nextSecondarySeed() {
+    int r;
+    Thread t = Thread.currentThread();
+    if ((r = UNSAFE.getInt(t, SECONDARY)) != 0) {
+        // xorshift
+        r ^= r << 13;
+        r ^= r >>> 17;
+        r ^= r << 5;
+    } else {
+        localInit();
+        if ((r = (int) UNSAFE.getLong(t, SEED)) == 0)
+            // avoid zero
+            r = 1;
+    }
+    UNSAFE.putInt(t, SECONDARY, r);
+    return r;
+}

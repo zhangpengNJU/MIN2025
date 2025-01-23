@@ -1,0 +1,20 @@
+@Override
+public String getObject(LocaleNameProvider localeNameProvider, Locale locale, String key, Object... params) {
+    assert params.length == 2;
+    int type = (Integer) params[0];
+    String code = (String) params[1];
+    switch(type) {
+        case DISPLAY_LANGUAGE:
+            return localeNameProvider.getDisplayLanguage(code, locale);
+        case DISPLAY_COUNTRY:
+            return localeNameProvider.getDisplayCountry(code, locale);
+        case DISPLAY_VARIANT:
+            return localeNameProvider.getDisplayVariant(code, locale);
+        case DISPLAY_SCRIPT:
+            return localeNameProvider.getDisplayScript(code, locale);
+        default:
+            // shouldn't happen
+            assert false;
+    }
+    return null;
+}

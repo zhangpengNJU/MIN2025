@@ -1,0 +1,23 @@
+@Override
+public void forEachRemaining(T_CONS action) {
+    Objects.requireNonNull(action);
+    if (sliceOrigin >= fence)
+        return;
+    if (index >= fence)
+        return;
+    if (index >= sliceOrigin && (index + s.estimateSize()) <= sliceFence) {
+        // The spliterator is contained within the slice
+        s.forEachRemaining(action);
+        index = fence;
+    } else {
+        // The spliterator intersects with the slice
+        while (sliceOrigin > index) {
+            s.tryAdvance(emptyConsumer());
+            index++;
+        }
+        // Traverse elements up to the fence
+        for (; index < fence; index++) {
+            s.tryAdvance(action);
+        }
+    }
+}

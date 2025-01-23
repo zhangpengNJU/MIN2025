@@ -1,0 +1,25 @@
+/**
+ * Sets the value of a socket option.
+ *
+ * @param   <T>
+ *          The type of the socket option value
+ * @param   name
+ *          The socket option
+ * @param   value
+ *          The value of the socket option. A value of {@code null} may be
+ *          a valid value for some socket options.
+ *
+ * @return  This channel
+ *
+ * @throws  UnsupportedOperationException
+ *          If the socket option is not supported by this channel
+ * @throws  IllegalArgumentException
+ *          If the value is not a valid value for this socket option
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @see java.net.StandardSocketOptions
+ */
+<T> NetworkChannel setOption(SocketOption<T> name, T value) throws IOException;

@@ -1,0 +1,31 @@
+/**
+ * Sets the minimum value of this scroll bar.
+ * <p>
+ * When <code>setMinimum</code> is called, the minimum value
+ * is changed, and other values (including the maximum, the
+ * visible amount, and the current scroll bar value)
+ * are changed to be consistent with the new minimum.
+ * <p>
+ * Normally, a program should change a scroll bar's minimum
+ * value only by calling <code>setValues</code>.
+ * The <code>setValues</code> method simultaneously
+ * and synchronously sets the minimum, maximum, visible amount,
+ * and value properties of a scroll bar, so that they are
+ * mutually consistent.
+ * <p>
+ * Note that setting the minimum value to <code>Integer.MAX_VALUE</code>
+ * will result in the new minimum value being set to
+ * <code>Integer.MAX_VALUE - 1</code>.
+ *
+ * @param       newMinimum   the new minimum value for this scroll bar
+ * @see         java.awt.Scrollbar#setValues
+ * @see         java.awt.Scrollbar#setMaximum
+ * @since       JDK1.1
+ */
+public void setMinimum(int newMinimum) {
+    // No checks are necessary in this method since minimum is
+    // the first variable checked in the setValues function.
+    // Use setValues so that a consistent policy relating
+    // minimum, maximum, visible amount, and value is enforced.
+    setValues(value, visibleAmount, newMinimum, maximum);
+}

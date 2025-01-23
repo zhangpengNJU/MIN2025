@@ -1,0 +1,15 @@
+/**
+ * Returns a <code>Set</code> of all keys contained in this
+ * <code>ResourceBundle</code> and its parent bundles.
+ *
+ * @return a <code>Set</code> of all keys contained in this
+ *         <code>ResourceBundle</code> and its parent bundles.
+ * @since 1.6
+ */
+public Set<String> keySet() {
+    Set<String> keys = new HashSet<>();
+    for (ResourceBundle rb = this; rb != null; rb = rb.parent) {
+        keys.addAll(rb.handleKeySet());
+    }
+    return keys;
+}

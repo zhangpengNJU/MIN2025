@@ -1,0 +1,14 @@
+/**
+ * Returns a {@code BigDecimal} whose value is the absolute value
+ * of this {@code BigDecimal}, with rounding according to the
+ * context settings.
+ *
+ * @param mc the context to use.
+ * @return {@code abs(this)}, rounded as necessary.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}.
+ * @since 1.5
+ */
+public BigDecimal abs(MathContext mc) {
+    return (signum() < 0 ? negate(mc) : plus(mc));
+}

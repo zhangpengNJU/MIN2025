@@ -1,0 +1,21 @@
+/**
+ * Removes the specified adjustment listener so that it no longer
+ * receives instances of <code>AdjustmentEvent</code> from this scroll bar.
+ * If l is <code>null</code>, no exception is thrown and no action
+ * is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param           l    the adjustment listener
+ * @see             #addAdjustmentListener
+ * @see             #getAdjustmentListeners
+ * @see             java.awt.event.AdjustmentEvent
+ * @see             java.awt.event.AdjustmentListener
+ * @since           JDK1.1
+ */
+public synchronized void removeAdjustmentListener(AdjustmentListener l) {
+    if (l == null) {
+        return;
+    }
+    adjustmentListener = AWTEventMulticaster.remove(adjustmentListener, l);
+}

@@ -1,0 +1,34 @@
+/**
+ * Recursively traverse the specified preferences node and store
+ * the described preferences into the system or current user
+ * preferences tree, as appropriate.
+ */
+private static void ImportSubtree(Preferences prefsNode, Element xmlNode) {
+    NodeList xmlKids = xmlNode.getChildNodes();
+    int numXmlKids = xmlKids.getLength();
+    /*
+         * We first lock the node, import its contents and get
+         * child nodes. Then we unlock the node and go to children
+         * Since some of the children might have been concurrently
+         * deleted we check for this.
+         */
+    Preferences[] prefsKids;
+    /* Lock the node */
+    synchronized (((AbstractPreferences) prefsNode).lock) {
+        // If removed, return silently
+        if (((AbstractPreferences) prefsNode).isRemoved())
+            return;
+        // Import any preferences at this node
+        Element firstXmlKid = (Element) xmlKids.item(0);
+        ImportPrefs(prefsNode, firstXmlKid);
+        prefsKids = new Preferences[numXmlKids - 1];
+        // Get involved children
+        for (int i = 1; i < numXmlKids; i++) {
+            Element xmlKid = (Element) xmlKids.item(i);
+            prefsKids[i - 1] = prefsNode.node(xmlKid.getAttribute("name"));
+        }
+    }
+    // unlocked the node
+    // import children
+    for (int i = 1; i < numXmlKids; i++) ImportSubtree(prefsKids[i - 1], (Element) xmlKids.item(i));
+}

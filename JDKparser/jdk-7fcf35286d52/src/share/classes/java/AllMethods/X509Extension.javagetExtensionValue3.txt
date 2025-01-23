@@ -1,0 +1,40 @@
+/**
+ * Gets the DER-encoded OCTET string for the extension value
+ * (<em>extnValue</em>) identified by the passed-in {@code oid}
+ * String.
+ * The {@code oid} string is
+ * represented by a set of nonnegative whole numbers separated
+ * by periods.
+ *
+ * <p>For example:<br>
+ * <table border=groove summary="Examples of OIDs and extension names">
+ * <tr>
+ * <th>OID <em>(Object Identifier)</em></th>
+ * <th>Extension Name</th></tr>
+ * <tr><td>2.5.29.14</td>
+ * <td>SubjectKeyIdentifier</td></tr>
+ * <tr><td>2.5.29.15</td>
+ * <td>KeyUsage</td></tr>
+ * <tr><td>2.5.29.16</td>
+ * <td>PrivateKeyUsage</td></tr>
+ * <tr><td>2.5.29.17</td>
+ * <td>SubjectAlternativeName</td></tr>
+ * <tr><td>2.5.29.18</td>
+ * <td>IssuerAlternativeName</td></tr>
+ * <tr><td>2.5.29.19</td>
+ * <td>BasicConstraints</td></tr>
+ * <tr><td>2.5.29.30</td>
+ * <td>NameConstraints</td></tr>
+ * <tr><td>2.5.29.33</td>
+ * <td>PolicyMappings</td></tr>
+ * <tr><td>2.5.29.35</td>
+ * <td>AuthorityKeyIdentifier</td></tr>
+ * <tr><td>2.5.29.36</td>
+ * <td>PolicyConstraints</td></tr>
+ * </table>
+ *
+ * @param oid the Object Identifier value for the extension.
+ * @return the DER-encoded octet string of the extension value or
+ * null if it is not present.
+ */
+public byte[] getExtensionValue(String oid);

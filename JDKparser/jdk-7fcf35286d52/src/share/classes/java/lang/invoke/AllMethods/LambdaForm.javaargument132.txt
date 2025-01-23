@@ -1,0 +1,5 @@
+static Name argument(int which, BasicType type) {
+    if (which >= INTERNED_ARGUMENT_LIMIT)
+        return new Name(which, type);
+    return INTERNED_ARGUMENTS[type.ordinal()][which];
+}

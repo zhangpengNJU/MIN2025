@@ -1,0 +1,27 @@
+public String toString() {
+    StringBuilder buf = new StringBuilder(debugName + "=Lambda(");
+    for (int i = 0; i < names.length; i++) {
+        if (i == arity)
+            buf.append(")=>{");
+        Name n = names[i];
+        if (i >= arity)
+            buf.append("\n    ");
+        buf.append(n.paramString());
+        if (i < arity) {
+            if (i + 1 < arity)
+                buf.append(",");
+            continue;
+        }
+        buf.append("=").append(n.exprString());
+        buf.append(";");
+    }
+    if (arity == names.length)
+        buf.append(")=>{");
+    buf.append(result < 0 ? "void" : names[result]).append("}");
+    if (TRACE_INTERPRETER) {
+        // Extra verbosity:
+        buf.append(":").append(basicTypeSignature());
+        buf.append("/").append(vmentry);
+    }
+    return buf.toString();
+}

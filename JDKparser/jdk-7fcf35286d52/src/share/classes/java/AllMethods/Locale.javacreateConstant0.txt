@@ -1,0 +1,8 @@
+/**
+ * This method must be called only for creating the Locale.*
+ * constants due to making shortcuts.
+ */
+private static Locale createConstant(String lang, String country) {
+    BaseLocale base = BaseLocale.createInstance(lang, country);
+    return getInstance(base, null);
+}

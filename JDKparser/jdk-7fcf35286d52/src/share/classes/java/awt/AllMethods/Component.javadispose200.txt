@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public void dispose() {
+    if (Component.this.bufferStrategy == this) {
+        Component.this.bufferStrategy = null;
+        if (peer != null) {
+            destroyBuffers();
+        }
+    }
+}

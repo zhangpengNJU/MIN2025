@@ -1,0 +1,14 @@
+/**
+ * Returns the minimum of this {@code BigDecimal} and
+ * {@code val}.
+ *
+ * @param  val value with which the minimum is to be computed.
+ * @return the {@code BigDecimal} whose value is the lesser of this
+ *         {@code BigDecimal} and {@code val}.  If they are equal,
+ *         as defined by the {@link #compareTo(BigDecimal) compareTo}
+ *         method, {@code this} is returned.
+ * @see    #compareTo(java.math.BigDecimal)
+ */
+public BigDecimal min(BigDecimal val) {
+    return (compareTo(val) <= 0 ? this : val);
+}

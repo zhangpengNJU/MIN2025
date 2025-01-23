@@ -1,0 +1,23 @@
+/*
+     * Calculate the additional domains that could potentially be reached via
+     * limited privilege scope. Mark the context as being subject to limited
+     * privilege scope unless the reachable domains (if any) are already
+     * contained in this domain context (in which case any limited
+     * privilege scope checking would be redundant).
+     */
+private void calculateFields(AccessControlContext assigned, AccessControlContext parent, Permission[] permissions) {
+    ProtectionDomain[] parentLimit = null;
+    ProtectionDomain[] assignedLimit = null;
+    ProtectionDomain[] newLimit;
+    parentLimit = (parent != null) ? parent.limitedContext : null;
+    assignedLimit = (assigned != null) ? assigned.limitedContext : null;
+    newLimit = combine(parentLimit, assignedLimit);
+    if (newLimit != null) {
+        if (context == null || !containsAllPDs(newLimit, context)) {
+            this.limitedContext = newLimit;
+            this.permissions = permissions;
+            this.parent = parent;
+            this.isLimited = true;
+        }
+    }
+}

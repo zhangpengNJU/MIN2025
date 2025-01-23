@@ -1,0 +1,6 @@
+@Override
+public final Stream<P_OUT> limit(long maxSize) {
+    if (maxSize < 0)
+        throw new IllegalArgumentException(Long.toString(maxSize));
+    return SliceOps.makeRef(this, 0, maxSize);
+}

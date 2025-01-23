@@ -1,0 +1,11 @@
+/**
+ * Returns the first unmatched node of the given mode, or null if
+ * none.  Used by methods isEmpty, hasWaitingConsumer.
+ */
+private Node firstOfMode(boolean isData) {
+    for (Node p = head; p != null; p = succ(p)) {
+        if (!p.isMatched())
+            return (p.isData == isData) ? p : null;
+    }
+    return null;
+}

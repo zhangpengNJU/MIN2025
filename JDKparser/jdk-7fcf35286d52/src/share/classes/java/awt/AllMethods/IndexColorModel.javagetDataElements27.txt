@@ -1,0 +1,51 @@
+/**
+ * Returns a data element array representation of a pixel in this
+ * <code>ColorModel</code> given an array of unnormalized color/alpha
+ * components.  This array can then be passed to the
+ * <code>setDataElements</code> method of a <code>WritableRaster</code>
+ * object.  An <code>ArrayIndexOutOfBoundsException</code> is
+ * thrown if the
+ * <code>components</code> array is not large enough to hold all of the
+ * color and alpha components starting at <code>offset</code>.
+ * If the pixel variable is <code>null</code>, a new array
+ * is allocated.  If <code>pixel</code> is not <code>null</code>,
+ * it must be a primitive array of type <code>transferType</code>;
+ * otherwise, a <code>ClassCastException</code> is thrown.
+ * An <code>ArrayIndexOutOfBoundsException</code> is thrown if pixel
+ * is not large enough to hold a pixel value for this
+ * <code>ColorModel</code>.
+ * <p>
+ * Since <code>IndexColorModel</code> can be subclassed, subclasses
+ * inherit the implementation of this method and if they don't
+ * override it then they throw an exception if they use an
+ * unsupported <code>transferType</code>
+ *
+ * @param components an array of unnormalized color and alpha
+ * components
+ * @param offset the index into <code>components</code> at which to
+ * begin retrieving color and alpha components
+ * @param pixel the <code>Object</code> representing an array of color
+ * and alpha components
+ * @return an <code>Object</code> representing an array of color and
+ * alpha components.
+ * @throws ClassCastException if <code>pixel</code>
+ *  is not a primitive array of type <code>transferType</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *  <code>pixel</code> is not large enough to hold a pixel value
+ *  for this <code>ColorModel</code> or the <code>components</code>
+ *  array is not large enough to hold all of the color and alpha
+ *  components starting at <code>offset</code>
+ * @throws UnsupportedOperationException if <code>transferType</code>
+ *         is not one of the supported transfer types
+ * @see WritableRaster#setDataElements
+ * @see SampleModel#setDataElements
+ */
+public Object getDataElements(int[] components, int offset, Object pixel) {
+    int rgb = (components[offset + 0] << 16) | (components[offset + 1] << 8) | (components[offset + 2]);
+    if (supportsAlpha) {
+        rgb |= (components[offset + 3] << 24);
+    } else {
+        rgb &= 0xff000000;
+    }
+    return getDataElements(rgb, pixel);
+}

@@ -1,0 +1,9 @@
+/*
+             * this adaptor is used by the BeanContextSupport class to forward
+             * vetoable changes from a child to the BeanContext, avoiding
+             * accidential serialization of the BeanContext by a badly
+             * behaved Serializable child.
+             */
+public void vetoableChange(PropertyChangeEvent pce) throws PropertyVetoException {
+    BeanContextSupport.this.vetoableChange(pce);
+}

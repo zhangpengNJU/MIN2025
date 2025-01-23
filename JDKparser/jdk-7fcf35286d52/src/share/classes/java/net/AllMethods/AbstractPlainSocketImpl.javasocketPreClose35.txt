@@ -1,0 +1,7 @@
+/*
+     * "Pre-close" a socket by dup'ing the file descriptor - this enables
+     * the socket to be closed without releasing the file descriptor.
+     */
+private void socketPreClose() throws IOException {
+    socketClose0(true);
+}

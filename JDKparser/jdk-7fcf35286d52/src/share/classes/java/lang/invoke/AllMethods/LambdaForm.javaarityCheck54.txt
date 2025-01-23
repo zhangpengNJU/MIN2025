@@ -1,0 +1,10 @@
+private boolean arityCheck(Object[] argumentValues) {
+    assert (argumentValues.length == arity) : arity + "!=" + Arrays.asList(argumentValues) + ".length";
+    // also check that the leading (receiver) argument is somehow bound to this LF:
+    assert (argumentValues[0] instanceof MethodHandle) : "not MH: " + argumentValues[0];
+    MethodHandle mh = (MethodHandle) argumentValues[0];
+    assert (mh.internalForm() == this);
+    // note:  argument #0 could also be an interface wrapper, in the future
+    argumentTypesMatch(basicTypeSignature(), argumentValues);
+    return true;
+}

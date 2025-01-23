@@ -1,0 +1,8 @@
+static int getPCSType(Profile p) {
+    byte[] theHeader;
+    int thePCSSig, thePCS;
+    theHeader = getData(p, icSigHead);
+    thePCSSig = intFromBigEndian(theHeader, icHdrPcs);
+    thePCS = iccCStoJCS(thePCSSig);
+    return thePCS;
+}

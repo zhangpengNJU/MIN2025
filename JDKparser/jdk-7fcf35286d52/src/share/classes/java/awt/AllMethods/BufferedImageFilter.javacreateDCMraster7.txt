@@ -1,0 +1,15 @@
+private final WritableRaster createDCMraster() {
+    WritableRaster wr;
+    DirectColorModel dcm = (DirectColorModel) model;
+    boolean hasAlpha = model.hasAlpha();
+    int[] bandMasks = new int[3 + (hasAlpha ? 1 : 0)];
+    bandMasks[0] = dcm.getRedMask();
+    bandMasks[1] = dcm.getGreenMask();
+    bandMasks[2] = dcm.getBlueMask();
+    if (hasAlpha) {
+        bandMasks[3] = dcm.getAlphaMask();
+    }
+    DataBufferInt db = new DataBufferInt(intPixels, width * height);
+    wr = Raster.createPackedRaster(db, width, height, width, bandMasks, null);
+    return wr;
+}

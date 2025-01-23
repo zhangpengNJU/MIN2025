@@ -1,0 +1,49 @@
+/**
+ * Reads compressed data into a byte array.
+ * This method will block until some input can be read and compressed.
+ *
+ * @param b buffer into which the data is read
+ * @param off starting offset of the data within {@code b}
+ * @param len maximum number of compressed bytes to read into {@code b}
+ * @return the actual number of bytes read, or -1 if the end of the
+ * uncompressed input stream is reached
+ * @throws IndexOutOfBoundsException  if {@code len > b.length - off}
+ * @throws IOException if an I/O error occurs or if this input stream is
+ * already closed
+ */
+public int read(byte[] b, int off, int len) throws IOException {
+    // Sanity checks
+    ensureOpen();
+    if (b == null) {
+        throw new NullPointerException("Null buffer for read");
+    } else if (off < 0 || len < 0 || len > b.length - off) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0) {
+        return 0;
+    }
+    // Read and compress (deflate) input data bytes
+    int cnt = 0;
+    while (len > 0 && !def.finished()) {
+        int n;
+        // Read data from the input stream
+        if (def.needsInput()) {
+            n = in.read(buf, 0, buf.length);
+            if (n < 0) {
+                // End of the input stream reached
+                def.finish();
+            } else if (n > 0) {
+                def.setInput(buf, 0, n);
+            }
+        }
+        // Compress the input data, filling the read buffer
+        n = def.deflate(b, off, len);
+        cnt += n;
+        off += n;
+        len -= n;
+    }
+    if (cnt == 0 && def.finished()) {
+        reachEOF = true;
+        cnt = -1;
+    }
+    return cnt;
+}

@@ -1,0 +1,14 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> action) {
+    Objects.requireNonNull(action);
+    while (permitStatus() != PermitStatus.NO_MORE) {
+        if (!s.tryAdvance(this))
+            return false;
+        else if (acquirePermits(1) == 1) {
+            action.accept(tmpSlot);
+            tmpSlot = null;
+            return true;
+        }
+    }
+    return false;
+}

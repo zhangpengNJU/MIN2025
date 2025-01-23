@@ -1,0 +1,107 @@
+/**
+ * Sets the background color of this window.
+ * <p>
+ * If the windowing system supports the {@link
+ * GraphicsDevice.WindowTranslucency#PERPIXEL_TRANSLUCENT PERPIXEL_TRANSLUCENT}
+ * translucency, the alpha component of the given background color
+ * may effect the mode of operation for this window: it indicates whether
+ * this window must be opaque (alpha equals {@code 1.0f}) or per-pixel translucent
+ * (alpha is less than {@code 1.0f}). If the given background color is
+ * {@code null}, the window is considered completely opaque.
+ * <p>
+ * All the following conditions must be met to enable the per-pixel
+ * transparency mode for this window:
+ * <ul>
+ * <li>The {@link GraphicsDevice.WindowTranslucency#PERPIXEL_TRANSLUCENT
+ * PERPIXEL_TRANSLUCENT} translucency must be supported by the graphics
+ * device where this window is located
+ * <li>The window must be undecorated (see {@link Frame#setUndecorated}
+ * and {@link Dialog#setUndecorated})
+ * <li>The window must not be in full-screen mode (see {@link
+ * GraphicsDevice#setFullScreenWindow(Window)})
+ * </ul>
+ * <p>
+ * If the alpha component of the requested background color is less than
+ * {@code 1.0f}, and any of the above conditions are not met, the background
+ * color of this window will not change, the alpha component of the given
+ * background color will not affect the mode of operation for this window,
+ * and either the {@code UnsupportedOperationException} or {@code
+ * IllegalComponentStateException} will be thrown.
+ * <p>
+ * When the window is per-pixel translucent, the drawing sub-system
+ * respects the alpha value of each individual pixel. If a pixel gets
+ * painted with the alpha color component equal to zero, it becomes
+ * visually transparent. If the alpha of the pixel is equal to 1.0f, the
+ * pixel is fully opaque. Interim values of the alpha color component make
+ * the pixel semi-transparent. In this mode, the background of the window
+ * gets painted with the alpha value of the given background color. If the
+ * alpha value of the argument of this method is equal to {@code 0}, the
+ * background is not painted at all.
+ * <p>
+ * The actual level of translucency of a given pixel also depends on window
+ * opacity (see {@link #setOpacity(float)}), as well as the current shape of
+ * this window (see {@link #setShape(Shape)}).
+ * <p>
+ * Note that painting a pixel with the alpha value of {@code 0} may or may
+ * not disable the mouse event handling on this pixel. This is a
+ * platform-dependent behavior. To make sure the mouse events do not get
+ * dispatched to a particular pixel, the pixel must be excluded from the
+ * shape of the window.
+ * <p>
+ * Enabling the per-pixel translucency mode may change the graphics
+ * configuration of this window due to the native platform requirements.
+ *
+ * @param bgColor the color to become this window's background color.
+ *
+ * @throws IllegalComponentStateException if the alpha value of the given
+ *     background color is less than {@code 1.0f} and the window is decorated
+ * @throws IllegalComponentStateException if the alpha value of the given
+ *     background color is less than {@code 1.0f} and the window is in
+ *     full-screen mode
+ * @throws UnsupportedOperationException if the alpha value of the given
+ *     background color is less than {@code 1.0f} and {@link
+ *     GraphicsDevice.WindowTranslucency#PERPIXEL_TRANSLUCENT
+ *     PERPIXEL_TRANSLUCENT} translucency is not supported
+ *
+ * @see Window#getBackground
+ * @see Window#isOpaque
+ * @see Window#setOpacity(float)
+ * @see Window#setShape(Shape)
+ * @see Frame#isUndecorated
+ * @see Dialog#isUndecorated
+ * @see GraphicsDevice.WindowTranslucency
+ * @see GraphicsDevice#isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency)
+ * @see GraphicsConfiguration#isTranslucencyCapable()
+ */
+@Override
+public void setBackground(Color bgColor) {
+    Color oldBg = getBackground();
+    super.setBackground(bgColor);
+    if (oldBg != null && oldBg.equals(bgColor)) {
+        return;
+    }
+    int oldAlpha = oldBg != null ? oldBg.getAlpha() : 255;
+    int alpha = bgColor != null ? bgColor.getAlpha() : 255;
+    if ((oldAlpha == 255) && (alpha < 255)) {
+        // non-opaque window
+        GraphicsConfiguration gc = getGraphicsConfiguration();
+        GraphicsDevice gd = gc.getDevice();
+        if (gc.getDevice().getFullScreenWindow() == this) {
+            throw new IllegalComponentStateException("Making full-screen window non opaque is not supported.");
+        }
+        if (!gc.isTranslucencyCapable()) {
+            GraphicsConfiguration capableGC = gd.getTranslucencyCapableGC();
+            if (capableGC == null) {
+                throw new UnsupportedOperationException("PERPIXEL_TRANSLUCENT translucency is not supported");
+            }
+            setGraphicsConfiguration(capableGC);
+        }
+        setLayersOpaque(this, false);
+    } else if ((oldAlpha < 255) && (alpha == 255)) {
+        setLayersOpaque(this, true);
+    }
+    WindowPeer peer = (WindowPeer) getPeer();
+    if (peer != null) {
+        peer.setOpaque(alpha == 255);
+    }
+}

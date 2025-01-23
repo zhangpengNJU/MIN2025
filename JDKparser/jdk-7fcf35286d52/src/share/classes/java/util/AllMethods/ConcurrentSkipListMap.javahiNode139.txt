@@ -1,0 +1,12 @@
+/**
+ * Returns highest node. This node might not be in range, so
+ * most usages need to check bounds.
+ */
+ConcurrentSkipListMap.Node<K, V> hiNode(Comparator<? super K> cmp) {
+    if (hi == null)
+        return m.findLast();
+    else if (hiInclusive)
+        return m.findNear(hi, LT | EQ, cmp);
+    else
+        return m.findNear(hi, LT, cmp);
+}

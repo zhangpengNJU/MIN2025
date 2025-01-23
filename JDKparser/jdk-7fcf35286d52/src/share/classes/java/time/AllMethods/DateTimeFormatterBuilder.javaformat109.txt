@@ -1,0 +1,9 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    ZoneId zone = context.getValue(query);
+    if (zone == null) {
+        return false;
+    }
+    buf.append(zone.getId());
+    return true;
+}

@@ -1,0 +1,54 @@
+/**
+ * Stops dispatching events using this <code>EventQueue</code>.
+ * Any pending events are transferred to the previous
+ * <code>EventQueue</code> for processing.
+ * <p>
+ * Warning: To avoid deadlock, do not declare this method
+ * synchronized in a subclass.
+ *
+ * @exception EmptyStackException if no previous push was made
+ *  on this <code>EventQueue</code>
+ * @see      java.awt.EventQueue#push
+ * @since           1.2
+ */
+protected void pop() throws EmptyStackException {
+    if (getEventLog().isLoggable(PlatformLogger.Level.FINE)) {
+        getEventLog().fine("EventQueue.pop(" + this + ")");
+    }
+    pushPopLock.lock();
+    try {
+        EventQueue topQueue = this;
+        while (topQueue.nextQueue != null) {
+            topQueue = topQueue.nextQueue;
+        }
+        EventQueue prevQueue = topQueue.previousQueue;
+        if (prevQueue == null) {
+            throw new EmptyStackException();
+        }
+        topQueue.previousQueue = null;
+        prevQueue.nextQueue = null;
+        // Transfer all events back to previous EventQueue.
+        while (topQueue.peekEvent() != null) {
+            try {
+                prevQueue.postEventPrivate(topQueue.getNextEventPrivate());
+            } catch (InterruptedException ie) {
+                if (getEventLog().isLoggable(PlatformLogger.Level.FINE)) {
+                    getEventLog().fine("Interrupted pop", ie);
+                }
+            }
+        }
+        if ((topQueue.dispatchThread != null) && (topQueue.dispatchThread.getEventQueue() == this)) {
+            prevQueue.dispatchThread = topQueue.dispatchThread;
+            topQueue.dispatchThread.setEventQueue(prevQueue);
+        }
+        if (appContext.get(AppContext.EVENT_QUEUE_KEY) == this) {
+            appContext.put(AppContext.EVENT_QUEUE_KEY, prevQueue);
+        }
+        // Wake up EDT waiting in getNextEvent(), so it can
+        // pick up a new EventQueue
+        topQueue.postEventPrivate(new InvocationEvent(topQueue, dummyRunnable));
+        pushPopCond.signalAll();
+    } finally {
+        pushPopLock.unlock();
+    }
+}

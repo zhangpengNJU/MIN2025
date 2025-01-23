@@ -1,0 +1,11 @@
+public final boolean remove(Object o) {
+    if (o != null) {
+        for (Iterator<V> it = iterator(); it.hasNext(); ) {
+            if (o.equals(it.next())) {
+                it.remove();
+                return true;
+            }
+        }
+    }
+    return false;
+}

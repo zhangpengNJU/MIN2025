@@ -1,0 +1,20 @@
+/**
+ * Replaces the de-serialized object with an URL object.
+ *
+ * @return a newly created object from the deserialzed state.
+ *
+ * @throws ObjectStreamException if a new object replacing this
+ * object could not be created
+ */
+private Object readResolve() throws ObjectStreamException {
+    URLStreamHandler handler = null;
+    // already been checked in readObject
+    handler = getURLStreamHandler(tempState.getProtocol());
+    URL replacementURL = null;
+    if (isBuiltinStreamHandler(handler.getClass().getName())) {
+        replacementURL = fabricateNewURL();
+    } else {
+        replacementURL = setDeserializedFields(handler);
+    }
+    return replacementURL;
+}

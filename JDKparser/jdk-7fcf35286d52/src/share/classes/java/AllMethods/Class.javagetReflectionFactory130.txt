@@ -1,0 +1,7 @@
+// Fetches the factory for reflective objects
+private static ReflectionFactory getReflectionFactory() {
+    if (reflectionFactory == null) {
+        reflectionFactory = java.security.AccessController.doPrivileged(new sun.reflect.ReflectionFactory.GetReflectionFactoryAction());
+    }
+    return reflectionFactory;
+}

@@ -1,0 +1,15 @@
+/**
+ * Provides an array view of the contents of this node.
+ *
+ * <p>Depending on the underlying implementation, this may return a
+ * reference to an internal array rather than a copy.  Since the returned
+ * array may be shared, the returned array should not be modified.  The
+ * {@code generator} function may be consulted to create the array if a new
+ * array needs to be created.
+ *
+ * @param generator a factory function which takes an integer parameter and
+ *        returns a new, empty array of that size and of the appropriate
+ *        array type
+ * @return an array containing the contents of this {@code Node}
+ */
+T[] asArray(IntFunction<T[]> generator);

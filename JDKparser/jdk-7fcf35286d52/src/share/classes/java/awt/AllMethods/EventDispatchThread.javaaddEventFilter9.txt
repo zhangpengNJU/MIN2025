@@ -1,0 +1,25 @@
+void addEventFilter(EventFilter filter) {
+    if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        eventLog.finest("adding the event filter: " + filter);
+    }
+    synchronized (eventFilters) {
+        if (!eventFilters.contains(filter)) {
+            if (filter instanceof ModalEventFilter) {
+                ModalEventFilter newFilter = (ModalEventFilter) filter;
+                int k = 0;
+                for (k = 0; k < eventFilters.size(); k++) {
+                    EventFilter f = eventFilters.get(k);
+                    if (f instanceof ModalEventFilter) {
+                        ModalEventFilter cf = (ModalEventFilter) f;
+                        if (cf.compareTo(newFilter) > 0) {
+                            break;
+                        }
+                    }
+                }
+                eventFilters.add(k, filter);
+            } else {
+                eventFilters.add(filter);
+            }
+        }
+    }
+}

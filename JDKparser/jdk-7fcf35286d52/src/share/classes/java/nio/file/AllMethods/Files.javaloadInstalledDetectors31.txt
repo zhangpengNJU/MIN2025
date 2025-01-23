@@ -1,0 +1,15 @@
+// loads all installed file type detectors
+private static List<FileTypeDetector> loadInstalledDetectors() {
+    return AccessController.doPrivileged(new PrivilegedAction<List<FileTypeDetector>>() {
+
+        @Override
+        public List<FileTypeDetector> run() {
+            List<FileTypeDetector> list = new ArrayList<>();
+            ServiceLoader<FileTypeDetector> loader = ServiceLoader.load(FileTypeDetector.class, ClassLoader.getSystemClassLoader());
+            for (FileTypeDetector detector : loader) {
+                list.add(detector);
+            }
+            return list;
+        }
+    });
+}

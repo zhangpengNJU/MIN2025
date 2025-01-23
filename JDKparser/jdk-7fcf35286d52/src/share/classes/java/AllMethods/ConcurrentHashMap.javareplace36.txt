@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ *
+ * @return the previous value associated with the specified key,
+ *         or {@code null} if there was no mapping for the key
+ * @throws NullPointerException if the specified key or value is null
+ */
+public V replace(K key, V value) {
+    if (key == null || value == null)
+        throw new NullPointerException();
+    return replaceNode(key, value, null);
+}

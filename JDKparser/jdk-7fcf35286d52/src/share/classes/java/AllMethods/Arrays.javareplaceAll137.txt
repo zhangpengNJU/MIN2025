@@ -1,0 +1,8 @@
+@Override
+public void replaceAll(UnaryOperator<E> operator) {
+    Objects.requireNonNull(operator);
+    E[] a = this.a;
+    for (int i = 0; i < a.length; i++) {
+        a[i] = operator.apply(a[i]);
+    }
+}

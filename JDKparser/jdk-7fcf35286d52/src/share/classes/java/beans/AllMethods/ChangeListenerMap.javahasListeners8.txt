@@ -1,0 +1,15 @@
+/**
+ * Indicates whether the map contains
+ * at least one listener to be notified.
+ *
+ * @param name  the name of the property
+ * @return      {@code true} if at least one listener exists or
+ *              {@code false} otherwise
+ */
+public final synchronized boolean hasListeners(String name) {
+    if (this.map == null) {
+        return false;
+    }
+    L[] array = this.map.get(null);
+    return (array != null) || ((name != null) && (null != this.map.get(name)));
+}

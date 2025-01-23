@@ -1,0 +1,10 @@
+Statement getMissedStatement() {
+    for (List<Statement> statements : this.targetToStatementList.values()) {
+        for (int i = 0; i < statements.size(); i++) {
+            if (Statement.class == statements.get(i).getClass()) {
+                return statements.remove(i);
+            }
+        }
+    }
+    return null;
+}

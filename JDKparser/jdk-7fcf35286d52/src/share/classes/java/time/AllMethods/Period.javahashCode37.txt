@@ -1,0 +1,9 @@
+/**
+ * A hash code for this period.
+ *
+ * @return a suitable hash code
+ */
+@Override
+public int hashCode() {
+    return years + Integer.rotateLeft(months, 8) + Integer.rotateLeft(days, 16);
+}

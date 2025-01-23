@@ -1,0 +1,13 @@
+/**
+ * Implements CharacterIterator.next() for String.
+ * @see CharacterIterator#next
+ */
+public char next() {
+    if (pos < end - 1) {
+        pos++;
+        return text.charAt(pos);
+    } else {
+        pos = end;
+        return DONE;
+    }
+}

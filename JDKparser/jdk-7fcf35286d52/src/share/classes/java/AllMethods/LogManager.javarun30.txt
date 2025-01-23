@@ -1,0 +1,10 @@
+@Override
+public Void run() {
+    if (logger != owner.rootLogger) {
+        boolean useParent = owner.getBooleanProperty(name + ".useParentHandlers", true);
+        if (!useParent) {
+            logger.setUseParentHandlers(false);
+        }
+    }
+    return null;
+}

@@ -1,0 +1,50 @@
+/**
+ * Sets the position, bounds, and angular extents of this arc to the
+ * specified value. The starting angle of the arc is tangent to the
+ * line specified by points (p1, p2), the ending angle is tangent to
+ * the line specified by points (p2, p3), and the arc has the
+ * specified radius.
+ *
+ * @param p1 The first point that defines the arc. The starting
+ * angle of the arc is tangent to the line specified by points (p1, p2).
+ * @param p2 The second point that defines the arc. The starting
+ * angle of the arc is tangent to the line specified by points (p1, p2).
+ * The ending angle of the arc is tangent to the line specified by
+ * points (p2, p3).
+ * @param p3 The third point that defines the arc. The ending angle
+ * of the arc is tangent to the line specified by points (p2, p3).
+ * @param radius The radius of the arc.
+ * @since 1.2
+ */
+public void setArcByTangent(Point2D p1, Point2D p2, Point2D p3, double radius) {
+    double ang1 = Math.atan2(p1.getY() - p2.getY(), p1.getX() - p2.getX());
+    double ang2 = Math.atan2(p3.getY() - p2.getY(), p3.getX() - p2.getX());
+    double diff = ang2 - ang1;
+    if (diff > Math.PI) {
+        ang2 -= Math.PI * 2.0;
+    } else if (diff < -Math.PI) {
+        ang2 += Math.PI * 2.0;
+    }
+    double bisect = (ang1 + ang2) / 2.0;
+    double theta = Math.abs(ang2 - bisect);
+    double dist = radius / Math.sin(theta);
+    double x = p2.getX() + dist * Math.cos(bisect);
+    double y = p2.getY() + dist * Math.sin(bisect);
+    // REMIND: This needs some work...
+    if (ang1 < ang2) {
+        ang1 -= Math.PI / 2.0;
+        ang2 += Math.PI / 2.0;
+    } else {
+        ang1 += Math.PI / 2.0;
+        ang2 -= Math.PI / 2.0;
+    }
+    ang1 = Math.toDegrees(-ang1);
+    ang2 = Math.toDegrees(-ang2);
+    diff = ang2 - ang1;
+    if (diff < 0) {
+        diff += 360;
+    } else {
+        diff -= 360;
+    }
+    setArcByCenter(x, y, radius, ang1, diff, type);
+}

@@ -1,0 +1,25 @@
+/*
+     * Reads in a Hashtable in which the values are Vectors of
+     * UnresolvedPermissions and saves them in the perms field.
+     */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get permissions
+    @SuppressWarnings("unchecked")
+    Hashtable<String, Vector<UnresolvedPermission>> // writeObject writes a Hashtable<String, Vector<UnresolvedPermission>>
+    // for the permissions key, so this cast is safe, unless the data is corrupt.
+    permissions = (Hashtable<String, Vector<UnresolvedPermission>>) gfields.get("permissions", null);
+    perms = new HashMap<String, List<UnresolvedPermission>>(permissions.size() * 2);
+    // Convert each entry (Vector) into a List
+    Set<Map.Entry<String, Vector<UnresolvedPermission>>> set = permissions.entrySet();
+    for (Map.Entry<String, Vector<UnresolvedPermission>> e : set) {
+        // Convert Vector into ArrayList
+        Vector<UnresolvedPermission> vec = e.getValue();
+        List<UnresolvedPermission> list = new ArrayList<>(vec.size());
+        list.addAll(vec);
+        // Add to Hashtable being serialized
+        perms.put(e.getKey(), list);
+    }
+}

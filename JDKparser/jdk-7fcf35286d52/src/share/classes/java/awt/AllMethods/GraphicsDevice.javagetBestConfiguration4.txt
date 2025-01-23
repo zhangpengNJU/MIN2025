@@ -1,0 +1,14 @@
+/**
+ * Returns the "best" configuration possible that passes the
+ * criteria defined in the {@link GraphicsConfigTemplate}.
+ * @param gct the <code>GraphicsConfigTemplate</code> object
+ * used to obtain a valid <code>GraphicsConfiguration</code>
+ * @return a <code>GraphicsConfiguration</code> that passes
+ * the criteria defined in the specified
+ * <code>GraphicsConfigTemplate</code>.
+ * @see GraphicsConfigTemplate
+ */
+public GraphicsConfiguration getBestConfiguration(GraphicsConfigTemplate gct) {
+    GraphicsConfiguration[] configs = getConfigurations();
+    return gct.getBestConfiguration(configs);
+}

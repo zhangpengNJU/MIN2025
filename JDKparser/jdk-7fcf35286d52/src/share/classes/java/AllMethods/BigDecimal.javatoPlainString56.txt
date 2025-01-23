@@ -1,0 +1,67 @@
+/**
+ * Returns a string representation of this {@code BigDecimal}
+ * without an exponent field.  For values with a positive scale,
+ * the number of digits to the right of the decimal point is used
+ * to indicate scale.  For values with a zero or negative scale,
+ * the resulting string is generated as if the value were
+ * converted to a numerically equal value with zero scale and as
+ * if all the trailing zeros of the zero scale value were present
+ * in the result.
+ *
+ * The entire string is prefixed by a minus sign character '-'
+ * (<tt>'&#92;u002D'</tt>) if the unscaled value is less than
+ * zero. No sign character is prefixed if the unscaled value is
+ * zero or positive.
+ *
+ * Note that if the result of this method is passed to the
+ * {@linkplain #BigDecimal(String) string constructor}, only the
+ * numerical value of this {@code BigDecimal} will necessarily be
+ * recovered; the representation of the new {@code BigDecimal}
+ * may have a different scale.  In particular, if this
+ * {@code BigDecimal} has a negative scale, the string resulting
+ * from this method will have a scale of zero when processed by
+ * the string constructor.
+ *
+ * (This method behaves analogously to the {@code toString}
+ * method in 1.4 and earlier releases.)
+ *
+ * @return a string representation of this {@code BigDecimal}
+ * without an exponent field.
+ * @since 1.5
+ * @see #toString()
+ * @see #toEngineeringString()
+ */
+public String toPlainString() {
+    if (scale == 0) {
+        if (intCompact != INFLATED) {
+            return Long.toString(intCompact);
+        } else {
+            return intVal.toString();
+        }
+    }
+    if (this.scale < 0) {
+        // No decimal point
+        if (signum() == 0) {
+            return "0";
+        }
+        int tailingZeros = checkScaleNonZero((-(long) scale));
+        StringBuilder buf;
+        if (intCompact != INFLATED) {
+            buf = new StringBuilder(20 + tailingZeros);
+            buf.append(intCompact);
+        } else {
+            String str = intVal.toString();
+            buf = new StringBuilder(str.length() + tailingZeros);
+            buf.append(str);
+        }
+        for (int i = 0; i < tailingZeros; i++) buf.append('0');
+        return buf.toString();
+    }
+    String str;
+    if (intCompact != INFLATED) {
+        str = Long.toString(Math.abs(intCompact));
+    } else {
+        str = intVal.abs().toString();
+    }
+    return getValueString(signum(), str, scale);
+}

@@ -1,0 +1,9 @@
+static MethodHandle[] makeCtors(Class<? extends BoundMethodHandle> cbmh, String types, MethodHandle[] mhs) {
+    if (mhs == null)
+        mhs = new MethodHandle[1];
+    // hack for empty BMH species
+    if (types.equals(""))
+        return mhs;
+    mhs[0] = makeCbmhCtor(cbmh, types);
+    return mhs;
+}

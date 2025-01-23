@@ -1,0 +1,14 @@
+/**
+ * Returns a copy of this year-month with the new year and month, checking
+ * to see if a new object is in fact required.
+ *
+ * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
+ * @param newMonth  the month-of-year to represent, validated not null
+ * @return the year-month, not null
+ */
+private YearMonth with(int newYear, int newMonth) {
+    if (year == newYear && month == newMonth) {
+        return this;
+    }
+    return new YearMonth(newYear, newMonth);
+}

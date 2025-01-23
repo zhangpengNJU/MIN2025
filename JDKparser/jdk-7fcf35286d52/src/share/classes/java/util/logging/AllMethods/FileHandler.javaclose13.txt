@@ -1,0 +1,26 @@
+/**
+ * Close all the files.
+ *
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have <tt>LoggingPermission("control")</tt>.
+ */
+@Override
+public synchronized void close() throws SecurityException {
+    super.close();
+    // Unlock any lock file.
+    if (lockFileName == null) {
+        return;
+    }
+    try {
+        // Close the lock file channel (which also will free any locks)
+        lockFileChannel.close();
+    } catch (Exception ex) {
+    // Problems closing the stream.  Punt.
+    }
+    synchronized (locks) {
+        locks.remove(lockFileName);
+    }
+    new File(lockFileName).delete();
+    lockFileName = null;
+    lockFileChannel = null;
+}

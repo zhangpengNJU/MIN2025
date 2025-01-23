@@ -1,0 +1,35 @@
+@Override
+public Map<String, Integer> getDisplayNames(int field, int style, Locale locale) {
+    if (!checkDisplayNameParams(field, style, ALL_STYLES, NARROW_FORMAT, locale, ERA_MASK | YEAR_MASK | MONTH_MASK | DAY_OF_WEEK_MASK | AM_PM_MASK)) {
+        return null;
+    }
+    Map<String, Integer> names;
+    names = CalendarDataUtility.retrieveFieldValueNames(getCalendarType(), field, style, locale);
+    // If strings[] has fewer than eras[], get more names from eras[].
+    if (names != null) {
+        if (field == ERA) {
+            int size = names.size();
+            if (style == ALL_STYLES) {
+                Set<Integer> values = new HashSet<>();
+                // count unique era values
+                for (String key : names.keySet()) {
+                    values.add(names.get(key));
+                }
+                size = values.size();
+            }
+            if (size < eras.length) {
+                int baseStyle = getBaseStyle(style);
+                for (int i = size; i < eras.length; i++) {
+                    Era era = eras[i];
+                    if (baseStyle == ALL_STYLES || baseStyle == SHORT || baseStyle == NARROW_FORMAT) {
+                        names.put(era.getAbbreviation(), i);
+                    }
+                    if (baseStyle == ALL_STYLES || baseStyle == LONG) {
+                        names.put(era.getName(), i);
+                    }
+                }
+            }
+        }
+    }
+    return names;
+}

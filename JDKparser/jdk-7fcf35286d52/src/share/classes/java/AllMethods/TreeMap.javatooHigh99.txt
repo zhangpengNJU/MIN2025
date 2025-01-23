@@ -1,0 +1,8 @@
+final boolean tooHigh(Object key) {
+    if (!toEnd) {
+        int c = m.compare(key, hi);
+        if (c > 0 || (c == 0 && !hiInclusive))
+            return true;
+    }
+    return false;
+}

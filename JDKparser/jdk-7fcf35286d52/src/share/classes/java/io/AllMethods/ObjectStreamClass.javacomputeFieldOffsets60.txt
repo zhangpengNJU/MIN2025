@@ -1,0 +1,46 @@
+/**
+ * Calculates and sets serializable field offsets, as well as primitive
+ * data size and object field count totals.  Throws InvalidClassException
+ * if fields are illegally ordered.
+ */
+private void computeFieldOffsets() throws InvalidClassException {
+    primDataSize = 0;
+    numObjFields = 0;
+    int firstObjIndex = -1;
+    for (int i = 0; i < fields.length; i++) {
+        ObjectStreamField f = fields[i];
+        switch(f.getTypeCode()) {
+            case 'Z':
+            case 'B':
+                f.setOffset(primDataSize++);
+                break;
+            case 'C':
+            case 'S':
+                f.setOffset(primDataSize);
+                primDataSize += 2;
+                break;
+            case 'I':
+            case 'F':
+                f.setOffset(primDataSize);
+                primDataSize += 4;
+                break;
+            case 'J':
+            case 'D':
+                f.setOffset(primDataSize);
+                primDataSize += 8;
+                break;
+            case '[':
+            case 'L':
+                f.setOffset(numObjFields++);
+                if (firstObjIndex == -1) {
+                    firstObjIndex = i;
+                }
+                break;
+            default:
+                throw new InternalError();
+        }
+    }
+    if (firstObjIndex != -1 && firstObjIndex + numObjFields != fields.length) {
+        throw new InvalidClassException(name, "illegal field order");
+    }
+}

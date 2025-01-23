@@ -1,0 +1,16 @@
+/**
+ * Sets the cursor for this drag operation to the specified
+ * <code>Cursor</code>.  If the specified <code>Cursor</code>
+ * is <code>null</code>, the default drag cursor behavior is
+ * activated for this drag operation, otherwise it is deactivated.
+ *
+ * @param c     the initial {@code Cursor} for this drag operation,
+ *                       or {@code null} for the default cursor handling;
+ *                       see {@linkplain Cursor class
+ *                       level documentation} for more details
+ *                       on the cursor handling during drag and drop
+ */
+public synchronized void setCursor(Cursor c) {
+    useCustomCursor = (c != null);
+    setCursorImpl(c);
+}

@@ -1,0 +1,32 @@
+private final int findLastEntry(PatternEntry entry, StringBuffer excessChars) throws ParseException {
+    if (entry == null)
+        return 0;
+    if (entry.strength != PatternEntry.RESET) {
+        // Search backwards for string that contains this one;
+        // most likely entry is last one
+        int oldIndex = -1;
+        if ((entry.chars.length() == 1)) {
+            int index = entry.chars.charAt(0) >> BYTEPOWER;
+            if ((statusArray[index] & (BITARRAYMASK << (entry.chars.charAt(0) & BYTEMASK))) != 0) {
+                oldIndex = patterns.lastIndexOf(entry);
+            }
+        } else {
+            oldIndex = patterns.lastIndexOf(entry);
+        }
+        if ((oldIndex == -1))
+            throw new ParseException("couldn't find last entry: " + entry, oldIndex);
+        return oldIndex + 1;
+    } else {
+        int i;
+        for (i = patterns.size() - 1; i >= 0; --i) {
+            PatternEntry e = patterns.get(i);
+            if (e.chars.regionMatches(0, entry.chars, 0, e.chars.length())) {
+                excessChars.append(entry.chars.substring(e.chars.length(), entry.chars.length()));
+                break;
+            }
+        }
+        if (i == -1)
+            throw new ParseException("couldn't find: " + entry, i);
+        return i + 1;
+    }
+}

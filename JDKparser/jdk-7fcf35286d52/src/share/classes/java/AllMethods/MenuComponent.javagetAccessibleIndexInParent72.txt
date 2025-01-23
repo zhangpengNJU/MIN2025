@@ -1,0 +1,16 @@
+// inner class AccessibleAWTComponent
+/**
+ * Gets the index of this object in its accessible parent.
+ *
+ * @return -1 if this object does not have an accessible parent;
+ *      otherwise, the index of the child in its accessible parent.
+ */
+int getAccessibleIndexInParent() {
+    MenuContainer localParent = parent;
+    if (!(localParent instanceof MenuComponent)) {
+        // MenuComponents only have accessible index when inside MenuComponents
+        return -1;
+    }
+    MenuComponent localParentMenu = (MenuComponent) localParent;
+    return localParentMenu.getAccessibleChildIndex(this);
+}

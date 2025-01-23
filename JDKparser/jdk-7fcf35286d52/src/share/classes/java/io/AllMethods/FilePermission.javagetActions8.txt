@@ -1,0 +1,44 @@
+/**
+ * Return the canonical string representation of the actions.
+ * Always returns present actions in the following order:
+ * read, write, execute, delete, readlink.
+ *
+ * @return the canonical string representation of the actions.
+ */
+private static String getActions(int mask) {
+    StringBuilder sb = new StringBuilder();
+    boolean comma = false;
+    if ((mask & READ) == READ) {
+        comma = true;
+        sb.append("read");
+    }
+    if ((mask & WRITE) == WRITE) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("write");
+    }
+    if ((mask & EXECUTE) == EXECUTE) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("execute");
+    }
+    if ((mask & DELETE) == DELETE) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("delete");
+    }
+    if ((mask & READLINK) == READLINK) {
+        if (comma)
+            sb.append(',');
+        else
+            comma = true;
+        sb.append("readlink");
+    }
+    return sb.toString();
+}

@@ -1,0 +1,26 @@
+// release all references for this child since it has been unnested.
+void cleanupReferences() {
+    if (serviceRequestors == null)
+        return;
+    Iterator requestors = serviceRequestors.entrySet().iterator();
+    while (requestors.hasNext()) {
+        Map.Entry tmp = (Map.Entry) requestors.next();
+        Object requestor = tmp.getKey();
+        Iterator services = ((Map) tmp.getValue()).entrySet().iterator();
+        requestors.remove();
+        while (services.hasNext()) {
+            Map.Entry entry = (Map.Entry) services.next();
+            Object service = entry.getKey();
+            BCSSCServiceRef sref = (BCSSCServiceRef) entry.getValue();
+            BCSSCServiceClassRef scref = sref.getServiceClassRef();
+            BeanContextServiceProvider bcsp = sref.isDelegated() ? scref.getDelegateProvider() : scref.getServiceProvider();
+            scref.removeRequestor(requestor);
+            services.remove();
+            while (sref.release() >= 0) {
+                bcsp.releaseService(BeanContextServicesSupport.this.getBeanContextServicesPeer(), requestor, service);
+            }
+        }
+    }
+    serviceRequestors = null;
+    serviceClasses = null;
+}

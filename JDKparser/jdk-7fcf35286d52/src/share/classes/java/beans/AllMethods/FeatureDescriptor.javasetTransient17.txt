@@ -1,0 +1,12 @@
+/**
+ * Sets the "transient" attribute according to the annotation.
+ * If the "transient" attribute is already set
+ * it should not be changed.
+ *
+ * @param annotation  the annotation of the element of the feature
+ */
+void setTransient(Transient annotation) {
+    if ((annotation != null) && (null == getValue(TRANSIENT))) {
+        setValue(TRANSIENT, annotation.value());
+    }
+}

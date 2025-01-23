@@ -1,0 +1,5 @@
+static void toSurrogates(int codePoint, char[] dst, int index) {
+    // We write elements "backwards" to guarantee all-or-nothing
+    dst[index + 1] = lowSurrogate(codePoint);
+    dst[index] = highSurrogate(codePoint);
+}

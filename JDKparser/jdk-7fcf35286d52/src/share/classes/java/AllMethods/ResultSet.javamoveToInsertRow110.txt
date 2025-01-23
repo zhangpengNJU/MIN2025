@@ -1,0 +1,25 @@
+/**
+ * Moves the cursor to the insert row.  The current cursor position is
+ * remembered while the cursor is positioned on the insert row.
+ *
+ * The insert row is a special row associated with an updatable
+ * result set.  It is essentially a buffer where a new row may
+ * be constructed by calling the updater methods prior to
+ * inserting the row into the result set.
+ *
+ * Only the updater, getter,
+ * and <code>insertRow</code> methods may be
+ * called when the cursor is on the insert row.  All of the columns in
+ * a result set must be given a value each time this method is
+ * called before calling <code>insertRow</code>.
+ * An updater method must be called before a
+ * getter method can be called on a column value.
+ *
+ * @exception SQLException if a database access error occurs; this
+ * method is called on a closed result set
+ * or the result set concurrency is <code>CONCUR_READ_ONLY</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+void moveToInsertRow() throws SQLException;

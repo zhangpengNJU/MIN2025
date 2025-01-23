@@ -1,0 +1,10 @@
+// check for potential overflow (see bug 4801285)
+private int addWithoutOverflow(int x, int w) {
+    int x2 = x + w;
+    if (x > 0 && w > 0 && x2 < 0) {
+        x2 = Integer.MAX_VALUE;
+    } else if (x < 0 && w < 0 && x2 > 0) {
+        x2 = Integer.MIN_VALUE;
+    }
+    return x2;
+}

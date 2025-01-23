@@ -1,0 +1,21 @@
+/**
+ * Returns the remote reference bound to the specified
+ * <code>name</code> in this registry.
+ *
+ * @param   name the name for the remote reference to look up
+ *
+ * @return  a reference to a remote object
+ *
+ * @throws  NotBoundException if <code>name</code> is not currently bound
+ *
+ * @throws  RemoteException if remote communication with the
+ * registry failed; if exception is a <code>ServerException</code>
+ * containing an <code>AccessException</code>, then the registry
+ * denies the caller access to perform this operation
+ *
+ * @throws  AccessException if this registry is local and it denies
+ * the caller access to perform this operation
+ *
+ * @throws  NullPointerException if <code>name</code> is <code>null</code>
+ */
+public Remote lookup(String name) throws RemoteException, NotBoundException, AccessException;

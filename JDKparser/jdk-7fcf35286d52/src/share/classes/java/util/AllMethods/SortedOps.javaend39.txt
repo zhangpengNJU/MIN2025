@@ -1,0 +1,16 @@
+@Override
+public void end() {
+    double[] doubles = b.asPrimitiveArray();
+    Arrays.sort(doubles);
+    downstream.begin(doubles.length);
+    if (!cancellationRequestedCalled) {
+        for (double aDouble : doubles) downstream.accept(aDouble);
+    } else {
+        for (double aDouble : doubles) {
+            if (downstream.cancellationRequested())
+                break;
+            downstream.accept(aDouble);
+        }
+    }
+    downstream.end();
+}

@@ -1,0 +1,9 @@
+/**
+ * Field names in concrete BMHs adhere to this pattern:
+ * arg + type + index
+ * where type is a single character (L, I, J, F, D).
+ */
+private static String makeFieldName(String types, int index) {
+    assert index >= 0 && index < types.length();
+    return "arg" + types.charAt(index) + index;
+}

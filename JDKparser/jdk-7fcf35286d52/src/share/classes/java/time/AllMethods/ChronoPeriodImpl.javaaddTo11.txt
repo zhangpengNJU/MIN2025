@@ -1,0 +1,24 @@
+// -------------------------------------------------------------------------
+@Override
+public Temporal addTo(Temporal temporal) {
+    validateChrono(temporal);
+    if (months == 0) {
+        if (years != 0) {
+            temporal = temporal.plus(years, YEARS);
+        }
+    } else {
+        long monthRange = monthRange();
+        if (monthRange > 0) {
+            temporal = temporal.plus(years * monthRange + months, MONTHS);
+        } else {
+            if (years != 0) {
+                temporal = temporal.plus(years, YEARS);
+            }
+            temporal = temporal.plus(months, MONTHS);
+        }
+    }
+    if (days != 0) {
+        temporal = temporal.plus(days, DAYS);
+    }
+    return temporal;
+}

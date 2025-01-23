@@ -1,0 +1,10 @@
+@Override
+Sink<P_OUT> opWrapSink(int flags, Sink<Integer> sink) {
+    return new Sink.ChainedReference<P_OUT, Integer>(sink) {
+
+        @Override
+        public void accept(P_OUT u) {
+            downstream.accept(mapper.applyAsInt(u));
+        }
+    };
+}

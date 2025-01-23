@@ -1,0 +1,30 @@
+public void forEachRemaining(Consumer<? super V> action) {
+    int i, hi, mc;
+    if (action == null)
+        throw new NullPointerException();
+    WeakHashMap<K, V> m = map;
+    WeakHashMap.Entry<K, V>[] tab = m.table;
+    if ((hi = fence) < 0) {
+        mc = expectedModCount = m.modCount;
+        hi = fence = tab.length;
+    } else
+        mc = expectedModCount;
+    if (tab.length >= hi && (i = index) >= 0 && (i < (index = hi) || current != null)) {
+        WeakHashMap.Entry<K, V> p = current;
+        // exhaust
+        current = null;
+        do {
+            if (p == null)
+                p = tab[i++];
+            else {
+                Object x = p.get();
+                V v = p.value;
+                p = p.next;
+                if (x != null)
+                    action.accept(v);
+            }
+        } while (p != null || i < hi);
+    }
+    if (m.modCount != mc)
+        throw new ConcurrentModificationException();
+}

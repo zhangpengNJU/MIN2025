@@ -1,0 +1,16 @@
+@Override
+public void end() {
+    long[] longs = b.asPrimitiveArray();
+    Arrays.sort(longs);
+    downstream.begin(longs.length);
+    if (!cancellationRequestedCalled) {
+        for (long aLong : longs) downstream.accept(aLong);
+    } else {
+        for (long aLong : longs) {
+            if (downstream.cancellationRequested())
+                break;
+            downstream.accept(aLong);
+        }
+    }
+    downstream.end();
+}

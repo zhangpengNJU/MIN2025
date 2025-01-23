@@ -1,0 +1,14 @@
+private void initConsumer(ImageConsumer ic) {
+    if (isConsumer(ic)) {
+        ic.setDimensions(width, height);
+    }
+    if (isConsumer(ic)) {
+        ic.setProperties(properties);
+    }
+    if (isConsumer(ic)) {
+        ic.setColorModel(model);
+    }
+    if (isConsumer(ic)) {
+        ic.setHints(animating ? (fullbuffers ? (ImageConsumer.TOPDOWNLEFTRIGHT | ImageConsumer.COMPLETESCANLINES) : ImageConsumer.RANDOMPIXELORDER) : (ImageConsumer.TOPDOWNLEFTRIGHT | ImageConsumer.COMPLETESCANLINES | ImageConsumer.SINGLEPASS | ImageConsumer.SINGLEFRAME));
+    }
+}

@@ -1,0 +1,43 @@
+/**
+ * Sends a synthetic AWTEvent to a Component. If the Component is in
+ * the current AppContext, then the event is immediately dispatched.
+ * If the Component is in a different AppContext, then the event is
+ * posted to the other AppContext's EventQueue, and this method blocks
+ * until the event is handled or target AppContext is disposed.
+ * Returns true if successfuly dispatched event, false if failed
+ * to dispatch.
+ */
+static boolean sendMessage(Component target, AWTEvent e) {
+    e.isPosted = true;
+    AppContext myAppContext = AppContext.getAppContext();
+    final AppContext targetAppContext = target.appContext;
+    final SentEvent se = new DefaultKeyboardFocusManagerSentEvent(e, myAppContext);
+    if (myAppContext == targetAppContext) {
+        se.dispatch();
+    } else {
+        if (targetAppContext.isDisposed()) {
+            return false;
+        }
+        SunToolkit.postEvent(targetAppContext, se);
+        if (EventQueue.isDispatchThread()) {
+            EventDispatchThread edt = (EventDispatchThread) Thread.currentThread();
+            edt.pumpEvents(SentEvent.ID, new Conditional() {
+
+                public boolean evaluate() {
+                    return !se.dispatched && !targetAppContext.isDisposed();
+                }
+            });
+        } else {
+            synchronized (se) {
+                while (!se.dispatched && !targetAppContext.isDisposed()) {
+                    try {
+                        se.wait(1000);
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return se.dispatched;
+}

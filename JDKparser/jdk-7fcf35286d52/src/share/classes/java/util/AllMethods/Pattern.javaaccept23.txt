@@ -1,0 +1,11 @@
+/**
+ * Match next character, signal error if failed.
+ */
+private void accept(int ch, String s) {
+    int testChar = temp[cursor++];
+    if (has(COMMENTS))
+        testChar = parsePastWhitespace(testChar);
+    if (ch != testChar) {
+        throw error(s);
+    }
+}

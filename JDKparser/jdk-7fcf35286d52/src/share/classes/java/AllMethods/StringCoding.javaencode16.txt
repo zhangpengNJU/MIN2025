@@ -1,0 +1,17 @@
+static byte[] encode(String charsetName, char[] ca, int off, int len) throws UnsupportedEncodingException {
+    StringEncoder se = deref(encoder);
+    String csn = (charsetName == null) ? "ISO-8859-1" : charsetName;
+    if ((se == null) || !(csn.equals(se.requestedCharsetName()) || csn.equals(se.charsetName()))) {
+        se = null;
+        try {
+            Charset cs = lookupCharset(csn);
+            if (cs != null)
+                se = new StringEncoder(cs, csn);
+        } catch (IllegalCharsetNameException x) {
+        }
+        if (se == null)
+            throw new UnsupportedEncodingException(csn);
+        set(encoder, se);
+    }
+    return se.encode(ca, off, len);
+}

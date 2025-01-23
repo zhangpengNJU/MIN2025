@@ -1,0 +1,7 @@
+// filling versions of the above:
+// using Integer len instead of int len and no varargs to avoid bootstrapping problems
+private static Object[] fillNewArray(Integer len, Object[] args) {
+    Object[] a = new Object[len];
+    fillWithArguments(a, 0, args);
+    return a;
+}

@@ -1,0 +1,60 @@
+/**
+ * Returns a <code>List</code> of <code>DataFlavor</code>s to which the
+ * specified <code>String</code> native can be translated by the data
+ * transfer subsystem. The <code>List</code> will be sorted from best
+ * <code>DataFlavor</code> to worst. That is, the first
+ * <code>DataFlavor</code> will best reflect data in the specified
+ * native to a Java application.
+ * <p>
+ * If the specified native is previously unknown to the data transfer
+ * subsystem, and that native has been properly encoded, then invoking this
+ * method will establish a mapping in both directions between the specified
+ * native and a <code>DataFlavor</code> whose MIME type is a decoded
+ * version of the native.
+ * <p>
+ * If the specified native is not a properly encoded native and the
+ * mappings for this native have not been altered with
+ * <code>setFlavorsForNative</code>, then the contents of the
+ * <code>List</code> is platform dependent, but <code>null</code>
+ * cannot be returned.
+ *
+ * @param nat the native whose corresponding <code>DataFlavor</code>s
+ *        should be returned. If <code>null</code> is specified, all
+ *        <code>DataFlavor</code>s currently known to the data transfer
+ *        subsystem are returned in a non-deterministic order.
+ * @return a <code>java.util.List</code> of <code>DataFlavor</code>
+ *         objects into which platform-specific data in the specified,
+ *         platform-specific native can be translated
+ *
+ * @see #encodeJavaMIMEType
+ * @since 1.4
+ */
+@Override
+public synchronized List<DataFlavor> getFlavorsForNative(String nat) {
+    LinkedHashSet<DataFlavor> returnValue = flavorsForNativeCache.check(nat);
+    if (returnValue != null) {
+        return new ArrayList<>(returnValue);
+    } else {
+        returnValue = new LinkedHashSet<>();
+    }
+    if (nat == null) {
+        for (String n : getNativesForFlavor(null)) {
+            returnValue.addAll(getFlavorsForNative(n));
+        }
+    } else {
+        final LinkedHashSet<DataFlavor> flavors = nativeToFlavorLookup(nat);
+        if (disabledMappingGenerationKeys.contains(nat)) {
+            return new ArrayList<>(flavors);
+        }
+        final LinkedHashSet<DataFlavor> flavorsWithSynthesized = nativeToFlavorLookup(nat);
+        for (DataFlavor df : flavorsWithSynthesized) {
+            returnValue.add(df);
+            if ("text".equals(df.getPrimaryType())) {
+                String baseType = df.mimeType.getBaseType();
+                returnValue.addAll(convertMimeTypeToDataFlavors(baseType));
+            }
+        }
+    }
+    flavorsForNativeCache.put(nat, returnValue);
+    return new ArrayList<>(returnValue);
+}

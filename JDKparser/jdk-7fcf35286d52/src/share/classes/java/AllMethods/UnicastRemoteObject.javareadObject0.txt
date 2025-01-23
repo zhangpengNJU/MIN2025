@@ -1,0 +1,7 @@
+/**
+ * Re-export the remote object when it is deserialized.
+ */
+private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    in.defaultReadObject();
+    reexport();
+}

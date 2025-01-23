@@ -1,0 +1,20 @@
+/**
+ * Gets information about the possible properties for this driver.
+ * <P>
+ * The <code>getPropertyInfo</code> method is intended to allow a generic
+ * GUI tool to discover what properties it should prompt
+ * a human for in order to get
+ * enough information to connect to a database.  Note that depending on
+ * the values the human has supplied so far, additional values may become
+ * necessary, so it may be necessary to iterate though several calls
+ * to the <code>getPropertyInfo</code> method.
+ *
+ * @param url the URL of the database to which to connect
+ * @param info a proposed list of tag/value pairs that will be sent on
+ *          connect open
+ * @return an array of <code>DriverPropertyInfo</code> objects describing
+ *          possible properties.  This array may be an empty array if
+ *          no properties are required.
+ * @exception SQLException if a database access error occurs
+ */
+DriverPropertyInfo[] getPropertyInfo(String url, java.util.Properties info) throws SQLException;

@@ -1,0 +1,15 @@
+/**
+ * Utility routine to check if the InetAddress is an link local address.
+ *
+ * @return a {@code boolean} indicating if the InetAddress is
+ * a link local address; or false if address is not a link local unicast address.
+ * @since 1.4
+ */
+public boolean isLinkLocalAddress() {
+    // link-local unicast in IPv4 (169.254.0.0/16)
+    // defined in "Documenting Special Use IPv4 Address Blocks
+    // that have been Registered with IANA" by Bill Manning
+    // draft-manning-dsua-06.txt
+    int address = holder().getAddress();
+    return (((address >>> 24) & 0xFF) == 169) && (((address >>> 16) & 0xFF) == 254);
+}

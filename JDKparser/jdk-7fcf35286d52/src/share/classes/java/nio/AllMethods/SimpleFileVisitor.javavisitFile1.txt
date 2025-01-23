@@ -1,0 +1,12 @@
+/**
+ * Invoked for a file in a directory.
+ *
+ * <p> Unless overridden, this method returns {@link FileVisitResult#CONTINUE
+ * CONTINUE}.
+ */
+@Override
+public FileVisitResult visitFile(T file, BasicFileAttributes attrs) throws IOException {
+    Objects.requireNonNull(file);
+    Objects.requireNonNull(attrs);
+    return FileVisitResult.CONTINUE;
+}

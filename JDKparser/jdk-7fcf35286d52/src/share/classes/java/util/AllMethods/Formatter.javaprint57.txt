@@ -1,0 +1,20 @@
+private void print(double value, Locale l) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    boolean neg = Double.compare(value, 0.0) == -1;
+    if (!Double.isNaN(value)) {
+        double v = Math.abs(value);
+        // leading sign indicator
+        leadingSign(sb, neg);
+        // the value
+        if (!Double.isInfinite(v))
+            print(sb, v, l, f, c, precision, neg);
+        else
+            sb.append(f.contains(Flags.UPPERCASE) ? "INFINITY" : "Infinity");
+        // trailing sign indicator
+        trailingSign(sb, neg);
+    } else {
+        sb.append(f.contains(Flags.UPPERCASE) ? "NAN" : "NaN");
+    }
+    // justify based on width
+    a.append(justify(sb.toString()));
+}

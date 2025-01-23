@@ -1,0 +1,22 @@
+/**
+ * Implements the guard interface for a permission. The
+ * {@code SecurityManager.checkPermission} method is called,
+ * passing this permission object as the permission to check.
+ * Returns silently if access is granted. Otherwise, throws
+ * a SecurityException.
+ *
+ * @param object the object being guarded (currently ignored).
+ *
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        {@code checkPermission} method doesn't allow access.
+ *
+ * @see Guard
+ * @see GuardedObject
+ * @see SecurityManager#checkPermission
+ */
+public void checkGuard(Object object) throws SecurityException {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null)
+        sm.checkPermission(this);
+}

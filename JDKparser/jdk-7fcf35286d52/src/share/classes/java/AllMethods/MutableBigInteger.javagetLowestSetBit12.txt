@@ -1,0 +1,14 @@
+/**
+ * Return the index of the lowest set bit in this MutableBigInteger. If the
+ * magnitude of this MutableBigInteger is zero, -1 is returned.
+ */
+private final int getLowestSetBit() {
+    if (intLen == 0)
+        return -1;
+    int j, b;
+    for (j = intLen - 1; (j > 0) && (value[j + offset] == 0); j--) ;
+    b = value[j + offset];
+    if (b == 0)
+        return -1;
+    return ((intLen - 1 - j) << 5) + Integer.numberOfTrailingZeros(b);
+}

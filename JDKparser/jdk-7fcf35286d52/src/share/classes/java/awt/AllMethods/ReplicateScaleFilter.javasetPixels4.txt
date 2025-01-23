@@ -1,0 +1,37 @@
+/**
+ * Choose which rows and columns of the delivered int pixels are
+ * needed for the destination scaled image and pass through just
+ * those rows and columns that are needed, replicated as necessary.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ */
+public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
+    if (srcrows == null || srccols == null) {
+        calculateMaps();
+    }
+    int sx, sy;
+    int dx1 = (2 * x * destWidth + srcWidth - 1) / (2 * srcWidth);
+    int dy1 = (2 * y * destHeight + srcHeight - 1) / (2 * srcHeight);
+    int[] outpix;
+    if (outpixbuf != null && outpixbuf instanceof int[]) {
+        outpix = (int[]) outpixbuf;
+    } else {
+        outpix = new int[destWidth];
+        outpixbuf = outpix;
+    }
+    for (int dy = dy1; (sy = srcrows[dy]) < y + h; dy++) {
+        int srcoff = off + scansize * (sy - y);
+        int dx;
+        for (dx = dx1; (sx = srccols[dx]) < x + w; dx++) {
+            outpix[dx] = pixels[srcoff + sx - x];
+        }
+        if (dx > dx1) {
+            consumer.setPixels(dx1, dy, dx - dx1, 1, model, outpix, dx1, destWidth);
+        }
+    }
+}

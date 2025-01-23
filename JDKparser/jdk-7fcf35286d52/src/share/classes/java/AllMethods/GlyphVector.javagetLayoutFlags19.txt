@@ -1,0 +1,19 @@
+/**
+ * Returns flags describing the global state of the GlyphVector.
+ * Flags not described below are reserved.  The default
+ * implementation returns 0 (meaning false) for the position adjustments,
+ * transforms, rtl, and complex flags.
+ * Subclassers should override this method, and make sure
+ * it correctly describes the GlyphVector and corresponds
+ * to the results of related calls.
+ * @return an int containing the flags describing the state
+ * @see #FLAG_HAS_POSITION_ADJUSTMENTS
+ * @see #FLAG_HAS_TRANSFORMS
+ * @see #FLAG_RUN_RTL
+ * @see #FLAG_COMPLEX_GLYPHS
+ * @see #FLAG_MASK
+ * @since 1.4
+ */
+public int getLayoutFlags() {
+    return 0;
+}

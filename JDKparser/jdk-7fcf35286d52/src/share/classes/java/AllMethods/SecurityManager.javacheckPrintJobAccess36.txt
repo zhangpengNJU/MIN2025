@@ -1,0 +1,22 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to initiate a print job request.
+ * <p>
+ * This method calls
+ * <code>checkPermission</code> with the
+ * <code>RuntimePermission("queuePrintJob")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkPrintJobAccess</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ * <p>
+ *
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to initiate a print job request.
+ * @since   JDK1.1
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkPrintJobAccess() {
+    checkPermission(new RuntimePermission("queuePrintJob"));
+}

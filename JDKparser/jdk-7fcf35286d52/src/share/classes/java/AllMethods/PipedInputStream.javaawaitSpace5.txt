@@ -1,0 +1,12 @@
+private void awaitSpace() throws IOException {
+    while (in == out) {
+        checkStateForReceive();
+        /* full: kick any waiting readers */
+        notifyAll();
+        try {
+            wait(1000);
+        } catch (InterruptedException ex) {
+            throw new java.io.InterruptedIOException();
+        }
+    }
+}

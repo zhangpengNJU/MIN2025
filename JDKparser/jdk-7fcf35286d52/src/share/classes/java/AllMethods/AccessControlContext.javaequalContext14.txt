@@ -1,0 +1,13 @@
+/*
+     * Compare for equality based on state that is free of limited
+     * privilege complications.
+     */
+private boolean equalContext(AccessControlContext that) {
+    if (!equalPDs(this.context, that.context))
+        return false;
+    if (this.combiner == null && that.combiner != null)
+        return false;
+    if (this.combiner != null && !this.combiner.equals(that.combiner))
+        return false;
+    return true;
+}

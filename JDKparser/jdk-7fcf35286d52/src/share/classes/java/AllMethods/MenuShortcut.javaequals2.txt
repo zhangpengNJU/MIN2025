@@ -1,0 +1,12 @@
+/**
+ * Returns whether this MenuShortcut is the same as another:
+ * equality is defined to mean that both MenuShortcuts use the same key
+ * and both either use or don't use the SHIFT key.
+ * @param s the MenuShortcut to compare with this.
+ * @return <code>true</code> if this MenuShortcut is the same as another,
+ * <code>false</code> otherwise.
+ * @since JDK1.1
+ */
+public boolean equals(MenuShortcut s) {
+    return (s != null && (s.getKey() == key) && (s.usesShiftModifier() == usesShift));
+}

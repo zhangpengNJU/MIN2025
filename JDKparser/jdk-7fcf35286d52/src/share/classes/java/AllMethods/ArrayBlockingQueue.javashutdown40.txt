@@ -1,0 +1,21 @@
+/**
+ * Called to notify the iterator that the queue is empty, or that it
+ * has fallen hopelessly behind, so that it should abandon any
+ * further iteration, except possibly to return one more element
+ * from next(), as promised by returning true from hasNext().
+ */
+void shutdown() {
+    // assert lock.getHoldCount() == 1;
+    cursor = NONE;
+    if (nextIndex >= 0)
+        nextIndex = REMOVED;
+    if (lastRet >= 0) {
+        lastRet = REMOVED;
+        lastItem = null;
+    }
+    prevTakeIndex = DETACHED;
+// Don't set nextItem to null because we must continue to be
+// able to return it on next().
+// 
+// Caller will unlink from itrs when convenient.
+}

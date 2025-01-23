@@ -1,0 +1,32 @@
+/**
+ * Writes a sequence of bytes to this channel from the given buffer, starting
+ * at the given file position.
+ *
+ * <p> This method initiates the writing of a sequence of bytes to this
+ * channel from the given buffer, starting at the given file position. The
+ * method returns a {@code Future} representing the pending result of the
+ * write operation. The {@code Future}'s {@link Future#get() get} method
+ * returns the number of bytes written.
+ *
+ * <p> This method works in the same manner as the {@link
+ * AsynchronousByteChannel#write(ByteBuffer)} method, except that bytes are
+ * written starting at the given file position. If the given position is
+ * greater than the file's size, at the time that the write is attempted,
+ * then the file will be grown to accommodate the new bytes; the values of
+ * any bytes between the previous end-of-file and the newly-written bytes
+ * are unspecified.
+ *
+ * @param   src
+ *          The buffer from which bytes are to be transferred
+ * @param   position
+ *          The file position at which the transfer is to begin;
+ *          must be non-negative
+ *
+ * @return  A {@code Future} object representing the pending result
+ *
+ * @throws  IllegalArgumentException
+ *          If the position is negative
+ * @throws  NonWritableChannelException
+ *          If this channel was not opened for writing
+ */
+public abstract Future<Integer> write(ByteBuffer src, long position);

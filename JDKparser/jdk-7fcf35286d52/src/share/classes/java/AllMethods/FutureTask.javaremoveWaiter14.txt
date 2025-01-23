@@ -1,0 +1,31 @@
+/**
+ * Tries to unlink a timed-out or interrupted wait node to avoid
+ * accumulating garbage.  Internal nodes are simply unspliced
+ * without CAS since it is harmless if they are traversed anyway
+ * by releasers.  To avoid effects of unsplicing from already
+ * removed nodes, the list is retraversed in case of an apparent
+ * race.  This is slow when there are a lot of nodes, but we don't
+ * expect lists to be long enough to outweigh higher-overhead
+ * schemes.
+ */
+private void removeWaiter(WaitNode node) {
+    if (node != null) {
+        node.thread = null;
+        retry: for (; ; ) {
+            // restart on removeWaiter race
+            for (WaitNode pred = null, q = waiters, s; q != null; q = s) {
+                s = q.next;
+                if (q.thread != null)
+                    pred = q;
+                else if (pred != null) {
+                    pred.next = s;
+                    if (// check for race
+                    pred.thread == null)
+                        continue retry;
+                } else if (!UNSAFE.compareAndSwapObject(this, waitersOffset, q, s))
+                    continue retry;
+            }
+            break;
+        }
+    }
+}

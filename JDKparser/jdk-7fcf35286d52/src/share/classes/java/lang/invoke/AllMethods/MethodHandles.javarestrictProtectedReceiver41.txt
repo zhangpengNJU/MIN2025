@@ -1,0 +1,7 @@
+private boolean restrictProtectedReceiver(MemberName method) {
+    // The accessing class only has the right to use a protected member
+    // on itself or a subclass.  Enforce that restriction, from JVMS 5.4.4, etc.
+    if (!method.isProtected() || method.isStatic() || allowedModes == TRUSTED || method.getDeclaringClass() == lookupClass() || VerifyAccess.isSamePackage(method.getDeclaringClass(), lookupClass()) || (ALLOW_NESTMATE_ACCESS && VerifyAccess.isSamePackageMember(method.getDeclaringClass(), lookupClass())))
+        return false;
+    return true;
+}

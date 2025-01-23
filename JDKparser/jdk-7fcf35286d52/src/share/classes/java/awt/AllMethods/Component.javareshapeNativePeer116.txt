@@ -1,0 +1,11 @@
+private void reshapeNativePeer(int x, int y, int width, int height, int op) {
+    // native peer might be offset by more than direct
+    // parent since parent might be lightweight.
+    int nativeX = x;
+    int nativeY = y;
+    for (Component c = parent; (c != null) && (c.peer instanceof LightweightPeer); c = c.parent) {
+        nativeX += c.x;
+        nativeY += c.y;
+    }
+    peer.setBounds(nativeX, nativeY, width, height, op);
+}

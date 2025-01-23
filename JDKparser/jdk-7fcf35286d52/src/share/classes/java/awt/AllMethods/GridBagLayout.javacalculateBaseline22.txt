@@ -1,0 +1,47 @@
+// getLayoutInfo()
+/**
+ * Calculate the baseline for the specified component.
+ * If {@code c} is positioned along it's baseline, the baseline is
+ * obtained and the {@code constraints} ascent, descent and
+ * baseline resize behavior are set from the component; and true is
+ * returned. Otherwise false is returned.
+ */
+private boolean calculateBaseline(Component c, GridBagConstraints constraints, Dimension size) {
+    int anchor = constraints.anchor;
+    if (anchor == GridBagConstraints.BASELINE || anchor == GridBagConstraints.BASELINE_LEADING || anchor == GridBagConstraints.BASELINE_TRAILING) {
+        // Apply the padding to the component, then ask for the baseline.
+        int w = size.width + constraints.ipadx;
+        int h = size.height + constraints.ipady;
+        constraints.ascent = c.getBaseline(w, h);
+        if (constraints.ascent >= 0) {
+            // Component has a baseline
+            int baseline = constraints.ascent;
+            // Adjust the ascent and descent to include the insets.
+            constraints.descent = h - constraints.ascent + constraints.insets.bottom;
+            constraints.ascent += constraints.insets.top;
+            constraints.baselineResizeBehavior = c.getBaselineResizeBehavior();
+            constraints.centerPadding = 0;
+            if (constraints.baselineResizeBehavior == Component.BaselineResizeBehavior.CENTER_OFFSET) {
+                // Component has a baseline resize behavior of
+                // CENTER_OFFSET, calculate centerPadding and
+                // centerOffset (see the description of
+                // CENTER_OFFSET in the enum for detais on this
+                // algorithm).
+                int nextBaseline = c.getBaseline(w, h + 1);
+                constraints.centerOffset = baseline - h / 2;
+                if (h % 2 == 0) {
+                    if (baseline != nextBaseline) {
+                        constraints.centerPadding = 1;
+                    }
+                } else if (baseline == nextBaseline) {
+                    constraints.centerOffset--;
+                    constraints.centerPadding = 1;
+                }
+            }
+        }
+        return true;
+    } else {
+        constraints.ascent = -1;
+        return false;
+    }
+}

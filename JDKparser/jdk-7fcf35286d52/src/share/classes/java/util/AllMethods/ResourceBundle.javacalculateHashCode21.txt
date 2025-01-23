@@ -1,0 +1,8 @@
+private void calculateHashCode() {
+    hashCodeCache = name.hashCode() << 3;
+    hashCodeCache ^= locale.hashCode();
+    ClassLoader loader = getLoader();
+    if (loader != null) {
+        hashCodeCache ^= loader.hashCode();
+    }
+}

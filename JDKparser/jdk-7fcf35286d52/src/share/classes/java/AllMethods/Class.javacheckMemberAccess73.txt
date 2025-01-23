@@ -1,0 +1,27 @@
+/*
+     * Check if client is allowed to access members.  If access is denied,
+     * throw a SecurityException.
+     *
+     * This method also enforces package access.
+     *
+     * <p> Default policy: allow all clients access with normal Java access
+     * control.
+     */
+private void checkMemberAccess(int which, Class<?> caller, boolean checkProxyInterfaces) {
+    final SecurityManager s = System.getSecurityManager();
+    if (s != null) {
+        /* Default policy allows access to all {@link Member#PUBLIC} members,
+             * as well as access to classes that have the same class loader as the caller.
+             * In all other cases, it requires RuntimePermission("accessDeclaredMembers")
+             * permission.
+             */
+        final ClassLoader ccl = ClassLoader.getClassLoader(caller);
+        final ClassLoader cl = getClassLoader0();
+        if (which != Member.PUBLIC) {
+            if (ccl != cl) {
+                s.checkPermission(SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION);
+            }
+        }
+        this.checkPackageAccess(ccl, checkProxyInterfaces);
+    }
+}

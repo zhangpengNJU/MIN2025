@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the container listeners
+ * registered on this container.
+ *
+ * @return all of this container's <code>ContainerListener</code>s
+ *         or an empty array if no container
+ *         listeners are currently registered
+ *
+ * @see #addContainerListener
+ * @see #removeContainerListener
+ * @since 1.4
+ */
+public synchronized ContainerListener[] getContainerListeners() {
+    return getListeners(ContainerListener.class);
+}

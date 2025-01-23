@@ -1,0 +1,17 @@
+/**
+ * Returns true if action can be run. Call only when known to
+ * be triggerable. Uses FJ tag bit to ensure that only one
+ * thread claims ownership.  If async, starts as task -- a
+ * later call to tryFire will run action.
+ */
+final boolean claim() {
+    Executor e = executor;
+    if (compareAndSetForkJoinTaskTag((short) 0, (short) 1)) {
+        if (e == null)
+            return true;
+        // disable
+        executor = null;
+        e.execute(this);
+    }
+    return false;
+}

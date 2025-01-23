@@ -1,0 +1,30 @@
+private boolean canBeCached(byte refKind, Class<?> defc, MemberName member) {
+    if (refKind == REF_invokeSpecial) {
+        return false;
+    }
+    if (!Modifier.isPublic(defc.getModifiers()) || !Modifier.isPublic(member.getDeclaringClass().getModifiers()) || !member.isPublic() || member.isCallerSensitive()) {
+        return false;
+    }
+    ClassLoader loader = defc.getClassLoader();
+    if (!sun.misc.VM.isSystemDomainLoader(loader)) {
+        ClassLoader sysl = ClassLoader.getSystemClassLoader();
+        boolean found = false;
+        while (sysl != null) {
+            if (loader == sysl) {
+                found = true;
+                break;
+            }
+            sysl = sysl.getParent();
+        }
+        if (!found) {
+            return false;
+        }
+    }
+    try {
+        MemberName resolved2 = publicLookup().resolveOrFail(refKind, new MemberName(refKind, defc, member.getName(), member.getType()));
+        checkSecurityManager(defc, resolved2);
+    } catch (ReflectiveOperationException | SecurityException ex) {
+        return false;
+    }
+    return true;
+}

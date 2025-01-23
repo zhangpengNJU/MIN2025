@@ -1,0 +1,72 @@
+/**
+ * Returns a copy of the transform associated with this
+ * <code>Font</code>.  This transform is not necessarily the one
+ * used to construct the font.  If the font has algorithmic
+ * superscripting or width adjustment, this will be incorporated
+ * into the returned <code>AffineTransform</code>.
+ * <p>
+ * Typically, fonts will not be transformed.  Clients generally
+ * should call {@link #isTransformed} first, and only call this
+ * method if <code>isTransformed</code> returns true.
+ *
+ * @return an {@link AffineTransform} object representing the
+ *          transform attribute of this <code>Font</code> object.
+ */
+public AffineTransform getTransform() {
+    /* The most common case is the identity transform.  Most callers
+         * should call isTransformed() first, to decide if they need to
+         * get the transform, but some may not.  Here we check to see
+         * if we have a nonidentity transform, and only do the work to
+         * fetch and/or compute it if so, otherwise we return a new
+         * identity transform.
+         *
+         * Note that the transform is _not_ necessarily the same as
+         * the transform passed in as an Attribute in a Map, as the
+         * transform returned will also reflect the effects of WIDTH and
+         * SUPERSCRIPT attributes.  Clients who want the actual transform
+         * need to call getRequestedAttributes.
+         */
+    if (nonIdentityTx) {
+        AttributeValues values = getAttributeValues();
+        AffineTransform at = values.isNonDefault(ETRANSFORM) ? new AffineTransform(values.getTransform()) : new AffineTransform();
+        if (values.getSuperscript() != 0) {
+            // can't get ascent and descent here, recursive call to this fn,
+            // so use pointsize
+            // let users combine super- and sub-scripting
+            int superscript = values.getSuperscript();
+            double trans = 0;
+            int n = 0;
+            boolean up = superscript > 0;
+            int sign = up ? -1 : 1;
+            int ss = up ? superscript : -superscript;
+            while ((ss & 7) > n) {
+                int newn = ss & 7;
+                trans += sign * (ssinfo[newn] - ssinfo[n]);
+                ss >>= 3;
+                sign = -sign;
+                n = newn;
+            }
+            trans *= pointSize;
+            double scale = Math.pow(2. / 3., n);
+            at.preConcatenate(AffineTransform.getTranslateInstance(0, trans));
+            at.scale(scale, scale);
+        // note on placement and italics
+        // We preconcatenate the transform because we don't want to translate along
+        // the italic angle, but purely perpendicular to the baseline.  While this
+        // looks ok for superscripts, it can lead subscripts to stack on each other
+        // and bring the following text too close.  The way we deal with potential
+        // collisions that can occur in the case of italics is by adjusting the
+        // horizontal spacing of the adjacent glyphvectors.  Examine the italic
+        // angle of both vectors, if one is non-zero, compute the minimum ascent
+        // and descent, and then the x position at each for each vector along its
+        // italic angle starting from its (offset) baseline.  Compute the difference
+        // between the x positions and use the maximum difference to adjust the
+        // position of the right gv.
+        }
+        if (values.isNonDefault(EWIDTH)) {
+            at.scale(values.getWidth(), 1f);
+        }
+        return at;
+    }
+    return new AffineTransform();
+}

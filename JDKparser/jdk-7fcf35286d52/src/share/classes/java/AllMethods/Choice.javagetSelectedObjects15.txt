@@ -1,0 +1,13 @@
+/**
+ * Returns an array (length 1) containing the currently selected
+ * item.  If this choice has no items, returns <code>null</code>.
+ * @see ItemSelectable
+ */
+public synchronized Object[] getSelectedObjects() {
+    if (selectedIndex >= 0) {
+        Object[] items = new Object[1];
+        items[0] = getItem(selectedIndex);
+        return items;
+    }
+    return null;
+}

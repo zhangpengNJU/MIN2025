@@ -1,0 +1,13 @@
+/**
+ * Creates the DropTargetContext associated with this DropTarget.
+ * Subclasses may override this method to instantiate their own
+ * DropTargetContext subclass.
+ *
+ * This call is typically *only* called by the platform's
+ * DropTargetContextPeer as a drag operation encounters this
+ * DropTarget. Accessing the Context while no Drag is current
+ * has undefined results.
+ */
+protected DropTargetContext createDropTargetContext() {
+    return new DropTargetContext(this);
+}

@@ -1,0 +1,17 @@
+private void verifyParameters(final Parameter[] parameters) {
+    final int mask = Modifier.FINAL | Modifier.SYNTHETIC | Modifier.MANDATED;
+    if (getParameterTypes().length != parameters.length)
+        throw new MalformedParametersException("Wrong number of parameters in MethodParameters attribute");
+    for (Parameter parameter : parameters) {
+        final String name = parameter.getRealName();
+        final int mods = parameter.getModifiers();
+        if (name != null) {
+            if (name.isEmpty() || name.indexOf('.') != -1 || name.indexOf(';') != -1 || name.indexOf('[') != -1 || name.indexOf('/') != -1) {
+                throw new MalformedParametersException("Invalid parameter name \"" + name + "\"");
+            }
+        }
+        if (mods != (mods & mask)) {
+            throw new MalformedParametersException("Invalid parameter modifiers");
+        }
+    }
+}

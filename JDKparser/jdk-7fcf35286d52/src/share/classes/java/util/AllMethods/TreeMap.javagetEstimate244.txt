@@ -1,0 +1,14 @@
+final int getEstimate() {
+    // force initialization
+    int s;
+    TreeMap<K, V> t;
+    if ((s = est) < 0) {
+        if ((t = tree) != null) {
+            current = (s == -1) ? t.getFirstEntry() : t.getLastEntry();
+            s = est = t.size;
+            expectedModCount = t.modCount;
+        } else
+            s = est = 0;
+    }
+    return s;
+}

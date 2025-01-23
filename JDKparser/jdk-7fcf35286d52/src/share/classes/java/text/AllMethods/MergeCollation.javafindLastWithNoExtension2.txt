@@ -1,0 +1,9 @@
+private final PatternEntry findLastWithNoExtension(int i) {
+    for (--i; i >= 0; --i) {
+        PatternEntry entry = patterns.get(i);
+        if (entry.extension.length() == 0) {
+            return entry;
+        }
+    }
+    return null;
+}

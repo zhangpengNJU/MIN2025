@@ -1,0 +1,29 @@
+/**
+ * Tests if the line segment from {@code (x1,y1)} to
+ * {@code (x2,y2)} intersects the line segment from {@code (x3,y3)}
+ * to {@code (x4,y4)}.
+ *
+ * @param x1 the X coordinate of the start point of the first
+ *           specified line segment
+ * @param y1 the Y coordinate of the start point of the first
+ *           specified line segment
+ * @param x2 the X coordinate of the end point of the first
+ *           specified line segment
+ * @param y2 the Y coordinate of the end point of the first
+ *           specified line segment
+ * @param x3 the X coordinate of the start point of the second
+ *           specified line segment
+ * @param y3 the Y coordinate of the start point of the second
+ *           specified line segment
+ * @param x4 the X coordinate of the end point of the second
+ *           specified line segment
+ * @param y4 the Y coordinate of the end point of the second
+ *           specified line segment
+ * @return <code>true</code> if the first specified line segment
+ *                  and the second specified line segment intersect
+ *                  each other; <code>false</code> otherwise.
+ * @since 1.2
+ */
+public static boolean linesIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+    return ((relativeCCW(x1, y1, x2, y2, x3, y3) * relativeCCW(x1, y1, x2, y2, x4, y4) <= 0) && (relativeCCW(x3, y3, x4, y4, x1, y1) * relativeCCW(x3, y3, x4, y4, x2, y2) <= 0));
+}

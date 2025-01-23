@@ -1,0 +1,10 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> consumer) {
+    Objects.requireNonNull(consumer);
+    if (est > 0) {
+        est--;
+        consumer.accept(element);
+        return true;
+    }
+    return false;
+}

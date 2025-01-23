@@ -1,0 +1,11 @@
+/**
+ * Returns node for matching characters within an explicit value range.
+ */
+private static CharProperty rangeFor(final int lower, final int upper) {
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return inRange(lower, ch, upper);
+        }
+    };
+}

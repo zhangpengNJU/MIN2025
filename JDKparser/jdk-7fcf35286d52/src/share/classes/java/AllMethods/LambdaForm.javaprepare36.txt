@@ -1,0 +1,78 @@
+/*
+     * Code generation issues:
+     *
+     * Compiled LFs should be reusable in general.
+     * The biggest issue is how to decide when to pull a name into
+     * the bytecode, versus loading a reified form from the MH data.
+     *
+     * For example, an asType wrapper may require execution of a cast
+     * after a call to a MH.  The target type of the cast can be placed
+     * as a constant in the LF itself.  This will force the cast type
+     * to be compiled into the bytecodes and native code for the MH.
+     * Or, the target type of the cast can be erased in the LF, and
+     * loaded from the MH data.  (Later on, if the MH as a whole is
+     * inlined, the data will flow into the inlined instance of the LF,
+     * as a constant, and the end result will be an optimal cast.)
+     *
+     * This erasure of cast types can be done with any use of
+     * reference types.  It can also be done with whole method
+     * handles.  Erasing a method handle might leave behind
+     * LF code that executes correctly for any MH of a given
+     * type, and load the required MH from the enclosing MH's data.
+     * Or, the erasure might even erase the expected MT.
+     *
+     * Also, for direct MHs, the MemberName of the target
+     * could be erased, and loaded from the containing direct MH.
+     * As a simple case, a LF for all int-valued non-static
+     * field getters would perform a cast on its input argument
+     * (to non-constant base type derived from the MemberName)
+     * and load an integer value from the input object
+     * (at a non-constant offset also derived from the MemberName).
+     * Such MN-erased LFs would be inlinable back to optimized
+     * code, whenever a constant enclosing DMH is available
+     * to supply a constant MN from its data.
+     *
+     * The main problem here is to keep LFs reasonably generic,
+     * while ensuring that hot spots will inline good instances.
+     * "Reasonably generic" means that we don't end up with
+     * repeated versions of bytecode or machine code that do
+     * not differ in their optimized form.  Repeated versions
+     * of machine would have the undesirable overheads of
+     * (a) redundant compilation work and (b) extra I$ pressure.
+     * To control repeated versions, we need to be ready to
+     * erase details from LFs and move them into MH data,
+     * whevener those details are not relevant to significant
+     * optimization.  "Significant" means optimization of
+     * code that is actually hot.
+     *
+     * Achieving this may require dynamic splitting of MHs, by replacing
+     * a generic LF with a more specialized one, on the same MH,
+     * if (a) the MH is frequently executed and (b) the MH cannot
+     * be inlined into a containing caller, such as an invokedynamic.
+     *
+     * Compiled LFs that are no longer used should be GC-able.
+     * If they contain non-BCP references, they should be properly
+     * interlinked with the class loader(s) that their embedded types
+     * depend on.  This probably means that reusable compiled LFs
+     * will be tabulated (indexed) on relevant class loaders,
+     * or else that the tables that cache them will have weak links.
+     */
+/**
+ * Make this LF directly executable, as part of a MethodHandle.
+ * Invariant:  Every MH which is invoked must prepare its LF
+ * before invocation.
+ * (In principle, the JVM could do this very lazily,
+ * as a sort of pre-invocation linkage step.)
+ */
+public void prepare() {
+    if (COMPILE_THRESHOLD == 0 && !isCompiled) {
+        compileToBytecode();
+    }
+    if (this.vmentry != null) {
+        // already prepared (e.g., a primitive DMH invoker form)
+        return;
+    }
+    LambdaForm prep = getPreparedForm(basicTypeSignature());
+    this.vmentry = prep.vmentry;
+// TO DO: Maybe add invokeGeneric, invokeWithArguments
+}

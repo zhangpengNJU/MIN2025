@@ -1,0 +1,15 @@
+/**
+ * Removes the specified <code>Savepoint</code>  and subsequent <code>Savepoint</code> objects from the current
+ * transaction. Any reference to the savepoint after it have been removed
+ * will cause an <code>SQLException</code> to be thrown.
+ *
+ * @param savepoint the <code>Savepoint</code> object to be removed
+ * @exception SQLException if a database access error occurs, this
+ *  method is called on a closed connection or
+ *            the given <code>Savepoint</code> object is not a valid
+ *            savepoint in the current transaction
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.4
+ */
+void releaseSavepoint(Savepoint savepoint) throws SQLException;

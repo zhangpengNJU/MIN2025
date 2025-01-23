@@ -1,0 +1,17 @@
+/**
+ * Returns an enumeration of all the PropertyPermission objects in the
+ * container.
+ *
+ * @return an enumeration of all the PropertyPermission objects.
+ */
+@SuppressWarnings("unchecked")
+public Enumeration<Permission> elements() {
+    // Convert Iterator of Map values into an Enumeration
+    synchronized (this) {
+        /**
+         * Casting to rawtype since Enumeration<PropertyPermission>
+         * cannot be directly cast to Enumeration<Permission>
+         */
+        return (Enumeration) Collections.enumeration(perms.values());
+    }
+}

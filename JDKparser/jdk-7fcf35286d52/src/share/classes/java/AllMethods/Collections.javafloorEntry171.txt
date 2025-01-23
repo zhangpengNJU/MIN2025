@@ -1,0 +1,5 @@
+@SuppressWarnings("unchecked")
+public Entry<K, V> floorEntry(K key) {
+    Entry<K, V> floor = (Entry<K, V>) nm.floorEntry(key);
+    return (null != floor) ? new UnmodifiableEntrySet.UnmodifiableEntry<>(floor) : null;
+}

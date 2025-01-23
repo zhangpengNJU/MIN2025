@@ -1,0 +1,55 @@
+/**
+ * Appends an affix pattern to the given StringBuffer, quoting special
+ * characters as needed.  Uses the internal affix pattern, if that exists,
+ * or the literal affix, if the internal affix pattern is null.  The
+ * appended string will generate the same affix pattern (or literal affix)
+ * when passed to toPattern().
+ *
+ * @param buffer the affix string is appended to this
+ * @param affixPattern a pattern such as posPrefixPattern; may be null
+ * @param expAffix a corresponding expanded affix, such as positivePrefix.
+ * Ignored unless affixPattern is null.  If affixPattern is null, then
+ * expAffix is appended as a literal affix.
+ * @param localized true if the appended pattern should contain localized
+ * pattern characters; otherwise, non-localized pattern chars are appended
+ */
+private void appendAffix(StringBuffer buffer, String affixPattern, String expAffix, boolean localized) {
+    if (affixPattern == null) {
+        appendAffix(buffer, expAffix, localized);
+    } else {
+        int i;
+        for (int pos = 0; pos < affixPattern.length(); pos = i) {
+            i = affixPattern.indexOf(QUOTE, pos);
+            if (i < 0) {
+                appendAffix(buffer, affixPattern.substring(pos), localized);
+                break;
+            }
+            if (i > pos) {
+                appendAffix(buffer, affixPattern.substring(pos, i), localized);
+            }
+            char c = affixPattern.charAt(++i);
+            ++i;
+            if (c == QUOTE) {
+                buffer.append(c);
+            // Fall through and append another QUOTE below
+            } else if (c == CURRENCY_SIGN && i < affixPattern.length() && affixPattern.charAt(i) == CURRENCY_SIGN) {
+                ++i;
+                buffer.append(c);
+            // Fall through and append another CURRENCY_SIGN below
+            } else if (localized) {
+                switch(c) {
+                    case PATTERN_PERCENT:
+                        c = symbols.getPercent();
+                        break;
+                    case PATTERN_PER_MILLE:
+                        c = symbols.getPerMill();
+                        break;
+                    case PATTERN_MINUS:
+                        c = symbols.getMinusSign();
+                        break;
+                }
+            }
+            buffer.append(c);
+        }
+    }
+}

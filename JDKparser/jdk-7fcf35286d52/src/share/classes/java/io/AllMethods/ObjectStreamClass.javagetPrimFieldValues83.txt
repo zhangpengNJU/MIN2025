@@ -1,0 +1,46 @@
+/**
+ * Fetches the serializable primitive field values of object obj and
+ * marshals them into byte array buf starting at offset 0.  The caller
+ * is responsible for ensuring that obj is of the proper type.
+ */
+void getPrimFieldValues(Object obj, byte[] buf) {
+    if (obj == null) {
+        throw new NullPointerException();
+    }
+    /* assuming checkDefaultSerialize() has been called on the class
+             * descriptor this FieldReflector was obtained from, no field keys
+             * in array should be equal to Unsafe.INVALID_FIELD_OFFSET.
+             */
+    for (int i = 0; i < numPrimFields; i++) {
+        long key = readKeys[i];
+        int off = offsets[i];
+        switch(typeCodes[i]) {
+            case 'Z':
+                Bits.putBoolean(buf, off, unsafe.getBoolean(obj, key));
+                break;
+            case 'B':
+                buf[off] = unsafe.getByte(obj, key);
+                break;
+            case 'C':
+                Bits.putChar(buf, off, unsafe.getChar(obj, key));
+                break;
+            case 'S':
+                Bits.putShort(buf, off, unsafe.getShort(obj, key));
+                break;
+            case 'I':
+                Bits.putInt(buf, off, unsafe.getInt(obj, key));
+                break;
+            case 'F':
+                Bits.putFloat(buf, off, unsafe.getFloat(obj, key));
+                break;
+            case 'J':
+                Bits.putLong(buf, off, unsafe.getLong(obj, key));
+                break;
+            case 'D':
+                Bits.putDouble(buf, off, unsafe.getDouble(obj, key));
+                break;
+            default:
+                throw new InternalError();
+        }
+    }
+}

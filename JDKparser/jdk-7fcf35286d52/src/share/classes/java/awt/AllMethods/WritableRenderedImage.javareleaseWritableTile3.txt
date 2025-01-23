@@ -1,0 +1,15 @@
+/**
+ * Relinquishes the right to write to a tile.  If the caller
+ * continues to write to the tile, the results are undefined.
+ * Calls to this method should only appear in matching pairs
+ * with calls to getWritableTile; any other use will lead
+ * to undefined results.
+ *
+ * The WritableRenderedImage is responsible for notifying all of
+ * its TileObservers when a tile goes from having one writer
+ * to having no writers.
+ *
+ * @param tileX the X index of the tile.
+ * @param tileY the Y index of the tile.
+ */
+public void releaseWritableTile(int tileX, int tileY);

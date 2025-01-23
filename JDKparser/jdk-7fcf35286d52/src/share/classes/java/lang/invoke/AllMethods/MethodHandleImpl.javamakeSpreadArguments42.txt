@@ -1,0 +1,45 @@
+/**
+ * Factory method:  Spread selected argument.
+ */
+static MethodHandle makeSpreadArguments(MethodHandle target, Class<?> spreadArgType, int spreadArgPos, int spreadArgCount) {
+    MethodType targetType = target.type();
+    for (int i = 0; i < spreadArgCount; i++) {
+        Class<?> arg = VerifyType.spreadArgElementType(spreadArgType, i);
+        if (arg == null)
+            arg = Object.class;
+        targetType = targetType.changeParameterType(spreadArgPos + i, arg);
+    }
+    target = target.asType(targetType);
+    MethodType srcType = targetType.replaceParameterTypes(spreadArgPos, spreadArgPos + spreadArgCount, spreadArgType);
+    // Now build a LambdaForm.
+    MethodType lambdaType = srcType.invokerType();
+    Name[] names = arguments(spreadArgCount + 2, lambdaType);
+    int nameCursor = lambdaType.parameterCount();
+    int[] indexes = new int[targetType.parameterCount()];
+    for (int i = 0, argIndex = 1; i < targetType.parameterCount() + 1; i++, argIndex++) {
+        Class<?> src = lambdaType.parameterType(i);
+        if (i == spreadArgPos) {
+            // Spread the array.
+            MethodHandle aload = MethodHandles.arrayElementGetter(spreadArgType);
+            Name array = names[argIndex];
+            names[nameCursor++] = new Name(Lazy.NF_checkSpreadArgument, array, spreadArgCount);
+            for (int j = 0; j < spreadArgCount; i++, j++) {
+                indexes[i] = nameCursor;
+                names[nameCursor++] = new Name(aload, array, j);
+            }
+        } else if (i < indexes.length) {
+            indexes[i] = argIndex;
+        }
+    }
+    // leave room for the final call
+    assert (nameCursor == names.length - 1);
+    // Build argument array for the call.
+    Name[] targetArgs = new Name[targetType.parameterCount()];
+    for (int i = 0; i < targetType.parameterCount(); i++) {
+        int idx = indexes[i];
+        targetArgs[i] = names[idx];
+    }
+    names[names.length - 1] = new Name(target, (Object[]) targetArgs);
+    LambdaForm form = new LambdaForm("spread", lambdaType.parameterCount(), names);
+    return SimpleMethodHandle.make(srcType, form);
+}

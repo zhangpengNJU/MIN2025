@@ -1,0 +1,6 @@
+static void putLong(ByteBuffer bb, int bi, long x, boolean bigEndian) {
+    if (bigEndian)
+        putLongB(bb, bi, x);
+    else
+        putLongL(bb, bi, x);
+}

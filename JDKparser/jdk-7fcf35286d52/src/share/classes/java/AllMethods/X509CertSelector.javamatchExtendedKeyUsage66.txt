@@ -1,0 +1,24 @@
+/* match on extended key usage purpose OIDs */
+private boolean matchExtendedKeyUsage(X509Certificate xcert) {
+    if ((keyPurposeSet == null) || keyPurposeSet.isEmpty()) {
+        return true;
+    }
+    try {
+        ExtendedKeyUsageExtension ext = (ExtendedKeyUsageExtension) getExtensionObject(xcert, EXTENDED_KEY_USAGE_ID);
+        if (ext != null) {
+            Vector<ObjectIdentifier> certKeyPurposeVector = ext.get(ExtendedKeyUsageExtension.USAGES);
+            if (!certKeyPurposeVector.contains(ANY_EXTENDED_KEY_USAGE) && !certKeyPurposeVector.containsAll(keyPurposeOIDSet)) {
+                if (debug != null) {
+                    debug.println("X509CertSelector.match: cert failed " + "extendedKeyUsage criterion");
+                }
+                return false;
+            }
+        }
+    } catch (IOException ex) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "IOException in extended key usage check");
+        }
+        return false;
+    }
+    return true;
+}

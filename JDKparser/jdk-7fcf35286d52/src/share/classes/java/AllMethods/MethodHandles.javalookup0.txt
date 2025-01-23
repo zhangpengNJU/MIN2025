@@ -1,0 +1,27 @@
+// See IMPL_LOOKUP below.
+// // Method handle creation from ordinary methods.
+/**
+ * Returns a {@link Lookup lookup object} with
+ * full capabilities to emulate all supported bytecode behaviors of the caller.
+ * These capabilities include <a href="MethodHandles.Lookup.html#privacc">private access</a> to the caller.
+ * Factory methods on the lookup object can create
+ * <a href="MethodHandleInfo.html#directmh">direct method handles</a>
+ * for any member that the caller has access to via bytecodes,
+ * including protected and private fields and methods.
+ * This lookup object is a <em>capability</em> which may be delegated to trusted agents.
+ * Do not store it in place where untrusted code can access it.
+ * <p>
+ * This method is caller sensitive, which means that it may return different
+ * values to different callers.
+ * <p>
+ * For any given caller class {@code C}, the lookup object returned by this call
+ * has equivalent capabilities to any lookup object
+ * supplied by the JVM to the bootstrap method of an
+ * <a href="package-summary.html#indyinsn">invokedynamic instruction</a>
+ * executing in the same caller class {@code C}.
+ * @return a lookup object for the caller of this method, with private access
+ */
+@CallerSensitive
+public static Lookup lookup() {
+    return new Lookup(Reflection.getCallerClass());
+}

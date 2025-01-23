@@ -1,0 +1,25 @@
+/**
+ * Sets the mode of the file dialog.  If <code>mode</code> is not
+ * a legal value, an exception will be thrown and <code>mode</code>
+ * will not be set.
+ *
+ * @param      mode  the mode for this file dialog, either
+ *                 <code>FileDialog.LOAD</code> or
+ *                 <code>FileDialog.SAVE</code>
+ * @see        java.awt.FileDialog#LOAD
+ * @see        java.awt.FileDialog#SAVE
+ * @see        java.awt.FileDialog#getMode
+ * @exception  IllegalArgumentException if an illegal file
+ *                 dialog mode is supplied
+ * @since      JDK1.1
+ */
+public void setMode(int mode) {
+    switch(mode) {
+        case LOAD:
+        case SAVE:
+            this.mode = mode;
+            break;
+        default:
+            throw new IllegalArgumentException("illegal file dialog mode");
+    }
+}

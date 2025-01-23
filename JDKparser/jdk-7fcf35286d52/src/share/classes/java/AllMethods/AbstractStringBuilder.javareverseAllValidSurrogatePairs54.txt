@@ -1,0 +1,15 @@
+/**
+ * Outlined helper method for reverse()
+ */
+private void reverseAllValidSurrogatePairs() {
+    for (int i = 0; i < count - 1; i++) {
+        char c2 = value[i];
+        if (Character.isLowSurrogate(c2)) {
+            char c1 = value[i + 1];
+            if (Character.isHighSurrogate(c1)) {
+                value[i++] = c1;
+                value[i] = c2;
+            }
+        }
+    }
+}

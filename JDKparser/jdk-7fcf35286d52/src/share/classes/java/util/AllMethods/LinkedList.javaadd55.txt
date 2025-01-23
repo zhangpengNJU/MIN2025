@@ -1,0 +1,10 @@
+public void add(E e) {
+    checkForComodification();
+    lastReturned = null;
+    if (next == null)
+        linkLast(e);
+    else
+        linkBefore(e, next);
+    nextIndex++;
+    expectedModCount++;
+}

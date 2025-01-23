@@ -1,0 +1,21 @@
+/**
+ * Returns the active Window, if the active Window is in the same context
+ * as the calling thread. Only a Frame or a Dialog can be the active
+ * Window. The native windowing system may denote the active Window or its
+ * children with special decorations, such as a highlighted title bar.
+ * The active Window is always either the focused Window, or the first
+ * Frame or Dialog that is an owner of the focused Window.
+ *
+ * @return the active Window, or null if the active Window is not a member
+ *         of the calling thread's context
+ * @see #getGlobalActiveWindow
+ * @see #setGlobalActiveWindow
+ */
+public Window getActiveWindow() {
+    synchronized (KeyboardFocusManager.class) {
+        if (activeWindow == null) {
+            return null;
+        }
+        return (activeWindow.appContext == AppContext.getAppContext()) ? activeWindow : null;
+    }
+}

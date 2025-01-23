@@ -1,0 +1,21 @@
+// Scaling/Rounding Operations
+/**
+ * Returns a {@code BigDecimal} rounded according to the
+ * {@code MathContext} settings.  If the precision setting is 0 then
+ * no rounding takes place.
+ *
+ * <p>The effect of this method is identical to that of the
+ * {@link #plus(MathContext)} method.
+ *
+ * @param mc the context to use.
+ * @return a {@code BigDecimal} rounded according to the
+ *         {@code MathContext} settings.
+ * @throws ArithmeticException if the rounding mode is
+ *         {@code UNNECESSARY} and the
+ *         {@code BigDecimal}  operation would require rounding.
+ * @see    #plus(MathContext)
+ * @since  1.5
+ */
+public BigDecimal round(MathContext mc) {
+    return plus(mc);
+}

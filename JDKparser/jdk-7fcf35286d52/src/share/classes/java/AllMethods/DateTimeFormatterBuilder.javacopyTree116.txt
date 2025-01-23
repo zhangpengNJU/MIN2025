@@ -1,0 +1,13 @@
+/**
+ * Clone a copy of this tree
+ */
+public PrefixTree copyTree() {
+    PrefixTree copy = new PrefixTree(key, value, null);
+    if (child != null) {
+        copy.child = child.copyTree();
+    }
+    if (sibling != null) {
+        copy.sibling = sibling.copyTree();
+    }
+    return copy;
+}

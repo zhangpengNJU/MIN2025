@@ -1,0 +1,30 @@
+/**
+ * Unlinks non-null first node.
+ */
+private void unlinkFirst(Node<E> first, Node<E> next) {
+    // assert first != null;
+    // assert next != null;
+    // assert first.item == null;
+    for (Node<E> o = null, p = next, q; ; ) {
+        if (p.item != null || (q = p.next) == null) {
+            if (o != null && p.prev != p && first.casNext(next, p)) {
+                skipDeletedPredecessors(p);
+                if (first.prev == null && (p.next == null || p.item != null) && p.prev == first) {
+                    // Ensure o is not reachable from head
+                    updateHead();
+                    // Ensure o is not reachable from tail
+                    updateTail();
+                    // Finally, actually gc-unlink
+                    o.lazySetNext(o);
+                    o.lazySetPrev(prevTerminator());
+                }
+            }
+            return;
+        } else if (p == q)
+            return;
+        else {
+            o = p;
+            p = q;
+        }
+    }
+}

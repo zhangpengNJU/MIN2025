@@ -1,0 +1,16 @@
+/**
+ * Returns a shallow copy of this identity hash map: the keys and values
+ * themselves are not cloned.
+ *
+ * @return a shallow copy of this map
+ */
+public Object clone() {
+    try {
+        IdentityHashMap<?, ?> m = (IdentityHashMap<?, ?>) super.clone();
+        m.entrySet = null;
+        m.table = table.clone();
+        return m;
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+}

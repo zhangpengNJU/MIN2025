@@ -1,0 +1,15 @@
+/**
+ * subclasses may envelope to monitor veto child property changes.
+ */
+public void vetoableChange(PropertyChangeEvent pce) throws PropertyVetoException {
+    String propertyName = pce.getPropertyName();
+    Object source = pce.getSource();
+    synchronized (children) {
+        if ("beanContext".equals(propertyName) && containsKey(source) && !getBeanContextPeer().equals(pce.getNewValue())) {
+            if (!validatePendingRemove(source)) {
+                throw new PropertyVetoException("current BeanContext vetoes setBeanContext()", pce);
+            } else
+                ((BCSChild) children.get(source)).setRemovePending(true);
+        }
+    }
+}

@@ -1,0 +1,31 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setEnabled(boolean)</code>.
+ */
+@Deprecated
+public void disable() {
+    if (enabled) {
+        KeyboardFocusManager.clearMostRecentFocusOwner(this);
+        synchronized (getTreeLock()) {
+            enabled = false;
+            // A disabled lw container is allowed to contain a focus owner.
+            if ((isFocusOwner() || (containsFocus() && !isLightweight())) && KeyboardFocusManager.isAutoFocusTransferEnabled()) {
+                // Don't clear the global focus owner. If transferFocus
+                // fails, we want the focus to stay on the disabled
+                // Component so that keyboard traversal, et. al. still
+                // makes sense to the user.
+                transferFocus(false);
+            }
+            ComponentPeer peer = this.peer;
+            if (peer != null) {
+                peer.setEnabled(false);
+                if (visible && !getRecursivelyVisibleBounds().isEmpty()) {
+                    updateCursorImmediately();
+                }
+            }
+        }
+        if (accessibleContext != null) {
+            accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, null, AccessibleState.ENABLED);
+        }
+    }
+}

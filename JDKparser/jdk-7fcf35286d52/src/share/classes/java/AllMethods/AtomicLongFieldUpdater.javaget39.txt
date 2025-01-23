@@ -1,0 +1,6 @@
+public final long get(T obj) {
+    accessCheck(obj);
+    synchronized (this) {
+        return U.getLong(obj, offset);
+    }
+}

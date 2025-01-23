@@ -1,0 +1,28 @@
+private static void checkInitted() {
+    if (initted)
+        return;
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+        public Void run() {
+            // Tests to ensure the system properties table is fully
+            // initialized. This is needed because reflection code is
+            // called very early in the initialization process (before
+            // command-line arguments have been parsed and therefore
+            // these user-settable properties installed.) We assume that
+            // if System.out is non-null then the System class has been
+            // fully initialized and that the bulk of the startup code
+            // has been run.
+            if (System.out == null) {
+                // java.lang.System not yet fully initialized
+                return null;
+            }
+            // Doesn't use Boolean.getBoolean to avoid class init.
+            String val = System.getProperty("sun.reflect.noCaches");
+            if (val != null && val.equals("true")) {
+                useCaches = false;
+            }
+            initted = true;
+            return null;
+        }
+    });
+}

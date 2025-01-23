@@ -1,0 +1,26 @@
+/**
+ * Invokes the writeObject method of the represented serializable class.
+ * Throws UnsupportedOperationException if this class descriptor is not
+ * associated with a class, or if the class is externalizable,
+ * non-serializable or does not define writeObject.
+ */
+void invokeWriteObject(Object obj, ObjectOutputStream out) throws IOException, UnsupportedOperationException {
+    requireInitialized();
+    if (writeObjectMethod != null) {
+        try {
+            writeObjectMethod.invoke(obj, new Object[] { out });
+        } catch (InvocationTargetException ex) {
+            Throwable th = ex.getTargetException();
+            if (th instanceof IOException) {
+                throw (IOException) th;
+            } else {
+                throwMiscException(th);
+            }
+        } catch (IllegalAccessException ex) {
+            // should not occur, as access checks have been suppressed
+            throw new InternalError(ex);
+        }
+    } else {
+        throw new UnsupportedOperationException();
+    }
+}

@@ -1,0 +1,9 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+    // calls getFrom() to check if supported
+    long curValue = getFrom(temporal);
+    // leniently check from 1 to 92 TODO: check
+    range().checkValidValue(newValue, this);
+    return (R) temporal.with(DAY_OF_YEAR, temporal.getLong(DAY_OF_YEAR) + (newValue - curValue));
+}

@@ -1,0 +1,29 @@
+/**
+ * Returns a byte array containing the two's-complement
+ * representation of this BigInteger.  The byte array will be in
+ * <i>big-endian</i> byte-order: the most significant byte is in
+ * the zeroth element.  The array will contain the minimum number
+ * of bytes required to represent this BigInteger, including at
+ * least one sign bit, which is {@code (ceil((this.bitLength() +
+ * 1)/8))}.  (This representation is compatible with the
+ * {@link #BigInteger(byte[]) (byte[])} constructor.)
+ *
+ * @return a byte array containing the two's-complement representation of
+ *         this BigInteger.
+ * @see    #BigInteger(byte[])
+ */
+public byte[] toByteArray() {
+    int byteLen = bitLength() / 8 + 1;
+    byte[] byteArray = new byte[byteLen];
+    for (int i = byteLen - 1, bytesCopied = 4, nextInt = 0, intIndex = 0; i >= 0; i--) {
+        if (bytesCopied == 4) {
+            nextInt = getInt(intIndex++);
+            bytesCopied = 1;
+        } else {
+            nextInt >>>= 8;
+            bytesCopied++;
+        }
+        byteArray[i] = (byte) nextInt;
+    }
+    return byteArray;
+}

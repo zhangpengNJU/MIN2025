@@ -1,0 +1,54 @@
+/**
+ * Creates a new strategy for multi-buffering on this component.
+ * Multi-buffering is useful for rendering performance.  This method
+ * attempts to create the best strategy available with the number of
+ * buffers supplied.  It will always create a <code>BufferStrategy</code>
+ * with that number of buffers.
+ * A page-flipping strategy is attempted first, then a blitting strategy
+ * using accelerated buffers.  Finally, an unaccelerated blitting
+ * strategy is used.
+ * <p>
+ * Each time this method is called,
+ * the existing buffer strategy for this component is discarded.
+ * @param numBuffers number of buffers to create, including the front buffer
+ * @exception IllegalArgumentException if numBuffers is less than 1.
+ * @exception IllegalStateException if the component is not displayable
+ * @see #isDisplayable
+ * @see Window#getBufferStrategy()
+ * @see Canvas#getBufferStrategy()
+ * @since 1.4
+ */
+void createBufferStrategy(int numBuffers) {
+    BufferCapabilities bufferCaps;
+    if (numBuffers > 1) {
+        // Try to create a page-flipping strategy
+        bufferCaps = new BufferCapabilities(new ImageCapabilities(true), new ImageCapabilities(true), BufferCapabilities.FlipContents.UNDEFINED);
+        try {
+            createBufferStrategy(numBuffers, bufferCaps);
+            // Success
+            return;
+        } catch (AWTException e) {
+        // Failed
+        }
+    }
+    // Try a blitting (but still accelerated) strategy
+    bufferCaps = new BufferCapabilities(new ImageCapabilities(true), new ImageCapabilities(true), null);
+    try {
+        createBufferStrategy(numBuffers, bufferCaps);
+        // Success
+        return;
+    } catch (AWTException e) {
+    // Failed
+    }
+    // Try an unaccelerated blitting strategy
+    bufferCaps = new BufferCapabilities(new ImageCapabilities(false), new ImageCapabilities(false), null);
+    try {
+        createBufferStrategy(numBuffers, bufferCaps);
+        // Success
+        return;
+    } catch (AWTException e) {
+        // Code should never reach here (an unaccelerated blitting
+        // strategy should always work)
+        throw new InternalError("Could not create a buffer strategy", e);
+    }
+}

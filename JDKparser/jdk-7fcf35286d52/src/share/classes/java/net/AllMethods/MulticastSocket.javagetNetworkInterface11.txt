@@ -1,0 +1,19 @@
+/**
+ * Get the multicast network interface set.
+ *
+ * @exception SocketException if there is an error in
+ * the underlying protocol, such as a TCP error.
+ * @return the multicast {@code NetworkInterface} currently set
+ * @see #setNetworkInterface(NetworkInterface)
+ * @since 1.4
+ */
+public NetworkInterface getNetworkInterface() throws SocketException {
+    NetworkInterface ni = (NetworkInterface) getImpl().getOption(SocketOptions.IP_MULTICAST_IF2);
+    if ((ni.getIndex() == 0) || (ni.getIndex() == -1)) {
+        InetAddress[] addrs = new InetAddress[1];
+        addrs[0] = InetAddress.anyLocalAddress();
+        return new NetworkInterface(addrs[0].getHostName(), 0, addrs);
+    } else {
+        return ni;
+    }
+}

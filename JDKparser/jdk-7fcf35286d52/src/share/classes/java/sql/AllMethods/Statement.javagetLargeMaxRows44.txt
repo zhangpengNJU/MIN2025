@@ -1,0 +1,22 @@
+/**
+ *  Retrieves the maximum number of rows that a
+ *  <code>ResultSet</code> object produced by this
+ *  <code>Statement</code> object can contain.  If this limit is exceeded,
+ *  the excess rows are silently dropped.
+ *  <p>
+ *  This method should be used when the returned row limit may exceed
+ *  {@link Integer#MAX_VALUE}.
+ * <p>
+ *  The default implementation will return {@code 0}
+ *
+ *  @return the current maximum number of rows for a <code>ResultSet</code>
+ *          object produced by this <code>Statement</code> object;
+ *          zero means there is no limit
+ *  @exception SQLException if a database access error occurs or
+ *  this method is called on a closed <code>Statement</code>
+ *  @see #setMaxRows
+ *  @since 1.8
+ */
+default long getLargeMaxRows() throws SQLException {
+    return 0;
+}

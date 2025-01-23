@@ -1,0 +1,14 @@
+/**
+ * {@inheritDoc}
+ * <p>
+ * The iterator for this class is not multi-threaded safe,
+ * which means that this {@code Path2D} class does not
+ * guarantee that modifications to the geometry of this
+ * {@code Path2D} object do not affect any iterations of
+ * that geometry that are already in process.
+ *
+ * @since 1.6
+ */
+public final PathIterator getPathIterator(AffineTransform at, double flatness) {
+    return new FlatteningPathIterator(getPathIterator(at), flatness);
+}

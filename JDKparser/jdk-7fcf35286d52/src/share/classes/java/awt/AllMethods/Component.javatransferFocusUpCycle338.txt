@@ -1,0 +1,33 @@
+/**
+ * Transfers the focus up one focus traversal cycle. Typically, the focus
+ * owner is set to this Component's focus cycle root, and the current focus
+ * cycle root is set to the new focus owner's focus cycle root. If,
+ * however, this Component's focus cycle root is a Window, then the focus
+ * owner is set to the focus cycle root's default Component to focus, and
+ * the current focus cycle root is unchanged.
+ *
+ * @see       #requestFocus()
+ * @see       Container#isFocusCycleRoot()
+ * @see       Container#setFocusCycleRoot(boolean)
+ * @since     1.4
+ */
+public void transferFocusUpCycle() {
+    Container rootAncestor;
+    for (rootAncestor = getFocusCycleRootAncestor(); rootAncestor != null && !(rootAncestor.isShowing() && rootAncestor.isFocusable() && rootAncestor.isEnabled()); rootAncestor = rootAncestor.getFocusCycleRootAncestor()) {
+    }
+    if (rootAncestor != null) {
+        Container rootAncestorRootAncestor = rootAncestor.getFocusCycleRootAncestor();
+        Container fcr = (rootAncestorRootAncestor != null) ? rootAncestorRootAncestor : rootAncestor;
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().setGlobalCurrentFocusCycleRootPriv(fcr);
+        rootAncestor.requestFocus(CausedFocusEvent.Cause.TRAVERSAL_UP);
+    } else {
+        Window window = getContainingWindow();
+        if (window != null) {
+            Component toFocus = window.getFocusTraversalPolicy().getDefaultComponent(window);
+            if (toFocus != null) {
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().setGlobalCurrentFocusCycleRootPriv(window);
+                toFocus.requestFocus(CausedFocusEvent.Cause.TRAVERSAL_UP);
+            }
+        }
+    }
+}

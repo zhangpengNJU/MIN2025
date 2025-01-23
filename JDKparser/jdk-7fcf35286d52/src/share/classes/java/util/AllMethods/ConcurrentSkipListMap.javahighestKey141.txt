@@ -1,0 +1,13 @@
+/**
+ * Returns highest absolute key (ignoring directonality).
+ */
+K highestKey() {
+    Comparator<? super K> cmp = m.comparator;
+    ConcurrentSkipListMap.Node<K, V> n = hiNode(cmp);
+    if (n != null) {
+        K last = n.key;
+        if (inBounds(last, cmp))
+            return last;
+    }
+    throw new NoSuchElementException();
+}

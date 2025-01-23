@@ -1,0 +1,15 @@
+/**
+ * Creates a new <code>Font</code> object by replicating the current
+ * <code>Font</code> object and applying a new size to it.
+ * @param size the size for the new <code>Font</code>.
+ * @return a new <code>Font</code> object.
+ * @since 1.2
+ */
+public Font deriveFont(float size) {
+    if (values == null) {
+        return new Font(name, style, size, createdFont, font2DHandle);
+    }
+    AttributeValues newValues = getAttributeValues().clone();
+    newValues.setSize(size);
+    return new Font(newValues, null, -1, createdFont, font2DHandle);
+}

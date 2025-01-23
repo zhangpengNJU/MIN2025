@@ -1,0 +1,22 @@
+static LocalTime readExternal(DataInput in) throws IOException {
+    int hour = in.readByte();
+    int minute = 0;
+    int second = 0;
+    int nano = 0;
+    if (hour < 0) {
+        hour = ~hour;
+    } else {
+        minute = in.readByte();
+        if (minute < 0) {
+            minute = ~minute;
+        } else {
+            second = in.readByte();
+            if (second < 0) {
+                second = ~second;
+            } else {
+                nano = in.readInt();
+            }
+        }
+    }
+    return LocalTime.of(hour, minute, second, nano);
+}

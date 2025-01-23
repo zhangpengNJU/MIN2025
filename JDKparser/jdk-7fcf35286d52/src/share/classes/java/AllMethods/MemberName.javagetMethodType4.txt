@@ -1,0 +1,39 @@
+/**
+ * Return the declared type of this member, which
+ *  must be a method or constructor.
+ */
+public MethodType getMethodType() {
+    if (type == null) {
+        expandFromVM();
+        if (type == null) {
+            return null;
+        }
+    }
+    if (!isInvocable()) {
+        throw newIllegalArgumentException("not invocable, no method type");
+    }
+    {
+        // Get a snapshot of type which doesn't get changed by racing threads.
+        final Object type = this.type;
+        if (type instanceof MethodType) {
+            return (MethodType) type;
+        }
+    }
+    // type is not a MethodType yet.  Convert it thread-safely.
+    synchronized (this) {
+        if (type instanceof String) {
+            String sig = (String) type;
+            MethodType res = MethodType.fromMethodDescriptorString(sig, getClassLoader());
+            type = res;
+        } else if (type instanceof Object[]) {
+            Object[] typeInfo = (Object[]) type;
+            Class<?>[] ptypes = (Class<?>[]) typeInfo[1];
+            Class<?> rtype = (Class<?>) typeInfo[0];
+            MethodType res = MethodType.methodType(rtype, ptypes);
+            type = res;
+        }
+        // Make sure type is a MethodType for racing threads.
+        assert type instanceof MethodType : "bad method type " + type;
+    }
+    return (MethodType) type;
+}

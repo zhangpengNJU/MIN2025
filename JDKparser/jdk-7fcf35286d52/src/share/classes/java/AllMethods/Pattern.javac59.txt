@@ -1,0 +1,9 @@
+/**
+ *  Utility method for parsing control escape sequences.
+ */
+private int c() {
+    if (cursor < patternLength) {
+        return read() ^ 64;
+    }
+    throw error("Illegal control escape sequence");
+}

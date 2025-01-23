@@ -1,0 +1,9 @@
+/**
+ * {@inheritDoc}
+ */
+public final PropertyChangeListener extract(PropertyChangeListener listener) {
+    while (listener instanceof PropertyChangeListenerProxy) {
+        listener = ((PropertyChangeListenerProxy) listener).getListener();
+    }
+    return listener;
+}

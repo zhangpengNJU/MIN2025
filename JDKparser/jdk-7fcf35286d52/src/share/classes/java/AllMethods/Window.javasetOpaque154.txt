@@ -1,0 +1,7 @@
+public void setOpaque(Window window, boolean opaque) {
+    Color bg = window.getBackground();
+    if (bg == null) {
+        bg = new Color(0, 0, 0, 0);
+    }
+    window.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), opaque ? 255 : 0));
+}

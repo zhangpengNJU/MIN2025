@@ -1,0 +1,16 @@
+/*
+     * Reads in a Hashtable of PropertyPermissions and saves them in the
+     * perms field. Reads in all_allowed.
+     */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get all_allowed
+    all_allowed = gfields.get("all_allowed", false);
+    // Get permissions
+    @SuppressWarnings("unchecked")
+    Hashtable<String, PropertyPermission> permissions = (Hashtable<String, PropertyPermission>) gfields.get("permissions", null);
+    perms = new HashMap<>(permissions.size() * 2);
+    perms.putAll(permissions);
+}

@@ -1,0 +1,24 @@
+/**
+ * Retrieves the schema names available in this database.  The results
+ * are ordered by <code>TABLE_CATALOG</code> and
+ * <code>TABLE_SCHEM</code>.
+ *
+ * <P>The schema columns are:
+ *  <OL>
+ *  <LI><B>TABLE_SCHEM</B> String {@code =>} schema name
+ *  <LI><B>TABLE_CATALOG</B> String {@code =>} catalog name (may be <code>null</code>)
+ *  </OL>
+ *
+ * @param catalog a catalog name; must match the catalog name as it is stored
+ * in the database;"" retrieves those without a catalog; null means catalog
+ * name should not be used to narrow down the search.
+ * @param schemaPattern a schema name; must match the schema name as it is
+ * stored in the database; null means
+ * schema name should not be used to narrow down the search.
+ * @return a <code>ResultSet</code> object in which each row is a
+ *         schema description
+ * @exception SQLException if a database access error occurs
+ * @see #getSearchStringEscape
+ * @since 1.6
+ */
+ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException;

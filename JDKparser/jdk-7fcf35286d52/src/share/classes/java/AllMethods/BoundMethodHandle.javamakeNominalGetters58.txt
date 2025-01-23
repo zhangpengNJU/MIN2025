@@ -1,0 +1,8 @@
+static NamedFunction[] makeNominalGetters(String types, NamedFunction[] nfs, MethodHandle[] getters) {
+    if (nfs == null)
+        nfs = new NamedFunction[types.length()];
+    for (int i = 0; i < nfs.length; ++i) {
+        nfs[i] = new NamedFunction(getters[i]);
+    }
+    return nfs;
+}

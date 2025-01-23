@@ -1,0 +1,17 @@
+/**
+ * This method sets the current actions acceptable to
+ * this <code>DropTarget</code>.
+ * <P>
+ * @param actions an <code>int</code> representing the supported action(s)
+ */
+protected void setTargetActions(int actions) {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    if (peer != null) {
+        synchronized (peer) {
+            peer.setTargetActions(actions);
+            getDropTarget().doSetDefaultActions(actions);
+        }
+    } else {
+        getDropTarget().doSetDefaultActions(actions);
+    }
+}

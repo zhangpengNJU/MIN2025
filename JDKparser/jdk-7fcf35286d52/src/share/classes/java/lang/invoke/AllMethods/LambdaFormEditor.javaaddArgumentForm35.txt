@@ -1,0 +1,14 @@
+LambdaForm addArgumentForm(int pos, BasicType type) {
+    Transform key = Transform.of(Transform.Kind.ADD_ARG, pos, type.ordinal());
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.arity == lambdaForm.arity + 1);
+        assert (form.parameterType(pos) == type);
+        return form;
+    }
+    LambdaFormBuffer buf = buffer();
+    buf.startEdit();
+    buf.insertParameter(pos, new Name(type));
+    form = buf.endEdit();
+    return putInCache(key, form);
+}

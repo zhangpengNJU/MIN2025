@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final synchronized void quadTo(double x1, double y1, double x2, double y2) {
+    needRoom(true, 4);
+    pointTypes[numTypes++] = SEG_QUADTO;
+    floatCoords[numCoords++] = (float) x1;
+    floatCoords[numCoords++] = (float) y1;
+    floatCoords[numCoords++] = (float) x2;
+    floatCoords[numCoords++] = (float) y2;
+}

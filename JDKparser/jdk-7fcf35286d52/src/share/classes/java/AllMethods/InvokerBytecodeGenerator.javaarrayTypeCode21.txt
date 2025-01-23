@@ -1,0 +1,25 @@
+private byte arrayTypeCode(Wrapper elementType) {
+    switch(elementType) {
+        case BOOLEAN:
+            return Opcodes.T_BOOLEAN;
+        case BYTE:
+            return Opcodes.T_BYTE;
+        case CHAR:
+            return Opcodes.T_CHAR;
+        case SHORT:
+            return Opcodes.T_SHORT;
+        case INT:
+            return Opcodes.T_INT;
+        case LONG:
+            return Opcodes.T_LONG;
+        case FLOAT:
+            return Opcodes.T_FLOAT;
+        case DOUBLE:
+            return Opcodes.T_DOUBLE;
+        // in place of Opcodes.T_OBJECT
+        case OBJECT:
+            return 0;
+        default:
+            throw new InternalError();
+    }
+}

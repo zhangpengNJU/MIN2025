@@ -1,0 +1,23 @@
+/**
+ * Sets the XML value designated by this SQLXML instance to the given String representation.
+ * The format of this String is defined by org.xml.sax.InputSource,
+ * where the characters in the stream represent the unicode code points for
+ * XML according to section 2 and appendix B of the XML 1.0 specification.
+ * Although an encoding declaration other than unicode may be present,
+ * the encoding of the String is unicode.
+ * The behavior of this method is the same as ResultSet.updateString()
+ * when the designated column of the ResultSet has a type java.sql.Types of SQLXML.
+ * <p>
+ * The SQL XML object becomes not writeable when this method is called and
+ * may also become not readable depending on implementation.
+ *
+ * @param value the XML value
+ * @throws SQLException if there is an error processing the XML value.
+ *   The getCause() method of the exception may provide a more detailed exception, for example,
+ *   if the stream does not contain valid characters.
+ *   An exception is thrown if the state is not writable.
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+void setString(String value) throws SQLException;

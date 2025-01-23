@@ -1,0 +1,17 @@
+/**
+ * Check the system/security property for the ephemeral port range
+ * for this system. The suffix is either "high" or "low"
+ */
+private static int initEphemeralPorts(String suffix, int defval) {
+    return AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+
+        public Integer run() {
+            int val = Integer.getInteger("jdk.net.ephemeralPortRange." + suffix, -1);
+            if (val != -1) {
+                return val;
+            } else {
+                return suffix.equals("low") ? PortConfig.getLower() : PortConfig.getUpper();
+            }
+        }
+    });
+}

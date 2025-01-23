@@ -1,0 +1,17 @@
+/**
+ * Executes the SQL statement in this <code>PreparedStatement</code> object,
+ * which must be an SQL Data Manipulation Language (DML) statement, such as <code>INSERT</code>, <code>UPDATE</code> or
+ * <code>DELETE</code>; or an SQL statement that returns nothing,
+ * such as a DDL statement.
+ *
+ * @return either (1) the row count for SQL Data Manipulation Language (DML) statements
+ *         or (2) 0 for SQL statements that return nothing
+ * @exception SQLException if a database access error occurs;
+ * this method is called on a closed  <code>PreparedStatement</code>
+ * or the SQL statement returns a <code>ResultSet</code> object
+ * @throws SQLTimeoutException when the driver has determined that the
+ * timeout value that was specified by the {@code setQueryTimeout}
+ * method has been exceeded and has at least attempted to cancel
+ * the currently running {@code Statement}
+ */
+int executeUpdate() throws SQLException;

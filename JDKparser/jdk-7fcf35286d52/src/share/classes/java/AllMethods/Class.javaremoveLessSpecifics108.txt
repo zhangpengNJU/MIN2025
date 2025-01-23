@@ -1,0 +1,26 @@
+/* Removes all Methods from this MethodArray that have a more specific
+         * default Method in this MethodArray.
+         *
+         * Users of MethodArray are responsible for pruning Methods that have
+         * a more specific <em>concrete</em> Method.
+         */
+void removeLessSpecifics() {
+    if (!hasDefaults())
+        return;
+    for (int i = 0; i < length; i++) {
+        Method m = get(i);
+        if (m == null || !m.isDefault())
+            continue;
+        for (int j = 0; j < length; j++) {
+            if (i == j)
+                continue;
+            Method candidate = get(j);
+            if (candidate == null)
+                continue;
+            if (!matchesNameAndDescriptor(m, candidate))
+                continue;
+            if (hasMoreSpecificClass(m, candidate))
+                remove(j);
+        }
+    }
+}

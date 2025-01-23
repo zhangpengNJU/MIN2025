@@ -1,0 +1,16 @@
+/**
+ * Basically, tests if a method from a class defined using a
+ *          class loader is on the execution stack.
+ *
+ * @return  <code>true</code> if a call to <code>currentClassLoader</code>
+ *          has a non-null return value.
+ *
+ * @deprecated This type of security checking is not recommended.
+ *  It is recommended that the <code>checkPermission</code>
+ *  call be used instead.
+ * @see        #currentClassLoader() currentClassLoader
+ */
+@Deprecated
+protected boolean inClassLoader() {
+    return currentClassLoader() != null;
+}

@@ -1,0 +1,50 @@
+/**
+ * Sets this transform to a rotation transformation that rotates
+ * coordinates according to a rotation vector.
+ * All coordinates rotate about the origin by the same amount.
+ * The amount of rotation is such that coordinates along the former
+ * positive X axis will subsequently align with the vector pointing
+ * from the origin to the specified vector coordinates.
+ * If both <code>vecx</code> and <code>vecy</code> are 0.0,
+ * the transform is set to an identity transform.
+ * This operation is equivalent to calling:
+ * <pre>
+ *     setToRotation(Math.atan2(vecy, vecx));
+ * </pre>
+ *
+ * @param vecx the X coordinate of the rotation vector
+ * @param vecy the Y coordinate of the rotation vector
+ * @since 1.6
+ */
+public void setToRotation(double vecx, double vecy) {
+    double sin, cos;
+    if (vecy == 0) {
+        sin = 0.0;
+        if (vecx < 0.0) {
+            cos = -1.0;
+            state = APPLY_SCALE;
+            type = TYPE_QUADRANT_ROTATION;
+        } else {
+            cos = 1.0;
+            state = APPLY_IDENTITY;
+            type = TYPE_IDENTITY;
+        }
+    } else if (vecx == 0) {
+        cos = 0.0;
+        sin = (vecy > 0.0) ? 1.0 : -1.0;
+        state = APPLY_SHEAR;
+        type = TYPE_QUADRANT_ROTATION;
+    } else {
+        double len = Math.sqrt(vecx * vecx + vecy * vecy);
+        cos = vecx / len;
+        sin = vecy / len;
+        state = APPLY_SHEAR | APPLY_SCALE;
+        type = TYPE_GENERAL_ROTATION;
+    }
+    m00 = cos;
+    m10 = sin;
+    m01 = -sin;
+    m11 = cos;
+    m02 = 0.0;
+    m12 = 0.0;
+}

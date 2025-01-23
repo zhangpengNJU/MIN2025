@@ -1,0 +1,13 @@
+/**
+ * Specified that the character argument starts a single-line
+ * comment. All characters from the comment character to the end of
+ * the line are ignored by this stream tokenizer.
+ *
+ * <p>Any other attribute settings for the specified character are cleared.
+ *
+ * @param   ch   the character.
+ */
+public void commentChar(int ch) {
+    if (ch >= 0 && ch < ctype.length)
+        ctype[ch] = CT_COMMENT;
+}

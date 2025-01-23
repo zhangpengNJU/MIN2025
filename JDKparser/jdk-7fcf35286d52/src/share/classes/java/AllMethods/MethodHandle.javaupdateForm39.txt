@@ -1,0 +1,17 @@
+/**
+ * Replace the old lambda form of this method handle with a new one.
+ * The new one must be functionally equivalent to the old one.
+ * Threads may continue running the old form indefinitely,
+ * but it is likely that the new one will be preferred for new executions.
+ * Use with discretion.
+ */
+/*non-public*/
+void updateForm(LambdaForm newForm) {
+    assert (newForm.customized == null || newForm.customized == this);
+    if (form == newForm)
+        return;
+    // as in MethodHandle.<init>
+    newForm.prepare();
+    UNSAFE.putObject(this, FORM_OFFSET, newForm);
+    UNSAFE.fullFence();
+}

@@ -1,0 +1,15 @@
+public boolean tryAdvance(Consumer<? super V> action) {
+    TreeMap.Entry<K, V> e;
+    if (action == null)
+        throw new NullPointerException();
+    if (est < 0)
+        // force initialization
+        getEstimate();
+    if ((e = current) == null || e == fence)
+        return false;
+    current = successor(e);
+    action.accept(e.value);
+    if (tree.modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    return true;
+}

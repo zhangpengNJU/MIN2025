@@ -1,0 +1,13 @@
+/**
+ * Returns the portion of the text that is selected.
+ *
+ * @return the text, null if no selection
+ */
+public String getSelectedText() {
+    String selText = TextComponent.this.getSelectedText();
+    // Fix for 4256662
+    if (selText == null || selText.equals("")) {
+        return null;
+    }
+    return selText;
+}

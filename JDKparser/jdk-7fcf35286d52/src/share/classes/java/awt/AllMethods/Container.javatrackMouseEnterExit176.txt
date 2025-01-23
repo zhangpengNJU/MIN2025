@@ -1,0 +1,22 @@
+/*
+     * Generates enter/exit events as mouse moves over lw components
+     * @param targetOver        Target mouse is over (including native container)
+     * @param e                 Mouse event in native container
+     */
+private void trackMouseEnterExit(Component targetOver, MouseEvent e) {
+    if (e instanceof SunDropTargetEvent) {
+        trackDropTargetEnterExit(targetOver, e);
+        return;
+    }
+    int id = e.getID();
+    if (id != MouseEvent.MOUSE_EXITED && id != MouseEvent.MOUSE_DRAGGED && id != LWD_MOUSE_DRAGGED_OVER && !isMouseInNativeContainer) {
+        // any event but an exit or drag means we're in the native container
+        isMouseInNativeContainer = true;
+        startListeningForOtherDrags();
+    } else if (id == MouseEvent.MOUSE_EXITED) {
+        isMouseInNativeContainer = false;
+        stopListeningForOtherDrags();
+    }
+    Component tle = retargetMouseEnterExit(targetOver, e, targetLastEntered.get(), isMouseInNativeContainer);
+    targetLastEntered = new WeakReference<>(tle);
+}

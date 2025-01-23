@@ -1,0 +1,18 @@
+// Recursive method to walk the tree below a node and set
+// a new parent logger.
+void walkAndSetParent(Logger parent) {
+    if (children == null) {
+        return;
+    }
+    Iterator<LogNode> values = children.values().iterator();
+    while (values.hasNext()) {
+        LogNode node = values.next();
+        LoggerWeakRef ref = node.loggerRef;
+        Logger logger = (ref == null) ? null : ref.get();
+        if (logger == null) {
+            node.walkAndSetParent(parent);
+        } else {
+            doSetParent(logger, parent);
+        }
+    }
+}

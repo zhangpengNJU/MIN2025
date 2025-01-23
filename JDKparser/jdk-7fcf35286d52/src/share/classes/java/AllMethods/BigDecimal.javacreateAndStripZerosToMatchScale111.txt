@@ -1,0 +1,24 @@
+/**
+ * Remove insignificant trailing zeros from this
+ * {@code long} value until the preferred scale is reached or no
+ * more zeros can be removed.  If the preferred scale is less than
+ * Integer.MIN_VALUE, all the trailing zeros will be removed.
+ *
+ * @return new {@code BigDecimal} with a scale possibly reduced
+ * to be closed to the preferred scale.
+ */
+private static BigDecimal createAndStripZerosToMatchScale(long compactVal, int scale, long preferredScale) {
+    while (Math.abs(compactVal) >= 10L && scale > preferredScale) {
+        if ((compactVal & 1L) != 0L)
+            // odd number cannot end in 0
+            break;
+        long r = compactVal % 10L;
+        if (r != 0L)
+            // non-0 remainder
+            break;
+        compactVal /= 10;
+        // could Overflow
+        scale = checkScale(compactVal, (long) scale - 1);
+    }
+    return valueOf(compactVal, scale);
+}

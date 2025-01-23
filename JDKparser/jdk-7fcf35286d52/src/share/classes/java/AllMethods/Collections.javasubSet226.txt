@@ -1,0 +1,5 @@
+public NavigableSet<E> subSet(E fromElement, E toElement) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableSet<>(ns.subSet(fromElement, true, toElement, false), mutex);
+    }
+}

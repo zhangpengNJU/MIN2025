@@ -1,0 +1,9 @@
+private static Method resolve(Method oldMethod, Method newMethod) {
+    if (oldMethod == null) {
+        return newMethod;
+    }
+    if (newMethod == null) {
+        return oldMethod;
+    }
+    return !oldMethod.isSynthetic() && newMethod.isSynthetic() ? oldMethod : newMethod;
+}

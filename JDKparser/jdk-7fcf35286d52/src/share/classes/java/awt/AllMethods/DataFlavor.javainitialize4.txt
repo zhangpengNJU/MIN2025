@@ -1,0 +1,42 @@
+/**
+ * Common initialization code called from various constructors.
+ *
+ * @param mimeType the MIME Content Type (must have a class= param)
+ * @param humanPresentableName the human Presentable Name or
+ *                 <code>null</code>
+ * @param classLoader the fallback class loader to resolve against
+ *
+ * @throws MimeTypeParseException
+ * @throws ClassNotFoundException
+ * @throws  NullPointerException if <code>mimeType</code> is null
+ *
+ * @see #tryToLoadClass
+ */
+private void initialize(String mimeType, String humanPresentableName, ClassLoader classLoader) throws MimeTypeParseException, ClassNotFoundException {
+    if (mimeType == null) {
+        throw new NullPointerException("mimeType");
+    }
+    // throws
+    this.mimeType = new MimeType(mimeType);
+    String rcn = getParameter("class");
+    if (rcn == null) {
+        if ("application/x-java-serialized-object".equals(this.mimeType.getBaseType()))
+            throw new IllegalArgumentException("no representation class specified for:" + mimeType);
+        else
+            // default
+            representationClass = java.io.InputStream.class;
+    } else {
+        // got a class name
+        representationClass = DataFlavor.tryToLoadClass(rcn, classLoader);
+    }
+    this.mimeType.setParameter("class", representationClass.getName());
+    if (humanPresentableName == null) {
+        humanPresentableName = this.mimeType.getParameter("humanPresentableName");
+        if (humanPresentableName == null)
+            humanPresentableName = this.mimeType.getPrimaryType() + "/" + this.mimeType.getSubType();
+    }
+    // set it.
+    this.humanPresentableName = humanPresentableName;
+    // just in case
+    this.mimeType.removeParameter("humanPresentableName");
+}

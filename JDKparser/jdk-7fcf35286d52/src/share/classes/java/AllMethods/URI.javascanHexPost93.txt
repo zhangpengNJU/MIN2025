@@ -1,0 +1,19 @@
+private int scanHexPost(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q;
+    if (p == n)
+        return p;
+    q = scanHexSeq(p, n);
+    if (q > p) {
+        p = q;
+        if (at(p, n, ':')) {
+            p++;
+            p = takeIPv4Address(p, n, "hex digits or IPv4 address");
+            ipv6byteCount += 4;
+        }
+    } else {
+        p = takeIPv4Address(p, n, "hex digits or IPv4 address");
+        ipv6byteCount += 4;
+    }
+    return p;
+}

@@ -1,0 +1,24 @@
+public Iterator<E> iterator() {
+    return new Iterator<E>() {
+
+        private final Iterator<? extends E> i = c.iterator();
+
+        public boolean hasNext() {
+            return i.hasNext();
+        }
+
+        public E next() {
+            return i.next();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super E> action) {
+            // Use backing collection version
+            i.forEachRemaining(action);
+        }
+    };
+}

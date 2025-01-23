@@ -1,0 +1,13 @@
+/**
+ * Computes {@code this / val} and {@code this % val} using the
+ * Burnikel-Ziegler algorithm.
+ * @param val the divisor
+ * @return an array containing the quotient and remainder
+ */
+private BigInteger[] divideAndRemainderBurnikelZiegler(BigInteger val) {
+    MutableBigInteger q = new MutableBigInteger();
+    MutableBigInteger r = new MutableBigInteger(this).divideAndRemainderBurnikelZiegler(new MutableBigInteger(val), q);
+    BigInteger qBigInt = q.isZero() ? ZERO : q.toBigInteger(signum * val.signum);
+    BigInteger rBigInt = r.isZero() ? ZERO : r.toBigInteger(signum);
+    return new BigInteger[] { qBigInt, rBigInt };
+}

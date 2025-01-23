@@ -1,0 +1,16 @@
+/**
+ * Gets a default PRNG algorithm by looking through all registered
+ * providers. Returns the first PRNG algorithm of the first provider that
+ * has registered a SecureRandom implementation, or null if none of the
+ * registered providers supplies a SecureRandom implementation.
+ */
+private static String getPrngAlgorithm() {
+    for (Provider p : Providers.getProviderList().providers()) {
+        for (Service s : p.getServices()) {
+            if (s.getType().equals("SecureRandom")) {
+                return s.getAlgorithm();
+            }
+        }
+    }
+    return null;
+}

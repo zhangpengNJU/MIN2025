@@ -1,0 +1,12 @@
+public void run() {
+    try {
+        mainLoop();
+    } finally {
+        // Someone killed this Thread, behave as if Timer cancelled
+        synchronized (queue) {
+            newTasksMayBeScheduled = false;
+            // Eliminate obsolete references
+            queue.clear();
+        }
+    }
+}

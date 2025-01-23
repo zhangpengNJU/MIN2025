@@ -1,0 +1,34 @@
+/**
+ * Returns an array of all the listeners that were added to the
+ * PropertyChangeSupport object with addPropertyChangeListener().
+ * <p>
+ * If some listeners have been added with a named property, then
+ * the returned array will be a mixture of PropertyChangeListeners
+ * and <code>PropertyChangeListenerProxy</code>s. If the calling
+ * method is interested in distinguishing the listeners then it must
+ * test each element to see if it's a
+ * <code>PropertyChangeListenerProxy</code>, perform the cast, and examine
+ * the parameter.
+ *
+ * <pre>{@code
+ * PropertyChangeListener[] listeners = bean.getPropertyChangeListeners();
+ * for (int i = 0; i < listeners.length; i++) {
+ *   if (listeners[i] instanceof PropertyChangeListenerProxy) {
+ *     PropertyChangeListenerProxy proxy =
+ *                    (PropertyChangeListenerProxy)listeners[i];
+ *     if (proxy.getPropertyName().equals("foo")) {
+ *       // proxy is a PropertyChangeListener which was associated
+ *       // with the property named "foo"
+ *     }
+ *   }
+ * }
+ * }</pre>
+ *
+ * @see PropertyChangeListenerProxy
+ * @return all of the <code>PropertyChangeListeners</code> added or an
+ *         empty array if no listeners have been added
+ * @since 1.4
+ */
+public PropertyChangeListener[] getPropertyChangeListeners() {
+    return this.map.getListeners();
+}

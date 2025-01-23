@@ -1,0 +1,10 @@
+/**
+ * Private method for trusted invocation of a MemberName of kind {@code REF_invokeStatic}.
+ * The caller signature is restricted to basic types as with {@code invokeBasic}.
+ * The trailing (not leading) argument must be a MemberName.
+ * @param args the signature-polymorphic parameter list, statically represented using varargs
+ * @return the signature-polymorphic result, statically represented using {@code Object}
+ */
+/*non-public*/
+@PolymorphicSignature
+static native Object linkToStatic(Object... args) throws Throwable;

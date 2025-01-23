@@ -1,0 +1,77 @@
+/*
+     * Writes end of central directory (END) header.
+     */
+private void writeEND(long off, long len) throws IOException {
+    boolean hasZip64 = false;
+    long xlen = len;
+    long xoff = off;
+    if (xlen >= ZIP64_MAGICVAL) {
+        xlen = ZIP64_MAGICVAL;
+        hasZip64 = true;
+    }
+    if (xoff >= ZIP64_MAGICVAL) {
+        xoff = ZIP64_MAGICVAL;
+        hasZip64 = true;
+    }
+    int count = xentries.size();
+    if (count >= ZIP64_MAGICCOUNT) {
+        hasZip64 |= !inhibitZip64;
+        if (hasZip64) {
+            count = ZIP64_MAGICCOUNT;
+        }
+    }
+    if (hasZip64) {
+        long off64 = written;
+        // zip64 end of central directory record
+        // zip64 END record signature
+        writeInt(ZIP64_ENDSIG);
+        // size of zip64 end
+        writeLong(ZIP64_ENDHDR - 12);
+        // version made by
+        writeShort(45);
+        // version needed to extract
+        writeShort(45);
+        // number of this disk
+        writeInt(0);
+        // central directory start disk
+        writeInt(0);
+        // number of directory entires on disk
+        writeLong(xentries.size());
+        // number of directory entires
+        writeLong(xentries.size());
+        // length of central directory
+        writeLong(len);
+        // offset of central directory
+        writeLong(off);
+        // zip64 end of central directory locator
+        // zip64 END locator signature
+        writeInt(ZIP64_LOCSIG);
+        // zip64 END start disk
+        writeInt(0);
+        // offset of zip64 END
+        writeLong(off64);
+        // total number of disks (?)
+        writeInt(1);
+    }
+    // END record signature
+    writeInt(ENDSIG);
+    // number of this disk
+    writeShort(0);
+    // central directory start disk
+    writeShort(0);
+    // number of directory entries on disk
+    writeShort(count);
+    // total number of directory entries
+    writeShort(count);
+    // length of central directory
+    writeInt(xlen);
+    // offset of central directory
+    writeInt(xoff);
+    if (comment != null) {
+        // zip file comment
+        writeShort(comment.length);
+        writeBytes(comment, 0, comment.length);
+    } else {
+        writeShort(0);
+    }
+}

@@ -1,0 +1,11 @@
+private MethodHandle getDirectMethodForConstant(byte refKind, Class<?> defc, MemberName member) throws ReflectiveOperationException {
+    if (MethodHandleNatives.refKindIsField(refKind)) {
+        return getDirectFieldNoSecurityManager(refKind, defc, member);
+    } else if (MethodHandleNatives.refKindIsMethod(refKind)) {
+        return getDirectMethodNoSecurityManager(refKind, defc, member, lookupClass);
+    } else if (refKind == REF_newInvokeSpecial) {
+        return getDirectConstructorNoSecurityManager(defc, member);
+    }
+    // oops
+    throw newIllegalArgumentException("bad MethodHandle constant #" + member);
+}

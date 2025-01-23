@@ -1,0 +1,18 @@
+/**
+ * Converts this <code>Font</code> object to a <code>String</code>
+ * representation.
+ * @return     a <code>String</code> representation of this
+ *          <code>Font</code> object.
+ * @since      JDK1.0
+ */
+// NOTE: This method may be called by privileged threads.
+// DO NOT INVOKE CLIENT CODE ON THIS THREAD!
+public String toString() {
+    String strStyle;
+    if (isBold()) {
+        strStyle = isItalic() ? "bolditalic" : "bold";
+    } else {
+        strStyle = isItalic() ? "italic" : "plain";
+    }
+    return getClass().getName() + "[family=" + getFamily() + ",name=" + name + ",style=" + strStyle + ",size=" + size + "]";
+}

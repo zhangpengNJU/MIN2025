@@ -1,0 +1,11 @@
+/**
+ * Resolves instances being deserialized into instances registered
+ * with CMM.
+ * @return ICC_Profile object for profile registered with CMM.
+ * @throws ObjectStreamException
+ *     never thrown, but mandated by the serialization spec.
+ * @since 1.3
+ */
+protected Object readResolve() throws ObjectStreamException {
+    return resolvedDeserializedProfile;
+}

@@ -1,0 +1,22 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+    // Check the new value and get the old value of the field
+    // lenient check range
+    int newVal = range.checkValidIntValue(newValue, this);
+    int currentVal = temporal.get(this);
+    if (newVal == currentVal) {
+        return temporal;
+    }
+    if (rangeUnit == FOREVER) {
+        // replace year of WeekBasedYear
+        // Create a new date object with the same chronology,
+        // the desired year and the same week and dow.
+        int idow = temporal.get(weekDef.dayOfWeek);
+        int wowby = temporal.get(weekDef.weekOfWeekBasedYear);
+        return (R) ofWeekBasedYear(Chronology.from(temporal), (int) newValue, wowby, idow);
+    } else {
+        // Compute the difference and add that using the base unit of the field
+        return (R) temporal.plus(newVal - currentVal, baseUnit);
+    }
+}

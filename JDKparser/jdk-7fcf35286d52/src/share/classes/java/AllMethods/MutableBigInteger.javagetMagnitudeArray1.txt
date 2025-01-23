@@ -1,0 +1,9 @@
+/**
+ * Internal helper method to return the magnitude array. The caller is not
+ * supposed to modify the returned array.
+ */
+private int[] getMagnitudeArray() {
+    if (offset > 0 || value.length != intLen)
+        return Arrays.copyOfRange(value, offset, offset + intLen);
+    return value;
+}

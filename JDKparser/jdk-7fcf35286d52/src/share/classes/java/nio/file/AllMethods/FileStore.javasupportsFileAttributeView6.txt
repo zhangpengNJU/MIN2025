@@ -1,0 +1,17 @@
+/**
+ * Tells whether or not this file store supports the file attributes
+ * identified by the given file attribute view.
+ *
+ * <p> Invoking this method to test if the file store supports {@link
+ * BasicFileAttributeView} will always return {@code true}. In the case of
+ * the default provider, this method cannot guarantee to give the correct
+ * result when the file store is not a local storage device. The reasons for
+ * this are implementation specific and therefore unspecified.
+ *
+ * @param   type
+ *          the file attribute view type
+ *
+ * @return  {@code true} if, and only if, the file attribute view is
+ *          supported
+ */
+public abstract boolean supportsFileAttributeView(Class<? extends FileAttributeView> type);

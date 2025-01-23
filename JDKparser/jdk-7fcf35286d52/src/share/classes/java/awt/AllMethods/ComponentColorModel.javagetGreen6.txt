@@ -1,0 +1,21 @@
+/**
+ * Returns the green color component for the specified pixel, scaled
+ * from 0 to 255 in the default RGB ColorSpace, sRGB.  A color conversion
+ * is done if necessary.  The pixel value is specified as an int.
+ * The returned value will be a non
+ * pre-multiplied value. If the alpha is premultiplied, this method
+ * divides it out before returning the value (if the alpha value is 0,
+ * the green value will be 0).
+ *
+ * @param pixel The pixel from which you want to get the green color component.
+ *
+ * @return The green color component for the specified pixel, as an int.
+ *
+ * @throws IllegalArgumentException If there is more than
+ * one component in this <CODE>ColorModel</CODE>.
+ * @throws IllegalArgumentException If the component value for this
+ * <CODE>ColorModel</CODE> is signed
+ */
+public int getGreen(int pixel) {
+    return getRGBComponent(pixel, 1);
+}

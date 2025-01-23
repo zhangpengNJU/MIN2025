@@ -1,0 +1,51 @@
+/**
+ * Uses the extended Euclidean algorithm to compute the modInverse of base
+ * mod a modulus that is a power of 2. The modulus is 2^k.
+ */
+MutableBigInteger euclidModInverse(int k) {
+    MutableBigInteger b = new MutableBigInteger(1);
+    b.leftShift(k);
+    MutableBigInteger mod = new MutableBigInteger(b);
+    MutableBigInteger a = new MutableBigInteger(this);
+    MutableBigInteger q = new MutableBigInteger();
+    MutableBigInteger r = b.divide(a, q);
+    MutableBigInteger swapper = b;
+    // swap b & r
+    b = r;
+    r = swapper;
+    MutableBigInteger t1 = new MutableBigInteger(q);
+    MutableBigInteger t0 = new MutableBigInteger(1);
+    MutableBigInteger temp = new MutableBigInteger();
+    while (!b.isOne()) {
+        r = a.divide(b, q);
+        if (r.intLen == 0)
+            throw new ArithmeticException("BigInteger not invertible.");
+        swapper = r;
+        a = swapper;
+        if (q.intLen == 1)
+            t1.mul(q.value[q.offset], temp);
+        else
+            q.multiply(t1, temp);
+        swapper = q;
+        q = temp;
+        temp = swapper;
+        t0.add(q);
+        if (a.isOne())
+            return t0;
+        r = b.divide(a, q);
+        if (r.intLen == 0)
+            throw new ArithmeticException("BigInteger not invertible.");
+        swapper = b;
+        b = r;
+        if (q.intLen == 1)
+            t0.mul(q.value[q.offset], temp);
+        else
+            q.multiply(t0, temp);
+        swapper = q;
+        q = temp;
+        temp = swapper;
+        t1.add(q);
+    }
+    mod.subtract(t1);
+    return mod;
+}

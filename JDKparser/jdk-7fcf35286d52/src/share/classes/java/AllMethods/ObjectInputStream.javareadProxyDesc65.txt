@@ -1,0 +1,69 @@
+/**
+ * Reads in and returns class descriptor for a dynamic proxy class.  Sets
+ * passHandle to proxy class descriptor's assigned handle.  If proxy class
+ * descriptor cannot be resolved to a class in the local VM, a
+ * ClassNotFoundException is associated with the descriptor's handle.
+ */
+private ObjectStreamClass readProxyDesc(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_PROXYCLASSDESC) {
+        throw new InternalError();
+    }
+    ObjectStreamClass desc = new ObjectStreamClass();
+    int descHandle = handles.assign(unshared ? unsharedMarker : desc);
+    passHandle = NULL_HANDLE;
+    int numIfaces = bin.readInt();
+    if (numIfaces > 65535) {
+        // Report specification limit exceeded
+        throw new InvalidObjectException("interface limit exceeded: " + numIfaces + ", limit: " + Caches.PROXY_INTERFACE_LIMIT);
+    }
+    String[] ifaces = new String[numIfaces];
+    for (int i = 0; i < numIfaces; i++) {
+        ifaces[i] = bin.readUTF();
+    }
+    // Recheck against implementation limit and throw with interface names
+    if (numIfaces > Caches.PROXY_INTERFACE_LIMIT) {
+        throw new InvalidObjectException("interface limit exceeded: " + numIfaces + ", limit: " + Caches.PROXY_INTERFACE_LIMIT + "; " + Arrays.toString(ifaces));
+    }
+    Class<?> cl = null;
+    ClassNotFoundException resolveEx = null;
+    bin.setBlockDataMode(true);
+    try {
+        if ((cl = resolveProxyClass(ifaces)) == null) {
+            resolveEx = new ClassNotFoundException("null class");
+        } else if (!Proxy.isProxyClass(cl)) {
+            throw new InvalidClassException("Not a proxy");
+        } else {
+            // ReflectUtil.checkProxyPackageAccess makes a test
+            // equivalent to isCustomSubclass so there's no need
+            // to condition this call to isCustomSubclass == true here.
+            ReflectUtil.checkProxyPackageAccess(getClass().getClassLoader(), cl.getInterfaces());
+            // Filter the interfaces
+            for (Class<?> clazz : cl.getInterfaces()) {
+                filterCheck(clazz, -1);
+            }
+        }
+    } catch (ClassNotFoundException ex) {
+        resolveEx = ex;
+    } catch (OutOfMemoryError memerr) {
+        IOException ex = new InvalidObjectException("Proxy interface limit exceeded: " + Arrays.toString(ifaces));
+        ex.initCause(memerr);
+        throw ex;
+    }
+    // Call filterCheck on the class before reading anything else
+    filterCheck(cl, -1);
+    skipCustomData();
+    try {
+        totalObjectRefs++;
+        depth++;
+        desc.initProxy(cl, resolveEx, readClassDesc(false));
+    } catch (OutOfMemoryError memerr) {
+        IOException ex = new InvalidObjectException("Proxy interface limit exceeded: " + Arrays.toString(ifaces));
+        ex.initCause(memerr);
+        throw ex;
+    } finally {
+        depth--;
+    }
+    handles.finish(descHandle);
+    passHandle = descHandle;
+    return desc;
+}

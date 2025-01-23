@@ -1,0 +1,13 @@
+/**
+ * Produces a {@link Node.Builder}.
+ *
+ * @param exactSizeIfKnown -1 if a variable size builder is requested,
+ * otherwise the exact capacity desired.  A fixed capacity builder will
+ * fail if the wrong number of elements are added to the builder.
+ * @param generator the array factory
+ * @param <T> the type of elements of the node builder
+ * @return a {@code Node.Builder}
+ */
+static <T> Node.Builder<T> builder(long exactSizeIfKnown, IntFunction<T[]> generator) {
+    return (exactSizeIfKnown >= 0 && exactSizeIfKnown < MAX_ARRAY_SIZE) ? new FixedNodeBuilder<>(exactSizeIfKnown, generator) : builder();
+}

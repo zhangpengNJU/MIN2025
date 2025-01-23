@@ -1,0 +1,40 @@
+/**
+ * check to make sure the certs for the new class (certs) are the same as
+ * the certs for the first class inserted in the package (pcerts)
+ */
+private boolean compareCerts(Certificate[] pcerts, Certificate[] certs) {
+    // certs can be null, indicating no certs.
+    if ((certs == null) || (certs.length == 0)) {
+        return pcerts.length == 0;
+    }
+    // the length must be the same at this point
+    if (certs.length != pcerts.length)
+        return false;
+    // go through and make sure all the certs in one array
+    // are in the other and vice-versa.
+    boolean match;
+    for (int i = 0; i < certs.length; i++) {
+        match = false;
+        for (int j = 0; j < pcerts.length; j++) {
+            if (certs[i].equals(pcerts[j])) {
+                match = true;
+                break;
+            }
+        }
+        if (!match)
+            return false;
+    }
+    // now do the same for pcerts
+    for (int i = 0; i < pcerts.length; i++) {
+        match = false;
+        for (int j = 0; j < certs.length; j++) {
+            if (pcerts[i].equals(certs[j])) {
+                match = true;
+                break;
+            }
+        }
+        if (!match)
+            return false;
+    }
+    return true;
+}

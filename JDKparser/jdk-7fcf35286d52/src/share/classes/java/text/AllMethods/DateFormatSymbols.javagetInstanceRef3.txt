@@ -1,0 +1,13 @@
+/**
+ * Returns a DateFormatSymbols provided by a provider or found in
+ * the cache. Note that this method returns a cached instance,
+ * not its clone. Therefore, the instance should never be given to
+ * an application.
+ */
+static final DateFormatSymbols getInstanceRef(Locale locale) {
+    DateFormatSymbols dfs = getProviderInstance(locale);
+    if (dfs != null) {
+        return dfs;
+    }
+    throw new RuntimeException("DateFormatSymbols instance creation failed.");
+}

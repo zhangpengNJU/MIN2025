@@ -1,0 +1,22 @@
+/**
+ * Registers the caller as parallel capable.
+ * The registration succeeds if and only if all of the following
+ * conditions are met:
+ * <ol>
+ * <li> no instance of the caller has been created</li>
+ * <li> all of the super classes (except class Object) of the caller are
+ * registered as parallel capable</li>
+ * </ol>
+ * <p>Note that once a class loader is registered as parallel capable, there
+ * is no way to change it back.</p>
+ *
+ * @return  true if the caller is successfully registered as
+ *          parallel capable and false if otherwise.
+ *
+ * @since   1.7
+ */
+@CallerSensitive
+protected static boolean registerAsParallelCapable() {
+    Class<? extends ClassLoader> callerClass = Reflection.getCallerClass().asSubclass(ClassLoader.class);
+    return ParallelLoaders.register(callerClass);
+}

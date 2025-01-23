@@ -1,0 +1,29 @@
+/**
+ * Specifies the print quality for pages using these attributes.
+ * Specifying <code>3</code> denotes draft. Specifying <code>4</code>
+ * denotes normal. Specifying <code>5</code> denotes high. Specifying
+ * any other value will generate an IllegalArgumentException. Not
+ * specifying the property is equivalent to calling
+ * setPrintQuality(PrintQualityType.NORMAL).
+ *
+ * @param   printQuality <code>3</code>, <code>4</code>, or <code>5</code>
+ * @throws  IllegalArgumentException if printQuality is not <code>3
+ *          </code>, <code>4</code>, or <code>5</code>
+ */
+public void setPrintQuality(int printQuality) {
+    switch(printQuality) {
+        case 3:
+            setPrintQuality(PrintQualityType.DRAFT);
+            break;
+        case 4:
+            setPrintQuality(PrintQualityType.NORMAL);
+            break;
+        case 5:
+            setPrintQuality(PrintQualityType.HIGH);
+            break;
+        default:
+            // This will throw an IllegalArgumentException
+            setPrintQuality(null);
+            break;
+    }
+}

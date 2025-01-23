@@ -1,0 +1,18 @@
+/**
+ * Returns a BigInteger whose value is the greatest common divisor of
+ * {@code abs(this)} and {@code abs(val)}.  Returns 0 if
+ * {@code this == 0 && val == 0}.
+ *
+ * @param  val value with which the GCD is to be computed.
+ * @return {@code GCD(abs(this), abs(val))}
+ */
+public BigInteger gcd(BigInteger val) {
+    if (val.signum == 0)
+        return this.abs();
+    else if (this.signum == 0)
+        return val.abs();
+    MutableBigInteger a = new MutableBigInteger(this);
+    MutableBigInteger b = new MutableBigInteger(val);
+    MutableBigInteger result = a.hybridGCD(b);
+    return result.toBigInteger(1);
+}

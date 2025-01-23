@@ -1,0 +1,36 @@
+int compareTo(ModalEventFilter another) {
+    Dialog anotherDialog = another.getModalDialog();
+    // check if modalDialog is from anotherDialog's hierarchy
+    // or vice versa
+    Component c = modalDialog;
+    while (c != null) {
+        if (c == anotherDialog) {
+            return 1;
+        }
+        c = c.getParent_NoClientCode();
+    }
+    c = anotherDialog;
+    while (c != null) {
+        if (c == modalDialog) {
+            return -1;
+        }
+        c = c.getParent_NoClientCode();
+    }
+    // check if one dialog blocks (directly or indirectly) another
+    Dialog blocker = modalDialog.getModalBlocker();
+    while (blocker != null) {
+        if (blocker == anotherDialog) {
+            return -1;
+        }
+        blocker = blocker.getModalBlocker();
+    }
+    blocker = anotherDialog.getModalBlocker();
+    while (blocker != null) {
+        if (blocker == modalDialog) {
+            return 1;
+        }
+        blocker = blocker.getModalBlocker();
+    }
+    // compare modality types
+    return modalDialog.getModalityType().compareTo(anotherDialog.getModalityType());
+}

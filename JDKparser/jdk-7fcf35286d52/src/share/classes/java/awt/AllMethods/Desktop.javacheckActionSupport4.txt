@@ -1,0 +1,12 @@
+/**
+ * Checks if the action type is supported.
+ *
+ * @param actionType the action type in question
+ * @throws UnsupportedOperationException if the specified action type is not
+ *         supported on the current platform
+ */
+private void checkActionSupport(Action actionType) {
+    if (!isSupported(actionType)) {
+        throw new UnsupportedOperationException("The " + actionType.name() + " action is not supported on the current platform!");
+    }
+}

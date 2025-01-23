@@ -1,0 +1,12 @@
+/**
+ * Clones this object.
+ * @return a clone of this object.
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

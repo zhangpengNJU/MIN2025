@@ -1,0 +1,12 @@
+// override for better proleptic algorithm
+@Override
+void resolveProlepticMonth(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    Long pMonth = fieldValues.remove(PROLEPTIC_MONTH);
+    if (pMonth != null) {
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            PROLEPTIC_MONTH.checkValidValue(pMonth);
+        }
+        addFieldValue(fieldValues, MONTH_OF_YEAR, Math.floorMod(pMonth, 12) + 1);
+        addFieldValue(fieldValues, YEAR, Math.floorDiv(pMonth, 12));
+    }
+}

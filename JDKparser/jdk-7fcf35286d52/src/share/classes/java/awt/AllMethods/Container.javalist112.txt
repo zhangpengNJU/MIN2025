@@ -1,0 +1,26 @@
+/**
+ * Prints out a list, starting at the specified indentation,
+ * to the specified print writer.
+ * <p>
+ * The immediate children of the container are printed with
+ * an indentation of <code>indent+1</code>.  The children
+ * of those children are printed at <code>indent+2</code>
+ * and so on.
+ *
+ * @param    out      a print writer
+ * @param    indent   the number of spaces to indent
+ * @throws   NullPointerException if {@code out} is {@code null}
+ * @see      Component#list(java.io.PrintWriter, int)
+ * @since    JDK1.1
+ */
+public void list(PrintWriter out, int indent) {
+    super.list(out, indent);
+    synchronized (getTreeLock()) {
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            if (comp != null) {
+                comp.list(out, indent + 1);
+            }
+        }
+    }
+}

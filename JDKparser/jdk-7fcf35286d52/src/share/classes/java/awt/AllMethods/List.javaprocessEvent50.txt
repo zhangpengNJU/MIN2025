@@ -1,0 +1,29 @@
+/**
+ * Processes events on this scrolling list. If an event is
+ * an instance of <code>ItemEvent</code>, it invokes the
+ * <code>processItemEvent</code> method. Else, if the
+ * event is an instance of <code>ActionEvent</code>,
+ * it invokes <code>processActionEvent</code>.
+ * If the event is not an item event or an action event,
+ * it invokes <code>processEvent</code> on the superclass.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param        e the event
+ * @see          java.awt.event.ActionEvent
+ * @see          java.awt.event.ItemEvent
+ * @see          #processActionEvent
+ * @see          #processItemEvent
+ * @since        JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ItemEvent) {
+        processItemEvent((ItemEvent) e);
+        return;
+    } else if (e instanceof ActionEvent) {
+        processActionEvent((ActionEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

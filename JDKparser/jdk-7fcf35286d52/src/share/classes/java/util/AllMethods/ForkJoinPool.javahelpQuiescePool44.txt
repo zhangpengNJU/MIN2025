@@ -1,0 +1,41 @@
+/**
+ * Runs tasks until {@code isQuiescent()}. We piggyback on
+ * active count ctl maintenance, but rather than blocking
+ * when tasks cannot be found, we rescan until all others cannot
+ * find tasks either.
+ */
+final void helpQuiescePool(WorkQueue w) {
+    // save context
+    ForkJoinTask<?> ps = w.currentSteal;
+    for (boolean active = true; ; ) {
+        long c;
+        WorkQueue q;
+        ForkJoinTask<?> t;
+        int b;
+        // run locals before each scan
+        w.execLocalTasks();
+        if ((q = findNonEmptyStealQueue()) != null) {
+            if (!active) {
+                // re-establish active count
+                active = true;
+                U.getAndAddLong(this, CTL, AC_UNIT);
+            }
+            if ((b = q.base) - q.top < 0 && (t = q.pollAt(b)) != null) {
+                U.putOrderedObject(w, QCURRENTSTEAL, t);
+                t.doExec();
+                if (++w.nsteals < 0)
+                    w.transferStealCount(this);
+            }
+        } else if (active) {
+            // decrement active count without queuing
+            long nc = (AC_MASK & ((c = ctl) - AC_UNIT)) | (~AC_MASK & c);
+            if ((int) (nc >> AC_SHIFT) + (config & SMASK) <= 0)
+                // bypass decrement-then-increment
+                break;
+            if (U.compareAndSwapLong(this, CTL, c, nc))
+                active = false;
+        } else if ((int) ((c = ctl) >> AC_SHIFT) + (config & SMASK) <= 0 && U.compareAndSwapLong(this, CTL, c, c + AC_UNIT))
+            break;
+    }
+    U.putOrderedObject(w, QCURRENTSTEAL, ps);
+}

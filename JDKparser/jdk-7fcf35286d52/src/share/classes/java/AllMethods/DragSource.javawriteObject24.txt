@@ -1,0 +1,38 @@
+/**
+ * Serializes this <code>DragSource</code>. This method first performs
+ * default serialization. Next, it writes out this object's
+ * <code>FlavorMap</code> if and only if it can be serialized. If not,
+ * <code>null</code> is written instead. Next, it writes out
+ * <code>Serializable</code> listeners registered with this
+ * object. Listeners are written in a <code>null</code>-terminated sequence
+ * of 0 or more pairs. The pair consists of a <code>String</code> and an
+ * <code>Object</code>; the <code>String</code> indicates the type of the
+ * <code>Object</code> and is one of the following:
+ * <ul>
+ * <li><code>dragSourceListenerK</code> indicating a
+ *     <code>DragSourceListener</code> object;
+ * <li><code>dragSourceMotionListenerK</code> indicating a
+ *     <code>DragSourceMotionListener</code> object.
+ * </ul>
+ *
+ * @serialData Either a <code>FlavorMap</code> instance, or
+ *      <code>null</code>, followed by a <code>null</code>-terminated
+ *      sequence of 0 or more pairs; the pair consists of a
+ *      <code>String</code> and an <code>Object</code>; the
+ *      <code>String</code> indicates the type of the <code>Object</code>
+ *      and is one of the following:
+ *      <ul>
+ *      <li><code>dragSourceListenerK</code> indicating a
+ *          <code>DragSourceListener</code> object;
+ *      <li><code>dragSourceMotionListenerK</code> indicating a
+ *          <code>DragSourceMotionListener</code> object.
+ *      </ul>.
+ * @since 1.4
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    s.writeObject(SerializationTester.test(flavorMap) ? flavorMap : null);
+    DnDEventMulticaster.save(s, dragSourceListenerK, listener);
+    DnDEventMulticaster.save(s, dragSourceMotionListenerK, motionListener);
+    s.writeObject(null);
+}

@@ -1,0 +1,9 @@
+// Private support method for logging for "logrb" methods.
+private void doLog(LogRecord lr, ResourceBundle rb) {
+    lr.setLoggerName(name);
+    if (rb != null) {
+        lr.setResourceBundleName(rb.getBaseBundleName());
+        lr.setResourceBundle(rb);
+    }
+    log(lr);
+}

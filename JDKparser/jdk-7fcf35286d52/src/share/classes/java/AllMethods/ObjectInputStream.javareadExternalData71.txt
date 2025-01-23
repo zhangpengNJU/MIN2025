@@ -1,0 +1,51 @@
+/**
+ * If obj is non-null, reads externalizable data by invoking readExternal()
+ * method of obj; otherwise, attempts to skip over externalizable data.
+ * Expects that passHandle is set to obj's handle before this method is
+ * called.
+ */
+private void readExternalData(Externalizable obj, ObjectStreamClass desc) throws IOException {
+    SerialCallbackContext oldContext = curContext;
+    if (oldContext != null)
+        oldContext.check();
+    curContext = null;
+    try {
+        boolean blocked = desc.hasBlockExternalData();
+        if (blocked) {
+            bin.setBlockDataMode(true);
+        }
+        if (obj != null) {
+            try {
+                obj.readExternal(this);
+            } catch (ClassNotFoundException ex) {
+                /*
+                     * In most cases, the handle table has already propagated
+                     * a CNFException to passHandle at this point; this mark
+                     * call is included to address cases where the readExternal
+                     * method has cons'ed and thrown a new CNFException of its
+                     * own.
+                     */
+                handles.markException(passHandle, ex);
+            }
+        }
+        if (blocked) {
+            skipCustomData();
+        }
+    } finally {
+        if (oldContext != null)
+            oldContext.check();
+        curContext = oldContext;
+    }
+/*
+         * At this point, if the externalizable data was not written in
+         * block-data form and either the externalizable class doesn't exist
+         * locally (i.e., obj == null) or readExternal() just threw a
+         * CNFException, then the stream is probably in an inconsistent state,
+         * since some (or all) of the externalizable data may not have been
+         * consumed.  Since there's no "correct" action to take in this case,
+         * we mimic the behavior of past serialization implementations and
+         * blindly hope that the stream is in sync; if it isn't and additional
+         * externalizable data remains in the stream, a subsequent read will
+         * most likely throw a StreamCorruptedException.
+         */
+}

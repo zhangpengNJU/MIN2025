@@ -1,0 +1,20 @@
+@SuppressWarnings("unchecked")
+@Override
+public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    Objects.requireNonNull(function);
+    int expectedModCount = modCount;
+    Entry<K, V>[] tab = getTable();
+    ;
+    for (Entry<K, V> entry : tab) {
+        while (entry != null) {
+            Object key = entry.get();
+            if (key != null) {
+                entry.value = function.apply((K) WeakHashMap.unmaskNull(key), entry.value);
+            }
+            entry = entry.next;
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
+}

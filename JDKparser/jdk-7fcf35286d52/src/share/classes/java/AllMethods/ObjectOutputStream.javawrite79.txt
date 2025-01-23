@@ -1,0 +1,12 @@
+/* ----------------- generic output stream methods ----------------- */
+/*
+         * The following methods are equivalent to their counterparts in
+         * OutputStream, except that they partition written data into data
+         * blocks when in block data mode.
+         */
+public void write(int b) throws IOException {
+    if (pos >= MAX_BLOCK_SIZE) {
+        drain();
+    }
+    buf[pos++] = (byte) b;
+}

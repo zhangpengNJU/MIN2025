@@ -1,0 +1,11 @@
+/**
+ * Generates a hash code for the message format object.
+ */
+public int hashCode() {
+    int result = choiceLimits.length;
+    if (choiceFormats.length > 0) {
+        // enough for reasonable distribution
+        result ^= choiceFormats[choiceFormats.length - 1].hashCode();
+    }
+    return result;
+}

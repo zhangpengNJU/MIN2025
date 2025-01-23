@@ -1,0 +1,10 @@
+int parseflags(int infoflags) {
+    if ((infoflags & ERROR) != 0) {
+        return ERRORED;
+    } else if ((infoflags & ABORT) != 0) {
+        return ABORTED;
+    } else if ((infoflags & (ALLBITS | FRAMEBITS)) != 0) {
+        return COMPLETE;
+    }
+    return 0;
+}

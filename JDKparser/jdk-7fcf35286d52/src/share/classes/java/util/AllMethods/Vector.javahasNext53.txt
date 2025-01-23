@@ -1,0 +1,5 @@
+public boolean hasNext() {
+    // Racy but within spec, since modifications are checked
+    // within or after synchronization in next/previous
+    return cursor != elementCount;
+}

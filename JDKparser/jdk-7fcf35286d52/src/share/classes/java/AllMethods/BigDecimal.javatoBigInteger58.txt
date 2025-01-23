@@ -1,0 +1,21 @@
+/**
+ * Converts this {@code BigDecimal} to a {@code BigInteger}.
+ * This conversion is analogous to the
+ * <i>narrowing primitive conversion</i> from {@code double} to
+ * {@code long} as defined in section 5.1.3 of
+ * <cite>The Java&trade; Language Specification</cite>:
+ * any fractional part of this
+ * {@code BigDecimal} will be discarded.  Note that this
+ * conversion can lose information about the precision of the
+ * {@code BigDecimal} value.
+ * <p>
+ * To have an exception thrown if the conversion is inexact (in
+ * other words if a nonzero fractional part is discarded), use the
+ * {@link #toBigIntegerExact()} method.
+ *
+ * @return this {@code BigDecimal} converted to a {@code BigInteger}.
+ */
+public BigInteger toBigInteger() {
+    // force to an integer, quietly
+    return this.setScale(0, ROUND_DOWN).inflated();
+}

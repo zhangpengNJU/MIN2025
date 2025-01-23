@@ -1,0 +1,16 @@
+/**
+ * Specifies the minimum value the user can specify as the first page to
+ * be printed for jobs using these attributes. Not specifying this
+ * attribute is equivalent to specifying <code>1</code>.
+ *
+ * @param   minPage an integer greater than zero and less than or equal
+ *          to <i>maxPage</i>.
+ * @throws  IllegalArgumentException if one or more of the above
+ *          conditions is violated.
+ */
+public void setMinPage(int minPage) {
+    if (minPage <= 0 || minPage > maxPage) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "minPage");
+    }
+    this.minPage = minPage;
+}

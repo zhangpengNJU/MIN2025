@@ -1,0 +1,23 @@
+/**
+ * Creates an enum set initially containing the specified elements.
+ *
+ * Overloadings of this method exist to initialize an enum set with
+ * one through five elements.  A sixth overloading is provided that
+ * uses the varargs feature.  This overloading may be used to create
+ * an enum set initially containing an arbitrary number of elements, but
+ * is likely to run slower than the overloadings that do not use varargs.
+ *
+ * @param <E> The class of the parameter elements and of the set
+ * @param e1 an element that this set is to contain initially
+ * @param e2 another element that this set is to contain initially
+ * @param e3 another element that this set is to contain initially
+ * @throws NullPointerException if any parameters are null
+ * @return an enum set initially containing the specified elements
+ */
+public static <E extends Enum<E>> EnumSet<E> of(E e1, E e2, E e3) {
+    EnumSet<E> result = noneOf(e1.getDeclaringClass());
+    result.add(e1);
+    result.add(e2);
+    result.add(e3);
+    return result;
+}

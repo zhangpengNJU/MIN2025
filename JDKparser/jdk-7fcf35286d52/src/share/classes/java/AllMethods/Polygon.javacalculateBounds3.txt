@@ -1,0 +1,22 @@
+/*
+     * Calculates the bounding box of the points passed to the constructor.
+     * Sets <code>bounds</code> to the result.
+     * @param xpoints[] array of <i>x</i> coordinates
+     * @param ypoints[] array of <i>y</i> coordinates
+     * @param npoints the total number of points
+     */
+void calculateBounds(int[] xpoints, int[] ypoints, int npoints) {
+    int boundsMinX = Integer.MAX_VALUE;
+    int boundsMinY = Integer.MAX_VALUE;
+    int boundsMaxX = Integer.MIN_VALUE;
+    int boundsMaxY = Integer.MIN_VALUE;
+    for (int i = 0; i < npoints; i++) {
+        int x = xpoints[i];
+        boundsMinX = Math.min(boundsMinX, x);
+        boundsMaxX = Math.max(boundsMaxX, x);
+        int y = ypoints[i];
+        boundsMinY = Math.min(boundsMinY, y);
+        boundsMaxY = Math.max(boundsMaxY, y);
+    }
+    bounds = new Rectangle(boundsMinX, boundsMinY, boundsMaxX - boundsMinX, boundsMaxY - boundsMinY);
+}

@@ -1,0 +1,11 @@
+/**
+ * Returns {@code true} if this CompletableFuture was cancelled
+ * before it completed normally.
+ *
+ * @return {@code true} if this CompletableFuture was cancelled
+ * before it completed normally
+ */
+public boolean isCancelled() {
+    Object r;
+    return ((r = result) instanceof AltResult) && (((AltResult) r).ex instanceof CancellationException);
+}

@@ -1,0 +1,8 @@
+protected void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
+    cipher.init(Cipher.DECRYPT_MODE, publicKey);
+    if (data == null) {
+        data = new ByteArrayOutputStream(128);
+    } else {
+        data.reset();
+    }
+}

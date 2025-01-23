@@ -1,0 +1,15 @@
+private int getFence() {
+    // initialize fence to size on first use
+    // (a specialized variant appears in method forEach)
+    int hi;
+    ArrayList<E> lst;
+    if ((hi = fence) < 0) {
+        if ((lst = list) == null)
+            hi = fence = 0;
+        else {
+            expectedModCount = lst.modCount;
+            hi = fence = lst.size;
+        }
+    }
+    return hi;
+}

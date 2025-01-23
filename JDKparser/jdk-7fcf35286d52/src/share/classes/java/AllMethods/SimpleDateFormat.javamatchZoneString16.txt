@@ -1,0 +1,11 @@
+private int matchZoneString(String text, int start, String[] zoneNames) {
+    for (int i = 1; i <= 4; ++i) {
+        // Checking long and short zones [1 & 2],
+        // and long and short daylight [3 & 4].
+        String zoneName = zoneNames[i];
+        if (text.regionMatches(true, start, zoneName, 0, zoneName.length())) {
+            return i;
+        }
+    }
+    return -1;
+}

@@ -1,0 +1,18 @@
+// #4178589: must overload remove(EventListener) to call our add()
+// instead of the static addInternal() so we allocate a
+// ToolkitEventMulticaster instead of an AWTEventMulticaster.
+// Note: this method is called by AWTEventListener.removeInternal(),
+// so its method signature must match AWTEventListener.remove().
+protected EventListener remove(EventListener oldl) {
+    if (oldl == a)
+        return b;
+    if (oldl == b)
+        return a;
+    AWTEventListener a2 = (AWTEventListener) removeInternal(a, oldl);
+    AWTEventListener b2 = (AWTEventListener) removeInternal(b, oldl);
+    if (a2 == a && b2 == b) {
+        // it's not here
+        return this;
+    }
+    return add(a2, b2);
+}

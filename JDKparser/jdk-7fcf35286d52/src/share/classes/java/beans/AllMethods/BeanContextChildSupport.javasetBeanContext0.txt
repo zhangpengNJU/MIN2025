@@ -1,0 +1,32 @@
+/**
+ * Sets the <code>BeanContext</code> for
+ * this <code>BeanContextChildSupport</code>.
+ * @param bc the new value to be assigned to the <code>BeanContext</code>
+ * property
+ * @throws PropertyVetoException if the change is rejected
+ */
+public synchronized void setBeanContext(BeanContext bc) throws PropertyVetoException {
+    if (bc == beanContext)
+        return;
+    BeanContext oldValue = beanContext;
+    BeanContext newValue = bc;
+    if (!rejectedSetBCOnce) {
+        if (rejectedSetBCOnce = !validatePendingSetBeanContext(bc)) {
+            throw new PropertyVetoException("setBeanContext() change rejected:", new PropertyChangeEvent(beanContextChildPeer, "beanContext", oldValue, newValue));
+        }
+        try {
+            fireVetoableChange("beanContext", oldValue, newValue);
+        } catch (PropertyVetoException pve) {
+            rejectedSetBCOnce = true;
+            // re-throw
+            throw pve;
+        }
+    }
+    if (beanContext != null)
+        releaseBeanContextResources();
+    beanContext = newValue;
+    rejectedSetBCOnce = false;
+    firePropertyChange("beanContext", oldValue, newValue);
+    if (beanContext != null)
+        initializeBeanContextResources();
+}

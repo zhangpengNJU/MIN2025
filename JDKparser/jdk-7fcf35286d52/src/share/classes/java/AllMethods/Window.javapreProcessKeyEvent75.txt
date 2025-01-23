@@ -1,0 +1,12 @@
+/**
+ * Implements a debugging hook -- checks to see if
+ * the user has typed <i>control-shift-F1</i>.  If so,
+ * the list of child windows is dumped to {@code System.out}.
+ * @param e  the keyboard event
+ */
+void preProcessKeyEvent(KeyEvent e) {
+    // Dump the list of child windows to System.out.
+    if (e.isActionKey() && e.getKeyCode() == KeyEvent.VK_F1 && e.isControlDown() && e.isShiftDown() && e.getID() == KeyEvent.KEY_PRESSED) {
+        list(System.out, 0);
+    }
+}

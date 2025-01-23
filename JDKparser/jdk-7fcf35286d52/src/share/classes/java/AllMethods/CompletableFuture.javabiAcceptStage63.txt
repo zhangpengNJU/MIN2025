@@ -1,0 +1,12 @@
+private <U> CompletableFuture<Void> biAcceptStage(Executor e, CompletionStage<U> o, BiConsumer<? super T, ? super U> f) {
+    CompletableFuture<U> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.biAccept(this, b, f, null)) {
+        BiAccept<T, U> c = new BiAccept<T, U>(e, d, this, b, f);
+        bipush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

@@ -1,0 +1,18 @@
+/**
+ * Fires a PropertyChangeEvent in response to a change in a bound property.
+ * The event will be delivered to all registered PropertyChangeListeners.
+ * No event will be delivered if oldValue and newValue are the same.
+ *
+ * @param propertyName the name of the property that has changed
+ * @param oldValue the property's previous value
+ * @param newValue the property's new value
+ */
+protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+    if (oldValue == newValue) {
+        return;
+    }
+    PropertyChangeSupport changeSupport = this.changeSupport;
+    if (changeSupport != null) {
+        changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+}

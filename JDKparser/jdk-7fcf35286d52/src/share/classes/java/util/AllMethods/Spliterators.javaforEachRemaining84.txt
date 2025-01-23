@@ -1,0 +1,11 @@
+@Override
+public void forEachRemaining(Consumer<? super T> action) {
+    if (action == null)
+        throw new NullPointerException();
+    Iterator<? extends T> i;
+    if ((i = it) == null) {
+        i = it = collection.iterator();
+        est = (long) collection.size();
+    }
+    i.forEachRemaining(action);
+}

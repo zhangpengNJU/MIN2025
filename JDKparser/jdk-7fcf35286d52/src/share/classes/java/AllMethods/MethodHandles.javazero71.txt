@@ -1,0 +1,11 @@
+private static MethodHandle zero(Wrapper btw, Class<?> rtype) {
+    int pos = btw.ordinal();
+    MethodHandle zero = ZERO_MHS[pos];
+    if (zero == null) {
+        zero = setCachedMethodHandle(ZERO_MHS, pos, makeZero(btw.primitiveType()));
+    }
+    if (zero.type().returnType() == rtype)
+        return zero;
+    assert (btw == Wrapper.OBJECT);
+    return makeZero(rtype);
+}

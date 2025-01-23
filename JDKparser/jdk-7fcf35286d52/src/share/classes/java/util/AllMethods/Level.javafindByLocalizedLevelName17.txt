@@ -1,0 +1,16 @@
+// Returns a KnownLevel with the given localized name matching
+// by calling the Level.getLocalizedLevelName() method (i.e. found
+// from the resourceBundle associated with the Level object).
+// This method does not call Level.getLocalizedName() that may
+// be overridden in a subclass implementation
+static synchronized KnownLevel findByLocalizedLevelName(String name) {
+    for (List<KnownLevel> levels : nameToLevels.values()) {
+        for (KnownLevel l : levels) {
+            String lname = l.levelObject.getLocalizedLevelName();
+            if (name.equals(lname)) {
+                return l;
+            }
+        }
+    }
+    return null;
+}

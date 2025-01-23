@@ -1,0 +1,19 @@
+/* -------------- primitive data array output methods -------------- */
+/*
+         * The following methods write out spans of primitive data values.
+         * Though equivalent to calling the corresponding primitive write
+         * methods repeatedly, these methods are optimized for writing groups
+         * of primitive data values more efficiently.
+         */
+void writeBooleans(boolean[] v, int off, int len) throws IOException {
+    int endoff = off + len;
+    while (off < endoff) {
+        if (pos >= MAX_BLOCK_SIZE) {
+            drain();
+        }
+        int stop = Math.min(endoff, off + (MAX_BLOCK_SIZE - pos));
+        while (off < stop) {
+            Bits.putBoolean(buf, pos++, v[off++]);
+        }
+    }
+}

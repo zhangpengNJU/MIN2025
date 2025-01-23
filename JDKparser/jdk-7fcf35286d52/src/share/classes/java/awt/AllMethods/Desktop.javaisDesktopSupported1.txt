@@ -1,0 +1,16 @@
+/**
+ * Tests whether this class is supported on the current platform.
+ * If it's supported, use {@link #getDesktop()} to retrieve an
+ * instance.
+ *
+ * @return <code>true</code> if this class is supported on the
+ *         current platform; <code>false</code> otherwise
+ * @see #getDesktop()
+ */
+public static boolean isDesktopSupported() {
+    Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+    if (defaultToolkit instanceof SunToolkit) {
+        return ((SunToolkit) defaultToolkit).isDesktopSupported();
+    }
+    return false;
+}

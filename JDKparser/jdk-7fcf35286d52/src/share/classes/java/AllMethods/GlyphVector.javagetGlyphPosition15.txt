@@ -1,0 +1,16 @@
+/**
+ * Returns the position of the specified glyph relative to the
+ * origin of this <code>GlyphVector</code>.
+ * If <code>glyphIndex</code> equals the number of of glyphs in
+ * this <code>GlyphVector</code>, this method returns the position after
+ * the last glyph. This position is used to define the advance of
+ * the entire <code>GlyphVector</code>.
+ * @param glyphIndex the index into this <code>GlyphVector</code>
+ * @return a {@link Point2D} object that is the position of the glyph
+ *   at the specified <code>glyphIndex</code>.
+ * @throws IndexOutOfBoundsException if <code>glyphIndex</code>
+ *   is less than 0 or greater than the number of glyphs
+ *   in this <code>GlyphVector</code>
+ * @see #setGlyphPosition
+ */
+public abstract Point2D getGlyphPosition(int glyphIndex);

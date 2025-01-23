@@ -1,0 +1,46 @@
+/**
+ * Creates a default <code>PreparedStatement</code> object capable
+ * of returning the auto-generated keys designated by the given array.
+ * This array contains the names of the columns in the target
+ * table that contain the auto-generated keys that should be returned.
+ * The driver will ignore the array if the SQL statement
+ * is not an <code>INSERT</code> statement, or an SQL statement able to return
+ * auto-generated keys (the list of such statements is vendor-specific).
+ * <P>
+ * An SQL statement with or without IN parameters can be
+ * pre-compiled and stored in a <code>PreparedStatement</code> object. This
+ * object can then be used to efficiently execute this statement
+ * multiple times.
+ * <P>
+ * <B>Note:</B> This method is optimized for handling
+ * parametric SQL statements that benefit from precompilation. If
+ * the driver supports precompilation,
+ * the method <code>prepareStatement</code> will send
+ * the statement to the database for precompilation. Some drivers
+ * may not support precompilation. In this case, the statement may
+ * not be sent to the database until the <code>PreparedStatement</code>
+ * object is executed.  This has no direct effect on users; however, it does
+ * affect which methods throw certain SQLExceptions.
+ * <P>
+ * Result sets created using the returned <code>PreparedStatement</code>
+ * object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ * and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ * The holdability of the created result sets can be determined by
+ * calling {@link #getHoldability}.
+ *
+ * @param sql an SQL statement that may contain one or more '?' IN
+ *        parameter placeholders
+ * @param columnNames an array of column names indicating the columns
+ *        that should be returned from the inserted row or rows
+ * @return a new <code>PreparedStatement</code> object, containing the
+ *         pre-compiled statement, that is capable of returning the
+ *         auto-generated keys designated by the given array of column
+ *         names
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ *
+ * @since 1.4
+ */
+PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException;

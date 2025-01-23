@@ -1,0 +1,15 @@
+/**
+ * Pushes completion to this and b unless both done.
+ */
+final void bipush(CompletableFuture<?> b, BiCompletion<?, ?, ?> c) {
+    if (c != null) {
+        Object r;
+        while ((r = result) == null && !tryPushStack(c)) // clear on failure
+        lazySetNext(c, null);
+        if (b != null && b != this && b.result == null) {
+            Completion q = (r != null) ? c : new CoCompletion(c);
+            while (b.result == null && !b.tryPushStack(q)) // clear on failure
+            lazySetNext(q, null);
+        }
+    }
+}

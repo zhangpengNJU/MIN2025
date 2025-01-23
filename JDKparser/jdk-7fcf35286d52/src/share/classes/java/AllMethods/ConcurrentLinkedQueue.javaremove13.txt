@@ -1,0 +1,34 @@
+/**
+ * Removes a single instance of the specified element from this queue,
+ * if it is present.  More formally, removes an element {@code e} such
+ * that {@code o.equals(e)}, if this queue contains one or more such
+ * elements.
+ * Returns {@code true} if this queue contained the specified element
+ * (or equivalently, if this queue changed as a result of the call).
+ *
+ * @param o element to be removed from this queue, if present
+ * @return {@code true} if this queue changed as a result of the call
+ */
+public boolean remove(Object o) {
+    if (o != null) {
+        Node<E> next, pred = null;
+        for (Node<E> p = first(); p != null; pred = p, p = next) {
+            boolean removed = false;
+            E item = p.item;
+            if (item != null) {
+                if (!o.equals(item)) {
+                    next = succ(p);
+                    continue;
+                }
+                removed = p.casItem(item, null);
+            }
+            next = succ(p);
+            if (// unlink
+            pred != null && next != null)
+                pred.casNext(p, next);
+            if (removed)
+                return true;
+        }
+    }
+    return false;
+}

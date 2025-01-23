@@ -1,0 +1,25 @@
+static String refKindName(byte refKind) {
+    assert (refKindIsValid(refKind));
+    switch(refKind) {
+        case REF_getField:
+            return "getField";
+        case REF_getStatic:
+            return "getStatic";
+        case REF_putField:
+            return "putField";
+        case REF_putStatic:
+            return "putStatic";
+        case REF_invokeVirtual:
+            return "invokeVirtual";
+        case REF_invokeStatic:
+            return "invokeStatic";
+        case REF_invokeSpecial:
+            return "invokeSpecial";
+        case REF_newInvokeSpecial:
+            return "newInvokeSpecial";
+        case REF_invokeInterface:
+            return "invokeInterface";
+        default:
+            return "REF_???";
+    }
+}

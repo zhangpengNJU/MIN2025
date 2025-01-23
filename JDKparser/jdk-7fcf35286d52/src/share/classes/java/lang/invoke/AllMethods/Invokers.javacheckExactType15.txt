@@ -1,0 +1,12 @@
+/**
+ * Static definition of MethodHandle.invokeExact checking code.
+ */
+/*non-public*/
+@ForceInline
+static void checkExactType(Object mhObj, Object expectedObj) {
+    MethodHandle mh = (MethodHandle) mhObj;
+    MethodType expected = (MethodType) expectedObj;
+    MethodType actual = mh.type();
+    if (actual != expected)
+        throw newWrongMethodTypeException(expected, actual);
+}

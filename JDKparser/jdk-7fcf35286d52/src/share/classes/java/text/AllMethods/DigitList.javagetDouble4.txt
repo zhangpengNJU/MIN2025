@@ -1,0 +1,16 @@
+/**
+ * Utility routine to get the value of the digit list
+ * If (count == 0) this throws a NumberFormatException, which
+ * mimics Long.parseLong().
+ */
+public final double getDouble() {
+    if (count == 0) {
+        return 0.0;
+    }
+    StringBuffer temp = getStringBuffer();
+    temp.append('.');
+    temp.append(digits, 0, count);
+    temp.append('E');
+    temp.append(decimalAt);
+    return Double.parseDouble(temp.toString());
+}

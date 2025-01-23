@@ -1,0 +1,10 @@
+/**
+ * Returns the millisecond offset from the beginning of the
+ * year. In the year for Long.MIN_VALUE, it's a pseudo value
+ * beyond the limit. The given CalendarDate object must have been
+ * normalized before calling this method.
+ */
+private long getYearOffsetInMillis(CalendarDate date) {
+    long t = (jcal.getDayOfYear(date) - 1) * ONE_DAY;
+    return t + date.getTimeOfDay() - date.getZoneOffset();
+}

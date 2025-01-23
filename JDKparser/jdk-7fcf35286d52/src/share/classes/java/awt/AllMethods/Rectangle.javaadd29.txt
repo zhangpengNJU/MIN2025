@@ -1,0 +1,56 @@
+/**
+ * Adds a point, specified by the integer arguments {@code newx,newy}
+ * to the bounds of this {@code Rectangle}.
+ * <p>
+ * If this {@code Rectangle} has any dimension less than zero,
+ * the rules for <a href=#NonExistant>non-existant</a>
+ * rectangles apply.
+ * In that case, the new bounds of this {@code Rectangle} will
+ * have a location equal to the specified coordinates and
+ * width and height equal to zero.
+ * <p>
+ * After adding a point, a call to <code>contains</code> with the
+ * added point as an argument does not necessarily return
+ * <code>true</code>. The <code>contains</code> method does not
+ * return <code>true</code> for points on the right or bottom
+ * edges of a <code>Rectangle</code>. Therefore, if the added point
+ * falls on the right or bottom edge of the enlarged
+ * <code>Rectangle</code>, <code>contains</code> returns
+ * <code>false</code> for that point.
+ * If the specified point must be contained within the new
+ * {@code Rectangle}, a 1x1 rectangle should be added instead:
+ * <pre>
+ *     r.add(newx, newy, 1, 1);
+ * </pre>
+ * @param newx the X coordinate of the new point
+ * @param newy the Y coordinate of the new point
+ */
+public void add(int newx, int newy) {
+    if ((width | height) < 0) {
+        this.x = newx;
+        this.y = newy;
+        this.width = this.height = 0;
+        return;
+    }
+    int x1 = this.x;
+    int y1 = this.y;
+    long x2 = this.width;
+    long y2 = this.height;
+    x2 += x1;
+    y2 += y1;
+    if (x1 > newx)
+        x1 = newx;
+    if (y1 > newy)
+        y1 = newy;
+    if (x2 < newx)
+        x2 = newx;
+    if (y2 < newy)
+        y2 = newy;
+    x2 -= x1;
+    y2 -= y1;
+    if (x2 > Integer.MAX_VALUE)
+        x2 = Integer.MAX_VALUE;
+    if (y2 > Integer.MAX_VALUE)
+        y2 = Integer.MAX_VALUE;
+    reshape(x1, y1, (int) x2, (int) y2);
+}

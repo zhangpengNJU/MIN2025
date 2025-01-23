@@ -1,0 +1,32 @@
+/**
+ * Returns this map's entry for the given key, or {@code null} if the map
+ * does not contain an entry for the key.
+ *
+ * @return this map's entry for the given key, or {@code null} if the map
+ *         does not contain an entry for the key
+ * @throws ClassCastException if the specified key cannot be compared
+ *         with the keys currently in the map
+ * @throws NullPointerException if the specified key is null
+ *         and this map uses natural ordering, or its comparator
+ *         does not permit null keys
+ */
+final Entry<K, V> getEntry(Object key) {
+    // Offload comparator-based version for sake of performance
+    if (comparator != null)
+        return getEntryUsingComparator(key);
+    if (key == null)
+        throw new NullPointerException();
+    @SuppressWarnings("unchecked")
+    Comparable<? super K> k = (Comparable<? super K>) key;
+    Entry<K, V> p = root;
+    while (p != null) {
+        int cmp = k.compareTo(p.key);
+        if (cmp < 0)
+            p = p.left;
+        else if (cmp > 0)
+            p = p.right;
+        else
+            return p;
+    }
+    return null;
+}

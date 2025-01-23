@@ -1,0 +1,8 @@
+/**
+ * Check access and get the requested field, eliding security manager checks.
+ */
+private MethodHandle getDirectFieldNoSecurityManager(byte refKind, Class<?> refc, MemberName field) throws IllegalAccessException {
+    // not needed for reflection or for linking CONSTANT_MH constants
+    final boolean checkSecurity = false;
+    return getDirectFieldCommon(refKind, refc, field, checkSecurity);
+}

@@ -1,0 +1,15 @@
+/**
+ * Retrieves and removes the head of this queue, waiting
+ * if necessary up to the specified wait time, for another thread
+ * to insert it.
+ *
+ * @return the head of this queue, or {@code null} if the
+ *         specified waiting time elapses before an element is present
+ * @throws InterruptedException {@inheritDoc}
+ */
+public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    E e = transferer.transfer(null, true, unit.toNanos(timeout));
+    if (e != null || !Thread.interrupted())
+        return e;
+    throw new InterruptedException();
+}

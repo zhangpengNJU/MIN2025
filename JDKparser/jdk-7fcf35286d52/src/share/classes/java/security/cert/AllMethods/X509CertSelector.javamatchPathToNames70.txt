@@ -1,0 +1,37 @@
+/* match on pathToNames */
+private boolean matchPathToNames(X509Certificate xcert) {
+    if (pathToGeneralNames == null) {
+        return true;
+    }
+    try {
+        NameConstraintsExtension ext = (NameConstraintsExtension) getExtensionObject(xcert, NAME_CONSTRAINTS_ID);
+        if (ext == null) {
+            return true;
+        }
+        if ((debug != null) && Debug.isOn("certpath")) {
+            debug.println("X509CertSelector.match pathToNames:\n");
+            Iterator<GeneralNameInterface> i = pathToGeneralNames.iterator();
+            while (i.hasNext()) {
+                debug.println("    " + i.next() + "\n");
+            }
+        }
+        GeneralSubtrees permitted = ext.get(NameConstraintsExtension.PERMITTED_SUBTREES);
+        GeneralSubtrees excluded = ext.get(NameConstraintsExtension.EXCLUDED_SUBTREES);
+        if (excluded != null) {
+            if (matchExcluded(excluded) == false) {
+                return false;
+            }
+        }
+        if (permitted != null) {
+            if (matchPermitted(permitted) == false) {
+                return false;
+            }
+        }
+    } catch (IOException ex) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "IOException in name constraints check");
+        }
+        return false;
+    }
+    return true;
+}

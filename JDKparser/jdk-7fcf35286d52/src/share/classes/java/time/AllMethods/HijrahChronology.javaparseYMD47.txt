@@ -1,0 +1,22 @@
+/**
+ * Parse yyyy-MM-dd into a 3 element array [yyyy, mm, dd].
+ *
+ * @param string the input string
+ * @return the 3 element array with year, month, day
+ */
+private int[] parseYMD(String string) {
+    // yyyy-MM-dd
+    string = string.trim();
+    try {
+        if (string.charAt(4) != '-' || string.charAt(7) != '-') {
+            throw new IllegalArgumentException("date must be yyyy-MM-dd");
+        }
+        int[] ymd = new int[3];
+        ymd[0] = Integer.valueOf(string.substring(0, 4));
+        ymd[1] = Integer.valueOf(string.substring(5, 7));
+        ymd[2] = Integer.valueOf(string.substring(8, 10));
+        return ymd;
+    } catch (NumberFormatException ex) {
+        throw new IllegalArgumentException("date must be yyyy-MM-dd", ex);
+    }
+}

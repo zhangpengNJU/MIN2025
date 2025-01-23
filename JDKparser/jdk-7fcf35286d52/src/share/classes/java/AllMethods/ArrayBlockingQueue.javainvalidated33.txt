@@ -1,0 +1,12 @@
+/**
+ * Returns true if index is invalidated by the given number of
+ * dequeues, starting from prevTakeIndex.
+ */
+private boolean invalidated(int index, int prevTakeIndex, long dequeues, int length) {
+    if (index < 0)
+        return false;
+    int distance = index - prevTakeIndex;
+    if (distance < 0)
+        distance += length;
+    return dequeues > distance;
+}

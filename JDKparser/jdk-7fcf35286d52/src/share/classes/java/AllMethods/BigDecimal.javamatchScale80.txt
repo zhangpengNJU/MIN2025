@@ -1,0 +1,22 @@
+/**
+ * Match the scales of two {@code BigDecimal}s to align their
+ * least significant digits.
+ *
+ * <p>If the scales of val[0] and val[1] differ, rescale
+ * (non-destructively) the lower-scaled {@code BigDecimal} so
+ * they match.  That is, the lower-scaled reference will be
+ * replaced by a reference to a new object with the same scale as
+ * the other {@code BigDecimal}.
+ *
+ * @param  val array of two elements referring to the two
+ *         {@code BigDecimal}s to be aligned.
+ */
+private static void matchScale(BigDecimal[] val) {
+    if (val[0].scale == val[1].scale) {
+        return;
+    } else if (val[0].scale < val[1].scale) {
+        val[0] = val[0].setScale(val[1].scale, ROUND_UNNECESSARY);
+    } else if (val[1].scale < val[0].scale) {
+        val[1] = val[1].setScale(val[0].scale, ROUND_UNNECESSARY);
+    }
+}

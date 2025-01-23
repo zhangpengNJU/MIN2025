@@ -1,0 +1,17 @@
+public void run() {
+    CompletableFuture<Void> d;
+    Runnable f;
+    if ((d = dep) != null && (f = fn) != null) {
+        dep = null;
+        fn = null;
+        if (d.result == null) {
+            try {
+                f.run();
+                d.completeNull();
+            } catch (Throwable ex) {
+                d.completeThrowable(ex);
+            }
+        }
+        d.postComplete();
+    }
+}

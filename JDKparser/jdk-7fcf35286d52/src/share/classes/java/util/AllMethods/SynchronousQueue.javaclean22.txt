@@ -1,0 +1,62 @@
+/**
+ * Gets rid of cancelled node s with original predecessor pred.
+ */
+void clean(QNode pred, QNode s) {
+    // forget thread
+    s.waiter = null;
+    /*
+             * At any given time, exactly one node on list cannot be
+             * deleted -- the last inserted node. To accommodate this,
+             * if we cannot delete s, we save its predecessor as
+             * "cleanMe", deleting the previously saved version
+             * first. At least one of node s or the node previously
+             * saved can always be deleted, so this always terminates.
+             */
+    while (pred.next == s) {
+        // Return early if already unlinked
+        QNode h = head;
+        // Absorb cancelled first node as head
+        QNode hn = h.next;
+        if (hn != null && hn.isCancelled()) {
+            advanceHead(h, hn);
+            continue;
+        }
+        // Ensure consistent read for tail
+        QNode t = tail;
+        if (t == h)
+            return;
+        QNode tn = t.next;
+        if (t != tail)
+            continue;
+        if (tn != null) {
+            advanceTail(t, tn);
+            continue;
+        }
+        if (s != t) {
+            // If not tail, try to unsplice
+            QNode sn = s.next;
+            if (sn == s || pred.casNext(s, sn))
+                return;
+        }
+        QNode dp = cleanMe;
+        if (dp != null) {
+            // Try unlinking previous cancelled node
+            QNode d = dp.next;
+            QNode dn;
+            if (// d is gone or
+            d == null || // d is off list or
+            d == dp || // d not cancelled or
+            !d.isCancelled() || (// d not tail and
+            d != t && // has successor
+            (dn = d.next) != null && // that is on list
+            dn != d && // d unspliced
+            dp.casNext(d, dn)))
+                casCleanMe(dp, null);
+            if (dp == pred)
+                // s is already saved node
+                return;
+        } else if (casCleanMe(null, pred))
+            // Postpone cleaning s
+            return;
+    }
+}

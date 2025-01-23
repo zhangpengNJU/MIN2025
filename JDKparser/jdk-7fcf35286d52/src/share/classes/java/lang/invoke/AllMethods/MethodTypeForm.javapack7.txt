@@ -1,0 +1,5 @@
+private static long pack(int a, int b, int c, int d) {
+    assert (((a | b | c | d) & ~0xFFFF) == 0);
+    long hw = ((a << 16) | b), lw = ((c << 16) | d);
+    return (hw << 32) | lw;
+}

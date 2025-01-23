@@ -1,0 +1,19 @@
+/**
+ * Connects a datagram socket to a remote destination. This associates the remote
+ * address with the local socket so that datagrams may only be sent to this destination
+ * and received from this destination. This may be overridden to call a native
+ * system connect.
+ *
+ * <p>If the remote destination to which the socket is connected does not
+ * exist, or is otherwise unreachable, and if an ICMP destination unreachable
+ * packet has been received for that address, then a subsequent call to
+ * send or receive may throw a PortUnreachableException.
+ * Note, there is no guarantee that the exception will be thrown.
+ * @param address the remote InetAddress to connect to
+ * @param port the remote port number
+ * @exception   SocketException may be thrown if the socket cannot be
+ * connected to the remote destination
+ * @since 1.4
+ */
+protected void connect(InetAddress address, int port) throws SocketException {
+}

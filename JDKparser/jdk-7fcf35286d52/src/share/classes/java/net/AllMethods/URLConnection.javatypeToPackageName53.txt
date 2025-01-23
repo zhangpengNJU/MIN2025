@@ -1,0 +1,21 @@
+/**
+ * Utility function to map a MIME content type into an equivalent
+ * pair of class name components.  For example: "text/html" would
+ * be returned as "text.html"
+ */
+private String typeToPackageName(String contentType) {
+    // make sure we canonicalize the class name: all lower case
+    contentType = contentType.toLowerCase();
+    int len = contentType.length();
+    char[] nm = new char[len];
+    contentType.getChars(0, len, nm, 0);
+    for (int i = 0; i < len; i++) {
+        char c = nm[i];
+        if (c == '/') {
+            nm[i] = '.';
+        } else if (!('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' || '0' <= c && c <= '9')) {
+            nm[i] = '_';
+        }
+    }
+    return new String(nm);
+}

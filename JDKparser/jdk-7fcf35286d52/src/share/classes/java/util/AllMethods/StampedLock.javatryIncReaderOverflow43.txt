@@ -1,0 +1,21 @@
+// internals
+/**
+ * Tries to increment readerOverflow by first setting state
+ * access bits value to RBITS, indicating hold of spinlock,
+ * then updating, then releasing.
+ *
+ * @param s a reader overflow stamp: (s & ABITS) >= RFULL
+ * @return new stamp on success, else zero
+ */
+private long tryIncReaderOverflow(long s) {
+    // assert (s & ABITS) >= RFULL;
+    if ((s & ABITS) == RFULL) {
+        if (U.compareAndSwapLong(this, STATE, s, s | RBITS)) {
+            ++readerOverflow;
+            state = s;
+            return s;
+        }
+    } else if ((LockSupport.nextSecondarySeed() & OVERFLOW_YIELD_RATE) == 0)
+        Thread.yield();
+    return 0L;
+}

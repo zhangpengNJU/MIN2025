@@ -1,0 +1,15 @@
+/**
+ * Tests if {@link SocketOptions#SO_REUSEADDR SO_REUSEADDR} is enabled.
+ *
+ * @return a {@code boolean} indicating whether or not
+ *         {@link SocketOptions#SO_REUSEADDR SO_REUSEADDR} is enabled.
+ * @exception SocketException if there is an error
+ * in the underlying protocol, such as a TCP error.
+ * @since   1.4
+ * @see #setReuseAddress(boolean)
+ */
+public boolean getReuseAddress() throws SocketException {
+    if (isClosed())
+        throw new SocketException("Socket is closed");
+    return ((Boolean) (getImpl().getOption(SocketOptions.SO_REUSEADDR))).booleanValue();
+}

@@ -1,0 +1,37 @@
+private Method privateGetMethodRecursive(String name, Class<?>[] parameterTypes, boolean includeStaticMethods, MethodArray allInterfaceCandidates) {
+    // Note: the intent is that the search algorithm this routine
+    // uses be equivalent to the ordering imposed by
+    // privateGetPublicMethods(). It fetches only the declared
+    // public methods for each class, however, to reduce the
+    // number of Method objects which have to be created for the
+    // common case where the method being requested is declared in
+    // the class which is being queried.
+    // 
+    // Due to default methods, unless a method is found on a superclass,
+    // methods declared in any superinterface needs to be considered.
+    // Collect all candidates declared in superinterfaces in {@code
+    // allInterfaceCandidates} and select the most specific if no match on
+    // a superclass is found.
+    // Must _not_ return root methods
+    Method res;
+    // Search declared public methods
+    if ((res = searchMethods(privateGetDeclaredMethods(true), name, parameterTypes)) != null) {
+        if (includeStaticMethods || !Modifier.isStatic(res.getModifiers()))
+            return res;
+    }
+    // Search superclass's methods
+    if (!isInterface()) {
+        Class<? super T> c = getSuperclass();
+        if (c != null) {
+            if ((res = c.getMethod0(name, parameterTypes, true)) != null) {
+                return res;
+            }
+        }
+    }
+    // Search superinterfaces' methods
+    Class<?>[] interfaces = getInterfaces();
+    for (Class<?> c : interfaces) if ((res = c.getMethod0(name, parameterTypes, false)) != null)
+        allInterfaceCandidates.add(res);
+    // Not found
+    return null;
+}

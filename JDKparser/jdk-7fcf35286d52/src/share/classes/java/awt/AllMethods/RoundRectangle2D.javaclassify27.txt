@@ -1,0 +1,13 @@
+private int classify(double coord, double left, double right, double arcsize) {
+    if (coord < left) {
+        return 0;
+    } else if (coord < left + arcsize) {
+        return 1;
+    } else if (coord < right - arcsize) {
+        return 2;
+    } else if (coord < right) {
+        return 3;
+    } else {
+        return 4;
+    }
+}

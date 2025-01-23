@@ -1,0 +1,13 @@
+/**
+ * Removes the specified menu component from this menu bar.
+ * @param        m the menu component to be removed.
+ * @see          java.awt.MenuBar#add(java.awt.Menu)
+ */
+public void remove(MenuComponent m) {
+    synchronized (getTreeLock()) {
+        int index = menus.indexOf(m);
+        if (index >= 0) {
+            remove(index);
+        }
+    }
+}

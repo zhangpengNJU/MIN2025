@@ -1,0 +1,15 @@
+// Division
+/**
+ * Returns a BigInteger whose value is {@code (this / val)}.
+ *
+ * @param  val value by which this BigInteger is to be divided.
+ * @return {@code this / val}
+ * @throws ArithmeticException if {@code val} is zero.
+ */
+public BigInteger divide(BigInteger val) {
+    if (val.mag.length < BURNIKEL_ZIEGLER_THRESHOLD || mag.length - val.mag.length < BURNIKEL_ZIEGLER_OFFSET) {
+        return divideKnuth(val);
+    } else {
+        return divideBurnikelZiegler(val);
+    }
+}

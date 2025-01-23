@@ -1,0 +1,17 @@
+/**
+ * Write the buffered fields to the stream.
+ *
+ * @throws  IOException if I/O errors occur while writing to the underlying
+ *          stream
+ * @throws  NotActiveException Called when a classes writeObject method was
+ *          not called to write the state of the object.
+ * @since 1.2
+ */
+public void writeFields() throws IOException {
+    if (curPut == null) {
+        throw new NotActiveException("no current PutField object");
+    }
+    bout.setBlockDataMode(false);
+    curPut.writeFields();
+    bout.setBlockDataMode(true);
+}

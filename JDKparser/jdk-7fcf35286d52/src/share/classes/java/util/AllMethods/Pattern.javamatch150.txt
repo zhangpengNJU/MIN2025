@@ -1,0 +1,28 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    // Check for zero length group
+    if (i > matcher.locals[beginIndex]) {
+        int count = matcher.locals[countIndex];
+        if (count < cmin) {
+            matcher.locals[countIndex] = count + 1;
+            boolean result = body.match(matcher, i, seq);
+            // If match failed we must backtrack, so
+            // the loop count should NOT be incremented
+            if (!result)
+                matcher.locals[countIndex] = count;
+            return result;
+        }
+        if (next.match(matcher, i, seq))
+            return true;
+        if (count < cmax) {
+            matcher.locals[countIndex] = count + 1;
+            boolean result = body.match(matcher, i, seq);
+            // If match failed we must backtrack, so
+            // the loop count should NOT be incremented
+            if (!result)
+                matcher.locals[countIndex] = count;
+            return result;
+        }
+        return false;
+    }
+    return next.match(matcher, i, seq);
+}

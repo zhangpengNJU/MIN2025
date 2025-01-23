@@ -1,0 +1,51 @@
+/**
+ * Returns the index within the given char sequence that is offset
+ * from the given {@code index} by {@code codePointOffset}
+ * code points. Unpaired surrogates within the text range given by
+ * {@code index} and {@code codePointOffset} count as
+ * one code point each.
+ *
+ * @param seq the char sequence
+ * @param index the index to be offset
+ * @param codePointOffset the offset in code points
+ * @return the index within the char sequence
+ * @exception NullPointerException if {@code seq} is null.
+ * @exception IndexOutOfBoundsException if {@code index}
+ *   is negative or larger then the length of the char sequence,
+ *   or if {@code codePointOffset} is positive and the
+ *   subsequence starting with {@code index} has fewer than
+ *   {@code codePointOffset} code points, or if
+ *   {@code codePointOffset} is negative and the subsequence
+ *   before {@code index} has fewer than the absolute value
+ *   of {@code codePointOffset} code points.
+ * @since 1.5
+ */
+public static int offsetByCodePoints(CharSequence seq, int index, int codePointOffset) {
+    int length = seq.length();
+    if (index < 0 || index > length) {
+        throw new IndexOutOfBoundsException();
+    }
+    int x = index;
+    if (codePointOffset >= 0) {
+        int i;
+        for (i = 0; x < length && i < codePointOffset; i++) {
+            if (isHighSurrogate(seq.charAt(x++)) && x < length && isLowSurrogate(seq.charAt(x))) {
+                x++;
+            }
+        }
+        if (i < codePointOffset) {
+            throw new IndexOutOfBoundsException();
+        }
+    } else {
+        int i;
+        for (i = codePointOffset; x > 0 && i < 0; i++) {
+            if (isLowSurrogate(seq.charAt(--x)) && x > 0 && isHighSurrogate(seq.charAt(x - 1))) {
+                x--;
+            }
+        }
+        if (i < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+    return x;
+}

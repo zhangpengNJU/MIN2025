@@ -1,0 +1,32 @@
+// -- Scanning --
+// The various scan and parse methods that follow use a uniform
+// convention of taking the current start position and end index as
+// their first two arguments.  The start is inclusive while the end is
+// exclusive, just as in the String class, i.e., a start/end pair
+// denotes the left-open interval [start, end) of the input string.
+// 
+// These methods never proceed past the end position.  They may return
+// -1 to indicate outright failure, but more often they simply return
+// the position of the first char after the last char scanned.  Thus
+// a typical idiom is
+// 
+// int p = start;
+// int q = scan(p, end, ...);
+// if (q > p)
+// // We scanned something
+// ...;
+// else if (q == p)
+// // We scanned nothing
+// ...;
+// else if (q == -1)
+// // Something went wrong
+// ...;
+// Scan a specific char: If the char at the given start position is
+// equal to c, return the index of the next char; otherwise, return the
+// start position.
+// 
+private int scan(int start, int end, char c) {
+    if ((start < end) && (charAt(start) == c))
+        return start + 1;
+    return start;
+}

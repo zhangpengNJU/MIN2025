@@ -1,0 +1,28 @@
+/**
+ * Returns a stream consisting of the distinct elements (according to
+ * {@link Object#equals(Object)}) of this stream.
+ *
+ * <p>For ordered streams, the selection of distinct elements is stable
+ * (for duplicated elements, the element appearing first in the encounter
+ * order is preserved.)  For unordered streams, no stability guarantees
+ * are made.
+ *
+ * <p>This is a <a href="package-summary.html#StreamOps">stateful
+ * intermediate operation</a>.
+ *
+ * @apiNote
+ * Preserving stability for {@code distinct()} in parallel pipelines is
+ * relatively expensive (requires that the operation act as a full barrier,
+ * with substantial buffering overhead), and stability is often not needed.
+ * Using an unordered stream source (such as {@link #generate(Supplier)})
+ * or removing the ordering constraint with {@link #unordered()} may result
+ * in significantly more efficient execution for {@code distinct()} in parallel
+ * pipelines, if the semantics of your situation permit.  If consistency
+ * with encounter order is required, and you are experiencing poor performance
+ * or memory utilization with {@code distinct()} in parallel pipelines,
+ * switching to sequential execution with {@link #sequential()} may improve
+ * performance.
+ *
+ * @return the new stream
+ */
+Stream<T> distinct();

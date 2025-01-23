@@ -1,0 +1,120 @@
+/**
+ * Sets the default focus traversal keys for a given traversal operation.
+ * This traversal key {@code Set} will be in effect on all
+ * {@code Window}s that have no such {@code Set} of
+ * their own explicitly defined. This {@code Set} will also be
+ * inherited, recursively, by any child {@code Component} of
+ * those {@code Windows} that has
+ * no such {@code Set} of its own explicitly defined.
+ * <p>
+ * The default values for the default focus traversal keys are
+ * implementation-dependent. Sun recommends that all implementations for a
+ * particular native platform use the same default values. The
+ * recommendations for Windows and Unix are listed below. These
+ * recommendations are used in the Sun AWT implementations.
+ *
+ * <table border=1 summary="Recommended default values for focus traversal keys">
+ * <tr>
+ *    <th>Identifier</th>
+ *    <th>Meaning</th>
+ *    <th>Default</th>
+ * </tr>
+ * <tr>
+ *    <td>{@code KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS}</td>
+ *    <td>Normal forward keyboard traversal</td>
+ *    <td>{@code TAB} on {@code KEY_PRESSED},
+ *        {@code CTRL-TAB} on {@code KEY_PRESSED}</td>
+ * </tr>
+ * <tr>
+ *    <td>{@code KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS}</td>
+ *    <td>Normal reverse keyboard traversal</td>
+ *    <td>{@code SHIFT-TAB} on {@code KEY_PRESSED},
+ *        {@code CTRL-SHIFT-TAB} on {@code KEY_PRESSED}</td>
+ * </tr>
+ * <tr>
+ *    <td>{@code KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS}</td>
+ *    <td>Go up one focus traversal cycle</td>
+ *    <td>none</td>
+ * </tr>
+ * <tr>
+ *    <td>{@code KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS}</td>
+ *    <td>Go down one focus traversal cycle</td>
+ *    <td>none</td>
+ * </tr>
+ * </table>
+ *
+ * To disable a traversal key, use an empty {@code Set};
+ * {@code Collections.EMPTY_SET} is recommended.
+ * <p>
+ * Using the {@code AWTKeyStroke} API, client code can
+ * specify on which of two
+ * specific {@code KeyEvent}s, {@code KEY_PRESSED} or
+ * {@code KEY_RELEASED}, the focus traversal operation will
+ * occur. Regardless of which {@code KeyEvent} is specified,
+ * however, all {@code KeyEvent}s related to the focus
+ * traversal key, including the associated {@code KEY_TYPED}
+ * event, will be consumed, and will not be dispatched
+ * to any {@code Component}. It is a runtime error to
+ * specify a {@code KEY_TYPED} event as
+ * mapping to a focus traversal operation, or to map the same event to
+ * multiple default focus traversal operations.
+ * <p>
+ * This method may throw a {@code ClassCastException} if any {@code Object}
+ * in {@code keystrokes} is not an {@code AWTKeyStroke}.
+ *
+ * @param id one of
+ *        {@code KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS},
+ *        {@code KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS},
+ *        {@code KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS}, or
+ *        {@code KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS}
+ * @param keystrokes the Set of {@code AWTKeyStroke}s for the
+ *        specified operation
+ * @see #getDefaultFocusTraversalKeys
+ * @see Component#setFocusTraversalKeys
+ * @see Component#getFocusTraversalKeys
+ * @throws IllegalArgumentException if id is not one of
+ *         {@code KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS},
+ *         {@code KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS},
+ *         {@code KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS}, or
+ *         {@code KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS},
+ *         or if keystrokes is {@code null},
+ *         or if keystrokes contains {@code null},
+ *         or if any keystroke
+ *         represents a {@code KEY_TYPED} event,
+ *         or if any keystroke already maps
+ *         to another default focus traversal operation
+ * @beaninfo
+ *       bound: true
+ */
+public void setDefaultFocusTraversalKeys(int id, Set<? extends AWTKeyStroke> keystrokes) {
+    if (id < 0 || id >= TRAVERSAL_KEY_LENGTH) {
+        throw new IllegalArgumentException("invalid focus traversal key identifier");
+    }
+    if (keystrokes == null) {
+        throw new IllegalArgumentException("cannot set null Set of default focus traversal keys");
+    }
+    Set<AWTKeyStroke> oldKeys;
+    synchronized (this) {
+        for (AWTKeyStroke keystroke : keystrokes) {
+            if (keystroke == null) {
+                throw new IllegalArgumentException("cannot set null focus traversal key");
+            }
+            if (keystroke.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+                throw new IllegalArgumentException("focus traversal keys cannot map to KEY_TYPED events");
+            }
+            // Check to see if key already maps to another traversal
+            // operation
+            for (int i = 0; i < TRAVERSAL_KEY_LENGTH; i++) {
+                if (i == id) {
+                    continue;
+                }
+                if (defaultFocusTraversalKeys[i].contains(keystroke)) {
+                    throw new IllegalArgumentException("focus traversal keys must be unique for a Component");
+                }
+            }
+        }
+        oldKeys = defaultFocusTraversalKeys[id];
+        defaultFocusTraversalKeys[id] = Collections.unmodifiableSet(new HashSet<>(keystrokes));
+    }
+    firePropertyChange(defaultFocusTraversalKeyPropertyNames[id], oldKeys, keystrokes);
+}

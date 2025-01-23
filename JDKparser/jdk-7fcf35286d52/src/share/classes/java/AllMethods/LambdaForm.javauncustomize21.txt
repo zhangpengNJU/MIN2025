@@ -1,0 +1,16 @@
+/**
+ * Get uncustomized flavor of the LambdaForm
+ */
+LambdaForm uncustomize() {
+    if (customized == null) {
+        return this;
+    }
+    // Customized LambdaForm should always has a link to uncustomized version.
+    assert (transformCache != null);
+    LambdaForm uncustomizedForm = (LambdaForm) transformCache;
+    if (COMPILE_THRESHOLD > 0 && isCompiled) {
+        // If customized LambdaForm has been compiled, compile uncustomized version as well.
+        uncustomizedForm.compileToBytecode();
+    }
+    return uncustomizedForm;
+}

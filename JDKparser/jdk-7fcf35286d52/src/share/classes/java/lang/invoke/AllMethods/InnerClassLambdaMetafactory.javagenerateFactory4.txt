@@ -1,0 +1,19 @@
+/**
+ * Generate the factory method for the class
+ */
+private void generateFactory() {
+    MethodVisitor m = cw.visitMethod(ACC_PRIVATE | ACC_STATIC, NAME_FACTORY, invokedType.toMethodDescriptorString(), null, null);
+    m.visitCode();
+    m.visitTypeInsn(NEW, lambdaClassName);
+    m.visitInsn(Opcodes.DUP);
+    int parameterCount = invokedType.parameterCount();
+    for (int typeIndex = 0, varIndex = 0; typeIndex < parameterCount; typeIndex++) {
+        Class<?> argType = invokedType.parameterType(typeIndex);
+        m.visitVarInsn(getLoadOpcode(argType), varIndex);
+        varIndex += getParameterSize(argType);
+    }
+    m.visitMethodInsn(INVOKESPECIAL, lambdaClassName, NAME_CTOR, constructorType.toMethodDescriptorString(), false);
+    m.visitInsn(ARETURN);
+    m.visitMaxs(-1, -1);
+    m.visitEnd();
+}

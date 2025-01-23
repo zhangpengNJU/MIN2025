@@ -1,0 +1,35 @@
+/* ---------------- AbstractMap Overrides -------------- */
+/**
+ * Compares the specified object with this map for equality.
+ * Returns {@code true} if the given object is also a map and the
+ * two maps represent the same mappings.  More formally, two maps
+ * {@code m1} and {@code m2} represent the same mappings if
+ * {@code m1.entrySet().equals(m2.entrySet())}.  This
+ * operation may return misleading results if either map is
+ * concurrently modified during execution of this method.
+ *
+ * @param o object to be compared for equality with this map
+ * @return {@code true} if the specified object is equal to this map
+ */
+public boolean equals(Object o) {
+    if (o == this)
+        return true;
+    if (!(o instanceof Map))
+        return false;
+    Map<?, ?> m = (Map<?, ?>) o;
+    try {
+        for (Map.Entry<K, V> e : this.entrySet()) if (!e.getValue().equals(m.get(e.getKey())))
+            return false;
+        for (Map.Entry<?, ?> e : m.entrySet()) {
+            Object k = e.getKey();
+            Object v = e.getValue();
+            if (k == null || v == null || !v.equals(get(k)))
+                return false;
+        }
+        return true;
+    } catch (ClassCastException unused) {
+        return false;
+    } catch (NullPointerException unused) {
+        return false;
+    }
+}

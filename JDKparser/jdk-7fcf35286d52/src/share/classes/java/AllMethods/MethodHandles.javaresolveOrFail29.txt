@@ -1,0 +1,11 @@
+MemberName resolveOrFail(byte refKind, Class<?> refc, String name, MethodType type) throws NoSuchMethodException, IllegalAccessException {
+    // do this before attempting to resolve
+    checkSymbolicClass(refc);
+    // NPE
+    name.getClass();
+    // NPE
+    type.getClass();
+    // NPE check on name
+    checkMethodName(refKind, name);
+    return IMPL_NAMES.resolveOrFail(refKind, new MemberName(refc, name, type, refKind), lookupClassOrNull(), NoSuchMethodException.class);
+}

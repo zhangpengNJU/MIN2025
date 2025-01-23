@@ -1,0 +1,20 @@
+/**
+ * Returns a <code>List</code> of <code>DataFlavor</code>s to which the
+ * specified <code>String</code> corresponds. The <code>List</code> will be
+ * sorted from best <code>DataFlavor</code> to worst. That is, the first
+ * <code>DataFlavor</code> will best reflect data in the specified
+ * native to a Java application. The returned <code>List</code> is a
+ * modifiable copy of this <code>FlavorTable</code>'s internal data.
+ * Client code is free to modify the <code>List</code> without affecting
+ * this object.
+ *
+ * @param nat the native whose corresponding <code>DataFlavor</code>s
+ *        should be returned. If <code>null</code> is specified, all
+ *        <code>DataFlavor</code>s currently known to this
+ *        <code>FlavorTable</code> are returned in a non-deterministic
+ *        order.
+ * @return a <code>java.util.List</code> of <code>DataFlavor</code>
+ *         objects into which platform-specific data in the specified,
+ *         platform-specific native can be translated
+ */
+List<DataFlavor> getFlavorsForNative(String nat);

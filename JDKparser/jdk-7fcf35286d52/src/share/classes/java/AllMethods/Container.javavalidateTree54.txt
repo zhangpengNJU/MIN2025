@@ -1,0 +1,32 @@
+/**
+ * Recursively descends the container tree and recomputes the
+ * layout for any subtrees marked as needing it (those marked as
+ * invalid).  Synchronization should be provided by the method
+ * that calls this one:  <code>validate</code>.
+ *
+ * @see #doLayout
+ * @see #validate
+ */
+protected void validateTree() {
+    checkTreeLock();
+    if (!isValid() || descendUnconditionallyWhenValidating) {
+        if (peer instanceof ContainerPeer) {
+            ((ContainerPeer) peer).beginLayout();
+        }
+        if (!isValid()) {
+            doLayout();
+        }
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            if ((comp instanceof Container) && !(comp instanceof Window) && (!comp.isValid() || descendUnconditionallyWhenValidating)) {
+                ((Container) comp).validateTree();
+            } else {
+                comp.validate();
+            }
+        }
+        if (peer instanceof ContainerPeer) {
+            ((ContainerPeer) peer).endLayout();
+        }
+    }
+    super.validate();
+}

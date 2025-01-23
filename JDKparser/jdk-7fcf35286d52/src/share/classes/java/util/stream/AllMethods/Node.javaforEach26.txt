@@ -1,0 +1,18 @@
+/**
+ * {@inheritDoc}
+ *
+ * @param consumer A {@code Consumer} that is to be invoked with each
+ *        element in this {@code Node}.  If this is an
+ *        {@code LongConsumer}, it is cast to {@code LongConsumer} so
+ *        the elements may be processed without boxing.
+ */
+@Override
+default void forEach(Consumer<? super Long> consumer) {
+    if (consumer instanceof LongConsumer) {
+        forEach((LongConsumer) consumer);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling Node.OfLong.forEachRemaining(Consumer)");
+        spliterator().forEachRemaining(consumer);
+    }
+}

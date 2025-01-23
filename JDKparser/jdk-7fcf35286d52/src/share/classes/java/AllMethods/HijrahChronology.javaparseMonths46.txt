@@ -1,0 +1,23 @@
+/**
+ * Parses the 12 months lengths from a property value for a specific year.
+ *
+ * @param line the value of a year property
+ * @return an array of int[12] containing the 12 month lengths
+ * @throws IllegalArgumentException if the number of months is not 12
+ * @throws NumberFormatException if the 12 tokens are not numbers
+ */
+private int[] parseMonths(String line) {
+    int[] months = new int[12];
+    String[] numbers = line.split("\\s");
+    if (numbers.length != 12) {
+        throw new IllegalArgumentException("wrong number of months on line: " + Arrays.toString(numbers) + "; count: " + numbers.length);
+    }
+    for (int i = 0; i < 12; i++) {
+        try {
+            months[i] = Integer.valueOf(numbers[i]);
+        } catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("bad key: " + numbers[i]);
+        }
+    }
+    return months;
+}

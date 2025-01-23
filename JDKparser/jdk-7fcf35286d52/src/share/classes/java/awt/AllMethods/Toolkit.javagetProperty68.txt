@@ -1,0 +1,21 @@
+/**
+ * Gets a property with the specified key and default.
+ * This method returns defaultValue if the property is not found.
+ */
+public static String getProperty(String key, String defaultValue) {
+    // first try platform specific bundle
+    if (platformResources != null) {
+        try {
+            return platformResources.getString(key);
+        } catch (MissingResourceException e) {
+        }
+    }
+    // then shared one
+    if (resources != null) {
+        try {
+            return resources.getString(key);
+        } catch (MissingResourceException e) {
+        }
+    }
+    return defaultValue;
+}

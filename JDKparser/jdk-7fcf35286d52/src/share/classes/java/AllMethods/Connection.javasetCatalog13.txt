@@ -1,0 +1,22 @@
+/**
+ * Sets the given catalog name in order to select
+ * a subspace of this <code>Connection</code> object's database
+ * in which to work.
+ * <P>
+ * If the driver does not support catalogs, it will
+ * silently ignore this request.
+ * <p>
+ * Calling {@code setCatalog} has no effect on previously created or prepared
+ * {@code Statement} objects. It is implementation defined whether a DBMS
+ * prepare operation takes place immediately when the {@code Connection}
+ * method {@code prepareStatement} or {@code prepareCall} is invoked.
+ * For maximum portability, {@code setCatalog} should be called before a
+ * {@code Statement} is created or prepared.
+ *
+ * @param catalog the name of a catalog (subspace in this
+ *        <code>Connection</code> object's database) in which to work
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ * @see #getCatalog
+ */
+void setCatalog(String catalog) throws SQLException;

@@ -1,0 +1,12 @@
+/**
+ * Produces or recovers a target method handle which is behaviorally
+ * equivalent to the unique method of this wrapper instance.
+ * The object {@code x} must have been produced by a call to {@link #asInterfaceInstance asInterfaceInstance}.
+ * This requirement may be tested via {@link #isWrapperInstance isWrapperInstance}.
+ * @param x any reference
+ * @return a method handle implementing the unique method
+ * @throws IllegalArgumentException if the reference x is not to a wrapper instance
+ */
+public static MethodHandle wrapperInstanceTarget(Object x) {
+    return asWrapperInstance(x).getWrapperInstanceTarget();
+}

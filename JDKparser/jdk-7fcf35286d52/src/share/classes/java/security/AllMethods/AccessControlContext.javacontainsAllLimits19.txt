@@ -1,0 +1,18 @@
+private boolean containsAllLimits(AccessControlContext that) {
+    boolean match = false;
+    Permission thisPerm;
+    if (this.permissions == null && that.permissions == null)
+        return true;
+    for (int i = 0; i < this.permissions.length; i++) {
+        Permission limit = this.permissions[i];
+        Class<?> limitClass = limit.getClass();
+        match = false;
+        for (int j = 0; (j < that.permissions.length) && !match; j++) {
+            Permission perm = that.permissions[j];
+            match = (limitClass.equals(perm.getClass()) && limit.equals(perm));
+        }
+        if (!match)
+            return false;
+    }
+    return match;
+}

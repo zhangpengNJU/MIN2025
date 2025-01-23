@@ -1,0 +1,16 @@
+/**
+ * Returns this KeyboardFocusManager's KeyEventPostProcessor chain as a
+ * List. The List will not include this KeyboardFocusManager unless it was
+ * explicitly added via a call to <code>addKeyEventPostProcessor</code>. If
+ * no KeyEventPostProcessors are registered, implementations are free to
+ * return null or a List of length 0. Client code should not assume one
+ * behavior over another, nor should it assume that the behavior, once
+ * established, will not change.
+ *
+ * @return a possibly null or empty List of KeyEventPostProcessors
+ * @see #addKeyEventPostProcessor
+ * @see #removeKeyEventPostProcessor
+ */
+protected java.util.List<KeyEventPostProcessor> getKeyEventPostProcessors() {
+    return (keyEventPostProcessors != null) ? (java.util.List) keyEventPostProcessors.clone() : null;
+}

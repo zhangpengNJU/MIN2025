@@ -1,0 +1,21 @@
+private void checkText() {
+    if (precision != -1)
+        throw new IllegalFormatPrecisionException(precision);
+    switch(c) {
+        case Conversion.PERCENT_SIGN:
+            if (f.valueOf() != Flags.LEFT_JUSTIFY.valueOf() && f.valueOf() != Flags.NONE.valueOf())
+                throw new IllegalFormatFlagsException(f.toString());
+            // '-' requires a width
+            if (width == -1 && f.contains(Flags.LEFT_JUSTIFY))
+                throw new MissingFormatWidthException(toString());
+            break;
+        case Conversion.LINE_SEPARATOR:
+            if (width != -1)
+                throw new IllegalFormatWidthException(width);
+            if (f.valueOf() != Flags.NONE.valueOf())
+                throw new IllegalFormatFlagsException(f.toString());
+            break;
+        default:
+            assert false;
+    }
+}

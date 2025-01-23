@@ -1,0 +1,22 @@
+/**
+ * Determines the weights of the layout grid's columns and rows.
+ * Weights are used to calculate how much a given column or row
+ * stretches beyond its preferred size, if the layout has extra
+ * room to fill.
+ * <p>
+ * Most applications do not call this method directly.
+ * @return      an array of two arrays, representing the
+ *                    horizontal weights of the layout columns
+ *                    and the vertical weights of the layout rows
+ * @since       JDK1.1
+ */
+public double[][] getLayoutWeights() {
+    if (layoutInfo == null)
+        return new double[2][0];
+    double[][] weights = new double[2][];
+    weights[0] = new double[layoutInfo.width];
+    weights[1] = new double[layoutInfo.height];
+    System.arraycopy(layoutInfo.weightX, 0, weights[0], 0, layoutInfo.width);
+    System.arraycopy(layoutInfo.weightY, 0, weights[1], 0, layoutInfo.height);
+    return weights;
+}

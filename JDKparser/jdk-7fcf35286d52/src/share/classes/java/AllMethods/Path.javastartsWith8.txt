@@ -1,0 +1,24 @@
+/**
+ * Tests if this path starts with the given path.
+ *
+ * <p> This path <em>starts</em> with the given path if this path's root
+ * component <em>starts</em> with the root component of the given path,
+ * and this path starts with the same name elements as the given path.
+ * If the given path has more name elements than this path then {@code false}
+ * is returned.
+ *
+ * <p> Whether or not the root component of this path starts with the root
+ * component of the given path is file system specific. If this path does
+ * not have a root component and the given path has a root component then
+ * this path does not start with the given path.
+ *
+ * <p> If the given path is associated with a different {@code FileSystem}
+ * to this path then {@code false} is returned.
+ *
+ * @param   other
+ *          the given path
+ *
+ * @return  {@code true} if this path starts with the given path; otherwise
+ *          {@code false}
+ */
+boolean startsWith(Path other);

@@ -1,0 +1,19 @@
+/**
+ * Atomically sets the value of both the reference and stamp
+ * to the given update values if the
+ * current reference is {@code ==} to the expected reference
+ * and the current stamp is equal to the expected stamp.
+ *
+ * <p><a href="package-summary.html#weakCompareAndSet">May fail
+ * spuriously and does not provide ordering guarantees</a>, so is
+ * only rarely an appropriate alternative to {@code compareAndSet}.
+ *
+ * @param expectedReference the expected value of the reference
+ * @param newReference the new value for the reference
+ * @param expectedStamp the expected value of the stamp
+ * @param newStamp the new value for the stamp
+ * @return {@code true} if successful
+ */
+public boolean weakCompareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) {
+    return compareAndSet(expectedReference, newReference, expectedStamp, newStamp);
+}

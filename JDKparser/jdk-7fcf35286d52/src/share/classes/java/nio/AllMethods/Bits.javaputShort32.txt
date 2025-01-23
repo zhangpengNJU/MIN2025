@@ -1,0 +1,6 @@
+static void putShort(ByteBuffer bb, int bi, short x, boolean bigEndian) {
+    if (bigEndian)
+        putShortB(bb, bi, x);
+    else
+        putShortL(bb, bi, x);
+}

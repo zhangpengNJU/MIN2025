@@ -1,0 +1,197 @@
+/**
+ * Parses an escape sequence to determine the actual value that needs
+ * to be matched.
+ * If -1 is returned and create was true a new object was added to the tree
+ * to handle the escape sequence.
+ * If the returned value is greater than zero, it is the value that
+ * matches the escape sequence.
+ */
+private int escape(boolean inclass, boolean create, boolean isrange) {
+    int ch = skip();
+    switch(ch) {
+        case '0':
+            return o();
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            if (inclass)
+                break;
+            if (create) {
+                root = ref((ch - '0'));
+            }
+            return -1;
+        case 'A':
+            if (inclass)
+                break;
+            if (create)
+                root = new Begin();
+            return -1;
+        case 'B':
+            if (inclass)
+                break;
+            if (create)
+                root = new Bound(Bound.NONE, has(UNICODE_CHARACTER_CLASS));
+            return -1;
+        case 'C':
+            break;
+        case 'D':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.DIGIT).complement() : new Ctype(ASCII.DIGIT).complement();
+            return -1;
+        case 'E':
+        case 'F':
+            break;
+        case 'G':
+            if (inclass)
+                break;
+            if (create)
+                root = new LastMatch();
+            return -1;
+        case 'H':
+            if (create)
+                root = new HorizWS().complement();
+            return -1;
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+            break;
+        case 'R':
+            if (inclass)
+                break;
+            if (create)
+                root = new LineEnding();
+            return -1;
+        case 'S':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.WHITE_SPACE).complement() : new Ctype(ASCII.SPACE).complement();
+            return -1;
+        case 'T':
+        case 'U':
+            break;
+        case 'V':
+            if (create)
+                root = new VertWS().complement();
+            return -1;
+        case 'W':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.WORD).complement() : new Ctype(ASCII.WORD).complement();
+            return -1;
+        case 'X':
+        case 'Y':
+            break;
+        case 'Z':
+            if (inclass)
+                break;
+            if (create) {
+                if (has(UNIX_LINES))
+                    root = new UnixDollar(false);
+                else
+                    root = new Dollar(false);
+            }
+            return -1;
+        case 'a':
+            return '\007';
+        case 'b':
+            if (inclass)
+                break;
+            if (create)
+                root = new Bound(Bound.BOTH, has(UNICODE_CHARACTER_CLASS));
+            return -1;
+        case 'c':
+            return c();
+        case 'd':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.DIGIT) : new Ctype(ASCII.DIGIT);
+            return -1;
+        case 'e':
+            return '\033';
+        case 'f':
+            return '\f';
+        case 'g':
+            break;
+        case 'h':
+            if (create)
+                root = new HorizWS();
+            return -1;
+        case 'i':
+        case 'j':
+            break;
+        case 'k':
+            if (inclass)
+                break;
+            if (read() != '<')
+                throw error("\\k is not followed by '<' for named capturing group");
+            String name = groupname(read());
+            if (!namedGroups().containsKey(name))
+                throw error("(named capturing group <" + name + "> does not exit");
+            if (create) {
+                if (has(CASE_INSENSITIVE))
+                    root = new CIBackRef(namedGroups().get(name), has(UNICODE_CASE));
+                else
+                    root = new BackRef(namedGroups().get(name));
+            }
+            return -1;
+        case 'l':
+        case 'm':
+            break;
+        case 'n':
+            return '\n';
+        case 'o':
+        case 'p':
+        case 'q':
+            break;
+        case 'r':
+            return '\r';
+        case 's':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.WHITE_SPACE) : new Ctype(ASCII.SPACE);
+            return -1;
+        case 't':
+            return '\t';
+        case 'u':
+            return u();
+        case 'v':
+            // '\v' was implemented as VT/0x0B in releases < 1.8 (though
+            // undocumented). In JDK8 '\v' is specified as a predefined
+            // character class for all vertical whitespace characters.
+            // So [-1, root=VertWS node] pair is returned (instead of a
+            // single 0x0B). This breaks the range if '\v' is used as
+            // the start or end value, such as [\v-...] or [...-\v], in
+            // which a single definite value (0x0B) is expected. For
+            // compatibility concern '\013'/0x0B is returned if isrange.
+            if (isrange)
+                return '\013';
+            if (create)
+                root = new VertWS();
+            return -1;
+        case 'w':
+            if (create)
+                root = has(UNICODE_CHARACTER_CLASS) ? new Utype(UnicodeProp.WORD) : new Ctype(ASCII.WORD);
+            return -1;
+        case 'x':
+            return x();
+        case 'y':
+            break;
+        case 'z':
+            if (inclass)
+                break;
+            if (create)
+                root = new End();
+            return -1;
+        default:
+            return ch;
+    }
+    throw error("Illegal/unsupported escape sequence");
+}

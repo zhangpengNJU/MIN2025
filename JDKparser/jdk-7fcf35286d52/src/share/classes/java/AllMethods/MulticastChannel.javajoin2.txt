@@ -1,0 +1,46 @@
+/**
+ * Joins a multicast group to begin receiving datagrams sent to the group
+ * from a given source address.
+ *
+ * <p> If this channel is currently a member of the group on the given
+ * interface to receive datagrams from the given source address then the
+ * membership key, representing that membership, is returned. Otherwise this
+ * channel joins the group and the resulting new membership key is returned.
+ * The resulting membership key is {@link MembershipKey#sourceAddress
+ * source-specific}.
+ *
+ * <p> Membership is <em>cumulative</em> and this method may be invoked
+ * again with the same group and interface to allow receiving datagrams sent
+ * by other source addresses to the group.
+ *
+ * @param   group
+ *          The multicast address to join
+ * @param   interf
+ *          The network interface on which to join the group
+ * @param   source
+ *          The source address
+ *
+ * @return  The membership key
+ *
+ * @throws  IllegalArgumentException
+ *          If the group parameter is not a {@link
+ *          InetAddress#isMulticastAddress multicast} address, the
+ *          source parameter is not a unicast address, the group
+ *          parameter is an address type that is not supported by this channel,
+ *          or the source parameter is not the same address type as the group
+ * @throws  IllegalStateException
+ *          If the channel is currently a member of the group on the given
+ *          interface to receive all datagrams
+ * @throws  UnsupportedOperationException
+ *          If the channel's socket is not an Internet Protocol socket or
+ *          source filtering is not supported
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IOException
+ *          If an I/O error occurs
+ * @throws  SecurityException
+ *          If a security manager is set, and its
+ *          {@link SecurityManager#checkMulticast(InetAddress) checkMulticast}
+ *          method denies access to the multiast group
+ */
+MembershipKey join(InetAddress group, NetworkInterface interf, InetAddress source) throws IOException;

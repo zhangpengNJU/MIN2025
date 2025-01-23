@@ -1,0 +1,37 @@
+/**
+ * Pops task if in the same CC computation as the given task,
+ * in either shared or owned mode. Used only by helpComplete.
+ */
+final CountedCompleter<?> popCC(CountedCompleter<?> task, int mode) {
+    int s;
+    ForkJoinTask<?>[] a;
+    Object o;
+    if (base - (s = top) < 0 && (a = array) != null) {
+        long j = (((a.length - 1) & (s - 1)) << ASHIFT) + ABASE;
+        if ((o = U.getObjectVolatile(a, j)) != null && (o instanceof CountedCompleter)) {
+            CountedCompleter<?> t = (CountedCompleter<?>) o;
+            for (CountedCompleter<?> r = t; ; ) {
+                if (r == task) {
+                    if (mode < 0) {
+                        // must lock
+                        if (U.compareAndSwapInt(this, QLOCK, 0, 1)) {
+                            if (top == s && array == a && U.compareAndSwapObject(a, j, t, null)) {
+                                U.putOrderedInt(this, QTOP, s - 1);
+                                U.putOrderedInt(this, QLOCK, 0);
+                                return t;
+                            }
+                            U.compareAndSwapInt(this, QLOCK, 1, 0);
+                        }
+                    } else if (U.compareAndSwapObject(a, j, t, null)) {
+                        U.putOrderedInt(this, QTOP, s - 1);
+                        return t;
+                    }
+                    break;
+                } else if (// try parent
+                (r = r.completer) == null)
+                    break;
+            }
+        }
+    }
+    return null;
+}

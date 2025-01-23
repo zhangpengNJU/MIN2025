@@ -1,0 +1,24 @@
+/**
+ * Determines which modifier key is the appropriate accelerator
+ * key for menu shortcuts.
+ * <p>
+ * Menu shortcuts, which are embodied in the
+ * <code>MenuShortcut</code> class, are handled by the
+ * <code>MenuBar</code> class.
+ * <p>
+ * By default, this method returns <code>Event.CTRL_MASK</code>.
+ * Toolkit implementations should override this method if the
+ * <b>Control</b> key isn't the correct key for accelerators.
+ * @return    the modifier mask on the <code>Event</code> class
+ *                 that is used for menu shortcuts on this toolkit.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @see       java.awt.MenuBar
+ * @see       java.awt.MenuShortcut
+ * @since     JDK1.1
+ */
+public int getMenuShortcutKeyMask() throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    return Event.CTRL_MASK;
+}

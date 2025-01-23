@@ -1,0 +1,31 @@
+/**
+ * Configure a FileHandler from LogManager properties and/or default values
+ * as specified in the class javadoc.
+ */
+private void configure() {
+    LogManager manager = LogManager.getLogManager();
+    String cname = getClass().getName();
+    pattern = manager.getStringProperty(cname + ".pattern", "%h/java%u.log");
+    limit = manager.getIntProperty(cname + ".limit", 0);
+    if (limit < 0) {
+        limit = 0;
+    }
+    count = manager.getIntProperty(cname + ".count", 1);
+    if (count <= 0) {
+        count = 1;
+    }
+    append = manager.getBooleanProperty(cname + ".append", false);
+    setLevel(manager.getLevelProperty(cname + ".level", Level.ALL));
+    setFilter(manager.getFilterProperty(cname + ".filter", null));
+    setFormatter(manager.getFormatterProperty(cname + ".formatter", new XMLFormatter()));
+    try {
+        setEncoding(manager.getStringProperty(cname + ".encoding", null));
+    } catch (Exception ex) {
+        try {
+            setEncoding(null);
+        } catch (Exception ex2) {
+        // doing a setEncoding with null should always work.
+        // assert false;
+        }
+    }
+}

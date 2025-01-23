@@ -1,0 +1,11 @@
+private CompletableFuture<Void> uniAcceptStage(Executor e, Consumer<? super T> f) {
+    if (f == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.uniAccept(this, f, null)) {
+        UniAccept<T> c = new UniAccept<T>(e, d, this, f);
+        push(c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

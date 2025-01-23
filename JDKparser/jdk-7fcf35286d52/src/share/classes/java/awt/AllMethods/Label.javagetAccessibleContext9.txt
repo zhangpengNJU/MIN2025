@@ -1,0 +1,19 @@
+// ///////////////
+// Accessibility support
+// //////////////
+/**
+ * Gets the AccessibleContext associated with this Label.
+ * For labels, the AccessibleContext takes the form of an
+ * AccessibleAWTLabel.
+ * A new AccessibleAWTLabel instance is created if necessary.
+ *
+ * @return an AccessibleAWTLabel that serves as the
+ *         AccessibleContext of this Label
+ * @since 1.3
+ */
+public AccessibleContext getAccessibleContext() {
+    if (accessibleContext == null) {
+        accessibleContext = new AccessibleAWTLabel();
+    }
+    return accessibleContext;
+}

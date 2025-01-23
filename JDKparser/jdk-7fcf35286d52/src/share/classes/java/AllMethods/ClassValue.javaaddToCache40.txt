@@ -1,0 +1,8 @@
+/**
+ * Add the given entry to the cache, in its home location, unless it is out of date.
+ */
+private <T> void addToCache(Entry<T> e) {
+    ClassValue<T> classValue = e.classValueOrNull();
+    if (classValue != null)
+        addToCache(classValue, e);
+}

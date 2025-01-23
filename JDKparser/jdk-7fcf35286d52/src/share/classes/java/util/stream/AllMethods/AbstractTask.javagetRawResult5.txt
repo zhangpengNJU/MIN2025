@@ -1,0 +1,13 @@
+/**
+ * Returns the local result, if any. Subclasses should use
+ * {@link #setLocalResult(Object)} and {@link #getLocalResult()} to manage
+ * results.  This returns the local result so that calls from within the
+ * fork-join framework will return the correct result.
+ *
+ * @return local result for this node previously stored with
+ * {@link #setLocalResult}
+ */
+@Override
+public R getRawResult() {
+    return localResult;
+}

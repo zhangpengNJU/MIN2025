@@ -1,0 +1,13 @@
+/**
+ * Returns the location of the destination point given a
+ * point in the source.  If dstPt is non-null, it will
+ * be used to hold the return value.  Since this is not a geometric
+ * operation, the srcPt will equal the dstPt.
+ */
+public final Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+    if (dstPt == null) {
+        dstPt = new Point2D.Float();
+    }
+    dstPt.setLocation(srcPt.getX(), srcPt.getY());
+    return dstPt;
+}

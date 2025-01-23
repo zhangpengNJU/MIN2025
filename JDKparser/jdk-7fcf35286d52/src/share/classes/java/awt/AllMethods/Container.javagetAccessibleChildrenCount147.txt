@@ -1,0 +1,19 @@
+/**
+ * Returns the number of accessible children in the object.  If all
+ * of the children of this object implement <code>Accessible</code>,
+ * then this method should return the number of children of this object.
+ *
+ * @return the number of accessible children in the object
+ */
+int getAccessibleChildrenCount() {
+    synchronized (getTreeLock()) {
+        int count = 0;
+        Component[] children = this.getComponents();
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof Accessible) {
+                count++;
+            }
+        }
+        return count;
+    }
+}

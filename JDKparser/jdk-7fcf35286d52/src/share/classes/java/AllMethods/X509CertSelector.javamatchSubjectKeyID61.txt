@@ -1,0 +1,29 @@
+/* match on subject key identifier extension value */
+private boolean matchSubjectKeyID(X509Certificate xcert) {
+    if (subjectKeyID == null) {
+        return true;
+    }
+    try {
+        byte[] extVal = xcert.getExtensionValue("2.5.29.14");
+        if (extVal == null) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "no subject key ID extension");
+            }
+            return false;
+        }
+        DerInputStream in = new DerInputStream(extVal);
+        byte[] certSubjectKeyID = in.getOctetString();
+        if (certSubjectKeyID == null || !Arrays.equals(subjectKeyID, certSubjectKeyID)) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: subject key IDs " + "don't match\nX509CertSelector.match: subjectKeyID: " + Arrays.toString(subjectKeyID) + "\nX509CertSelector.match: certSubjectKeyID: " + Arrays.toString(certSubjectKeyID));
+            }
+            return false;
+        }
+    } catch (IOException ex) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "exception in subject key ID check");
+        }
+        return false;
+    }
+    return true;
+}

@@ -1,0 +1,20 @@
+/**
+ * Adds a permission to the AllPermissions. The key for the hash is
+ * permission.path.
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception IllegalArgumentException - if the permission is not a
+ *                                       AllPermission
+ *
+ * @exception SecurityException - if this AllPermissionCollection object
+ *                                has been marked readonly
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof AllPermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+    // No sync; staleness OK
+    all_allowed = true;
+}

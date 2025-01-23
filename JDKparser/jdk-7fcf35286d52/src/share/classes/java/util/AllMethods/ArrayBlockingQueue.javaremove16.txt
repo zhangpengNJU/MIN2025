@@ -1,0 +1,41 @@
+/**
+ * Removes a single instance of the specified element from this queue,
+ * if it is present.  More formally, removes an element {@code e} such
+ * that {@code o.equals(e)}, if this queue contains one or more such
+ * elements.
+ * Returns {@code true} if this queue contained the specified element
+ * (or equivalently, if this queue changed as a result of the call).
+ *
+ * <p>Removal of interior elements in circular array based queues
+ * is an intrinsically slow and disruptive operation, so should
+ * be undertaken only in exceptional circumstances, ideally
+ * only when the queue is known not to be accessible by other
+ * threads.
+ *
+ * @param o element to be removed from this queue, if present
+ * @return {@code true} if this queue changed as a result of the call
+ */
+public boolean remove(Object o) {
+    if (o == null)
+        return false;
+    final Object[] items = this.items;
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        if (count > 0) {
+            final int putIndex = this.putIndex;
+            int i = takeIndex;
+            do {
+                if (o.equals(items[i])) {
+                    removeAt(i);
+                    return true;
+                }
+                if (++i == items.length)
+                    i = 0;
+            } while (i != putIndex);
+        }
+        return false;
+    } finally {
+        lock.unlock();
+    }
+}

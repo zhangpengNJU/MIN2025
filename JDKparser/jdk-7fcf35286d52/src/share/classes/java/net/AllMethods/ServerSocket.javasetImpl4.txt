@@ -1,0 +1,12 @@
+private void setImpl() {
+    if (factory != null) {
+        impl = factory.createSocketImpl();
+        checkOldImpl();
+    } else {
+        // No need to do a checkOldImpl() here, we know it's an up to date
+        // SocketImpl!
+        impl = new SocksSocketImpl();
+    }
+    if (impl != null)
+        impl.setServerSocket(this);
+}

@@ -1,0 +1,17 @@
+private static Class<?> impliedRestargType(MethodType restargType, int fromPos) {
+    // can be nothing else
+    if (restargType.isGeneric())
+        return Object[].class;
+    int maxPos = restargType.parameterCount();
+    // reasonable default
+    if (fromPos >= maxPos)
+        return Object[].class;
+    Class<?> argType = restargType.parameterType(fromPos);
+    for (int i = fromPos + 1; i < maxPos; i++) {
+        if (argType != restargType.parameterType(i))
+            throw newIllegalArgumentException("need homogeneous rest arguments", restargType);
+    }
+    if (argType == Object.class)
+        return Object[].class;
+    return Array.newInstance(argType, 0).getClass();
+}

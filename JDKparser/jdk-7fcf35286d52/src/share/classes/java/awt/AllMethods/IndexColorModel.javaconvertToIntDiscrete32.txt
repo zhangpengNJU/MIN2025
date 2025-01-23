@@ -1,0 +1,54 @@
+/**
+ * Returns a new <code>BufferedImage</code> of TYPE_INT_ARGB or
+ * TYPE_INT_RGB that has a <code>Raster</code> with pixel data
+ * computed by expanding the indices in the source <code>Raster</code>
+ * using the color/alpha component arrays of this <code>ColorModel</code>.
+ * Only the lower <em>n</em> bits of each index value in the source
+ * <code>Raster</code>, as specified in the
+ * <a href="#index_values">class description</a> above, are used to
+ * compute the color/alpha values in the returned image.
+ * If <code>forceARGB</code> is <code>true</code>, a TYPE_INT_ARGB image is
+ * returned regardless of whether or not this <code>ColorModel</code>
+ * has an alpha component array or a transparent pixel.
+ * @param raster the specified <code>Raster</code>
+ * @param forceARGB if <code>true</code>, the returned
+ *     <code>BufferedImage</code> is TYPE_INT_ARGB; otherwise it is
+ *     TYPE_INT_RGB
+ * @return a <code>BufferedImage</code> created with the specified
+ *     <code>Raster</code>
+ * @throws IllegalArgumentException if the raster argument is not
+ *           compatible with this IndexColorModel
+ */
+public BufferedImage convertToIntDiscrete(Raster raster, boolean forceARGB) {
+    ColorModel cm;
+    if (!isCompatibleRaster(raster)) {
+        throw new IllegalArgumentException("This raster is not compatible" + "with this IndexColorModel.");
+    }
+    if (forceARGB || transparency == TRANSLUCENT) {
+        cm = ColorModel.getRGBdefault();
+    } else if (transparency == BITMASK) {
+        cm = new DirectColorModel(25, 0xff0000, 0x00ff00, 0x0000ff, 0x1000000);
+    } else {
+        cm = new DirectColorModel(24, 0xff0000, 0x00ff00, 0x0000ff);
+    }
+    int w = raster.getWidth();
+    int h = raster.getHeight();
+    WritableRaster discreteRaster = cm.createCompatibleWritableRaster(w, h);
+    Object obj = null;
+    int[] data = null;
+    int rX = raster.getMinX();
+    int rY = raster.getMinY();
+    for (int y = 0; y < h; y++, rY++) {
+        obj = raster.getDataElements(rX, rY, w, 1, obj);
+        if (obj instanceof int[]) {
+            data = (int[]) obj;
+        } else {
+            data = DataBuffer.toIntArray(obj);
+        }
+        for (int x = 0; x < w; x++) {
+            data[x] = rgb[data[x] & pixel_mask];
+        }
+        discreteRaster.setDataElements(0, y, w, 1, data);
+    }
+    return new BufferedImage(cm, discreteRaster, false, null);
+}

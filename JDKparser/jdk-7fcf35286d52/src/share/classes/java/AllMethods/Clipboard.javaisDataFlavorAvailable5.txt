@@ -1,0 +1,25 @@
+/**
+ * Returns whether or not the current contents of this clipboard can be
+ * provided in the specified <code>DataFlavor</code>.
+ *
+ * @param flavor the requested <code>DataFlavor</code> for the contents
+ *
+ * @return <code>true</code> if the current contents of this clipboard
+ *         can be provided in the specified <code>DataFlavor</code>;
+ *         <code>false</code> otherwise
+ *
+ * @throws NullPointerException if <code>flavor</code> is <code>null</code>
+ * @throws IllegalStateException if this clipboard is currently unavailable
+ *
+ * @since 1.5
+ */
+public boolean isDataFlavorAvailable(DataFlavor flavor) {
+    if (flavor == null) {
+        throw new NullPointerException("flavor");
+    }
+    Transferable cntnts = getContents(null);
+    if (cntnts == null) {
+        return false;
+    }
+    return cntnts.isDataFlavorSupported(flavor);
+}

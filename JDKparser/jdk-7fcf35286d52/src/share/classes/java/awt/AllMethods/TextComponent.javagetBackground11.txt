@@ -1,0 +1,19 @@
+/**
+ * Gets the background color of this text component.
+ *
+ * By default, non-editable text components have a background color
+ * of SystemColor.control.  This default can be overridden by
+ * calling setBackground.
+ *
+ * @return This text component's background color.
+ *         If this text component does not have a background color,
+ *         the background color of its parent is returned.
+ * @see #setBackground(Color)
+ * @since JDK1.0
+ */
+public Color getBackground() {
+    if (!editable && !backgroundSetByClientCode) {
+        return SystemColor.control;
+    }
+    return super.getBackground();
+}

@@ -1,0 +1,9 @@
+/**
+ * Remove the head task from the priority queue.
+ */
+void removeMin() {
+    queue[1] = queue[size];
+    // Drop extra reference to prevent memory leak
+    queue[size--] = null;
+    fixDown(1);
+}

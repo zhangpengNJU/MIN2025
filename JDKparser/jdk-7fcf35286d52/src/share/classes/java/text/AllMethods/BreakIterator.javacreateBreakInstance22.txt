@@ -1,0 +1,8 @@
+private static BreakIterator createBreakInstance(Locale locale, int type) {
+    LocaleProviderAdapter adapter = LocaleProviderAdapter.getAdapter(BreakIteratorProvider.class, locale);
+    BreakIterator iterator = createBreakInstance(adapter, locale, type);
+    if (iterator == null) {
+        iterator = createBreakInstance(LocaleProviderAdapter.forJRE(), locale, type);
+    }
+    return iterator;
+}

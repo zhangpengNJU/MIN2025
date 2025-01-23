@@ -1,0 +1,24 @@
+/**
+ * Returns the graphical width of a line beginning at <code>start</code>
+ * and including characters up to <code>limit</code>.
+ * <code>start</code> and <code>limit</code> are absolute indices,
+ * not relative to the start of the paragraph.
+ *
+ * @param start the character index at which to start measuring
+ * @param limit the character index at which to stop measuring
+ * @return the graphical width of a line beginning at <code>start</code>
+ *   and including characters up to <code>limit</code>
+ * @throws IndexOutOfBoundsException if <code>limit</code> is less
+ *         than <code>start</code>
+ * @throws IllegalArgumentException if <code>start</code> or
+ *          <code>limit</code> is not between the beginning of
+ *          the paragraph and the end of the paragraph.
+ */
+public float getAdvanceBetween(int start, int limit) {
+    int localStart = start - fStart;
+    int localLimit = limit - fStart;
+    ensureComponents(localStart, localLimit);
+    TextLine line = makeTextLineOnRange(localStart, localLimit);
+    return line.getMetrics().advance;
+// could cache line in case getLayout is called with same start, limit
+}

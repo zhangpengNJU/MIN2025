@@ -1,0 +1,12 @@
+/**
+ * Returns a new time based on this one, returning {@code this} where possible.
+ *
+ * @param time  the time to create with, not null
+ * @param offset  the zone offset to create with, not null
+ */
+private OffsetTime with(LocalTime time, ZoneOffset offset) {
+    if (this.time == time && this.offset.equals(offset)) {
+        return this;
+    }
+    return new OffsetTime(time, offset);
+}

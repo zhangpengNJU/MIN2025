@@ -1,0 +1,10 @@
+private long getEnd(BaseCalendar cal, BaseCalendar.Date cdate, int year) {
+    int time = endTime;
+    if (endTimeMode != UTC_TIME) {
+        time -= rawOffset;
+    }
+    if (endTimeMode == WALL_TIME) {
+        time -= dstSavings;
+    }
+    return getTransition(cal, cdate, endMode, year, endMonth, endDay, endDayOfWeek, time);
+}

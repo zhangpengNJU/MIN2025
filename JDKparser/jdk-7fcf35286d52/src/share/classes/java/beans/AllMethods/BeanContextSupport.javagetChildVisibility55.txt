@@ -1,0 +1,12 @@
+/**
+ * Gets the Component (if any) associated with the specified child.
+ * @param child the specified child
+ * @return the Component (if any) associated with the specified child.
+ */
+protected static final Visibility getChildVisibility(Object child) {
+    try {
+        return (Visibility) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

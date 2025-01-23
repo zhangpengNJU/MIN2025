@@ -1,0 +1,33 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to dynamic link the library code
+ * specified by the string argument file. The argument is either a
+ * simple library name or a complete filename.
+ * <p>
+ * This method is invoked for the current security manager by
+ * methods <code>load</code> and <code>loadLibrary</code> of class
+ * <code>Runtime</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>RuntimePermission("loadLibrary."+lib)</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkLink</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      lib   the name of the library.
+ * @exception  SecurityException if the calling thread does not have
+ *             permission to dynamically link the library.
+ * @exception  NullPointerException if the <code>lib</code> argument is
+ *             <code>null</code>.
+ * @see        java.lang.Runtime#load(java.lang.String)
+ * @see        java.lang.Runtime#loadLibrary(java.lang.String)
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkLink(String lib) {
+    if (lib == null) {
+        throw new NullPointerException("library can't be null");
+    }
+    checkPermission(new RuntimePermission("loadLibrary." + lib));
+}

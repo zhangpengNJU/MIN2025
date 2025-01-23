@@ -1,0 +1,11 @@
+protected final boolean tryReleaseShared(int releases) {
+    for (; ; ) {
+        int current = getState();
+        int next = current + releases;
+        if (// overflow
+        next < current)
+            throw new Error("Maximum permit count exceeded");
+        if (compareAndSetState(current, next))
+            return true;
+    }
+}

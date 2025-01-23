@@ -1,0 +1,57 @@
+/**
+ * Changes the splash screen image. The new image is loaded from the
+ * specified URL; GIF, JPEG and PNG image formats are supported.
+ * The method returns after the image has finished loading and the window
+ * has been updated.
+ * The splash screen window is resized according to the size of
+ * the image and is centered on the screen.
+ *
+ * @param imageURL the non-<code>null</code> URL for the new
+ *        splash screen image
+ * @throws NullPointerException if {@code imageURL} is <code>null</code>
+ * @throws IOException if there was an error while loading the image
+ * @throws IllegalStateException if the splash screen has already been
+ *         closed
+ */
+public void setImageURL(URL imageURL) throws NullPointerException, IOException, IllegalStateException {
+    checkVisible();
+    URLConnection connection = imageURL.openConnection();
+    connection.connect();
+    int length = connection.getContentLength();
+    java.io.InputStream stream = connection.getInputStream();
+    byte[] buf = new byte[length];
+    int off = 0;
+    while (true) {
+        // check for available data
+        int available = stream.available();
+        if (available <= 0) {
+            // no data available... well, let's try reading one byte
+            // we'll see what happens then
+            available = 1;
+        }
+        // check for enough room in buffer, realloc if needed
+        // the buffer always grows in size 2x minimum
+        if (off + available > length) {
+            length = off * 2;
+            if (off + available > length) {
+                length = available + off;
+            }
+            byte[] oldBuf = buf;
+            buf = new byte[length];
+            System.arraycopy(oldBuf, 0, buf, 0, off);
+        }
+        // now read the data
+        int result = stream.read(buf, off, available);
+        if (result < 0) {
+            break;
+        }
+        off += result;
+    }
+    synchronized (SplashScreen.class) {
+        checkVisible();
+        if (!_setImageData(splashPtr, buf)) {
+            throw new IOException("Bad image format or i/o error when loading image");
+        }
+        this.imageURL = imageURL;
+    }
+}

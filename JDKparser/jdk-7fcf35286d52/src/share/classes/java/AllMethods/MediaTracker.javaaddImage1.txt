@@ -1,0 +1,17 @@
+/**
+ * Adds a scaled image to the list of images being tracked
+ * by this media tracker. The image will eventually be
+ * rendered at the indicated width and height.
+ *
+ * @param     image   the image to be tracked
+ * @param     id   an identifier that can be used to track this image
+ * @param     w    the width at which the image is rendered
+ * @param     h    the height at which the image is rendered
+ */
+public synchronized void addImage(Image image, int id, int w, int h) {
+    addImageImpl(image, id, w, h);
+    Image rvImage = getResolutionVariant(image);
+    if (rvImage != null) {
+        addImageImpl(rvImage, id, w == -1 ? -1 : 2 * w, h == -1 ? -1 : 2 * h);
+    }
+}

@@ -1,0 +1,19 @@
+boolean isWindowPerpixelTranslucencySupported() {
+    /*
+         * Per-pixel alpha is supported if all the conditions are TRUE:
+         *    1. The toolkit is a sort of SunToolkit
+         *    2. The toolkit supports translucency in general
+         *        (isWindowTranslucencySupported())
+         *    3. There's at least one translucency-capable
+         *        GraphicsConfiguration
+         */
+    Toolkit curToolkit = Toolkit.getDefaultToolkit();
+    if (!(curToolkit instanceof SunToolkit)) {
+        return false;
+    }
+    if (!((SunToolkit) curToolkit).isWindowTranslucencySupported()) {
+        return false;
+    }
+    // TODO: cache translucency capable GC
+    return getTranslucencyCapableGC() != null;
+}

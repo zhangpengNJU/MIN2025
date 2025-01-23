@@ -1,0 +1,16 @@
+/**
+ * Initialize Thread fields for the current thread.  Called only
+ * when Thread.threadLocalRandomProbe is zero, indicating that a
+ * thread local seed value needs to be generated. Note that even
+ * though the initialization is purely thread-local, we need to
+ * rely on (static) atomic generators to initialize the values.
+ */
+static final void localInit() {
+    int p = probeGenerator.addAndGet(PROBE_INCREMENT);
+    // skip 0
+    int probe = (p == 0) ? 1 : p;
+    long seed = mix64(seeder.getAndAdd(SEEDER_INCREMENT));
+    Thread t = Thread.currentThread();
+    UNSAFE.putLong(t, SEED, seed);
+    UNSAFE.putInt(t, PROBE, probe);
+}

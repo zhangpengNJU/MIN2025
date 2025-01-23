@@ -1,0 +1,12 @@
+/**
+ * Emit an unboxing call (plus preceding checkcast).
+ *
+ * @param wrapper wrapper type class to unbox.
+ */
+private void emitUnboxing(Wrapper wrapper) {
+    String owner = "java/lang/" + wrapper.wrapperType().getSimpleName();
+    String name = wrapper.primitiveSimpleName() + "Value";
+    String desc = "()" + wrapper.basicTypeChar();
+    emitReferenceCast(wrapper.wrapperType(), null);
+    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, desc, false);
+}

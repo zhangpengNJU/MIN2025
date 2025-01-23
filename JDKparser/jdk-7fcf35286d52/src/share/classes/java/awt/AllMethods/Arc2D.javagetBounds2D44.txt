@@ -1,0 +1,58 @@
+/**
+ * Returns the high-precision framing rectangle of the arc.  The framing
+ * rectangle contains only the part of this <code>Arc2D</code> that is
+ * in between the starting and ending angles and contains the pie
+ * wedge, if this <code>Arc2D</code> has a <code>PIE</code> closure type.
+ * <p>
+ * This method differs from the
+ * {@link RectangularShape#getBounds() getBounds} in that the
+ * <code>getBounds</code> method only returns the bounds of the
+ * enclosing ellipse of this <code>Arc2D</code> without considering
+ * the starting and ending angles of this <code>Arc2D</code>.
+ *
+ * @return the <CODE>Rectangle2D</CODE> that represents the arc's
+ * framing rectangle.
+ * @since 1.2
+ */
+public Rectangle2D getBounds2D() {
+    if (isEmpty()) {
+        return makeBounds(getX(), getY(), getWidth(), getHeight());
+    }
+    double x1, y1, x2, y2;
+    if (getArcType() == PIE) {
+        x1 = y1 = x2 = y2 = 0.0;
+    } else {
+        x1 = y1 = 1.0;
+        x2 = y2 = -1.0;
+    }
+    double angle = 0.0;
+    for (int i = 0; i < 6; i++) {
+        if (i < 4) {
+            // 0-3 are the four quadrants
+            angle += 90.0;
+            if (!containsAngle(angle)) {
+                continue;
+            }
+        } else if (i == 4) {
+            // 4 is start angle
+            angle = getAngleStart();
+        } else {
+            // 5 is end angle
+            angle += getAngleExtent();
+        }
+        double rads = Math.toRadians(-angle);
+        double xe = Math.cos(rads);
+        double ye = Math.sin(rads);
+        x1 = Math.min(x1, xe);
+        y1 = Math.min(y1, ye);
+        x2 = Math.max(x2, xe);
+        y2 = Math.max(y2, ye);
+    }
+    double w = getWidth();
+    double h = getHeight();
+    x2 = (x2 - x1) * 0.5 * w;
+    y2 = (y2 - y1) * 0.5 * h;
+    x1 = getX() + (x1 * 0.5 + 0.5) * w;
+    y1 = getY() + (y1 * 0.5 + 0.5) * h;
+    return makeBounds(x1, y1, x2, y2);
+}

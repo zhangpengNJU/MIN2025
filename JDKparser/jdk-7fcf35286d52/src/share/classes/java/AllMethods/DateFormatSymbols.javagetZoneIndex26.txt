@@ -1,0 +1,29 @@
+/**
+ * Package private: used by SimpleDateFormat
+ * Gets the index for the given time zone ID to obtain the time zone
+ * strings for formatting. The time zone ID is just for programmatic
+ * lookup. NOT LOCALIZED!!!
+ * @param ID the given time zone ID.
+ * @return the index of the given time zone ID.  Returns -1 if
+ * the given time zone ID can't be located in the DateFormatSymbols object.
+ * @see java.util.SimpleTimeZone
+ */
+final int getZoneIndex(String ID) {
+    String[][] zoneStrings = getZoneStringsWrapper();
+    /*
+         * getZoneIndex has been re-written for performance reasons. instead of
+         * traversing the zoneStrings array every time, we cache the last used zone
+         * index
+         */
+    if (lastZoneIndex < zoneStrings.length && ID.equals(zoneStrings[lastZoneIndex][0])) {
+        return lastZoneIndex;
+    }
+    /* slow path, search entire list */
+    for (int index = 0; index < zoneStrings.length; index++) {
+        if (ID.equals(zoneStrings[index][0])) {
+            lastZoneIndex = index;
+            return index;
+        }
+    }
+    return -1;
+}

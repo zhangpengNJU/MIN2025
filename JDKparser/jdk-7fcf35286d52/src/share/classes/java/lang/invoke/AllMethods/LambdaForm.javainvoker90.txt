@@ -1,0 +1,6 @@
+private MethodHandle invoker() {
+    if (invoker != null)
+        return invoker;
+    // Get an invoker and cache it.
+    return invoker = computeInvoker(methodType().form());
+}

@@ -1,0 +1,66 @@
+// ----------------------------------------------------------------------
+// Rule representation
+// 
+// We represent the following flavors of rules:
+// 5        the fifth of the month
+// lastSun  the last Sunday in the month
+// lastMon  the last Monday in the month
+// Sun>=8   first Sunday on or after the eighth
+// Sun<=25  last Sunday on or before the 25th
+// This is further complicated by the fact that we need to remain
+// backward compatible with the 1.1 FCS.  Finally, we need to minimize
+// API changes.  In order to satisfy these requirements, we support
+// three representation systems, and we translate between them.
+// 
+// INTERNAL REPRESENTATION
+// This is the format SimpleTimeZone objects take after construction or
+// streaming in is complete.  Rules are represented directly, using an
+// unencoded format.  We will discuss the start rule only below; the end
+// rule is analogous.
+// startMode      Takes on enumerated values DAY_OF_MONTH,
+// DOW_IN_MONTH, DOW_AFTER_DOM, or DOW_BEFORE_DOM.
+// startDay       The day of the month, or for DOW_IN_MONTH mode, a
+// value indicating which DOW, such as +1 for first,
+// +2 for second, -1 for last, etc.
+// startDayOfWeek The day of the week.  Ignored for DAY_OF_MONTH.
+// 
+// ENCODED REPRESENTATION
+// This is the format accepted by the constructor and by setStartRule()
+// and setEndRule().  It uses various combinations of positive, negative,
+// and zero values to encode the different rules.  This representation
+// allows us to specify all the different rule flavors without altering
+// the API.
+// MODE              startMonth    startDay    startDayOfWeek
+// DOW_IN_MONTH_MODE >=0           !=0         >0
+// DOM_MODE          >=0           >0          ==0
+// DOW_GE_DOM_MODE   >=0           >0          <0
+// DOW_LE_DOM_MODE   >=0           <0          <0
+// (no DST)          don't care    ==0         don't care
+// 
+// STREAMED REPRESENTATION
+// We must retain binary compatibility with the 1.1 FCS.  The 1.1 code only
+// handles DOW_IN_MONTH_MODE and non-DST mode, the latter indicated by the
+// flag useDaylight.  When we stream an object out, we translate into an
+// approximate DOW_IN_MONTH_MODE representation so the object can be parsed
+// and used by 1.1 code.  Following that, we write out the full
+// representation separately so that contemporary code can recognize and
+// parse it.  The full representation is written in a "packed" format,
+// consisting of a version number, a length, and an array of bytes.  Future
+// versions of this class may specify different versions.  If they wish to
+// include additional data, they should do so by storing them after the
+// packed representation below.
+// ----------------------------------------------------------------------
+/**
+ * Given a set of encoded rules in startDay and startDayOfMonth, decode
+ * them and set the startMode appropriately.  Do the same for endDay and
+ * endDayOfMonth.  Upon entry, the day of week variables may be zero or
+ * negative, in order to indicate special modes.  The day of month
+ * variables may also be negative.  Upon exit, the mode variables will be
+ * set, and the day of week and day of month variables will be positive.
+ * This method also recognizes a startDay or endDay of zero as indicating
+ * no DST.
+ */
+private void decodeRules() {
+    decodeStartRule();
+    decodeEndRule();
+}

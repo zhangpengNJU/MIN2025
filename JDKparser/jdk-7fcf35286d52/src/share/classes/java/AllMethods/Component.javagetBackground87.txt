@@ -1,0 +1,17 @@
+/**
+ * Gets the background color of this component.
+ * @return this component's background color; if this component does
+ *          not have a background color,
+ *          the background color of its parent is returned
+ * @see #setBackground
+ * @since JDK1.0
+ */
+@Transient
+public Color getBackground() {
+    Color background = this.background;
+    if (background != null) {
+        return background;
+    }
+    Container parent = this.parent;
+    return (parent != null) ? parent.getBackground() : null;
+}

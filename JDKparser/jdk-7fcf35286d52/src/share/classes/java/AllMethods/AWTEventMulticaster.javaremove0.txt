@@ -1,0 +1,27 @@
+/**
+ * Removes a listener from this multicaster.
+ * <p>
+ * The returned multicaster contains all the listeners in this
+ * multicaster with the exception of all occurrences of {@code oldl}.
+ * If the resulting multicaster contains only one regular listener
+ * the regular listener may be returned.  If the resulting multicaster
+ * is empty, then {@code null} may be returned instead.
+ * <p>
+ * No exception is thrown if {@code oldl} is {@code null}.
+ *
+ * @param oldl the listener to be removed
+ * @return resulting listener
+ */
+protected EventListener remove(EventListener oldl) {
+    if (oldl == a)
+        return b;
+    if (oldl == b)
+        return a;
+    EventListener a2 = removeInternal(a, oldl);
+    EventListener b2 = removeInternal(b, oldl);
+    if (a2 == a && b2 == b) {
+        // it's not here
+        return this;
+    }
+    return addInternal(a2, b2);
+}

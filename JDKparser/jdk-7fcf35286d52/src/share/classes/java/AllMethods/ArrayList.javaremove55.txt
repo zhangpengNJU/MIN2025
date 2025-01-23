@@ -1,0 +1,8 @@
+public E remove(int index) {
+    rangeCheck(index);
+    checkForComodification();
+    E result = parent.remove(parentOffset + index);
+    this.modCount = parent.modCount;
+    this.size--;
+    return result;
+}

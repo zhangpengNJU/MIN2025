@@ -1,0 +1,10 @@
+/**
+ * Frees the resources associated with an ICC_Profile object.
+ */
+protected void finalize() {
+    if (cmmProfile != null) {
+        CMSManager.getModule().freeProfile(cmmProfile);
+    } else if (profileActivator != null) {
+        ProfileDeferralMgr.unregisterDeferral(profileActivator);
+    }
+}

@@ -1,0 +1,12 @@
+private static Signature getInstance(Instance instance, String algorithm) {
+    Signature sig;
+    if (instance.impl instanceof Signature) {
+        sig = (Signature) instance.impl;
+        sig.algorithm = algorithm;
+    } else {
+        SignatureSpi spi = (SignatureSpi) instance.impl;
+        sig = new Delegate(spi, algorithm);
+    }
+    sig.provider = instance.provider;
+    return sig;
+}

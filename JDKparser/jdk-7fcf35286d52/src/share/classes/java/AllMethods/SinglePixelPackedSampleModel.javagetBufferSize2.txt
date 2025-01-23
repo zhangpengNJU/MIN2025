@@ -1,0 +1,9 @@
+/**
+ * Returns the size of the buffer (in data array elements)
+ * needed for a data buffer that matches this
+ * SinglePixelPackedSampleModel.
+ */
+private long getBufferSize() {
+    long size = scanlineStride * (height - 1) + width;
+    return size;
+}

@@ -1,0 +1,64 @@
+private static ResourceBundle findBundle(CacheKey cacheKey, List<Locale> candidateLocales, List<String> formats, int index, Control control, ResourceBundle baseBundle) {
+    Locale targetLocale = candidateLocales.get(index);
+    ResourceBundle parent = null;
+    if (index != candidateLocales.size() - 1) {
+        parent = findBundle(cacheKey, candidateLocales, formats, index + 1, control, baseBundle);
+    } else if (baseBundle != null && Locale.ROOT.equals(targetLocale)) {
+        return baseBundle;
+    }
+    // Before we do the real loading work, see whether we need to
+    // do some housekeeping: If references to class loaders or
+    // resource bundles have been nulled out, remove all related
+    // information from the cache.
+    Object ref;
+    while ((ref = referenceQueue.poll()) != null) {
+        cacheList.remove(((CacheKeyReference) ref).getCacheKey());
+    }
+    // flag indicating the resource bundle has expired in the cache
+    boolean expiredBundle = false;
+    // First, look up the cache to see if it's in the cache, without
+    // attempting to load bundle.
+    cacheKey.setLocale(targetLocale);
+    ResourceBundle bundle = findBundleInCache(cacheKey, control);
+    if (isValidBundle(bundle)) {
+        expiredBundle = bundle.expired;
+        if (!expiredBundle) {
+            // If its parent is the one asked for by the candidate
+            // locales (the runtime lookup path), we can take the cached
+            // one. (If it's not identical, then we'd have to check the
+            // parent's parents to be consistent with what's been
+            // requested.)
+            if (bundle.parent == parent) {
+                return bundle;
+            }
+            // Otherwise, remove the cached one since we can't keep
+            // the same bundles having different parents.
+            BundleReference bundleRef = cacheList.get(cacheKey);
+            if (bundleRef != null && bundleRef.get() == bundle) {
+                cacheList.remove(cacheKey, bundleRef);
+            }
+        }
+    }
+    if (bundle != NONEXISTENT_BUNDLE) {
+        CacheKey constKey = (CacheKey) cacheKey.clone();
+        try {
+            bundle = loadBundle(cacheKey, formats, control, expiredBundle);
+            if (bundle != null) {
+                if (bundle.parent == null) {
+                    bundle.setParent(parent);
+                }
+                bundle.locale = targetLocale;
+                bundle = putBundleInCache(cacheKey, bundle, control);
+                return bundle;
+            }
+            // Put NONEXISTENT_BUNDLE in the cache as a mark that there's no bundle
+            // instance for the locale.
+            putBundleInCache(cacheKey, NONEXISTENT_BUNDLE, control);
+        } finally {
+            if (constKey.getCause() instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    return parent;
+}

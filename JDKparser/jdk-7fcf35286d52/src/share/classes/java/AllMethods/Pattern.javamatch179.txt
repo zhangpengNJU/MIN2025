@@ -1,0 +1,33 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    int[] src = buffer;
+    int patternLength = src.length;
+    int last = matcher.to - patternLength;
+    // Loop over all possible match positions in text
+    NEXT: while (i <= last) {
+        // Loop over pattern from right to left
+        for (int j = patternLength - 1; j >= 0; j--) {
+            int ch = seq.charAt(i + j);
+            if (ch != src[j]) {
+                // Shift search to the right by the maximum of the
+                // bad character shift and the good suffix shift
+                i += Math.max(j + 1 - lastOcc[ch & 0x7F], optoSft[j]);
+                continue NEXT;
+            }
+        }
+        // Entire pattern matched starting at i
+        matcher.first = i;
+        boolean ret = next.match(matcher, i + patternLength, seq);
+        if (ret) {
+            matcher.first = i;
+            matcher.groups[0] = matcher.first;
+            matcher.groups[1] = matcher.last;
+            return true;
+        }
+        i++;
+    }
+    // BnM is only used as the leading node in the unanchored case,
+    // and it replaced its Start() which always searches to the end
+    // if it doesn't find what it's looking for, so hitEnd is true.
+    matcher.hitEnd = true;
+    return false;
+}

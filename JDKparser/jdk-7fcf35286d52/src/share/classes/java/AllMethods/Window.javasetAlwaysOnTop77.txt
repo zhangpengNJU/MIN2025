@@ -1,0 +1,82 @@
+/**
+ * Sets whether this window should always be above other windows.  If
+ * there are multiple always-on-top windows, their relative order is
+ * unspecified and platform dependent.
+ * <p>
+ * If some other window is already always-on-top then the
+ * relative order between these windows is unspecified (depends on
+ * platform).  No window can be brought to be over the always-on-top
+ * window except maybe another always-on-top window.
+ * <p>
+ * All windows owned by an always-on-top window inherit this state and
+ * automatically become always-on-top.  If a window ceases to be
+ * always-on-top, the windows that it owns will no longer be
+ * always-on-top.  When an always-on-top window is sent {@link #toBack
+ * toBack}, its always-on-top state is set to {@code false}.
+ *
+ * <p> When this method is called on a window with a value of
+ * {@code true}, and the window is visible and the platform
+ * supports always-on-top for this window, the window is immediately
+ * brought forward, "sticking" it in the top-most position. If the
+ * window isn`t currently visible, this method sets the always-on-top
+ * state to {@code true} but does not bring the window forward.
+ * When the window is later shown, it will be always-on-top.
+ *
+ * <p> When this method is called on a window with a value of
+ * {@code false} the always-on-top state is set to normal. It may also
+ * cause an unspecified, platform-dependent change in the z-order of
+ * top-level windows, but other always-on-top windows will remain in
+ * top-most position. Calling this method with a value of {@code false}
+ * on a window that has a normal state has no effect.
+ *
+ * <p><b>Note</b>: some platforms might not support always-on-top
+ * windows.  To detect if always-on-top windows are supported by the
+ * current platform, use {@link Toolkit#isAlwaysOnTopSupported()} and
+ * {@link Window#isAlwaysOnTopSupported()}.  If always-on-top mode
+ * isn't supported for this window or this window's toolkit does not
+ * support always-on-top windows, calling this method has no effect.
+ * <p>
+ * If a SecurityManager is installed, the calling thread must be
+ * granted the AWTPermission "setWindowAlwaysOnTop" in
+ * order to set the value of this property. If this
+ * permission is not granted, this method will throw a
+ * SecurityException, and the current value of the property will
+ * be left unchanged.
+ *
+ * @param alwaysOnTop true if the window should always be above other
+ *        windows
+ * @throws SecurityException if the calling thread does not have
+ *         permission to set the value of always-on-top property
+ *
+ * @see #isAlwaysOnTop
+ * @see #toFront
+ * @see #toBack
+ * @see AWTPermission
+ * @see #isAlwaysOnTopSupported
+ * @see #getToolkit
+ * @see Toolkit#isAlwaysOnTopSupported
+ * @since 1.5
+ */
+public final void setAlwaysOnTop(boolean alwaysOnTop) throws SecurityException {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.SET_WINDOW_ALWAYS_ON_TOP_PERMISSION);
+    }
+    boolean oldAlwaysOnTop;
+    synchronized (this) {
+        oldAlwaysOnTop = this.alwaysOnTop;
+        this.alwaysOnTop = alwaysOnTop;
+    }
+    if (oldAlwaysOnTop != alwaysOnTop) {
+        if (isAlwaysOnTopSupported()) {
+            WindowPeer peer = (WindowPeer) this.peer;
+            synchronized (getTreeLock()) {
+                if (peer != null) {
+                    peer.updateAlwaysOnTopState();
+                }
+            }
+        }
+        firePropertyChange("alwaysOnTop", oldAlwaysOnTop, alwaysOnTop);
+    }
+    setOwnedWindowsAlwaysOnTop(alwaysOnTop);
+}

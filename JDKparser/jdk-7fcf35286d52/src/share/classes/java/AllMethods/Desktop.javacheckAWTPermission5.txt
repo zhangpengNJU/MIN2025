@@ -1,0 +1,11 @@
+/**
+ *  Calls to the security manager's <code>checkPermission</code> method with
+ *  an <code>AWTPermission("showWindowWithoutWarningBanner")</code>
+ *  permission.
+ */
+private void checkAWTPermission() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(new AWTPermission("showWindowWithoutWarningBanner"));
+    }
+}

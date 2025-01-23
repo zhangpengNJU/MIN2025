@@ -1,0 +1,22 @@
+private void setMinMax(int type, int nc, float[] minVals, float[] maxVals) {
+    if (type == ColorSpace.TYPE_Lab) {
+        // L
+        minVals[0] = 0.0f;
+        maxVals[0] = 100.0f;
+        // a
+        minVals[1] = -128.0f;
+        maxVals[1] = 127.0f;
+        // b
+        minVals[2] = -128.0f;
+        maxVals[2] = 127.0f;
+    } else if (type == ColorSpace.TYPE_XYZ) {
+        // X, Y, Z
+        minVals[0] = minVals[1] = minVals[2] = 0.0f;
+        maxVals[0] = maxVals[1] = maxVals[2] = 1.0f + (32767.0f / 32768.0f);
+    } else {
+        for (int i = 0; i < nc; i++) {
+            minVals[i] = 0.0f;
+            maxVals[i] = 1.0f;
+        }
+    }
+}

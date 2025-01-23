@@ -1,0 +1,30 @@
+/**
+ * Processes item events occurring on this <code>Choice</code>
+ * menu by dispatching them to any registered
+ * <code>ItemListener</code> objects.
+ * <p>
+ * This method is not called unless item events are
+ * enabled for this component. Item events are enabled
+ * when one of the following occurs:
+ * <ul>
+ * <li>An <code>ItemListener</code> object is registered
+ * via <code>addItemListener</code>.
+ * <li>Item events are enabled via <code>enableEvents</code>.
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the item event
+ * @see         java.awt.event.ItemEvent
+ * @see         java.awt.event.ItemListener
+ * @see         #addItemListener(ItemListener)
+ * @see         java.awt.Component#enableEvents
+ * @since       JDK1.1
+ */
+protected void processItemEvent(ItemEvent e) {
+    ItemListener listener = itemListener;
+    if (listener != null) {
+        listener.itemStateChanged(e);
+    }
+}

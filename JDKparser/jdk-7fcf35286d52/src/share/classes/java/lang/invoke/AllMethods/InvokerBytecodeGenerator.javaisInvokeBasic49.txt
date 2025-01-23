@@ -1,0 +1,12 @@
+/**
+ * Check if MemberName is a call to MethodHandle.invokeBasic.
+ */
+private boolean isInvokeBasic(Name name) {
+    if (name.function == null)
+        return false;
+    if (name.arguments.length < 1)
+        // must have MH argument
+        return false;
+    MemberName member = name.function.member();
+    return memberRefersTo(member, MethodHandle.class, "invokeBasic") && !member.isPublic() && !member.isStatic();
+}

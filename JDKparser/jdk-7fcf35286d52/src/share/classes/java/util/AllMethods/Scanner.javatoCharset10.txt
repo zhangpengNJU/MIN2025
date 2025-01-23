@@ -1,0 +1,14 @@
+/**
+ * Returns a charset object for the given charset name.
+ * @throws NullPointerException          is csn is null
+ * @throws IllegalArgumentException      if the charset is not supported
+ */
+private static Charset toCharset(String csn) {
+    Objects.requireNonNull(csn, "charsetName");
+    try {
+        return Charset.forName(csn);
+    } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+        // IllegalArgumentException should be thrown
+        throw new IllegalArgumentException(e);
+    }
+}

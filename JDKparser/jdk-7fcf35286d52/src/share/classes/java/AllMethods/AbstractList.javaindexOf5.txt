@@ -1,0 +1,22 @@
+// Search Operations
+/**
+ * {@inheritDoc}
+ *
+ * <p>This implementation first gets a list iterator (with
+ * {@code listIterator()}).  Then, it iterates over the list until the
+ * specified element is found or the end of the list is reached.
+ *
+ * @throws ClassCastException   {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public int indexOf(Object o) {
+    ListIterator<E> it = listIterator();
+    if (o == null) {
+        while (it.hasNext()) if (it.next() == null)
+            return it.previousIndex();
+    } else {
+        while (it.hasNext()) if (o.equals(it.next()))
+            return it.previousIndex();
+    }
+    return -1;
+}

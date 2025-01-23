@@ -1,0 +1,41 @@
+/**
+ * Loads a class from a codebase URL path, optionally using the
+ * supplied loader.
+ *
+ * This method should be used when the caller would like to make
+ * available to the provider implementation an additional contextual
+ * class loader to consider, such as the loader of a caller on the
+ * stack.  Typically, a provider implementation will attempt to
+ * resolve the named class using the given <code>defaultLoader</code>,
+ * if specified, before attempting to resolve the class from the
+ * codebase URL path.
+ *
+ * <p>This method delegates to the
+ * {@link RMIClassLoaderSpi#loadClass(String,String,ClassLoader)}
+ * method of the provider instance, passing <code>codebase</code>
+ * as the first argument, <code>name</code> as the second argument,
+ * and <code>defaultLoader</code> as the third argument.
+ *
+ * @param   codebase the list of URLs (separated by spaces) to load
+ * the class from, or <code>null</code>
+ *
+ * @param   name the name of the class to load
+ *
+ * @param   defaultLoader additional contextual class loader
+ * to use, or <code>null</code>
+ *
+ * @return  the <code>Class</code> object representing the loaded class
+ *
+ * @throws MalformedURLException if <code>codebase</code> is
+ * non-<code>null</code> and contains an invalid URL, or if
+ * <code>codebase</code> is <code>null</code> and a provider-specific
+ * URL used to load classes is invalid
+ *
+ * @throws  ClassNotFoundException if a definition for the class
+ * could not be found at the specified location
+ *
+ * @since   1.4
+ */
+public static Class<?> loadClass(String codebase, String name, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
+    return provider.loadClass(codebase, name, defaultLoader);
+}

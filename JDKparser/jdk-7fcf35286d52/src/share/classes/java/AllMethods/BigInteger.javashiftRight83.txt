@@ -1,0 +1,23 @@
+/**
+ * Returns a BigInteger whose value is {@code (this >> n)}.  Sign
+ * extension is performed.  The shift distance, {@code n}, may be
+ * negative, in which case this method performs a left shift.
+ * (Computes <tt>floor(this / 2<sup>n</sup>)</tt>.)
+ *
+ * @param  n shift distance, in bits.
+ * @return {@code this >> n}
+ * @see #shiftLeft
+ */
+public BigInteger shiftRight(int n) {
+    if (signum == 0)
+        return ZERO;
+    if (n > 0) {
+        return shiftRightImpl(n);
+    } else if (n == 0) {
+        return this;
+    } else {
+        // Possible int overflow in {@code -n} is not a trouble,
+        // because shiftLeft considers its argument unsigned
+        return new BigInteger(shiftLeft(mag, -n), signum);
+    }
+}

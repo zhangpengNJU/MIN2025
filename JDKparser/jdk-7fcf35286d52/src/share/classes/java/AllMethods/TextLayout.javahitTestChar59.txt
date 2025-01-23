@@ -1,0 +1,100 @@
+/**
+ * Returns a <code>TextHitInfo</code> corresponding to the
+ * specified point.
+ * Coordinates outside the bounds of the <code>TextLayout</code>
+ * map to hits on the leading edge of the first logical character,
+ * or the trailing edge of the last logical character, as appropriate,
+ * regardless of the position of that character in the line.  Only the
+ * direction along the baseline is used to make this evaluation.
+ * @param x the x offset from the origin of this
+ *     <code>TextLayout</code>.  This is in standard coordinates.
+ * @param y the y offset from the origin of this
+ *     <code>TextLayout</code>.  This is in standard coordinates.
+ * @param bounds the bounds of the <code>TextLayout</code>.  This
+ *     is in baseline-relative coordinates.
+ * @return a hit describing the character and edge (leading or trailing)
+ *     under the specified point.
+ */
+public TextHitInfo hitTestChar(float x, float y, Rectangle2D bounds) {
+    // check boundary conditions
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    boolean prev = false;
+    if (lp != null) {
+        Point2D.Float pt = new Point2D.Float(x, y);
+        prev = lp.pointToPath(pt, pt);
+        x = pt.x;
+        y = pt.y;
+    }
+    if (isVertical()) {
+        if (y < bounds.getMinY()) {
+            return TextHitInfo.leading(0);
+        } else if (y >= bounds.getMaxY()) {
+            return TextHitInfo.trailing(characterCount - 1);
+        }
+    } else {
+        if (x < bounds.getMinX()) {
+            return isLeftToRight() ? TextHitInfo.leading(0) : TextHitInfo.trailing(characterCount - 1);
+        } else if (x >= bounds.getMaxX()) {
+            return isLeftToRight() ? TextHitInfo.trailing(characterCount - 1) : TextHitInfo.leading(0);
+        }
+    }
+    // revised hit test
+    // the original seems too complex and fails miserably with italic offsets
+    // the natural tendency is to move towards the character you want to hit
+    // so we'll just measure distance to the center of each character's visual
+    // bounds, pick the closest one, then see which side of the character's
+    // center line (italic) the point is on.
+    // this tends to make it easier to hit narrow characters, which can be a
+    // bit odd if you're visually over an adjacent wide character. this makes
+    // a difference with bidi, so perhaps i need to revisit this yet again.
+    double distance = Double.MAX_VALUE;
+    int index = 0;
+    int trail = -1;
+    CoreMetrics lcm = null;
+    float icx = 0, icy = 0, ia = 0, cy = 0, dya = 0, ydsq = 0;
+    for (int i = 0; i < characterCount; ++i) {
+        if (!textLine.caretAtOffsetIsValid(i)) {
+            continue;
+        }
+        if (trail == -1) {
+            trail = i;
+        }
+        CoreMetrics cm = textLine.getCoreMetricsAt(i);
+        if (cm != lcm) {
+            lcm = cm;
+            // just work around baseline mess for now
+            if (cm.baselineIndex == GraphicAttribute.TOP_ALIGNMENT) {
+                cy = -(textLine.getMetrics().ascent - cm.ascent) + cm.ssOffset;
+            } else if (cm.baselineIndex == GraphicAttribute.BOTTOM_ALIGNMENT) {
+                cy = textLine.getMetrics().descent - cm.descent + cm.ssOffset;
+            } else {
+                cy = cm.effectiveBaselineOffset(baselineOffsets) + cm.ssOffset;
+            }
+            float dy = (cm.descent - cm.ascent) / 2 - cy;
+            dya = dy * cm.italicAngle;
+            cy += dy;
+            ydsq = (cy - y) * (cy - y);
+        }
+        float cx = textLine.getCharXPosition(i);
+        float ca = textLine.getCharAdvance(i);
+        float dx = ca / 2;
+        cx += dx - dya;
+        // proximity in x (along baseline) is two times as important as proximity in y
+        double nd = Math.sqrt(4 * (cx - x) * (cx - x) + ydsq);
+        if (nd < distance) {
+            distance = nd;
+            index = i;
+            trail = -1;
+            icx = cx;
+            icy = cy;
+            ia = cm.italicAngle;
+        }
+    }
+    boolean left = x < icx - (y - icy) * ia;
+    boolean leading = textLine.isCharLTR(index) == left;
+    if (trail == -1) {
+        trail = characterCount;
+    }
+    TextHitInfo result = leading ? TextHitInfo.leading(index) : TextHitInfo.trailing(trail - 1);
+    return result;
+}

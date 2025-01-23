@@ -1,0 +1,9 @@
+public synchronized void setUnitIncrement(int u) {
+    if (u != unitIncrement) {
+        unitIncrement = u;
+        if (sp.peer != null) {
+            ScrollPanePeer peer = (ScrollPanePeer) sp.peer;
+            peer.setUnitIncrement(this, u);
+        }
+    }
+}

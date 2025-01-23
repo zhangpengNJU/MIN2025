@@ -1,0 +1,12 @@
+/**
+ * Invoked for a directory before entries in the directory are visited.
+ *
+ * <p> Unless overridden, this method returns {@link FileVisitResult#CONTINUE
+ * CONTINUE}.
+ */
+@Override
+public FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs) throws IOException {
+    Objects.requireNonNull(dir);
+    Objects.requireNonNull(attrs);
+    return FileVisitResult.CONTINUE;
+}

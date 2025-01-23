@@ -1,0 +1,75 @@
+/**
+ * Reads the Manifest from the specified InputStream. The entry
+ * names and attributes read will be merged in with the current
+ * manifest entries.
+ *
+ * @param is the input stream
+ * @exception IOException if an I/O error has occurred
+ */
+public void read(InputStream is) throws IOException {
+    // Buffered input stream for reading manifest data
+    FastInputStream fis = new FastInputStream(is);
+    // Line buffer
+    byte[] lbuf = new byte[512];
+    // Read the main attributes for the manifest
+    attr.read(fis, lbuf);
+    // Total number of entries, attributes read
+    int ecount = 0, acount = 0;
+    // Average size of entry attributes
+    int asize = 2;
+    // Now parse the manifest entries
+    int len;
+    String name = null;
+    boolean skipEmptyLines = true;
+    byte[] lastline = null;
+    while ((len = fis.readLine(lbuf)) != -1) {
+        if (lbuf[--len] != '\n') {
+            throw new IOException("manifest line too long");
+        }
+        if (len > 0 && lbuf[len - 1] == '\r') {
+            --len;
+        }
+        if (len == 0 && skipEmptyLines) {
+            continue;
+        }
+        skipEmptyLines = false;
+        if (name == null) {
+            name = parseName(lbuf, len);
+            if (name == null) {
+                throw new IOException("invalid manifest format");
+            }
+            if (fis.peek() == ' ') {
+                // name is wrapped
+                lastline = new byte[len - 6];
+                System.arraycopy(lbuf, 6, lastline, 0, len - 6);
+                continue;
+            }
+        } else {
+            // continuation line
+            byte[] buf = new byte[lastline.length + len - 1];
+            System.arraycopy(lastline, 0, buf, 0, lastline.length);
+            System.arraycopy(lbuf, 1, buf, lastline.length, len - 1);
+            if (fis.peek() == ' ') {
+                // name is wrapped
+                lastline = buf;
+                continue;
+            }
+            name = new String(buf, 0, buf.length, "UTF8");
+            lastline = null;
+        }
+        Attributes attr = getAttributes(name);
+        if (attr == null) {
+            attr = new Attributes(asize);
+            entries.put(name, attr);
+        }
+        attr.read(fis, lbuf);
+        ecount++;
+        acount += attr.size();
+        // XXX: Fix for when the average is 0. When it is 0,
+        // you get an Attributes object with an initial
+        // capacity of 0, which tickles a bug in HashMap.
+        asize = Math.max(2, acount / ecount);
+        name = null;
+        skipEmptyLines = true;
+    }
+}

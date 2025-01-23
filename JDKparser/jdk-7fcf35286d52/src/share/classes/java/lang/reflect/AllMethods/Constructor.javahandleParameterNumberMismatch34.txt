@@ -1,0 +1,15 @@
+@Override
+void handleParameterNumberMismatch(int resultLength, int numParameters) {
+    Class<?> declaringClass = getDeclaringClass();
+    if (declaringClass.isEnum() || declaringClass.isAnonymousClass() || declaringClass.isLocalClass())
+        // Can't do reliable parameter counting
+        return;
+    else {
+        if (// top-level
+        !declaringClass.isMemberClass() || // Check for the enclosing instance parameter for
+        // non-static member classes
+        (declaringClass.isMemberClass() && ((declaringClass.getModifiers() & Modifier.STATIC) == 0) && resultLength + 1 != numParameters)) {
+            throw new AnnotationFormatError("Parameter annotations don't match number of parameters");
+        }
+    }
+}

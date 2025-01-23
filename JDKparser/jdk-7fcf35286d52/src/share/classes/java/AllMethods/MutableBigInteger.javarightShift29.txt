@@ -1,0 +1,20 @@
+/**
+ * Right shift this MutableBigInteger n bits. The MutableBigInteger is left
+ * in normal form.
+ */
+void rightShift(int n) {
+    if (intLen == 0)
+        return;
+    int nInts = n >>> 5;
+    int nBits = n & 0x1F;
+    this.intLen -= nInts;
+    if (nBits == 0)
+        return;
+    int bitsInHighWord = BigInteger.bitLengthForInt(value[offset]);
+    if (nBits >= bitsInHighWord) {
+        this.primitiveLeftShift(32 - nBits);
+        this.intLen--;
+    } else {
+        primitiveRightShift(nBits);
+    }
+}

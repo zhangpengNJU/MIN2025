@@ -1,0 +1,10 @@
+/**
+ * Returns {@code true} if this is a local class or an anonymous
+ * class.  Returns {@code false} otherwise.
+ */
+private boolean isLocalOrAnonymousClass() {
+    // JVM Spec 4.8.6: A class must have an EnclosingMethod
+    // attribute if and only if it is a local class or an
+    // anonymous class.
+    return getEnclosingMethodInfo() != null;
+}

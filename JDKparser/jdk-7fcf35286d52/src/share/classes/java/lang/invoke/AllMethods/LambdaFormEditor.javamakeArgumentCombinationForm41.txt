@@ -1,0 +1,52 @@
+private LambdaForm makeArgumentCombinationForm(int pos, MethodType combinerType, boolean keepArguments, boolean dropResult) {
+    LambdaFormBuffer buf = buffer();
+    buf.startEdit();
+    int combinerArity = combinerType.parameterCount();
+    int resultArity = (dropResult ? 0 : 1);
+    assert (pos <= MethodType.MAX_JVM_ARITY);
+    assert (pos + resultArity + (keepArguments ? combinerArity : 0) <= lambdaForm.arity);
+    // cannot filter the MH arg itself
+    assert (pos > 0);
+    assert (combinerType == combinerType.basicType());
+    assert (combinerType.returnType() != void.class || dropResult);
+    BoundMethodHandle.SpeciesData oldData = oldSpeciesData();
+    BoundMethodHandle.SpeciesData newData = newSpeciesData(L_TYPE);
+    // The newly created LF will run with a different BMH.
+    // Switch over any pre-existing BMH field references to the new BMH class.
+    // BMH holding the values
+    Name oldBaseAddress = lambdaForm.parameter(0);
+    buf.replaceFunctions(oldData.getterFunctions(), newData.getterFunctions(), oldBaseAddress);
+    Name newBaseAddress = oldBaseAddress.withConstraint(newData);
+    buf.renameParameter(0, newBaseAddress);
+    Name getCombiner = new Name(newData.getterFunction(oldData.fieldCount()), newBaseAddress);
+    Object[] combinerArgs = new Object[1 + combinerArity];
+    combinerArgs[0] = getCombiner;
+    Name[] newParams;
+    if (keepArguments) {
+        newParams = new Name[0];
+        System.arraycopy(lambdaForm.names, pos + resultArity, combinerArgs, 1, combinerArity);
+    } else {
+        newParams = new Name[combinerArity];
+        BasicType[] newTypes = basicTypes(combinerType.parameterList());
+        for (int i = 0; i < newTypes.length; i++) {
+            newParams[i] = new Name(pos + i, newTypes[i]);
+        }
+        System.arraycopy(newParams, 0, combinerArgs, 1, combinerArity);
+    }
+    Name callCombiner = new Name(combinerType, combinerArgs);
+    // insert the two new expressions
+    int exprPos = lambdaForm.arity();
+    buf.insertExpression(exprPos + 0, getCombiner);
+    buf.insertExpression(exprPos + 1, callCombiner);
+    // insert new arguments, if needed
+    // skip result parameter
+    int argPos = pos + resultArity;
+    for (Name newParam : newParams) {
+        buf.insertParameter(argPos++, newParam);
+    }
+    assert (buf.lastIndexOf(callCombiner) == exprPos + 1 + newParams.length);
+    if (!dropResult) {
+        buf.replaceParameterByCopy(pos, exprPos + 1 + newParams.length);
+    }
+    return buf.endEdit();
+}

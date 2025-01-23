@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final synchronized void lineTo(double x, double y) {
+    needRoom(true, 2);
+    pointTypes[numTypes++] = SEG_LINETO;
+    doubleCoords[numCoords++] = x;
+    doubleCoords[numCoords++] = y;
+}

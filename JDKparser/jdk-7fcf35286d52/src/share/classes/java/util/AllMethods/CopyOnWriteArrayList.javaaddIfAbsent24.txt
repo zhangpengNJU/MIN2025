@@ -1,0 +1,10 @@
+/**
+ * Appends the element, if not present.
+ *
+ * @param e element to be added to this list, if absent
+ * @return {@code true} if the element was added
+ */
+public boolean addIfAbsent(E e) {
+    Object[] snapshot = getArray();
+    return indexOf(e, snapshot, 0, snapshot.length) >= 0 ? false : addIfAbsent(e, snapshot);
+}

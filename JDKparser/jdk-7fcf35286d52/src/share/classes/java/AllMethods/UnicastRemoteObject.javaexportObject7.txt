@@ -1,0 +1,10 @@
+/**
+ * Exports the specified object using the specified server ref.
+ */
+private static Remote exportObject(Remote obj, UnicastServerRef sref) throws RemoteException {
+    // if obj extends UnicastRemoteObject, set its ref.
+    if (obj instanceof UnicastRemoteObject) {
+        ((UnicastRemoteObject) obj).ref = sref;
+    }
+    return sref.exportObject(obj, null, false);
+}

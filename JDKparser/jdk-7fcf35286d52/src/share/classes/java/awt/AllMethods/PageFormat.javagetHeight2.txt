@@ -1,0 +1,16 @@
+/**
+ * Returns the height, in 1/72nds of an inch, of the page.
+ * This method takes into account the orientation of the
+ * page when determining the height.
+ * @return the height of the page.
+ */
+public double getHeight() {
+    double height;
+    int orientation = getOrientation();
+    if (orientation == PORTRAIT) {
+        height = mPaper.getHeight();
+    } else {
+        height = mPaper.getWidth();
+    }
+    return height;
+}

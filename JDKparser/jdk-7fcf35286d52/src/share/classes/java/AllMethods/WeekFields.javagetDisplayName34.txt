@@ -1,0 +1,12 @@
+// -----------------------------------------------------------------------
+@Override
+public String getDisplayName(Locale locale) {
+    Objects.requireNonNull(locale, "locale");
+    if (rangeUnit == YEARS) {
+        // only have values for week-of-year
+        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
+        ResourceBundle rb = lr.getJavaTimeFormatData();
+        return rb.containsKey("field.week") ? rb.getString("field.week") : name;
+    }
+    return name;
+}

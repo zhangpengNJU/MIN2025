@@ -1,0 +1,16 @@
+/**
+ * Returns the activation group identifier for the VM.  If an
+ * activation group does not exist for this VM, a default
+ * activation group is created. A group can be created only once,
+ * so if a group has already become active and deactivated.
+ *
+ * @return the activation group identifier
+ * @exception ActivationException if error occurs during group
+ * creation, if security manager is not set, or if the group
+ * has already been created and deactivated.
+ */
+static synchronized ActivationGroupID internalCurrentGroupID() throws ActivationException {
+    if (currGroupID == null)
+        throw new ActivationException("nonexistent group");
+    return currGroupID;
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns the actions as a String. This is abstract
+ * so subclasses can defer creating a String representation until
+ * one is needed. Subclasses should always return actions in what they
+ * consider to be their
+ * canonical form. For example, two FilePermission objects created via
+ * the following:
+ *
+ * <pre>
+ *   perm1 = new FilePermission(p1,"read,write");
+ *   perm2 = new FilePermission(p2,"write,read");
+ * </pre>
+ *
+ * both return
+ * "read,write" when the {@code getActions} method is invoked.
+ *
+ * @return the actions of this Permission.
+ */
+public abstract String getActions();

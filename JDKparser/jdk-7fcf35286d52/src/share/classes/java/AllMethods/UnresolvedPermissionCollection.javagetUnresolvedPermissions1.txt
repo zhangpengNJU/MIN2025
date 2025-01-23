@@ -1,0 +1,9 @@
+/**
+ * get any unresolved permissions of the same type as p,
+ * and return the List containing them.
+ */
+List<UnresolvedPermission> getUnresolvedPermissions(Permission p) {
+    synchronized (this) {
+        return perms.get(p.getClass().getName());
+    }
+}

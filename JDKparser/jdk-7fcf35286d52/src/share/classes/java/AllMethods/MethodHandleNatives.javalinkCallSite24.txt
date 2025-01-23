@@ -1,0 +1,14 @@
+// Up-calls from the JVM.
+// These must NOT be public.
+/**
+ * The JVM is linking an invokedynamic instruction.  Create a reified call site for it.
+ */
+static MemberName linkCallSite(Object callerObj, Object bootstrapMethodObj, Object nameObj, Object typeObj, Object staticArguments, Object[] appendixResult) {
+    MethodHandle bootstrapMethod = (MethodHandle) bootstrapMethodObj;
+    Class<?> caller = (Class<?>) callerObj;
+    String name = nameObj.toString().intern();
+    MethodType type = (MethodType) typeObj;
+    if (!TRACE_METHOD_LINKAGE)
+        return linkCallSiteImpl(caller, bootstrapMethod, name, type, staticArguments, appendixResult);
+    return linkCallSiteTracing(caller, bootstrapMethod, name, type, staticArguments, appendixResult);
+}

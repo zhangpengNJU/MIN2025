@@ -1,0 +1,35 @@
+private void getInternal1(List<HttpCookie> cookies, Map<String, List<HttpCookie>> cookieIndex, String host, boolean secureLink) {
+    // Use a separate list to handle cookies that need to be removed so
+    // that there is no conflict with iterators.
+    ArrayList<HttpCookie> toRemove = new ArrayList<HttpCookie>();
+    for (Map.Entry<String, List<HttpCookie>> entry : cookieIndex.entrySet()) {
+        String domain = entry.getKey();
+        List<HttpCookie> lst = entry.getValue();
+        for (HttpCookie c : lst) {
+            if ((c.getVersion() == 0 && netscapeDomainMatches(domain, host)) || (c.getVersion() == 1 && HttpCookie.domainMatches(domain, host))) {
+                if ((cookieJar.indexOf(c) != -1)) {
+                    // the cookie still in main cookie store
+                    if (!c.hasExpired()) {
+                        // don't add twice and make sure it's the proper
+                        // security level
+                        if ((secureLink || !c.getSecure()) && !cookies.contains(c)) {
+                            cookies.add(c);
+                        }
+                    } else {
+                        toRemove.add(c);
+                    }
+                } else {
+                    // the cookie has beed removed from main store,
+                    // so also remove it from domain indexed store
+                    toRemove.add(c);
+                }
+            }
+        }
+        // Clear up the cookies that need to be removed
+        for (HttpCookie c : toRemove) {
+            lst.remove(c);
+            cookieJar.remove(c);
+        }
+        toRemove.clear();
+    }
+}

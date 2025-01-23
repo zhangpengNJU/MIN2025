@@ -1,0 +1,82 @@
+private static InetAddress[] getAddressesFromNameService(String host, InetAddress reqAddr) throws UnknownHostException {
+    InetAddress[] addresses = null;
+    boolean success = false;
+    UnknownHostException ex = null;
+    // Check whether the host is in the lookupTable.
+    // 1) If the host isn't in the lookupTable when
+    // checkLookupTable() is called, checkLookupTable()
+    // would add the host in the lookupTable and
+    // return null. So we will do the lookup.
+    // 2) If the host is in the lookupTable when
+    // checkLookupTable() is called, the current thread
+    // would be blocked until the host is removed
+    // from the lookupTable. Then this thread
+    // should try to look up the addressCache.
+    // i) if it found the addresses in the
+    // addressCache, checkLookupTable()  would
+    // return the addresses.
+    // ii) if it didn't find the addresses in the
+    // addressCache for any reason,
+    // it should add the host in the
+    // lookupTable and return null so the
+    // following code would do  a lookup itself.
+    if ((addresses = checkLookupTable(host)) == null) {
+        try {
+            // This is the first thread which looks up the addresses
+            // this host or the cache entry for this host has been
+            // expired so this thread should do the lookup.
+            for (NameService nameService : nameServices) {
+                try {
+                    /*
+                         * Do not put the call to lookup() inside the
+                         * constructor.  if you do you will still be
+                         * allocating space when the lookup fails.
+                         */
+                    addresses = nameService.lookupAllHostAddr(host);
+                    success = true;
+                    break;
+                } catch (UnknownHostException uhe) {
+                    if (host.equalsIgnoreCase("localhost")) {
+                        InetAddress[] local = new InetAddress[] { impl.loopbackAddress() };
+                        addresses = local;
+                        success = true;
+                        break;
+                    } else {
+                        addresses = unknown_array;
+                        success = false;
+                        ex = uhe;
+                    }
+                }
+            }
+            // More to do?
+            if (reqAddr != null && addresses.length > 1 && !addresses[0].equals(reqAddr)) {
+                // Find it?
+                int i = 1;
+                for (; i < addresses.length; i++) {
+                    if (addresses[i].equals(reqAddr)) {
+                        break;
+                    }
+                }
+                // Rotate
+                if (i < addresses.length) {
+                    InetAddress tmp, tmp2 = reqAddr;
+                    for (int j = 0; j < i; j++) {
+                        tmp = addresses[j];
+                        addresses[j] = tmp2;
+                        tmp2 = tmp;
+                    }
+                    addresses[i] = tmp2;
+                }
+            }
+            // Cache the address.
+            cacheAddresses(host, addresses, success);
+            if (!success && ex != null)
+                throw ex;
+        } finally {
+            // Delete host from the lookupTable and notify
+            // all threads waiting on the lookupTable monitor.
+            updateLookupTable(host);
+        }
+    }
+    return addresses;
+}

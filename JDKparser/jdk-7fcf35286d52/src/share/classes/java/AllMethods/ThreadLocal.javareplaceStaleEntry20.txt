@@ -1,0 +1,58 @@
+/**
+ * Replace a stale entry encountered during a set operation
+ * with an entry for the specified key.  The value passed in
+ * the value parameter is stored in the entry, whether or not
+ * an entry already exists for the specified key.
+ *
+ * As a side effect, this method expunges all stale entries in the
+ * "run" containing the stale entry.  (A run is a sequence of entries
+ * between two null slots.)
+ *
+ * @param  key the key
+ * @param  value the value to be associated with key
+ * @param  staleSlot index of the first stale entry encountered while
+ *         searching for key.
+ */
+private void replaceStaleEntry(ThreadLocal<?> key, Object value, int staleSlot) {
+    Entry[] tab = table;
+    int len = tab.length;
+    Entry e;
+    // Back up to check for prior stale entry in current run.
+    // We clean out whole runs at a time to avoid continual
+    // incremental rehashing due to garbage collector freeing
+    // up refs in bunches (i.e., whenever the collector runs).
+    int slotToExpunge = staleSlot;
+    for (int i = prevIndex(staleSlot, len); (e = tab[i]) != null; i = prevIndex(i, len)) if (e.get() == null)
+        slotToExpunge = i;
+    // Find either the key or trailing null slot of run, whichever
+    // occurs first
+    for (int i = nextIndex(staleSlot, len); (e = tab[i]) != null; i = nextIndex(i, len)) {
+        ThreadLocal<?> k = e.get();
+        // If we find key, then we need to swap it
+        // with the stale entry to maintain hash table order.
+        // The newly stale slot, or any other stale slot
+        // encountered above it, can then be sent to expungeStaleEntry
+        // to remove or rehash all of the other entries in run.
+        if (k == key) {
+            e.value = value;
+            tab[i] = tab[staleSlot];
+            tab[staleSlot] = e;
+            // Start expunge at preceding stale entry if it exists
+            if (slotToExpunge == staleSlot)
+                slotToExpunge = i;
+            cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+            return;
+        }
+        // If we didn't find stale entry on backward scan, the
+        // first stale entry seen while scanning for key is the
+        // first still present in the run.
+        if (k == null && slotToExpunge == staleSlot)
+            slotToExpunge = i;
+    }
+    // If key not found, put new entry in stale slot
+    tab[staleSlot].value = null;
+    tab[staleSlot] = new Entry(key, value);
+    // If there are any other stale entries in run, expunge them
+    if (slotToExpunge != staleSlot)
+        cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+}

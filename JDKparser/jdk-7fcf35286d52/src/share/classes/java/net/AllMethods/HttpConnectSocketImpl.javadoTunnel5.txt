@@ -1,0 +1,15 @@
+private Socket doTunnel(String urlString, int connectTimeout) throws IOException {
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(server, port));
+    URL destURL = new URL(urlString);
+    HttpURLConnection conn = (HttpURLConnection) destURL.openConnection(proxy);
+    conn.setConnectTimeout(connectTimeout);
+    conn.setReadTimeout(this.timeout);
+    conn.connect();
+    doTunneling(conn);
+    try {
+        Object httpClient = httpField.get(conn);
+        return (Socket) serverSocketField.get(httpClient);
+    } catch (IllegalAccessException x) {
+        throw new InternalError("Should not reach here", x);
+    }
+}

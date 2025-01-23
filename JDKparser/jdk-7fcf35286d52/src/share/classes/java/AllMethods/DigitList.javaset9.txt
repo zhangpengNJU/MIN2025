@@ -1,0 +1,19 @@
+/**
+ * Set the digit list to a representation of the given double value.
+ * This method supports both fixed-point and exponential notation.
+ * @param isNegative Boolean value indicating whether the number is negative.
+ * @param source Value to be converted; must not be Inf, -Inf, Nan,
+ * or a value <= 0.
+ * @param maximumDigits The most fractional or total digits which should
+ * be converted.
+ * @param fixedPoint If true, then maximumDigits is the maximum
+ * fractional digits to be converted.  If false, total digits.
+ */
+final void set(boolean isNegative, double source, int maximumDigits, boolean fixedPoint) {
+    FloatingDecimal.BinaryToASCIIConverter fdConverter = FloatingDecimal.getBinaryToASCIIConverter(source);
+    boolean hasBeenRoundedUp = fdConverter.digitsRoundedUp();
+    boolean valueExactAsDecimal = fdConverter.decimalDigitsExact();
+    assert !fdConverter.isExceptional();
+    String digitsString = fdConverter.toJavaFormatString();
+    set(isNegative, digitsString, hasBeenRoundedUp, valueExactAsDecimal, maximumDigits, fixedPoint);
+}

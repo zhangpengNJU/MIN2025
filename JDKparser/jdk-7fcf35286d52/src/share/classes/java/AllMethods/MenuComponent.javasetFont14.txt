@@ -1,0 +1,28 @@
+// getFont_NoClientCode()
+/**
+ * Sets the font to be used for this menu component to the specified
+ * font. This font is also used by all subcomponents of this menu
+ * component, unless those subcomponents specify a different font.
+ * <p>
+ * Some platforms may not support setting of all font attributes
+ * of a menu component; in such cases, calling <code>setFont</code>
+ * will have no effect on the unsupported font attributes of this
+ * menu component.  Unless subcomponents of this menu component
+ * specify a different font, this font will be used by those
+ * subcomponents if supported by the underlying platform.
+ *
+ * @param     f   the font to be set
+ * @see       #getFont
+ * @see       Font#getAttributes
+ * @see       java.awt.font.TextAttribute
+ */
+public void setFont(Font f) {
+    synchronized (getTreeLock()) {
+        font = f;
+        // Fixed 6312943: NullPointerException in method MenuComponent.setFont(Font)
+        MenuComponentPeer peer = this.peer;
+        if (peer != null) {
+            peer.setFont(f);
+        }
+    }
+}

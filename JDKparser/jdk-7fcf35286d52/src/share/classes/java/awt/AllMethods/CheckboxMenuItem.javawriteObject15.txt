@@ -1,0 +1,24 @@
+/**
+ * Writes default serializable fields to stream.  Writes
+ * a list of serializable <code>ItemListeners</code>
+ * as optional data.  The non-serializable
+ * <code>ItemListeners</code> are detected and
+ * no attempt is made to serialize them.
+ *
+ * @param s the <code>ObjectOutputStream</code> to write
+ * @serialData <code>null</code> terminated sequence of
+ *  0 or more pairs; the pair consists of a <code>String</code>
+ *  and an <code>Object</code>; the <code>String</code> indicates
+ *  the type of object and is one of the following:
+ *  <code>itemListenerK</code> indicating an
+ *    <code>ItemListener</code> object
+ *
+ * @see AWTEventMulticaster#save(ObjectOutputStream, String, EventListener)
+ * @see java.awt.Component#itemListenerK
+ * @see #readObject(ObjectInputStream)
+ */
+private void writeObject(ObjectOutputStream s) throws java.io.IOException {
+    s.defaultWriteObject();
+    AWTEventMulticaster.save(s, itemListenerK, itemListener);
+    s.writeObject(null);
+}

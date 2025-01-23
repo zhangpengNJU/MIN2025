@@ -1,0 +1,24 @@
+/**
+ * Invalidates the container.
+ * <p>
+ * If the {@code LayoutManager} installed on this container is an instance
+ * of the {@code LayoutManager2} interface, then
+ * the {@link LayoutManager2#invalidateLayout(Container)} method is invoked
+ * on it supplying this {@code Container} as the argument.
+ * <p>
+ * Afterwards this method marks this container invalid, and invalidates its
+ * ancestors. See the {@link Component#invalidate} method for more details.
+ *
+ * @see #validate
+ * @see #layout
+ * @see LayoutManager2
+ */
+@Override
+public void invalidate() {
+    LayoutManager layoutMgr = this.layoutMgr;
+    if (layoutMgr instanceof LayoutManager2) {
+        LayoutManager2 lm = (LayoutManager2) layoutMgr;
+        lm.invalidateLayout(this);
+    }
+    super.invalidate();
+}

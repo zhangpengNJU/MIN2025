@@ -1,0 +1,8 @@
+void widen(Wrapper ws, Wrapper wt) {
+    if (ws != wt) {
+        int opcode = wideningOpcodes[ws.ordinal()][wt.ordinal()];
+        if (opcode != Opcodes.NOP) {
+            visitInsn(opcode);
+        }
+    }
+}

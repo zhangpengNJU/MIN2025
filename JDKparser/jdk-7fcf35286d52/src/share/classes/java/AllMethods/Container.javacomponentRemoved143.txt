@@ -1,0 +1,6 @@
+public void componentRemoved(ContainerEvent e) {
+    Component c = e.getChild();
+    if (c != null && c instanceof Accessible) {
+        AccessibleAWTContainer.this.firePropertyChange(AccessibleContext.ACCESSIBLE_CHILD_PROPERTY, ((Accessible) c).getAccessibleContext(), null);
+    }
+}

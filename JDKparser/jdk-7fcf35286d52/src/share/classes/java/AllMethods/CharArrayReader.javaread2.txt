@@ -1,0 +1,33 @@
+/**
+ * Reads characters into a portion of an array.
+ * @param b  Destination buffer
+ * @param off  Offset at which to start storing characters
+ * @param len   Maximum number of characters to read
+ * @return  The actual number of characters read, or -1 if
+ *          the end of the stream has been reached
+ *
+ * @exception   IOException  If an I/O error occurs
+ */
+public int read(char[] b, int off, int len) throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
+            throw new IndexOutOfBoundsException();
+        } else if (len == 0) {
+            return 0;
+        }
+        if (pos >= count) {
+            return -1;
+        }
+        int avail = count - pos;
+        if (len > avail) {
+            len = avail;
+        }
+        if (len <= 0) {
+            return 0;
+        }
+        System.arraycopy(buf, pos, b, off, len);
+        pos += len;
+        return len;
+    }
+}

@@ -1,0 +1,26 @@
+/**
+ * Finds or creates a method type with modified parameter types.
+ * Convenience method for {@link #methodType(java.lang.Class, java.lang.Class[]) methodType}.
+ * @param start  the position (zero-based) of the first replaced parameter type(s)
+ * @param end    the position (zero-based) after the last replaced parameter type(s)
+ * @param ptypesToInsert zero or more new parameter types to insert into the parameter list
+ * @return the same type, except with the selected parameter(s) replaced
+ * @throws IndexOutOfBoundsException if {@code start} is negative or greater than {@code parameterCount()}
+ *                                  or if {@code end} is negative or greater than {@code parameterCount()}
+ *                                  or if {@code start} is greater than {@code end}
+ * @throws IllegalArgumentException if any element of {@code ptypesToInsert} is {@code void.class}
+ *                                  or if the resulting method type would have more than 255 parameter slots
+ * @throws NullPointerException if {@code ptypesToInsert} or any of its elements is null
+ */
+/*non-public*/
+MethodType replaceParameterTypes(int start, int end, Class<?>... ptypesToInsert) {
+    if (start == end)
+        return insertParameterTypes(start, ptypesToInsert);
+    int len = ptypes.length;
+    if (!(0 <= start && start <= end && end <= len))
+        throw newIndexOutOfBoundsException("start=" + start + " end=" + end);
+    int ilen = ptypesToInsert.length;
+    if (ilen == 0)
+        return dropParameterTypes(start, end);
+    return dropParameterTypes(start, end).insertParameterTypes(start, ptypesToInsert);
+}

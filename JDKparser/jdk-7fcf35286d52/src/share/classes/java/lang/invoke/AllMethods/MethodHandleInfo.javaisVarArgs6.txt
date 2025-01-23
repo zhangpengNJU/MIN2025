@@ -1,0 +1,22 @@
+/**
+ * Determines if the underlying member was a variable arity method or constructor.
+ * Such members are represented by method handles that are varargs collectors.
+ * @implSpec
+ * This produces a result equivalent to:
+ * <pre>{@code
+ *     getReferenceKind() >= REF_invokeVirtual && Modifier.isTransient(getModifiers())
+ * }</pre>
+ *
+ * @return {@code true} if and only if the underlying member was declared with variable arity.
+ */
+// spelling derived from java.lang.reflect.Executable, not MethodHandle.isVarargsCollector
+public default boolean isVarArgs() {
+    // fields are never varargs:
+    if (MethodHandleNatives.refKindIsField((byte) getReferenceKind()))
+        return false;
+    // not in the public API: Modifier.VARARGS
+    // from JVMS 4.6 (Table 4.20)
+    final int ACC_VARARGS = 0x00000080;
+    assert (ACC_VARARGS == Modifier.TRANSIENT);
+    return Modifier.isTransient(getModifiers());
+}

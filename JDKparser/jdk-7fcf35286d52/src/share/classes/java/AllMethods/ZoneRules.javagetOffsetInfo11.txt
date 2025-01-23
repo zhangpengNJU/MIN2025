@@ -1,0 +1,47 @@
+private Object getOffsetInfo(LocalDateTime dt) {
+    if (savingsInstantTransitions.length == 0) {
+        return standardOffsets[0];
+    }
+    // check if using last rules
+    if (lastRules.length > 0 && dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
+        ZoneOffsetTransition[] transArray = findTransitionArray(dt.getYear());
+        Object info = null;
+        for (ZoneOffsetTransition trans : transArray) {
+            info = findOffsetInfo(dt, trans);
+            if (info instanceof ZoneOffsetTransition || info.equals(trans.getOffsetBefore())) {
+                return info;
+            }
+        }
+        return info;
+    }
+    // using historic rules
+    int index = Arrays.binarySearch(savingsLocalTransitions, dt);
+    if (index == -1) {
+        // before first transition
+        return wallOffsets[0];
+    }
+    if (index < 0) {
+        // switch negative insert position to start of matched range
+        index = -index - 2;
+    } else if (index < savingsLocalTransitions.length - 1 && savingsLocalTransitions[index].equals(savingsLocalTransitions[index + 1])) {
+        // handle overlap immediately following gap
+        index++;
+    }
+    if ((index & 1) == 0) {
+        // gap or overlap
+        LocalDateTime dtBefore = savingsLocalTransitions[index];
+        LocalDateTime dtAfter = savingsLocalTransitions[index + 1];
+        ZoneOffset offsetBefore = wallOffsets[index / 2];
+        ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
+        if (offsetAfter.getTotalSeconds() > offsetBefore.getTotalSeconds()) {
+            // gap
+            return new ZoneOffsetTransition(dtBefore, offsetBefore, offsetAfter);
+        } else {
+            // overlap
+            return new ZoneOffsetTransition(dtAfter, offsetBefore, offsetAfter);
+        }
+    } else {
+        // normal (neither gap or overlap)
+        return wallOffsets[index / 2 + 1];
+    }
+}

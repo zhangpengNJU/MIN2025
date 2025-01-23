@@ -1,0 +1,19 @@
+/**
+ * Returns an Accessible representing the specified selected item
+ * in the object.  If there isn't a selection, or there are
+ * fewer items selected than the integer passed in, the return
+ * value will be null.
+ *
+ * @param i the zero-based index of selected items
+ * @return an Accessible containing the selected item
+ */
+public Accessible getAccessibleSelection(int i) {
+    synchronized (List.this) {
+        int len = getAccessibleSelectionCount();
+        if (i < 0 || i >= len) {
+            return null;
+        } else {
+            return getAccessibleChild(List.this.getSelectedIndexes()[i]);
+        }
+    }
+}

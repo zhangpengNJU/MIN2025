@@ -1,0 +1,24 @@
+/**
+ * Returns true if MHs.explicitCastArguments produces the same result as MH.asType.
+ *  If the type conversion is impossible for either, the result should be false.
+ */
+/*non-public*/
+boolean explicitCastEquivalentToAsType(MethodType newType) {
+    if (this == newType)
+        return true;
+    if (!explicitCastEquivalentToAsType(rtype, newType.rtype)) {
+        return false;
+    }
+    Class<?>[] srcTypes = newType.ptypes;
+    Class<?>[] dstTypes = ptypes;
+    if (dstTypes == srcTypes) {
+        return true;
+    }
+    assert (dstTypes.length == srcTypes.length);
+    for (int i = 0; i < dstTypes.length; i++) {
+        if (!explicitCastEquivalentToAsType(srcTypes[i], dstTypes[i])) {
+            return false;
+        }
+    }
+    return true;
+}

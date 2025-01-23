@@ -1,0 +1,10 @@
+// Safe casts assuming clone() works correctly
+@SuppressWarnings("unchecked")
+private static <T> Set<T> cloneSet(Set<T> set) {
+    if (set instanceof HashSet) {
+        Object clone = ((HashSet<T>) set).clone();
+        return (Set<T>) clone;
+    } else {
+        return new HashSet<T>(set);
+    }
+}

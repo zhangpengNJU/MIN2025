@@ -1,0 +1,32 @@
+/**
+ * Formats an Object producing an <code>AttributedCharacterIterator</code>.
+ * You can use the returned <code>AttributedCharacterIterator</code>
+ * to build the resulting String, as well as to determine information
+ * about the resulting String.
+ * <p>
+ * Each attribute key of the AttributedCharacterIterator will be of type
+ * <code>DateFormat.Field</code>, with the corresponding attribute value
+ * being the same as the attribute key.
+ *
+ * @exception NullPointerException if obj is null.
+ * @exception IllegalArgumentException if the Format cannot format the
+ *            given object, or if the Format's pattern string is invalid.
+ * @param obj The object to format
+ * @return AttributedCharacterIterator describing the formatted value.
+ * @since 1.4
+ */
+@Override
+public AttributedCharacterIterator formatToCharacterIterator(Object obj) {
+    StringBuffer sb = new StringBuffer();
+    CharacterIteratorFieldDelegate delegate = new CharacterIteratorFieldDelegate();
+    if (obj instanceof Date) {
+        format((Date) obj, sb, delegate);
+    } else if (obj instanceof Number) {
+        format(new Date(((Number) obj).longValue()), sb, delegate);
+    } else if (obj == null) {
+        throw new NullPointerException("formatToCharacterIterator must be passed non-null object");
+    } else {
+        throw new IllegalArgumentException("Cannot format given Object as a Date");
+    }
+    return delegate.getIterator(sb.toString());
+}

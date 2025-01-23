@@ -1,0 +1,19 @@
+/**
+ * Returns true iff this BigInteger is a Lucas-Lehmer probable prime.
+ *
+ * The following assumptions are made:
+ * This BigInteger is a positive, odd number.
+ */
+private boolean passesLucasLehmer() {
+    BigInteger thisPlusOne = this.add(ONE);
+    // Step 1
+    int d = 5;
+    while (jacobiSymbol(d, this) != -1) {
+        // 5, -7, 9, -11, ...
+        d = (d < 0) ? Math.abs(d) + 2 : -(d + 2);
+    }
+    // Step 2
+    BigInteger u = lucasLehmerSequence(d, thisPlusOne, this);
+    // Step 3
+    return u.mod(this).equals(ZERO);
+}

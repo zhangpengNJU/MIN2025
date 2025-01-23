@@ -1,0 +1,19 @@
+// Reluctant matching
+boolean match1(Matcher matcher, int i, int j, CharSequence seq) {
+    for (; ; ) {
+        if (next.match(matcher, i, seq))
+            return true;
+        if (j >= cmax)
+            return false;
+        if (!atom.match(matcher, i, seq))
+            return false;
+        if (i == matcher.last)
+            return false;
+        if (capture) {
+            matcher.groups[groupIndex] = i;
+            matcher.groups[groupIndex + 1] = matcher.last;
+        }
+        i = matcher.last;
+        j++;
+    }
+}

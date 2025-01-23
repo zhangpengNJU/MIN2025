@@ -1,0 +1,18 @@
+/**
+ * Sets the designated parameter to the given Java array of bytes.
+ * The driver converts this to an SQL <code>VARBINARY</code> or
+ * <code>LONGVARBINARY</code> (depending on the argument's size relative
+ * to the driver's limits on <code>VARBINARY</code> values) when it sends
+ * it to the database.
+ *
+ * @param parameterName the name of the parameter
+ * @param x the parameter value
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #getBytes
+ * @since 1.4
+ */
+void setBytes(String parameterName, byte[] x) throws SQLException;

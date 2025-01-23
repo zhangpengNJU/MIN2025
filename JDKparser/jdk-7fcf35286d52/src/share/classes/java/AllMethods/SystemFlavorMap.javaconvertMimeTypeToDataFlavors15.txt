@@ -1,0 +1,66 @@
+private static Set<DataFlavor> convertMimeTypeToDataFlavors(final String baseType) {
+    final Set<DataFlavor> returnValue = new LinkedHashSet<>();
+    String subType = null;
+    try {
+        final MimeType mimeType = new MimeType(baseType);
+        subType = mimeType.getSubType();
+    } catch (MimeTypeParseException mtpe) {
+    // Cannot happen, since we checked all mappings
+    // on load from flavormap.properties.
+    }
+    if (DataTransferer.doesSubtypeSupportCharset(subType, null)) {
+        if (TEXT_PLAIN_BASE_TYPE.equals(baseType)) {
+            returnValue.add(DataFlavor.stringFlavor);
+        }
+        for (String unicodeClassName : UNICODE_TEXT_CLASSES) {
+            final String mimeType = baseType + ";charset=Unicode;class=" + unicodeClassName;
+            final LinkedHashSet<String> mimeTypes = handleHtmlMimeTypes(baseType, mimeType);
+            for (String mt : mimeTypes) {
+                DataFlavor toAdd = null;
+                try {
+                    toAdd = new DataFlavor(mt);
+                } catch (ClassNotFoundException cannotHappen) {
+                }
+                returnValue.add(toAdd);
+            }
+        }
+        for (String charset : DataTransferer.standardEncodings()) {
+            for (String encodedTextClass : ENCODED_TEXT_CLASSES) {
+                final String mimeType = baseType + ";charset=" + charset + ";class=" + encodedTextClass;
+                final LinkedHashSet<String> mimeTypes = handleHtmlMimeTypes(baseType, mimeType);
+                for (String mt : mimeTypes) {
+                    DataFlavor df = null;
+                    try {
+                        df = new DataFlavor(mt);
+                        // Check for equality to plainTextFlavor so
+                        // that we can ensure that the exact charset of
+                        // plainTextFlavor, not the canonical charset
+                        // or another equivalent charset with a
+                        // different name, is used.
+                        if (df.equals(DataFlavor.plainTextFlavor)) {
+                            df = DataFlavor.plainTextFlavor;
+                        }
+                    } catch (ClassNotFoundException cannotHappen) {
+                    }
+                    returnValue.add(df);
+                }
+            }
+        }
+        if (TEXT_PLAIN_BASE_TYPE.equals(baseType)) {
+            returnValue.add(DataFlavor.plainTextFlavor);
+        }
+    } else {
+        // Non-charset text natives should be treated as
+        // opaque, 8-bit data in any of its various
+        // representations.
+        for (String encodedTextClassName : ENCODED_TEXT_CLASSES) {
+            DataFlavor toAdd = null;
+            try {
+                toAdd = new DataFlavor(baseType + ";class=" + encodedTextClassName);
+            } catch (ClassNotFoundException cannotHappen) {
+            }
+            returnValue.add(toAdd);
+        }
+    }
+    return returnValue;
+}

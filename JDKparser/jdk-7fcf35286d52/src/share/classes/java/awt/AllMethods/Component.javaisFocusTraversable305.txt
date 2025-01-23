@@ -1,0 +1,17 @@
+/**
+ * Returns whether this <code>Component</code> can become the focus
+ * owner.
+ *
+ * @return <code>true</code> if this <code>Component</code> is
+ * focusable; <code>false</code> otherwise
+ * @see #setFocusable
+ * @since JDK1.1
+ * @deprecated As of 1.4, replaced by <code>isFocusable()</code>.
+ */
+@Deprecated
+public boolean isFocusTraversable() {
+    if (isFocusTraversableOverridden == FOCUS_TRAVERSABLE_UNKNOWN) {
+        isFocusTraversableOverridden = FOCUS_TRAVERSABLE_DEFAULT;
+    }
+    return focusable;
+}

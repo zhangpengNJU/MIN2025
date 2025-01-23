@@ -1,0 +1,8 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R> R query(TemporalQuery<R> query) {
+    if (query == TemporalQueries.chronology()) {
+        return (R) Chronology.this;
+    }
+    return TemporalAccessor.super.query(query);
+}

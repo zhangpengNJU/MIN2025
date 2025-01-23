@@ -1,0 +1,25 @@
+/**
+ * Returns the number of bits for the specified color/alpha component.
+ * Color components are indexed in the order specified by the
+ * <code>ColorSpace</code>.  Typically, this order reflects the name
+ * of the color space type. For example, for TYPE_RGB, index 0
+ * corresponds to red, index 1 to green, and index 2
+ * to blue.  If this <code>ColorModel</code> supports alpha, the alpha
+ * component corresponds to the index following the last color
+ * component.
+ * @param componentIdx the index of the color/alpha component
+ * @return the number of bits for the color/alpha component at the
+ *          specified index.
+ * @throws ArrayIndexOutOfBoundsException if <code>componentIdx</code>
+ *         is greater than the number of components or
+ *         less than zero
+ * @throws NullPointerException if the number of bits array is
+ *         <code>null</code>
+ */
+public int getComponentSize(int componentIdx) {
+    // REMIND:
+    if (nBits == null) {
+        throw new NullPointerException("Number of bits array is null.");
+    }
+    return nBits[componentIdx];
+}

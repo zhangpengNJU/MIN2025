@@ -1,0 +1,28 @@
+/**
+ * Returns the drag gesture motion threshold. The drag gesture motion threshold
+ * defines the recommended behavior for {@link MouseDragGestureRecognizer}s.
+ * <p>
+ * If the system property <code>awt.dnd.drag.threshold</code> is set to
+ * a positive integer, this method returns the value of the system property;
+ * otherwise if a pertinent desktop property is available and supported by
+ * the implementation of the Java platform, this method returns the value of
+ * that property; otherwise this method returns some default value.
+ * The pertinent desktop property can be queried using
+ * <code>java.awt.Toolkit.getDesktopProperty("DnD.gestureMotionThreshold")</code>.
+ *
+ * @return the drag gesture motion threshold
+ * @see MouseDragGestureRecognizer
+ * @since 1.5
+ */
+public static int getDragThreshold() {
+    int ts = AccessController.doPrivileged(new GetIntegerAction("awt.dnd.drag.threshold", 0)).intValue();
+    if (ts > 0) {
+        return ts;
+    } else {
+        Integer td = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("DnD.gestureMotionThreshold");
+        if (td != null) {
+            return td.intValue();
+        }
+    }
+    return 5;
+}

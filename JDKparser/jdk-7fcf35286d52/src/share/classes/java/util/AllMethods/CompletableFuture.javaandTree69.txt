@@ -1,0 +1,21 @@
+/**
+ * Recursively constructs a tree of completions.
+ */
+static CompletableFuture<Void> andTree(CompletableFuture<?>[] cfs, int lo, int hi) {
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (// empty
+    lo > hi)
+        d.result = NIL;
+    else {
+        CompletableFuture<?> a, b;
+        int mid = (lo + hi) >>> 1;
+        if ((a = (lo == mid ? cfs[lo] : andTree(cfs, lo, mid))) == null || (b = (lo == hi ? a : (hi == mid + 1) ? cfs[hi] : andTree(cfs, mid + 1, hi))) == null)
+            throw new NullPointerException();
+        if (!d.biRelay(a, b)) {
+            BiRelay<?, ?> c = new BiRelay<>(d, a, b);
+            a.bipush(b, c);
+            c.tryFire(SYNC);
+        }
+    }
+    return d;
+}

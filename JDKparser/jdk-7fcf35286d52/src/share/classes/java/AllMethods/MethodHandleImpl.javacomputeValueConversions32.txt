@@ -1,0 +1,14 @@
+static Object[] computeValueConversions(MethodType srcType, MethodType dstType, boolean strict, boolean monobox) {
+    final int INARG_COUNT = srcType.parameterCount();
+    Object[] convSpecs = new Object[INARG_COUNT + 1];
+    for (int i = 0; i <= INARG_COUNT; i++) {
+        boolean isRet = (i == INARG_COUNT);
+        Class<?> src = isRet ? dstType.returnType() : srcType.parameterType(i);
+        Class<?> dst = isRet ? srcType.returnType() : dstType.parameterType(i);
+        if (!VerifyType.isNullConversion(src, dst, /*keepInterfaces=*/
+        strict)) {
+            convSpecs[i] = valueConversion(src, dst, strict, monobox);
+        }
+    }
+    return convSpecs;
+}

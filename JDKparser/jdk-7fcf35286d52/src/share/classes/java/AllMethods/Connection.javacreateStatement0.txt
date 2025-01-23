@@ -1,0 +1,19 @@
+/**
+ * Creates a <code>Statement</code> object for sending
+ * SQL statements to the database.
+ * SQL statements without parameters are normally
+ * executed using <code>Statement</code> objects. If the same SQL statement
+ * is executed many times, it may be more efficient to use a
+ * <code>PreparedStatement</code> object.
+ * <P>
+ * Result sets created using the returned <code>Statement</code>
+ * object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ * and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ * The holdability of the created result sets can be determined by
+ * calling {@link #getHoldability}.
+ *
+ * @return a new default <code>Statement</code> object
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ */
+Statement createStatement() throws SQLException;

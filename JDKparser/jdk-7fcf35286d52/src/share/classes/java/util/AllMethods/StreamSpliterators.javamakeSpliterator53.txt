@@ -1,0 +1,4 @@
+@Override
+protected Spliterator.OfLong makeSpliterator(Spliterator.OfLong s, long sliceOrigin, long sliceFence, long origin, long fence) {
+    return new SliceSpliterator.OfLong(s, sliceOrigin, sliceFence, origin, fence);
+}

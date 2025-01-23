@@ -1,0 +1,7 @@
+@Override
+public void accept(T t) {
+    if (!stop && predicate.test(t) == matchKind.stopOnPredicateMatches) {
+        stop = true;
+        value = matchKind.shortCircuitResult;
+    }
+}

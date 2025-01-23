@@ -1,0 +1,8 @@
+static <T extends PlatformManagedObject> PlatformComponent getPlatformComponent(Class<T> mxbeanInterface) {
+    ensureInitialized();
+    String cn = mxbeanInterface.getName();
+    PlatformComponent pc = enumMap.get(cn);
+    if (pc != null && pc.getMXBeanInterface() == mxbeanInterface)
+        return pc;
+    return null;
+}

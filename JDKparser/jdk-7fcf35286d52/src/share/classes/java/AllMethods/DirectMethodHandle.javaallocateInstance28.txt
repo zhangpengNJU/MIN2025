@@ -1,0 +1,5 @@
+/*non-public*/
+static Object allocateInstance(Object mh) throws InstantiationException {
+    Constructor dmh = (Constructor) mh;
+    return UNSAFE.allocateInstance(dmh.instanceClass);
+}

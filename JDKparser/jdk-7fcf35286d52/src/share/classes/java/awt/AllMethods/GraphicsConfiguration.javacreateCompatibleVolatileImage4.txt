@@ -1,0 +1,29 @@
+/**
+ * Returns a {@link VolatileImage} with a data layout and color model
+ * compatible with this <code>GraphicsConfiguration</code>.
+ * The returned <code>VolatileImage</code>
+ * may have data that is stored optimally for the underlying graphics
+ * device and may therefore benefit from platform-specific rendering
+ * acceleration.
+ * @param width the width of the returned <code>VolatileImage</code>
+ * @param height the height of the returned <code>VolatileImage</code>
+ * @param transparency the specified transparency mode
+ * @return a <code>VolatileImage</code> whose data layout and color
+ * model is compatible with this <code>GraphicsConfiguration</code>.
+ * @throws IllegalArgumentException if the transparency is not a valid value
+ * @see Transparency#OPAQUE
+ * @see Transparency#BITMASK
+ * @see Transparency#TRANSLUCENT
+ * @see Component#createVolatileImage(int, int)
+ * @since 1.5
+ */
+public VolatileImage createCompatibleVolatileImage(int width, int height, int transparency) {
+    VolatileImage vi = null;
+    try {
+        vi = createCompatibleVolatileImage(width, height, null, transparency);
+    } catch (AWTException e) {
+        // shouldn't happen: we're passing in null caps
+        assert false;
+    }
+    return vi;
+}

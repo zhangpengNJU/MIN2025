@@ -1,0 +1,15 @@
+/**
+ * Returns listeners that have been associated with the named property.
+ *
+ * @param name  the name of the property
+ * @return an array of listeners for the named property
+ */
+public final L[] getListeners(String name) {
+    if (name != null) {
+        L[] listeners = get(name);
+        if (listeners != null) {
+            return listeners.clone();
+        }
+    }
+    return newArray(0);
+}

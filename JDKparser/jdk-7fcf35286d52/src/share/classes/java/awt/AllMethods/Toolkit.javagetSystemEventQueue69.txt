@@ -1,0 +1,24 @@
+/**
+ * Get the application's or applet's EventQueue instance.
+ * Depending on the Toolkit implementation, different EventQueues
+ * may be returned for different applets.  Applets should
+ * therefore not assume that the EventQueue instance returned
+ * by this method will be shared by other applets or the system.
+ *
+ * <p> If there is a security manager then its
+ * {@link SecurityManager#checkPermission checkPermission} method
+ * is called to check {@code AWTPermission("accessEventQueue")}.
+ *
+ * @return    the <code>EventQueue</code> object
+ * @throws  SecurityException
+ *          if a security manager is set and it denies access to
+ *          the {@code EventQueue}
+ * @see     java.awt.AWTPermission
+ */
+public final EventQueue getSystemEventQueue() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.CHECK_AWT_EVENTQUEUE_PERMISSION);
+    }
+    return getSystemEventQueueImpl();
+}

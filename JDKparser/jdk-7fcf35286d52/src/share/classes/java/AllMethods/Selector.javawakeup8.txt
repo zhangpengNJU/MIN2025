@@ -1,0 +1,20 @@
+/**
+ * Causes the first selection operation that has not yet returned to return
+ * immediately.
+ *
+ * <p> If another thread is currently blocked in an invocation of the
+ * {@link #select()} or {@link #select(long)} methods then that invocation
+ * will return immediately.  If no selection operation is currently in
+ * progress then the next invocation of one of these methods will return
+ * immediately unless the {@link #selectNow()} method is invoked in the
+ * meantime.  In any case the value returned by that invocation may be
+ * non-zero.  Subsequent invocations of the {@link #select()} or {@link
+ * #select(long)} methods will block as usual unless this method is invoked
+ * again in the meantime.
+ *
+ * <p> Invoking this method more than once between two successive selection
+ * operations has the same effect as invoking it just once.  </p>
+ *
+ * @return  This selector
+ */
+public abstract Selector wakeup();

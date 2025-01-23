@@ -1,0 +1,5 @@
+public NavigableMap<K, V> descendingMap() {
+    synchronized (mutex) {
+        return new SynchronizedNavigableMap<>(nm.descendingMap(), mutex);
+    }
+}

@@ -1,0 +1,20 @@
+// =======================================================================
+// Start of simple convenience methods using level names as method names
+// and use Supplier<String>
+// =======================================================================
+/**
+ * Log a SEVERE message, which is only to be constructed if the logging
+ * level is such that the message will actually be logged.
+ * <p>
+ * If the logger is currently enabled for the SEVERE message
+ * level then the message is constructed by invoking the provided
+ * supplier function and forwarded to all the registered output
+ * Handler objects.
+ * <p>
+ * @param   msgSupplier   A function, which when called, produces the
+ *                        desired log message
+ * @since   1.8
+ */
+public void severe(Supplier<String> msgSupplier) {
+    log(Level.SEVERE, msgSupplier);
+}

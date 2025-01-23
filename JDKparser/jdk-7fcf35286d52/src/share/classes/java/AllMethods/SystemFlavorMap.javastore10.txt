@@ -1,0 +1,16 @@
+/**
+ * Stores the listed object under the specified hash key in map. Unlike a
+ * standard map, the listed object will not replace any object already at
+ * the appropriate Map location, but rather will be appended to a List
+ * stored in that location.
+ */
+private <H, L> void store(H hashed, L listed, Map<H, LinkedHashSet<L>> map) {
+    LinkedHashSet<L> list = map.get(hashed);
+    if (list == null) {
+        list = new LinkedHashSet<>(1);
+        map.put(hashed, list);
+    }
+    if (!list.contains(listed)) {
+        list.add(listed);
+    }
+}

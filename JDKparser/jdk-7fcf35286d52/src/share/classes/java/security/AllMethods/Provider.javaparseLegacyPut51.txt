@@ -1,0 +1,67 @@
+private void parseLegacyPut(String name, String value) {
+    if (name.toLowerCase(ENGLISH).startsWith(ALIAS_PREFIX_LOWER)) {
+        // e.g. put("Alg.Alias.MessageDigest.SHA", "SHA-1");
+        // aliasKey ~ MessageDigest.SHA
+        String stdAlg = value;
+        String aliasKey = name.substring(ALIAS_LENGTH);
+        String[] typeAndAlg = getTypeAndAlgorithm(aliasKey);
+        if (typeAndAlg == null) {
+            return;
+        }
+        String type = getEngineName(typeAndAlg[0]);
+        String aliasAlg = typeAndAlg[1].intern();
+        ServiceKey key = new ServiceKey(type, stdAlg, true);
+        Service s = legacyMap.get(key);
+        if (s == null) {
+            s = new Service(this);
+            s.type = type;
+            s.algorithm = stdAlg;
+            legacyMap.put(key, s);
+        }
+        legacyMap.put(new ServiceKey(type, aliasAlg, true), s);
+        s.addAlias(aliasAlg);
+    } else {
+        String[] typeAndAlg = getTypeAndAlgorithm(name);
+        if (typeAndAlg == null) {
+            return;
+        }
+        int i = typeAndAlg[1].indexOf(' ');
+        if (i == -1) {
+            // e.g. put("MessageDigest.SHA-1", "sun.security.provider.SHA");
+            String type = getEngineName(typeAndAlg[0]);
+            String stdAlg = typeAndAlg[1].intern();
+            String className = value;
+            ServiceKey key = new ServiceKey(type, stdAlg, true);
+            Service s = legacyMap.get(key);
+            if (s == null) {
+                s = new Service(this);
+                s.type = type;
+                s.algorithm = stdAlg;
+                legacyMap.put(key, s);
+            }
+            s.className = className;
+        } else {
+            // attribute
+            // e.g. put("MessageDigest.SHA-1 ImplementedIn", "Software");
+            String attributeValue = value;
+            String type = getEngineName(typeAndAlg[0]);
+            String attributeString = typeAndAlg[1];
+            String stdAlg = attributeString.substring(0, i).intern();
+            String attributeName = attributeString.substring(i + 1);
+            // kill additional spaces
+            while (attributeName.startsWith(" ")) {
+                attributeName = attributeName.substring(1);
+            }
+            attributeName = attributeName.intern();
+            ServiceKey key = new ServiceKey(type, stdAlg, true);
+            Service s = legacyMap.get(key);
+            if (s == null) {
+                s = new Service(this);
+                s.type = type;
+                s.algorithm = stdAlg;
+                legacyMap.put(key, s);
+            }
+            s.addAttribute(attributeName, attributeValue);
+        }
+    }
+}

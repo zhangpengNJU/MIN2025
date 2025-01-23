@@ -1,0 +1,18 @@
+/**
+ * Checks if this <code>Font</code> has a glyph for the specified
+ * character.
+ *
+ * <p> <b>Note:</b> This method cannot handle <a
+ * href="../../java/lang/Character.html#supplementary"> supplementary
+ * characters</a>. To support all Unicode characters, including
+ * supplementary characters, use the {@link #canDisplay(int)}
+ * method or <code>canDisplayUpTo</code> methods.
+ *
+ * @param c the character for which a glyph is needed
+ * @return <code>true</code> if this <code>Font</code> has a glyph for this
+ *          character; <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean canDisplay(char c) {
+    return getFont2D().canDisplay(c);
+}

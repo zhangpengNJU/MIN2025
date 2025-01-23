@@ -1,0 +1,73 @@
+/**
+ * Sets the values of four properties for this scroll bar:
+ * <code>value</code>, <code>visibleAmount</code>,
+ * <code>minimum</code>, and <code>maximum</code>.
+ * If the values supplied for these properties are inconsistent
+ * or incorrect, they will be changed to ensure consistency.
+ * <p>
+ * This method simultaneously and synchronously sets the values
+ * of four scroll bar properties, assuring that the values of
+ * these properties are mutually consistent. It enforces the
+ * following constraints:
+ * <code>maximum</code> must be greater than <code>minimum</code>,
+ * <code>maximum - minimum</code> must not be greater
+ *     than <code>Integer.MAX_VALUE</code>,
+ * <code>visibleAmount</code> must be greater than zero.
+ * <code>visibleAmount</code> must not be greater than
+ *     <code>maximum - minimum</code>,
+ * <code>value</code> must not be less than <code>minimum</code>,
+ * and <code>value</code> must not be greater than
+ *     <code>maximum - visibleAmount</code>
+ * <p>
+ * Calling this method does not fire an
+ * <code>AdjustmentEvent</code>.
+ *
+ * @param      value is the position in the current window
+ * @param      visible is the visible amount of the scroll bar
+ * @param      minimum is the minimum value of the scroll bar
+ * @param      maximum is the maximum value of the scroll bar
+ * @see        #setMinimum
+ * @see        #setMaximum
+ * @see        #setVisibleAmount
+ * @see        #setValue
+ */
+public void setValues(int value, int visible, int minimum, int maximum) {
+    int oldValue;
+    synchronized (this) {
+        if (minimum == Integer.MAX_VALUE) {
+            minimum = Integer.MAX_VALUE - 1;
+        }
+        if (maximum <= minimum) {
+            maximum = minimum + 1;
+        }
+        long maxMinusMin = (long) maximum - (long) minimum;
+        if (maxMinusMin > Integer.MAX_VALUE) {
+            maxMinusMin = Integer.MAX_VALUE;
+            maximum = minimum + (int) maxMinusMin;
+        }
+        if (visible > (int) maxMinusMin) {
+            visible = (int) maxMinusMin;
+        }
+        if (visible < 1) {
+            visible = 1;
+        }
+        if (value < minimum) {
+            value = minimum;
+        }
+        if (value > maximum - visible) {
+            value = maximum - visible;
+        }
+        oldValue = this.value;
+        this.value = value;
+        this.visibleAmount = visible;
+        this.minimum = minimum;
+        this.maximum = maximum;
+        ScrollbarPeer peer = (ScrollbarPeer) this.peer;
+        if (peer != null) {
+            peer.setValues(value, visibleAmount, minimum, maximum);
+        }
+    }
+    if ((oldValue != value) && (accessibleContext != null)) {
+        accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_VALUE_PROPERTY, Integer.valueOf(oldValue), Integer.valueOf(value));
+    }
+}

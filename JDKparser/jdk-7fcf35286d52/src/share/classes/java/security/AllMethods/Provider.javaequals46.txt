@@ -1,0 +1,10 @@
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj instanceof ServiceKey == false) {
+        return false;
+    }
+    ServiceKey other = (ServiceKey) obj;
+    return this.type.equals(other.type) && this.algorithm.equals(other.algorithm);
+}

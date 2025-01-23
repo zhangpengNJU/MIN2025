@@ -1,0 +1,125 @@
+/**
+ * Adds the specified component to this container at the specified
+ * index. This method also notifies the layout manager to add
+ * the component to this container's layout using the specified
+ * constraints object via the <code>addLayoutComponent</code>
+ * method.
+ * <p>
+ * The constraints are
+ * defined by the particular layout manager being used.  For
+ * example, the <code>BorderLayout</code> class defines five
+ * constraints: <code>BorderLayout.NORTH</code>,
+ * <code>BorderLayout.SOUTH</code>, <code>BorderLayout.EAST</code>,
+ * <code>BorderLayout.WEST</code>, and <code>BorderLayout.CENTER</code>.
+ * <p>
+ * The <code>GridBagLayout</code> class requires a
+ * <code>GridBagConstraints</code> object.  Failure to pass
+ * the correct type of constraints object results in an
+ * <code>IllegalArgumentException</code>.
+ * <p>
+ * If the current layout manager implements {@code LayoutManager2}, then
+ * {@link LayoutManager2#addLayoutComponent(Component,Object)} is invoked on
+ * it. If the current layout manager does not implement
+ * {@code LayoutManager2}, and constraints is a {@code String}, then
+ * {@link LayoutManager#addLayoutComponent(String,Component)} is invoked on it.
+ * <p>
+ * If the component is not an ancestor of this container and has a non-null
+ * parent, it is removed from its current parent before it is added to this
+ * container.
+ * <p>
+ * This is the method to override if a program needs to track
+ * every add request to a container as all other add methods defer
+ * to this one. An overriding method should
+ * usually include a call to the superclass's version of the method:
+ *
+ * <blockquote>
+ * <code>super.addImpl(comp, constraints, index)</code>
+ * </blockquote>
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * display the added component.
+ *
+ * @param     comp       the component to be added
+ * @param     constraints an object expressing layout constraints
+ *                 for this component
+ * @param     index the position in the container's list at which to
+ *                 insert the component, where <code>-1</code>
+ *                 means append to the end
+ * @exception IllegalArgumentException if {@code index} is invalid;
+ *            if {@code comp} is a child of this container, the valid
+ *            range is {@code [-1, getComponentCount()-1]}; if component is
+ *            not a child of this container, the valid range is
+ *            {@code [-1, getComponentCount()]}
+ *
+ * @exception IllegalArgumentException if {@code comp} is an ancestor of
+ *                                     this container
+ * @exception IllegalArgumentException if adding a window to a container
+ * @exception NullPointerException if {@code comp} is {@code null}
+ * @see       #add(Component)
+ * @see       #add(Component, int)
+ * @see       #add(Component, java.lang.Object)
+ * @see #invalidate
+ * @see       LayoutManager
+ * @see       LayoutManager2
+ * @since     JDK1.1
+ */
+protected void addImpl(Component comp, Object constraints, int index) {
+    synchronized (getTreeLock()) {
+        /* Check for correct arguments:  index in bounds,
+             * comp cannot be one of this container's parents,
+             * and comp cannot be a window.
+             * comp and container must be on the same GraphicsDevice.
+             * if comp is container, all sub-components must be on
+             * same GraphicsDevice.
+             */
+        GraphicsConfiguration thisGC = this.getGraphicsConfiguration();
+        if (index > component.size() || (index < 0 && index != -1)) {
+            throw new IllegalArgumentException("illegal component position");
+        }
+        checkAddToSelf(comp);
+        checkNotAWindow(comp);
+        /* Reparent the component and tidy up the tree's state. */
+        if (comp.parent != null) {
+            comp.parent.remove(comp);
+            if (index > component.size()) {
+                throw new IllegalArgumentException("illegal component position");
+            }
+        }
+        if (thisGC != null) {
+            comp.checkGD(thisGC.getDevice().getIDstring());
+        }
+        // index == -1 means add to the end.
+        if (index == -1) {
+            component.add(comp);
+        } else {
+            component.add(index, comp);
+        }
+        comp.parent = this;
+        comp.setGraphicsConfiguration(thisGC);
+        adjustListeningChildren(AWTEvent.HIERARCHY_EVENT_MASK, comp.numListening(AWTEvent.HIERARCHY_EVENT_MASK));
+        adjustListeningChildren(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK, comp.numListening(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK));
+        adjustDescendants(comp.countHierarchyMembers());
+        invalidateIfValid();
+        if (peer != null) {
+            comp.addNotify();
+        }
+        /* Notify the layout manager of the added component. */
+        if (layoutMgr != null) {
+            if (layoutMgr instanceof LayoutManager2) {
+                ((LayoutManager2) layoutMgr).addLayoutComponent(comp, constraints);
+            } else if (constraints instanceof String) {
+                layoutMgr.addLayoutComponent((String) constraints, comp);
+            }
+        }
+        if (containerListener != null || (eventMask & AWTEvent.CONTAINER_EVENT_MASK) != 0 || Toolkit.enabledOnToolkit(AWTEvent.CONTAINER_EVENT_MASK)) {
+            ContainerEvent e = new ContainerEvent(this, ContainerEvent.COMPONENT_ADDED, comp);
+            dispatchEvent(e);
+        }
+        comp.createHierarchyEvents(HierarchyEvent.HIERARCHY_CHANGED, comp, this, HierarchyEvent.PARENT_CHANGED, Toolkit.enabledOnToolkit(AWTEvent.HIERARCHY_EVENT_MASK));
+        if (peer != null && layoutMgr == null && isVisible()) {
+            updateCursorImmediately();
+        }
+    }
+}

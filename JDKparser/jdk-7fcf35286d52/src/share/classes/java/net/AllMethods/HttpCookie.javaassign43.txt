@@ -1,0 +1,8 @@
+public void assign(HttpCookie cookie, String attrName, String attrValue) {
+    try {
+        int version = Integer.parseInt(attrValue);
+        cookie.setVersion(version);
+    } catch (NumberFormatException ignored) {
+    // Just ignore bogus version, it will default to 0 or 1
+    }
+}

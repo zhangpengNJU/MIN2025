@@ -1,0 +1,17 @@
+/**
+ * Returns an <code>Image</code> object that can then be painted on
+ * the screen. The <code>url</code> that is passed as an argument
+ * must specify an absolute URL.
+ * <p>
+ * This method always returns immediately, whether or not the image
+ * exists. When this applet attempts to draw the image on the screen,
+ * the data will be loaded. The graphics primitives that draw the
+ * image will incrementally paint on the screen.
+ *
+ * @param   url   an absolute URL giving the location of the image.
+ * @return  the image at the specified URL.
+ * @see     java.awt.Image
+ */
+public Image getImage(URL url) {
+    return getAppletContext().getImage(url);
+}

@@ -1,0 +1,11 @@
+// 
+// Auxiliary methods.
+// 
+static SpeciesData getSpeciesDataFromConcreteBMHClass(Class<? extends BoundMethodHandle> cbmh) {
+    try {
+        Field F_SPECIES_DATA = cbmh.getDeclaredField("SPECIES_DATA");
+        return (SpeciesData) F_SPECIES_DATA.get(null);
+    } catch (ReflectiveOperationException ex) {
+        throw newInternalError(ex);
+    }
+}

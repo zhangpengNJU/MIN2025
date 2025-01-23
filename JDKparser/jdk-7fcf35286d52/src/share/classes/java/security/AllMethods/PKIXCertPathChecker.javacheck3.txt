@@ -1,0 +1,14 @@
+/**
+ * Performs the check(s) on the specified certificate using its internal
+ * state and removes any critical extensions that it processes from the
+ * specified collection of OID strings that represent the unresolved
+ * critical extensions. The certificates are presented in the order
+ * specified by the {@code init} method.
+ *
+ * @param cert the {@code Certificate} to be checked
+ * @param unresolvedCritExts a {@code Collection} of OID strings
+ * representing the current set of unresolved critical extensions
+ * @exception CertPathValidatorException if the specified certificate does
+ * not pass the check
+ */
+public abstract void check(Certificate cert, Collection<String> unresolvedCritExts) throws CertPathValidatorException;

@@ -1,0 +1,46 @@
+/**
+ * Sets field parameters to their values given by
+ * {@code fieldValuePairs} that are pairs of a field and its value.
+ * For example,
+ * <pre>
+ *   setFeilds(Calendar.YEAR, 2013,
+ *             Calendar.MONTH, Calendar.DECEMBER,
+ *             Calendar.DAY_OF_MONTH, 23);</pre>
+ * is equivalent to the sequence of the following
+ * {@link #set(int, int) set} calls:
+ * <pre>
+ *   set(Calendar.YEAR, 2013)
+ *   .set(Calendar.MONTH, Calendar.DECEMBER)
+ *   .set(Calendar.DAY_OF_MONTH, 23);</pre>
+ *
+ * @param fieldValuePairs field-value pairs
+ * @return this {@code Calendar.Builder}
+ * @throws NullPointerException if {@code fieldValuePairs} is {@code null}
+ * @throws IllegalArgumentException if any of fields are invalid,
+ *             or if {@code fieldValuePairs.length} is an odd number.
+ * @throws IllegalStateException    if the instant value has been set,
+ *             or if fields have been set too many (approximately
+ *             {@link Integer#MAX_VALUE}) times.
+ */
+public Builder setFields(int... fieldValuePairs) {
+    int len = fieldValuePairs.length;
+    if ((len % 2) != 0) {
+        throw new IllegalArgumentException();
+    }
+    if (isInstantSet()) {
+        throw new IllegalStateException("instant has been set");
+    }
+    if ((nextStamp + len / 2) < 0) {
+        throw new IllegalStateException("stamp counter overflow");
+    }
+    allocateFields();
+    for (int i = 0; i < len; ) {
+        int field = fieldValuePairs[i++];
+        // Note: WEEK_YEAR can't be set with this method.
+        if (field < 0 || field >= FIELD_COUNT) {
+            throw new IllegalArgumentException("field is invalid");
+        }
+        internalSet(field, fieldValuePairs[i++]);
+    }
+    return this;
+}

@@ -1,0 +1,13 @@
+/* ------------------------------------------------------------ */
+// LinkedHashMap support
+/*
+     * The following package-protected methods are designed to be
+     * overridden by LinkedHashMap, but not by any other subclass.
+     * Nearly all other internal methods are also package-protected
+     * but are declared final, so can be used by LinkedHashMap, view
+     * classes, and HashSet.
+     */
+// Create a regular (non-tree) node
+Node<K, V> newNode(int hash, K key, V value, Node<K, V> next) {
+    return new Node<>(hash, key, value, next);
+}

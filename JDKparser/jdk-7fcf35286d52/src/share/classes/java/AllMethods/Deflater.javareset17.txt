@@ -1,0 +1,14 @@
+/**
+ * Resets deflater so that a new set of input data can be processed.
+ * Keeps current compression level and strategy settings.
+ */
+public void reset() {
+    synchronized (zsRef) {
+        ensureOpen();
+        reset(zsRef.address());
+        finish = false;
+        finished = false;
+        off = len = 0;
+        bytesRead = bytesWritten = 0;
+    }
+}

@@ -1,0 +1,33 @@
+/**
+ * Returns a Set of default focus traversal keys for a given traversal
+ * operation. This traversal key Set will be in effect on all Windows that
+ * have no such Set of their own explicitly defined. This Set will also be
+ * inherited, recursively, by any child Component of those Windows that has
+ * no such Set of its own explicitly defined. (See
+ * <code>setDefaultFocusTraversalKeys</code> for a full description of each
+ * operation.)
+ *
+ * @param id one of KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *        KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+ *        KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, or
+ *        KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS
+ * @return the <code>Set</code> of <code>AWTKeyStroke</code>s
+ *         for the specified operation; the <code>Set</code>
+ *         will be unmodifiable, and may be empty; <code>null</code>
+ *         will never be returned
+ * @see #setDefaultFocusTraversalKeys
+ * @see Component#setFocusTraversalKeys
+ * @see Component#getFocusTraversalKeys
+ * @throws IllegalArgumentException if id is not one of
+ *         KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, or
+ *         KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS
+ */
+public Set<AWTKeyStroke> getDefaultFocusTraversalKeys(int id) {
+    if (id < 0 || id >= TRAVERSAL_KEY_LENGTH) {
+        throw new IllegalArgumentException("invalid focus traversal key identifier");
+    }
+    // Okay to return Set directly because it is an unmodifiable view
+    return defaultFocusTraversalKeys[id];
+}

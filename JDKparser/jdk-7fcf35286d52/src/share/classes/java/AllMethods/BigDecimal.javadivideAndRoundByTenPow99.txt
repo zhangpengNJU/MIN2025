@@ -1,0 +1,10 @@
+/*
+     * Divides {@code BigInteger} value by ten power.
+     */
+private static BigInteger divideAndRoundByTenPow(BigInteger intVal, int tenPow, int roundingMode) {
+    if (tenPow < LONG_TEN_POWERS_TABLE.length)
+        intVal = divideAndRound(intVal, LONG_TEN_POWERS_TABLE[tenPow], roundingMode);
+    else
+        intVal = divideAndRound(intVal, bigTenToThe(tenPow), roundingMode);
+    return intVal;
+}

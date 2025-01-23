@@ -1,0 +1,26 @@
+String toString(byte[] ba, int length) {
+    CharsetDecoder cd = decoder().reset();
+    int len = (int) (length * cd.maxCharsPerByte());
+    char[] ca = new char[len];
+    if (len == 0)
+        return new String(ca);
+    // UTF-8 only for now. Other ArrayDeocder only handles
+    // CodingErrorAction.REPLACE mode. ZipCoder uses
+    // REPORT mode.
+    if (isUTF8 && cd instanceof ArrayDecoder) {
+        int clen = ((ArrayDecoder) cd).decode(ba, 0, length, ca);
+        if (// malformed
+        clen == -1)
+            throw new IllegalArgumentException("MALFORMED");
+        return new String(ca, 0, clen);
+    }
+    ByteBuffer bb = ByteBuffer.wrap(ba, 0, length);
+    CharBuffer cb = CharBuffer.wrap(ca);
+    CoderResult cr = cd.decode(bb, cb, true);
+    if (!cr.isUnderflow())
+        throw new IllegalArgumentException(cr.toString());
+    cr = cd.flush(cb);
+    if (!cr.isUnderflow())
+        throw new IllegalArgumentException(cr.toString());
+    return new String(ca, 0, cb.position());
+}

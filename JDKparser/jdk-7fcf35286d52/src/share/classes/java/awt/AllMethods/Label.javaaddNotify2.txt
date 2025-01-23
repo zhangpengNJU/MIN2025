@@ -1,0 +1,12 @@
+/**
+ * Creates the peer for this label.  The peer allows us to
+ * modify the appearance of the label without changing its
+ * functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createLabel(this);
+        super.addNotify();
+    }
+}

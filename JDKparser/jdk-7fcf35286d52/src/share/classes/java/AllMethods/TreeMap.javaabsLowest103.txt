@@ -1,0 +1,9 @@
+/*
+         * Absolute versions of relation operations.
+         * Subclasses map to these using like-named "sub"
+         * versions that invert senses for descending maps
+         */
+final TreeMap.Entry<K, V> absLowest() {
+    TreeMap.Entry<K, V> e = (fromStart ? m.getFirstEntry() : (loInclusive ? m.getCeilingEntry(lo) : m.getHigherEntry(lo)));
+    return (e == null || tooHigh(e.key)) ? null : e;
+}

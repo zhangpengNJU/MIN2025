@@ -1,0 +1,18 @@
+/**
+ * {@code BinaryOperator<Map>} that merges the contents of its right
+ * argument into its left argument, using the provided merge function to
+ * handle duplicate keys.
+ *
+ * @param <K> type of the map keys
+ * @param <V> type of the map values
+ * @param <M> type of the map
+ * @param mergeFunction A merge function suitable for
+ * {@link Map#merge(Object, Object, BiFunction) Map.merge()}
+ * @return a merge function for two maps
+ */
+private static <K, V, M extends Map<K, V>> BinaryOperator<M> mapMerger(BinaryOperator<V> mergeFunction) {
+    return (m1, m2) -> {
+        for (Map.Entry<K, V> e : m2.entrySet()) m1.merge(e.getKey(), e.getValue(), mergeFunction);
+        return m1;
+    };
+}

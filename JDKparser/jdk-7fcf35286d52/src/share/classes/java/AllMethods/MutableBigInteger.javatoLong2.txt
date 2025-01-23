@@ -1,0 +1,11 @@
+/**
+ * Convert this MutableBigInteger to a long value. The caller has to make
+ * sure this MutableBigInteger can be fit into long.
+ */
+private long toLong() {
+    assert (intLen <= 2) : "this MutableBigInteger exceeds the range of long";
+    if (intLen == 0)
+        return 0;
+    long d = value[offset] & LONG_MASK;
+    return (intLen == 2) ? d << 32 | (value[offset + 1] & LONG_MASK) : d;
+}

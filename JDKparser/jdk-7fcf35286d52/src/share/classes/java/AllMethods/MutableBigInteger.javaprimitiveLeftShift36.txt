@@ -1,0 +1,15 @@
+/**
+ * Left shift this MutableBigInteger n bits, where n is
+ * less than 32.
+ * Assumes that intLen > 0, n > 0 for speed
+ */
+private final void primitiveLeftShift(int n) {
+    int[] val = value;
+    int n2 = 32 - n;
+    for (int i = offset, c = val[i], m = i + intLen - 1; i < m; i++) {
+        int b = c;
+        c = val[i + 1];
+        val[i] = (b << n) | (c >>> n2);
+    }
+    val[offset + intLen - 1] <<= n;
+}

@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setLocation(int, int)</code>.
+ */
+@Deprecated
+public void move(int x, int y) {
+    synchronized (getTreeLock()) {
+        setBoundsOp(ComponentPeer.SET_LOCATION);
+        setBounds(x, y, width, height);
+    }
+}

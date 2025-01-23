@@ -1,0 +1,34 @@
+/**
+ * Adds the specified thread to this thread group.
+ *
+ * <p> Note: This method is called from both library code
+ * and the Virtual Machine. It is called from VM to add
+ * certain system threads to the system thread group.
+ *
+ * @param  t
+ *         the Thread to be added
+ *
+ * @throws  IllegalThreadStateException
+ *          if the Thread group has been destroyed
+ */
+void add(Thread t) {
+    synchronized (this) {
+        if (destroyed) {
+            throw new IllegalThreadStateException();
+        }
+        if (threads == null) {
+            threads = new Thread[4];
+        } else if (nthreads == threads.length) {
+            threads = Arrays.copyOf(threads, nthreads * 2);
+        }
+        threads[nthreads] = t;
+        // This is done last so it doesn't matter in case the
+        // thread is killed
+        nthreads++;
+        // The thread is now a fully fledged member of the group, even
+        // though it may, or may not, have been started yet. It will prevent
+        // the group from being destroyed so the unstarted Threads count is
+        // decremented.
+        nUnstartedThreads--;
+    }
+}

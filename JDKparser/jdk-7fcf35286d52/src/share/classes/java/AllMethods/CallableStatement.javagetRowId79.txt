@@ -1,0 +1,17 @@
+// ------------------------- JDBC 4.0 -----------------------------------
+/**
+ * Retrieves the value of the designated JDBC <code>ROWID</code> parameter as a
+ * <code>java.sql.RowId</code> object.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,...
+ * @return a <code>RowId</code> object that represents the JDBC <code>ROWID</code>
+ *     value is used as the designated parameter. If the parameter contains
+ * a SQL <code>NULL</code>, then a <code>null</code> value is returned.
+ * @throws SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+RowId getRowId(int parameterIndex) throws SQLException;

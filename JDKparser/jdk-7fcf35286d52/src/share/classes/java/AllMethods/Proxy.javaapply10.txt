@@ -1,0 +1,14 @@
+@Override
+public Object apply(ClassLoader classLoader, Class<?>[] interfaces) {
+    switch(interfaces.length) {
+        // the most frequent
+        case 1:
+            return new Key1(interfaces[0]);
+        case 2:
+            return new Key2(interfaces[0], interfaces[1]);
+        case 0:
+            return key0;
+        default:
+            return new KeyX(interfaces);
+    }
+}

@@ -1,0 +1,49 @@
+// Join the segments in the given path according to the given segment-index
+// array, ignoring those segments whose index entries have been set to -1,
+// and inserting slashes as needed.  Return the length of the resulting
+// path.
+// 
+// Preconditions:
+// segs[i] == -1 implies segment i is to be ignored
+// path computed by split, as above, with '\0' having replaced '/'
+// 
+// Postconditions:
+// path[0] .. path[return value] == Resulting path
+// 
+static private int join(char[] path, int[] segs) {
+    // Number of segments
+    int ns = segs.length;
+    // Index of last char in path
+    int end = path.length - 1;
+    // Index of next path char to write
+    int p = 0;
+    if (path[p] == '\0') {
+        // Restore initial slash for absolute paths
+        path[p++] = '/';
+    }
+    for (int i = 0; i < ns; i++) {
+        // Current segment
+        int q = segs[i];
+        if (q == -1)
+            // Ignore this segment
+            continue;
+        if (p == q) {
+            // We're already at this segment, so just skip to its end
+            while ((p <= end) && (path[p] != '\0')) p++;
+            if (p <= end) {
+                // Preserve trailing slash
+                path[p++] = '/';
+            }
+        } else if (p < q) {
+            // Copy q down to p
+            while ((q <= end) && (path[q] != '\0')) path[p++] = path[q++];
+            if (q <= end) {
+                // Preserve trailing slash
+                path[p++] = '/';
+            }
+        } else
+            // ASSERT false
+            throw new InternalError();
+    }
+    return p;
+}

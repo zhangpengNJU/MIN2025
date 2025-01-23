@@ -1,0 +1,21 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a copy of this date with the specified number of years subtracted.
+ * <p>
+ * This subtracts the specified period in years to the date.
+ * In some cases, subtracting years can cause the resulting date to become invalid.
+ * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+ * that the result is valid. Typically this will select the last valid day of the month.
+ * <p>
+ * The default implementation uses {@link #plusYears(long)}.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param yearsToSubtract  the years to subtract, may be negative
+ * @return a date based on this one with the years subtracted, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+@SuppressWarnings("unchecked")
+D minusYears(long yearsToSubtract) {
+    return (yearsToSubtract == Long.MIN_VALUE ? ((ChronoLocalDateImpl<D>) plusYears(Long.MAX_VALUE)).plusYears(1) : plusYears(-yearsToSubtract));
+}

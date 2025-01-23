@@ -1,0 +1,34 @@
+// Private version of parse() that will store the original header used to
+// create the cookie, in the cookie itself. This can be useful for filtering
+// Set-Cookie[2] headers, using the internal parsing logic defined in this
+// class.
+private static List<HttpCookie> parse(String header, boolean retainHeader) {
+    int version = guessCookieVersion(header);
+    // if header start with set-cookie or set-cookie2, strip it off
+    if (startsWithIgnoreCase(header, SET_COOKIE2)) {
+        header = header.substring(SET_COOKIE2.length());
+    } else if (startsWithIgnoreCase(header, SET_COOKIE)) {
+        header = header.substring(SET_COOKIE.length());
+    }
+    List<HttpCookie> cookies = new java.util.ArrayList<>();
+    // The Netscape cookie may have a comma in its expires attribute, while
+    // the comma is the delimiter in rfc 2965/2109 cookie header string.
+    // so the parse logic is slightly different
+    if (version == 0) {
+        // Netscape draft cookie
+        HttpCookie cookie = parseInternal(header, retainHeader);
+        cookie.setVersion(0);
+        cookies.add(cookie);
+    } else {
+        // rfc2965/2109 cookie
+        // if header string contains more than one cookie,
+        // it'll separate them with comma
+        List<String> cookieStrings = splitMultiCookies(header);
+        for (String cookieStr : cookieStrings) {
+            HttpCookie cookie = parseInternal(cookieStr, retainHeader);
+            cookie.setVersion(1);
+            cookies.add(cookie);
+        }
+    }
+    return cookies;
+}

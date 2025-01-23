@@ -1,0 +1,39 @@
+/**
+ * Returns whether the system tray is supported on the current
+ * platform.  In addition to displaying the tray icon, minimal
+ * system tray support includes either a popup menu (see {@link
+ * TrayIcon#setPopupMenu(PopupMenu)}) or an action event (see
+ * {@link TrayIcon#addActionListener(ActionListener)}).
+ *
+ * <p>Developers should not assume that all of the system tray
+ * functionality is supported.  To guarantee that the tray icon's
+ * default action is always accessible, add the default action to
+ * both the action listener and the popup menu.  See the {@link
+ * SystemTray example} for an example of how to do this.
+ *
+ * <p><b>Note</b>: When implementing <code>SystemTray</code> and
+ * <code>TrayIcon</code> it is <em>strongly recommended</em> that
+ * you assign different gestures to the popup menu and an action
+ * event.  Overloading a gesture for both purposes is confusing
+ * and may prevent the user from accessing one or the other.
+ *
+ * @see #getSystemTray
+ * @return <code>false</code> if no system tray access is supported; this
+ * method returns <code>true</code> if the minimal system tray access is
+ * supported but does not guarantee that all system tray
+ * functionality is supported for the current platform
+ */
+public static boolean isSupported() {
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    if (toolkit instanceof SunToolkit) {
+        // connecting tray to native resource
+        initializeSystemTrayIfNeeded();
+        return ((SunToolkit) toolkit).isTraySupported();
+    } else if (toolkit instanceof HeadlessToolkit) {
+        // skip initialization as the init routine
+        // throws HeadlessException
+        return ((HeadlessToolkit) toolkit).isTraySupported();
+    } else {
+        return false;
+    }
+}

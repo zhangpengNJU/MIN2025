@@ -1,0 +1,28 @@
+/**
+ * Sets the WEEK_OF_MONTH and WEEK_OF_YEAR fields to new values with the
+ * new parameter value if they have been calculated internally.
+ */
+private void invalidateWeekFields() {
+    if (stamp[WEEK_OF_MONTH] != COMPUTED && stamp[WEEK_OF_YEAR] != COMPUTED) {
+        return;
+    }
+    // We have to check the new values of these fields after changing
+    // firstDayOfWeek and/or minimalDaysInFirstWeek. If the field values
+    // have been changed, then set the new values. (4822110)
+    Calendar cal = (Calendar) clone();
+    cal.setLenient(true);
+    cal.clear(WEEK_OF_MONTH);
+    cal.clear(WEEK_OF_YEAR);
+    if (stamp[WEEK_OF_MONTH] == COMPUTED) {
+        int weekOfMonth = cal.get(WEEK_OF_MONTH);
+        if (fields[WEEK_OF_MONTH] != weekOfMonth) {
+            fields[WEEK_OF_MONTH] = weekOfMonth;
+        }
+    }
+    if (stamp[WEEK_OF_YEAR] == COMPUTED) {
+        int weekOfYear = cal.get(WEEK_OF_YEAR);
+        if (fields[WEEK_OF_YEAR] != weekOfYear) {
+            fields[WEEK_OF_YEAR] = weekOfYear;
+        }
+    }
+}

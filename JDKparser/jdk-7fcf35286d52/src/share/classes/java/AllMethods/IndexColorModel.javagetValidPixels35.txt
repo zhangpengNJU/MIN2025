@@ -1,0 +1,17 @@
+/**
+ * Returns a <code>BigInteger</code> that indicates the valid/invalid
+ * pixels in the colormap.  A bit is valid if the
+ * <code>BigInteger</code> value at that index is set, and is invalid
+ * if the <code>BigInteger</code> value at that index is not set.
+ * The only valid ranges to query in the <code>BigInteger</code> are
+ * between 0 and the map size.
+ * @return a <code>BigInteger</code> indicating the valid/invalid pixels.
+ * @since 1.3
+ */
+public BigInteger getValidPixels() {
+    if (validBits == null) {
+        return getAllValid();
+    } else {
+        return validBits;
+    }
+}

@@ -1,0 +1,27 @@
+/**
+ * Removes first entry; returns its snapshot.
+ * @return null if empty, else snapshot of first entry
+ */
+private Map.Entry<K, V> doRemoveFirstEntry() {
+    for (Node<K, V> b, n; ; ) {
+        if ((n = (b = head.node).next) == null)
+            return null;
+        Node<K, V> f = n.next;
+        if (n != b.next)
+            continue;
+        Object v = n.value;
+        if (v == null) {
+            n.helpDelete(b, f);
+            continue;
+        }
+        if (!n.casValue(v, null))
+            continue;
+        if (!n.appendMarker(f) || !b.casNext(n, f))
+            // retry
+            findFirst();
+        clearIndexToFirst();
+        @SuppressWarnings("unchecked")
+        V vv = (V) v;
+        return new AbstractMap.SimpleImmutableEntry<K, V>(n.key, vv);
+    }
+}

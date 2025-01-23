@@ -1,0 +1,16 @@
+/**
+ * Appends the string representation of the {@code double}
+ * argument to this sequence.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(double)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   d   a {@code double}.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(double d) {
+    FloatingDecimal.appendTo(d, this);
+    return this;
+}

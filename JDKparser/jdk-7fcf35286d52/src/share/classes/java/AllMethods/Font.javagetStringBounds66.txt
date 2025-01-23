@@ -1,0 +1,31 @@
+/**
+ * Returns the logical bounds of the specified <code>String</code> in
+ * the specified <code>FontRenderContext</code>.  The logical bounds
+ * contains the origin, ascent, advance, and height, which includes
+ * the leading.  The logical bounds does not always enclose all the
+ * text.  For example, in some languages and in some fonts, accent
+ * marks can be positioned above the ascent or below the descent.
+ * To obtain a visual bounding box, which encloses all the text,
+ * use the {@link TextLayout#getBounds() getBounds} method of
+ * <code>TextLayout</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.Font class notes}).
+ * @param str the specified <code>String</code>
+ * @param beginIndex the initial offset of <code>str</code>
+ * @param limit the end offset of <code>str</code>
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>Rectangle2D</code> that is the bounding box of the
+ * specified <code>String</code> in the specified
+ * <code>FontRenderContext</code>.
+ * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+ *         less than zero, or <code>limit</code> is greater than the
+ *         length of <code>str</code>, or <code>beginIndex</code>
+ *         is greater than <code>limit</code>.
+ * @see FontRenderContext
+ * @see Font#createGlyphVector
+ * @since 1.2
+ */
+public Rectangle2D getStringBounds(String str, int beginIndex, int limit, FontRenderContext frc) {
+    String substr = str.substring(beginIndex, limit);
+    return getStringBounds(substr, frc);
+}

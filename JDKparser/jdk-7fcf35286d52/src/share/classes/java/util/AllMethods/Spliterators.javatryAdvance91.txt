@@ -1,0 +1,10 @@
+@Override
+public boolean tryAdvance(IntConsumer action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (it.hasNext()) {
+        action.accept(it.nextInt());
+        return true;
+    }
+    return false;
+}

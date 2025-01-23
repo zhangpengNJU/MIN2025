@@ -1,0 +1,19 @@
+/**
+ * Sets the flags component of this builder. On return, the flags
+ * component of this builder is a copy of the flags in the given
+ * array.
+ *
+ * @param   flags  the flags component
+ * @return  this builder
+ */
+public Builder setFlags(AclEntryFlag... flags) {
+    Set<AclEntryFlag> set = EnumSet.noneOf(AclEntryFlag.class);
+    // copy and check for null elements
+    for (AclEntryFlag f : flags) {
+        if (f == null)
+            throw new NullPointerException();
+        set.add(f);
+    }
+    this.flags = set;
+    return this;
+}

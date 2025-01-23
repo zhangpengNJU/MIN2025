@@ -1,0 +1,5 @@
+private static void maybeCompile(LambdaForm lform, MemberName m) {
+    if (VerifyAccess.isSamePackage(m.getDeclaringClass(), MethodHandle.class))
+        // Help along bootstrapping...
+        lform.compileToBytecode();
+}

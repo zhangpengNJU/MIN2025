@@ -1,0 +1,37 @@
+/**
+ * Retrieves a description of the access rights for a table's columns.
+ *
+ * <P>Only privileges matching the column name criteria are
+ * returned.  They are ordered by COLUMN_NAME and PRIVILEGE.
+ *
+ * <P>Each privilege description has the following columns:
+ *  <OL>
+ *  <LI><B>TABLE_CAT</B> String {@code =>} table catalog (may be <code>null</code>)
+ *  <LI><B>TABLE_SCHEM</B> String {@code =>} table schema (may be <code>null</code>)
+ *  <LI><B>TABLE_NAME</B> String {@code =>} table name
+ *  <LI><B>COLUMN_NAME</B> String {@code =>} column name
+ *  <LI><B>GRANTOR</B> String {@code =>} grantor of access (may be <code>null</code>)
+ *  <LI><B>GRANTEE</B> String {@code =>} grantee of access
+ *  <LI><B>PRIVILEGE</B> String {@code =>} name of access (SELECT,
+ *      INSERT, UPDATE, REFRENCES, ...)
+ *  <LI><B>IS_GRANTABLE</B> String {@code =>} "YES" if grantee is permitted
+ *      to grant to others; "NO" if not; <code>null</code> if unknown
+ *  </OL>
+ *
+ * @param catalog a catalog name; must match the catalog name as it
+ *        is stored in the database; "" retrieves those without a catalog;
+ *        <code>null</code> means that the catalog name should not be used to narrow
+ *        the search
+ * @param schema a schema name; must match the schema name as it is
+ *        stored in the database; "" retrieves those without a schema;
+ *        <code>null</code> means that the schema name should not be used to narrow
+ *        the search
+ * @param table a table name; must match the table name as it is
+ *        stored in the database
+ * @param columnNamePattern a column name pattern; must match the column
+ *        name as it is stored in the database
+ * @return <code>ResultSet</code> - each row is a column privilege description
+ * @exception SQLException if a database access error occurs
+ * @see #getSearchStringEscape
+ */
+ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern) throws SQLException;

@@ -1,0 +1,25 @@
+/**
+ * Writes <code>len</code> bytes from the specified byte array
+ * starting at offset <code>off</code> to this piped output stream.
+ * This method blocks until all the bytes are written to the output
+ * stream.
+ *
+ * @param      b     the data.
+ * @param      off   the start offset in the data.
+ * @param      len   the number of bytes to write.
+ * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
+ *          {@link #connect(java.io.PipedInputStream) unconnected},
+ *          closed, or if an I/O error occurs.
+ */
+public void write(byte[] b, int off, int len) throws IOException {
+    if (sink == null) {
+        throw new IOException("Pipe not connected");
+    } else if (b == null) {
+        throw new NullPointerException();
+    } else if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0) {
+        return;
+    }
+    sink.receive(b, off, len);
+}

@@ -1,0 +1,43 @@
+/**
+ *  Returns a gamma value representing the tone reproduction curve
+ *  (TRC) for a particular component.  The component parameter
+ *  must be one of REDCOMPONENT, GREENCOMPONENT, or BLUECOMPONENT.
+ *  <p>
+ *  If the profile
+ *  represents the TRC for the corresponding component
+ *  as a table rather than a single gamma value, an
+ *  exception is thrown.  In this case the actual table
+ *  can be obtained through the {@link #getTRC(int)} method.
+ *  When using a gamma value,
+ *  the linear component (R, G, or B) is computed as follows:
+ *  <pre>
+ *
+ *  &nbsp;                                         gamma
+ *  &nbsp;        linearComponent = deviceComponent
+ *
+ * </pre>
+ *  @param component The <CODE>ICC_ProfileRGB</CODE> constant that
+ *  represents the component whose TRC you want to retrieve
+ *  @return the gamma value as a float.
+ *  @exception ProfileDataException if the profile does not specify
+ *             the corresponding TRC as a single gamma value.
+ */
+public float getGamma(int component) {
+    float theGamma;
+    int theSignature;
+    switch(component) {
+        case REDCOMPONENT:
+            theSignature = ICC_Profile.icSigRedTRCTag;
+            break;
+        case GREENCOMPONENT:
+            theSignature = ICC_Profile.icSigGreenTRCTag;
+            break;
+        case BLUECOMPONENT:
+            theSignature = ICC_Profile.icSigBlueTRCTag;
+            break;
+        default:
+            throw new IllegalArgumentException("Must be Red, Green, or Blue");
+    }
+    theGamma = super.getGamma(theSignature);
+    return theGamma;
+}

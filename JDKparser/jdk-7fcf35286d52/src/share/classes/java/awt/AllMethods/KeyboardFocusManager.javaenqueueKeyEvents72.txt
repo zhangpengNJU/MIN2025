@@ -1,0 +1,21 @@
+/**
+ * Called by the AWT to notify the KeyboardFocusManager that it should
+ * delay dispatching of KeyEvents until the specified Component becomes
+ * the focus owner. If client code requests a focus change, and the AWT
+ * determines that this request might be granted by the native windowing
+ * system, then the AWT will call this method. It is the responsibility of
+ * the KeyboardFocusManager to delay dispatching of KeyEvents with
+ * timestamps later than the specified time stamp until the specified
+ * Component receives a FOCUS_GAINED event, or the AWT cancels the delay
+ * request by invoking <code>dequeueKeyEvents</code> or
+ * <code>discardKeyEvents</code>.
+ *
+ * @param after timestamp of current event, or the current, system time if
+ *        the current event has no timestamp, or the AWT cannot determine
+ *        which event is currently being handled
+ * @param untilFocused Component which should receive a FOCUS_GAINED event
+ *        before any pending KeyEvents
+ * @see #dequeueKeyEvents
+ * @see #discardKeyEvents
+ */
+protected abstract void enqueueKeyEvents(long after, Component untilFocused);

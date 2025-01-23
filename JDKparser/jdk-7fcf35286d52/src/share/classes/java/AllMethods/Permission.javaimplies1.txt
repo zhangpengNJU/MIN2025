@@ -1,0 +1,17 @@
+/**
+ * Checks if the specified permission's actions are "implied by"
+ * this object's actions.
+ * <P>
+ * This must be implemented by subclasses of Permission, as they are the
+ * only ones that can impose semantics on a Permission object.
+ *
+ * <p>The {@code implies} method is used by the AccessController to determine
+ * whether or not a requested permission is implied by another permission that
+ * is known to be valid in the current execution context.
+ *
+ * @param permission the permission to check against.
+ *
+ * @return true if the specified permission is implied by this object,
+ * false if not.
+ */
+public abstract boolean implies(Permission permission);

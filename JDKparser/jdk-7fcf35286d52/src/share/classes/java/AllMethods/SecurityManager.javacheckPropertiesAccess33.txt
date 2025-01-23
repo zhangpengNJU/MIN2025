@@ -1,0 +1,26 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to access or modify the system
+ * properties.
+ * <p>
+ * This method is used by the <code>getProperties</code> and
+ * <code>setProperties</code> methods of class <code>System</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>PropertyPermission("*", "read,write")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkPropertiesAccess</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ * <p>
+ *
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to access or modify the system properties.
+ * @see        java.lang.System#getProperties()
+ * @see        java.lang.System#setProperties(java.util.Properties)
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkPropertiesAccess() {
+    checkPermission(new PropertyPermission("*", SecurityConstants.PROPERTY_RW_ACTION));
+}

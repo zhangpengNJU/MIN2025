@@ -1,0 +1,76 @@
+/**
+ * Creates a new <code>ComponentSampleModel</code> with the specified
+ * width and height.  The new <code>SampleModel</code> will have the same
+ * number of bands, storage data type, interleaving scheme, and
+ * pixel stride as this <code>SampleModel</code>.
+ * @param w the width of the resulting <code>SampleModel</code>
+ * @param h the height of the resulting <code>SampleModel</code>
+ * @return a new <code>ComponentSampleModel</code> with the specified size
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    SampleModel ret = null;
+    long size;
+    int minBandOff = bandOffsets[0];
+    int maxBandOff = bandOffsets[0];
+    for (int i = 1; i < bandOffsets.length; i++) {
+        minBandOff = Math.min(minBandOff, bandOffsets[i]);
+        maxBandOff = Math.max(maxBandOff, bandOffsets[i]);
+    }
+    maxBandOff -= minBandOff;
+    int bands = bandOffsets.length;
+    int[] bandOff;
+    int pStride = Math.abs(pixelStride);
+    int lStride = Math.abs(scanlineStride);
+    int bStride = Math.abs(maxBandOff);
+    if (pStride > lStride) {
+        if (pStride > bStride) {
+            if (lStride > bStride) {
+                // pix > line > band
+                bandOff = new int[bandOffsets.length];
+                for (int i = 0; i < bands; i++) bandOff[i] = bandOffsets[i] - minBandOff;
+                lStride = bStride + 1;
+                pStride = lStride * h;
+            } else {
+                // pix > band > line
+                bandOff = orderBands(bandOffsets, lStride * h);
+                pStride = bands * lStride * h;
+            }
+        } else {
+            // band > pix > line
+            pStride = lStride * h;
+            bandOff = orderBands(bandOffsets, pStride * w);
+        }
+    } else {
+        if (pStride > bStride) {
+            // line > pix > band
+            bandOff = new int[bandOffsets.length];
+            for (int i = 0; i < bands; i++) bandOff[i] = bandOffsets[i] - minBandOff;
+            pStride = bStride + 1;
+            lStride = pStride * w;
+        } else {
+            if (lStride > bStride) {
+                // line > band > pix
+                bandOff = orderBands(bandOffsets, pStride * w);
+                lStride = bands * pStride * w;
+            } else {
+                // band > line > pix
+                lStride = pStride * w;
+                bandOff = orderBands(bandOffsets, lStride * h);
+            }
+        }
+    }
+    // make sure we make room for negative offsets...
+    int base = 0;
+    if (scanlineStride < 0) {
+        base += lStride * h;
+        lStride *= -1;
+    }
+    if (pixelStride < 0) {
+        base += pStride * w;
+        pStride *= -1;
+    }
+    for (int i = 0; i < bands; i++) bandOff[i] += base;
+    return new ComponentSampleModel(dataType, w, h, pStride, lStride, bankIndices, bandOff);
+}

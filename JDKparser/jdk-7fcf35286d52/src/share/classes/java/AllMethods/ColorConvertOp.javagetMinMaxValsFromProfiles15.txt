@@ -1,0 +1,12 @@
+private void getMinMaxValsFromProfiles(ICC_Profile srcProfile, ICC_Profile dstProfile) {
+    int type = srcProfile.getColorSpaceType();
+    int nc = srcProfile.getNumComponents();
+    srcMinVals = new float[nc];
+    srcMaxVals = new float[nc];
+    setMinMax(type, nc, srcMinVals, srcMaxVals);
+    type = dstProfile.getColorSpaceType();
+    nc = dstProfile.getNumComponents();
+    dstMinVals = new float[nc];
+    dstMaxVals = new float[nc];
+    setMinMax(type, nc, dstMinVals, dstMaxVals);
+}

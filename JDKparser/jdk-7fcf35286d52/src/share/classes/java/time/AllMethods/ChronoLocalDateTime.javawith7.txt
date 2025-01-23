@@ -1,0 +1,11 @@
+// -----------------------------------------------------------------------
+// override for covariant return type
+/**
+ * {@inheritDoc}
+ * @throws DateTimeException {@inheritDoc}
+ * @throws ArithmeticException {@inheritDoc}
+ */
+@Override
+default ChronoLocalDateTime<D> with(TemporalAdjuster adjuster) {
+    return ChronoLocalDateTimeImpl.ensureValid(getChronology(), Temporal.super.with(adjuster));
+}

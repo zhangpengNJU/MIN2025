@@ -1,0 +1,53 @@
+/**
+ * Sets this check box's group to the specified check box group.
+ * If this check box is already in a different check box group,
+ * it is first taken out of that group.
+ * <p>
+ * If the state of this check box is <code>true</code> and the new
+ * group already has a check box selected, this check box's state
+ * is changed to <code>false</code>.  If the state of this check
+ * box is <code>true</code> and the new group has no check box
+ * selected, this check box becomes the selected checkbox for
+ * the new group and its state is <code>true</code>.
+ *
+ * @param     g   the new check box group, or <code>null</code>
+ *                to remove this check box from any check box group
+ * @see       #getCheckboxGroup
+ */
+public void setCheckboxGroup(CheckboxGroup g) {
+    CheckboxGroup oldGroup;
+    boolean oldState;
+    /* Do nothing if this check box has already belonged
+         * to the check box group g.
+         */
+    if (this.group == g) {
+        return;
+    }
+    synchronized (this) {
+        oldGroup = this.group;
+        oldState = getState();
+        this.group = g;
+        CheckboxPeer peer = (CheckboxPeer) this.peer;
+        if (peer != null) {
+            peer.setCheckboxGroup(g);
+        }
+        if (this.group != null && getState()) {
+            if (this.group.getSelectedCheckbox() != null) {
+                setState(false);
+            } else {
+                this.group.setSelectedCheckbox(this);
+            }
+        }
+    }
+    /* Locking check box below could cause deadlock with
+         * CheckboxGroup's setSelectedCheckbox method.
+         *
+         * Fix for 4726853 by kdm@sparc.spb.su
+         * Here we should check if this check box was selected
+         * in the previous group and set selected check box to
+         * null for that group if so.
+         */
+    if (oldGroup != null && oldState) {
+        oldGroup.setSelectedCheckbox(null);
+    }
+}

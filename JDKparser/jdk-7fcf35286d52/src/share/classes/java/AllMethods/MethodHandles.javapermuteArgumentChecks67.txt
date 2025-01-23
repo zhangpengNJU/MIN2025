@@ -1,0 +1,22 @@
+private static boolean permuteArgumentChecks(int[] reorder, MethodType newType, MethodType oldType) {
+    if (newType.returnType() != oldType.returnType())
+        throw newIllegalArgumentException("return types do not match", oldType, newType);
+    if (reorder.length == oldType.parameterCount()) {
+        int limit = newType.parameterCount();
+        boolean bad = false;
+        for (int j = 0; j < reorder.length; j++) {
+            int i = reorder[j];
+            if (i < 0 || i >= limit) {
+                bad = true;
+                break;
+            }
+            Class<?> src = newType.parameterType(i);
+            Class<?> dst = oldType.parameterType(j);
+            if (src != dst)
+                throw newIllegalArgumentException("parameter types do not match after reorder", oldType, newType);
+        }
+        if (!bad)
+            return true;
+    }
+    throw newIllegalArgumentException("bad reorder array: " + Arrays.toString(reorder));
+}

@@ -1,0 +1,19 @@
+/**
+ * Retrieves the value of the designated column in the current row
+ * of this <code>ResultSet</code> object as
+ * a <code>java.sql.BigDecimal</code> in the Java programming language.
+ *
+ * @param columnIndex the first column is 1, the second is 2, ...
+ * @param scale the number of digits to the right of the decimal point
+ * @return the column value; if the value is SQL <code>NULL</code>, the
+ * value returned is <code>null</code>
+ * @exception SQLException if the columnIndex is not valid;
+ * if a database access error occurs or this method is
+ *            called on a closed result set
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @deprecated Use {@code getBigDecimal(int columnIndex)}
+ *             or {@code getBigDecimal(String columnLabel)}
+ */
+@Deprecated
+BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException;

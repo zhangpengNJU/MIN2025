@@ -1,0 +1,9 @@
+// Compute a high-order mask for the characters
+// between first and last, inclusive
+private static long highMask(char first, char last) {
+    long m = 0;
+    int f = Math.max(Math.min(first, 127), 64) - 64;
+    int l = Math.max(Math.min(last, 127), 64) - 64;
+    for (int i = f; i <= l; i++) m |= 1L << i;
+    return m;
+}

@@ -1,0 +1,25 @@
+/**
+ * Returns a {@code BigDecimal} whose value is
+ * <tt>(this<sup>n</sup>)</tt>, The power is computed exactly, to
+ * unlimited precision.
+ *
+ * <p>The parameter {@code n} must be in the range 0 through
+ * 999999999, inclusive.  {@code ZERO.pow(0)} returns {@link
+ * #ONE}.
+ *
+ * Note that future releases may expand the allowable exponent
+ * range of this method.
+ *
+ * @param  n power to raise this {@code BigDecimal} to.
+ * @return <tt>this<sup>n</sup></tt>
+ * @throws ArithmeticException if {@code n} is out of range.
+ * @since  1.5
+ */
+public BigDecimal pow(int n) {
+    if (n < 0 || n > 999999999)
+        throw new ArithmeticException("Invalid operation");
+    // No need to calculate pow(n) if result will over/underflow.
+    // Don't attempt to support "supernormal" numbers.
+    int newScale = checkScale((long) scale * n);
+    return new BigDecimal(this.inflated().pow(n), newScale);
+}

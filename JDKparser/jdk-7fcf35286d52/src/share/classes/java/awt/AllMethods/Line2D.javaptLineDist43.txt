@@ -1,0 +1,15 @@
+/**
+ * Returns the distance from a <code>Point2D</code> to this line.
+ * The distance measured is the distance between the specified
+ * point and the closest point on the infinitely-extended line
+ * defined by this <code>Line2D</code>.  If the specified point
+ * intersects the line, this method returns 0.0.
+ * @param pt the specified <code>Point2D</code> being measured
+ * @return a double value that is the distance from a specified
+ *                  <code>Point2D</code> to the current line.
+ * @see #ptSegDist(Point2D)
+ * @since 1.2
+ */
+public double ptLineDist(Point2D pt) {
+    return ptLineDist(getX1(), getY1(), getX2(), getY2(), pt.getX(), pt.getY());
+}

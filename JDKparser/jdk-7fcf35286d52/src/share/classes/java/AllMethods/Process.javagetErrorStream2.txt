@@ -1,0 +1,20 @@
+/**
+ * Returns the input stream connected to the error output of the
+ * subprocess.  The stream obtains data piped from the error output
+ * of the process represented by this {@code Process} object.
+ *
+ * <p>If the standard error of the subprocess has been redirected using
+ * {@link ProcessBuilder#redirectError(Redirect)
+ * ProcessBuilder.redirectError} or
+ * {@link ProcessBuilder#redirectErrorStream(boolean)
+ * ProcessBuilder.redirectErrorStream}
+ * then this method will return a
+ * <a href="ProcessBuilder.html#redirect-output">null input stream</a>.
+ *
+ * <p>Implementation note: It is a good idea for the returned
+ * input stream to be buffered.
+ *
+ * @return the input stream connected to the error output of
+ *         the subprocess
+ */
+public abstract InputStream getErrorStream();

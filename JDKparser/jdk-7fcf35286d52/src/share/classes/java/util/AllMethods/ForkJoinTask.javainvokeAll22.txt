@@ -1,0 +1,40 @@
+/**
+ * Forks the given tasks, returning when {@code isDone} holds for
+ * each task or an (unchecked) exception is encountered, in which
+ * case the exception is rethrown. If more than one task
+ * encounters an exception, then this method throws any one of
+ * these exceptions. If any task encounters an exception, others
+ * may be cancelled. However, the execution status of individual
+ * tasks is not guaranteed upon exceptional return. The status of
+ * each task may be obtained using {@link #getException()} and
+ * related methods to check if they have been cancelled, completed
+ * normally or exceptionally, or left unprocessed.
+ *
+ * @param tasks the tasks
+ * @throws NullPointerException if any task is null
+ */
+public static void invokeAll(ForkJoinTask<?>... tasks) {
+    Throwable ex = null;
+    int last = tasks.length - 1;
+    for (int i = last; i >= 0; --i) {
+        ForkJoinTask<?> t = tasks[i];
+        if (t == null) {
+            if (ex == null)
+                ex = new NullPointerException();
+        } else if (i != 0)
+            t.fork();
+        else if (t.doInvoke() < NORMAL && ex == null)
+            ex = t.getException();
+    }
+    for (int i = 1; i <= last; ++i) {
+        ForkJoinTask<?> t = tasks[i];
+        if (t != null) {
+            if (ex != null)
+                t.cancel(false);
+            else if (t.doJoin() < NORMAL)
+                ex = t.getException();
+        }
+    }
+    if (ex != null)
+        rethrow(ex);
+}

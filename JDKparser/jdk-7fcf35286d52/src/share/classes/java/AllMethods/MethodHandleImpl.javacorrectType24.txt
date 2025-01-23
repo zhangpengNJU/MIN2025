@@ -1,0 +1,4 @@
+static MethodType correctType(Class<?> arrayClass, boolean isSetter) {
+    Class<?> elemClass = arrayClass.getComponentType();
+    return !isSetter ? MethodType.methodType(elemClass, arrayClass, int.class) : MethodType.methodType(void.class, arrayClass, int.class, elemClass);
+}

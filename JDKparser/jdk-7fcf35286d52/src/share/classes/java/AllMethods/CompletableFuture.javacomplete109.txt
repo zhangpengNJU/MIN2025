@@ -1,0 +1,13 @@
+/**
+ * If not already completed, sets the value returned by {@link
+ * #get()} and related methods to the given value.
+ *
+ * @param value the result value
+ * @return {@code true} if this invocation caused this CompletableFuture
+ * to transition to a completed state, else {@code false}
+ */
+public boolean complete(T value) {
+    boolean triggered = completeValue(value);
+    postComplete();
+    return triggered;
+}

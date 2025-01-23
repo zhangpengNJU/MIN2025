@@ -1,0 +1,34 @@
+/**
+ * Reads the persistent fields from the stream and makes them available by
+ * name.
+ *
+ * @return  the <code>GetField</code> object representing the persistent
+ *          fields of the object being deserialized
+ * @throws  ClassNotFoundException if the class of a serialized object
+ *          could not be found.
+ * @throws  IOException if an I/O error occurs.
+ * @throws  NotActiveException if the stream is not currently reading
+ *          objects.
+ * @since 1.2
+ */
+public ObjectInputStream.GetField readFields() throws IOException, ClassNotFoundException {
+    SerialCallbackContext ctx = curContext;
+    if (ctx == null) {
+        throw new NotActiveException("not in call to readObject");
+    }
+    Object curObj = ctx.getObj();
+    ObjectStreamClass curDesc = ctx.getDesc();
+    bin.setBlockDataMode(false);
+    GetFieldImpl getField = new GetFieldImpl(curDesc);
+    getField.readFields();
+    bin.setBlockDataMode(true);
+    if (!curDesc.hasWriteObjectData()) {
+        /*
+             * Fix for 4360508: since stream does not contain terminating
+             * TC_ENDBLOCKDATA tag, set flag so that reading code elsewhere
+             * knows to simulate end-of-custom-data behavior.
+             */
+        defaultDataEnd = true;
+    }
+    return getField;
+}

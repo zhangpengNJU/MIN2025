@@ -1,0 +1,12 @@
+/**
+ * Check if MemberName is a call to MethodHandle.linkToStatic, etc.
+ */
+private boolean isLinkerMethodInvoke(Name name) {
+    if (name.function == null)
+        return false;
+    if (name.arguments.length < 1)
+        // must have MH argument
+        return false;
+    MemberName member = name.function.member();
+    return member != null && member.getDeclaringClass() == MethodHandle.class && !member.isPublic() && member.isStatic() && member.getName().startsWith("linkTo");
+}

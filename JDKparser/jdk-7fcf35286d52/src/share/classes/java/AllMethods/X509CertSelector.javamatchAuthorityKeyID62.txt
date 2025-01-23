@@ -1,0 +1,29 @@
+/* match on authority key identifier extension value */
+private boolean matchAuthorityKeyID(X509Certificate xcert) {
+    if (authorityKeyID == null) {
+        return true;
+    }
+    try {
+        byte[] extVal = xcert.getExtensionValue("2.5.29.35");
+        if (extVal == null) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "no authority key ID extension");
+            }
+            return false;
+        }
+        DerInputStream in = new DerInputStream(extVal);
+        byte[] certAuthKeyID = in.getOctetString();
+        if (certAuthKeyID == null || !Arrays.equals(authorityKeyID, certAuthKeyID)) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "authority key IDs don't match");
+            }
+            return false;
+        }
+    } catch (IOException ex) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "exception in authority key ID check");
+        }
+        return false;
+    }
+    return true;
+}

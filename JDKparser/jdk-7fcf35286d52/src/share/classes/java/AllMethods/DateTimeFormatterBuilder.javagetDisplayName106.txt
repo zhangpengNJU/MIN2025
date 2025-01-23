@@ -1,0 +1,36 @@
+private String getDisplayName(String id, int type, Locale locale) {
+    if (textStyle == TextStyle.NARROW) {
+        return null;
+    }
+    String[] names;
+    SoftReference<Map<Locale, String[]>> ref = cache.get(id);
+    Map<Locale, String[]> perLocale = null;
+    if (ref == null || (perLocale = ref.get()) == null || (names = perLocale.get(locale)) == null) {
+        names = TimeZoneNameUtility.retrieveDisplayNames(id, locale);
+        if (names == null) {
+            return null;
+        }
+        names = Arrays.copyOfRange(names, 0, 7);
+        names[5] = TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.LONG, locale);
+        if (names[5] == null) {
+            // use the id
+            names[5] = names[0];
+        }
+        names[6] = TimeZoneNameUtility.retrieveGenericDisplayName(id, TimeZone.SHORT, locale);
+        if (names[6] == null) {
+            names[6] = names[0];
+        }
+        if (perLocale == null) {
+            perLocale = new ConcurrentHashMap<>();
+        }
+        perLocale.put(locale, names);
+        cache.put(id, new SoftReference<>(perLocale));
+    }
+    switch(type) {
+        case STD:
+            return names[textStyle.zoneNameStyleIndex() + 1];
+        case DST:
+            return names[textStyle.zoneNameStyleIndex() + 3];
+    }
+    return names[textStyle.zoneNameStyleIndex() + 5];
+}

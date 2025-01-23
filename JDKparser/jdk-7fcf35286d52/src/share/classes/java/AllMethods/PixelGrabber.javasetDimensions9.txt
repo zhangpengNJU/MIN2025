@@ -1,0 +1,28 @@
+/**
+ * The setDimensions method is part of the ImageConsumer API which
+ * this class must implement to retrieve the pixels.
+ * <p>
+ * Note: This method is intended to be called by the ImageProducer
+ * of the Image whose pixels are being grabbed.  Developers using
+ * this class to retrieve pixels from an image should avoid calling
+ * this method directly since that operation could result in problems
+ * with retrieving the requested pixels.
+ * @param width the width of the dimension
+ * @param height the height of the dimension
+ */
+public void setDimensions(int width, int height) {
+    if (dstW < 0) {
+        dstW = width - dstX;
+    }
+    if (dstH < 0) {
+        dstH = height - dstY;
+    }
+    if (dstW <= 0 || dstH <= 0) {
+        imageComplete(STATICIMAGEDONE);
+    } else if (intPixels == null && imageModel == ColorModel.getRGBdefault()) {
+        intPixels = new int[dstW * dstH];
+        dstScan = dstW;
+        dstOff = 0;
+    }
+    flags |= (ImageObserver.WIDTH | ImageObserver.HEIGHT);
+}

@@ -1,0 +1,15 @@
+public Boolean run() {
+    for (Class<?> cl = subcl; cl != ObjectOutputStream.class; cl = cl.getSuperclass()) {
+        try {
+            cl.getDeclaredMethod("writeUnshared", new Class<?>[] { Object.class });
+            return Boolean.FALSE;
+        } catch (NoSuchMethodException ex) {
+        }
+        try {
+            cl.getDeclaredMethod("putFields", (Class<?>[]) null);
+            return Boolean.FALSE;
+        } catch (NoSuchMethodException ex) {
+        }
+    }
+    return Boolean.TRUE;
+}

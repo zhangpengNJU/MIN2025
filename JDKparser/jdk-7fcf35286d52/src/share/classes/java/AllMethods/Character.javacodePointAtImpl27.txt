@@ -1,0 +1,11 @@
+// throws ArrayIndexOutOfBoundsException if index out of bounds
+static int codePointAtImpl(char[] a, int index, int limit) {
+    char c1 = a[index];
+    if (isHighSurrogate(c1) && ++index < limit) {
+        char c2 = a[index];
+        if (isLowSurrogate(c2)) {
+            return toCodePoint(c1, c2);
+        }
+    }
+    return c1;
+}

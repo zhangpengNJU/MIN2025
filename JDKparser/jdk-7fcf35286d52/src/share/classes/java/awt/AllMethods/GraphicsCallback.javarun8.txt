@@ -1,0 +1,8 @@
+public void run(Component comp, Graphics cg) {
+    comp.validate();
+    if (comp.peer instanceof LightweightPeer) {
+        comp.lightweightPaint(cg);
+    } else {
+        comp.peer.paint(cg);
+    }
+}

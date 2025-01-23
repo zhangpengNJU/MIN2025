@@ -1,0 +1,28 @@
+/**
+ * remove a service
+ * @param serviceClass the service class
+ * @param bcsp the service provider
+ * @param revokeCurrentServicesNow whether or not to revoke the service
+ */
+public void revokeService(Class serviceClass, BeanContextServiceProvider bcsp, boolean revokeCurrentServicesNow) {
+    if (serviceClass == null)
+        throw new NullPointerException("serviceClass");
+    if (bcsp == null)
+        throw new NullPointerException("bcsp");
+    synchronized (BeanContext.globalHierarchyLock) {
+        if (!services.containsKey(serviceClass))
+            return;
+        BCSSServiceProvider bcsssp = (BCSSServiceProvider) services.get(serviceClass);
+        if (!bcsssp.getServiceProvider().equals(bcsp))
+            throw new IllegalArgumentException("service provider mismatch");
+        services.remove(serviceClass);
+        if (bcsp instanceof Serializable)
+            serializable--;
+        // get the BCSChild values.
+        Iterator i = bcsChildren();
+        while (i.hasNext()) {
+            ((BCSSChild) i.next()).revokeService(serviceClass, false, revokeCurrentServicesNow);
+        }
+        fireServiceRevoked(serviceClass, revokeCurrentServicesNow);
+    }
+}

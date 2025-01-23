@@ -1,0 +1,11 @@
+/**
+ * Returns the root of the current computation; i.e., this
+ * task if it has no completer, else its completer's root.
+ *
+ * @return the root of the current computation
+ */
+public final CountedCompleter<?> getRoot() {
+    CountedCompleter<?> a = this, p;
+    while ((p = a.completer) != null) a = p;
+    return a;
+}

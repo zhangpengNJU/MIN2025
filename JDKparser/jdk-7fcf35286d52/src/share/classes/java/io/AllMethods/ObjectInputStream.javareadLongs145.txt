@@ -1,0 +1,20 @@
+void readLongs(long[] v, int off, int len) throws IOException {
+    int stop, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            int span = Math.min(endoff - off, MAX_BLOCK_SIZE >> 3);
+            in.readFully(buf, 0, span << 3);
+            stop = off + span;
+            pos = 0;
+        } else if (end - pos < 8) {
+            v[off++] = din.readLong();
+            continue;
+        } else {
+            stop = Math.min(endoff, off + ((end - pos) >> 3));
+        }
+        while (off < stop) {
+            v[off++] = Bits.getLong(buf, pos);
+            pos += 8;
+        }
+    }
+}

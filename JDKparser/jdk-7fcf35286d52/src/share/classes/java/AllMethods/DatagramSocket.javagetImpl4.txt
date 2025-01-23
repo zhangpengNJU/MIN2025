@@ -1,0 +1,14 @@
+/**
+ * Get the {@code DatagramSocketImpl} attached to this socket,
+ * creating it if necessary.
+ *
+ * @return  the {@code DatagramSocketImpl} attached to that
+ *          DatagramSocket
+ * @throws SocketException if creation fails.
+ * @since 1.4
+ */
+DatagramSocketImpl getImpl() throws SocketException {
+    if (!created)
+        createImpl();
+    return impl;
+}

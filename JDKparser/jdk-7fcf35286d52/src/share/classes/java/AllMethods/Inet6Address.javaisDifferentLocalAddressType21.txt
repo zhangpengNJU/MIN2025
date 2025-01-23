@@ -1,0 +1,14 @@
+/* check the two Ipv6 addresses and return false if they are both
+     * non global address types, but not the same.
+     * (ie. one is sitelocal and the other linklocal)
+     * return true otherwise.
+     */
+private static boolean isDifferentLocalAddressType(byte[] thisAddr, byte[] otherAddr) {
+    if (Inet6Address.isLinkLocalAddress(thisAddr) && !Inet6Address.isLinkLocalAddress(otherAddr)) {
+        return false;
+    }
+    if (Inet6Address.isSiteLocalAddress(thisAddr) && !Inet6Address.isSiteLocalAddress(otherAddr)) {
+        return false;
+    }
+    return true;
+}

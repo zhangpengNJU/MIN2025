@@ -1,0 +1,5 @@
+@Override
+public ChronoZonedDateTime<D> withZoneSameInstant(ZoneId zone) {
+    Objects.requireNonNull(zone, "zone");
+    return this.zone.equals(zone) ? this : create(dateTime.toInstant(offset), zone);
+}

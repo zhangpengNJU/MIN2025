@@ -1,0 +1,36 @@
+private int arrayInsnOpcode(byte tcode, int aaop) throws InternalError {
+    assert (aaop == Opcodes.AASTORE || aaop == Opcodes.AALOAD);
+    int xas;
+    switch(tcode) {
+        case Opcodes.T_BOOLEAN:
+            xas = Opcodes.BASTORE;
+            break;
+        case Opcodes.T_BYTE:
+            xas = Opcodes.BASTORE;
+            break;
+        case Opcodes.T_CHAR:
+            xas = Opcodes.CASTORE;
+            break;
+        case Opcodes.T_SHORT:
+            xas = Opcodes.SASTORE;
+            break;
+        case Opcodes.T_INT:
+            xas = Opcodes.IASTORE;
+            break;
+        case Opcodes.T_LONG:
+            xas = Opcodes.LASTORE;
+            break;
+        case Opcodes.T_FLOAT:
+            xas = Opcodes.FASTORE;
+            break;
+        case Opcodes.T_DOUBLE:
+            xas = Opcodes.DASTORE;
+            break;
+        case 0:
+            xas = Opcodes.AASTORE;
+            break;
+        default:
+            throw new InternalError();
+    }
+    return xas - Opcodes.AASTORE + aaop;
+}

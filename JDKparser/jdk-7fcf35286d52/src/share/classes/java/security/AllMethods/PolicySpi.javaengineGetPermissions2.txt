@@ -1,0 +1,22 @@
+/**
+ * Return a PermissionCollection object containing the set of
+ * permissions granted to the specified CodeSource.
+ *
+ * <p> The default implementation of this method returns
+ * Policy.UNSUPPORTED_EMPTY_COLLECTION object.  This method can be
+ * overridden if the policy implementation can return a set of
+ * permissions granted to a CodeSource.
+ *
+ * @param codesource the CodeSource to which the returned
+ *          PermissionCollection has been granted.
+ *
+ * @return a set of permissions granted to the specified CodeSource.
+ *          If this operation is supported, the returned
+ *          set of permissions must be a new mutable instance
+ *          and it must support heterogeneous Permission types.
+ *          If this operation is not supported,
+ *          Policy.UNSUPPORTED_EMPTY_COLLECTION is returned.
+ */
+protected PermissionCollection engineGetPermissions(CodeSource codesource) {
+    return Policy.UNSUPPORTED_EMPTY_COLLECTION;
+}

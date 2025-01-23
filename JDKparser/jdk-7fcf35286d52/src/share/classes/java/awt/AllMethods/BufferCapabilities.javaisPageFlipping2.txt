@@ -1,0 +1,13 @@
+/**
+ * @return whether or not the buffer strategy uses page flipping; a set of
+ * buffers that uses page flipping
+ * can swap the contents internally between the front buffer and one or
+ * more back buffers by switching the video pointer (or by copying memory
+ * internally).  A non-flipping set of
+ * buffers uses blitting to copy the contents from one buffer to
+ * another; when this is the case, <code>getFlipContents</code> returns
+ * <code>null</code>
+ */
+public boolean isPageFlipping() {
+    return (getFlipContents() != null);
+}

@@ -1,0 +1,23 @@
+/*
+     * The following private methods on the text- and character-output streams
+     * always flush the stream buffers, so that writes to the underlying byte
+     * stream occur as promptly as with the original PrintStream.
+     */
+private void write(char[] buf) {
+    try {
+        synchronized (this) {
+            ensureOpen();
+            textOut.write(buf);
+            textOut.flushBuffer();
+            charOut.flushBuffer();
+            if (autoFlush) {
+                for (int i = 0; i < buf.length; i++) if (buf[i] == '\n')
+                    out.flush();
+            }
+        }
+    } catch (InterruptedIOException x) {
+        Thread.currentThread().interrupt();
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

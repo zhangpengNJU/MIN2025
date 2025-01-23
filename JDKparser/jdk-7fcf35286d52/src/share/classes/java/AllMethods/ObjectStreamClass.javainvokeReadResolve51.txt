@@ -1,0 +1,28 @@
+/**
+ * Invokes the readResolve method of the represented serializable class and
+ * returns the result.  Throws UnsupportedOperationException if this class
+ * descriptor is not associated with a class, or if the class is
+ * non-serializable or does not define readResolve.
+ */
+Object invokeReadResolve(Object obj) throws IOException, UnsupportedOperationException {
+    requireInitialized();
+    if (readResolveMethod != null) {
+        try {
+            return readResolveMethod.invoke(obj, (Object[]) null);
+        } catch (InvocationTargetException ex) {
+            Throwable th = ex.getTargetException();
+            if (th instanceof ObjectStreamException) {
+                throw (ObjectStreamException) th;
+            } else {
+                throwMiscException(th);
+                // never reached
+                throw new InternalError(th);
+            }
+        } catch (IllegalAccessException ex) {
+            // should not occur, as access checks have been suppressed
+            throw new InternalError(ex);
+        }
+    } else {
+        throw new UnsupportedOperationException();
+    }
+}

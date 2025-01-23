@@ -1,0 +1,16 @@
+/**
+ * Specifies whether drawing at (0, 0) to pages using these attributes
+ * draws at the upper-left corner of the physical page, or at the
+ * upper-left corner of the printable area. (Note that these locations
+ * could be equivalent.) Not specifying the property is equivalent to
+ * specifying OriginType.PHYSICAL.
+ *
+ * @param   origin OriginType.PHYSICAL or OriginType.PRINTABLE
+ * @throws  IllegalArgumentException if origin is null.
+ */
+public void setOrigin(OriginType origin) {
+    if (origin == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "origin");
+    }
+    this.origin = origin;
+}

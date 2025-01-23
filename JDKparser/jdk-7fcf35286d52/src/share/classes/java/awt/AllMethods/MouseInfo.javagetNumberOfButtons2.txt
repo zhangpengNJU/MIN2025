@@ -1,0 +1,20 @@
+/**
+ * Returns the number of buttons on the mouse.
+ * On systems without a mouse, returns <code>-1</code>.
+ *
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless() returns true
+ * @return number of buttons on the mouse
+ * @since 1.5
+ */
+public static int getNumberOfButtons() throws HeadlessException {
+    if (GraphicsEnvironment.isHeadless()) {
+        throw new HeadlessException();
+    }
+    Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("awt.mouse.numButtons");
+    if (prop instanceof Integer) {
+        return ((Integer) prop).intValue();
+    }
+    // This should never happen.
+    assert false : "awt.mouse.numButtons is not an integer property";
+    return 0;
+}

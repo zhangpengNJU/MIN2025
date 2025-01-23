@@ -1,0 +1,16 @@
+/**
+ * Specialization of format.
+ *
+ * @param number the double number to format
+ * @return the formatted String
+ * @exception        ArithmeticException if rounding is needed with rounding
+ *                   mode being set to RoundingMode.UNNECESSARY
+ * @see java.text.Format#format
+ */
+public final String format(double number) {
+    // Use fast-path for double result if that works
+    String result = fastFormat(number);
+    if (result != null)
+        return result;
+    return format(number, new StringBuffer(), DontCareFieldPosition.INSTANCE).toString();
+}

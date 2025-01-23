@@ -1,0 +1,11 @@
+/**
+ * Null-checks user executor argument, and translates uses of
+ * commonPool to asyncPool in case parallelism disabled.
+ */
+static Executor screenExecutor(Executor e) {
+    if (!useCommonPool && e == ForkJoinPool.commonPool())
+        return asyncPool;
+    if (e == null)
+        throw new NullPointerException();
+    return e;
+}

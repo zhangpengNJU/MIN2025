@@ -1,0 +1,14 @@
+/**
+ * Write an XML representation of the specified object to the output.
+ *
+ * @param o The object to be written to the stream.
+ *
+ * @see XMLDecoder#readObject
+ */
+public void writeObject(Object o) {
+    if (internal) {
+        super.writeObject(o);
+    } else {
+        writeStatement(new Statement(this, "writeObject", new Object[] { o }));
+    }
+}

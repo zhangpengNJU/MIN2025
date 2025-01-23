@@ -1,0 +1,15 @@
+/**
+ * Returns a new BigInteger representing mag.length-n upper
+ * ints of the number.  This is used by Karatsuba multiplication and
+ * Karatsuba squaring.
+ */
+private BigInteger getUpper(int n) {
+    int len = mag.length;
+    if (len <= n) {
+        return ZERO;
+    }
+    int upperLen = len - n;
+    int[] upperInts = new int[upperLen];
+    System.arraycopy(mag, 0, upperInts, 0, upperLen);
+    return new BigInteger(trustedStripLeadingZeroInts(upperInts), 1);
+}

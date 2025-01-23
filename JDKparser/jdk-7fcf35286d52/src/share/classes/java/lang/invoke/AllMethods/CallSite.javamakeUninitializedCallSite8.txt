@@ -1,0 +1,10 @@
+private MethodHandle makeUninitializedCallSite(MethodType targetType) {
+    MethodType basicType = targetType.basicType();
+    MethodHandle invoker = basicType.form().cachedMethodHandle(MethodTypeForm.MH_UNINIT_CS);
+    if (invoker == null) {
+        invoker = THROW_UCS.asType(basicType);
+        invoker = basicType.form().setCachedMethodHandle(MethodTypeForm.MH_UNINIT_CS, invoker);
+    }
+    // unchecked view is OK since no values will be received or returned
+    return invoker.viewAsType(targetType, false);
+}

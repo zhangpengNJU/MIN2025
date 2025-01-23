@@ -1,0 +1,14 @@
+/**
+ * Returns a copy of this period with the specified period subtracted.
+ * <p>
+ * If the specified amount is a {@code ChronoPeriod} then it must have
+ * the same chronology as this period. Implementations may choose to
+ * accept or reject other {@code TemporalAmount} implementations.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param amountToSubtract  the period to subtract, not null
+ * @return a {@code ChronoPeriod} based on this period with the requested period subtracted, not null
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+ChronoPeriod minus(TemporalAmount amountToSubtract);

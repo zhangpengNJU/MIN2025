@@ -1,0 +1,8 @@
+public boolean contains(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    Object value = entry.getValue();
+    Entry<K, V> p = getEntry(entry.getKey());
+    return p != null && valEquals(p.getValue(), value);
+}

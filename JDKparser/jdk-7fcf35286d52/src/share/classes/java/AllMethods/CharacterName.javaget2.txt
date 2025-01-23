@@ -1,0 +1,12 @@
+public static String get(int cp) {
+    byte[] strPool = null;
+    if (refStrPool == null || (strPool = refStrPool.get()) == null)
+        strPool = initNamePool();
+    int off = 0;
+    if (lookup[cp >> 8] == null || (off = lookup[cp >> 8][cp & 0xff]) == 0)
+        return null;
+    @SuppressWarnings("deprecation")
+    String // ASCII
+    result = new String(strPool, 0, off >>> 8, off & 0xff);
+    return result;
+}

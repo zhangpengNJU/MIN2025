@@ -1,0 +1,48 @@
+/**
+ * Visits the given file, returning the {@code Event} corresponding to that
+ * visit.
+ *
+ * The {@code ignoreSecurityException} parameter determines whether
+ * any SecurityException should be ignored or not. If a SecurityException
+ * is thrown, and is ignored, then this method returns {@code null} to
+ * mean that there is no event corresponding to a visit to the file.
+ *
+ * The {@code canUseCached} parameter determines whether cached attributes
+ * for the file can be used or not.
+ */
+private Event visit(Path entry, boolean ignoreSecurityException, boolean canUseCached) {
+    // need the file attributes
+    BasicFileAttributes attrs;
+    try {
+        attrs = getAttributes(entry, canUseCached);
+    } catch (IOException ioe) {
+        return new Event(EventType.ENTRY, entry, ioe);
+    } catch (SecurityException se) {
+        if (ignoreSecurityException)
+            return null;
+        throw se;
+    }
+    // at maximum depth or file is not a directory
+    int depth = stack.size();
+    if (depth >= maxDepth || !attrs.isDirectory()) {
+        return new Event(EventType.ENTRY, entry, attrs);
+    }
+    // check for cycles when following links
+    if (followLinks && wouldLoop(entry, attrs.fileKey())) {
+        return new Event(EventType.ENTRY, entry, new FileSystemLoopException(entry.toString()));
+    }
+    // file is a directory, attempt to open it
+    DirectoryStream<Path> stream = null;
+    try {
+        stream = Files.newDirectoryStream(entry);
+    } catch (IOException ioe) {
+        return new Event(EventType.ENTRY, entry, ioe);
+    } catch (SecurityException se) {
+        if (ignoreSecurityException)
+            return null;
+        throw se;
+    }
+    // push a directory node to the stack and return an event
+    stack.push(new DirectoryNode(entry, attrs.fileKey(), stream));
+    return new Event(EventType.START_DIRECTORY, entry, attrs);
+}

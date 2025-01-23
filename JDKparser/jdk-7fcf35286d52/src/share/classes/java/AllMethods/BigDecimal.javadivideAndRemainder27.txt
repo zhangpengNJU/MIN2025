@@ -1,0 +1,35 @@
+/**
+ * Returns a two-element {@code BigDecimal} array containing the
+ * result of {@code divideToIntegralValue} followed by the result of
+ * {@code remainder} on the two operands calculated with rounding
+ * according to the context settings.
+ *
+ * <p>Note that if both the integer quotient and remainder are
+ * needed, this method is faster than using the
+ * {@code divideToIntegralValue} and {@code remainder} methods
+ * separately because the division need only be carried out once.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided,
+ *         and the remainder computed.
+ * @param  mc the context to use.
+ * @return a two element {@code BigDecimal} array: the quotient
+ *         (the result of {@code divideToIntegralValue}) is the
+ *         initial element and the remainder is the final element.
+ * @throws ArithmeticException if {@code divisor==0}
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}, or {@code mc.precision}
+ *         {@literal >} 0 and the result of {@code this.divideToIntgralValue(divisor)} would
+ *         require a precision of more than {@code mc.precision} digits.
+ * @see    #divideToIntegralValue(java.math.BigDecimal, java.math.MathContext)
+ * @see    #remainder(java.math.BigDecimal, java.math.MathContext)
+ * @since  1.5
+ */
+public BigDecimal[] divideAndRemainder(BigDecimal divisor, MathContext mc) {
+    if (mc.precision == 0)
+        return divideAndRemainder(divisor);
+    BigDecimal[] result = new BigDecimal[2];
+    BigDecimal lhs = this;
+    result[0] = lhs.divideToIntegralValue(divisor, mc);
+    result[1] = lhs.subtract(result[0].multiply(divisor));
+    return result;
+}

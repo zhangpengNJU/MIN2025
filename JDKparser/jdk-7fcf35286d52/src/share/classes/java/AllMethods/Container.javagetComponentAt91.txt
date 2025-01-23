@@ -1,0 +1,21 @@
+/**
+ * Locates the component that contains the x,y position.  The
+ * top-most child component is returned in the case where there
+ * is overlap in the components.  This is determined by finding
+ * the component closest to the index 0 that claims to contain
+ * the given point via Component.contains(), except that Components
+ * which have native peers take precedence over those which do not
+ * (i.e., lightweight Components).
+ *
+ * @param x the <i>x</i> coordinate
+ * @param y the <i>y</i> coordinate
+ * @return null if the component does not contain the position.
+ * If there is no child component at the requested point and the
+ * point is within the bounds of the container the container itself
+ * is returned; otherwise the top-most child is returned.
+ * @see Component#contains
+ * @since JDK1.1
+ */
+public Component getComponentAt(int x, int y) {
+    return locate(x, y);
+}

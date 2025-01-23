@@ -1,0 +1,51 @@
+/**
+ * Attempts to find the next occurrence of the specified pattern ignoring
+ * delimiters. If the pattern is found before the next line separator, the
+ * scanner advances past the input that matched and returns the string that
+ * matched the pattern.
+ * If no such pattern is detected in the input up to the next line
+ * separator, then <code>null</code> is returned and the scanner's
+ * position is unchanged. This method may block waiting for input that
+ * matches the pattern.
+ *
+ * <p>Since this method continues to search through the input looking
+ * for the specified pattern, it may buffer all of the input searching for
+ * the desired token if no line separators are present.
+ *
+ * @param pattern the pattern to scan for
+ * @return the text that matched the specified pattern
+ * @throws IllegalStateException if this scanner is closed
+ */
+public String findInLine(Pattern pattern) {
+    ensureOpen();
+    if (pattern == null)
+        throw new NullPointerException();
+    clearCaches();
+    // Expand buffer to include the next newline or end of input
+    int endPosition = 0;
+    saveState();
+    while (true) {
+        String token = findPatternInBuffer(separatorPattern(), 0);
+        if (token != null) {
+            endPosition = matcher.start();
+            // up to next newline
+            break;
+        }
+        if (needInput) {
+            readInput();
+        } else {
+            endPosition = buf.limit();
+            // up to end of input
+            break;
+        }
+    }
+    revertState();
+    int horizonForLine = endPosition - position;
+    // If there is nothing between the current pos and the next
+    // newline simply return null, invoking findWithinHorizon
+    // with "horizon=0" will scan beyond the line bound.
+    if (horizonForLine == 0)
+        return null;
+    // Search for the pattern
+    return findWithinHorizon(pattern, horizonForLine);
+}

@@ -1,0 +1,13 @@
+/**
+ * Leave the multicast group.
+ * @param mcastaddr  multicast address to leave.
+ * @param netIf specified the local interface to leave the group at
+ * @throws  IllegalArgumentException if mcastaddr is null or is a
+ *          SocketAddress subclass not supported by this socket
+ * @since 1.4
+ */
+protected void leaveGroup(SocketAddress mcastaddr, NetworkInterface netIf) throws IOException {
+    if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        throw new IllegalArgumentException("Unsupported address type");
+    leave(((InetSocketAddress) mcastaddr).getAddress(), netIf);
+}

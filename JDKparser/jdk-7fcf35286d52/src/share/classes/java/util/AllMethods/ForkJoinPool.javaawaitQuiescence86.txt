@@ -1,0 +1,45 @@
+/**
+ * If called by a ForkJoinTask operating in this pool, equivalent
+ * in effect to {@link ForkJoinTask#helpQuiesce}. Otherwise,
+ * waits and/or attempts to assist performing tasks until this
+ * pool {@link #isQuiescent} or the indicated timeout elapses.
+ *
+ * @param timeout the maximum time to wait
+ * @param unit the time unit of the timeout argument
+ * @return {@code true} if quiescent; {@code false} if the
+ * timeout elapsed.
+ */
+public boolean awaitQuiescence(long timeout, TimeUnit unit) {
+    long nanos = unit.toNanos(timeout);
+    ForkJoinWorkerThread wt;
+    Thread thread = Thread.currentThread();
+    if ((thread instanceof ForkJoinWorkerThread) && (wt = (ForkJoinWorkerThread) thread).pool == this) {
+        helpQuiescePool(wt.workQueue);
+        return true;
+    }
+    long startTime = System.nanoTime();
+    WorkQueue[] ws;
+    int r = 0, m;
+    boolean found = true;
+    while (!isQuiescent() && (ws = workQueues) != null && (m = ws.length - 1) >= 0) {
+        if (!found) {
+            if ((System.nanoTime() - startTime) > nanos)
+                return false;
+            // cannot block
+            Thread.yield();
+        }
+        found = false;
+        for (int j = (m + 1) << 2; j >= 0; --j) {
+            ForkJoinTask<?> t;
+            WorkQueue q;
+            int b, k;
+            if ((k = r++ & m) <= m && k >= 0 && (q = ws[k]) != null && (b = q.base) - q.top < 0) {
+                found = true;
+                if ((t = q.pollAt(b)) != null)
+                    t.doExec();
+                break;
+            }
+        }
+    }
+    return true;
+}

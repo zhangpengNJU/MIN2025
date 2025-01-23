@@ -1,0 +1,11 @@
+/**
+ * Updates state on barrier trip and wakes up everyone.
+ * Called only while holding lock.
+ */
+private void nextGeneration() {
+    // signal completion of last generation
+    trip.signalAll();
+    // set up next generation
+    count = parties;
+    generation = new Generation();
+}

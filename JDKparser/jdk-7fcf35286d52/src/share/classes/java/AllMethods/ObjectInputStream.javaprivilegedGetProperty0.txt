@@ -1,0 +1,7 @@
+private static boolean privilegedGetProperty(String theProp) {
+    if (System.getSecurityManager() == null) {
+        return Boolean.getBoolean(theProp);
+    } else {
+        return AccessController.doPrivileged(new GetBooleanAction(theProp));
+    }
+}

@@ -1,0 +1,38 @@
+/**
+ * Does an exact division (that is, the remainder is known to be zero)
+ * of the specified number by 3.  This is used in Toom-Cook
+ * multiplication.  This is an efficient algorithm that runs in linear
+ * time.  If the argument is not exactly divisible by 3, results are
+ * undefined.  Note that this is expected to be called with positive
+ * arguments only.
+ */
+private BigInteger exactDivideBy3() {
+    int len = mag.length;
+    int[] result = new int[len];
+    long x, w, q, borrow;
+    borrow = 0L;
+    for (int i = len - 1; i >= 0; i--) {
+        x = (mag[i] & LONG_MASK);
+        w = x - borrow;
+        if (borrow > x) {
+            // Did we make the number go negative?
+            borrow = 1L;
+        } else {
+            borrow = 0L;
+        }
+        // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32).  Thus,
+        // the effect of this is to divide by 3 (mod 2^32).
+        // This is much faster than division on most architectures.
+        q = (w * 0xAAAAAAABL) & LONG_MASK;
+        result[i] = (int) q;
+        // Now check the borrow. The second check can of course be
+        // eliminated if the first fails.
+        if (q >= 0x55555556L) {
+            borrow++;
+            if (q >= 0xAAAAAAABL)
+                borrow++;
+        }
+    }
+    result = trustedStripLeadingZeroInts(result);
+    return new BigInteger(result, signum);
+}

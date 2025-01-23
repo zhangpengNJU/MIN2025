@@ -1,0 +1,16 @@
+/**
+ * Revokes previous registration for the activation descriptor
+ * associated with <code>id</code>. An object can no longer be
+ * activated via that <code>id</code>.
+ *
+ * @param id the object's activation identifier
+ * @exception UnknownObjectException if object (<code>id</code>) is unknown
+ * @exception ActivationException if activation system is not running
+ * @exception RemoteException if remote call to activation system fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static void unregister(ActivationID id) throws UnknownObjectException, ActivationException, RemoteException {
+    ActivationGroup.getSystem().unregisterObject(id);
+}

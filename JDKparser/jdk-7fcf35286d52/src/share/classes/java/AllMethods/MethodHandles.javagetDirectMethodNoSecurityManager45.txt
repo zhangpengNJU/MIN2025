@@ -1,0 +1,9 @@
+/**
+ * Check access and get the requested method, eliding security manager checks.
+ */
+private MethodHandle getDirectMethodNoSecurityManager(byte refKind, Class<?> refc, MemberName method, Class<?> callerClass) throws IllegalAccessException {
+    final boolean doRestrict = true;
+    // not needed for reflection or for linking CONSTANT_MH constants
+    final boolean checkSecurity = false;
+    return getDirectMethodCommon(refKind, refc, method, checkSecurity, doRestrict, callerClass);
+}

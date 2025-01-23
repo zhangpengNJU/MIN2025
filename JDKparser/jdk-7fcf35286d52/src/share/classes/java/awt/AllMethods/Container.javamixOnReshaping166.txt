@@ -1,0 +1,24 @@
+@Override
+void mixOnReshaping() {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this);
+        }
+        boolean isMixingNeeded = isMixingNeeded();
+        if (isLightweight() && hasHeavyweightDescendants()) {
+            final Point origin = new Point(getX(), getY());
+            for (Container cont = getContainer(); cont != null && cont.isLightweight(); cont = cont.getContainer()) {
+                origin.translate(cont.getX(), cont.getY());
+            }
+            recursiveRelocateHeavyweightChildren(origin);
+            if (!isMixingNeeded) {
+                return;
+            }
+            recursiveApplyCurrentShape();
+        }
+        if (!isMixingNeeded) {
+            return;
+        }
+        super.mixOnReshaping();
+    }
+}

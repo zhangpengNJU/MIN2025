@@ -1,0 +1,10 @@
+/* ---------------- Private operations -------------- */
+// to determine whether or not accept this cookie
+private boolean shouldAcceptInternal(URI uri, HttpCookie cookie) {
+    try {
+        return policyCallback.shouldAccept(uri, cookie);
+    } catch (Exception ignored) {
+        // pretect against malicious callback
+        return false;
+    }
+}

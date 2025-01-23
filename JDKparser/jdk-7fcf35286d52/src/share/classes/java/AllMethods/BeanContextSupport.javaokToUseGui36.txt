@@ -1,0 +1,16 @@
+/**
+ * Notify this instance that it may now render a GUI
+ */
+public synchronized void okToUseGui() {
+    if (!okToUseGui) {
+        okToUseGui = true;
+        // lets also tell the Children that can that they may use their GUI's
+        synchronized (children) {
+            for (Iterator i = children.keySet().iterator(); i.hasNext(); ) {
+                Visibility v = getChildVisibility(i.next());
+                if (v != null)
+                    v.okToUseGui();
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+/**
+ * Returns the trigger time of a delayed action.
+ */
+long triggerTime(long delay) {
+    return now() + ((delay < (Long.MAX_VALUE >> 1)) ? delay : overflowFree(delay));
+}

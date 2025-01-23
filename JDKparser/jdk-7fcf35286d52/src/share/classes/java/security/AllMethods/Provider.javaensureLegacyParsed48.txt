@@ -1,0 +1,20 @@
+/**
+ * Ensure all the legacy String properties are fully parsed into
+ * service objects.
+ */
+private void ensureLegacyParsed() {
+    if ((legacyChanged == false) || (legacyStrings == null)) {
+        return;
+    }
+    serviceSet = null;
+    if (legacyMap == null) {
+        legacyMap = new LinkedHashMap<ServiceKey, Service>();
+    } else {
+        legacyMap.clear();
+    }
+    for (Map.Entry<String, String> entry : legacyStrings.entrySet()) {
+        parseLegacyPut(entry.getKey(), entry.getValue());
+    }
+    removeInvalidServices(legacyMap);
+    legacyChanged = false;
+}

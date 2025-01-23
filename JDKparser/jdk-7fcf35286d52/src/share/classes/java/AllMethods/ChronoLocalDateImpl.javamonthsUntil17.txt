@@ -1,0 +1,11 @@
+private long monthsUntil(ChronoLocalDate end) {
+    ValueRange range = getChronology().range(MONTH_OF_YEAR);
+    if (range.getMaximum() != 12) {
+        throw new IllegalStateException("ChronoLocalDateImpl only supports Chronologies with 12 months per year");
+    }
+    // no overflow
+    long packed1 = getLong(PROLEPTIC_MONTH) * 32L + get(DAY_OF_MONTH);
+    // no overflow
+    long packed2 = end.getLong(PROLEPTIC_MONTH) * 32L + end.get(DAY_OF_MONTH);
+    return (packed2 - packed1) / 32;
+}

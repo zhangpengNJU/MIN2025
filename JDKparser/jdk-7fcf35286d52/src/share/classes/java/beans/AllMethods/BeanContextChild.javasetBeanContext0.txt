@@ -1,0 +1,19 @@
+/**
+ * <p>
+ * Objects that implement this interface,
+ * shall fire a java.beans.PropertyChangeEvent, with parameters:
+ *
+ * propertyName "beanContext", oldValue (the previous nesting
+ * <code>BeanContext</code> instance, or <code>null</code>),
+ * newValue (the current nesting
+ * <code>BeanContext</code> instance, or <code>null</code>).
+ * <p>
+ * A change in the value of the nesting BeanContext property of this
+ * BeanContextChild may be vetoed by throwing the appropriate exception.
+ * </p>
+ * @param bc The <code>BeanContext</code> with which
+ * to associate this <code>BeanContextChild</code>.
+ * @throws PropertyVetoException if the
+ * addition of the specified <code>BeanContext</code> is refused.
+ */
+void setBeanContext(BeanContext bc) throws PropertyVetoException;

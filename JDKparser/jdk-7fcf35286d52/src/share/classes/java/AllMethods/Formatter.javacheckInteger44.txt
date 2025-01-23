@@ -1,0 +1,11 @@
+private void checkInteger() {
+    checkNumeric();
+    if (precision != -1)
+        throw new IllegalFormatPrecisionException(precision);
+    if (c == Conversion.DECIMAL_INTEGER)
+        checkBadFlags(Flags.ALTERNATE);
+    else if (c == Conversion.OCTAL_INTEGER)
+        checkBadFlags(Flags.GROUP);
+    else
+        checkBadFlags(Flags.GROUP);
+}

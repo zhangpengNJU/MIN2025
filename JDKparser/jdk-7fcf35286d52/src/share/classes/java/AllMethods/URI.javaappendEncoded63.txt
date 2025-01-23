@@ -1,0 +1,15 @@
+private static void appendEncoded(StringBuffer sb, char c) {
+    ByteBuffer bb = null;
+    try {
+        bb = ThreadLocalCoders.encoderFor("UTF-8").encode(CharBuffer.wrap("" + c));
+    } catch (CharacterCodingException x) {
+        assert false;
+    }
+    while (bb.hasRemaining()) {
+        int b = bb.get() & 0xff;
+        if (b >= 0x80)
+            appendEscape(sb, (byte) b);
+        else
+            sb.append((char) b);
+    }
+}

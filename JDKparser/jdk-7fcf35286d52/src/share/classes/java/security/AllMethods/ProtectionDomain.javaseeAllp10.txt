@@ -1,0 +1,35 @@
+/**
+ * Return true (merge policy permissions) in the following cases:
+ *
+ * . SecurityManager is null
+ *
+ * . SecurityManager is not null,
+ *          debug is not null,
+ *          SecurityManager impelmentation is in bootclasspath,
+ *          Policy implementation is in bootclasspath
+ *          (the bootclasspath restrictions avoid recursion)
+ *
+ * . SecurityManager is not null,
+ *          debug is null,
+ *          caller has Policy.getPolicy permission
+ */
+private static boolean seeAllp() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm == null) {
+        return true;
+    } else {
+        if (debug != null) {
+            if (sm.getClass().getClassLoader() == null && Policy.getPolicyNoCheck().getClass().getClassLoader() == null) {
+                return true;
+            }
+        } else {
+            try {
+                sm.checkPermission(SecurityConstants.GET_POLICY_PERMISSION);
+                return true;
+            } catch (SecurityException se) {
+            // fall thru and return false
+            }
+        }
+    }
+    return false;
+}

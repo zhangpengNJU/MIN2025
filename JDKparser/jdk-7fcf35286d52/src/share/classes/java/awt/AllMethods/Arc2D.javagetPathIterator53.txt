@@ -1,0 +1,19 @@
+/**
+ * Returns an iteration object that defines the boundary of the
+ * arc.
+ * This iterator is multithread safe.
+ * <code>Arc2D</code> guarantees that
+ * modifications to the geometry of the arc
+ * do not affect any iterations of that geometry that
+ * are already in process.
+ *
+ * @param at an optional <CODE>AffineTransform</CODE> to be applied
+ * to the coordinates as they are returned in the iteration, or null
+ * if the untransformed coordinates are desired.
+ *
+ * @return A <CODE>PathIterator</CODE> that defines the arc's boundary.
+ * @since 1.2
+ */
+public PathIterator getPathIterator(AffineTransform at) {
+    return new ArcIterator(this, at);
+}

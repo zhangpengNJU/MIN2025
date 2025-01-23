@@ -1,0 +1,17 @@
+/**
+ * Sets the framing rectangle of this <code>Shape</code>
+ * based on the specified center point coordinates and corner point
+ * coordinates.  The framing rectangle is used by the subclasses of
+ * <code>RectangularShape</code> to define their geometry.
+ *
+ * @param centerX the X coordinate of the specified center point
+ * @param centerY the Y coordinate of the specified center point
+ * @param cornerX the X coordinate of the specified corner point
+ * @param cornerY the Y coordinate of the specified corner point
+ * @since 1.2
+ */
+public void setFrameFromCenter(double centerX, double centerY, double cornerX, double cornerY) {
+    double halfW = Math.abs(cornerX - centerX);
+    double halfH = Math.abs(cornerY - centerY);
+    setFrame(centerX - halfW, centerY - halfH, halfW * 2.0, halfH * 2.0);
+}

@@ -1,0 +1,53 @@
+/**
+ * Gets the PermissionCollection in this Permissions object for
+ * permissions whose type is the same as that of <i>p</i>.
+ * For example, if <i>p</i> is a FilePermission,
+ * the FilePermissionCollection
+ * stored in this Permissions object will be returned.
+ *
+ * If createEmpty is true,
+ * this method creates a new PermissionCollection object for the specified
+ * type of permission objects if one does not yet exist.
+ * To do so, it first calls the {@code newPermissionCollection} method
+ * on <i>p</i>.  Subclasses of class Permission
+ * override that method if they need to store their permissions in a
+ * particular PermissionCollection object in order to provide the
+ * correct semantics when the {@code PermissionCollection.implies}
+ * method is called.
+ * If the call returns a PermissionCollection, that collection is stored
+ * in this Permissions object. If the call returns null and createEmpty
+ * is true, then
+ * this method instantiates and stores a default PermissionCollection
+ * that uses a hashtable to store its permission objects.
+ *
+ * createEmpty is ignored when creating empty PermissionCollection
+ * for unresolved permissions because of the overhead of determining the
+ * PermissionCollection to use.
+ *
+ * createEmpty should be set to false when this method is invoked from
+ * implies() because it incurs the additional overhead of creating and
+ * adding an empty PermissionCollection that will just return false.
+ * It should be set to true when invoked from add().
+ */
+private PermissionCollection getPermissionCollection(Permission p, boolean createEmpty) {
+    Class<?> c = p.getClass();
+    PermissionCollection pc = permsMap.get(c);
+    if (!hasUnresolved && !createEmpty) {
+        return pc;
+    } else if (pc == null) {
+        // Check for unresolved permissions
+        pc = (hasUnresolved ? getUnresolvedPermissions(p) : null);
+        // if still null, create a new collection
+        if (pc == null && createEmpty) {
+            pc = p.newPermissionCollection();
+            // still no PermissionCollection?
+            // We'll give them a PermissionsHash.
+            if (pc == null)
+                pc = new PermissionsHash();
+        }
+        if (pc != null) {
+            permsMap.put(c, pc);
+        }
+    }
+    return pc;
+}

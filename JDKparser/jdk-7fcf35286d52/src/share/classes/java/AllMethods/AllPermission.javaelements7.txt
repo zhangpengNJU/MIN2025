@@ -1,0 +1,21 @@
+/**
+ * Returns an enumeration of all the AllPermission objects in the
+ * container.
+ *
+ * @return an enumeration of all the AllPermission objects.
+ */
+public Enumeration<Permission> elements() {
+    return new Enumeration<Permission>() {
+
+        private boolean hasMore = all_allowed;
+
+        public boolean hasMoreElements() {
+            return hasMore;
+        }
+
+        public Permission nextElement() {
+            hasMore = false;
+            return SecurityConstants.ALL_PERMISSION;
+        }
+    };
+}

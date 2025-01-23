@@ -1,0 +1,8 @@
+private static int fixResult(int result, Name[] names) {
+    if (result == LAST_RESULT)
+        // might still be void
+        result = names.length - 1;
+    if (result >= 0 && names[result].type == V_TYPE)
+        result = VOID_RESULT;
+    return result;
+}

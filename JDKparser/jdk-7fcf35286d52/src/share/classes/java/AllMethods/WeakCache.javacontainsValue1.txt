@@ -1,0 +1,14 @@
+/**
+ * Checks whether the specified non-null value is already present in this
+ * {@code WeakCache}. The check is made using identity comparison regardless
+ * of whether value's class overrides {@link Object#equals} or not.
+ *
+ * @param value the non-null value to check
+ * @return true if given {@code value} is already cached
+ * @throws NullPointerException if value is null
+ */
+public boolean containsValue(V value) {
+    Objects.requireNonNull(value);
+    expungeStaleEntries();
+    return reverseMap.containsKey(new LookupValue<>(value));
+}

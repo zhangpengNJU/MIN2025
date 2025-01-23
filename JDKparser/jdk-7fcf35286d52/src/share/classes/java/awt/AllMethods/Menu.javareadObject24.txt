@@ -1,0 +1,19 @@
+/**
+ * Reads the <code>ObjectInputStream</code>.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ * @exception HeadlessException if
+ *   <code>GraphicsEnvironment.isHeadless</code> returns
+ *   <code>true</code>
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @see #writeObject(ObjectOutputStream)
+ */
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException, HeadlessException {
+    // HeadlessException will be thrown from MenuComponent's readObject
+    s.defaultReadObject();
+    for (int i = 0; i < items.size(); i++) {
+        MenuItem item = (MenuItem) items.elementAt(i);
+        item.parent = this;
+    }
+}

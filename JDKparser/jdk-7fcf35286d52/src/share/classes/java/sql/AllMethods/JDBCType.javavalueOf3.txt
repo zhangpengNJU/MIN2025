@@ -1,0 +1,16 @@
+/**
+ * Returns the {@code JDBCType} that corresponds to the specified
+ * {@code Types} value
+ * @param type {@code Types} value
+ * @return The {@code JDBCType} constant
+ * @throws IllegalArgumentException if this enum type has no constant with
+ * the specified {@code Types} value
+ * @see Types
+ */
+public static JDBCType valueOf(int type) {
+    for (JDBCType sqlType : JDBCType.class.getEnumConstants()) {
+        if (type == sqlType.type)
+            return sqlType;
+    }
+    throw new IllegalArgumentException("Type:" + type + " is not a valid " + "Types.java value.");
+}

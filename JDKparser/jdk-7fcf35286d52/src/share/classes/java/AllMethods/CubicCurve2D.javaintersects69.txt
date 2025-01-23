@@ -1,0 +1,17 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean intersects(double x, double y, double w, double h) {
+    // Trivially reject non-existant rectangles
+    if (w <= 0 || h <= 0) {
+        return false;
+    }
+    int numCrossings = rectCrossings(x, y, w, h);
+    // the intended return value is
+    // numCrossings != 0 || numCrossings == Curve.RECT_INTERSECTS
+    // but if (numCrossings != 0) numCrossings == INTERSECTS won't matter
+    // and if !(numCrossings != 0) then numCrossings == 0, so
+    // numCrossings != RECT_INTERSECT
+    return numCrossings != 0;
+}

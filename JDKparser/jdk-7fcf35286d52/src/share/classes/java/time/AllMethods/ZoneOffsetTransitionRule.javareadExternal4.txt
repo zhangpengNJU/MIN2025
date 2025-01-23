@@ -1,0 +1,24 @@
+/**
+ * Reads the state from the stream.
+ *
+ * @param in  the input stream, not null
+ * @return the created object, not null
+ * @throws IOException if an error occurs
+ */
+static ZoneOffsetTransitionRule readExternal(DataInput in) throws IOException {
+    int data = in.readInt();
+    Month month = Month.of(data >>> 28);
+    int dom = ((data & (63 << 22)) >>> 22) - 32;
+    int dowByte = (data & (7 << 19)) >>> 19;
+    DayOfWeek dow = dowByte == 0 ? null : DayOfWeek.of(dowByte);
+    int timeByte = (data & (31 << 14)) >>> 14;
+    TimeDefinition defn = TimeDefinition.values()[(data & (3 << 12)) >>> 12];
+    int stdByte = (data & (255 << 4)) >>> 4;
+    int beforeByte = (data & (3 << 2)) >>> 2;
+    int afterByte = (data & 3);
+    LocalTime time = (timeByte == 31 ? LocalTime.ofSecondOfDay(in.readInt()) : LocalTime.of(timeByte % 24, 0));
+    ZoneOffset std = (stdByte == 255 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds((stdByte - 128) * 900));
+    ZoneOffset before = (beforeByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + beforeByte * 1800));
+    ZoneOffset after = (afterByte == 3 ? ZoneOffset.ofTotalSeconds(in.readInt()) : ZoneOffset.ofTotalSeconds(std.getTotalSeconds() + afterByte * 1800));
+    return ZoneOffsetTransitionRule.of(month, dom, dow, time, timeByte == 24, defn, std, before, after);
+}

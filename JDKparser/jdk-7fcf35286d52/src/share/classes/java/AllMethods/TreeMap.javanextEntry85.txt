@@ -1,0 +1,10 @@
+final Entry<K, V> nextEntry() {
+    Entry<K, V> e = next;
+    if (e == null)
+        throw new NoSuchElementException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    next = successor(e);
+    lastReturned = e;
+    return e;
+}

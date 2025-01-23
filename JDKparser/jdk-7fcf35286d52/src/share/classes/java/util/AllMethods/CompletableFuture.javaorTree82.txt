@@ -1,0 +1,18 @@
+/**
+ * Recursively constructs a tree of completions.
+ */
+static CompletableFuture<Object> orTree(CompletableFuture<?>[] cfs, int lo, int hi) {
+    CompletableFuture<Object> d = new CompletableFuture<Object>();
+    if (lo <= hi) {
+        CompletableFuture<?> a, b;
+        int mid = (lo + hi) >>> 1;
+        if ((a = (lo == mid ? cfs[lo] : orTree(cfs, lo, mid))) == null || (b = (lo == hi ? a : (hi == mid + 1) ? cfs[hi] : orTree(cfs, mid + 1, hi))) == null)
+            throw new NullPointerException();
+        if (!d.orRelay(a, b)) {
+            OrRelay<?, ?> c = new OrRelay<>(d, a, b);
+            a.orpush(b, c);
+            c.tryFire(SYNC);
+        }
+    }
+    return d;
+}

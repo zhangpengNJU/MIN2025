@@ -1,0 +1,11 @@
+/**
+ * Adds a Consumer<Chronology> to the list of listeners to be notified
+ * if the Chronology changes.
+ * @param listener a Consumer<Chronology> to be called when Chronology changes
+ */
+void addChronoChangedListener(Consumer<Chronology> listener) {
+    if (chronoListeners == null) {
+        chronoListeners = new ArrayList<Consumer<Chronology>>();
+    }
+    chronoListeners.add(listener);
+}

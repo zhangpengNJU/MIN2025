@@ -1,0 +1,12 @@
+boolean updateGraphicsData(GraphicsConfiguration gc) {
+    checkTreeLock();
+    if (graphicsConfig == gc) {
+        return false;
+    }
+    graphicsConfig = gc;
+    ComponentPeer peer = getPeer();
+    if (peer != null) {
+        return peer.updateGraphicsData(gc);
+    }
+    return false;
+}

@@ -1,0 +1,19 @@
+@Override
+public int parse(DateTimeParseContext context, CharSequence text, int position) {
+    // using ordinals to avoid javac synthetic inner class
+    switch(ordinal()) {
+        case 0:
+            context.setCaseSensitive(true);
+            break;
+        case 1:
+            context.setCaseSensitive(false);
+            break;
+        case 2:
+            context.setStrict(true);
+            break;
+        case 3:
+            context.setStrict(false);
+            break;
+    }
+    return position;
+}

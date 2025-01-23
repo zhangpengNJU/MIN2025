@@ -1,0 +1,21 @@
+/**
+ * According to the Unicode Bidirectional Behavior specification
+ * (Unicode Standard 2.0, section 3.11), whitespace at the ends
+ * of lines which would naturally flow against the base direction
+ * must be made to flow with the line direction, and moved to the
+ * end of the line.  This method returns the start of the sequence
+ * of trailing whitespace characters to move to the end of a
+ * line taken from the given range.
+ */
+private int trailingCdWhitespaceStart(int startPos, int limitPos) {
+    if (fLevels != null) {
+        // Back up over counterdirectional whitespace
+        final byte baseLevel = (byte) (fIsDirectionLTR ? 0 : 1);
+        for (int cdWsStart = limitPos; --cdWsStart >= startPos; ) {
+            if ((fLevels[cdWsStart] % 2) == baseLevel || Character.getDirectionality(fChars[cdWsStart]) != Character.DIRECTIONALITY_WHITESPACE) {
+                return ++cdWsStart;
+            }
+        }
+    }
+    return startPos;
+}

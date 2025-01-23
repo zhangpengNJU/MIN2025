@@ -1,0 +1,24 @@
+private char[] readline(boolean zeroOut) throws IOException {
+    int len = reader.read(rcb, 0, rcb.length);
+    if (len < 0)
+        // EOL
+        return null;
+    if (rcb[len - 1] == '\r')
+        // remove CR at end;
+        len--;
+    else if (rcb[len - 1] == '\n') {
+        // remove LF at end;
+        len--;
+        if (len > 0 && rcb[len - 1] == '\r')
+            // remove the CR, if there is one
+            len--;
+    }
+    char[] b = new char[len];
+    if (len > 0) {
+        System.arraycopy(rcb, 0, b, 0, len);
+        if (zeroOut) {
+            Arrays.fill(rcb, 0, len, ' ');
+        }
+    }
+    return b;
+}

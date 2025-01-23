@@ -1,0 +1,21 @@
+/**
+ * Inserts the specified element into this delay queue.
+ *
+ * @param e the element to add
+ * @return {@code true}
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean offer(E e) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        q.offer(e);
+        if (q.peek() == e) {
+            leader = null;
+            available.signal();
+        }
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}

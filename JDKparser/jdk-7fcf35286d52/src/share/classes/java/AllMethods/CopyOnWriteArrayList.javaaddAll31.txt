@@ -1,0 +1,31 @@
+/**
+ * Appends all of the elements in the specified collection to the end
+ * of this list, in the order that they are returned by the specified
+ * collection's iterator.
+ *
+ * @param c collection containing elements to be added to this list
+ * @return {@code true} if this list changed as a result of the call
+ * @throws NullPointerException if the specified collection is null
+ * @see #add(Object)
+ */
+public boolean addAll(Collection<? extends E> c) {
+    Object[] cs = (c.getClass() == CopyOnWriteArrayList.class) ? ((CopyOnWriteArrayList<?>) c).getArray() : c.toArray();
+    if (cs.length == 0)
+        return false;
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        Object[] elements = getArray();
+        int len = elements.length;
+        if (len == 0 && (c.getClass() == CopyOnWriteArrayList.class || c.getClass() == ArrayList.class)) {
+            setArray(cs);
+        } else {
+            Object[] newElements = Arrays.copyOf(elements, len + cs.length);
+            System.arraycopy(cs, 0, newElements, len, cs.length);
+            setArray(newElements);
+        }
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}

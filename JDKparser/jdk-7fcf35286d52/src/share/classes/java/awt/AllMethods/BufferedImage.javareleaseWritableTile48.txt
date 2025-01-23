@@ -1,0 +1,13 @@
+/**
+ * Relinquishes permission to write to a tile.  If the caller
+ * continues to write to the tile, the results are undefined.
+ * Calls to this method should only appear in matching pairs
+ * with calls to {@link #getWritableTile(int, int) getWritableTile(int, int)}.  Any other leads
+ * to undefined results.  All registered <code>TileObservers</code>
+ * are notified when a tile goes from having one writer to having no
+ * writers.
+ * @param tileX the x index of the tile
+ * @param tileY the y index of the tile
+ */
+public void releaseWritableTile(int tileX, int tileY) {
+}

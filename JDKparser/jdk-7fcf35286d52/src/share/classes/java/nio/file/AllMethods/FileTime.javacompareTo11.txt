@@ -1,0 +1,42 @@
+/**
+ * Compares the value of two {@code FileTime} objects for order.
+ *
+ * @param   other
+ *          the other {@code FileTime} to be compared
+ *
+ * @return  {@code 0} if this {@code FileTime} is equal to {@code other}, a
+ *          value less than 0 if this {@code FileTime} represents a time
+ *          that is before {@code other}, and a value greater than 0 if this
+ *          {@code FileTime} represents a time that is after {@code other}
+ */
+@Override
+public int compareTo(FileTime other) {
+    // same granularity
+    if (unit != null && unit == other.unit) {
+        return Long.compare(value, other.value);
+    } else {
+        // compare using instant representation when unit differs
+        long secs = toInstant().getEpochSecond();
+        long secsOther = other.toInstant().getEpochSecond();
+        int cmp = Long.compare(secs, secsOther);
+        if (cmp != 0) {
+            return cmp;
+        }
+        cmp = Long.compare(toInstant().getNano(), other.toInstant().getNano());
+        if (cmp != 0) {
+            return cmp;
+        }
+        if (secs != MAX_SECOND && secs != MIN_SECOND) {
+            return 0;
+        }
+        // if both this and other's Instant reps are MIN/MAX,
+        // use daysSinceEpoch and nanosOfDays, which will not
+        // saturate during calculation.
+        long days = toDays();
+        long daysOther = other.toDays();
+        if (days == daysOther) {
+            return Long.compare(toExcessNanos(days), other.toExcessNanos(daysOther));
+        }
+        return Long.compare(days, daysOther);
+    }
+}

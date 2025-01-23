@@ -1,0 +1,49 @@
+/**
+ * Finds the least double greater than {@code d} (if {@code positive} is
+ * {@code true}), or the greatest double less than {@code d} (if
+ * {@code positive} is {@code false}).
+ * If {@code NaN}, returns same value.
+ *
+ * Does not affect floating-point flags,
+ * provided these member functions do not:
+ *          Double.longBitsToDouble(long)
+ *          Double.doubleToLongBits(double)
+ *          Double.isNaN(double)
+ *
+ * @param d        the reference value
+ * @param positive {@code true} if the least double is desired;
+ *                 {@code false} otherwise
+ * @return the least or greater double value
+ */
+public static double nextDouble(double d, boolean positive) {
+    /* filter out NaN's */
+    if (Double.isNaN(d)) {
+        return d;
+    }
+    /* zero's are also a special case */
+    if (d == 0.0) {
+        double smallestPositiveDouble = Double.longBitsToDouble(1L);
+        if (positive) {
+            return smallestPositiveDouble;
+        } else {
+            return -smallestPositiveDouble;
+        }
+    }
+    /* if entering here, d is a nonzero value */
+    /* hold all bits in a long for later use */
+    long bits = Double.doubleToLongBits(d);
+    /* strip off the sign bit */
+    long magnitude = bits & ~SIGN;
+    /* if next double away from zero, increase magnitude */
+    if ((bits > 0) == positive) {
+        if (magnitude != POSITIVEINFINITY) {
+            magnitude += 1;
+        }
+    } else /* else decrease magnitude */
+    {
+        magnitude -= 1;
+    }
+    /* restore sign bit and return */
+    long signbit = bits & SIGN;
+    return Double.longBitsToDouble(magnitude | signbit);
+}

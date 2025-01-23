@@ -1,0 +1,9 @@
+/**
+ * Create a compatible WritableRaster the same size as this Raster with
+ * the same SampleModel and a new initialized DataBuffer.
+ * @return a compatible <code>WritableRaster</code> with the same sample
+ *         model and a new data buffer.
+ */
+public WritableRaster createCompatibleWritableRaster() {
+    return new SunWritableRaster(sampleModel, new Point(0, 0));
+}

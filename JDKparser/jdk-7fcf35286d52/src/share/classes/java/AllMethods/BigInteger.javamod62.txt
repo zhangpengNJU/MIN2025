@@ -1,0 +1,17 @@
+// Modular Arithmetic Operations
+/**
+ * Returns a BigInteger whose value is {@code (this mod m}).  This method
+ * differs from {@code remainder} in that it always returns a
+ * <i>non-negative</i> BigInteger.
+ *
+ * @param  m the modulus.
+ * @return {@code this mod m}
+ * @throws ArithmeticException {@code m} &le; 0
+ * @see    #remainder
+ */
+public BigInteger mod(BigInteger m) {
+    if (m.signum <= 0)
+        throw new ArithmeticException("BigInteger: modulus not positive");
+    BigInteger result = this.remainder(m);
+    return (result.signum >= 0 ? result : result.add(m));
+}

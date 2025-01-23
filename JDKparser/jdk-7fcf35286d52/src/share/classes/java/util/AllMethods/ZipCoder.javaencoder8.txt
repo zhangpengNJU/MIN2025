@@ -1,0 +1,6 @@
+private CharsetEncoder encoder() {
+    if (enc == null) {
+        enc = cs.newEncoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
+    }
+    return enc;
+}

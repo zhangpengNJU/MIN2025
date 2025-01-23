@@ -1,0 +1,18 @@
+@Override
+public final IntStream peek(IntConsumer action) {
+    Objects.requireNonNull(action);
+    return new StatelessOp<Integer>(this, StreamShape.INT_VALUE, 0) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+            return new Sink.ChainedInt<Integer>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    action.accept(t);
+                    downstream.accept(t);
+                }
+            };
+        }
+    };
+}

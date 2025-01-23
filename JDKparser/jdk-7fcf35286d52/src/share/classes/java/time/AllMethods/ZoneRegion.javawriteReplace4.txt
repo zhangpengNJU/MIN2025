@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(7);  // identifies a ZoneId (not ZoneOffset)
+ *  out.writeUTF(zoneId);
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.ZONE_REGION_TYPE, this);
+}

@@ -1,0 +1,14 @@
+// Package-level method.
+// Remove the weak reference for the specified child Logger from the
+// kid list. We should only be called from LoggerWeakRef.dispose().
+final void removeChildLogger(LogManager.LoggerWeakRef child) {
+    synchronized (treeLock) {
+        for (Iterator<LogManager.LoggerWeakRef> iter = kids.iterator(); iter.hasNext(); ) {
+            LogManager.LoggerWeakRef ref = iter.next();
+            if (ref == child) {
+                iter.remove();
+                return;
+            }
+        }
+    }
+}

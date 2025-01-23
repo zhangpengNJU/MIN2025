@@ -1,0 +1,6 @@
+@Override
+public Spliterator.OfLong trySplit() {
+    if (estimate == 0)
+        return null;
+    return new InfiniteSupplyingSpliterator.OfLong(estimate = estimate >>> 1, s);
+}

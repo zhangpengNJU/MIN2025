@@ -1,0 +1,32 @@
+/**
+ * Removes the ith element from queue.
+ *
+ * Normally this method leaves the elements at up to i-1,
+ * inclusive, untouched.  Under these circumstances, it returns
+ * null.  Occasionally, in order to maintain the heap invariant,
+ * it must swap a later element of the list with one earlier than
+ * i.  Under these circumstances, this method returns the element
+ * that was previously at the end of the list and is now at some
+ * position before i. This fact is used by iterator.remove so as to
+ * avoid missing traversing elements.
+ */
+@SuppressWarnings("unchecked")
+private E removeAt(int i) {
+    // assert i >= 0 && i < size;
+    modCount++;
+    int s = --size;
+    if (// removed last element
+    s == i)
+        queue[i] = null;
+    else {
+        E moved = (E) queue[s];
+        queue[s] = null;
+        siftDown(i, moved);
+        if (queue[i] == moved) {
+            siftUp(i, moved);
+            if (queue[i] != moved)
+                return moved;
+        }
+    }
+    return null;
+}

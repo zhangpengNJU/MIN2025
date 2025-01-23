@@ -1,0 +1,99 @@
+/**
+ * Registers an activation descriptor (with the specified location,
+ * data, and restart mode) for the specified object, and exports that
+ * object with the specified port, and the specified client and server
+ * socket factories.
+ *
+ * <p><strong>Note:</strong> Using this method (as well as the
+ * <code>Activatable</code> constructors that both register and export
+ * an activatable remote object) is strongly discouraged because the
+ * actions of registering and exporting the remote object are
+ * <i>not</i> guaranteed to be atomic.  Instead, an application should
+ * register an activation descriptor and export a remote object
+ * separately, so that exceptions can be handled properly.
+ *
+ * <p>This method first registers an activation descriptor for the
+ * specified object as follows. It obtains the activation system by
+ * invoking the method {@link ActivationGroup#getSystem
+ * ActivationGroup.getSystem}.  This method then obtains an {@link
+ * ActivationID} for the object by invoking the activation system's
+ * {@link ActivationSystem#registerObject registerObject} method with
+ * an {@link ActivationDesc} constructed with the specified object's
+ * class name, and the specified location, data, and restart mode.  If
+ * an exception occurs obtaining the activation system or registering
+ * the activation descriptor, that exception is thrown to the caller.
+ *
+ * <p>Next, this method exports the object by invoking the {@link
+ * #exportObject(Remote,ActivationID,int,RMIClientSocketFactory,RMIServerSocketFactory)
+ * exportObject} method with the specified remote object, the
+ * activation identifier obtained from registration, the specified
+ * port, and the specified client and server socket factories.  If an
+ * exception occurs exporting the object, this method attempts to
+ * unregister the activation identifier (obtained from registration) by
+ * invoking the activation system's {@link
+ * ActivationSystem#unregisterObject unregisterObject} method with the
+ * activation identifier.  If an exception occurs unregistering the
+ * identifier, that exception is ignored, and the original exception
+ * that occurred exporting the object is thrown to the caller.
+ *
+ * <p>Finally, this method invokes the {@link
+ * ActivationGroup#activeObject activeObject} method on the activation
+ * group in this VM with the activation identifier and the specified
+ * remote object, and returns the activation identifier to the caller.
+ *
+ * @param obj the object being exported
+ * @param location the object's code location
+ * @param data the object's bootstrapping data
+ * @param restart if true, the object is restarted (reactivated) when
+ * either the activator is restarted or the object's activation group
+ * is restarted after an unexpected crash; if false, the object is only
+ * activated on demand.  Specifying <code>restart</code> to be
+ * <code>true</code> does not force an initial immediate activation of
+ * a newly registered object;  initial activation is lazy.
+ * @param port the port on which the object is exported (an anonymous
+ * port is used if port=0)
+ * @param csf the client-side socket factory for making calls to the
+ * remote object
+ * @param ssf the server-side socket factory for receiving remote calls
+ * @return the activation identifier obtained from registering the
+ * descriptor with the activation system
+ * @exception ActivationException if activation group is not active
+ * @exception RemoteException if object registration or export fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static ActivationID exportObject(Remote obj, String location, MarshalledObject<?> data, boolean restart, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws ActivationException, RemoteException {
+    ActivationDesc desc = new ActivationDesc(obj.getClass().getName(), location, data, restart);
+    /*
+         * Register descriptor.
+         */
+    ActivationSystem system = ActivationGroup.getSystem();
+    ActivationID id = system.registerObject(desc);
+    /*
+         * Export object.
+         */
+    try {
+        exportObject(obj, id, port, csf, ssf);
+    } catch (RemoteException e) {
+        /*
+             * Attempt to unregister activation descriptor because export
+             * failed and register/export should be atomic (see 4323621).
+             */
+        try {
+            system.unregisterObject(id);
+        } catch (Exception ex) {
+        }
+        /*
+             * Report original exception.
+             */
+        throw e;
+    }
+    /*
+         * This call can't fail (it is a local call, and the only possible
+         * exception, thrown if the group is inactive, will not be thrown
+         * because the group is not inactive).
+         */
+    ActivationGroup.currentGroup().activeObject(id, obj);
+    return id;
+}

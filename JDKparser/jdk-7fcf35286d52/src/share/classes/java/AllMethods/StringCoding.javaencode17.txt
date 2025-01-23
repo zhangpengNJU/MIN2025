@@ -1,0 +1,33 @@
+static byte[] encode(Charset cs, char[] ca, int off, int len) {
+    CharsetEncoder ce = cs.newEncoder();
+    int en = scale(len, ce.maxBytesPerChar());
+    byte[] ba = new byte[en];
+    if (len == 0)
+        return ba;
+    boolean isTrusted = false;
+    if (System.getSecurityManager() != null) {
+        if (!(isTrusted = (cs.getClass().getClassLoader0() == null))) {
+            ca = Arrays.copyOfRange(ca, off, off + len);
+            off = 0;
+        }
+    }
+    ce.onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE).reset();
+    if (ce instanceof ArrayEncoder) {
+        int blen = ((ArrayEncoder) ce).encode(ca, off, len, ba);
+        return safeTrim(ba, blen, cs, isTrusted);
+    } else {
+        ByteBuffer bb = ByteBuffer.wrap(ba);
+        CharBuffer cb = CharBuffer.wrap(ca, off, len);
+        try {
+            CoderResult cr = ce.encode(cb, bb, true);
+            if (!cr.isUnderflow())
+                cr.throwException();
+            cr = ce.flush(bb);
+            if (!cr.isUnderflow())
+                cr.throwException();
+        } catch (CharacterCodingException x) {
+            throw new Error(x);
+        }
+        return safeTrim(ba, bb.position(), cs, isTrusted);
+    }
+}

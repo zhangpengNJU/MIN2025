@@ -1,0 +1,20 @@
+/**
+ *  Creates a WritableRaster with the specified SampleModel.
+ *  The upper left corner of the Raster is given by the location argument.
+ *  If location is null, (0, 0) will be used.
+ *  @param sm the specified <code>SampleModel</code>
+ *  @param location the upper-left corner of the
+ *         <code>WritableRaster</code>
+ *  @return a <code>WritableRaster</code> with the specified
+ *          <code>SampleModel</code> and location.
+ *  @throws RasterFormatException if computing either
+ *          <code>location.x + sm.getWidth()</code> or
+ *          <code>location.y + sm.getHeight()</code> results in integer
+ *          overflow
+ */
+public static WritableRaster createWritableRaster(SampleModel sm, Point location) {
+    if (location == null) {
+        location = new Point(0, 0);
+    }
+    return createWritableRaster(sm, sm.createDataBuffer(), location);
+}

@@ -1,0 +1,55 @@
+/**
+ * Determine the size to allocate the child component.
+ * If the viewport area is bigger than the preferred size
+ * of the child then the child is allocated enough
+ * to fill the viewport, otherwise the child is given
+ * it's preferred size.
+ */
+Dimension calculateChildSize() {
+    // 
+    // calculate the view size, accounting for border but not scrollbars
+    // - don't use right/bottom insets since they vary depending
+    // on whether or not scrollbars were displayed on last resize
+    // 
+    Dimension size = getSize();
+    Insets insets = getInsets();
+    int viewWidth = size.width - insets.left * 2;
+    int viewHeight = size.height - insets.top * 2;
+    // 
+    // determine whether or not horz or vert scrollbars will be displayed
+    // 
+    boolean vbarOn;
+    boolean hbarOn;
+    Component child = getComponent(0);
+    Dimension childSize = new Dimension(child.getPreferredSize());
+    if (scrollbarDisplayPolicy == SCROLLBARS_AS_NEEDED) {
+        vbarOn = childSize.height > viewHeight;
+        hbarOn = childSize.width > viewWidth;
+    } else if (scrollbarDisplayPolicy == SCROLLBARS_ALWAYS) {
+        vbarOn = hbarOn = true;
+    } else {
+        // SCROLLBARS_NEVER
+        vbarOn = hbarOn = false;
+    }
+    // 
+    // adjust predicted view size to account for scrollbars
+    // 
+    int vbarWidth = getVScrollbarWidth();
+    int hbarHeight = getHScrollbarHeight();
+    if (vbarOn) {
+        viewWidth -= vbarWidth;
+    }
+    if (hbarOn) {
+        viewHeight -= hbarHeight;
+    }
+    // 
+    // if child is smaller than view, size it up
+    // 
+    if (childSize.width < viewWidth) {
+        childSize.width = viewWidth;
+    }
+    if (childSize.height < viewHeight) {
+        childSize.height = viewHeight;
+    }
+    return childSize;
+}

@@ -1,0 +1,28 @@
+/**
+ * Concatenates this transform with a transform that rotates
+ * coordinates around an anchor point according to a rotation
+ * vector.
+ * All coordinates rotate about the specified anchor coordinates
+ * by the same amount.
+ * The amount of rotation is such that coordinates along the former
+ * positive X axis will subsequently align with the vector pointing
+ * from the origin to the specified vector coordinates.
+ * If both <code>vecx</code> and <code>vecy</code> are 0.0,
+ * the transform is not modified in any way.
+ * This method is equivalent to calling:
+ * <pre>
+ *     rotate(Math.atan2(vecy, vecx), anchorx, anchory);
+ * </pre>
+ *
+ * @param vecx the X coordinate of the rotation vector
+ * @param vecy the Y coordinate of the rotation vector
+ * @param anchorx the X coordinate of the rotation anchor point
+ * @param anchory the Y coordinate of the rotation anchor point
+ * @since 1.6
+ */
+public void rotate(double vecx, double vecy, double anchorx, double anchory) {
+    // REMIND: Simple for now - optimize later
+    translate(anchorx, anchory);
+    rotate(vecx, vecy);
+    translate(-anchorx, -anchory);
+}

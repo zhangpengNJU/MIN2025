@@ -1,0 +1,8 @@
+private long getMostRecentEventTimeImpl() {
+    pushPopLock.lock();
+    try {
+        return (Thread.currentThread() == dispatchThread) ? mostRecentEventTime : System.currentTimeMillis();
+    } finally {
+        pushPopLock.unlock();
+    }
+}

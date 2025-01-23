@@ -1,0 +1,15 @@
+/*
+     * Checks if any other modal dialog D blocks the given window.
+     * If such D exists, mark the window as blocked by D.
+     */
+static void checkShouldBeBlocked(Window w) {
+    synchronized (w.getTreeLock()) {
+        for (int i = 0; i < modalDialogs.size(); i++) {
+            Dialog modalDialog = modalDialogs.get(i);
+            if (modalDialog.shouldBlock(w)) {
+                modalDialog.blockWindow(w);
+                break;
+            }
+        }
+    }
+}

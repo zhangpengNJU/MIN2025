@@ -1,0 +1,20 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case COMPONENT_ADDED:
+            typeStr = "COMPONENT_ADDED";
+            break;
+        case COMPONENT_REMOVED:
+            typeStr = "COMPONENT_REMOVED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr + ",child=" + child.getName();
+}

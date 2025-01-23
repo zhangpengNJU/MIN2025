@@ -1,0 +1,6 @@
+private long localizedWeekOfYear(TemporalAccessor temporal) {
+    int dow = localizedDayOfWeek(temporal);
+    int doy = temporal.get(DAY_OF_YEAR);
+    int offset = startOfWeekOffset(doy, dow);
+    return computeWeek(offset, doy);
+}

@@ -1,0 +1,10 @@
+@Override
+public String toString() {
+    double[] array = asPrimitiveArray();
+    if (array.length < 200) {
+        return String.format("%s[length=%d, chunks=%d]%s", getClass().getSimpleName(), array.length, spineIndex, Arrays.toString(array));
+    } else {
+        double[] array2 = Arrays.copyOf(array, 200);
+        return String.format("%s[length=%d, chunks=%d]%s...", getClass().getSimpleName(), array.length, spineIndex, Arrays.toString(array2));
+    }
+}

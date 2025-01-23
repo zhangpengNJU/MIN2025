@@ -1,0 +1,5 @@
+static OffsetDateTime readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    LocalDateTime dateTime = LocalDateTime.readExternal(in);
+    ZoneOffset offset = ZoneOffset.readExternal(in);
+    return OffsetDateTime.of(dateTime, offset);
+}

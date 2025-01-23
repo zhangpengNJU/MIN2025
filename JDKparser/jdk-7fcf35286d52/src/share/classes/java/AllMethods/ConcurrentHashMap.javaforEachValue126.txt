@@ -1,0 +1,18 @@
+/**
+ * Performs the given action for each non-null transformation
+ * of each value.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param transformer a function returning the transformation
+ * for an element, or null if there is no transformation (in
+ * which case the action is not applied)
+ * @param action the action
+ * @param <U> the return type of the transformer
+ * @since 1.8
+ */
+public <U> void forEachValue(long parallelismThreshold, Function<? super V, ? extends U> transformer, Consumer<? super U> action) {
+    if (transformer == null || action == null)
+        throw new NullPointerException();
+    new ForEachTransformedValueTask<K, V, U>(null, batchFor(parallelismThreshold), 0, 0, table, transformer, action).invoke();
+}

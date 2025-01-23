@@ -1,0 +1,14 @@
+/**
+ * Saves this queue to a stream (that is, serializes it).
+ *
+ * @param s the stream
+ * @throws java.io.IOException if an I/O error occurs
+ * @serialData All of the elements (each an {@code E}) in
+ * the proper order, followed by a null
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    s.defaultWriteObject();
+    for (E e : this) s.writeObject(e);
+    // Use trailing null as sentinel
+    s.writeObject(null);
+}

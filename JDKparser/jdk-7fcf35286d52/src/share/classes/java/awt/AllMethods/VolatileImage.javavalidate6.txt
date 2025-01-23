@@ -1,0 +1,43 @@
+// Volatile management methods
+/**
+ * Attempts to restore the drawing surface of the image if the surface
+ * had been lost since the last <code>validate</code> call.  Also
+ * validates this image against the given GraphicsConfiguration
+ * parameter to see whether operations from this image to the
+ * GraphicsConfiguration are compatible.  An example of an
+ * incompatible combination might be a situation where a VolatileImage
+ * object was created on one graphics device and then was used
+ * to render to a different graphics device.  Since VolatileImage
+ * objects tend to be very device-specific, this operation might
+ * not work as intended, so the return code from this validate
+ * call would note that incompatibility.  A null or incorrect
+ * value for gc may cause incorrect values to be returned from
+ * <code>validate</code> and may cause later problems with rendering.
+ *
+ * @param   gc   a <code>GraphicsConfiguration</code> object for this
+ *          image to be validated against.  A null gc implies that the
+ *          validate method should skip the compatibility test.
+ * @return  <code>IMAGE_OK</code> if the image did not need validation<BR>
+ *          <code>IMAGE_RESTORED</code> if the image needed restoration.
+ *          Restoration implies that the contents of the image may have
+ *          been affected and the image may need to be re-rendered.<BR>
+ *          <code>IMAGE_INCOMPATIBLE</code> if the image is incompatible
+ *          with the <code>GraphicsConfiguration</code> object passed
+ *          into the <code>validate</code> method.  Incompatibility
+ *          implies that the image may need to be recreated with a
+ *          new <code>Component</code> or
+ *          <code>GraphicsConfiguration</code> in order to get an image
+ *          that can be used successfully with this
+ *          <code>GraphicsConfiguration</code>.
+ *          An incompatible image is not checked for whether restoration
+ *          was necessary, so the state of the image is unchanged
+ *          after a return value of <code>IMAGE_INCOMPATIBLE</code>
+ *          and this return value implies nothing about whether the
+ *          image needs to be restored.
+ * @see java.awt.GraphicsConfiguration
+ * @see java.awt.Component
+ * @see #IMAGE_OK
+ * @see #IMAGE_RESTORED
+ * @see #IMAGE_INCOMPATIBLE
+ */
+public abstract int validate(GraphicsConfiguration gc);

@@ -1,0 +1,10 @@
+void setEagerValidation(boolean eager) {
+    try {
+        maybeInstantiateVerifier();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    if (jv != null) {
+        jv.setEagerValidation(eager);
+    }
+}

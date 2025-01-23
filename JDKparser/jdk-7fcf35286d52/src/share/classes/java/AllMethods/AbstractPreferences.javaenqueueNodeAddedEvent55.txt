@@ -1,0 +1,13 @@
+/**
+ * Enqueue a "node added" event for delivery to registered node change
+ * listeners unless there are no registered listeners.  Invoked with
+ * this.lock held.
+ */
+private void enqueueNodeAddedEvent(Preferences child) {
+    if (nodeListeners.length != 0) {
+        synchronized (eventQueue) {
+            eventQueue.add(new NodeAddedEvent(this, child));
+            eventQueue.notify();
+        }
+    }
+}

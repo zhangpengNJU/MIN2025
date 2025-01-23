@@ -1,0 +1,9 @@
+/**
+ * Pushes the given completion (if it exists) unless done.
+ */
+final void push(UniCompletion<?, ?> c) {
+    if (c != null) {
+        while (result == null && !tryPushStack(c)) // clear on failure
+        lazySetNext(c, null);
+    }
+}

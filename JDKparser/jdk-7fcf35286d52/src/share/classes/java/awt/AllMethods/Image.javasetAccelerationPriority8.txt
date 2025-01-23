@@ -1,0 +1,29 @@
+/**
+ * Sets a hint for this image about how important acceleration is.
+ * This priority hint is used to compare to the priorities of other
+ * Image objects when determining how to use scarce acceleration
+ * resources such as video memory.  When and if it is possible to
+ * accelerate this Image, if there are not enough resources available
+ * to provide that acceleration but enough can be freed up by
+ * de-accelerating some other image of lower priority, then that other
+ * Image may be de-accelerated in deference to this one.  Images
+ * that have the same priority take up resources on a first-come,
+ * first-served basis.
+ * @param priority a value between 0 and 1, inclusive, where higher
+ * values indicate more importance for acceleration.  A value of 0
+ * means that this Image should never be accelerated.  Other values
+ * are used simply to determine acceleration priority relative to other
+ * Images.
+ * @throws IllegalArgumentException if <code>priority</code> is less
+ * than zero or greater than 1.
+ * @since 1.5
+ */
+public void setAccelerationPriority(float priority) {
+    if (priority < 0 || priority > 1) {
+        throw new IllegalArgumentException("Priority must be a value " + "between 0 and 1, inclusive");
+    }
+    accelerationPriority = priority;
+    if (surfaceManager != null) {
+        surfaceManager.setAccelerationPriority(accelerationPriority);
+    }
+}

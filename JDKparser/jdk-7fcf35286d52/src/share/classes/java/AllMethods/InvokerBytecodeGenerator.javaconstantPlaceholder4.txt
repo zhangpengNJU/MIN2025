@@ -1,0 +1,14 @@
+String constantPlaceholder(Object arg) {
+    String cpPlaceholder = "CONSTANT_PLACEHOLDER_" + cph++;
+    // debugging aid
+    if (DUMP_CLASS_FILES)
+        cpPlaceholder += " <<" + debugString(arg) + ">>";
+    if (cpPatches.containsKey(cpPlaceholder)) {
+        throw new InternalError("observed CP placeholder twice: " + cpPlaceholder);
+    }
+    // insert placeholder in CP and remember the patch
+    // TODO check if aready in the constant pool
+    int index = cw.newConst((Object) cpPlaceholder);
+    cpPatches.put(cpPlaceholder, new CpPatch(index, cpPlaceholder, arg));
+    return cpPlaceholder;
+}

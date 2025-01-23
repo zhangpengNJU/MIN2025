@@ -1,0 +1,20 @@
+/**
+ *  Creates a savepoint with the given name in the current transaction
+ *  and returns the new <code>Savepoint</code> object that represents it.
+ *
+ *  <p> if setSavepoint is invoked outside of an active transaction, a transaction will be started at this newly created
+ * savepoint.
+ *
+ *  @param name a <code>String</code> containing the name of the savepoint
+ *  @return the new <code>Savepoint</code> object
+ *  @exception SQLException if a database access error occurs,
+ *  this method is called while participating in a distributed transaction,
+ *  this method is called on a closed connection
+ *             or this <code>Connection</code> object is currently in
+ *             auto-commit mode
+ *  @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ *  this method
+ *  @see Savepoint
+ *  @since 1.4
+ */
+Savepoint setSavepoint(String name) throws SQLException;

@@ -1,0 +1,16 @@
+/**
+ * Adds the specified key to this set view by mapping the key to
+ * the default mapped value in the backing map, if defined.
+ *
+ * @param e key to be added
+ * @return {@code true} if this set changed as a result of the call
+ * @throws NullPointerException if the specified key is null
+ * @throws UnsupportedOperationException if no default mapped value
+ * for additions was provided
+ */
+public boolean add(K e) {
+    V v;
+    if ((v = value) == null)
+        throw new UnsupportedOperationException();
+    return map.putVal(e, v, true) == null;
+}

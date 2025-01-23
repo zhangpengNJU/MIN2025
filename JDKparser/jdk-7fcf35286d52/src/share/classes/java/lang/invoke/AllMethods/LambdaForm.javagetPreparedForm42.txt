@@ -1,0 +1,10 @@
+private static LambdaForm getPreparedForm(String sig) {
+    MethodType mtype = signatureType(sig);
+    LambdaForm prep = mtype.form().cachedLambdaForm(MethodTypeForm.LF_INTERPRET);
+    if (prep != null)
+        return prep;
+    assert (isValidSignature(sig));
+    prep = new LambdaForm(sig);
+    prep.vmentry = InvokerBytecodeGenerator.generateLambdaFormInterpreterEntryPoint(sig);
+    return mtype.form().setCachedLambdaForm(MethodTypeForm.LF_INTERPRET, prep);
+}

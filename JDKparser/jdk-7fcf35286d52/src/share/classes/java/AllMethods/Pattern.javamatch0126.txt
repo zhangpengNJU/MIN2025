@@ -1,0 +1,42 @@
+// Greedy match.
+// i is the index to start matching at
+// j is the number of atoms that have matched
+boolean match0(Matcher matcher, int i, int j, CharSequence seq) {
+    if (j >= cmax) {
+        // We have matched the maximum... continue with the rest of
+        // the regular expression
+        return next.match(matcher, i, seq);
+    }
+    int backLimit = j;
+    while (atom.match(matcher, i, seq)) {
+        // k is the length of this match
+        int k = matcher.last - i;
+        if (// Zero length match
+        k == 0)
+            break;
+        // Move up index and number matched
+        i = matcher.last;
+        j++;
+        // We are greedy so match as many as we can
+        while (j < cmax) {
+            if (!atom.match(matcher, i, seq))
+                break;
+            if (i + k != matcher.last) {
+                if (match0(matcher, matcher.last, j + 1, seq))
+                    return true;
+                break;
+            }
+            i += k;
+            j++;
+        }
+        // Handle backing off if match fails
+        while (j >= backLimit) {
+            if (next.match(matcher, i, seq))
+                return true;
+            i -= k;
+            j--;
+        }
+        return false;
+    }
+    return next.match(matcher, i, seq);
+}

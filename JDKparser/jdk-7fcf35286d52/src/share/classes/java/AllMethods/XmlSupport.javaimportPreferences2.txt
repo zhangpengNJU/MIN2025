@@ -1,0 +1,23 @@
+/**
+ * Import preferences from the specified input stream, which is assumed
+ * to contain an XML document in the format described in the Preferences
+ * spec.
+ *
+ * @throws IOException if reading from the specified output stream
+ *         results in an <tt>IOException</tt>.
+ * @throws InvalidPreferencesFormatException Data on input stream does not
+ *         constitute a valid XML document with the mandated document type.
+ */
+static void importPreferences(InputStream is) throws IOException, InvalidPreferencesFormatException {
+    try {
+        Document doc = loadPrefsDoc(is);
+        String xmlVersion = doc.getDocumentElement().getAttribute("EXTERNAL_XML_VERSION");
+        if (xmlVersion.compareTo(EXTERNAL_XML_VERSION) > 0)
+            throw new InvalidPreferencesFormatException("Exported preferences file format version " + xmlVersion + " is not supported. This java installation can read" + " versions " + EXTERNAL_XML_VERSION + " or older. You may need" + " to install a newer version of JDK.");
+        Element xmlRoot = (Element) doc.getDocumentElement().getChildNodes().item(0);
+        Preferences prefsRoot = (xmlRoot.getAttribute("type").equals("user") ? Preferences.userRoot() : Preferences.systemRoot());
+        ImportSubtree(prefsRoot, xmlRoot);
+    } catch (SAXException e) {
+        throw new InvalidPreferencesFormatException(e);
+    }
+}

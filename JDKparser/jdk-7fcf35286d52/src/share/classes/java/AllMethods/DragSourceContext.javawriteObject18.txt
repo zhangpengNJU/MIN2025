@@ -1,0 +1,23 @@
+/**
+ * Serializes this <code>DragSourceContext</code>. This method first
+ * performs default serialization. Next, this object's
+ * <code>Transferable</code> is written out if and only if it can be
+ * serialized. If not, <code>null</code> is written instead. In this case,
+ * a <code>DragSourceContext</code> created from the resulting deserialized
+ * stream will contain a dummy <code>Transferable</code> which supports no
+ * <code>DataFlavor</code>s. Finally, this object's
+ * <code>DragSourceListener</code> is written out if and only if it can be
+ * serialized. If not, <code>null</code> is written instead.
+ *
+ * @serialData The default serializable fields, in alphabetical order,
+ *             followed by either a <code>Transferable</code> instance, or
+ *             <code>null</code>, followed by either a
+ *             <code>DragSourceListener</code> instance, or
+ *             <code>null</code>.
+ * @since 1.4
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    s.writeObject(SerializationTester.test(transferable) ? transferable : null);
+    s.writeObject(SerializationTester.test(listener) ? listener : null);
+}

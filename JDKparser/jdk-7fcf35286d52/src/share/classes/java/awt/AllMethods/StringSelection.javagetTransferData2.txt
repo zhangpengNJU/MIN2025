@@ -1,0 +1,34 @@
+/**
+ * Returns the <code>Transferable</code>'s data in the requested
+ * <code>DataFlavor</code> if possible. If the desired flavor is
+ * <code>DataFlavor.stringFlavor</code>, or an equivalent flavor,
+ * the <code>String</code> representing the selection is
+ * returned. If the desired flavor is
+ * <code>DataFlavor.plainTextFlavor</code>,
+ * or an equivalent flavor, a <code>Reader</code> is returned.
+ * <b>Note:</b> The behavior of this method for
+ * <code>DataFlavor.plainTextFlavor</code>
+ * and equivalent <code>DataFlavor</code>s is inconsistent with the
+ * definition of <code>DataFlavor.plainTextFlavor</code>.
+ *
+ * @param flavor the requested flavor for the data
+ * @return the data in the requested flavor, as outlined above
+ * @throws UnsupportedFlavorException if the requested data flavor is
+ *         not equivalent to either <code>DataFlavor.stringFlavor</code>
+ *         or <code>DataFlavor.plainTextFlavor</code>
+ * @throws IOException if an IOException occurs while retrieving the data.
+ *         By default, StringSelection never throws this exception, but a
+ *         subclass may.
+ * @throws NullPointerException if flavor is <code>null</code>
+ * @see java.io.Reader
+ */
+public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    // JCK Test StringSelection0007: if 'flavor' is null, throw NPE
+    if (flavor.equals(flavors[STRING])) {
+        return (Object) data;
+    } else if (flavor.equals(flavors[PLAIN_TEXT])) {
+        return new StringReader(data == null ? "" : data);
+    } else {
+        throw new UnsupportedFlavorException(flavor);
+    }
+}

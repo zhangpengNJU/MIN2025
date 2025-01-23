@@ -1,0 +1,27 @@
+/**
+ * Updates the data to be signed or verified, using the specified
+ * array of bytes, starting at the specified offset.
+ *
+ * @param data the array of bytes.
+ * @param off the offset to start from in the array of bytes.
+ * @param len the number of bytes to use, starting at offset.
+ *
+ * @exception SignatureException if this signature object is not
+ * initialized properly.
+ */
+public final void update(byte[] data, int off, int len) throws SignatureException {
+    if (state == SIGN || state == VERIFY) {
+        if (data == null) {
+            throw new IllegalArgumentException("data is null");
+        }
+        if (off < 0 || len < 0) {
+            throw new IllegalArgumentException("off or len is less than 0");
+        }
+        if (data.length - off < len) {
+            throw new IllegalArgumentException("data too small for specified offset and length");
+        }
+        engineUpdate(data, off, len);
+    } else {
+        throw new SignatureException("object not initialized for " + "signature or verification");
+    }
+}

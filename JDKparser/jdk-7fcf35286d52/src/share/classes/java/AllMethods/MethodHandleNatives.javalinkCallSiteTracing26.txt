@@ -1,0 +1,16 @@
+// Tracing logic:
+static MemberName linkCallSiteTracing(Class<?> caller, MethodHandle bootstrapMethod, String name, MethodType type, Object staticArguments, Object[] appendixResult) {
+    Object bsmReference = bootstrapMethod.internalMemberName();
+    if (bsmReference == null)
+        bsmReference = bootstrapMethod;
+    Object staticArglist = (staticArguments instanceof Object[] ? java.util.Arrays.asList((Object[]) staticArguments) : staticArguments);
+    System.out.println("linkCallSite " + caller.getName() + " " + bsmReference + " " + name + type + "/" + staticArglist);
+    try {
+        MemberName res = linkCallSiteImpl(caller, bootstrapMethod, name, type, staticArguments, appendixResult);
+        System.out.println("linkCallSite => " + res + " + " + appendixResult[0]);
+        return res;
+    } catch (Throwable ex) {
+        System.out.println("linkCallSite => throw " + ex);
+        throw ex;
+    }
+}

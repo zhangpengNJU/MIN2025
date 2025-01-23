@@ -1,0 +1,26 @@
+/**
+ * Compares this <code>Timestamp</code> object to the given
+ * <code>Timestamp</code> object.
+ *
+ * @param   ts   the <code>Timestamp</code> object to be compared to
+ *                this <code>Timestamp</code> object
+ * @return  the value <code>0</code> if the two <code>Timestamp</code>
+ *          objects are equal; a value less than <code>0</code> if this
+ *          <code>Timestamp</code> object is before the given argument;
+ *          and a value greater than <code>0</code> if this
+ *          <code>Timestamp</code> object is after the given argument.
+ * @since   1.4
+ */
+public int compareTo(Timestamp ts) {
+    long thisTime = this.getTime();
+    long anotherTime = ts.getTime();
+    int i = (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
+    if (i == 0) {
+        if (nanos > ts.nanos) {
+            return 1;
+        } else if (nanos < ts.nanos) {
+            return -1;
+        }
+    }
+    return i;
+}

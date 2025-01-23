@@ -1,0 +1,16 @@
+/**
+ * Returns a key-value mapping associated with the greatest
+ * key in this map, or {@code null} if the map is empty.
+ * The returned entry does <em>not</em> support
+ * the {@code Entry.setValue} method.
+ */
+public Map.Entry<K, V> lastEntry() {
+    for (; ; ) {
+        Node<K, V> n = findLast();
+        if (n == null)
+            return null;
+        AbstractMap.SimpleImmutableEntry<K, V> e = n.createSnapshot();
+        if (e != null)
+            return e;
+    }
+}

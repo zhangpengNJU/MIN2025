@@ -1,0 +1,60 @@
+/**
+ * Sends a rectangular region of the buffer of pixels to any
+ * ImageConsumers that are currently interested in the data for
+ * this image.
+ * If the framenotify parameter is true then the consumers are
+ * also notified that an animation frame is complete.
+ * This method only has effect if the animation flag has been
+ * turned on through the setAnimated() method.
+ * If the full buffer update flag was turned on with the
+ * setFullBufferUpdates() method then the rectangle parameters
+ * will be ignored and the entire buffer will always be sent.
+ * @param x the x coordinate of the upper left corner of the rectangle
+ * of pixels to be sent
+ * @param y the y coordinate of the upper left corner of the rectangle
+ * of pixels to be sent
+ * @param w the width of the rectangle of pixels to be sent
+ * @param h the height of the rectangle of pixels to be sent
+ * @param framenotify <code>true</code> if the consumers should be sent a
+ * {@link ImageConsumer#SINGLEFRAMEDONE SINGLEFRAMEDONE} notification
+ * @see ImageConsumer
+ * @see #setAnimated
+ * @see #setFullBufferUpdates
+ */
+public synchronized void newPixels(int x, int y, int w, int h, boolean framenotify) {
+    if (animating) {
+        if (fullbuffers) {
+            x = y = 0;
+            w = width;
+            h = height;
+        } else {
+            if (x < 0) {
+                w += x;
+                x = 0;
+            }
+            if (x + w > width) {
+                w = width - x;
+            }
+            if (y < 0) {
+                h += y;
+                y = 0;
+            }
+            if (y + h > height) {
+                h = height - y;
+            }
+        }
+        if ((w <= 0 || h <= 0) && !framenotify) {
+            return;
+        }
+        Enumeration enum_ = theConsumers.elements();
+        while (enum_.hasMoreElements()) {
+            ImageConsumer ic = (ImageConsumer) enum_.nextElement();
+            if (w > 0 && h > 0) {
+                sendPixels(ic, x, y, w, h);
+            }
+            if (framenotify && isConsumer(ic)) {
+                ic.imageComplete(ImageConsumer.SINGLEFRAMEDONE);
+            }
+        }
+    }
+}

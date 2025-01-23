@@ -1,0 +1,20 @@
+/**
+ * Private method for trusted invocation of a method handle respecting simplified signatures.
+ * Type mismatches will not throw {@code WrongMethodTypeException}, but could crash the JVM.
+ * <p>
+ * The caller signature is restricted to the following basic types:
+ * Object, int, long, float, double, and void return.
+ * <p>
+ * The caller is responsible for maintaining type correctness by ensuring
+ * that the each outgoing argument value is a member of the range of the corresponding
+ * callee argument type.
+ * (The caller should therefore issue appropriate casts and integer narrowing
+ * operations on outgoing argument values.)
+ * The caller can assume that the incoming result value is part of the range
+ * of the callee's return type.
+ * @param args the signature-polymorphic parameter list, statically represented using varargs
+ * @return the signature-polymorphic result, statically represented using {@code Object}
+ */
+/*non-public*/
+@PolymorphicSignature
+final native Object invokeBasic(Object... args) throws Throwable;

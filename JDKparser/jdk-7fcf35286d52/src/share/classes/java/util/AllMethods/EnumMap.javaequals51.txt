@@ -1,0 +1,12 @@
+private boolean equals(EnumMap<?, ?> em) {
+    if (em.keyType != keyType)
+        return size == 0 && em.size == 0;
+    // Key types match, compare each value
+    for (int i = 0; i < keyUniverse.length; i++) {
+        Object ourValue = vals[i];
+        Object hisValue = em.vals[i];
+        if (hisValue != ourValue && (hisValue == null || !hisValue.equals(ourValue)))
+            return false;
+    }
+    return true;
+}

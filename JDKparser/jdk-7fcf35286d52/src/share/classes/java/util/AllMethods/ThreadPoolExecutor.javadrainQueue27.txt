@@ -1,0 +1,18 @@
+/**
+ * Drains the task queue into a new list, normally using
+ * drainTo. But if the queue is a DelayQueue or any other kind of
+ * queue for which poll or drainTo may fail to remove some
+ * elements, it deletes them one by one.
+ */
+private List<Runnable> drainQueue() {
+    BlockingQueue<Runnable> q = workQueue;
+    ArrayList<Runnable> taskList = new ArrayList<Runnable>();
+    q.drainTo(taskList);
+    if (!q.isEmpty()) {
+        for (Runnable r : q.toArray(new Runnable[0])) {
+            if (q.remove(r))
+                taskList.add(r);
+        }
+    }
+    return taskList;
+}

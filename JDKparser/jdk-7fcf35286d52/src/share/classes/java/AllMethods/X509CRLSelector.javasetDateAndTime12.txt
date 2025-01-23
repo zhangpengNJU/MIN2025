@@ -1,0 +1,8 @@
+/**
+ * Sets the dateAndTime criterion and allows for the specified clock skew
+ * (in milliseconds) when checking against the validity period of the CRL.
+ */
+void setDateAndTime(Date dateAndTime, long skew) {
+    this.dateAndTime = (dateAndTime == null ? null : new Date(dateAndTime.getTime()));
+    this.skew = skew;
+}

@@ -1,0 +1,93 @@
+/**
+ * Concatenates this transform with a translation transformation.
+ * This is equivalent to calling concatenate(T), where T is an
+ * <code>AffineTransform</code> represented by the following matrix:
+ * <pre>
+ *          [   1    0    tx  ]
+ *          [   0    1    ty  ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param tx the distance by which coordinates are translated in the
+ * X axis direction
+ * @param ty the distance by which coordinates are translated in the
+ * Y axis direction
+ * @since 1.2
+ */
+public void translate(double tx, double ty) {
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            m02 = tx * m00 + ty * m01 + m02;
+            m12 = tx * m10 + ty * m11 + m12;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SHEAR | APPLY_SCALE;
+                if (type != TYPE_UNKNOWN) {
+                    type -= TYPE_TRANSLATION;
+                }
+            }
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE):
+            m02 = tx * m00 + ty * m01;
+            m12 = tx * m10 + ty * m11;
+            if (m02 != 0.0 || m12 != 0.0) {
+                state = APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE;
+                type |= TYPE_TRANSLATION;
+            }
+            return;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            m02 = ty * m01 + m02;
+            m12 = tx * m10 + m12;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SHEAR;
+                if (type != TYPE_UNKNOWN) {
+                    type -= TYPE_TRANSLATION;
+                }
+            }
+            return;
+        case (APPLY_SHEAR):
+            m02 = ty * m01;
+            m12 = tx * m10;
+            if (m02 != 0.0 || m12 != 0.0) {
+                state = APPLY_SHEAR | APPLY_TRANSLATE;
+                type |= TYPE_TRANSLATION;
+            }
+            return;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            m02 = tx * m00 + m02;
+            m12 = ty * m11 + m12;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SCALE;
+                if (type != TYPE_UNKNOWN) {
+                    type -= TYPE_TRANSLATION;
+                }
+            }
+            return;
+        case (APPLY_SCALE):
+            m02 = tx * m00;
+            m12 = ty * m11;
+            if (m02 != 0.0 || m12 != 0.0) {
+                state = APPLY_SCALE | APPLY_TRANSLATE;
+                type |= TYPE_TRANSLATION;
+            }
+            return;
+        case (APPLY_TRANSLATE):
+            m02 = tx + m02;
+            m12 = ty + m12;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_IDENTITY;
+                type = TYPE_IDENTITY;
+            }
+            return;
+        case (APPLY_IDENTITY):
+            m02 = tx;
+            m12 = ty;
+            if (tx != 0.0 || ty != 0.0) {
+                state = APPLY_TRANSLATE;
+                type = TYPE_TRANSLATION;
+            }
+            return;
+    }
+}

@@ -1,0 +1,9 @@
+/**
+ * Return a list of all fields defined by the given class.
+ *  Super types are searched (for inherited members) if {@code searchSupers} is true.
+ *  Access checking is performed on behalf of the given {@code lookupClass}.
+ *  Inaccessible members are not added to the last.
+ */
+public List<MemberName> getFields(Class<?> defc, boolean searchSupers, Class<?> lookupClass) {
+    return getFields(defc, searchSupers, null, null, lookupClass);
+}

@@ -1,0 +1,7 @@
+private HijrahDate resolvePreviousValid(int prolepticYear, int month, int day) {
+    int monthDays = chrono.getMonthLength(prolepticYear, month);
+    if (day > monthDays) {
+        day = monthDays;
+    }
+    return HijrahDate.of(chrono, prolepticYear, month, day);
+}

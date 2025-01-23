@@ -1,0 +1,14 @@
+/**
+ * Return a Raster containing the colors generated for the graphics
+ * operation.
+ *
+ * @param x,y,w,h the area in device space for which colors are
+ * generated.
+ */
+protected void fillRaster(int[] pixels, int off, int adjust, int x, int y, int w, int h) {
+    if (isSimpleFocus && isNonCyclic && isSimpleLookup) {
+        simpleNonCyclicFillRaster(pixels, off, adjust, x, y, w, h);
+    } else {
+        cyclicCircularGradientFillRaster(pixels, off, adjust, x, y, w, h);
+    }
+}

@@ -1,0 +1,47 @@
+/**
+ * Returns whether Toolkit supports this state for
+ * <code>Frame</code>s.  This method tells whether the <em>UI
+ * concept</em> of, say, maximization or iconification is
+ * supported.  It will always return false for "compound" states
+ * like <code>Frame.ICONIFIED|Frame.MAXIMIZED_VERT</code>.
+ * In other words, the rule of thumb is that only queries with a
+ * single frame state constant as an argument are meaningful.
+ * <p>Note that supporting a given concept is a platform-
+ * dependent feature. Due to native limitations the Toolkit
+ * object may report a particular state as supported, however at
+ * the same time the Toolkit object will be unable to apply the
+ * state to a given frame.  This circumstance has two following
+ * consequences:
+ * <ul>
+ * <li>Only the return value of {@code false} for the present
+ * method actually indicates that the given state is not
+ * supported. If the method returns {@code true} the given state
+ * may still be unsupported and/or unavailable for a particular
+ * frame.
+ * <li>The developer should consider examining the value of the
+ * {@link java.awt.event.WindowEvent#getNewState} method of the
+ * {@code WindowEvent} received through the {@link
+ * java.awt.event.WindowStateListener}, rather than assuming
+ * that the state given to the {@code setExtendedState()} method
+ * will be definitely applied. For more information see the
+ * documentation for the {@link Frame#setExtendedState} method.
+ * </ul>
+ *
+ * @param state one of named frame state constants.
+ * @return <code>true</code> is this frame state is supported by
+ *     this Toolkit implementation, <code>false</code> otherwise.
+ * @exception HeadlessException
+ *     if <code>GraphicsEnvironment.isHeadless()</code>
+ *     returns <code>true</code>.
+ * @see java.awt.Window#addWindowStateListener
+ * @since   1.4
+ */
+public boolean isFrameStateSupported(int state) throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    if (this != Toolkit.getDefaultToolkit()) {
+        return Toolkit.getDefaultToolkit().isFrameStateSupported(state);
+    } else {
+        // others are not guaranteed
+        return (state == Frame.NORMAL);
+    }
+}

@@ -1,0 +1,11 @@
+private static XmlPropertiesProvider loadProviderFromProperty(ClassLoader cl) {
+    String cn = System.getProperty("sun.util.spi.XmlPropertiesProvider");
+    if (cn == null)
+        return null;
+    try {
+        Class<?> c = Class.forName(cn, true, cl);
+        return (XmlPropertiesProvider) c.newInstance();
+    } catch (ClassNotFoundException | IllegalAccessException | InstantiationException x) {
+        throw new ServiceConfigurationError(null, x);
+    }
+}

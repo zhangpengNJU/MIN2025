@@ -1,0 +1,14 @@
+void dispatched() {
+    if (this instanceof InputEvent) {
+        Field field = get_InputEvent_CanAccessSystemClipboard();
+        if (field != null) {
+            try {
+                field.setBoolean(this, false);
+            } catch (IllegalAccessException e) {
+                if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                    log.fine("AWTEvent.dispatched() got IllegalAccessException ", e);
+                }
+            }
+        }
+    }
+}

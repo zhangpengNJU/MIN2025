@@ -1,0 +1,13 @@
+/**
+ * For positive values of {@code minimumCapacity}, this method
+ * behaves like {@code ensureCapacity}, however it is never
+ * synchronized.
+ * If {@code minimumCapacity} is non positive due to numeric
+ * overflow, this method throws {@code OutOfMemoryError}.
+ */
+private void ensureCapacityInternal(int minimumCapacity) {
+    // overflow-conscious code
+    if (minimumCapacity - value.length > 0) {
+        value = Arrays.copyOf(value, newCapacity(minimumCapacity));
+    }
+}

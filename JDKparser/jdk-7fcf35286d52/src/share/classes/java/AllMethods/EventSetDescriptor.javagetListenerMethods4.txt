@@ -1,0 +1,20 @@
+/**
+ * Gets the methods of the target listener interface.
+ *
+ * @return An array of <TT>Method</TT> objects for the target methods
+ * within the target listener interface that will get called when
+ * events are fired.
+ */
+public synchronized Method[] getListenerMethods() {
+    Method[] methods = getListenerMethods0();
+    if (methods == null) {
+        if (listenerMethodDescriptors != null) {
+            methods = new Method[listenerMethodDescriptors.length];
+            for (int i = 0; i < methods.length; i++) {
+                methods[i] = listenerMethodDescriptors[i].getMethod();
+            }
+        }
+        setListenerMethods(methods);
+    }
+    return methods;
+}

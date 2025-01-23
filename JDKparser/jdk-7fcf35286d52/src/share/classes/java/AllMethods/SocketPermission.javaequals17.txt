@@ -1,0 +1,51 @@
+/**
+ * Checks two SocketPermission objects for equality.
+ * <P>
+ * @param obj the object to test for equality with this object.
+ *
+ * @return true if <i>obj</i> is a SocketPermission, and has the
+ *  same hostname, port range, and actions as this
+ *  SocketPermission object. However, port range will be ignored
+ *  in the comparison if <i>obj</i> only contains the action, 'resolve'.
+ */
+public boolean equals(Object obj) {
+    if (obj == this)
+        return true;
+    if (!(obj instanceof SocketPermission))
+        return false;
+    SocketPermission that = (SocketPermission) obj;
+    // this is (overly?) complex!!!
+    // check the mask first
+    if (this.mask != that.mask)
+        return false;
+    if ((that.mask & RESOLVE) != that.mask) {
+        // now check the port range...
+        if ((this.portrange[0] != that.portrange[0]) || (this.portrange[1] != that.portrange[1])) {
+            return false;
+        }
+    }
+    // short cut. This catches:
+    // "crypto" equal to "crypto", or
+    // "1.2.3.4" equal to "1.2.3.4.", or
+    // "*.edu" equal to "*.edu", but it
+    // does not catch "crypto" equal to
+    // "crypto.eng.sun.com".
+    if (this.getName().equalsIgnoreCase(that.getName())) {
+        return true;
+    }
+    // we now attempt to get the Canonical (FQDN) name and
+    // compare that. If this fails, about all we can do is return
+    // false.
+    try {
+        this.getCanonName();
+        that.getCanonName();
+    } catch (UnknownHostException uhe) {
+        return false;
+    }
+    if (this.invalid || that.invalid)
+        return false;
+    if (this.cname != null) {
+        return this.cname.equalsIgnoreCase(that.cname);
+    }
+    return false;
+}

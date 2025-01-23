@@ -1,0 +1,23 @@
+@SuppressWarnings("unchecked")
+public boolean tryAdvance(Consumer<? super E> action) {
+    Node p;
+    if (action == null)
+        throw new NullPointerException();
+    final LinkedTransferQueue<E> q = this.queue;
+    if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null)) {
+        Object e;
+        do {
+            if ((e = p.item) == p)
+                e = null;
+            if (p == (p = p.next))
+                p = q.firstDataNode();
+        } while (e == null && p != null && p.isData);
+        if ((current = p) == null)
+            exhausted = true;
+        if (e != null) {
+            action.accept((E) e);
+            return true;
+        }
+    }
+    return false;
+}

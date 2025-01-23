@@ -1,0 +1,8 @@
+private void updateWindow() {
+    synchronized (getTreeLock()) {
+        WindowPeer peer = (WindowPeer) getPeer();
+        if (peer != null) {
+            peer.updateWindow();
+        }
+    }
+}

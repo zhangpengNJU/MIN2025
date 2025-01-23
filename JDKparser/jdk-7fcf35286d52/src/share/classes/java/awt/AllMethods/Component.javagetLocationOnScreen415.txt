@@ -1,0 +1,15 @@
+/**
+ * Returns the location of the object on the screen.
+ *
+ * @return location of object on screen -- can be
+ *    <code>null</code> if this object is not on the screen
+ */
+public Point getLocationOnScreen() {
+    synchronized (Component.this.getTreeLock()) {
+        if (Component.this.isShowing()) {
+            return Component.this.getLocationOnScreen();
+        } else {
+            return null;
+        }
+    }
+}

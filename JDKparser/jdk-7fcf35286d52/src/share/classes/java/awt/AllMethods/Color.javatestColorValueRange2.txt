@@ -1,0 +1,32 @@
+/**
+ * Checks the color <code>float</code> components supplied for
+ * validity.
+ * Throws an <code>IllegalArgumentException</code> if the value is out
+ * of range.
+ * @param r the Red component
+ * @param g the Green component
+ * @param b the Blue component
+ */
+private static void testColorValueRange(float r, float g, float b, float a) {
+    boolean rangeError = false;
+    String badComponentString = "";
+    if (a < 0.0 || a > 1.0) {
+        rangeError = true;
+        badComponentString = badComponentString + " Alpha";
+    }
+    if (r < 0.0 || r > 1.0) {
+        rangeError = true;
+        badComponentString = badComponentString + " Red";
+    }
+    if (g < 0.0 || g > 1.0) {
+        rangeError = true;
+        badComponentString = badComponentString + " Green";
+    }
+    if (b < 0.0 || b > 1.0) {
+        rangeError = true;
+        badComponentString = badComponentString + " Blue";
+    }
+    if (rangeError == true) {
+        throw new IllegalArgumentException("Color parameter outside of expected range:" + badComponentString);
+    }
+}

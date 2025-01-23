@@ -1,0 +1,7 @@
+public void run(Component comp, Graphics cg) {
+    if (comp.peer instanceof LightweightPeer) {
+        comp.paintHeavyweightComponents(cg);
+    } else {
+        comp.paintAll(cg);
+    }
+}

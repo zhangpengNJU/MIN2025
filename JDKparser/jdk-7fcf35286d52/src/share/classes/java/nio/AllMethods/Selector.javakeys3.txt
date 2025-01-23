@@ -1,0 +1,16 @@
+/**
+ * Returns this selector's key set.
+ *
+ * <p> The key set is not directly modifiable.  A key is removed only after
+ * it has been cancelled and its channel has been deregistered.  Any
+ * attempt to modify the key set will cause an {@link
+ * UnsupportedOperationException} to be thrown.
+ *
+ * <p> The key set is <a href="#ksc">not thread-safe</a>. </p>
+ *
+ * @return  This selector's key set
+ *
+ * @throws  ClosedSelectorException
+ *          If this selector is closed
+ */
+public abstract Set<SelectionKey> keys();

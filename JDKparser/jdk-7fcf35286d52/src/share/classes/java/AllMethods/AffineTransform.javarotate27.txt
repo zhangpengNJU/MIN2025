@@ -1,0 +1,48 @@
+/**
+ * Concatenates this transform with a transform that rotates
+ * coordinates according to a rotation vector.
+ * All coordinates rotate about the origin by the same amount.
+ * The amount of rotation is such that coordinates along the former
+ * positive X axis will subsequently align with the vector pointing
+ * from the origin to the specified vector coordinates.
+ * If both <code>vecx</code> and <code>vecy</code> are 0.0,
+ * no additional rotation is added to this transform.
+ * This operation is equivalent to calling:
+ * <pre>
+ *          rotate(Math.atan2(vecy, vecx));
+ * </pre>
+ *
+ * @param vecx the X coordinate of the rotation vector
+ * @param vecy the Y coordinate of the rotation vector
+ * @since 1.6
+ */
+public void rotate(double vecx, double vecy) {
+    if (vecy == 0.0) {
+        if (vecx < 0.0) {
+            rotate180();
+        }
+    // If vecx > 0.0 - no rotation
+    // If vecx == 0.0 - undefined rotation - treat as no rotation
+    } else if (vecx == 0.0) {
+        if (vecy > 0.0) {
+            rotate90();
+        } else {
+            // vecy must be < 0.0
+            rotate270();
+        }
+    } else {
+        double len = Math.sqrt(vecx * vecx + vecy * vecy);
+        double sin = vecy / len;
+        double cos = vecx / len;
+        double M0, M1;
+        M0 = m00;
+        M1 = m01;
+        m00 = cos * M0 + sin * M1;
+        m01 = -sin * M0 + cos * M1;
+        M0 = m10;
+        M1 = m11;
+        m10 = cos * M0 + sin * M1;
+        m11 = -sin * M0 + cos * M1;
+        updateState();
+    }
+}

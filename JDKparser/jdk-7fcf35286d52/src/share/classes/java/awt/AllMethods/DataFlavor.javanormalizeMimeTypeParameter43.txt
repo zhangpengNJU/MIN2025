@@ -1,0 +1,19 @@
+// clone()
+/**
+ * Called on <code>DataFlavor</code> for every MIME Type parameter
+ * to allow <code>DataFlavor</code> subclasses to handle special
+ * parameters like the text/plain <code>charset</code>
+ * parameters, whose values are case insensitive.  (MIME type parameter
+ * values are supposed to be case sensitive.
+ * <p>
+ * This method is called for each parameter name/value pair and should
+ * return the normalized representation of the <code>parameterValue</code>.
+ *
+ * This method is never invoked by this implementation from 1.1 onwards.
+ *
+ * @deprecated
+ */
+@Deprecated
+protected String normalizeMimeTypeParameter(String parameterName, String parameterValue) {
+    return parameterValue;
+}

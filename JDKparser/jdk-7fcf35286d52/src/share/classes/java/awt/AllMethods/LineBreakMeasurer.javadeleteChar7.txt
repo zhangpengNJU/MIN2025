@@ -1,0 +1,21 @@
+/**
+ * Updates this <code>LineBreakMeasurer</code> after a single
+ * character is deleted from the text, and sets the current
+ * position to the beginning of the paragraph.
+ * @param newParagraph the text after the deletion
+ * @param deletePos the position in the text at which the character
+ *    is deleted
+ * @throws IndexOutOfBoundsException if <code>deletePos</code> is
+ *         less than the start of <code>newParagraph</code> or greater
+ *         than the end of <code>newParagraph</code>
+ * @throws NullPointerException if <code>newParagraph</code> is
+ *         <code>null</code>
+ * @see #insertChar
+ */
+public void deleteChar(AttributedCharacterIterator newParagraph, int deletePos) {
+    measurer.deleteChar(newParagraph, deletePos);
+    limit = newParagraph.getEndIndex();
+    pos = start = newParagraph.getBeginIndex();
+    charIter.reset(measurer.getChars(), start);
+    breakIter.setText(charIter);
+}

@@ -1,0 +1,10 @@
+@Override
+public void forEach(Consumer<? super Integer> consumer) {
+    if (consumer instanceof IntConsumer) {
+        forEach((IntConsumer) consumer);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfInt.forEach(Consumer)");
+        spliterator().forEachRemaining(consumer);
+    }
+}

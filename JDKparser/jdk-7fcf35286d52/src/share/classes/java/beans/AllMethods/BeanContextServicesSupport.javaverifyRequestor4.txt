@@ -1,0 +1,6 @@
+// check a requestors listener
+void verifyRequestor(Object requestor, BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException {
+    BeanContextServiceRevokedListener cbcsrl = (BeanContextServiceRevokedListener) requestors.get(requestor);
+    if (cbcsrl != null && !cbcsrl.equals(bcsrl))
+        throw new TooManyListenersException();
+}

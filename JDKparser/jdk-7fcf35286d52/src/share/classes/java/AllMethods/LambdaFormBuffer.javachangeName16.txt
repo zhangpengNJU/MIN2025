@@ -1,0 +1,17 @@
+private void changeName(int i, Name name) {
+    assert (inTrans());
+    assert (i < length);
+    Name oldName = names[i];
+    // no multiple changes
+    assert (oldName == originalNames[i]);
+    assert (verifyFirstChange());
+    if (ownedCount() == 0)
+        growNames(0, 0);
+    names[i] = name;
+    if (firstChange > i) {
+        firstChange = i;
+    }
+    if (resultName != null && resultName == oldName) {
+        resultName = name;
+    }
+}

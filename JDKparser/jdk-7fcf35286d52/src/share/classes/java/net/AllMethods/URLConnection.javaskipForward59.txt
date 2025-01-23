@@ -1,0 +1,22 @@
+/**
+ * Skips through the specified number of bytes from the stream
+ * until either EOF is reached, or the specified
+ * number of bytes have been skipped
+ */
+static private long skipForward(InputStream is, long toSkip) throws IOException {
+    long eachSkip = 0;
+    long skipped = 0;
+    while (skipped != toSkip) {
+        eachSkip = is.skip(toSkip - skipped);
+        // check if EOF is reached
+        if (eachSkip <= 0) {
+            if (is.read() == -1) {
+                return skipped;
+            } else {
+                skipped++;
+            }
+        }
+        skipped += eachSkip;
+    }
+    return skipped;
+}

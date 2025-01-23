@@ -1,0 +1,13 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (-this)},
+ * with rounding according to the context settings.
+ *
+ * @param mc the context to use.
+ * @return {@code -this}, rounded as necessary.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}.
+ * @since  1.5
+ */
+public BigDecimal negate(MathContext mc) {
+    return negate().plus(mc);
+}

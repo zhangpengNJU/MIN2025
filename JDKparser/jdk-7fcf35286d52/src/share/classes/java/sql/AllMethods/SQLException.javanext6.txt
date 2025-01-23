@@ -1,0 +1,16 @@
+public Throwable next() {
+    Throwable throwable = null;
+    if (firstException != null) {
+        throwable = firstException;
+        firstException = null;
+    } else if (cause != null) {
+        throwable = cause;
+        cause = cause.getCause();
+    } else if (nextException != null) {
+        throwable = nextException;
+        cause = nextException.getCause();
+        nextException = nextException.getNextException();
+    } else
+        throw new NoSuchElementException();
+    return throwable;
+}

@@ -1,0 +1,40 @@
+/**
+ * This method writes out the preamble associated with the
+ * XML encoding if it has not been written already and
+ * then writes out all of the values that been
+ * written to the stream since the last time <code>flush</code>
+ * was called. After flushing, all internal references to the
+ * values that were written to this stream are cleared.
+ */
+public void flush() {
+    if (!preambleWritten) {
+        // Don't do this in constructor - it throws ... pending.
+        if (this.declaration) {
+            writeln("<?xml version=" + quote("1.0") + " encoding=" + quote(this.charset) + "?>");
+        }
+        writeln("<java version=" + quote(System.getProperty("java.version")) + " class=" + quote(XMLDecoder.class.getName()) + ">");
+        preambleWritten = true;
+    }
+    indentation++;
+    List<Statement> statements = statementList(this);
+    while (!statements.isEmpty()) {
+        Statement s = statements.remove(0);
+        if ("writeObject".equals(s.getMethodName())) {
+            outputValue(s.getArguments()[0], this, true);
+        } else {
+            outputStatement(s, this, false);
+        }
+    }
+    indentation--;
+    Statement statement = getMissedStatement();
+    while (statement != null) {
+        outputStatement(statement, this, false);
+        statement = getMissedStatement();
+    }
+    try {
+        out.flush();
+    } catch (IOException e) {
+        getExceptionListener().exceptionThrown(e);
+    }
+    clear();
+}

@@ -1,0 +1,47 @@
+private final BufferedImage ICCBIFilter(BufferedImage src, ColorSpace srcColorSpace, BufferedImage dest, ColorSpace destColorSpace) {
+    int nProfiles = profileList.length;
+    ICC_Profile srcProfile = null, destProfile = null;
+    srcProfile = ((ICC_ColorSpace) srcColorSpace).getProfile();
+    if (dest == null) {
+        /* last profile in the list defines
+                                      the output color space */
+        if (nProfiles == 0) {
+            throw new IllegalArgumentException("Destination ColorSpace is undefined");
+        }
+        destProfile = profileList[nProfiles - 1];
+        dest = createCompatibleDestImage(src, null);
+    } else {
+        if (src.getHeight() != dest.getHeight() || src.getWidth() != dest.getWidth()) {
+            throw new IllegalArgumentException("Width or height of BufferedImages do not match");
+        }
+        destProfile = ((ICC_ColorSpace) destColorSpace).getProfile();
+    }
+    /* Checking if all profiles in the transform sequence are the same.
+         * If so, performing just copying the data.
+         */
+    if (srcProfile == destProfile) {
+        boolean noTrans = true;
+        for (int i = 0; i < nProfiles; i++) {
+            if (srcProfile != profileList[i]) {
+                noTrans = false;
+                break;
+            }
+        }
+        if (noTrans) {
+            Graphics2D g = dest.createGraphics();
+            try {
+                g.drawImage(src, 0, 0, null);
+            } finally {
+                g.dispose();
+            }
+            return dest;
+        }
+    }
+    /* make a new transform if needed */
+    if ((thisTransform == null) || (thisSrcProfile != srcProfile) || (thisDestProfile != destProfile)) {
+        updateBITransform(srcProfile, destProfile);
+    }
+    /* color convert the image */
+    thisTransform.colorConvert(src, dest);
+    return dest;
+}

@@ -1,0 +1,23 @@
+/**
+ * Creates a new ComponentSampleModel with a subset of the bands
+ * of this ComponentSampleModel.  The new ComponentSampleModel can be
+ * used with any DataBuffer that the existing ComponentSampleModel
+ * can be used with.  The new ComponentSampleModel/DataBuffer
+ * combination will represent an image with a subset of the bands
+ * of the original ComponentSampleModel/DataBuffer combination.
+ * @param bands a subset of bands from this
+ *              <code>ComponentSampleModel</code>
+ * @return a <code>ComponentSampleModel</code> created with a subset
+ *          of bands from this <code>ComponentSampleModel</code>.
+ */
+public SampleModel createSubsetSampleModel(int[] bands) {
+    if (bands.length > bankIndices.length)
+        throw new RasterFormatException("There are only " + bankIndices.length + " bands");
+    int[] newBankIndices = new int[bands.length];
+    int[] newBandOffsets = new int[bands.length];
+    for (int i = 0; i < bands.length; i++) {
+        newBankIndices[i] = bankIndices[bands[i]];
+        newBandOffsets[i] = bandOffsets[bands[i]];
+    }
+    return new ComponentSampleModel(this.dataType, width, height, this.pixelStride, this.scanlineStride, newBankIndices, newBandOffsets);
+}

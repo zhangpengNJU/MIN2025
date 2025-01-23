@@ -1,0 +1,17 @@
+static boolean typesMatch(BasicType parameterType, Object object) {
+    if (object instanceof Name) {
+        return ((Name) object).type == parameterType;
+    }
+    switch(parameterType) {
+        case I_TYPE:
+            return object instanceof Integer;
+        case J_TYPE:
+            return object instanceof Long;
+        case F_TYPE:
+            return object instanceof Float;
+        case D_TYPE:
+            return object instanceof Double;
+    }
+    assert (parameterType == L_TYPE);
+    return true;
+}

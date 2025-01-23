@@ -1,0 +1,15 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final synchronized void moveTo(double x, double y) {
+    if (numTypes > 0 && pointTypes[numTypes - 1] == SEG_MOVETO) {
+        doubleCoords[numCoords - 2] = x;
+        doubleCoords[numCoords - 1] = y;
+    } else {
+        needRoom(false, 2);
+        pointTypes[numTypes++] = SEG_MOVETO;
+        doubleCoords[numCoords++] = x;
+        doubleCoords[numCoords++] = y;
+    }
+}

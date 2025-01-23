@@ -1,0 +1,35 @@
+/**
+ * Creates a graphics context (as a {@link Graphics2D} object) for the splash
+ * screen overlay image, which allows you to draw over the splash screen.
+ * Note that you do not draw on the main image but on the image that is
+ * displayed over the main image using alpha blending. Also note that drawing
+ * on the overlay image does not necessarily update the contents of splash
+ * screen window. You should call {@code update()} on the
+ * <code>SplashScreen</code> when you want the splash screen to be
+ * updated immediately.
+ * <p>
+ * The pixel (0, 0) in the coordinate space of the graphics context
+ * corresponds to the origin of the splash screen native window bounds (see
+ * {@link #getBounds()}).
+ *
+ * @return graphics context for the splash screen overlay surface
+ * @throws IllegalStateException if the splash screen has already been closed
+ */
+public Graphics2D createGraphics() throws IllegalStateException {
+    synchronized (SplashScreen.class) {
+        checkVisible();
+        if (image == null) {
+            // get unscaled splash image size
+            Dimension dim = _getBounds(splashPtr).getSize();
+            image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
+        }
+        float scale = _getScaleFactor(splashPtr);
+        Graphics2D g = image.createGraphics();
+        assert (scale > 0);
+        if (scale <= 0) {
+            scale = 1;
+        }
+        g.scale(scale, scale);
+        return g;
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Updates the data to be signed or verified by a byte.
+ *
+ * @param b the byte to use for the update.
+ *
+ * @exception SignatureException if this signature object is not
+ * initialized properly.
+ */
+public final void update(byte b) throws SignatureException {
+    if (state == VERIFY || state == SIGN) {
+        engineUpdate(b);
+    } else {
+        throw new SignatureException("object not initialized for " + "signature or verification");
+    }
+}

@@ -1,0 +1,19 @@
+public Void run() {
+    // In case fwDispatcher is installed and we're already on the
+    // dispatch thread (e.g. performing DefaultKeyboardFocusManager.sendMessage),
+    // dispatch the event straight away.
+    if (fwDispatcher == null || isDispatchThreadImpl()) {
+        dispatchEventImpl(event, src);
+    } else {
+        fwDispatcher.scheduleDispatch(new Runnable() {
+
+            @Override
+            public void run() {
+                if (dispatchThread.filterAndCheckEvent(event)) {
+                    dispatchEventImpl(event, src);
+                }
+            }
+        });
+    }
+    return null;
+}

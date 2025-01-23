@@ -1,0 +1,10 @@
+private void writeObject(ObjectOutputStream s) throws IOException {
+    if (getClass().getClassLoader() != null) {
+        throw new SecurityException("invalid address type");
+    }
+    PutField pf = s.putFields();
+    pf.put("hostName", holder().getHostName());
+    pf.put("address", holder().getAddress());
+    pf.put("family", holder().getFamily());
+    s.writeFields();
+}

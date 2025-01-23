@@ -1,0 +1,3 @@
+static int intFromBigEndian(byte[] array, int index) {
+    return (((array[index] & 0xff) << 24) | ((array[index + 1] & 0xff) << 16) | ((array[index + 2] & 0xff) << 8) | (array[index + 3] & 0xff));
+}

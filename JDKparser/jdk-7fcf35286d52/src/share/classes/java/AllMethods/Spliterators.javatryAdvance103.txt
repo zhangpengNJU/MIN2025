@@ -1,0 +1,10 @@
+@Override
+public boolean tryAdvance(DoubleConsumer action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (it.hasNext()) {
+        action.accept(it.nextDouble());
+        return true;
+    }
+    return false;
+}

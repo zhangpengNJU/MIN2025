@@ -1,0 +1,21 @@
+public void sort(Comparator<? super E> c) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        int lo = offset;
+        int hi = offset + size;
+        Object[] elements = expectedArray;
+        if (l.getArray() != elements)
+            throw new ConcurrentModificationException();
+        int len = elements.length;
+        if (lo < 0 || hi > len)
+            throw new IndexOutOfBoundsException();
+        Object[] newElements = Arrays.copyOf(elements, len);
+        @SuppressWarnings("unchecked")
+        E[] es = (E[]) newElements;
+        Arrays.sort(es, lo, hi, c);
+        l.setArray(expectedArray = newElements);
+    } finally {
+        lock.unlock();
+    }
+}

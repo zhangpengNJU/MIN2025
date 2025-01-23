@@ -1,0 +1,48 @@
+/**
+ * Returns an array of all the objects currently registered
+ * as <code><em>Foo</em>Listener</code>s
+ * upon this {@code Window}.
+ * <code><em>Foo</em>Listener</code>s are registered using the
+ * <code>add<em>Foo</em>Listener</code> method.
+ *
+ * <p>
+ *
+ * You can specify the {@code listenerType} argument
+ * with a class literal, such as
+ * <code><em>Foo</em>Listener.class</code>.
+ * For example, you can query a
+ * {@code Window} {@code w}
+ * for its window listeners with the following code:
+ *
+ * <pre>WindowListener[] wls = (WindowListener[])(w.getListeners(WindowListener.class));</pre>
+ *
+ * If no such listeners exist, this method returns an empty array.
+ *
+ * @param listenerType the type of listeners requested; this parameter
+ *          should specify an interface that descends from
+ *          {@code java.util.EventListener}
+ * @return an array of all objects registered as
+ *          <code><em>Foo</em>Listener</code>s on this window,
+ *          or an empty array if no such
+ *          listeners have been added
+ * @exception ClassCastException if {@code listenerType}
+ *          doesn't specify a class or interface that implements
+ *          {@code java.util.EventListener}
+ * @exception NullPointerException if {@code listenerType} is {@code null}
+ *
+ * @see #getWindowListeners
+ * @since 1.3
+ */
+public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
+    EventListener l = null;
+    if (listenerType == WindowFocusListener.class) {
+        l = windowFocusListener;
+    } else if (listenerType == WindowStateListener.class) {
+        l = windowStateListener;
+    } else if (listenerType == WindowListener.class) {
+        l = windowListener;
+    } else {
+        return super.getListeners(listenerType);
+    }
+    return AWTEventMulticaster.getListeners(l, listenerType);
+}

@@ -1,0 +1,42 @@
+/**
+ *  Binds this DatagramSocket to a specific address and port.
+ *  <p>
+ *  If the address is {@code null}, then the system will pick up
+ *  an ephemeral port and a valid local address to bind the socket.
+ * <p>
+ *  @param   addr The address and port to bind to.
+ *  @throws  SocketException if any error happens during the bind, or if the
+ *           socket is already bound.
+ *  @throws  SecurityException  if a security manager exists and its
+ *              {@code checkListen} method doesn't allow the operation.
+ *  @throws IllegalArgumentException if addr is a SocketAddress subclass
+ *          not supported by this socket.
+ *  @since 1.4
+ */
+public synchronized void bind(SocketAddress addr) throws SocketException {
+    if (isClosed())
+        throw new SocketException("Socket is closed");
+    if (isBound())
+        throw new SocketException("already bound");
+    if (addr == null)
+        addr = new InetSocketAddress(0);
+    if (!(addr instanceof InetSocketAddress))
+        throw new IllegalArgumentException("Unsupported address type!");
+    InetSocketAddress epoint = (InetSocketAddress) addr;
+    if (epoint.isUnresolved())
+        throw new SocketException("Unresolved address");
+    InetAddress iaddr = epoint.getAddress();
+    int port = epoint.getPort();
+    checkAddress(iaddr, "bind");
+    SecurityManager sec = System.getSecurityManager();
+    if (sec != null) {
+        sec.checkListen(port);
+    }
+    try {
+        getImpl().bind(port, iaddr);
+    } catch (SocketException e) {
+        getImpl().close();
+        throw e;
+    }
+    bound = true;
+}

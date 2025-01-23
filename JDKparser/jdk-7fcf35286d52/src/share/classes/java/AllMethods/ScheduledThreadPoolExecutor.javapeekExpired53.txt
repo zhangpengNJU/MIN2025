@@ -1,0 +1,9 @@
+/**
+ * Returns first element only if it is expired.
+ * Used only by drainTo.  Call only when holding lock.
+ */
+private RunnableScheduledFuture<?> peekExpired() {
+    // assert lock.isHeldByCurrentThread();
+    RunnableScheduledFuture<?> first = queue[0];
+    return (first == null || first.getDelay(NANOSECONDS) > 0) ? null : first;
+}

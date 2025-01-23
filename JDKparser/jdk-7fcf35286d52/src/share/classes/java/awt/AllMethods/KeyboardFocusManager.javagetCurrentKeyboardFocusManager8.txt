@@ -1,0 +1,8 @@
+synchronized static KeyboardFocusManager getCurrentKeyboardFocusManager(AppContext appcontext) {
+    KeyboardFocusManager manager = (KeyboardFocusManager) appcontext.get(KeyboardFocusManager.class);
+    if (manager == null) {
+        manager = new DefaultKeyboardFocusManager();
+        appcontext.put(KeyboardFocusManager.class, manager);
+    }
+    return manager;
+}

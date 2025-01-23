@@ -1,0 +1,21 @@
+// --------------------------JDBC 3.0-----------------------------
+/**
+ * Changes the default holdability of <code>ResultSet</code> objects
+ * created using this <code>Connection</code> object to the given
+ * holdability.  The default holdability of <code>ResultSet</code> objects
+ * can be be determined by invoking
+ * {@link DatabaseMetaData#getResultSetHoldability}.
+ *
+ * @param holdability a <code>ResultSet</code> holdability constant; one of
+ *        <code>ResultSet.HOLD_CURSORS_OVER_COMMIT</code> or
+ *        <code>ResultSet.CLOSE_CURSORS_AT_COMMIT</code>
+ * @throws SQLException if a database access occurs, this method is called
+ * on a closed connection, or the given parameter
+ *         is not a <code>ResultSet</code> constant indicating holdability
+ * @exception SQLFeatureNotSupportedException if the given holdability is not supported
+ * @see #getHoldability
+ * @see DatabaseMetaData#getResultSetHoldability
+ * @see ResultSet
+ * @since 1.4
+ */
+void setHoldability(int holdability) throws SQLException;

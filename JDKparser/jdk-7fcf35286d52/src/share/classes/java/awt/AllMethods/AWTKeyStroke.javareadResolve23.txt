@@ -1,0 +1,14 @@
+/**
+ * Returns a cached instance of <code>AWTKeyStroke</code> (or a subclass of
+ * <code>AWTKeyStroke</code>) which is equal to this instance.
+ *
+ * @return a cached instance which is equal to this instance
+ */
+protected Object readResolve() throws java.io.ObjectStreamException {
+    synchronized (AWTKeyStroke.class) {
+        if (getClass().equals(getAWTKeyStrokeClass())) {
+            return getCachedStroke(keyChar, keyCode, modifiers, onKeyRelease);
+        }
+    }
+    return this;
+}

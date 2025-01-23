@@ -1,0 +1,8 @@
+private ValueData getValueData(Object o) {
+    ValueData d = valueToExpression.get(o);
+    if (d == null) {
+        d = new ValueData();
+        valueToExpression.put(o, d);
+    }
+    return d;
+}

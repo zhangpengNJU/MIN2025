@@ -1,0 +1,49 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a functional reduce on
+ * {@code double} values, producing an optional double result.
+ *
+ * @param operator the combining function
+ * @return a {@code TerminalOp} implementing the reduction
+ */
+public static TerminalOp<Double, OptionalDouble> makeDouble(DoubleBinaryOperator operator) {
+    Objects.requireNonNull(operator);
+    class ReducingSink implements AccumulatingSink<Double, OptionalDouble, ReducingSink>, Sink.OfDouble {
+
+        private boolean empty;
+
+        private double state;
+
+        public void begin(long size) {
+            empty = true;
+            state = 0;
+        }
+
+        @Override
+        public void accept(double t) {
+            if (empty) {
+                empty = false;
+                state = t;
+            } else {
+                state = operator.applyAsDouble(state, t);
+            }
+        }
+
+        @Override
+        public OptionalDouble get() {
+            return empty ? OptionalDouble.empty() : OptionalDouble.of(state);
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            if (!other.empty)
+                accept(other.state);
+        }
+    }
+    return new ReduceOp<Double, OptionalDouble, ReducingSink>(StreamShape.DOUBLE_VALUE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

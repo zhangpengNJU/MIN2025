@@ -1,0 +1,24 @@
+// Scanning for tasks
+/**
+ * Top-level runloop for workers, called by ForkJoinWorkerThread.run.
+ */
+final void runWorker(WorkQueue w) {
+    // allocate queue
+    w.growArray();
+    // initially holds randomization hint
+    int seed = w.hint;
+    // avoid 0 for xorShift
+    int r = (seed == 0) ? 1 : seed;
+    for (ForkJoinTask<?> t; ; ) {
+        if ((t = scan(w, r)) != null)
+            w.runTask(t);
+        else if (!awaitWork(w, r))
+            break;
+        // xorshift
+        r ^= r << 13;
+        // xorshift
+        r ^= r >>> 17;
+        // xorshift
+        r ^= r << 5;
+    }
+}

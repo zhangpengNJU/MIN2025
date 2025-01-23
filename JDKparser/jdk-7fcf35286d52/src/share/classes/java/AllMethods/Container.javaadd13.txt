@@ -1,0 +1,20 @@
+/**
+ * Adds the specified component to this container.
+ * This is a convenience method for {@link #addImpl}.
+ * <p>
+ * This method is obsolete as of 1.1.  Please use the
+ * method <code>add(Component, Object)</code> instead.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy. If the container has already been
+ * displayed, the hierarchy must be validated thereafter in order to
+ * display the added component.
+ *
+ * @exception NullPointerException if {@code comp} is {@code null}
+ * @see #add(Component, Object)
+ * @see #invalidate
+ */
+public Component add(String name, Component comp) {
+    addImpl(comp, name, -1);
+    return comp;
+}

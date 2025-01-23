@@ -1,0 +1,15 @@
+/**
+ * Resets the stream to the most recent mark.
+ *
+ * @exception  IOException  If the stream has never been marked,
+ *                          or if the mark has been invalidated
+ */
+public void reset() throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        if (markedChar < 0)
+            throw new IOException((markedChar == INVALIDATED) ? "Mark invalid" : "Stream not marked");
+        nextChar = markedChar;
+        skipLF = markedSkipLF;
+    }
+}

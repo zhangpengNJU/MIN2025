@@ -1,0 +1,15 @@
+/**
+ * Returns the status of the pixels.  The ImageObserver flags
+ * representing the available pixel information are returned.
+ * This method and {@link #getStatus() getStatus} have the
+ * same implementation, but <code>getStatus</code> is the
+ * preferred method because it conforms to the convention of
+ * naming information-retrieval methods with the form
+ * "getXXX".
+ * @return the bitwise OR of all relevant ImageObserver flags
+ * @see ImageObserver
+ * @see #getStatus()
+ */
+public synchronized int status() {
+    return flags;
+}

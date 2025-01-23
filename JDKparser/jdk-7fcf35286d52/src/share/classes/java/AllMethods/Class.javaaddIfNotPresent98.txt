@@ -1,0 +1,9 @@
+void addIfNotPresent(Method newMethod) {
+    for (int i = 0; i < length; i++) {
+        Method m = methods[i];
+        if (m == newMethod || (m != null && m.equals(newMethod))) {
+            return;
+        }
+    }
+    add(newMethod);
+}

@@ -1,0 +1,21 @@
+/**
+ * Parses text from the beginning of the given string to produce an object
+ * array.
+ * The method may not use the entire text of the given string.
+ * <p>
+ * See the {@link #parse(String, ParsePosition)} method for more information
+ * on message parsing.
+ *
+ * @param source A <code>String</code> whose beginning should be parsed.
+ * @return An <code>Object</code> array parsed from the string.
+ * @exception ParseException if the beginning of the specified string
+ *            cannot be parsed.
+ */
+public Object[] parse(String source) throws ParseException {
+    ParsePosition pos = new ParsePosition(0);
+    Object[] result = parse(source, pos);
+    if (// unchanged, returned object is null
+    pos.index == 0)
+        throw new ParseException("MessageFormat parse error!", pos.errorIndex);
+    return result;
+}

@@ -1,0 +1,29 @@
+/*
+     * This method is called only for modal dialogs.
+     *
+     * Unblocks all the windows blocked by this modal dialog. After
+     * each of them has been unblocked, it is checked to be blocked by
+     * any other modal dialogs.
+     */
+void modalHide() {
+    // we should unblock all the windows first...
+    IdentityArrayList<Window> save = new IdentityArrayList<Window>();
+    int blockedWindowsCount = blockedWindows.size();
+    for (int i = 0; i < blockedWindowsCount; i++) {
+        Window w = blockedWindows.get(0);
+        save.add(w);
+        // also removes w from blockedWindows
+        unblockWindow(w);
+    }
+    // ... and only after that check if they should be blocked
+    // by another dialogs
+    for (int i = 0; i < blockedWindowsCount; i++) {
+        Window w = save.get(i);
+        if ((w instanceof Dialog) && ((Dialog) w).isModal_NoClientCode()) {
+            Dialog d = (Dialog) w;
+            d.modalShow();
+        } else {
+            checkShouldBeBlocked(w);
+        }
+    }
+}

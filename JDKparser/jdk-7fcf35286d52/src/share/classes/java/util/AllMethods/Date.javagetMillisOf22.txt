@@ -1,0 +1,11 @@
+/**
+ * Returns the millisecond value of this <code>Date</code> object
+ * without affecting its internal state.
+ */
+static final long getMillisOf(Date date) {
+    if (date.cdate == null || date.cdate.isNormalized()) {
+        return date.fastTime;
+    }
+    BaseCalendar.Date d = (BaseCalendar.Date) date.cdate.clone();
+    return gcal.getTime(d);
+}

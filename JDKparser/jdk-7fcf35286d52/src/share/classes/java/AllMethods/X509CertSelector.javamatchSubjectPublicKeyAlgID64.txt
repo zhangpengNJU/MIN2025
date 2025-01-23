@@ -1,0 +1,29 @@
+/* match on subject public key algorithm OID */
+private boolean matchSubjectPublicKeyAlgID(X509Certificate xcert) {
+    if (subjectPublicKeyAlgID == null) {
+        return true;
+    }
+    try {
+        byte[] encodedKey = xcert.getPublicKey().getEncoded();
+        DerValue val = new DerValue(encodedKey);
+        if (val.tag != DerValue.tag_Sequence) {
+            throw new IOException("invalid key format");
+        }
+        AlgorithmId algID = AlgorithmId.parse(val.data.getDerValue());
+        if (debug != null) {
+            debug.println("X509CertSelector.match: subjectPublicKeyAlgID = " + subjectPublicKeyAlgID + ", xcert subjectPublicKeyAlgID = " + algID.getOID());
+        }
+        if (!subjectPublicKeyAlgID.equals((Object) algID.getOID())) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "subject public key alg IDs don't match");
+            }
+            return false;
+        }
+    } catch (IOException e5) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: IOException in subject " + "public key algorithm OID check");
+        }
+        return false;
+    }
+    return true;
+}

@@ -1,0 +1,8 @@
+/**
+ * Replace a parameter by a fresh parameter.
+ */
+LambdaFormBuffer renameParameter(int pos, Name newParam) {
+    assert (newParam.isParam());
+    replaceName(pos, newParam);
+    return this;
+}

@@ -1,0 +1,9 @@
+// Take an IPv4 address: Throw an exception if the given interval
+// contains anything except an IPv4 address
+// 
+private int takeIPv4Address(int start, int n, String expected) throws URISyntaxException {
+    int p = scanIPv4Address(start, n, true);
+    if (p <= start)
+        failExpecting(expected, start);
+    return p;
+}

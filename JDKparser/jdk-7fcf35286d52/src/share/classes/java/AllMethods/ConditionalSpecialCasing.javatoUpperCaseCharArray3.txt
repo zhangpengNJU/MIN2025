@@ -1,0 +1,8 @@
+static char[] toUpperCaseCharArray(String src, int index, Locale locale) {
+    char[] result = lookUpTable(src, index, locale, false);
+    if (result != null) {
+        return result;
+    } else {
+        return Character.toUpperCaseCharArray(src.codePointAt(index));
+    }
+}

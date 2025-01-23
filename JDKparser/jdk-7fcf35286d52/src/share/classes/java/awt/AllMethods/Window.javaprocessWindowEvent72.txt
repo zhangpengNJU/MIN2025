@@ -1,0 +1,48 @@
+/**
+ * Processes window events occurring on this window by
+ * dispatching them to any registered WindowListener objects.
+ * NOTE: This method will not be called unless window events
+ * are enabled for this component; this happens when one of the
+ * following occurs:
+ * <ul>
+ * <li>A WindowListener object is registered via
+ *     {@code addWindowListener}
+ * <li>Window events are enabled via {@code enableEvents}
+ * </ul>
+ * <p>Note that if the event parameter is {@code null}
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the window event
+ * @see Component#enableEvents
+ */
+protected void processWindowEvent(WindowEvent e) {
+    WindowListener listener = windowListener;
+    if (listener != null) {
+        switch(e.getID()) {
+            case WindowEvent.WINDOW_OPENED:
+                listener.windowOpened(e);
+                break;
+            case WindowEvent.WINDOW_CLOSING:
+                listener.windowClosing(e);
+                break;
+            case WindowEvent.WINDOW_CLOSED:
+                listener.windowClosed(e);
+                break;
+            case WindowEvent.WINDOW_ICONIFIED:
+                listener.windowIconified(e);
+                break;
+            case WindowEvent.WINDOW_DEICONIFIED:
+                listener.windowDeiconified(e);
+                break;
+            case WindowEvent.WINDOW_ACTIVATED:
+                listener.windowActivated(e);
+                break;
+            case WindowEvent.WINDOW_DEACTIVATED:
+                listener.windowDeactivated(e);
+                break;
+            default:
+                break;
+        }
+    }
+}

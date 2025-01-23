@@ -1,0 +1,15 @@
+/**
+ * Returns an extended key code for a unicode character.
+ *
+ * @return for a unicode character with a corresponding {@code VK_} constant -- this
+ *   {@code VK_} constant; for a character appearing on the primary
+ *   level of a known keyboard layout -- a unique integer.
+ *   If a character does not appear on the primary level of a known keyboard,
+ *   {@code VK_UNDEFINED} is returned.
+ *
+ * @since 1.7
+ */
+public static int getExtendedKeyCodeForChar(int c) {
+    // Return a keycode (if any) associated with a character.
+    return sun.awt.ExtendedKeyCodes.getExtendedKeyCodeForChar(c);
+}

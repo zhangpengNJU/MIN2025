@@ -1,0 +1,11 @@
+private Entry entryFor(String key) {
+    Entry entry = map.get(key);
+    if (entry != null) {
+        long delta = System.currentTimeMillis() - entry.timestamp();
+        if (delta < 0 || delta >= millisUntilExpiration) {
+            map.remove(key);
+            entry = null;
+        }
+    }
+    return entry;
+}

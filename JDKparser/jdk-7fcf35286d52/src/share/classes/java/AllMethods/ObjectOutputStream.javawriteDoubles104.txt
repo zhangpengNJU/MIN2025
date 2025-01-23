@@ -1,0 +1,15 @@
+void writeDoubles(double[] v, int off, int len) throws IOException {
+    int limit = MAX_BLOCK_SIZE - 8;
+    int endoff = off + len;
+    while (off < endoff) {
+        if (pos <= limit) {
+            int avail = (MAX_BLOCK_SIZE - pos) >> 3;
+            int chunklen = Math.min(endoff - off, avail);
+            doublesToBytes(v, off, buf, pos, chunklen);
+            off += chunklen;
+            pos += chunklen << 3;
+        } else {
+            dout.writeDouble(v[off++]);
+        }
+    }
+}

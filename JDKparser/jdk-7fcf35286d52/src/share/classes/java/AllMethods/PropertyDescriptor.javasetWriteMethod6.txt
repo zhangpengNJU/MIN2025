@@ -1,0 +1,18 @@
+/**
+ * Sets the method that should be used to write the property value.
+ *
+ * @param writeMethod The new write method.
+ * @throws IntrospectionException if the write method is invalid
+ */
+public synchronized void setWriteMethod(Method writeMethod) throws IntrospectionException {
+    this.writeMethodRef.set(writeMethod);
+    if (writeMethod == null) {
+        writeMethodName = null;
+        return;
+    }
+    // Set the property type - which validates the method
+    setPropertyType(findPropertyType(getReadMethod(), writeMethod));
+    setClass0(writeMethod.getDeclaringClass());
+    writeMethodName = writeMethod.getName();
+    setTransient(writeMethod.getAnnotation(Transient.class));
+}

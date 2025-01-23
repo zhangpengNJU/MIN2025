@@ -1,0 +1,18 @@
+/**
+ * Tests to see if all objects in the
+ * specified <tt>Collection</tt> are children of
+ * this <tt>BeanContext</tt>.
+ * @param c the specified <tt>Collection</tt>
+ *
+ * @return <tt>true</tt> if all objects
+ * in the collection are children of
+ * this <tt>BeanContext</tt>, false if not.
+ */
+public boolean containsAll(Collection c) {
+    synchronized (children) {
+        Iterator i = c.iterator();
+        while (i.hasNext()) if (!contains(i.next()))
+            return false;
+        return true;
+    }
+}

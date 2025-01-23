@@ -1,0 +1,24 @@
+/**
+ * Appends the string representation of the {@code int}
+ * argument to this sequence.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(int)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   i   an {@code int}.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(int i) {
+    if (i == Integer.MIN_VALUE) {
+        append("-2147483648");
+        return this;
+    }
+    int appendedLength = (i < 0) ? Integer.stringSize(-i) + 1 : Integer.stringSize(i);
+    int spaceNeeded = count + appendedLength;
+    ensureCapacityInternal(spaceNeeded);
+    Integer.getChars(i, spaceNeeded, value);
+    count = spaceNeeded;
+    return this;
+}

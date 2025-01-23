@@ -1,0 +1,6 @@
+public boolean contains(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    return containsMapping(entry.getKey(), entry.getValue());
+}

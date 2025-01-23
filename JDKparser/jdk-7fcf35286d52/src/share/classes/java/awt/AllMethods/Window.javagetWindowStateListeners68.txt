@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the window state listeners
+ * registered on this window.
+ *
+ * @return all of this window's {@code WindowStateListener}s
+ *         or an empty array if no window state
+ *         listeners are currently registered
+ *
+ * @see #addWindowStateListener
+ * @see #removeWindowStateListener
+ * @since 1.4
+ */
+public synchronized WindowStateListener[] getWindowStateListeners() {
+    return getListeners(WindowStateListener.class);
+}

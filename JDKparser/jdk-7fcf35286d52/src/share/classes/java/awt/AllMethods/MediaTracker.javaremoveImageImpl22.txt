@@ -1,0 +1,18 @@
+private void removeImageImpl(Image image) {
+    MediaEntry cur = head;
+    MediaEntry prev = null;
+    while (cur != null) {
+        MediaEntry next = cur.next;
+        if (cur.getMedia() == image) {
+            if (prev == null) {
+                head = next;
+            } else {
+                prev.next = next;
+            }
+            cur.cancel();
+        } else {
+            prev = cur;
+        }
+        cur = next;
+    }
+}

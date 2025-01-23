@@ -1,0 +1,22 @@
+/**
+ * Removes and returns last element, or null if empty.
+ */
+private E unlinkLast() {
+    // assert lock.isHeldByCurrentThread();
+    Node<E> l = last;
+    if (l == null)
+        return null;
+    Node<E> p = l.prev;
+    E item = l.item;
+    l.item = null;
+    // help GC
+    l.prev = l;
+    last = p;
+    if (p == null)
+        first = null;
+    else
+        p.next = null;
+    --count;
+    notFull.signal();
+    return item;
+}

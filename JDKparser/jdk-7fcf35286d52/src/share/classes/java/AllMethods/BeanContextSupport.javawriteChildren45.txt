@@ -1,0 +1,36 @@
+/**
+ * Used to serialize all children of
+ * this <tt>BeanContext</tt>.
+ * @param oos the <tt>ObjectOutputStream</tt>
+ * to use during serialization
+ * @throws IOException if serialization failed
+ */
+public final void writeChildren(ObjectOutputStream oos) throws IOException {
+    if (serializable <= 0)
+        return;
+    boolean prev = serializing;
+    serializing = true;
+    int count = 0;
+    synchronized (children) {
+        Iterator i = children.entrySet().iterator();
+        while (i.hasNext() && count < serializable) {
+            Map.Entry entry = (Map.Entry) i.next();
+            if (entry.getKey() instanceof Serializable) {
+                try {
+                    // child
+                    oos.writeObject(entry.getKey());
+                    // BCSChild
+                    oos.writeObject(entry.getValue());
+                } catch (IOException ioe) {
+                    serializing = prev;
+                    throw ioe;
+                }
+                count++;
+            }
+        }
+    }
+    serializing = prev;
+    if (count != serializable) {
+        throw new IOException("wrote different number of children than expected");
+    }
+}

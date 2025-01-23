@@ -1,0 +1,14 @@
+/**
+ * Converts this {@code Date} object to a {@code LocalDate}
+ * <p>
+ * The conversion creates a {@code LocalDate} that represents the same
+ * date value as this {@code Date} in local time zone
+ *
+ * @return a {@code LocalDate} object representing the same date value
+ *
+ * @since 1.8
+ */
+@SuppressWarnings("deprecation")
+public LocalDate toLocalDate() {
+    return LocalDate.of(getYear() + 1900, getMonth() + 1, getDate());
+}

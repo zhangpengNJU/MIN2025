@@ -1,0 +1,21 @@
+/**
+ * Retrieves the constraints for the specified component.
+ * The return value is not a copy, but is the actual
+ * <code>GridBagConstraints</code> object used by the layout mechanism.
+ * <p>
+ * If <code>comp</code> is not in the <code>GridBagLayout</code>,
+ * a set of default <code>GridBagConstraints</code> are returned.
+ * A <code>comp</code> value of <code>null</code> is invalid
+ * and returns <code>null</code>.
+ *
+ * @param       comp the component to be queried
+ * @return      the constraints for the specified component
+ */
+protected GridBagConstraints lookupConstraints(Component comp) {
+    GridBagConstraints constraints = comptable.get(comp);
+    if (constraints == null) {
+        setConstraints(comp, defaultConstraints);
+        constraints = comptable.get(comp);
+    }
+    return constraints;
+}

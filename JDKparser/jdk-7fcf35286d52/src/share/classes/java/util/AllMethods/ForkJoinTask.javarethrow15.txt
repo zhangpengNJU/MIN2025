@@ -1,0 +1,7 @@
+/**
+ * A version of "sneaky throw" to relay exceptions
+ */
+static void rethrow(Throwable ex) {
+    if (ex != null)
+        ForkJoinTask.<RuntimeException>uncheckedThrow(ex);
+}

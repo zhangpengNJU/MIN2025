@@ -1,0 +1,15 @@
+private int getListenersCount(int id, boolean enabledOnToolkit) {
+    checkTreeLock();
+    if (enabledOnToolkit) {
+        return descendantsCount;
+    }
+    switch(id) {
+        case HierarchyEvent.HIERARCHY_CHANGED:
+            return listeningChildren;
+        case HierarchyEvent.ANCESTOR_MOVED:
+        case HierarchyEvent.ANCESTOR_RESIZED:
+            return listeningBoundsChildren;
+        default:
+            return 0;
+    }
+}

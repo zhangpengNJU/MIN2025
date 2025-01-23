@@ -1,0 +1,26 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by dispatchEvent(AWTEvent).
+ */
+@Deprecated
+public boolean postEvent(Event e) {
+    ComponentPeer peer = this.peer;
+    if (handleEvent(e)) {
+        e.consume();
+        return true;
+    }
+    Component parent = this.parent;
+    int eventx = e.x;
+    int eventy = e.y;
+    if (parent != null) {
+        e.translate(x, y);
+        if (parent.postEvent(e)) {
+            e.consume();
+            return true;
+        }
+        // restore coords
+        e.x = eventx;
+        e.y = eventy;
+    }
+    return false;
+}

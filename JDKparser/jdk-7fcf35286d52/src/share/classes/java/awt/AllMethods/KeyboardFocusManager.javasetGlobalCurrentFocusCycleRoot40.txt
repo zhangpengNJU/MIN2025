@@ -1,0 +1,32 @@
+/**
+ * Sets the current focus cycle root. If the focus owner is itself a focus
+ * cycle root, then it may be ambiguous as to which Components represent
+ * the next and previous Components to focus during normal focus traversal.
+ * In that case, the current focus cycle root is used to differentiate
+ * among the possibilities.
+ * <p>
+ * If a SecurityManager is installed, the calling thread must be granted
+ * the "replaceKeyboardFocusManager" AWTPermission. If this permission is
+ * not granted, this method will throw a SecurityException, and the current
+ * focus cycle root will not be changed.
+ * <p>
+ * This method is intended to be used only by KeyboardFocusManagers and
+ * focus implementations. It is not for general client use.
+ *
+ * @param newFocusCycleRoot the new focus cycle root
+ * @see #getCurrentFocusCycleRoot
+ * @see #getGlobalCurrentFocusCycleRoot
+ * @throws SecurityException if the calling thread does not have
+ *         "replaceKeyboardFocusManager" permission
+ * @beaninfo
+ *       bound: true
+ */
+public void setGlobalCurrentFocusCycleRoot(Container newFocusCycleRoot) throws SecurityException {
+    checkReplaceKFMPermission();
+    Container oldFocusCycleRoot;
+    synchronized (KeyboardFocusManager.class) {
+        oldFocusCycleRoot = getCurrentFocusCycleRoot();
+        currentFocusCycleRoot = newFocusCycleRoot;
+    }
+    firePropertyChange("currentFocusCycleRoot", oldFocusCycleRoot, newFocusCycleRoot);
+}

@@ -1,0 +1,22 @@
+/**
+ * This is to be called when assertions are enabled. It checks whether SpeciesData for all of the statically
+ * defined species subclasses of BoundMethodHandle has been added to the SpeciesData cache. See below in the
+ * static initializer for
+ */
+static boolean speciesDataCachePopulated() {
+    Class<BoundMethodHandle> rootCls = BoundMethodHandle.class;
+    try {
+        for (Class<?> c : rootCls.getDeclaredClasses()) {
+            if (rootCls.isAssignableFrom(c)) {
+                final Class<? extends BoundMethodHandle> cbmh = c.asSubclass(BoundMethodHandle.class);
+                SpeciesData d = Factory.getSpeciesDataFromConcreteBMHClass(cbmh);
+                assert (d != null) : cbmh.getName();
+                assert (d.clazz == cbmh);
+                assert (CACHE.get(d.typeChars) == d);
+            }
+        }
+    } catch (Throwable e) {
+        throw newInternalError(e);
+    }
+    return true;
+}

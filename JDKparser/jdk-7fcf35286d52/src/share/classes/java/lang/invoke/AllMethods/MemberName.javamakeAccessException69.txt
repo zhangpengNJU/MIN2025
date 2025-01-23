@@ -1,0 +1,15 @@
+public ReflectiveOperationException makeAccessException() {
+    String message = message() + ": " + toString();
+    ReflectiveOperationException ex;
+    if (isResolved() || !(resolution instanceof NoSuchMethodError || resolution instanceof NoSuchFieldError))
+        ex = new IllegalAccessException(message);
+    else if (isConstructor())
+        ex = new NoSuchMethodException(message);
+    else if (isMethod())
+        ex = new NoSuchMethodException(message);
+    else
+        ex = new NoSuchFieldException(message);
+    if (resolution instanceof Throwable)
+        ex.initCause((Throwable) resolution);
+    return ex;
+}

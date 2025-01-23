@@ -1,0 +1,59 @@
+/**
+ * Returns the string representation (display name) of the calendar
+ * <code>field value</code> in the given <code>style</code> and
+ * <code>locale</code>.  If no string representation is
+ * applicable, <code>null</code> is returned.
+ *
+ * <p>{@code field} is a {@code Calendar} field index, such as {@link
+ * Calendar#MONTH}. The time zone fields, {@link Calendar#ZONE_OFFSET} and
+ * {@link Calendar#DST_OFFSET}, are <em>not</em> supported by this
+ * method. {@code null} must be returned if any time zone fields are
+ * specified.
+ *
+ * <p>{@code value} is the numeric representation of the {@code field} value.
+ * For example, if {@code field} is {@link Calendar#DAY_OF_WEEK}, the valid
+ * values are {@link Calendar#SUNDAY} to {@link Calendar#SATURDAY}
+ * (inclusive).
+ *
+ * <p>{@code style} gives the style of the string representation. It is one
+ * of {@link Calendar#SHORT_FORMAT} ({@link Calendar#SHORT SHORT}),
+ * {@link Calendar#SHORT_STANDALONE}, {@link Calendar#LONG_FORMAT}
+ * ({@link Calendar#LONG LONG}), {@link Calendar#LONG_STANDALONE},
+ * {@link Calendar#NARROW_FORMAT}, or {@link Calendar#NARROW_STANDALONE}.
+ *
+ * <p>For example, the following call will return {@code "Sunday"}.
+ * <pre>
+ * getDisplayName("gregory", Calendar.DAY_OF_WEEK, Calendar.SUNDAY,
+ *                Calendar.LONG_STANDALONE, Locale.ENGLISH);
+ * </pre>
+ *
+ * @param calendarType
+ *              the calendar type. (Any calendar type given by {@code locale}
+ *              is ignored.)
+ * @param field
+ *              the {@code Calendar} field index,
+ *              such as {@link Calendar#DAY_OF_WEEK}
+ * @param value
+ *              the value of the {@code Calendar field},
+ *              such as {@link Calendar#MONDAY}
+ * @param style
+ *              the string representation style: one of {@link
+ *              Calendar#SHORT_FORMAT} ({@link Calendar#SHORT SHORT}),
+ *              {@link Calendar#SHORT_STANDALONE}, {@link
+ *              Calendar#LONG_FORMAT} ({@link Calendar#LONG LONG}),
+ *              {@link Calendar#LONG_STANDALONE},
+ *              {@link Calendar#NARROW_FORMAT},
+ *              or {@link Calendar#NARROW_STANDALONE}
+ * @param locale
+ *              the desired locale
+ * @return the string representation of the {@code field value}, or {@code
+ *         null} if the string representation is not applicable or
+ *         the given calendar type is unknown
+ * @throws IllegalArgumentException
+ *         if {@code field} or {@code style} is invalid
+ * @throws NullPointerException if {@code locale} is {@code null}
+ * @see TimeZoneNameProvider
+ * @see java.util.Calendar#get(int)
+ * @see java.util.Calendar#getDisplayName(int, int, Locale)
+ */
+public abstract String getDisplayName(String calendarType, int field, int value, int style, Locale locale);

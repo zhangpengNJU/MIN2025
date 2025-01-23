@@ -1,0 +1,4 @@
+@Override
+final Spliterator<P_OUT> lazySpliterator(Supplier<? extends Spliterator<P_OUT>> supplier) {
+    return new StreamSpliterators.DelegatingSpliterator<>(supplier);
+}

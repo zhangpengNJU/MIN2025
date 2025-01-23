@@ -1,0 +1,10 @@
+@Override
+public String toString() {
+    if (minWidth == 1 && maxWidth == 19 && signStyle == SignStyle.NORMAL) {
+        return "Value(" + field + ")";
+    }
+    if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
+        return "Value(" + field + "," + minWidth + ")";
+    }
+    return "Value(" + field + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+}

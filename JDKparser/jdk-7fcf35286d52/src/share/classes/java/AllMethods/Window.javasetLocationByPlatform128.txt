@@ -1,0 +1,55 @@
+/**
+ * Sets whether this Window should appear at the default location for the
+ * native windowing system or at the current location (returned by
+ * {@code getLocation}) the next time the Window is made visible.
+ * This behavior resembles a native window shown without programmatically
+ * setting its location.  Most windowing systems cascade windows if their
+ * locations are not explicitly set. The actual location is determined once the
+ * window is shown on the screen.
+ * <p>
+ * This behavior can also be enabled by setting the System Property
+ * "java.awt.Window.locationByPlatform" to "true", though calls to this method
+ * take precedence.
+ * <p>
+ * Calls to {@code setVisible}, {@code setLocation} and
+ * {@code setBounds} after calling {@code setLocationByPlatform} clear
+ * this property of the Window.
+ * <p>
+ * For example, after the following code is executed:
+ * <pre>
+ * setLocationByPlatform(true);
+ * setVisible(true);
+ * boolean flag = isLocationByPlatform();
+ * </pre>
+ * The window will be shown at platform's default location and
+ * {@code flag} will be {@code false}.
+ * <p>
+ * In the following sample:
+ * <pre>
+ * setLocationByPlatform(true);
+ * setLocation(10, 10);
+ * boolean flag = isLocationByPlatform();
+ * setVisible(true);
+ * </pre>
+ * The window will be shown at (10, 10) and {@code flag} will be
+ * {@code false}.
+ *
+ * @param locationByPlatform {@code true} if this Window should appear
+ *        at the default location, {@code false} if at the current location
+ * @throws IllegalComponentStateException if the window
+ *         is showing on screen and locationByPlatform is {@code true}.
+ * @see #setLocation
+ * @see #isShowing
+ * @see #setVisible
+ * @see #isLocationByPlatform
+ * @see java.lang.System#getProperty(String)
+ * @since 1.5
+ */
+public void setLocationByPlatform(boolean locationByPlatform) {
+    synchronized (getTreeLock()) {
+        if (locationByPlatform && isShowing()) {
+            throw new IllegalComponentStateException("The window is showing on screen.");
+        }
+        this.locationByPlatform = locationByPlatform;
+    }
+}

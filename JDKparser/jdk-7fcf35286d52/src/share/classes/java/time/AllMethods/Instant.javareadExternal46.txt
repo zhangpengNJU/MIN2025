@@ -1,0 +1,5 @@
+static Instant readExternal(DataInput in) throws IOException {
+    long seconds = in.readLong();
+    int nanos = in.readInt();
+    return Instant.ofEpochSecond(seconds, nanos);
+}

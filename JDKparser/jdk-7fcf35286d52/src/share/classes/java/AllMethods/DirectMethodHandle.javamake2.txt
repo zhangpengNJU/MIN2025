@@ -1,0 +1,5 @@
+static DirectMethodHandle make(MemberName member) {
+    if (member.isConstructor())
+        return makeAllocator(member);
+    return make(member.getDeclaringClass(), member);
+}

@@ -1,0 +1,15 @@
+/**
+ * Applies the pipeline stages described by this {@code PipelineHelper} to
+ * the provided {@code Spliterator} and send the results to the provided
+ * {@code Sink}.
+ *
+ * @implSpec
+ * The implementation behaves as if:
+ * <pre>{@code
+ *     intoWrapped(wrapSink(sink), spliterator);
+ * }</pre>
+ *
+ * @param sink the {@code Sink} to receive the results
+ * @param spliterator the spliterator describing the source input to process
+ */
+abstract <P_IN, S extends Sink<P_OUT>> S wrapAndCopyInto(S sink, Spliterator<P_IN> spliterator);

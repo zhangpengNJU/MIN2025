@@ -1,0 +1,12 @@
+private int rectCrossings(double x, double y, double w, double h) {
+    int crossings = 0;
+    if (!(getX1() == getX2() && getY1() == getY2())) {
+        crossings = Curve.rectCrossingsForLine(crossings, x, y, x + w, y + h, getX1(), getY1(), getX2(), getY2());
+        if (crossings == Curve.RECT_INTERSECTS) {
+            return crossings;
+        }
+    }
+    // we call this with the curve's direction reversed, because we wanted
+    // to call rectCrossingsForLine first, because it's cheaper.
+    return Curve.rectCrossingsForCubic(crossings, x, y, x + w, y + h, getX2(), getY2(), getCtrlX2(), getCtrlY2(), getCtrlX1(), getCtrlY1(), getX1(), getY1(), 0);
+}

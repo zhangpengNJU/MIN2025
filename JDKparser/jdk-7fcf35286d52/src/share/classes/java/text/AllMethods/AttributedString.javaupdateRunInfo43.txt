@@ -1,0 +1,27 @@
+// update the information about the current run
+private void updateRunInfo() {
+    if (currentIndex == endIndex) {
+        currentRunStart = currentRunLimit = endIndex;
+        currentRunIndex = -1;
+    } else {
+        synchronized (AttributedString.this) {
+            int runIndex = -1;
+            while (runIndex < runCount - 1 && runStarts[runIndex + 1] <= currentIndex) runIndex++;
+            currentRunIndex = runIndex;
+            if (runIndex >= 0) {
+                currentRunStart = runStarts[runIndex];
+                if (currentRunStart < beginIndex)
+                    currentRunStart = beginIndex;
+            } else {
+                currentRunStart = beginIndex;
+            }
+            if (runIndex < runCount - 1) {
+                currentRunLimit = runStarts[runIndex + 1];
+                if (currentRunLimit > endIndex)
+                    currentRunLimit = endIndex;
+            } else {
+                currentRunLimit = endIndex;
+            }
+        }
+    }
+}

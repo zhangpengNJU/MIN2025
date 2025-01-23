@@ -1,0 +1,7 @@
+private <T> Iterator<T> getIterator(int type) {
+    if (count == 0) {
+        return Collections.emptyIterator();
+    } else {
+        return new Enumerator<>(type, true);
+    }
+}

@@ -1,0 +1,7 @@
+@Override
+public int lengthOfYear() {
+    Calendar jcal = Calendar.getInstance(JapaneseChronology.LOCALE);
+    jcal.set(Calendar.ERA, era.getValue() + JapaneseEra.ERA_OFFSET);
+    jcal.set(yearOfEra, isoDate.getMonthValue() - 1, isoDate.getDayOfMonth());
+    return jcal.getActualMaximum(Calendar.DAY_OF_YEAR);
+}

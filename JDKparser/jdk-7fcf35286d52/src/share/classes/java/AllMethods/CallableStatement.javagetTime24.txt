@@ -1,0 +1,23 @@
+/**
+ * Retrieves the value of the designated JDBC <code>TIME</code> parameter as a
+ * <code>java.sql.Time</code> object, using
+ * the given <code>Calendar</code> object
+ * to construct the time.
+ * With a <code>Calendar</code> object, the driver
+ * can calculate the time taking into account a custom timezone and locale.
+ * If no <code>Calendar</code> object is specified, the driver uses the
+ * default timezone and locale.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ * and so on
+ * @param cal the <code>Calendar</code> object the driver will use
+ *            to construct the time
+ * @return the parameter value; if the value is SQL <code>NULL</code>, the result
+ *         is <code>null</code>.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @see #setTime
+ * @since 1.2
+ */
+java.sql.Time getTime(int parameterIndex, Calendar cal) throws SQLException;

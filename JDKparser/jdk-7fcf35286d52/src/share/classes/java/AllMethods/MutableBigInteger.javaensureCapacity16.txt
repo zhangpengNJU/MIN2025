@@ -1,0 +1,11 @@
+/**
+ * If this MutableBigInteger cannot hold len words, increase the size
+ * of the value array to len words.
+ */
+private final void ensureCapacity(int len) {
+    if (value.length < len) {
+        value = new int[len];
+        offset = 0;
+        intLen = len;
+    }
+}

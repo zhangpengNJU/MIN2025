@@ -1,0 +1,16 @@
+/*
+     * Return true if already closed or close is pending
+     */
+public boolean isClosedOrPending() {
+    /*
+         * Lock on fdLock to ensure that we wait if a
+         * close is in progress.
+         */
+    synchronized (fdLock) {
+        if (closePending || (fd == null)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

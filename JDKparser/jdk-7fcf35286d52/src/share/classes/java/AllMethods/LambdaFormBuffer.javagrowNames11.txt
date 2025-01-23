@@ -1,0 +1,35 @@
+void growNames(int insertPos, int growLength) {
+    int oldLength = length;
+    int newLength = oldLength + growLength;
+    int oc = ownedCount();
+    if (oc == 0 || newLength > names.length) {
+        names = Arrays.copyOf(names, (names.length + growLength) * 5 / 4);
+        if (oc == 0) {
+            flags++;
+            oc++;
+            assert (ownedCount() == oc);
+        }
+    }
+    if (originalNames != null && originalNames.length < names.length) {
+        originalNames = Arrays.copyOf(originalNames, names.length);
+        if (oc == 1) {
+            flags++;
+            oc++;
+            assert (ownedCount() == oc);
+        }
+    }
+    if (growLength == 0)
+        return;
+    int insertEnd = insertPos + growLength;
+    int tailLength = oldLength - insertPos;
+    System.arraycopy(names, insertPos, names, insertEnd, tailLength);
+    Arrays.fill(names, insertPos, insertEnd, null);
+    if (originalNames != null) {
+        System.arraycopy(originalNames, insertPos, originalNames, insertEnd, tailLength);
+        Arrays.fill(originalNames, insertPos, insertEnd, null);
+    }
+    length = newLength;
+    if (firstChange >= insertPos) {
+        firstChange += growLength;
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * static version of indexOf, to allow repeated calls without
+ * needing to re-acquire array each time.
+ * @param o element to search for
+ * @param elements the array
+ * @param index first index to search
+ * @param fence one past last index to search
+ * @return index of element, or -1 if absent
+ */
+private static int indexOf(Object o, Object[] elements, int index, int fence) {
+    if (o == null) {
+        for (int i = index; i < fence; i++) if (elements[i] == null)
+            return i;
+    } else {
+        for (int i = index; i < fence; i++) if (o.equals(elements[i]))
+            return i;
+    }
+    return -1;
+}

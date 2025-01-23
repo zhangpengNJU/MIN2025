@@ -1,0 +1,14 @@
+/**
+ * Creates the <code>Choice</code>'s peer.  This peer allows us
+ * to change the look
+ * of the <code>Choice</code> without changing its functionality.
+ * @see     java.awt.Toolkit#createChoice(java.awt.Choice)
+ * @see     java.awt.Component#getToolkit()
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createChoice(this);
+        super.addNotify();
+    }
+}

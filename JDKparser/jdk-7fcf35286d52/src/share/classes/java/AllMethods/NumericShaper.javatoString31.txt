@@ -1,0 +1,32 @@
+/**
+ * Returns a <code>String</code> that describes this shaper. This method
+ * is used for debugging purposes only.
+ * @return a <code>String</code> describing this shaper.
+ */
+public String toString() {
+    StringBuilder buf = new StringBuilder(super.toString());
+    buf.append("[contextual:").append(isContextual());
+    String[] keyNames = null;
+    if (isContextual()) {
+        buf.append(", context:");
+        buf.append(shapingRange == null ? Range.values()[key] : shapingRange);
+    }
+    if (rangeSet == null) {
+        buf.append(", range(s): ");
+        boolean first = true;
+        for (int i = 0; i < NUM_KEYS; ++i) {
+            if ((mask & (1 << i)) != 0) {
+                if (first) {
+                    first = false;
+                } else {
+                    buf.append(", ");
+                }
+                buf.append(Range.values()[i]);
+            }
+        }
+    } else {
+        buf.append(", range set: ").append(rangeSet);
+    }
+    buf.append(']');
+    return buf.toString();
+}

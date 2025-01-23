@@ -1,0 +1,16 @@
+@Override
+public void end() {
+    int[] ints = b.asPrimitiveArray();
+    Arrays.sort(ints);
+    downstream.begin(ints.length);
+    if (!cancellationRequestedCalled) {
+        for (int anInt : ints) downstream.accept(anInt);
+    } else {
+        for (int anInt : ints) {
+            if (downstream.cancellationRequested())
+                break;
+            downstream.accept(anInt);
+        }
+    }
+    downstream.end();
+}

@@ -1,0 +1,14 @@
+public long skip(long n) throws IOException {
+    if (n <= 0) {
+        return 0;
+    }
+    int skipped = 0;
+    if (peekb >= 0) {
+        peekb = -1;
+        skipped++;
+        n--;
+    }
+    n = skipped + in.skip(n);
+    totalBytesRead += n;
+    return n;
+}

@@ -1,0 +1,11 @@
+/**
+ * Write a subarray of bytes.  Pass each through write byte method.
+ * @since JDK1.1
+ * @deprecated no replacement
+ */
+@Deprecated
+public void write(byte[] b, int off, int len) {
+    if (len < 0)
+        throw new ArrayIndexOutOfBoundsException(len);
+    for (int i = 0; i < len; ++i) write(b[off + i]);
+}

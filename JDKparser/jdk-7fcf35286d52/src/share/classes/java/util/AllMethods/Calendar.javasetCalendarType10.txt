@@ -1,0 +1,36 @@
+/**
+ * Sets the calendar type parameter to the given {@code type}. The
+ * calendar type given by this method has precedence over any explicit
+ * or implicit calendar type given by the
+ * {@linkplain #setLocale(Locale) locale}.
+ *
+ * <p>In addition to the available calendar types returned by the
+ * {@link Calendar#getAvailableCalendarTypes() Calendar.getAvailableCalendarTypes}
+ * method, {@code "gregorian"} and {@code "iso8601"} as aliases of
+ * {@code "gregory"} can be used with this method.
+ *
+ * @param type the calendar type
+ * @return this {@code Calendar.Builder}
+ * @throws NullPointerException if {@code type} is {@code null}
+ * @throws IllegalArgumentException if {@code type} is unknown
+ * @throws IllegalStateException if another calendar type has already been set
+ * @see Calendar#getCalendarType()
+ * @see Calendar#getAvailableCalendarTypes()
+ */
+public Builder setCalendarType(String type) {
+    if (type.equals("gregorian")) {
+        // NPE if type == null
+        type = "gregory";
+    }
+    if (!Calendar.getAvailableCalendarTypes().contains(type) && !type.equals("iso8601")) {
+        throw new IllegalArgumentException("unknown calendar type: " + type);
+    }
+    if (this.type == null) {
+        this.type = type;
+    } else {
+        if (!this.type.equals(type)) {
+            throw new IllegalStateException("calendar type override");
+        }
+    }
+    return this;
+}

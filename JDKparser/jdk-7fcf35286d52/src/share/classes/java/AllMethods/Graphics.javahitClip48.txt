@@ -1,0 +1,36 @@
+/**
+ * Returns true if the specified rectangular area might intersect
+ * the current clipping area.
+ * The coordinates of the specified rectangular area are in the
+ * user coordinate space and are relative to the coordinate
+ * system origin of this graphics context.
+ * This method may use an algorithm that calculates a result quickly
+ * but which sometimes might return true even if the specified
+ * rectangular area does not intersect the clipping area.
+ * The specific algorithm employed may thus trade off accuracy for
+ * speed, but it will never return false unless it can guarantee
+ * that the specified rectangular area does not intersect the
+ * current clipping area.
+ * The clipping area used by this method can represent the
+ * intersection of the user clip as specified through the clip
+ * methods of this graphics context as well as the clipping
+ * associated with the device or image bounds and window visibility.
+ *
+ * @param x the x coordinate of the rectangle to test against the clip
+ * @param y the y coordinate of the rectangle to test against the clip
+ * @param width the width of the rectangle to test against the clip
+ * @param height the height of the rectangle to test against the clip
+ * @return <code>true</code> if the specified rectangle intersects
+ *         the bounds of the current clip; <code>false</code>
+ *         otherwise.
+ */
+public boolean hitClip(int x, int y, int width, int height) {
+    // Note, this implementation is not very efficient.
+    // Subclasses should override this method and calculate
+    // the results more directly.
+    Rectangle clipRect = getClipBounds();
+    if (clipRect == null) {
+        return true;
+    }
+    return clipRect.intersects(x, y, width, height);
+}

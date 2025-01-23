@@ -1,0 +1,83 @@
+/**
+ * Filters the information provided in the <code>setPixels</code>
+ * method of the <code>ImageConsumer</code> interface which takes
+ * an array of bytes.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered.  Developers using
+ * this class to retrieve pixels from an image should avoid calling
+ * this method directly since that operation could result in problems
+ * with retrieving the requested pixels.
+ * @throws IllegalArgumentException if width or height are less than
+ * zero.
+ * @see ImageConsumer#setPixels(int, int, int, int, ColorModel, byte[],
+ *                                    int, int)
+ */
+public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
+    // Fix 4184230
+    if (w < 0 || h < 0) {
+        throw new IllegalArgumentException("Width (" + w + ") and height (" + h + ") must be > 0");
+    }
+    // Nothing to do
+    if (w == 0 || h == 0) {
+        return;
+    }
+    if (y < 0) {
+        int diff = -y;
+        if (diff >= h) {
+            return;
+        }
+        off += scansize * diff;
+        y += diff;
+        h -= diff;
+    }
+    if (y + h > height) {
+        h = height - y;
+        if (h <= 0) {
+            return;
+        }
+    }
+    if (x < 0) {
+        int diff = -x;
+        if (diff >= w) {
+            return;
+        }
+        off += diff;
+        x += diff;
+        w -= diff;
+    }
+    if (x + w > width) {
+        w = width - x;
+        if (w <= 0) {
+            return;
+        }
+    }
+    int dstPtr = y * width + x;
+    if (intPixels == null) {
+        if (bytePixels == null) {
+            bytePixels = new byte[width * height];
+            this.model = model;
+        } else if (this.model != model) {
+            convertToRGB();
+        }
+        if (bytePixels != null) {
+            for (int sh = h; sh > 0; sh--) {
+                System.arraycopy(pixels, off, bytePixels, dstPtr, w);
+                off += scansize;
+                dstPtr += width;
+            }
+        }
+    }
+    if (intPixels != null) {
+        int dstRem = width - w;
+        int srcRem = scansize - w;
+        for (int sh = h; sh > 0; sh--) {
+            for (int sw = w; sw > 0; sw--) {
+                intPixels[dstPtr++] = model.getRGB(pixels[off++] & 0xff);
+            }
+            off += srcRem;
+            dstPtr += dstRem;
+        }
+    }
+}

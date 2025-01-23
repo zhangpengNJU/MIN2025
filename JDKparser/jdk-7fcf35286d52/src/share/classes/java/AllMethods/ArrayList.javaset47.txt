@@ -1,0 +1,10 @@
+public void set(E e) {
+    if (lastRet < 0)
+        throw new IllegalStateException();
+    checkForComodification();
+    try {
+        ArrayList.this.set(lastRet, e);
+    } catch (IndexOutOfBoundsException ex) {
+        throw new ConcurrentModificationException();
+    }
+}

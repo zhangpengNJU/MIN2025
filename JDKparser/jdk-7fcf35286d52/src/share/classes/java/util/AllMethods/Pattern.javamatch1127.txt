@@ -1,0 +1,22 @@
+// Reluctant match. At this point, the minimum has been satisfied.
+// i is the index to start matching at
+// j is the number of atoms that have matched
+boolean match1(Matcher matcher, int i, int j, CharSequence seq) {
+    for (; ; ) {
+        // Try finishing match without consuming any more
+        if (next.match(matcher, i, seq))
+            return true;
+        // At the maximum, no match found
+        if (j >= cmax)
+            return false;
+        // Okay, must try one more atom
+        if (!atom.match(matcher, i, seq))
+            return false;
+        // If we haven't moved forward then must break out
+        if (i == matcher.last)
+            return false;
+        // Move up index and number matched
+        i = matcher.last;
+        j++;
+    }
+}

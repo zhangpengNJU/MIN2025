@@ -1,0 +1,16 @@
+/*
+     * Extracts a "pure" AWTEventListener from a AWTEventListenerProxy,
+     * if the listener is proxied.
+     */
+static private AWTEventListener deProxyAWTEventListener(AWTEventListener l) {
+    AWTEventListener localL = l;
+    if (localL == null) {
+        return null;
+    }
+    // if user passed in a AWTEventListenerProxy object, extract
+    // the listener
+    if (l instanceof AWTEventListenerProxy) {
+        localL = ((AWTEventListenerProxy) l).getListener();
+    }
+    return localL;
+}

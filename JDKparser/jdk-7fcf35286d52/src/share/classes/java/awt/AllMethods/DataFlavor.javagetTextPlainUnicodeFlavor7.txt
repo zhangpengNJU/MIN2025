@@ -1,0 +1,24 @@
+/**
+ * Returns a <code>DataFlavor</code> representing plain text with Unicode
+ * encoding, where:
+ * <pre>
+ *     representationClass = java.io.InputStream
+ *     mimeType            = "text/plain;
+ *                            charset=&lt;platform default Unicode encoding&gt;"
+ * </pre>
+ * Sun's implementation for Microsoft Windows uses the encoding <code>utf-16le</code>.
+ * Sun's implementation for Solaris and Linux uses the encoding
+ * <code>iso-10646-ucs-2</code>.
+ *
+ * @return a <code>DataFlavor</code> representing plain text
+ *    with Unicode encoding
+ * @since 1.3
+ */
+public static final DataFlavor getTextPlainUnicodeFlavor() {
+    String encoding = null;
+    DataTransferer transferer = DataTransferer.getInstance();
+    if (transferer != null) {
+        encoding = transferer.getDefaultUnicodeEncoding();
+    }
+    return new DataFlavor("text/plain;charset=" + encoding + ";class=java.io.InputStream", "Plain Text");
+}

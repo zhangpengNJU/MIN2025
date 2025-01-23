@@ -1,0 +1,25 @@
+/**
+ * Performs a logical <b>OR</b> of this bit set with the bit set
+ * argument. This bit set is modified so that a bit in it has the
+ * value {@code true} if and only if it either already had the
+ * value {@code true} or the corresponding bit in the bit set
+ * argument has the value {@code true}.
+ *
+ * @param set a bit set
+ */
+public void or(BitSet set) {
+    if (this == set)
+        return;
+    int wordsInCommon = Math.min(wordsInUse, set.wordsInUse);
+    if (wordsInUse < set.wordsInUse) {
+        ensureCapacity(set.wordsInUse);
+        wordsInUse = set.wordsInUse;
+    }
+    // Perform logical OR on words in common
+    for (int i = 0; i < wordsInCommon; i++) words[i] |= set.words[i];
+    // Copy any remaining words
+    if (wordsInCommon < set.wordsInUse)
+        System.arraycopy(set.words, wordsInCommon, words, wordsInCommon, wordsInUse - wordsInCommon);
+    // recalculateWordsInUse() is unnecessary
+    checkInvariants();
+}

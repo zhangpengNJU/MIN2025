@@ -1,0 +1,29 @@
+/**
+ * Sets the selected item in this <code>Choice</code> menu to be the
+ * item at the specified position.
+ *
+ * <p>Note that this method should be primarily used to
+ * initially select an item in this component.
+ * Programmatically calling this method will <i>not</i> trigger
+ * an <code>ItemEvent</code>.  The only way to trigger an
+ * <code>ItemEvent</code> is by user interaction.
+ *
+ * @param      pos      the position of the selected item
+ * @exception  IllegalArgumentException if the specified
+ *                            position is greater than the
+ *                            number of items or less than zero
+ * @see        #getSelectedItem
+ * @see        #getSelectedIndex
+ */
+public synchronized void select(int pos) {
+    if ((pos >= pItems.size()) || (pos < 0)) {
+        throw new IllegalArgumentException("illegal Choice item position: " + pos);
+    }
+    if (pItems.size() > 0) {
+        selectedIndex = pos;
+        ChoicePeer peer = (ChoicePeer) this.peer;
+        if (peer != null) {
+            peer.select(pos);
+        }
+    }
+}

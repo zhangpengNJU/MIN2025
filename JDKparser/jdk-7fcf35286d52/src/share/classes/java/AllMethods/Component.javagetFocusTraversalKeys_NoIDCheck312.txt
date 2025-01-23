@@ -1,0 +1,15 @@
+final Set<AWTKeyStroke> getFocusTraversalKeys_NoIDCheck(int id) {
+    // Okay to return Set directly because it is an unmodifiable view
+    @SuppressWarnings("unchecked")
+    Set<AWTKeyStroke> keystrokes = (focusTraversalKeys != null) ? focusTraversalKeys[id] : null;
+    if (keystrokes != null) {
+        return keystrokes;
+    } else {
+        Container parent = this.parent;
+        if (parent != null) {
+            return parent.getFocusTraversalKeys(id);
+        } else {
+            return KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalKeys(id);
+        }
+    }
+}

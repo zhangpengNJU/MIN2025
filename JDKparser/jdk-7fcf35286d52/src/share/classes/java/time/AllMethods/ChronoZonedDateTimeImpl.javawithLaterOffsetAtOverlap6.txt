@@ -1,0 +1,11 @@
+@Override
+public ChronoZonedDateTime<D> withLaterOffsetAtOverlap() {
+    ZoneOffsetTransition trans = getZone().getRules().getTransition(LocalDateTime.from(this));
+    if (trans != null) {
+        ZoneOffset offset = trans.getOffsetAfter();
+        if (offset.equals(getOffset()) == false) {
+            return new ChronoZonedDateTimeImpl<>(dateTime, offset, zone);
+        }
+    }
+    return this;
+}

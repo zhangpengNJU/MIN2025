@@ -1,0 +1,14 @@
+/**
+ * Returns the start index of the previous match.
+ *
+ * @return  The index of the first character matched
+ *
+ * @throws  IllegalStateException
+ *          If no match has yet been attempted,
+ *          or if the previous match operation failed
+ */
+public int start() {
+    if (first < 0)
+        throw new IllegalStateException("No match available");
+    return first;
+}

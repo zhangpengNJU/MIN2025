@@ -1,0 +1,28 @@
+/**
+ * Block multicast datagrams from the given source address.
+ *
+ * <p> If this membership key is not source-specific, and the underlying
+ * operating system supports source filtering, then this method blocks
+ * multicast datagrams from the given source address. If the given source
+ * address is already blocked then this method has no effect.
+ * After a source address is blocked it may still be possible to receive
+ * datagrams from that source. This can arise when datagrams are waiting to
+ * be received in the socket's receive buffer.
+ *
+ * @param   source
+ *          The source address to block
+ *
+ * @return  This membership key
+ *
+ * @throws  IllegalArgumentException
+ *          If the {@code source} parameter is not a unicast address or
+ *          is not the same address type as the multicast group
+ * @throws  IllegalStateException
+ *          If this membership key is source-specific or is no longer valid
+ * @throws  UnsupportedOperationException
+ *          If the underlying operating system does not support source
+ *          filtering
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+public abstract MembershipKey block(InetAddress source) throws IOException;

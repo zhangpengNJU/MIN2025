@@ -1,0 +1,15 @@
+/**
+ * Creates a new prefix parsing tree based on parse context.
+ *
+ * @param context  the parse context
+ * @return the tree, not null
+ */
+public static PrefixTree newTree(DateTimeParseContext context) {
+    // if (!context.isStrict()) {
+    // return new LENIENT("", null, null);
+    // }
+    if (context.isCaseSensitive()) {
+        return new PrefixTree("", null, null);
+    }
+    return new CI("", null, null);
+}

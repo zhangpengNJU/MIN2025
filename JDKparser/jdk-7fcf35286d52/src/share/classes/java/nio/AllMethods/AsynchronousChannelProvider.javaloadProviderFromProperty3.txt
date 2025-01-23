@@ -1,0 +1,17 @@
+private static AsynchronousChannelProvider loadProviderFromProperty() {
+    String cn = System.getProperty("java.nio.channels.spi.AsynchronousChannelProvider");
+    if (cn == null)
+        return null;
+    try {
+        Class<?> c = Class.forName(cn, true, ClassLoader.getSystemClassLoader());
+        return (AsynchronousChannelProvider) c.newInstance();
+    } catch (ClassNotFoundException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (IllegalAccessException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (InstantiationException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (SecurityException x) {
+        throw new ServiceConfigurationError(null, x);
+    }
+}

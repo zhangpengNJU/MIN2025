@@ -1,0 +1,19 @@
+/**
+ * Solves the cubic whose coefficients are in the <code>eqn</code>
+ * array and places the non-complex roots back into the same array,
+ * returning the number of roots.  The solved cubic is represented
+ * by the equation:
+ * <pre>
+ *     eqn = {c, b, a, d}
+ *     dx^3 + ax^2 + bx + c = 0
+ * </pre>
+ * A return value of -1 is used to distinguish a constant equation
+ * that might be always 0 or never 0 from an equation that has no
+ * zeroes.
+ * @param eqn an array containing coefficients for a cubic
+ * @return the number of roots, or -1 if the equation is a constant.
+ * @since 1.2
+ */
+public static int solveCubic(double[] eqn) {
+    return solveCubic(eqn, eqn);
+}

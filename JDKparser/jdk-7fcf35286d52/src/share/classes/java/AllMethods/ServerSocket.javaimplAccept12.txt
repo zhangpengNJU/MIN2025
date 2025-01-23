@@ -1,0 +1,47 @@
+/**
+ * Subclasses of ServerSocket use this method to override accept()
+ * to return their own subclass of socket.  So a FooServerSocket
+ * will typically hand this method an <i>empty</i> FooSocket.  On
+ * return from implAccept the FooSocket will be connected to a client.
+ *
+ * @param s the Socket
+ * @throws java.nio.channels.IllegalBlockingModeException
+ *         if this socket has an associated channel,
+ *         and the channel is in non-blocking mode
+ * @throws IOException if an I/O error occurs when waiting
+ * for a connection.
+ * @since   JDK1.1
+ * @revised 1.4
+ * @spec JSR-51
+ */
+protected final void implAccept(Socket s) throws IOException {
+    SocketImpl si = null;
+    try {
+        if (s.impl == null)
+            s.setImpl();
+        else {
+            s.impl.reset();
+        }
+        si = s.impl;
+        s.impl = null;
+        si.address = new InetAddress();
+        si.fd = new FileDescriptor();
+        getImpl().accept(si);
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkAccept(si.getInetAddress().getHostAddress(), si.getPort());
+        }
+    } catch (IOException e) {
+        if (si != null)
+            si.reset();
+        s.impl = si;
+        throw e;
+    } catch (SecurityException e) {
+        if (si != null)
+            si.reset();
+        s.impl = si;
+        throw e;
+    }
+    s.impl = si;
+    s.postAccept();
+}

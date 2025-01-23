@@ -1,0 +1,19 @@
+/**
+ * Sets the permissions component of this builder. On return, the
+ * permissions component of this builder is a copy of the permissions in
+ * the given array.
+ *
+ * @param   perms  the permissions component
+ * @return  this builder
+ */
+public Builder setPermissions(AclEntryPermission... perms) {
+    Set<AclEntryPermission> set = EnumSet.noneOf(AclEntryPermission.class);
+    // copy and check for null elements
+    for (AclEntryPermission p : perms) {
+        if (p == null)
+            throw new NullPointerException();
+        set.add(p);
+    }
+    this.perms = set;
+    return this;
+}

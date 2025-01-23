@@ -1,0 +1,8 @@
+public void remove() {
+    Node<E> l = lastRet;
+    if (l == null)
+        throw new IllegalStateException();
+    // rely on a future traversal to relink.
+    l.item = null;
+    lastRet = null;
+}

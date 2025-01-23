@@ -1,0 +1,10 @@
+// register the id attributes for this provider
+// this is to ensure that equals() and hashCode() do not incorrectly
+// report to different provider objects as the same
+private void putId() {
+    // note: name and info may be null
+    super.put("Provider.id name", String.valueOf(name));
+    super.put("Provider.id version", String.valueOf(version));
+    super.put("Provider.id info", String.valueOf(info));
+    super.put("Provider.id className", this.getClass().getName());
+}

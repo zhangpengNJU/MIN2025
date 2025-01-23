@@ -1,0 +1,10 @@
+/**
+ * Returns appropriate BigInteger from intVal field if intVal is
+ * null, i.e. the compact representation is in use.
+ */
+private BigInteger inflated() {
+    if (intVal == null) {
+        return BigInteger.valueOf(intCompact);
+    }
+    return intVal;
+}

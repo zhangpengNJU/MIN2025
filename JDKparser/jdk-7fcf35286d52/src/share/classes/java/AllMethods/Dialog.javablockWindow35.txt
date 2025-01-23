@@ -1,0 +1,12 @@
+/*
+     * Adds the given top-level window to the list of blocked
+     * windows for this dialog and marks it as modal blocked.
+     * If the window is already blocked by some modal dialog,
+     * does nothing.
+     */
+void blockWindow(Window w) {
+    if (!w.isModalBlocked()) {
+        w.setModalBlocked(this, true, true);
+        blockedWindows.add(w);
+    }
+}

@@ -1,0 +1,34 @@
+/**
+ * Collect, in parallel, elements output from an int-valued pipeline and
+ * describe those elements with a {@link Node.OfInt}.
+ *
+ * @implSpec
+ * If the exact size of the output from the pipeline is known and the source
+ * {@link Spliterator} has the {@link Spliterator#SUBSIZED} characteristic,
+ * then a flat {@link Node} will be returned whose content is an array,
+ * since the size is known the array can be constructed in advance and
+ * output elements can be placed into the array concurrently by leaf
+ * tasks at the correct offsets.  If the exact size is not known, output
+ * elements are collected into a conc-node whose shape mirrors that
+ * of the computation. This conc-node can then be flattened in
+ * parallel to produce a flat {@code Node.OfInt} if desired.
+ *
+ * @param <P_IN> the type of elements from the source Spliterator
+ * @param helper the pipeline helper describing the pipeline
+ * @param flattenTree whether a conc node should be flattened into a node
+ *                    describing an array before returning
+ * @return a {@link Node.OfInt} describing the output elements
+ */
+public static <P_IN> Node.OfInt collectInt(PipelineHelper<Integer> helper, Spliterator<P_IN> spliterator, boolean flattenTree) {
+    long size = helper.exactOutputSizeIfKnown(spliterator);
+    if (size >= 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+        if (size >= MAX_ARRAY_SIZE)
+            throw new IllegalArgumentException(BAD_SIZE);
+        int[] array = new int[(int) size];
+        new SizedCollectorTask.OfInt<>(spliterator, helper, array).invoke();
+        return node(array);
+    } else {
+        Node.OfInt node = new CollectorTask.OfInt<>(helper, spliterator).invoke();
+        return flattenTree ? flattenInt(node) : node;
+    }
+}

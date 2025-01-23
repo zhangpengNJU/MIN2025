@@ -1,0 +1,19 @@
+/**
+ * Verifies that the signature in this SignedObject is the valid
+ * signature for the object stored inside, with the given
+ * verification key, using the designated verification engine.
+ *
+ * @param verificationKey the public key for verification.
+ * @param verificationEngine the signature verification engine.
+ *
+ * @exception SignatureException if signature verification failed.
+ * @exception InvalidKeyException if the verification key is invalid.
+ *
+ * @return {@code true} if the signature
+ * is valid, {@code false} otherwise
+ */
+public boolean verify(PublicKey verificationKey, Signature verificationEngine) throws InvalidKeyException, SignatureException {
+    verificationEngine.initVerify(verificationKey);
+    verificationEngine.update(this.content.clone());
+    return verificationEngine.verify(this.signature.clone());
+}

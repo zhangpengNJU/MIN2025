@@ -1,0 +1,13 @@
+/**
+ * Returns the hash code value for this timestamp.
+ * The hash code is generated using the date and time of the timestamp
+ * and the TSA's certificate path.
+ *
+ * @return a hash code value for this timestamp.
+ */
+public int hashCode() {
+    if (myhash == -1) {
+        myhash = timestamp.hashCode() + signerCertPath.hashCode();
+    }
+    return myhash;
+}

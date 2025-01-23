@@ -1,0 +1,51 @@
+/**
+ * Put the preferences in the specified Preferences node into the
+ * specified XML element which is assumed to represent a node
+ * in the specified XML document which is assumed to conform to
+ * PREFS_DTD.  If subTree is true, create children of the specified
+ * XML node conforming to all of the children of the specified
+ * Preferences node and recurse.
+ *
+ * @throws BackingStoreException if it is not possible to read
+ *         the preferences or children out of the specified
+ *         preferences node.
+ */
+private static void putPreferencesInXml(Element elt, Document doc, Preferences prefs, boolean subTree) throws BackingStoreException {
+    Preferences[] kidsCopy = null;
+    String[] kidNames = null;
+    // Node is locked to export its contents and get a
+    // copy of children, then lock is released,
+    // and, if subTree = true, recursive calls are made on children
+    synchronized (((AbstractPreferences) prefs).lock) {
+        // Check if this node was concurrently removed. If yes
+        // remove it from XML Document and return.
+        if (((AbstractPreferences) prefs).isRemoved()) {
+            elt.getParentNode().removeChild(elt);
+            return;
+        }
+        // Put map in xml element
+        String[] keys = prefs.keys();
+        Element map = (Element) elt.appendChild(doc.createElement("map"));
+        for (int i = 0; i < keys.length; i++) {
+            Element entry = (Element) map.appendChild(doc.createElement("entry"));
+            entry.setAttribute("key", keys[i]);
+            // NEXT STATEMENT THROWS NULL PTR EXC INSTEAD OF ASSERT FAIL
+            entry.setAttribute("value", prefs.get(keys[i], null));
+        }
+        // Recurse if appropriate
+        if (subTree) {
+            /* Get a copy of kids while lock is held */
+            kidNames = prefs.childrenNames();
+            kidsCopy = new Preferences[kidNames.length];
+            for (int i = 0; i < kidNames.length; i++) kidsCopy[i] = prefs.node(kidNames[i]);
+        }
+    // release lock
+    }
+    if (subTree) {
+        for (int i = 0; i < kidNames.length; i++) {
+            Element xmlKid = (Element) elt.appendChild(doc.createElement("node"));
+            xmlKid.setAttribute("name", kidNames[i]);
+            putPreferencesInXml(xmlKid, doc, kidsCopy[i], subTree);
+        }
+    }
+}

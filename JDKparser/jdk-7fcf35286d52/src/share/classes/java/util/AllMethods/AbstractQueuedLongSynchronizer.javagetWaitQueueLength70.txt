@@ -1,0 +1,19 @@
+/**
+ * Returns an estimate of the number of threads waiting on
+ * this condition.
+ * Implements {@link AbstractQueuedLongSynchronizer#getWaitQueueLength(ConditionObject)}.
+ *
+ * @return the estimated number of waiting threads
+ * @throws IllegalMonitorStateException if {@link #isHeldExclusively}
+ *         returns {@code false}
+ */
+protected final int getWaitQueueLength() {
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+    int n = 0;
+    for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
+        if (w.waitStatus == Node.CONDITION)
+            ++n;
+    }
+    return n;
+}

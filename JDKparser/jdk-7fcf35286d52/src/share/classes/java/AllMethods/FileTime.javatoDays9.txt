@@ -1,0 +1,7 @@
+private long toDays() {
+    if (unit != null) {
+        return unit.toDays(value);
+    } else {
+        return TimeUnit.SECONDS.toDays(toInstant().getEpochSecond());
+    }
+}

@@ -1,0 +1,38 @@
+/**
+ * Looks for a content handler in a user-defineable set of places.
+ * By default it looks in sun.net.www.content, but users can define a
+ * vertical-bar delimited set of class prefixes to search through in
+ * addition by defining the java.content.handler.pkgs property.
+ * The class name must be of the form:
+ * <pre>
+ *     {package-prefix}.{major}.{minor}
+ * e.g.
+ *     YoyoDyne.experimental.text.plain
+ * </pre>
+ */
+private ContentHandler lookupContentHandlerClassFor(String contentType) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    String contentHandlerClassName = typeToPackageName(contentType);
+    String contentHandlerPkgPrefixes = getContentHandlerPkgPrefixes();
+    StringTokenizer packagePrefixIter = new StringTokenizer(contentHandlerPkgPrefixes, "|");
+    while (packagePrefixIter.hasMoreTokens()) {
+        String packagePrefix = packagePrefixIter.nextToken().trim();
+        try {
+            String clsName = packagePrefix + "." + contentHandlerClassName;
+            Class<?> cls = null;
+            try {
+                cls = Class.forName(clsName);
+            } catch (ClassNotFoundException e) {
+                ClassLoader cl = ClassLoader.getSystemClassLoader();
+                if (cl != null) {
+                    cls = cl.loadClass(clsName);
+                }
+            }
+            if (cls != null) {
+                ContentHandler handler = (ContentHandler) cls.newInstance();
+                return handler;
+            }
+        } catch (Exception e) {
+        }
+    }
+    return UnknownContentHandler.INSTANCE;
+}

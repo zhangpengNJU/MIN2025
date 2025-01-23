@@ -1,0 +1,17 @@
+public int read(byte[] b, int off, int len) throws IOException {
+    int nbytes;
+    if (len == 0) {
+        return 0;
+    } else if (peekb < 0) {
+        nbytes = in.read(b, off, len);
+        totalBytesRead += nbytes >= 0 ? nbytes : 0;
+        return nbytes;
+    } else {
+        b[off++] = (byte) peekb;
+        len--;
+        peekb = -1;
+        nbytes = in.read(b, off, len);
+        totalBytesRead += nbytes >= 0 ? nbytes : 0;
+        return (nbytes >= 0) ? (nbytes + 1) : 1;
+    }
+}

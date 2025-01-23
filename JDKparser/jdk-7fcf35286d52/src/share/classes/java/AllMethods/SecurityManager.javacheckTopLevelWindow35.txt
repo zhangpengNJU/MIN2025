@@ -1,0 +1,59 @@
+/**
+ * Returns <code>false</code> if the calling
+ * thread is not trusted to bring up the top-level window indicated
+ * by the <code>window</code> argument. In this case, the caller can
+ * still decide to show the window, but the window should include
+ * some sort of visual warning. If the method returns
+ * <code>true</code>, then the window can be shown without any
+ * special restrictions.
+ * <p>
+ * See class <code>Window</code> for more information on trusted and
+ * untrusted windows.
+ * <p>
+ * This method calls
+ * <code>checkPermission</code> with the
+ * <code>AWTPermission("showWindowWithoutWarningBanner")</code> permission,
+ * and returns <code>true</code> if a SecurityException is not thrown,
+ * otherwise it returns <code>false</code>.
+ * In the case of subset Profiles of Java SE that do not include the
+ * {@code java.awt} package, {@code checkPermission} is instead called
+ * to check the permission {@code java.security.AllPermission}.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkTopLevelWindow</code>
+ * at the point the overridden method would normally return
+ * <code>false</code>, and the value of
+ * <code>super.checkTopLevelWindow</code> should
+ * be returned.
+ *
+ * @param      window   the new window that is being created.
+ * @return     <code>true</code> if the calling thread is trusted to put up
+ *             top-level windows; <code>false</code> otherwise.
+ * @exception  NullPointerException if the <code>window</code> argument is
+ *             <code>null</code>.
+ * @deprecated The dependency on {@code AWTPermission} creates an
+ *             impediment to future modularization of the Java platform.
+ *             Users of this method should instead invoke
+ *             {@link #checkPermission} directly.
+ *             This method will be changed in a future release to check
+ *             the permission {@code java.security.AllPermission}.
+ * @see        java.awt.Window
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+@Deprecated
+public boolean checkTopLevelWindow(Object window) {
+    if (window == null) {
+        throw new NullPointerException("window can't be null");
+    }
+    Permission perm = SecurityConstants.AWT.TOPLEVEL_WINDOW_PERMISSION;
+    if (perm == null) {
+        perm = SecurityConstants.ALL_PERMISSION;
+    }
+    try {
+        checkPermission(perm);
+        return true;
+    } catch (SecurityException se) {
+    // just return false
+    }
+    return false;
+}

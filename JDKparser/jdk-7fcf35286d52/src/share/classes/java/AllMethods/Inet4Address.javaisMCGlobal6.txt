@@ -1,0 +1,13 @@
+/**
+ * Utility routine to check if the multicast address has global scope.
+ *
+ * @return a {@code boolean} indicating if the address has
+ *         is a multicast address of global scope, false if it is not
+ *         of global scope or it is not a multicast address
+ * @since 1.4
+ */
+public boolean isMCGlobal() {
+    // 224.0.1.0 to 238.255.255.255
+    byte[] byteAddr = getAddress();
+    return ((byteAddr[0] & 0xff) >= 224 && (byteAddr[0] & 0xff) <= 238) && !((byteAddr[0] & 0xff) == 224 && byteAddr[1] == 0 && byteAddr[2] == 0);
+}

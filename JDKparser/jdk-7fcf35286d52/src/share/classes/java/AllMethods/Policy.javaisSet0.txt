@@ -1,0 +1,7 @@
+/**
+ * package private for AccessControlContext and ProtectionDomain
+ */
+static boolean isSet() {
+    PolicyInfo pi = policy.get();
+    return pi.policy != null && pi.initialized == true;
+}

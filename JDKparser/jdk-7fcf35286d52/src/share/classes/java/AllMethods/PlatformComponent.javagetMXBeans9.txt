@@ -1,0 +1,8 @@
+public List<PlatformLoggingMXBean> getMXBeans() {
+    PlatformLoggingMXBean m = ManagementFactoryHelper.getPlatformLoggingMXBean();
+    if (m == null) {
+        return Collections.emptyList();
+    } else {
+        return Collections.singletonList(m);
+    }
+}

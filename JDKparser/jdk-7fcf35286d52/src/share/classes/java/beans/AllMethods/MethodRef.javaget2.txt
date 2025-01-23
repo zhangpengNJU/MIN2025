@@ -1,0 +1,17 @@
+Method get() {
+    if (this.methodRef == null) {
+        return null;
+    }
+    Method method = this.methodRef.get();
+    if (method == null) {
+        method = find(this.typeRef.get(), this.signature);
+        if (method == null) {
+            this.signature = null;
+            this.methodRef = null;
+            this.typeRef = null;
+            return null;
+        }
+        this.methodRef = new SoftReference<>(method);
+    }
+    return isPackageAccessible(method.getDeclaringClass()) ? method : null;
+}

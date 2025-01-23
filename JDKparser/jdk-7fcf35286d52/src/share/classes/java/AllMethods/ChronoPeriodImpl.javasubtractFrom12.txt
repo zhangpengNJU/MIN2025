@@ -1,0 +1,23 @@
+@Override
+public Temporal subtractFrom(Temporal temporal) {
+    validateChrono(temporal);
+    if (months == 0) {
+        if (years != 0) {
+            temporal = temporal.minus(years, YEARS);
+        }
+    } else {
+        long monthRange = monthRange();
+        if (monthRange > 0) {
+            temporal = temporal.minus(years * monthRange + months, MONTHS);
+        } else {
+            if (years != 0) {
+                temporal = temporal.minus(years, YEARS);
+            }
+            temporal = temporal.minus(months, MONTHS);
+        }
+    }
+    if (days != 0) {
+        temporal = temporal.minus(days, DAYS);
+    }
+    return temporal;
+}

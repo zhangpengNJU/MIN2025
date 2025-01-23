@@ -1,0 +1,14 @@
+/**
+ * Prints a message to the current JDBC log stream.
+ *
+ * @param message a log or tracing message
+ */
+public static void println(String message) {
+    synchronized (logSync) {
+        if (logWriter != null) {
+            logWriter.println(message);
+            // automatic flushing is never enabled, so we must do it ourselves
+            logWriter.flush();
+        }
+    }
+}

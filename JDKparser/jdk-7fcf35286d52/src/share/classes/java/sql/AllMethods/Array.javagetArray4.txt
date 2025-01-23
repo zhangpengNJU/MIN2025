@@ -1,0 +1,24 @@
+/**
+ * Retrieves a slice of the SQL <code>ARRAY</code>
+ * value designated by this <code>Array</code> object, beginning with the
+ * specified <code>index</code> and containing up to <code>count</code>
+ * successive elements of the SQL array.  This method uses the type map
+ * associated with the connection for customizations of the type mappings.
+ * <p>
+ * <strong>Note:</strong> When <code>getArray</code> is used to materialize
+ * a base type that maps to a primitive data type, then it is
+ * implementation-defined whether the array returned is an array of
+ * that primitive data type or an array of <code>Object</code>.
+ *
+ * @param index the array index of the first element to retrieve;
+ *              the first element is at index 1
+ * @param count the number of successive SQL array elements to retrieve
+ * @return an array containing up to <code>count</code> consecutive elements
+ * of the SQL array, beginning with element <code>index</code>
+ * @exception SQLException if an error occurs while attempting to
+ * access the array
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+Object getArray(long index, int count) throws SQLException;

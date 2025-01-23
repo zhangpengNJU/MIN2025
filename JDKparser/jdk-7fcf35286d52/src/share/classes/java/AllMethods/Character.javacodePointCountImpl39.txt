@@ -1,0 +1,11 @@
+static int codePointCountImpl(char[] a, int offset, int count) {
+    int endIndex = offset + count;
+    int n = count;
+    for (int i = offset; i < endIndex; ) {
+        if (isHighSurrogate(a[i++]) && i < endIndex && isLowSurrogate(a[i])) {
+            n--;
+            i++;
+        }
+    }
+    return n;
+}

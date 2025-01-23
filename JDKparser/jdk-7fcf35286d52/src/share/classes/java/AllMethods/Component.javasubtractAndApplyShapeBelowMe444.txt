@@ -1,0 +1,16 @@
+final void subtractAndApplyShapeBelowMe() {
+    checkTreeLock();
+    Container parent = getContainer();
+    if (parent != null && isShowing()) {
+        Region opaqueShape = getOpaqueShape();
+        // First, cut my siblings
+        parent.recursiveSubtractAndApplyShape(opaqueShape, getSiblingIndexBelow());
+        // Second, if my container is non-opaque, cut siblings of my container
+        Container parent2 = parent.getContainer();
+        while (!parent.isOpaque() && parent2 != null) {
+            parent2.recursiveSubtractAndApplyShape(opaqueShape, parent.getSiblingIndexBelow());
+            parent = parent2;
+            parent2 = parent.getContainer();
+        }
+    }
+}

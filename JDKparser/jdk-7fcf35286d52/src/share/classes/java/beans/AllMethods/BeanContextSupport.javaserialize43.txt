@@ -1,0 +1,26 @@
+/**
+ * Used by writeObject to serialize a Collection.
+ * @param oos the <tt>ObjectOutputStream</tt>
+ * to use during serialization
+ * @param coll the <tt>Collection</tt> to serialize
+ * @throws IOException if serialization failed
+ */
+protected final void serialize(ObjectOutputStream oos, Collection coll) throws IOException {
+    int count = 0;
+    Object[] objects = coll.toArray();
+    for (int i = 0; i < objects.length; i++) {
+        if (objects[i] instanceof Serializable)
+            count++;
+        else
+            objects[i] = null;
+    }
+    // number of subsequent objects
+    oos.writeInt(count);
+    for (int i = 0; count > 0; i++) {
+        Object o = objects[i];
+        if (o != null) {
+            oos.writeObject(o);
+            count--;
+        }
+    }
+}

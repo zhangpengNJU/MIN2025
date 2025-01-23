@@ -1,0 +1,7 @@
+private void checkSpecialCaller(Class<?> specialCaller) throws IllegalAccessException {
+    int allowedModes = this.allowedModes;
+    if (allowedModes == TRUSTED)
+        return;
+    if (!hasPrivateAccess() || (specialCaller != lookupClass() && !(ALLOW_NESTMATE_ACCESS && VerifyAccess.isSamePackageMember(specialCaller, lookupClass()))))
+        throw new MemberName(specialCaller).makeAccessException("no private access for invokespecial", this);
+}

@@ -1,0 +1,32 @@
+/**
+ * Compares two remote objects for equality.
+ * Returns a boolean that indicates whether this remote object is
+ * equivalent to the specified Object. This method is used when a
+ * remote object is stored in a hashtable.
+ * If the specified Object is not itself an instance of RemoteObject,
+ * then this method delegates by returning the result of invoking the
+ * <code>equals</code> method of its parameter with this remote object
+ * as the argument.
+ * @param   obj     the Object to compare with
+ * @return  true if these Objects are equal; false otherwise.
+ * @see             java.util.Hashtable
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof RemoteObject) {
+        if (ref == null) {
+            return obj == this;
+        } else {
+            return ref.remoteEquals(((RemoteObject) obj).ref);
+        }
+    } else if (obj != null) {
+        /*
+             * Fix for 4099660: if object is not an instance of RemoteObject,
+             * use the result of its equals method, to support symmetry is a
+             * remote object implementation class that does not extend
+             * RemoteObject wishes to support equality with its stub objects.
+             */
+        return obj.equals(this);
+    } else {
+        return false;
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * Gets the index of the selected item on the list,
+ *
+ * @return        the index of the selected item;
+ *                if no item is selected, or if multiple items are
+ *                selected, <code>-1</code> is returned.
+ * @see           #select
+ * @see           #deselect
+ * @see           #isIndexSelected
+ */
+public synchronized int getSelectedIndex() {
+    int[] sel = getSelectedIndexes();
+    return (sel.length == 1) ? sel[0] : -1;
+}

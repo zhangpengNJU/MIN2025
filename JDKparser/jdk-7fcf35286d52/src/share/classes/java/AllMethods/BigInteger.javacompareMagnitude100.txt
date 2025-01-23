@@ -1,0 +1,25 @@
+/**
+ * Compares the magnitude array of this BigInteger with the specified
+ * BigInteger's. This is the version of compareTo ignoring sign.
+ *
+ * @param val BigInteger whose magnitude array to be compared.
+ * @return -1, 0 or 1 as this magnitude array is less than, equal to or
+ *         greater than the magnitude aray for the specified BigInteger's.
+ */
+final int compareMagnitude(BigInteger val) {
+    int[] m1 = mag;
+    int len1 = m1.length;
+    int[] m2 = val.mag;
+    int len2 = m2.length;
+    if (len1 < len2)
+        return -1;
+    if (len1 > len2)
+        return 1;
+    for (int i = 0; i < len1; i++) {
+        int a = m1[i];
+        int b = m2[i];
+        if (a != b)
+            return ((a & LONG_MASK) < (b & LONG_MASK)) ? -1 : 1;
+    }
+    return 0;
+}

@@ -1,0 +1,12 @@
+/**
+ * Map the field range to a week range
+ * @param temporal the temporal
+ * @param field the field to get the range of
+ * @return the ValueRange with the range adjusted to weeks.
+ */
+private ValueRange rangeByWeek(TemporalAccessor temporal, TemporalField field) {
+    int dow = localizedDayOfWeek(temporal);
+    int offset = startOfWeekOffset(temporal.get(field), dow);
+    ValueRange fieldRange = temporal.range(field);
+    return ValueRange.of(computeWeek(offset, (int) fieldRange.getMinimum()), computeWeek(offset, (int) fieldRange.getMaximum()));
+}

@@ -1,0 +1,9 @@
+// The next operation should occur in the specified radix but
+// the default is left untouched.
+private void setRadix(int radix) {
+    if (this.radix != radix) {
+        // Force rebuilding and recompilation of radix dependent patterns
+        integerPattern = null;
+        this.radix = radix;
+    }
+}

@@ -1,0 +1,23 @@
+/**
+ * Requests that a <code>Statement</code> be pooled or not pooled.  The value
+ * specified is a hint to the statement pool implementation indicating
+ * whether the application wants the statement to be pooled.  It is up to
+ * the statement pool manager as to whether the hint is used.
+ * <p>
+ * The poolable value of a statement is applicable to both internal
+ * statement caches implemented by the driver and external statement caches
+ * implemented by application servers and other applications.
+ * <p>
+ * By default, a <code>Statement</code> is not poolable when created, and
+ * a <code>PreparedStatement</code> and <code>CallableStatement</code>
+ * are poolable when created.
+ * <p>
+ * @param poolable              requests that the statement be pooled if true and
+ *                                              that the statement not be pooled if false
+ * <p>
+ * @throws SQLException if this method is called on a closed
+ * <code>Statement</code>
+ * <p>
+ * @since 1.6
+ */
+void setPoolable(boolean poolable) throws SQLException;

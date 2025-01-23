@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public Rectangle2D createIntersection(Rectangle2D r) {
+    if (r instanceof Rectangle) {
+        return intersection((Rectangle) r);
+    }
+    Rectangle2D dest = new Rectangle2D.Double();
+    Rectangle2D.intersect(this, r, dest);
+    return dest;
+}

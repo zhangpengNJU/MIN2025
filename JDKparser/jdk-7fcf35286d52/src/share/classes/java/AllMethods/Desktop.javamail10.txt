@@ -1,0 +1,27 @@
+/**
+ * Launches the mail composing window of the user default mail
+ * client.
+ *
+ * @throws UnsupportedOperationException if the current platform
+ * does not support the {@link Desktop.Action#MAIL} action
+ * @throws IOException if the user default mail client is not
+ * found, or it fails to be launched
+ * @throws SecurityException if a security manager exists and it
+ * denies the
+ * <code>AWTPermission("showWindowWithoutWarningBanner")</code>
+ * permission, or the calling thread is not allowed to create a
+ * subprocess
+ * @see java.awt.AWTPermission
+ */
+public void mail() throws IOException {
+    checkAWTPermission();
+    checkExec();
+    checkActionSupport(Action.MAIL);
+    URI mailtoURI = null;
+    try {
+        mailtoURI = new URI("mailto:?");
+        peer.mail(mailtoURI);
+    } catch (URISyntaxException e) {
+    // won't reach here.
+    }
+}

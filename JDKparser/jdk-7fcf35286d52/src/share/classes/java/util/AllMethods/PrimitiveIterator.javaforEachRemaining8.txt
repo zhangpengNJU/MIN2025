@@ -1,0 +1,21 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * If the action is an instance of {@code LongConsumer} then it is cast
+ * to {@code LongConsumer} and passed to {@link #forEachRemaining};
+ * otherwise the action is adapted to an instance of
+ * {@code LongConsumer}, by boxing the argument of {@code LongConsumer},
+ * and then passed to {@link #forEachRemaining}.
+ */
+@Override
+default void forEachRemaining(Consumer<? super Long> action) {
+    if (action instanceof LongConsumer) {
+        forEachRemaining((LongConsumer) action);
+    } else {
+        // The method reference action::accept is never null
+        Objects.requireNonNull(action);
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling PrimitiveIterator.OfLong.forEachRemainingLong(action::accept)");
+        forEachRemaining((LongConsumer) action::accept);
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Selects a set of keys whose corresponding channels are ready for I/O
+ * operations.
+ *
+ * <p> This method performs a blocking <a href="#selop">selection
+ * operation</a>.  It returns only after at least one channel is selected,
+ * this selector's {@link #wakeup wakeup} method is invoked, or the current
+ * thread is interrupted, whichever comes first.  </p>
+ *
+ * @return  The number of keys, possibly zero,
+ *          whose ready-operation sets were updated
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @throws  ClosedSelectorException
+ *          If this selector is closed
+ */
+public abstract int select() throws IOException;

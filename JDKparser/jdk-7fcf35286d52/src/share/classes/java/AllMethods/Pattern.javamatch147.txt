@@ -1,0 +1,32 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    // Avoid infinite loop in zero-length case.
+    if (i > matcher.locals[beginIndex]) {
+        int count = matcher.locals[countIndex];
+        // This block is for before we reach the minimum
+        // iterations required for the loop to match
+        if (count < cmin) {
+            matcher.locals[countIndex] = count + 1;
+            boolean b = body.match(matcher, i, seq);
+            // If match failed we must backtrack, so
+            // the loop count should NOT be incremented
+            if (!b)
+                matcher.locals[countIndex] = count;
+            // Return success or failure since we are under
+            // minimum
+            return b;
+        }
+        // This block is for after we have the minimum
+        // iterations required for the loop to match
+        if (count < cmax) {
+            matcher.locals[countIndex] = count + 1;
+            boolean b = body.match(matcher, i, seq);
+            // If match failed we must backtrack, so
+            // the loop count should NOT be incremented
+            if (!b)
+                matcher.locals[countIndex] = count;
+            else
+                return true;
+        }
+    }
+    return next.match(matcher, i, seq);
+}

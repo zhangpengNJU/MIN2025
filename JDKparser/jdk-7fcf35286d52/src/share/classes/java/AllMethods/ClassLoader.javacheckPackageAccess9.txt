@@ -1,0 +1,23 @@
+// Invoked by the VM after loading class with this loader.
+private void checkPackageAccess(Class<?> cls, ProtectionDomain pd) {
+    final SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        if (ReflectUtil.isNonPublicProxyClass(cls)) {
+            for (Class<?> intf : cls.getInterfaces()) {
+                checkPackageAccess(intf, pd);
+            }
+            return;
+        }
+        final String name = cls.getName();
+        final int i = name.lastIndexOf('.');
+        if (i != -1) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+                public Void run() {
+                    sm.checkPackageAccess(name.substring(0, i));
+                    return null;
+                }
+            }, new AccessControlContext(new ProtectionDomain[] { pd }));
+        }
+    }
+}

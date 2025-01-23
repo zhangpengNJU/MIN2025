@@ -1,0 +1,70 @@
+/*
+     * --- Modality support ---
+     *
+     */
+/*
+     * This method is called only for modal dialogs.
+     *
+     * Goes through the list of all visible top-level windows and
+     * divide them into three distinct groups: blockers of this dialog,
+     * blocked by this dialog and all others. Then blocks this dialog
+     * by first met dialog from the first group (if any) and blocks all
+     * the windows from the second group.
+     */
+void modalShow() {
+    // find all the dialogs that block this one
+    IdentityArrayList<Dialog> blockers = new IdentityArrayList<Dialog>();
+    for (Dialog d : modalDialogs) {
+        if (d.shouldBlock(this)) {
+            Window w = d;
+            while ((w != null) && (w != this)) {
+                w = w.getOwner_NoClientCode();
+            }
+            if ((w == this) || !shouldBlock(d) || (modalityType.compareTo(d.getModalityType()) < 0)) {
+                blockers.add(d);
+            }
+        }
+    }
+    // add all blockers' blockers to blockers :)
+    for (int i = 0; i < blockers.size(); i++) {
+        Dialog blocker = blockers.get(i);
+        if (blocker.isModalBlocked()) {
+            Dialog blockerBlocker = blocker.getModalBlocker();
+            if (!blockers.contains(blockerBlocker)) {
+                blockers.add(i + 1, blockerBlocker);
+            }
+        }
+    }
+    if (blockers.size() > 0) {
+        blockers.get(0).blockWindow(this);
+    }
+    // find all windows from blockers' hierarchies
+    IdentityArrayList<Window> blockersHierarchies = new IdentityArrayList<Window>(blockers);
+    int k = 0;
+    while (k < blockersHierarchies.size()) {
+        Window w = blockersHierarchies.get(k);
+        Window[] ownedWindows = w.getOwnedWindows_NoClientCode();
+        for (Window win : ownedWindows) {
+            blockersHierarchies.add(win);
+        }
+        k++;
+    }
+    java.util.List<Window> toBlock = new IdentityLinkedList<Window>();
+    // block all windows from scope of blocking except from blockers' hierarchies
+    IdentityArrayList<Window> unblockedWindows = Window.getAllUnblockedWindows();
+    for (Window w : unblockedWindows) {
+        if (shouldBlock(w) && !blockersHierarchies.contains(w)) {
+            if ((w instanceof Dialog) && ((Dialog) w).isModal_NoClientCode()) {
+                Dialog wd = (Dialog) w;
+                if (wd.shouldBlock(this) && (modalDialogs.indexOf(wd) > modalDialogs.indexOf(this))) {
+                    continue;
+                }
+            }
+            toBlock.add(w);
+        }
+    }
+    blockWindows(toBlock);
+    if (!isModalBlocked()) {
+        updateChildrenBlocking();
+    }
+}

@@ -1,0 +1,26 @@
+/**
+ * Subtracts this period from the specified temporal object.
+ * <p>
+ * This returns a temporal object of the same observable type as the input
+ * with this period subtracted.
+ * <p>
+ * In most cases, it is clearer to reverse the calling pattern by using
+ * {@link Temporal#minus(TemporalAmount)}.
+ * <pre>
+ *   // these two lines are equivalent, but the second approach is recommended
+ *   dateTime = thisPeriod.subtractFrom(dateTime);
+ *   dateTime = dateTime.minus(thisPeriod);
+ * </pre>
+ * <p>
+ * The specified temporal must have the same chronology as this period.
+ * This returns a temporal with the non-zero supported units subtracted.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param temporal  the temporal object to adjust, not null
+ * @return an object of the same type with the adjustment made, not null
+ * @throws DateTimeException if unable to subtract
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+@Override
+Temporal subtractFrom(Temporal temporal);

@@ -1,0 +1,61 @@
+/**
+ * Initialize superclass state such that a legacy provider can
+ * handle queries for itself.
+ *
+ * @since 1.4
+ */
+private static void initPolicy(final Policy p) {
+    /*
+         * A policy provider not on the bootclasspath could trigger
+         * security checks fulfilling a call to either Policy.implies
+         * or Policy.getPermissions. If this does occur the provider
+         * must be able to answer for it's own ProtectionDomain
+         * without triggering additional security checks, otherwise
+         * the policy implementation will end up in an infinite
+         * recursion.
+         *
+         * To mitigate this, the provider can collect it's own
+         * ProtectionDomain and associate a PermissionCollection while
+         * it is being installed. The currently installed policy
+         * provider (if there is one) will handle calls to
+         * Policy.implies or Policy.getPermissions during this
+         * process.
+         *
+         * This Policy superclass caches away the ProtectionDomain and
+         * statically binds permissions so that legacy Policy
+         * implementations will continue to function.
+         */
+    ProtectionDomain policyDomain = AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>() {
+
+        public ProtectionDomain run() {
+            return p.getClass().getProtectionDomain();
+        }
+    });
+    /*
+         * Collect the permissions granted to this protection domain
+         * so that the provider can be security checked while processing
+         * calls to Policy.implies or Policy.getPermissions.
+         */
+    PermissionCollection policyPerms = null;
+    synchronized (p) {
+        if (p.pdMapping == null) {
+            p.pdMapping = new WeakHashMap<>();
+        }
+    }
+    if (policyDomain.getCodeSource() != null) {
+        Policy pol = policy.get().policy;
+        if (pol != null) {
+            policyPerms = pol.getPermissions(policyDomain);
+        }
+        if (policyPerms == null) {
+            // assume it has all
+            policyPerms = new Permissions();
+            policyPerms.add(SecurityConstants.ALL_PERMISSION);
+        }
+        synchronized (p.pdMapping) {
+            // cache of pd to permissions
+            p.pdMapping.put(policyDomain.key, policyPerms);
+        }
+    }
+    return;
+}

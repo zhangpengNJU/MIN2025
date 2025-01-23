@@ -1,0 +1,12 @@
+/**
+ * Returns an operation set identifying this channel's supported
+ * operations.
+ *
+ * <p> Pipe-source channels only support reading, so this method
+ * returns {@link SelectionKey#OP_READ}.  </p>
+ *
+ * @return  The valid-operation set
+ */
+public final int validOps() {
+    return SelectionKey.OP_READ;
+}

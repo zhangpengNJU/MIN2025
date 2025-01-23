@@ -1,0 +1,15 @@
+private Rectangle2D getCachedBounds() {
+    if (cachedBounds != null) {
+        return cachedBounds;
+    }
+    Rectangle2D r = new Rectangle2D.Double();
+    if (curves.size() > 0) {
+        Curve c = (Curve) curves.get(0);
+        // First point is always an order 0 curve (moveto)
+        r.setRect(c.getX0(), c.getY0(), 0, 0);
+        for (int i = 1; i < curves.size(); i++) {
+            ((Curve) curves.get(i)).enlarge(r);
+        }
+    }
+    return (cachedBounds = r);
+}

@@ -1,0 +1,18 @@
+/*
+     * Returns true if specified byte array contains the
+     * jar magic extra field id.
+     */
+private static boolean hasMagic(byte[] edata) {
+    try {
+        int i = 0;
+        while (i < edata.length) {
+            if (get16(edata, i) == JAR_MAGIC) {
+                return true;
+            }
+            i += get16(edata, i + 2) + 4;
+        }
+    } catch (ArrayIndexOutOfBoundsException e) {
+    // Invalid extra field data
+    }
+    return false;
+}

@@ -1,0 +1,42 @@
+/**
+ * Return a StyledParagraph reflecting the insertion of a single character
+ * into the text.  This method will attempt to reuse the given paragraph,
+ * but may create a new paragraph.
+ * @param aci an iterator over the text.  The text should be the same as the
+ *     text used to create (or most recently update) oldParagraph, with
+ *     the exception of inserting a single character at insertPos.
+ * @param chars the characters in aci
+ * @param insertPos the index of the new character in aci
+ * @param oldParagraph a StyledParagraph for the text in aci before the
+ *     insertion
+ */
+public static StyledParagraph insertChar(AttributedCharacterIterator aci, char[] chars, int insertPos, StyledParagraph oldParagraph) {
+    // If the styles at insertPos match those at insertPos-1,
+    // oldParagraph will be reused.  Otherwise we create a new
+    // paragraph.
+    char ch = aci.setIndex(insertPos);
+    int relativePos = Math.max(insertPos - aci.getBeginIndex() - 1, 0);
+    Map<? extends Attribute, ?> attributes = addInputMethodAttrs(aci.getAttributes());
+    Decoration d = Decoration.getDecoration(attributes);
+    if (!oldParagraph.getDecorationAt(relativePos).equals(d)) {
+        return new StyledParagraph(aci, chars);
+    }
+    Object f = getGraphicOrFont(attributes);
+    if (f == null) {
+        FontResolver resolver = FontResolver.getInstance();
+        int fontIndex = resolver.getFontIndex(ch);
+        f = resolver.getFont(fontIndex, attributes);
+    }
+    if (!oldParagraph.getFontOrGraphicAt(relativePos).equals(f)) {
+        return new StyledParagraph(aci, chars);
+    }
+    // insert into existing paragraph
+    oldParagraph.length += 1;
+    if (oldParagraph.decorations != null) {
+        insertInto(relativePos, oldParagraph.decorationStarts, oldParagraph.decorations.size());
+    }
+    if (oldParagraph.fonts != null) {
+        insertInto(relativePos, oldParagraph.fontStarts, oldParagraph.fonts.size());
+    }
+    return oldParagraph;
+}

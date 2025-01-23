@@ -1,0 +1,15 @@
+/**
+ * Specifies the print quality for pages using these attributes. Not
+ * specifying the property is equivalent to specifying
+ * PrintQualityType.NORMAL.
+ *
+ * @param   printQuality PrintQualityType.DRAFT, PrintQualityType.NORMAL,
+ *          or PrintQualityType.HIGH
+ * @throws  IllegalArgumentException if printQuality is null.
+ */
+public void setPrintQuality(PrintQualityType printQuality) {
+    if (printQuality == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "printQuality");
+    }
+    this.printQuality = printQuality;
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns the distance from the point (x,&nbsp;y) to the caret along
+ * the line direction defined in <code>caretInfo</code>.  Distance is
+ * negative if the point is to the left of the caret on a horizontal
+ * line, or above the caret on a vertical line.
+ * Utility for use by hitTestChar.
+ */
+private float caretToPointDistance(float[] caretInfo, float x, float y) {
+    // distanceOffBaseline is negative if you're 'above' baseline
+    float lineDistance = isVerticalLine ? y : x;
+    float distanceOffBaseline = isVerticalLine ? -x : y;
+    return lineDistance - caretInfo[0] + (distanceOffBaseline * caretInfo[1]);
+}

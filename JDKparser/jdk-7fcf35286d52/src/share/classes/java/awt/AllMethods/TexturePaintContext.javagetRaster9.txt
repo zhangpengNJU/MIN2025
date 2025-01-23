@@ -1,0 +1,17 @@
+/**
+ * Return a Raster containing the colors generated for the graphics
+ * operation.
+ * @param x,y,w,h The area in device space for which colors are
+ * generated.
+ */
+public Raster getRaster(int x, int y, int w, int h) {
+    if (outRas == null || outRas.getWidth() < w || outRas.getHeight() < h) {
+        // If h==1, we will probably get lots of "scanline" rects
+        outRas = makeRaster((h == 1 ? Math.max(w, maxWidth) : w), h);
+    }
+    double X = mod(xOrg + x * incXAcross + y * incXDown, bWidth);
+    double Y = mod(yOrg + x * incYAcross + y * incYDown, bHeight);
+    setRaster((int) X, (int) Y, fractAsInt(X), fractAsInt(Y), w, h, bWidth, bHeight, colincx, colincxerr, colincy, colincyerr, rowincx, rowincxerr, rowincy, rowincyerr);
+    SunWritableRaster.markDirty(outRas);
+    return outRas;
+}

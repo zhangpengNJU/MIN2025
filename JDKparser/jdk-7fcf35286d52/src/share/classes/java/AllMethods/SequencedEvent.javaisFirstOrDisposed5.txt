@@ -1,0 +1,13 @@
+/**
+ * Sequenced events are dispatched in order, so we cannot dispatch
+ * until we are the first sequenced event in the queue (i.e. it's our
+ * turn).  But while we wait for our turn to dispatch, the event
+ * could have been disposed for a number of reasons.
+ */
+public final boolean isFirstOrDisposed() {
+    if (disposed) {
+        return true;
+    }
+    // getFirstWithContext can dispose this
+    return this == getFirstWithContext() || disposed;
+}

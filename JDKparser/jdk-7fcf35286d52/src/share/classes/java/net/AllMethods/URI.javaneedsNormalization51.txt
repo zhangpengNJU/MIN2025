@@ -1,0 +1,59 @@
+// -- Path normalization --
+// The following algorithm for path normalization avoids the creation of a
+// string object for each segment, as well as the use of a string buffer to
+// compute the final result, by using a single char array and editing it in
+// place.  The array is first split into segments, replacing each slash
+// with '\0' and creating a segment-index array, each element of which is
+// the index of the first char in the corresponding segment.  We then walk
+// through both arrays, removing ".", "..", and other segments as necessary
+// by setting their entries in the index array to -1.  Finally, the two
+// arrays are used to rejoin the segments and compute the final result.
+// 
+// This code is based upon src/solaris/native/java/io/canonicalize_md.c
+// Check the given path to see if it might need normalization.  A path
+// might need normalization if it contains duplicate slashes, a "."
+// segment, or a ".." segment.  Return -1 if no further normalization is
+// possible, otherwise return the number of segments found.
+// 
+// This method takes a string argument rather than a char array so that
+// this test can be performed without invoking path.toCharArray().
+// 
+static private int needsNormalization(String path) {
+    boolean normal = true;
+    // Number of segments
+    int ns = 0;
+    // Index of last char in path
+    int end = path.length() - 1;
+    // Index of next char in path
+    int p = 0;
+    // Skip initial slashes
+    while (p <= end) {
+        if (path.charAt(p) != '/')
+            break;
+        p++;
+    }
+    if (p > 1)
+        normal = false;
+    // Scan segments
+    while (p <= end) {
+        // Looking at "." or ".." ?
+        if ((path.charAt(p) == '.') && ((p == end) || ((path.charAt(p + 1) == '/') || ((path.charAt(p + 1) == '.') && ((p + 1 == end) || (path.charAt(p + 2) == '/')))))) {
+            normal = false;
+        }
+        ns++;
+        // Find beginning of next segment
+        while (p <= end) {
+            if (path.charAt(p++) != '/')
+                continue;
+            // Skip redundant slashes
+            while (p <= end) {
+                if (path.charAt(p) != '/')
+                    break;
+                normal = false;
+                p++;
+            }
+            break;
+        }
+    }
+    return normal ? -1 : ns;
+}

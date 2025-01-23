@@ -1,0 +1,18 @@
+/**
+ * Replaces the element at the specified position in this Vector with the
+ * specified element.
+ *
+ * @param index index of the element to replace
+ * @param element element to be stored at the specified position
+ * @return the element previously at the specified position
+ * @throws ArrayIndexOutOfBoundsException if the index is out of range
+ *         ({@code index < 0 || index >= size()})
+ * @since 1.2
+ */
+public synchronized E set(int index, E element) {
+    if (index >= elementCount)
+        throw new ArrayIndexOutOfBoundsException(index);
+    E oldValue = elementData(index);
+    elementData[index] = element;
+    return oldValue;
+}

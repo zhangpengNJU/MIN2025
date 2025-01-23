@@ -1,0 +1,16 @@
+/**
+ * Invokes {@code shutdown} when this executor is no longer
+ * referenced and it has no threads.
+ */
+protected void finalize() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm == null || acc == null) {
+        shutdown();
+    } else {
+        PrivilegedAction<Void> pa = () -> {
+            shutdown();
+            return null;
+        };
+        AccessController.doPrivileged(pa, acc);
+    }
+}

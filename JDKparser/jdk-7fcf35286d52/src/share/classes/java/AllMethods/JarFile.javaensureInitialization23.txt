@@ -1,0 +1,11 @@
+synchronized void ensureInitialization() {
+    try {
+        maybeInstantiateVerifier();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    if (jv != null && !jvInitialized) {
+        initializeVerifier();
+        jvInitialized = true;
+    }
+}

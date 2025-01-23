@@ -1,0 +1,25 @@
+/**
+ * Get all cookies, which:
+ *  1) given uri domain-matches with, or, associated with
+ *     given uri when added to the cookie store.
+ *  3) not expired.
+ * See RFC 2965 sec. 3.3.4 for more detail.
+ */
+public List<HttpCookie> get(URI uri) {
+    // argument can't be null
+    if (uri == null) {
+        throw new NullPointerException("uri is null");
+    }
+    List<HttpCookie> cookies = new ArrayList<HttpCookie>();
+    boolean secureLink = "https".equalsIgnoreCase(uri.getScheme());
+    lock.lock();
+    try {
+        // check domainIndex first
+        getInternal1(cookies, domainIndex, uri.getHost(), secureLink);
+        // check uriIndex then
+        getInternal2(cookies, uriIndex, getEffectiveURI(uri), secureLink);
+    } finally {
+        lock.unlock();
+    }
+    return cookies;
+}

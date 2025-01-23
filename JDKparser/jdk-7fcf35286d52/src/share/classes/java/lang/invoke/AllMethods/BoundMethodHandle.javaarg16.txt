@@ -1,0 +1,20 @@
+/*non-public*/
+final Object arg(int i) {
+    try {
+        switch(speciesData().fieldType(i)) {
+            case L_TYPE:
+                return speciesData().getters[i].invokeBasic(this);
+            case I_TYPE:
+                return (int) speciesData().getters[i].invokeBasic(this);
+            case J_TYPE:
+                return (long) speciesData().getters[i].invokeBasic(this);
+            case F_TYPE:
+                return (float) speciesData().getters[i].invokeBasic(this);
+            case D_TYPE:
+                return (double) speciesData().getters[i].invokeBasic(this);
+        }
+    } catch (Throwable ex) {
+        throw newInternalError(ex);
+    }
+    throw new InternalError("unexpected type: " + speciesData().typeChars + "." + i);
+}

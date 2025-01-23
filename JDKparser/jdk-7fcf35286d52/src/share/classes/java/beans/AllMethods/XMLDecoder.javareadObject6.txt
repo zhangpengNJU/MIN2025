@@ -1,0 +1,13 @@
+/**
+ * Reads the next object from the underlying input stream.
+ *
+ * @return the next object read
+ *
+ * @throws ArrayIndexOutOfBoundsException if the stream contains no objects
+ *         (or no more objects)
+ *
+ * @see XMLEncoder#writeObject
+ */
+public Object readObject() {
+    return (parsingComplete()) ? this.array[this.index++] : null;
+}

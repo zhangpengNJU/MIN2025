@@ -1,0 +1,27 @@
+/**
+ * Returns an unmodifiable Set view of the property entries contained
+ * in this Provider.
+ *
+ * @see   java.util.Map.Entry
+ * @since 1.2
+ */
+@Override
+public synchronized Set<Map.Entry<Object, Object>> entrySet() {
+    checkInitialized();
+    if (entrySet == null) {
+        if (// Initial call
+        entrySetCallCount++ == 0)
+            entrySet = Collections.unmodifiableMap(this).entrySet();
+        else
+            // Recursive call
+            return super.entrySet();
+    }
+    // This exception will be thrown if the implementation of
+    // Collections.unmodifiableMap.entrySet() is changed such that it
+    // no longer calls entrySet() on the backing Map.  (Provider's
+    // entrySet implementation depends on this "implementation detail",
+    // which is unlikely to change.
+    if (entrySetCallCount != 2)
+        throw new RuntimeException("Internal error.");
+    return entrySet;
+}

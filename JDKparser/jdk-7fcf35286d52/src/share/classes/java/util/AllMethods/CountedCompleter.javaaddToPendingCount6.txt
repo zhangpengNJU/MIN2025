@@ -1,0 +1,8 @@
+/**
+ * Adds (atomically) the given value to the pending count.
+ *
+ * @param delta the value to add
+ */
+public final void addToPendingCount(int delta) {
+    U.getAndAddInt(this, PENDING, delta);
+}

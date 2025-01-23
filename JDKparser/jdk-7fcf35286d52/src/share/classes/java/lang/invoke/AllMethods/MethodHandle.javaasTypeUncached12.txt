@@ -1,0 +1,9 @@
+/**
+ * Override this to change asType behavior.
+ */
+/*non-public*/
+MethodHandle asTypeUncached(MethodType newType) {
+    if (!type.isConvertibleTo(newType))
+        throw new WrongMethodTypeException("cannot convert " + this + " to " + newType);
+    return asTypeCache = MethodHandleImpl.makePairwiseConvert(this, newType, true);
+}

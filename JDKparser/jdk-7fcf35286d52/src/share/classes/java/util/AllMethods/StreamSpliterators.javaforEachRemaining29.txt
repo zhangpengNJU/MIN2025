@@ -1,0 +1,12 @@
+@Override
+public void forEachRemaining(DoubleConsumer consumer) {
+    if (buffer == null && !finished) {
+        Objects.requireNonNull(consumer);
+        init();
+        ph.wrapAndCopyInto((Sink.OfDouble) consumer::accept, spliterator);
+        finished = true;
+    } else {
+        do {
+        } while (tryAdvance(consumer));
+    }
+}

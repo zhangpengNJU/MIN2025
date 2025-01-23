@@ -1,0 +1,10 @@
+private void setTransparentPixel(int trans) {
+    if (trans >= 0 && trans < map_size) {
+        rgb[trans] &= 0x00ffffff;
+        transparent_index = trans;
+        allgrayopaque = false;
+        if (this.transparency == OPAQUE) {
+            setTransparency(BITMASK);
+        }
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Returns a copy of the input array stripped of any leading zero bytes.
+ */
+private static int[] stripLeadingZeroInts(int[] val) {
+    int vlen = val.length;
+    int keep;
+    // Find first nonzero byte
+    for (keep = 0; keep < vlen && val[keep] == 0; keep++) ;
+    return java.util.Arrays.copyOfRange(val, keep, vlen);
+}

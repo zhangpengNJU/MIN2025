@@ -1,0 +1,7 @@
+// Check that each of the chars in [start, end) matches the given mask
+// 
+private void checkChars(int start, int end, long lowMask, long highMask, String what) throws URISyntaxException {
+    int p = scan(start, end, lowMask, highMask);
+    if (p < end)
+        fail("Illegal character in " + what, p);
+}

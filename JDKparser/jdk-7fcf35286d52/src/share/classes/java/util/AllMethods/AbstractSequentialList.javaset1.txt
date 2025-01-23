@@ -1,0 +1,29 @@
+/**
+ * Replaces the element at the specified position in this list with the
+ * specified element (optional operation).
+ *
+ * <p>This implementation first gets a list iterator pointing to the
+ * indexed element (with <tt>listIterator(index)</tt>).  Then, it gets
+ * the current element using <tt>ListIterator.next</tt> and replaces it
+ * with <tt>ListIterator.set</tt>.
+ *
+ * <p>Note that this implementation will throw an
+ * <tt>UnsupportedOperationException</tt> if the list iterator does not
+ * implement the <tt>set</tt> operation.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ * @throws IndexOutOfBoundsException     {@inheritDoc}
+ */
+public E set(int index, E element) {
+    try {
+        ListIterator<E> e = listIterator(index);
+        E oldVal = e.next();
+        e.set(element);
+        return oldVal;
+    } catch (NoSuchElementException exc) {
+        throw new IndexOutOfBoundsException("Index: " + index);
+    }
+}

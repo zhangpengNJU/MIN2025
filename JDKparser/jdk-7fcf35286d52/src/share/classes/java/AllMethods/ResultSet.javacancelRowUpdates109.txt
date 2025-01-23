@@ -1,0 +1,20 @@
+/**
+ * Cancels the updates made to the current row in this
+ * <code>ResultSet</code> object.
+ * This method may be called after calling an
+ * updater method(s) and before calling
+ * the method <code>updateRow</code> to roll back
+ * the updates made to a row.  If no updates have been made or
+ * <code>updateRow</code> has already been called, this method has no
+ * effect.
+ *
+ * @exception SQLException if a database access error
+ *            occurs; this method is called on a closed result set;
+ * the result set concurrency is <code>CONCUR_READ_ONLY</code>
+ * or if this method is called when the cursor is
+ *            on the insert row
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+void cancelRowUpdates() throws SQLException;

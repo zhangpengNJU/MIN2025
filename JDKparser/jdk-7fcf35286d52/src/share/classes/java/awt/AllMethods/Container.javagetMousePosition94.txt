@@ -1,0 +1,37 @@
+/**
+ * Returns the position of the mouse pointer in this <code>Container</code>'s
+ * coordinate space if the <code>Container</code> is under the mouse pointer,
+ * otherwise returns <code>null</code>.
+ * This method is similar to {@link Component#getMousePosition()} with the exception
+ * that it can take the <code>Container</code>'s children into account.
+ * If <code>allowChildren</code> is <code>false</code>, this method will return
+ * a non-null value only if the mouse pointer is above the <code>Container</code>
+ * directly, not above the part obscured by children.
+ * If <code>allowChildren</code> is <code>true</code>, this method returns
+ * a non-null value if the mouse pointer is above <code>Container</code> or any
+ * of its descendants.
+ *
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless() returns true
+ * @param     allowChildren true if children should be taken into account
+ * @see       Component#getMousePosition
+ * @return    mouse coordinates relative to this <code>Component</code>, or null
+ * @since     1.5
+ */
+public Point getMousePosition(boolean allowChildren) throws HeadlessException {
+    if (GraphicsEnvironment.isHeadless()) {
+        throw new HeadlessException();
+    }
+    PointerInfo pi = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<PointerInfo>() {
+
+        public PointerInfo run() {
+            return MouseInfo.getPointerInfo();
+        }
+    });
+    synchronized (getTreeLock()) {
+        Component inTheSameWindow = findUnderMouseInWindow(pi);
+        if (isSameOrAncestorOf(inTheSameWindow, allowChildren)) {
+            return pointRelativeToComponent(pi.getLocation());
+        }
+        return null;
+    }
+}

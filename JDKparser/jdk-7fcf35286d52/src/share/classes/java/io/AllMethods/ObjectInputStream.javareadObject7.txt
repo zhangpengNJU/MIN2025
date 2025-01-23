@@ -1,0 +1,37 @@
+/**
+ * Internal method to read an object from the ObjectInputStream of the expected type.
+ * Called only from {@code readObject()} and {@code readString()}.
+ * Only {@code Object.class} and {@code String.class} are supported.
+ *
+ * @param type the type expected; either Object.class or String.class
+ * @return an object of the type
+ * @throws  IOException Any of the usual Input/Output related exceptions.
+ * @throws  ClassNotFoundException Class of a serialized object cannot be
+ *          found.
+ */
+private final Object readObject(Class<?> type) throws IOException, ClassNotFoundException {
+    if (enableOverride) {
+        return readObjectOverride();
+    }
+    if (!(type == Object.class || type == String.class))
+        throw new AssertionError("internal error");
+    // if nested read, passHandle contains handle of enclosing object
+    int outerHandle = passHandle;
+    try {
+        Object obj = readObject0(type, false);
+        handles.markDependency(outerHandle, passHandle);
+        ClassNotFoundException ex = handles.lookupException(passHandle);
+        if (ex != null) {
+            throw ex;
+        }
+        if (depth == 0) {
+            vlist.doCallbacks();
+        }
+        return obj;
+    } finally {
+        passHandle = outerHandle;
+        if (closed && depth == 0) {
+            clear();
+        }
+    }
+}

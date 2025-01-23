@@ -1,0 +1,22 @@
+/**
+ * Gets the minimum length of this month in days.
+ * <p>
+ * February has a minimum length of 28 days.
+ * April, June, September and November have 30 days.
+ * All other months have 31 days.
+ *
+ * @return the minimum length of this month in days, from 28 to 31
+ */
+public int minLength() {
+    switch(this) {
+        case FEBRUARY:
+            return 28;
+        case APRIL:
+        case JUNE:
+        case SEPTEMBER:
+        case NOVEMBER:
+            return 30;
+        default:
+            return 31;
+    }
+}

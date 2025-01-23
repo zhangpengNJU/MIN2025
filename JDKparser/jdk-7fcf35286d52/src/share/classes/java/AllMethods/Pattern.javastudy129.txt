@@ -1,0 +1,29 @@
+boolean study(TreeInfo info) {
+    // Save original info
+    int minL = info.minLength;
+    int maxL = info.maxLength;
+    boolean maxV = info.maxValid;
+    boolean detm = info.deterministic;
+    info.reset();
+    atom.study(info);
+    int temp = info.minLength * cmin + minL;
+    if (temp < minL) {
+        // arbitrary large number
+        temp = 0xFFFFFFF;
+    }
+    info.minLength = temp;
+    if (maxV & info.maxValid) {
+        temp = info.maxLength * cmax + maxL;
+        info.maxLength = temp;
+        if (temp < maxL) {
+            info.maxValid = false;
+        }
+    } else {
+        info.maxValid = false;
+    }
+    if (info.deterministic && cmin == cmax)
+        info.deterministic = detm;
+    else
+        info.deterministic = false;
+    return next.study(info);
+}

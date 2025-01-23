@@ -1,0 +1,7 @@
+public synchronized void put(String name, Integer code) {
+    assert ((name != null) && (code != null));
+    assert (findName(code) == null);
+    assert (findCode(name) == null);
+    code2name.put(code, name);
+    name2code.put(name, code);
+}

@@ -1,0 +1,54 @@
+/**
+ * Arrives at this phaser and awaits others. Equivalent in effect
+ * to {@code awaitAdvance(arrive())}.  If you need to await with
+ * interruption or timeout, you can arrange this with an analogous
+ * construction using one of the other forms of the {@code
+ * awaitAdvance} method.  If instead you need to deregister upon
+ * arrival, use {@code awaitAdvance(arriveAndDeregister())}.
+ *
+ * <p>It is a usage error for an unregistered party to invoke this
+ * method.  However, this error may result in an {@code
+ * IllegalStateException} only upon some subsequent operation on
+ * this phaser, if ever.
+ *
+ * @return the arrival phase number, or the (negative)
+ * {@linkplain #getPhase() current phase} if terminated
+ * @throws IllegalStateException if not terminated and the number
+ * of unarrived parties would become negative
+ */
+public int arriveAndAwaitAdvance() {
+    // Specialization of doArrive+awaitAdvance eliminating some reads/paths
+    final Phaser root = this.root;
+    for (; ; ) {
+        long s = (root == this) ? state : reconcileState();
+        int phase = (int) (s >>> PHASE_SHIFT);
+        if (phase < 0)
+            return phase;
+        int counts = (int) s;
+        int unarrived = (counts == EMPTY) ? 0 : (counts & UNARRIVED_MASK);
+        if (unarrived <= 0)
+            throw new IllegalStateException(badArrive(s));
+        if (UNSAFE.compareAndSwapLong(this, stateOffset, s, s -= ONE_ARRIVAL)) {
+            if (unarrived > 1)
+                return root.internalAwaitAdvance(phase, null);
+            if (root != this)
+                return parent.arriveAndAwaitAdvance();
+            // base of next state
+            long n = s & PARTIES_MASK;
+            int nextUnarrived = (int) n >>> PARTIES_SHIFT;
+            if (onAdvance(phase, nextUnarrived))
+                n |= TERMINATION_BIT;
+            else if (nextUnarrived == 0)
+                n |= EMPTY;
+            else
+                n |= nextUnarrived;
+            int nextPhase = (phase + 1) & MAX_PHASE;
+            n |= (long) nextPhase << PHASE_SHIFT;
+            if (!UNSAFE.compareAndSwapLong(this, stateOffset, s, n))
+                // terminated
+                return (int) (state >>> PHASE_SHIFT);
+            releaseWaiters(phase);
+            return nextPhase;
+        }
+    }
+}

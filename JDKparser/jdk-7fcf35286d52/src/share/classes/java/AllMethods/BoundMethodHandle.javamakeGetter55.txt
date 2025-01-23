@@ -1,0 +1,12 @@
+// 
+// Getter MH generation.
+// 
+private static MethodHandle makeGetter(Class<?> cbmhClass, String types, int index) {
+    String fieldName = makeFieldName(types, index);
+    Class<?> fieldType = Wrapper.forBasicType(types.charAt(index)).primitiveType();
+    try {
+        return LOOKUP.findGetter(cbmhClass, fieldName, fieldType);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+        throw newInternalError(e);
+    }
+}

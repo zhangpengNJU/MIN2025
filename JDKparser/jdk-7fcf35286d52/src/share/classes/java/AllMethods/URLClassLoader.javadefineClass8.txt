@@ -1,0 +1,32 @@
+/*
+     * Defines a Class using the class bytes obtained from the specified
+     * Resource. The resulting Class must be resolved before it can be
+     * used.
+     */
+private Class<?> defineClass(String name, Resource res) throws IOException {
+    long t0 = System.nanoTime();
+    int i = name.lastIndexOf('.');
+    URL url = res.getCodeSourceURL();
+    if (i != -1) {
+        String pkgname = name.substring(0, i);
+        // Check if package already loaded.
+        Manifest man = res.getManifest();
+        definePackageInternal(pkgname, man, url);
+    }
+    // Now read the class bytes and define the class
+    java.nio.ByteBuffer bb = res.getByteBuffer();
+    if (bb != null) {
+        // Use (direct) ByteBuffer:
+        CodeSigner[] signers = res.getCodeSigners();
+        CodeSource cs = new CodeSource(url, signers);
+        sun.misc.PerfCounter.getReadClassBytesTime().addElapsedTimeFrom(t0);
+        return defineClass(name, bb, cs);
+    } else {
+        byte[] b = res.getBytes();
+        // must read certificates AFTER reading bytes.
+        CodeSigner[] signers = res.getCodeSigners();
+        CodeSource cs = new CodeSource(url, signers);
+        sun.misc.PerfCounter.getReadClassBytesTime().addElapsedTimeFrom(t0);
+        return defineClass(name, b, 0, b.length, cs);
+    }
+}

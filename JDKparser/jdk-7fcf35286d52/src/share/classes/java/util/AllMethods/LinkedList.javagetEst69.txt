@@ -1,0 +1,15 @@
+final int getEst() {
+    // force initialization
+    int s;
+    final LinkedList<E> lst;
+    if ((s = est) < 0) {
+        if ((lst = list) == null)
+            s = est = 0;
+        else {
+            expectedModCount = lst.modCount;
+            current = lst.first;
+            s = est = lst.size;
+        }
+    }
+    return s;
+}

@@ -1,0 +1,23 @@
+/**
+ * Gets the location of this component in the form of a
+ * point specifying the component's top-left corner.
+ * The location will be relative to the parent's coordinate space.
+ * <p>
+ * Due to the asynchronous nature of native event handling, this
+ * method can return outdated values (for instance, after several calls
+ * of <code>setLocation()</code> in rapid succession).  For this
+ * reason, the recommended method of obtaining a component's position is
+ * within <code>java.awt.event.ComponentListener.componentMoved()</code>,
+ * which is called after the operating system has finished moving the
+ * component.
+ * </p>
+ * @return an instance of <code>Point</code> representing
+ *          the top-left corner of the component's bounds in
+ *          the coordinate space of the component's parent
+ * @see #setLocation
+ * @see #getLocationOnScreen
+ * @since JDK1.1
+ */
+public Point getLocation() {
+    return location();
+}

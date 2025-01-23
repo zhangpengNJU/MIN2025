@@ -1,0 +1,57 @@
+/**
+ * Final callback from terminating worker, as well as upon failure
+ * to construct or start a worker.  Removes record of worker from
+ * array, and adjusts counts. If pool is shutting down, tries to
+ * complete termination.
+ *
+ * @param wt the worker thread, or null if construction failed
+ * @param ex the exception causing failure, or null if none
+ */
+final void deregisterWorker(ForkJoinWorkerThread wt, Throwable ex) {
+    WorkQueue w = null;
+    if (wt != null && (w = wt.workQueue) != null) {
+        // remove index from array
+        WorkQueue[] ws;
+        int idx = w.config & SMASK;
+        int rs = lockRunState();
+        if ((ws = workQueues) != null && ws.length > idx && ws[idx] == w)
+            ws[idx] = null;
+        unlockRunState(rs, rs & ~RSLOCK);
+    }
+    // decrement counts
+    long c;
+    do {
+    } while (!U.compareAndSwapLong(this, CTL, c = ctl, ((AC_MASK & (c - AC_UNIT)) | (TC_MASK & (c - TC_UNIT)) | (SP_MASK & c))));
+    if (w != null) {
+        // ensure set
+        w.qlock = -1;
+        w.transferStealCount(this);
+        // cancel remaining tasks
+        w.cancelAll();
+    }
+    for (; ; ) {
+        // possibly replace
+        WorkQueue[] ws;
+        int m, sp;
+        if (tryTerminate(false, false) || w == null || w.array == null || (runState & STOP) != 0 || (ws = workQueues) == null || // already terminating
+        (m = ws.length - 1) < 0)
+            break;
+        if ((sp = (int) (c = ctl)) != 0) {
+            // wake up replacement
+            if (tryRelease(c, ws[sp & m], AC_UNIT))
+                break;
+        } else if (ex != null && (c & ADD_WORKER) != 0L) {
+            // create replacement
+            tryAddWorker(c);
+            break;
+        } else
+            // don't need replacement
+            break;
+    }
+    if (// help clean on way out
+    ex == null)
+        ForkJoinTask.helpExpungeStaleExceptions();
+    else
+        // rethrow
+        ForkJoinTask.rethrow(ex);
+}

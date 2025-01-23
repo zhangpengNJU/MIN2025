@@ -1,0 +1,7 @@
+BoundMethodHandle bindArgumentD(BoundMethodHandle mh, int pos, double value) {
+    assert (mh.speciesData() == oldSpeciesData());
+    BasicType bt = D_TYPE;
+    MethodType type2 = bindArgumentType(mh, pos, bt);
+    LambdaForm form2 = bindArgumentForm(1 + pos);
+    return mh.copyWithExtendD(type2, form2, value);
+}

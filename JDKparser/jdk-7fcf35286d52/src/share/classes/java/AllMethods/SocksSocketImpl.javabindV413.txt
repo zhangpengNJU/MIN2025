@@ -1,0 +1,61 @@
+private void bindV4(InputStream in, OutputStream out, InetAddress baddr, int lport) throws IOException {
+    if (!(baddr instanceof Inet4Address)) {
+        throw new SocketException("SOCKS V4 requires IPv4 only addresses");
+    }
+    super.bind(baddr, lport);
+    byte[] addr1 = baddr.getAddress();
+    /* Test for AnyLocal */
+    InetAddress naddr = baddr;
+    if (naddr.isAnyLocalAddress()) {
+        naddr = AccessController.doPrivileged(new PrivilegedAction<InetAddress>() {
+
+            public InetAddress run() {
+                return cmdsock.getLocalAddress();
+            }
+        });
+        addr1 = naddr.getAddress();
+    }
+    out.write(PROTO_VERS4);
+    out.write(BIND);
+    out.write((super.getLocalPort() >> 8) & 0xff);
+    out.write((super.getLocalPort() >> 0) & 0xff);
+    out.write(addr1);
+    String userName = getUserName();
+    try {
+        out.write(userName.getBytes("ISO-8859-1"));
+    } catch (java.io.UnsupportedEncodingException uee) {
+        assert false;
+    }
+    out.write(0);
+    out.flush();
+    byte[] data = new byte[8];
+    int n = readSocksReply(in, data);
+    if (n != 8)
+        throw new SocketException("Reply from SOCKS server has bad length: " + n);
+    if (data[0] != 0 && data[0] != 4)
+        throw new SocketException("Reply from SOCKS server has bad version");
+    SocketException ex = null;
+    switch(data[1]) {
+        case 90:
+            // Success!
+            external_address = new InetSocketAddress(baddr, lport);
+            break;
+        case 91:
+            ex = new SocketException("SOCKS request rejected");
+            break;
+        case 92:
+            ex = new SocketException("SOCKS server couldn't reach destination");
+            break;
+        case 93:
+            ex = new SocketException("SOCKS authentication failed");
+            break;
+        default:
+            ex = new SocketException("Reply from SOCKS server contains bad status");
+            break;
+    }
+    if (ex != null) {
+        in.close();
+        out.close();
+        throw ex;
+    }
+}

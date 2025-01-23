@@ -1,0 +1,11 @@
+/**
+ * Unconditionally sets the value of both the reference and stamp.
+ *
+ * @param newReference the new value for the reference
+ * @param newStamp the new value for the stamp
+ */
+public void set(V newReference, int newStamp) {
+    Pair<V> current = pair;
+    if (newReference != current.reference || newStamp != current.stamp)
+        this.pair = Pair.of(newReference, newStamp);
+}

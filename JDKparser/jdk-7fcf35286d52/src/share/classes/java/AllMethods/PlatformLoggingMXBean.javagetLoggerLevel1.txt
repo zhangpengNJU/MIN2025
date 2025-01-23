@@ -1,0 +1,27 @@
+/**
+ * Gets the name of the log {@linkplain java.util.logging.Logger#getLevel
+ * level} associated with the specified logger.
+ * If the specified logger does not exist, {@code null}
+ * is returned.
+ * This method first finds the logger of the given name and
+ * then returns the name of the log level by calling:
+ * <blockquote>
+ *   {@link java.util.logging.Logger#getLevel
+ *    Logger.getLevel()}.{@link java.util.logging.Level#getName getName()};
+ * </blockquote>
+ *
+ * <p>
+ * If the {@code Level} of the specified logger is {@code null},
+ * which means that this logger's effective level is inherited
+ * from its parent, an empty string will be returned.
+ *
+ * @param loggerName The name of the {@code Logger} to be retrieved.
+ *
+ * @return The name of the log level of the specified logger; or
+ *         an empty string if the log level of the specified logger
+ *         is {@code null}.  If the specified logger does not
+ *         exist, {@code null} is returned.
+ *
+ * @see java.util.logging.Logger#getLevel
+ */
+String getLoggerLevel(String loggerName);

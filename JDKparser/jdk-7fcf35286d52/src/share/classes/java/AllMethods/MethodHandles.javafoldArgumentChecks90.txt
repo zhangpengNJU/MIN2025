@@ -1,0 +1,14 @@
+private static Class<?> foldArgumentChecks(int foldPos, MethodType targetType, MethodType combinerType) {
+    int foldArgs = combinerType.parameterCount();
+    Class<?> rtype = combinerType.returnType();
+    int foldVals = rtype == void.class ? 0 : 1;
+    int afterInsertPos = foldPos + foldVals;
+    boolean ok = (targetType.parameterCount() >= afterInsertPos + foldArgs);
+    if (ok && !(combinerType.parameterList().equals(targetType.parameterList().subList(afterInsertPos, afterInsertPos + foldArgs))))
+        ok = false;
+    if (ok && foldVals != 0 && combinerType.returnType() != targetType.parameterType(0))
+        ok = false;
+    if (!ok)
+        throw misMatchedTypes("target and combiner types", targetType, combinerType);
+    return rtype;
+}

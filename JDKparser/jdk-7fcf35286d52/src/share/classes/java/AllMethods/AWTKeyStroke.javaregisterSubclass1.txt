@@ -1,0 +1,60 @@
+/**
+ * Registers a new class which the factory methods in
+ * <code>AWTKeyStroke</code> will use when generating new
+ * instances of <code>AWTKeyStroke</code>s. After invoking this
+ * method, the factory methods will return instances of the specified
+ * Class. The specified Class must be either <code>AWTKeyStroke</code>
+ * or derived from <code>AWTKeyStroke</code>, and it must have a
+ * no-arg constructor. The constructor can be of any accessibility,
+ * including <code>private</code>. This operation
+ * flushes the current <code>AWTKeyStroke</code> cache.
+ *
+ * @param subclass the new Class of which the factory methods should create
+ *        instances
+ * @throws IllegalArgumentException if subclass is <code>null</code>,
+ *         or if subclass does not have a no-arg constructor
+ * @throws ClassCastException if subclass is not
+ *         <code>AWTKeyStroke</code>, or a class derived from
+ *         <code>AWTKeyStroke</code>
+ */
+protected static void registerSubclass(Class<?> subclass) {
+    if (subclass == null) {
+        throw new IllegalArgumentException("subclass cannot be null");
+    }
+    synchronized (AWTKeyStroke.class) {
+        Class<AWTKeyStroke> keyStrokeClass = (Class) AppContext.getAppContext().get(AWTKeyStroke.class);
+        if (keyStrokeClass != null && keyStrokeClass.equals(subclass)) {
+            // Already registered
+            return;
+        }
+    }
+    if (!AWTKeyStroke.class.isAssignableFrom(subclass)) {
+        throw new ClassCastException("subclass is not derived from AWTKeyStroke");
+    }
+    Constructor ctor = getCtor(subclass);
+    String couldNotInstantiate = "subclass could not be instantiated";
+    if (ctor == null) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    }
+    try {
+        AWTKeyStroke stroke = (AWTKeyStroke) ctor.newInstance((Object[]) null);
+        if (stroke == null) {
+            throw new IllegalArgumentException(couldNotInstantiate);
+        }
+    } catch (NoSuchMethodError e) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    } catch (ExceptionInInitializerError e) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    } catch (InstantiationException e) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    } catch (IllegalAccessException e) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    } catch (InvocationTargetException e) {
+        throw new IllegalArgumentException(couldNotInstantiate);
+    }
+    synchronized (AWTKeyStroke.class) {
+        AppContext.getAppContext().put(AWTKeyStroke.class, subclass);
+        AppContext.getAppContext().remove(APP_CONTEXT_CACHE_KEY);
+        AppContext.getAppContext().remove(APP_CONTEXT_KEYSTROKE_KEY);
+    }
+}

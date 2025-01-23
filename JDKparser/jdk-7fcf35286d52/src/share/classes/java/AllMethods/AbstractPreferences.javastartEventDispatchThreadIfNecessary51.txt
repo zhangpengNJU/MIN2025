@@ -1,0 +1,13 @@
+/**
+ * This method starts the event dispatch thread the first time it
+ * is called.  The event dispatch thread will be started only
+ * if someone registers a listener.
+ */
+private static synchronized void startEventDispatchThreadIfNecessary() {
+    if (eventDispatchThread == null) {
+        // XXX Log "Starting event dispatch thread"
+        eventDispatchThread = new EventDispatchThread();
+        eventDispatchThread.setDaemon(true);
+        eventDispatchThread.start();
+    }
+}

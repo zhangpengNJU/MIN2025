@@ -1,0 +1,16 @@
+/**
+ * Creates the socket implementation.
+ *
+ * @throws IOException if creation fails
+ * @since 1.4
+ */
+void createImpl() throws SocketException {
+    if (impl == null)
+        setImpl();
+    try {
+        impl.create(true);
+        created = true;
+    } catch (IOException e) {
+        throw new SocketException(e.getMessage());
+    }
+}

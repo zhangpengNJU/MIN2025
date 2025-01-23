@@ -1,0 +1,22 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y) {
+    if (!(x * 0.0 + y * 0.0 == 0.0)) {
+        /* Either x or y was infinite or NaN.
+             * A NaN always produces a negative response to any test
+             * and Infinity values cannot be "inside" any path so
+             * they should return false as well.
+             */
+        return false;
+    }
+    // We count the "Y" crossings to determine if the point is
+    // inside the curve bounded by its closing line.
+    double x1 = getX1();
+    double y1 = getY1();
+    double x2 = getX2();
+    double y2 = getY2();
+    int crossings = (Curve.pointCrossingsForLine(x, y, x1, y1, x2, y2) + Curve.pointCrossingsForCubic(x, y, x1, y1, getCtrlX1(), getCtrlY1(), getCtrlX2(), getCtrlY2(), x2, y2, 0));
+    return ((crossings & 1) == 1);
+}

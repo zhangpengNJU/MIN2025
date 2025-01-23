@@ -1,0 +1,14 @@
+/**
+ * The common parts of next() across different types of iterators
+ */
+protected Entry<K, V> nextEntry() {
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    if (nextKey == null && !hasNext())
+        throw new NoSuchElementException();
+    lastReturned = entry;
+    entry = entry.next;
+    currentKey = nextKey;
+    nextKey = null;
+    return lastReturned;
+}

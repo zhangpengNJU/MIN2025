@@ -1,0 +1,16 @@
+// --------------------------JDBC 2.0-----------------------------
+/**
+ * Retrieves the value of the designated JDBC <code>NUMERIC</code> parameter as a
+ * <code>java.math.BigDecimal</code> object with as many digits to the
+ * right of the decimal point as the value contains.
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ * and so on
+ * @return the parameter value in full precision.  If the value is
+ * SQL <code>NULL</code>, the result is <code>null</code>.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @see #setBigDecimal
+ * @since 1.2
+ */
+BigDecimal getBigDecimal(int parameterIndex) throws SQLException;

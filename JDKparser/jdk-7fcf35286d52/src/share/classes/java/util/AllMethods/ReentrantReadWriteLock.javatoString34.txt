@@ -1,0 +1,11 @@
+/**
+ * Returns a string identifying this lock, as well as its lock state.
+ * The state, in brackets, includes the String {@code "Read locks ="}
+ * followed by the number of held read locks.
+ *
+ * @return a string identifying this lock, as well as its lock state
+ */
+public String toString() {
+    int r = sync.getReadLockCount();
+    return super.toString() + "[Read locks = " + r + "]";
+}

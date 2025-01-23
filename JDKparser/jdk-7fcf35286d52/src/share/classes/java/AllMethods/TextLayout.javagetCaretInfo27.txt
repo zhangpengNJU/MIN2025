@@ -1,0 +1,11 @@
+/**
+ * Returns information about the caret corresponding to <code>hit</code>.
+ * This method is a convenience overload of <code>getCaretInfo</code> and
+ * uses the natural bounds of this <code>TextLayout</code>.
+ * @param hit a hit on a character in this <code>TextLayout</code>
+ * @return the information about a caret corresponding to a hit.  The
+ *     returned caret info is in baseline-relative coordinates.
+ */
+public float[] getCaretInfo(TextHitInfo hit) {
+    return getCaretInfo(hit, getNaturalBounds());
+}

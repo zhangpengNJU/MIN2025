@@ -1,0 +1,35 @@
+/**
+ * Provides the implementation for
+ * {@link RMIClassLoader#loadProxyClass(String,String[],ClassLoader)}.
+ *
+ * Loads a dynamic proxy class (see {@link java.lang.reflect.Proxy}
+ * that implements a set of interfaces with the given names
+ * from a codebase URL path, optionally using the supplied loader.
+ *
+ * <p>An implementation of this method must either return a proxy
+ * class that implements the named interfaces or throw an exception.
+ *
+ * @param   codebase the list of URLs (space-separated) to load
+ * classes from, or <code>null</code>
+ *
+ * @param   interfaces the names of the interfaces for the proxy class
+ * to implement
+ *
+ * @return  a dynamic proxy class that implements the named interfaces
+ *
+ * @param   defaultLoader additional contextual class loader
+ * to use, or <code>null</code>
+ *
+ * @throws  MalformedURLException if <code>codebase</code> is
+ * non-<code>null</code> and contains an invalid URL, or
+ * if <code>codebase</code> is <code>null</code> and a provider-specific
+ * URL used to load classes is invalid
+ *
+ * @throws  ClassNotFoundException if a definition for one of
+ * the named interfaces could not be found at the specified location,
+ * or if creation of the dynamic proxy class failed (such as if
+ * {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader,Class[])}
+ * would throw an <code>IllegalArgumentException</code> for the given
+ * interface list)
+ */
+public abstract Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException;

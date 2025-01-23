@@ -1,0 +1,23 @@
+/**
+ * Writes default serializable fields to stream.  Writes
+ * an optional serializable icon <code>Image</code>, which is
+ * available as of 1.4.
+ *
+ * @param s the <code>ObjectOutputStream</code> to write
+ * @serialData an optional icon <code>Image</code>
+ * @see java.awt.Image
+ * @see #getIconImage
+ * @see #setIconImage(Image)
+ * @see #readObject(ObjectInputStream)
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    if (icons != null && icons.size() > 0) {
+        Image icon1 = icons.get(0);
+        if (icon1 instanceof Serializable) {
+            s.writeObject(icon1);
+            return;
+        }
+    }
+    s.writeObject(null);
+}

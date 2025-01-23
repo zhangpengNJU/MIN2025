@@ -1,0 +1,4 @@
+@Override
+public LambdaForm apply(MethodHandle target) {
+    return DelegatingMethodHandle.makeReinvokerForm(target, MethodTypeForm.LF_DELEGATE, DelegatingMethodHandle.class, DelegatingMethodHandle.NF_getTarget);
+}

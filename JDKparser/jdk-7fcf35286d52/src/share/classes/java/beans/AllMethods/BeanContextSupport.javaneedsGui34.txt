@@ -1,0 +1,34 @@
+/**
+ * <p>
+ * This method is typically called from the environment in order to determine
+ * if the implementor "needs" a GUI.
+ * </p>
+ * <p>
+ * The algorithm used herein tests the BeanContextPeer, and its current children
+ * to determine if they are either Containers, Components, or if they implement
+ * Visibility and return needsGui() == true.
+ * </p>
+ * @return <tt>true</tt> if the implementor needs a GUI
+ */
+public synchronized boolean needsGui() {
+    BeanContext bc = getBeanContextPeer();
+    if (bc != this) {
+        if (bc instanceof Visibility)
+            return ((Visibility) bc).needsGui();
+        if (bc instanceof Container || bc instanceof Component)
+            return true;
+    }
+    synchronized (children) {
+        for (Iterator i = children.keySet().iterator(); i.hasNext(); ) {
+            Object c = i.next();
+            try {
+                return ((Visibility) c).needsGui();
+            } catch (ClassCastException cce) {
+            // do nothing ...
+            }
+            if (c instanceof Container || c instanceof Component)
+                return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,8 @@
+// Returns a KnownLevel with the given non-localized name.
+static synchronized KnownLevel findByName(String name) {
+    List<KnownLevel> list = nameToLevels.get(name);
+    if (list != null) {
+        return list.get(0);
+    }
+    return null;
+}

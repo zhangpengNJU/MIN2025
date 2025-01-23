@@ -1,0 +1,28 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to cause the Java Virtual Machine to
+ * halt with the specified status code.
+ * <p>
+ * This method is invoked for the current security manager by the
+ * <code>exit</code> method of class <code>Runtime</code>. A status
+ * of <code>0</code> indicates success; other values indicate various
+ * errors.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>RuntimePermission("exitVM."+status)</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkExit</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      status   the exit status.
+ * @exception SecurityException if the calling thread does not have
+ *              permission to halt the Java Virtual Machine with
+ *              the specified status.
+ * @see        java.lang.Runtime#exit(int) exit
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkExit(int status) {
+    checkPermission(new RuntimePermission("exitVM." + status));
+}

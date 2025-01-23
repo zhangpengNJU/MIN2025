@@ -1,0 +1,16 @@
+private void reduceCacheLoad() {
+    removeStaleEntries();
+    if (cacheLoad < cacheLoadLimit)
+        // win
+        return;
+    Entry<?>[] oldCache = getCache();
+    if (oldCache.length > HASH_MASK)
+        // lose
+        return;
+    sizeCache(oldCache.length * 2);
+    for (Entry<?> e : oldCache) {
+        if (e != null && e.isLive()) {
+            addToCache(e);
+        }
+    }
+}

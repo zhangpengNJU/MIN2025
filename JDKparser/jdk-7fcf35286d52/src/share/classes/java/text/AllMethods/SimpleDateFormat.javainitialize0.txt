@@ -1,0 +1,16 @@
+/* Initialize compiledPattern and numberFormat fields */
+private void initialize(Locale loc) {
+    // Verify and compile the given pattern.
+    compiledPattern = compile(pattern);
+    /* try the cache first */
+    numberFormat = cachedNumberFormatData.get(loc);
+    if (numberFormat == null) {
+        /* cache miss */
+        numberFormat = NumberFormat.getIntegerInstance(loc);
+        numberFormat.setGroupingUsed(false);
+        /* update cache */
+        cachedNumberFormatData.putIfAbsent(loc, numberFormat);
+    }
+    numberFormat = (NumberFormat) numberFormat.clone();
+    initializeDefaultCentury();
+}

@@ -1,0 +1,55 @@
+/**
+ * Returns the starting position of the last occurrence of the specified
+ * target list within the specified source list, or -1 if there is no such
+ * occurrence.  More formally, returns the highest index <tt>i</tt>
+ * such that {@code source.subList(i, i+target.size()).equals(target)},
+ * or -1 if there is no such index.  (Returns -1 if
+ * {@code target.size() > source.size()})
+ *
+ * <p>This implementation uses the "brute force" technique of iterating
+ * over the source list, looking for a match with the target at each
+ * location in turn.
+ *
+ * @param source the list in which to search for the last occurrence
+ *        of <tt>target</tt>.
+ * @param target the list to search for as a subList of <tt>source</tt>.
+ * @return the starting position of the last occurrence of the specified
+ *         target list within the specified source list, or -1 if there
+ *         is no such occurrence.
+ * @since  1.4
+ */
+public static int lastIndexOfSubList(List<?> source, List<?> target) {
+    int sourceSize = source.size();
+    int targetSize = target.size();
+    int maxCandidate = sourceSize - targetSize;
+    if (sourceSize < INDEXOFSUBLIST_THRESHOLD || source instanceof RandomAccess) {
+        // Index access version
+        nextCand: for (int candidate = maxCandidate; candidate >= 0; candidate--) {
+            for (int i = 0, j = candidate; i < targetSize; i++, j++) if (!eq(target.get(i), source.get(j)))
+                // Element mismatch, try next cand
+                continue nextCand;
+            // All elements of candidate matched target
+            return candidate;
+        }
+    } else {
+        // Iterator version of above algorithm
+        if (maxCandidate < 0)
+            return -1;
+        ListIterator<?> si = source.listIterator(maxCandidate);
+        nextCand: for (int candidate = maxCandidate; candidate >= 0; candidate--) {
+            ListIterator<?> ti = target.listIterator();
+            for (int i = 0; i < targetSize; i++) {
+                if (!eq(ti.next(), si.next())) {
+                    if (candidate != 0) {
+                        // Back up source iterator to next candidate
+                        for (int j = 0; j <= i + 1; j++) si.previous();
+                    }
+                    continue nextCand;
+                }
+            }
+            return candidate;
+        }
+    }
+    // No candidate matched the target
+    return -1;
+}

@@ -1,0 +1,40 @@
+private byte[] generateLambdaFormInterpreterEntryPointBytes() {
+    classFilePrologue();
+    // Suppress this method in backtraces displayed to the user.
+    mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Hidden;", true);
+    // Don't inline the interpreter entry.
+    mv.visitAnnotation("Ljava/lang/invoke/DontInline;", true);
+    // create parameter array
+    emitIconstInsn(invokerType.parameterCount());
+    mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
+    // fill parameter array
+    for (int i = 0; i < invokerType.parameterCount(); i++) {
+        Class<?> ptype = invokerType.parameterType(i);
+        mv.visitInsn(Opcodes.DUP);
+        emitIconstInsn(i);
+        emitLoadInsn(basicType(ptype), i);
+        // box if primitive type
+        if (ptype.isPrimitive()) {
+            emitBoxing(Wrapper.forPrimitiveType(ptype));
+        }
+        mv.visitInsn(Opcodes.AASTORE);
+    }
+    // invoke
+    emitAloadInsn(0);
+    mv.visitFieldInsn(Opcodes.GETFIELD, MH, "form", "Ljava/lang/invoke/LambdaForm;");
+    // swap form and array; avoid local variable
+    mv.visitInsn(Opcodes.SWAP);
+    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, LF, "interpretWithArguments", "([Ljava/lang/Object;)Ljava/lang/Object;", false);
+    // maybe unbox
+    Class<?> rtype = invokerType.returnType();
+    if (rtype.isPrimitive() && rtype != void.class) {
+        emitUnboxing(Wrapper.forPrimitiveType(rtype));
+    }
+    // return statement
+    emitReturnInsn(basicType(rtype));
+    classFileEpilogue();
+    bogusMethod(invokerType);
+    final byte[] classFile = cw.toByteArray();
+    maybeDump(className, classFile);
+    return classFile;
+}

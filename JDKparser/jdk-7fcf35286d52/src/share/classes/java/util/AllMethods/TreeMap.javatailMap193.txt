@@ -1,0 +1,5 @@
+public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+    if (!inRange(fromKey, inclusive))
+        throw new IllegalArgumentException("fromKey out of range");
+    return new DescendingSubMap<>(m, fromStart, lo, loInclusive, false, fromKey, inclusive);
+}

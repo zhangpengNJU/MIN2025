@@ -1,0 +1,6 @@
+void setClientSize(int w, int h) {
+    synchronized (getTreeLock()) {
+        setBoundsOp(ComponentPeer.SET_CLIENT_SIZE);
+        setBounds(x, y, w, h);
+    }
+}

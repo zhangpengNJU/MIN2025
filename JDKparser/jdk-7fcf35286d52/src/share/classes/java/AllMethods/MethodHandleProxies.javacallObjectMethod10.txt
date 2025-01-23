@@ -1,0 +1,12 @@
+private static Object callObjectMethod(Object self, Method m, Object[] args) {
+    assert (isObjectMethod(m)) : m;
+    switch(m.getName()) {
+        case "toString":
+            return self.getClass().getName() + "@" + Integer.toHexString(self.hashCode());
+        case "hashCode":
+            return System.identityHashCode(self);
+        case "equals":
+            return (self == args[0]);
+    }
+    return null;
+}

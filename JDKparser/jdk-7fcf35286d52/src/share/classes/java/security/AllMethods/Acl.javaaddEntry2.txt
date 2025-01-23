@@ -1,0 +1,22 @@
+/**
+ * Adds an ACL entry to this ACL. An entry associates a principal
+ * (e.g., an individual or a group) with a set of
+ * permissions. Each principal can have at most one positive ACL
+ * entry (specifying permissions to be granted to the principal)
+ * and one negative ACL entry (specifying permissions to be
+ * denied). If there is already an ACL entry of the same type
+ * (negative or positive) already in the ACL, false is returned.
+ *
+ * @param caller the principal invoking this method. It must be an
+ * owner of this ACL.
+ *
+ * @param entry the ACL entry to be added to this ACL.
+ *
+ * @return true on success, false if an entry of the same type
+ * (positive or negative) for the same principal is already
+ * present in this ACL.
+ *
+ * @exception NotOwnerException if the caller principal
+ *  is not an owner of this ACL.
+ */
+public boolean addEntry(Principal caller, AclEntry entry) throws NotOwnerException;

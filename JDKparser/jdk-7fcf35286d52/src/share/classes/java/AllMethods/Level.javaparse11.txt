@@ -1,0 +1,62 @@
+/**
+ * Parse a level name string into a Level.
+ * <p>
+ * The argument string may consist of either a level name
+ * or an integer value.
+ * <p>
+ * For example:
+ * <ul>
+ * <li>     "SEVERE"
+ * <li>     "1000"
+ * </ul>
+ *
+ * @param  name   string to be parsed
+ * @throws NullPointerException if the name is null
+ * @throws IllegalArgumentException if the value is not valid.
+ * Valid values are integers between <CODE>Integer.MIN_VALUE</CODE>
+ * and <CODE>Integer.MAX_VALUE</CODE>, and all known level names.
+ * Known names are the levels defined by this class (e.g., <CODE>FINE</CODE>,
+ * <CODE>FINER</CODE>, <CODE>FINEST</CODE>), or created by this class with
+ * appropriate package access, or new levels defined or created
+ * by subclasses.
+ *
+ * @return The parsed value. Passing an integer that corresponds to a known name
+ * (e.g., 700) will return the associated name (e.g., <CODE>CONFIG</CODE>).
+ * Passing an integer that does not (e.g., 1) will return a new level name
+ * initialized to that value.
+ */
+public static synchronized Level parse(String name) throws IllegalArgumentException {
+    // Check that name is not null.
+    name.length();
+    KnownLevel level;
+    // Look for a known Level with the given non-localized name.
+    level = KnownLevel.findByName(name);
+    if (level != null) {
+        return level.levelObject;
+    }
+    // Now, check if the given name is an integer.  If so,
+    // first look for a Level with the given value and then
+    // if necessary create one.
+    try {
+        int x = Integer.parseInt(name);
+        level = KnownLevel.findByValue(x);
+        if (level == null) {
+            // add new Level
+            Level levelObject = new Level(name, x);
+            level = KnownLevel.findByValue(x);
+        }
+        return level.levelObject;
+    } catch (NumberFormatException ex) {
+    // Not an integer.
+    // Drop through.
+    }
+    // Finally, look for a known level with the given localized name,
+    // in the current default locale.
+    // This is relatively expensive, but not excessively so.
+    level = KnownLevel.findByLocalizedLevelName(name);
+    if (level != null) {
+        return level.levelObject;
+    }
+    // OK, we've tried everything and failed
+    throw new IllegalArgumentException("Bad level \"" + name + "\"");
+}

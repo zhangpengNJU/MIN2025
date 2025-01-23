@@ -1,0 +1,27 @@
+/**
+ * Returns true if the named preference node exists in the same tree
+ * as this node.  Relative path names (which do not begin with the slash
+ * character <tt>('/')</tt>) are interpreted relative to this preference
+ * node.
+ *
+ * <p>If this node (or an ancestor) has already been removed with the
+ * {@link #removeNode()} method, it <i>is</i> legal to invoke this method,
+ * but only with the path name <tt>""</tt>; the invocation will return
+ * <tt>false</tt>.  Thus, the idiom <tt>p.nodeExists("")</tt> may be
+ * used to test whether <tt>p</tt> has been removed.
+ *
+ * @param pathName the path name of the node whose existence
+ *        is to be checked.
+ * @return true if the specified node exists.
+ * @throws BackingStoreException if this operation cannot be completed
+ *         due to a failure in the backing store, or inability to
+ *         communicate with it.
+ * @throws IllegalArgumentException if the path name is invalid (i.e.,
+ *         it contains multiple consecutive slash characters, or ends
+ *         with a slash character and is more than one character long).
+ * @throws NullPointerException if path name is <tt>null</tt>.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method and
+ *         <tt>pathName</tt> is not the empty string (<tt>""</tt>).
+ */
+public abstract boolean nodeExists(String pathName) throws BackingStoreException;

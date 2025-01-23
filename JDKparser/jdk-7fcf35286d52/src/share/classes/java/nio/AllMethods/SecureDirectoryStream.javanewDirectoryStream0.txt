@@ -1,0 +1,36 @@
+/**
+ * Opens the directory identified by the given path, returning a {@code
+ * SecureDirectoryStream} to iterate over the entries in the directory.
+ *
+ * <p> This method works in exactly the manner specified by the {@link
+ * Files#newDirectoryStream(Path) newDirectoryStream} method for the case that
+ * the {@code path} parameter is an {@link Path#isAbsolute absolute} path.
+ * When the parameter is a relative path then the directory to open is
+ * relative to this open directory. The {@link
+ * LinkOption#NOFOLLOW_LINKS NOFOLLOW_LINKS} option may be used to
+ * ensure that this method fails if the file is a symbolic link.
+ *
+ * <p> The new directory stream, once created, is not dependent upon the
+ * directory stream used to create it. Closing this directory stream has no
+ * effect upon newly created directory stream.
+ *
+ * @param   path
+ *          the path to the directory to open
+ * @param   options
+ *          options indicating how symbolic links are handled
+ *
+ * @return  a new and open {@code SecureDirectoryStream} object
+ *
+ * @throws  ClosedDirectoryStreamException
+ *          if the directory stream is closed
+ * @throws  NotDirectoryException
+ *          if the file could not otherwise be opened because it is not
+ *          a directory <i>(optional specific exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkRead(String) checkRead}
+ *          method is invoked to check read access to the directory.
+ */
+SecureDirectoryStream<T> newDirectoryStream(T path, LinkOption... options) throws IOException;

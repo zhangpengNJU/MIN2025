@@ -1,0 +1,24 @@
+/**
+ * Emits a return statement from a LF invoker. If required, the result type is cast to the correct return type.
+ */
+private void emitReturn(Name onStack) {
+    // return statement
+    Class<?> rclass = invokerType.returnType();
+    BasicType rtype = lambdaForm.returnType();
+    // must agree
+    assert (rtype == basicType(rclass));
+    if (rtype == V_TYPE) {
+        // void
+        mv.visitInsn(Opcodes.RETURN);
+    // it doesn't matter what rclass is; the JVM will discard any value
+    } else {
+        LambdaForm.Name rn = lambdaForm.names[lambdaForm.result];
+        // put return value on the stack if it is not already there
+        if (rn != onStack) {
+            emitLoadInsn(rtype, lambdaForm.result);
+        }
+        emitImplicitConversion(rtype, rclass, rn);
+        // generate actual return statement
+        emitReturnInsn(rtype);
+    }
+}

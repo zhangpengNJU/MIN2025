@@ -1,0 +1,16 @@
+/**
+ * Reads the menu component from an object input stream.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ * @exception HeadlessException if
+ *   <code>GraphicsEnvironment.isHeadless</code> returns
+ *   <code>true</code>
+ * @serial
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    acc = AccessController.getContext();
+    s.defaultReadObject();
+    appContext = AppContext.getAppContext();
+}

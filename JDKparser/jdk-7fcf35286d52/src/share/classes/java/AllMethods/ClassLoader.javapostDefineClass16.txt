@@ -1,0 +1,7 @@
+private void postDefineClass(Class<?> c, ProtectionDomain pd) {
+    if (pd.getCodeSource() != null) {
+        Certificate[] certs = pd.getCodeSource().getCertificates();
+        if (certs != null)
+            setSigners(c, certs);
+    }
+}

@@ -1,0 +1,11 @@
+static BigDecimal scaledTenPow(int n, int sign, int scale) {
+    if (n < LONG_TEN_POWERS_TABLE.length)
+        return valueOf(sign * LONG_TEN_POWERS_TABLE[n], scale);
+    else {
+        BigInteger unscaledVal = bigTenToThe(n);
+        if (sign == -1) {
+            unscaledVal = unscaledVal.negate();
+        }
+        return new BigDecimal(unscaledVal, INFLATED, scale, n + 1);
+    }
+}

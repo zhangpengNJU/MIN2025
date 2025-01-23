@@ -1,0 +1,24 @@
+/**
+ * Returns {@code true} if this map maps one or more keys to the
+ * specified value. Note: This method may require a full traversal
+ * of the map, and is much slower than method {@code containsKey}.
+ *
+ * @param value value whose presence in this map is to be tested
+ * @return {@code true} if this map maps one or more keys to the
+ *         specified value
+ * @throws NullPointerException if the specified value is null
+ */
+public boolean containsValue(Object value) {
+    if (value == null)
+        throw new NullPointerException();
+    Node<K, V>[] t;
+    if ((t = table) != null) {
+        Traverser<K, V> it = new Traverser<K, V>(t, t.length, 0, t.length);
+        for (Node<K, V> p; (p = it.advance()) != null; ) {
+            V v;
+            if ((v = p.val) == value || (v != null && value.equals(v)))
+                return true;
+        }
+    }
+    return false;
+}

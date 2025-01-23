@@ -1,0 +1,37 @@
+private void setCurrentEventAndMostRecentTimeImpl(AWTEvent e) {
+    pushPopLock.lock();
+    try {
+        if (Thread.currentThread() != dispatchThread) {
+            return;
+        }
+        currentEvent = new WeakReference<>(e);
+        // This series of 'instanceof' checks should be replaced with a
+        // polymorphic type (for example, an interface which declares a
+        // getWhen() method). However, this would require us to make such
+        // a type public, or to place it in sun.awt. Both of these approaches
+        // have been frowned upon. So for now, we hack.
+        // 
+        // In tiger, we will probably give timestamps to all events, so this
+        // will no longer be an issue.
+        long mostRecentEventTime2 = Long.MIN_VALUE;
+        if (e instanceof InputEvent) {
+            InputEvent ie = (InputEvent) e;
+            mostRecentEventTime2 = ie.getWhen();
+            if (e instanceof KeyEvent) {
+                mostRecentKeyEventTime = ie.getWhen();
+            }
+        } else if (e instanceof InputMethodEvent) {
+            InputMethodEvent ime = (InputMethodEvent) e;
+            mostRecentEventTime2 = ime.getWhen();
+        } else if (e instanceof ActionEvent) {
+            ActionEvent ae = (ActionEvent) e;
+            mostRecentEventTime2 = ae.getWhen();
+        } else if (e instanceof InvocationEvent) {
+            InvocationEvent ie = (InvocationEvent) e;
+            mostRecentEventTime2 = ie.getWhen();
+        }
+        mostRecentEventTime = Math.max(mostRecentEventTime, mostRecentEventTime2);
+    } finally {
+        pushPopLock.unlock();
+    }
+}

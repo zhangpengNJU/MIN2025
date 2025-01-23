@@ -1,0 +1,9 @@
+/**
+ * Returns the predecessor of p, or the last node if p.prev has been
+ * linked to self, which will only be true if traversing with a
+ * stale pointer that is now off the list.
+ */
+final Node<E> pred(Node<E> p) {
+    Node<E> q = p.prev;
+    return (p == q) ? last() : q;
+}

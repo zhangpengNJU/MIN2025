@@ -1,0 +1,8 @@
+static byte getBaselineFromGraphic(GraphicAttribute graphic) {
+    byte alignment = (byte) graphic.getAlignment();
+    if (alignment == GraphicAttribute.BOTTOM_ALIGNMENT || alignment == GraphicAttribute.TOP_ALIGNMENT) {
+        return (byte) GraphicAttribute.ROMAN_BASELINE;
+    } else {
+        return alignment;
+    }
+}

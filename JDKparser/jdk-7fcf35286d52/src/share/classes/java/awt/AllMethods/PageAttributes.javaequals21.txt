@@ -1,0 +1,21 @@
+/**
+ * Determines whether two PageAttributes are equal to each other.
+ * <p>
+ * Two PageAttributes are equal if and only if each of their attributes are
+ * equal. Attributes of enumeration type are equal if and only if the
+ * fields refer to the same unique enumeration object. This means that
+ * an aliased media is equal to its underlying unique media. Printer
+ * resolutions are equal if and only if the feed resolution, cross feed
+ * resolution, and units are equal.
+ *
+ * @param   obj the object whose equality will be checked.
+ * @return  whether obj is equal to this PageAttribute according to the
+ *          above criteria.
+ */
+public boolean equals(Object obj) {
+    if (!(obj instanceof PageAttributes)) {
+        return false;
+    }
+    PageAttributes rhs = (PageAttributes) obj;
+    return (color == rhs.color && media == rhs.media && orientationRequested == rhs.orientationRequested && origin == rhs.origin && printQuality == rhs.printQuality && printerResolution[0] == rhs.printerResolution[0] && printerResolution[1] == rhs.printerResolution[1] && printerResolution[2] == rhs.printerResolution[2]);
+}

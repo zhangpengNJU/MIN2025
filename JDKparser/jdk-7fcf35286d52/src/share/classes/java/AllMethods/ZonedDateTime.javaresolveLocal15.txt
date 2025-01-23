@@ -1,0 +1,9 @@
+/**
+ * Resolves the new local date-time using this zone ID, retaining the offset if possible.
+ *
+ * @param newDateTime  the new local date-time, not null
+ * @return the zoned date-time, not null
+ */
+private ZonedDateTime resolveLocal(LocalDateTime newDateTime) {
+    return ofLocal(newDateTime, zone, offset);
+}

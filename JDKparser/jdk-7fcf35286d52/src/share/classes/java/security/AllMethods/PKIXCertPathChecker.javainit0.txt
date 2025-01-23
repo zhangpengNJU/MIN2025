@@ -1,0 +1,19 @@
+/**
+ * Initializes the internal state of this {@code PKIXCertPathChecker}.
+ * <p>
+ * The {@code forward} flag specifies the order that
+ * certificates will be passed to the {@link #check check} method
+ * (forward or reverse). A {@code PKIXCertPathChecker} <b>must</b>
+ * support reverse checking and <b>may</b> support forward checking.
+ *
+ * @param forward the order that certificates are presented to
+ * the {@code check} method. If {@code true}, certificates
+ * are presented from target to most-trusted CA (forward); if
+ * {@code false}, from most-trusted CA to target (reverse).
+ * @throws CertPathValidatorException if this
+ * {@code PKIXCertPathChecker} is unable to check certificates in
+ * the specified order; it should never be thrown if the forward flag
+ * is false since reverse checking must be supported
+ */
+@Override
+public abstract void init(boolean forward) throws CertPathValidatorException;

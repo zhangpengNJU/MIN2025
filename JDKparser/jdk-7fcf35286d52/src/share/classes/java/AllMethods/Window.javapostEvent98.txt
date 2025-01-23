@@ -1,0 +1,12 @@
+/**
+ * @deprecated As of JDK version 1.1
+ * replaced by {@code dispatchEvent(AWTEvent)}.
+ */
+@Deprecated
+public boolean postEvent(Event e) {
+    if (handleEvent(e)) {
+        e.consume();
+        return true;
+    }
+    return false;
+}

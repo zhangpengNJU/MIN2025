@@ -1,0 +1,14 @@
+/**
+ * Returns whether the drawing buffer was recently restored from a lost
+ * state and reinitialized to the default background color (white).
+ * Since the buffers in a buffer strategy are usually type
+ * <code>VolatileImage</code>, they may become lost.  If a surface has
+ * been recently restored from a lost state since the last call to
+ * <code>getDrawGraphics</code>, it may require repainting.
+ * For a discussion on lost buffers, see <code>VolatileImage</code>.
+ *
+ * @return Whether or not the drawing buffer was restored since the last
+ *         call to <code>getDrawGraphics</code>.
+ * @see java.awt.image.VolatileImage
+ */
+public abstract boolean contentsRestored();

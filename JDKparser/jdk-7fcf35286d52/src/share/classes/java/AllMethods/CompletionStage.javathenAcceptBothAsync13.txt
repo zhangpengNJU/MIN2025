@@ -1,0 +1,13 @@
+/**
+ * Returns a new CompletionStage that, when this and the other
+ * given stage complete normally, is executed using this stage's
+ * default asynchronous execution facility, with the two results
+ * as arguments to the supplied action.
+ *
+ * @param other the other CompletionStage
+ * @param action the action to perform before completing the
+ * returned CompletionStage
+ * @param <U> the type of the other CompletionStage's result
+ * @return the new CompletionStage
+ */
+public <U> CompletionStage<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action);

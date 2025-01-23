@@ -1,0 +1,15 @@
+/**
+ * Creates a shallow copy of a <code>ParameterBlock</code>.  The source and
+ * parameter Vectors are copied by reference -- additions or
+ * changes will be visible to both versions.
+ *
+ * @return an Object clone of the <code>ParameterBlock</code>.
+ */
+public Object shallowClone() {
+    try {
+        return super.clone();
+    } catch (Exception e) {
+        // We can't be here since we implement Cloneable.
+        return null;
+    }
+}

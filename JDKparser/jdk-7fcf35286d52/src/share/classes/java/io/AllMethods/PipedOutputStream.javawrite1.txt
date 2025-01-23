@@ -1,0 +1,16 @@
+/**
+ * Writes the specified <code>byte</code> to the piped output stream.
+ * <p>
+ * Implements the <code>write</code> method of <code>OutputStream</code>.
+ *
+ * @param      b   the <code>byte</code> to be written.
+ * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
+ *          {@link #connect(java.io.PipedInputStream) unconnected},
+ *          closed, or if an I/O error occurs.
+ */
+public void write(int b) throws IOException {
+    if (sink == null) {
+        throw new IOException("Pipe not connected");
+    }
+    sink.receive(b);
+}

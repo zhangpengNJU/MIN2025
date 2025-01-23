@@ -1,0 +1,14 @@
+/**
+ * Advances next.
+ */
+void advance() {
+    final ReentrantLock lock = LinkedBlockingDeque.this.lock;
+    lock.lock();
+    try {
+        // assert next != null;
+        next = succ(next);
+        nextItem = (next == null) ? null : next.item;
+    } finally {
+        lock.unlock();
+    }
+}

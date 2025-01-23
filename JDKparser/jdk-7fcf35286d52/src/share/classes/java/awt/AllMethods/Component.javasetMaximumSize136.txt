@@ -1,0 +1,26 @@
+/**
+ * Sets the maximum size of this component to a constant
+ * value.  Subsequent calls to <code>getMaximumSize</code> will always
+ * return this value.  Setting the maximum size to <code>null</code>
+ * restores the default behavior.
+ *
+ * @param maximumSize a <code>Dimension</code> containing the
+ *          desired maximum allowable size
+ * @see #getMaximumSize
+ * @see #isMaximumSizeSet
+ * @since 1.5
+ */
+public void setMaximumSize(Dimension maximumSize) {
+    // If the maximum size was set, use it as the old value, otherwise
+    // use null to indicate we didn't previously have a set maximum
+    // size.
+    Dimension old;
+    if (maxSizeSet) {
+        old = this.maxSize;
+    } else {
+        old = null;
+    }
+    this.maxSize = maximumSize;
+    maxSizeSet = (maximumSize != null);
+    firePropertyChange("maximumSize", old, maximumSize);
+}

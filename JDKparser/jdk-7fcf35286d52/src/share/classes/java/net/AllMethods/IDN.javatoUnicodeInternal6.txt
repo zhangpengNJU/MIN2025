@@ -1,0 +1,49 @@
+// 
+// toUnicode operation; should only apply to a single label
+// 
+private static String toUnicodeInternal(String label, int flag) {
+    boolean[] caseFlags = null;
+    StringBuffer dest;
+    // step 1
+    // find out if all the codepoints in input are ASCII
+    boolean isASCII = isAllASCII(label);
+    if (!isASCII) {
+        // step 2
+        // perform the nameprep operation; flag ALLOW_UNASSIGNED is used here
+        try {
+            UCharacterIterator iter = UCharacterIterator.getInstance(label);
+            dest = namePrep.prepare(iter, flag);
+        } catch (Exception e) {
+            // toUnicode never fails; if any step fails, return the input string
+            return label;
+        }
+    } else {
+        dest = new StringBuffer(label);
+    }
+    // step 3
+    // verify ACE Prefix
+    if (startsWithACEPrefix(dest)) {
+        // step 4
+        // Remove the ACE Prefix
+        String temp = dest.substring(ACE_PREFIX_LENGTH, dest.length());
+        try {
+            // step 5
+            // Decode using punycode
+            StringBuffer decodeOut = Punycode.decode(new StringBuffer(temp), null);
+            // step 6
+            // Apply toASCII
+            String toASCIIOut = toASCII(decodeOut.toString(), flag);
+            // step 7
+            // verify
+            if (toASCIIOut.equalsIgnoreCase(dest.toString())) {
+                // step 8
+                // return output of step 5
+                return decodeOut.toString();
+            }
+        } catch (Exception ignored) {
+        // no-op
+        }
+    }
+    // just return the input
+    return label;
+}

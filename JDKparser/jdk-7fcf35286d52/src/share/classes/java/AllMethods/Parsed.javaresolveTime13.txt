@@ -1,0 +1,24 @@
+private void resolveTime(long hod, long moh, long som, long nos) {
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        long totalNanos = Math.multiplyExact(hod, 3600_000_000_000L);
+        totalNanos = Math.addExact(totalNanos, Math.multiplyExact(moh, 60_000_000_000L));
+        totalNanos = Math.addExact(totalNanos, Math.multiplyExact(som, 1_000_000_000L));
+        totalNanos = Math.addExact(totalNanos, nos);
+        // safe int cast
+        int excessDays = (int) Math.floorDiv(totalNanos, 86400_000_000_000L);
+        long nod = Math.floorMod(totalNanos, 86400_000_000_000L);
+        updateCheckConflict(LocalTime.ofNanoOfDay(nod), Period.ofDays(excessDays));
+    } else {
+        // STRICT or SMART
+        int mohVal = MINUTE_OF_HOUR.checkValidIntValue(moh);
+        int nosVal = NANO_OF_SECOND.checkValidIntValue(nos);
+        // handle 24:00 end of day
+        if (resolverStyle == ResolverStyle.SMART && hod == 24 && mohVal == 0 && som == 0 && nosVal == 0) {
+            updateCheckConflict(LocalTime.MIDNIGHT, Period.ofDays(1));
+        } else {
+            int hodVal = HOUR_OF_DAY.checkValidIntValue(hod);
+            int somVal = SECOND_OF_MINUTE.checkValidIntValue(som);
+            updateCheckConflict(LocalTime.of(hodVal, mohVal, somVal, nosVal), Period.ZERO);
+        }
+    }
+}

@@ -1,0 +1,44 @@
+/**
+ * Compares this string to the specified {@code CharSequence}.  The
+ * result is {@code true} if and only if this {@code String} represents the
+ * same sequence of char values as the specified sequence. Note that if the
+ * {@code CharSequence} is a {@code StringBuffer} then the method
+ * synchronizes on it.
+ *
+ * @param  cs
+ *         The sequence to compare this {@code String} against
+ *
+ * @return  {@code true} if this {@code String} represents the same
+ *          sequence of char values as the specified sequence, {@code
+ *          false} otherwise
+ *
+ * @since  1.5
+ */
+public boolean contentEquals(CharSequence cs) {
+    // Argument is a StringBuffer, StringBuilder
+    if (cs instanceof AbstractStringBuilder) {
+        if (cs instanceof StringBuffer) {
+            synchronized (cs) {
+                return nonSyncContentEquals((AbstractStringBuilder) cs);
+            }
+        } else {
+            return nonSyncContentEquals((AbstractStringBuilder) cs);
+        }
+    }
+    // Argument is a String
+    if (cs instanceof String) {
+        return equals(cs);
+    }
+    // Argument is a generic CharSequence
+    char[] v1 = value;
+    int n = v1.length;
+    if (n != cs.length()) {
+        return false;
+    }
+    for (int i = 0; i < n; i++) {
+        if (v1[i] != cs.charAt(i)) {
+            return false;
+        }
+    }
+    return true;
+}

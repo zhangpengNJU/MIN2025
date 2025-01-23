@@ -1,0 +1,42 @@
+/**
+ * Starts loading all images tracked by this media tracker. This
+ * method waits until all the images being tracked have finished
+ * loading, or until the length of time specified in milliseconds
+ * by the <code>ms</code> argument has passed.
+ * <p>
+ * If there is an error while loading or scaling an image, then
+ * that image is considered to have finished loading. Use the
+ * <code>isErrorAny</code> or <code>isErrorID</code> methods to
+ * check for errors.
+ * @param       ms       the number of milliseconds to wait
+ *                       for the loading to complete
+ * @return      <code>true</code> if all images were successfully
+ *                       loaded; <code>false</code> otherwise
+ * @see         java.awt.MediaTracker#waitForID(int)
+ * @see         java.awt.MediaTracker#waitForAll(long)
+ * @see         java.awt.MediaTracker#isErrorAny
+ * @see         java.awt.MediaTracker#isErrorID
+ * @exception   InterruptedException  if any thread has
+ *                                     interrupted this thread.
+ */
+public synchronized boolean waitForAll(long ms) throws InterruptedException {
+    long end = System.currentTimeMillis() + ms;
+    boolean first = true;
+    while (true) {
+        int status = statusAll(first, first);
+        if ((status & LOADING) == 0) {
+            return (status == COMPLETE);
+        }
+        first = false;
+        long timeout;
+        if (ms == 0) {
+            timeout = 0;
+        } else {
+            timeout = end - System.currentTimeMillis();
+            if (timeout <= 0) {
+                return false;
+            }
+        }
+        wait(timeout);
+    }
+}

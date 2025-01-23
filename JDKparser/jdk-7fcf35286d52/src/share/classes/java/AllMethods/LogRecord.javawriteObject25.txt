@@ -1,0 +1,30 @@
+/**
+ * @serialData Default fields, followed by a two byte version number
+ * (major byte, followed by minor byte), followed by information on
+ * the log record parameter array.  If there is no parameter array,
+ * then -1 is written.  If there is a parameter array (possible of zero
+ * length) then the array length is written as an integer, followed
+ * by String values for each parameter.  If a parameter is null, then
+ * a null String is written.  Otherwise the output of Object.toString()
+ * is written.
+ */
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // We have to call defaultWriteObject first.
+    out.defaultWriteObject();
+    // Write our version number.
+    out.writeByte(1);
+    out.writeByte(0);
+    if (parameters == null) {
+        out.writeInt(-1);
+        return;
+    }
+    out.writeInt(parameters.length);
+    // Write string values for the parameters.
+    for (int i = 0; i < parameters.length; i++) {
+        if (parameters[i] == null) {
+            out.writeObject(null);
+        } else {
+            out.writeObject(parameters[i].toString());
+        }
+    }
+}

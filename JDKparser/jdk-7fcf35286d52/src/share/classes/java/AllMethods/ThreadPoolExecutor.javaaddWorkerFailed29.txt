@@ -1,0 +1,19 @@
+/**
+ * Rolls back the worker thread creation.
+ * - removes worker from workers, if present
+ * - decrements worker count
+ * - rechecks for termination, in case the existence of this
+ *   worker was holding up termination
+ */
+private void addWorkerFailed(Worker w) {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        if (w != null)
+            workers.remove(w);
+        decrementWorkerCount();
+        tryTerminate();
+    } finally {
+        mainLock.unlock();
+    }
+}

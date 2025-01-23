@@ -1,0 +1,18 @@
+/**
+ * Performs an action for each element of this stream, in the encounter
+ * order of the stream if the stream has a defined encounter order.
+ *
+ * <p>This is a <a href="package-summary.html#StreamOps">terminal
+ * operation</a>.
+ *
+ * <p>This operation processes the elements one at a time, in encounter
+ * order if one exists.  Performing the action for one element
+ * <a href="../concurrent/package-summary.html#MemoryVisibility"><i>happens-before</i></a>
+ * performing the action for subsequent elements, but for any given element,
+ * the action may be performed in whatever thread the library chooses.
+ *
+ * @param action a <a href="package-summary.html#NonInterference">
+ *               non-interfering</a> action to perform on the elements
+ * @see #forEach(Consumer)
+ */
+void forEachOrdered(Consumer<? super T> action);

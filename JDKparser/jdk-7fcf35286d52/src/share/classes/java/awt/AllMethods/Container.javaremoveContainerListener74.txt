@@ -1,0 +1,18 @@
+/**
+ * Removes the specified container listener so it no longer receives
+ * container events from this container.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the container listener
+ *
+ * @see #addContainerListener
+ * @see #getContainerListeners
+ */
+public synchronized void removeContainerListener(ContainerListener l) {
+    if (l == null) {
+        return;
+    }
+    containerListener = AWTEventMulticaster.remove(containerListener, l);
+}

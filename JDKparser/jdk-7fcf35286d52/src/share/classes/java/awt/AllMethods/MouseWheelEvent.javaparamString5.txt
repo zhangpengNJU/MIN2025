@@ -1,0 +1,17 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String scrollTypeStr = null;
+    if (getScrollType() == WHEEL_UNIT_SCROLL) {
+        scrollTypeStr = "WHEEL_UNIT_SCROLL";
+    } else if (getScrollType() == WHEEL_BLOCK_SCROLL) {
+        scrollTypeStr = "WHEEL_BLOCK_SCROLL";
+    } else {
+        scrollTypeStr = "unknown scroll type";
+    }
+    return super.paramString() + ",scrollType=" + scrollTypeStr + ",scrollAmount=" + getScrollAmount() + ",wheelRotation=" + getWheelRotation() + ",preciseWheelRotation=" + getPreciseWheelRotation();
+}

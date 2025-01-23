@@ -1,0 +1,12 @@
+@Override
+void needRoom(boolean needMove, int newCoords) {
+    if ((numTypes == 0) && needMove) {
+        throw new IllegalPathStateException("missing initial moveto " + "in path definition");
+    }
+    if (numTypes >= pointTypes.length) {
+        pointTypes = expandPointTypes(pointTypes, 1);
+    }
+    if (numCoords > (floatCoords.length - newCoords)) {
+        floatCoords = expandCoords(floatCoords, newCoords);
+    }
+}

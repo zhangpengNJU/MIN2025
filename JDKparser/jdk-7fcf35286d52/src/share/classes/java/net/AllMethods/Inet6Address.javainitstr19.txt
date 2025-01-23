@@ -1,0 +1,11 @@
+private void initstr(String hostName, byte[] addr, String ifname) throws UnknownHostException {
+    try {
+        NetworkInterface nif = NetworkInterface.getByName(ifname);
+        if (nif == null) {
+            throw new UnknownHostException("no such interface " + ifname);
+        }
+        initif(hostName, addr, nif);
+    } catch (SocketException e) {
+        throw new UnknownHostException("SocketException thrown" + ifname);
+    }
+}

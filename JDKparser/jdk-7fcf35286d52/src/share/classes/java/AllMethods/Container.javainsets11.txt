@@ -1,0 +1,13 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getInsets()</code>.
+ */
+@Deprecated
+public Insets insets() {
+    ComponentPeer peer = this.peer;
+    if (peer instanceof ContainerPeer) {
+        ContainerPeer cpeer = (ContainerPeer) peer;
+        return (Insets) cpeer.getInsets().clone();
+    }
+    return new Insets(0, 0, 0, 0);
+}

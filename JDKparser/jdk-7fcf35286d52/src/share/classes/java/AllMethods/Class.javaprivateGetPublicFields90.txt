@@ -1,0 +1,42 @@
+// Returns an array of "root" fields. These Field objects must NOT
+// be propagated to the outside world, but must instead be copied
+// via ReflectionFactory.copyField.
+private Field[] privateGetPublicFields(Set<Class<?>> traversedInterfaces) {
+    checkInitted();
+    Field[] res;
+    ReflectionData<T> rd = reflectionData();
+    if (rd != null) {
+        res = rd.publicFields;
+        if (res != null)
+            return res;
+    }
+    // No cached value available; compute value recursively.
+    // Traverse in correct order for getField().
+    List<Field> fields = new ArrayList<>();
+    if (traversedInterfaces == null) {
+        traversedInterfaces = new HashSet<>();
+    }
+    // Local fields
+    Field[] tmp = privateGetDeclaredFields(true);
+    addAll(fields, tmp);
+    // Direct superinterfaces, recursively
+    for (Class<?> c : getInterfaces()) {
+        if (!traversedInterfaces.contains(c)) {
+            traversedInterfaces.add(c);
+            addAll(fields, c.privateGetPublicFields(traversedInterfaces));
+        }
+    }
+    // Direct superclass, recursively
+    if (!isInterface()) {
+        Class<?> c = getSuperclass();
+        if (c != null) {
+            addAll(fields, c.privateGetPublicFields(traversedInterfaces));
+        }
+    }
+    res = new Field[fields.size()];
+    fields.toArray(res);
+    if (rd != null) {
+        rd.publicFields = res;
+    }
+    return res;
+}

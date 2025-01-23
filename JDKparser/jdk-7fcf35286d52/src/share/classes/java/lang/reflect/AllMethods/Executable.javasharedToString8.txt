@@ -1,0 +1,17 @@
+String sharedToString(int modifierMask, boolean isDefault, Class<?>[] parameterTypes, Class<?>[] exceptionTypes) {
+    try {
+        StringBuilder sb = new StringBuilder();
+        printModifiersIfNonzero(sb, modifierMask, isDefault);
+        specificToStringHeader(sb);
+        sb.append('(');
+        separateWithCommas(parameterTypes, sb);
+        sb.append(')');
+        if (exceptionTypes.length > 0) {
+            sb.append(" throws ");
+            separateWithCommas(exceptionTypes, sb);
+        }
+        return sb.toString();
+    } catch (Exception e) {
+        return "<" + e + ">";
+    }
+}

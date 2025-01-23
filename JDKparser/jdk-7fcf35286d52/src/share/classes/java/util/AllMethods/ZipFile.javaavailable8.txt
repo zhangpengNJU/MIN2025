@@ -1,0 +1,6 @@
+public int available() throws IOException {
+    if (closeRequested)
+        return 0;
+    long avail = zfin.size() - inf.getBytesWritten();
+    return (avail > (long) Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) avail);
+}

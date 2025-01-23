@@ -1,0 +1,24 @@
+/**
+ * Returns the approximate accumulated elapsed time (in milliseconds)
+ * spent in compilation.
+ * If multiple threads are used for compilation, this value is
+ * summation of the approximate time that each thread spent in compilation.
+ *
+ * <p>This method is optionally supported by the platform.
+ * A Java virtual machine implementation may not support the compilation
+ * time monitoring. The {@link #isCompilationTimeMonitoringSupported}
+ * method can be used to determine if the Java virtual machine
+ * supports this operation.
+ *
+ * <p> This value does not indicate the level of performance of
+ * the Java virtual machine and is not intended for performance comparisons
+ * of different virtual machine implementations.
+ * The implementations may have different definitions and different
+ * measurements of the compilation time.
+ *
+ * @return Compilation time in milliseconds
+ * @throws java.lang.UnsupportedOperationException if the Java
+ * virtual machine does not support
+ * this operation.
+ */
+public long getTotalCompilationTime();

@@ -1,0 +1,13 @@
+/**
+ * If this MN is not REF_newInvokeSpecial, return a clone with that ref. kind.
+ *  In that case it must already be REF_invokeSpecial.
+ */
+public MemberName asConstructor() {
+    switch(getReferenceKind()) {
+        case REF_invokeSpecial:
+            return clone().changeReferenceKind(REF_newInvokeSpecial, REF_invokeSpecial);
+        case REF_newInvokeSpecial:
+            return this;
+    }
+    throw new IllegalArgumentException(this.toString());
+}

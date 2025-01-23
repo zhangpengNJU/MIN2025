@@ -1,0 +1,6 @@
+@Override
+@SuppressWarnings("unchecked")
+protected T_NODE doLeaf() {
+    T_BUILDER builder = builderFactory.apply(helper.exactOutputSizeIfKnown(spliterator));
+    return (T_NODE) helper.wrapAndCopyInto(builder, spliterator).build();
+}

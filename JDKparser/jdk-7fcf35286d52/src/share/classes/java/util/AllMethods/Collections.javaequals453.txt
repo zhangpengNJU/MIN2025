@@ -1,0 +1,7 @@
+public boolean equals(Object o) {
+    if (o == this)
+        return true;
+    if (!(o instanceof Map.Entry))
+        return false;
+    return e.equals(new AbstractMap.SimpleImmutableEntry<>((Map.Entry<?, ?>) o));
+}

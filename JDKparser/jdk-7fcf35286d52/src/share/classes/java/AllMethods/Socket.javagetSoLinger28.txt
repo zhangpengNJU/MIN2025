@@ -1,0 +1,23 @@
+/**
+ * Returns setting for {@link SocketOptions#SO_LINGER SO_LINGER}.
+ * -1 returns implies that the
+ * option is disabled.
+ *
+ * The setting only affects socket close.
+ *
+ * @return the setting for {@link SocketOptions#SO_LINGER SO_LINGER}.
+ * @exception SocketException if there is an error
+ * in the underlying protocol, such as a TCP error.
+ * @since   JDK1.1
+ * @see #setSoLinger(boolean, int)
+ */
+public int getSoLinger() throws SocketException {
+    if (isClosed())
+        throw new SocketException("Socket is closed");
+    Object o = getImpl().getOption(SocketOptions.SO_LINGER);
+    if (o instanceof Integer) {
+        return ((Integer) o).intValue();
+    } else {
+        return -1;
+    }
+}

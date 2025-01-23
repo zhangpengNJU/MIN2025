@@ -1,0 +1,39 @@
+/**
+ * Return global logger object with the name Logger.GLOBAL_LOGGER_NAME.
+ *
+ * @return global logger object
+ * @since 1.7
+ */
+public static final Logger getGlobal() {
+    // In order to break a cyclic dependence between the LogManager
+    // and Logger static initializers causing deadlocks, the global
+    // logger is created with a special constructor that does not
+    // initialize its log manager.
+    // 
+    // If an application calls Logger.getGlobal() before any logger
+    // has been initialized, it is therefore possible that the
+    // LogManager class has not been initialized yet, and therefore
+    // Logger.global.manager will be null.
+    // 
+    // In order to finish the initialization of the global logger, we
+    // will therefore call LogManager.getLogManager() here.
+    // 
+    // To prevent race conditions we also need to call
+    // LogManager.getLogManager() unconditionally here.
+    // Indeed we cannot rely on the observed value of global.manager,
+    // because global.manager will become not null somewhere during
+    // the initialization of LogManager.
+    // If two threads are calling getGlobal() concurrently, one thread
+    // will see global.manager null and call LogManager.getLogManager(),
+    // but the other thread could come in at a time when global.manager
+    // is already set although ensureLogManagerInitialized is not finished
+    // yet...
+    // Calling LogManager.getLogManager() unconditionally will fix that.
+    LogManager.getLogManager();
+    // Now the global LogManager should be initialized,
+    // and the global logger should have been added to
+    // it, unless we were called within the constructor of a LogManager
+    // subclass installed as LogManager, in which case global.manager
+    // would still be null, and global will be lazily initialized later on.
+    return global;
+}

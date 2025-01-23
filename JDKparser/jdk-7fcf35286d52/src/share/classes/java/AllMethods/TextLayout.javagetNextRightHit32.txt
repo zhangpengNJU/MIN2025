@@ -1,0 +1,31 @@
+/**
+ * Returns the hit for the next caret to the right (bottom); if no
+ * such hit, returns <code>null</code>.  The hit is to the right of
+ * the strong caret at the specified offset, as determined by the
+ * specified policy.
+ * The returned hit is the stronger of the two possible
+ * hits, as determined by the specified policy.
+ * @param offset an insertion offset in this <code>TextLayout</code>.
+ * Cannot be less than 0 or greater than this <code>TextLayout</code>
+ * object's character count.
+ * @param policy the policy used to select the strong caret
+ * @return a hit whose caret appears at the next position to the
+ * right (bottom) of the caret of the provided hit, or <code>null</code>.
+ */
+public TextHitInfo getNextRightHit(int offset, CaretPolicy policy) {
+    if (offset < 0 || offset > characterCount) {
+        throw new IllegalArgumentException("Offset out of bounds in TextLayout.getNextRightHit()");
+    }
+    if (policy == null) {
+        throw new IllegalArgumentException("Null CaretPolicy passed to TextLayout.getNextRightHit()");
+    }
+    TextHitInfo hit1 = TextHitInfo.afterOffset(offset);
+    TextHitInfo hit2 = hit1.getOtherHit();
+    TextHitInfo nextHit = getNextRightHit(policy.getStrongCaret(hit1, hit2, this));
+    if (nextHit != null) {
+        TextHitInfo otherHit = getVisualOtherHit(nextHit);
+        return policy.getStrongCaret(otherHit, nextHit, this);
+    } else {
+        return null;
+    }
+}

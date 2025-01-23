@@ -1,0 +1,10 @@
+/**
+ * The sneaky part of sneaky throw, relying on generics
+ * limitations to evade compiler complaints about rethrowing
+ * unchecked exceptions
+ */
+@SuppressWarnings("unchecked")
+static <T extends Throwable> void uncheckedThrow(Throwable t) throws T {
+    // rely on vacuous cast
+    throw (T) t;
+}

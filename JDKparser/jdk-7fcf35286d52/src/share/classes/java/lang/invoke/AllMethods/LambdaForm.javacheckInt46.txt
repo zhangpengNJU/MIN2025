@@ -1,0 +1,9 @@
+private static boolean checkInt(Class<?> type, Object x) {
+    assert (x instanceof Integer);
+    if (type == int.class)
+        return true;
+    Wrapper w = Wrapper.forBasicType(type);
+    assert (w.isSubwordOrInt());
+    Object x1 = Wrapper.INT.wrap(w.wrap(x));
+    return x.equals(x1);
+}

@@ -1,0 +1,31 @@
+private void printDateTime(Object arg, Locale l) throws IOException {
+    if (arg == null) {
+        print("null");
+        return;
+    }
+    Calendar cal = null;
+    // Instead of Calendar.setLenient(true), perhaps we should
+    // wrap the IllegalArgumentException that might be thrown?
+    if (arg instanceof Long) {
+        // Note that the following method uses an instance of the
+        // default time zone (TimeZone.getDefaultRef().
+        cal = Calendar.getInstance(l == null ? Locale.US : l);
+        cal.setTimeInMillis((Long) arg);
+    } else if (arg instanceof Date) {
+        // Note that the following method uses an instance of the
+        // default time zone (TimeZone.getDefaultRef().
+        cal = Calendar.getInstance(l == null ? Locale.US : l);
+        cal.setTime((Date) arg);
+    } else if (arg instanceof Calendar) {
+        cal = (Calendar) ((Calendar) arg).clone();
+        cal.setLenient(true);
+    } else if (arg instanceof TemporalAccessor) {
+        print((TemporalAccessor) arg, c, l);
+        return;
+    } else {
+        failConversion(c, arg);
+    }
+    // Use the provided locale so that invocations of
+    // localizedMagnitude() use optimizations for null.
+    print(cal, c, l);
+}

@@ -1,0 +1,6 @@
+public V setValue(V value) {
+    checkIndexForEntryUse();
+    V oldValue = unmaskNull(vals[index]);
+    vals[index] = maskNull(value);
+    return oldValue;
+}

@@ -1,0 +1,44 @@
+/**
+ * Converts the specified BigInteger to a string and appends to
+ * {@code sb}.  This implements the recursive Schoenhage algorithm
+ * for base conversions.
+ * <p/>
+ * See Knuth, Donald,  _The Art of Computer Programming_, Vol. 2,
+ * Answers to Exercises (4.4) Question 14.
+ *
+ * @param u      The number to convert to a string.
+ * @param sb     The StringBuilder that will be appended to in place.
+ * @param radix  The base to convert to.
+ * @param digits The minimum number of digits to pad to.
+ */
+private static void toString(BigInteger u, StringBuilder sb, int radix, int digits) {
+    /* If we're smaller than a certain threshold, use the smallToString
+           method, padding with leading zeroes when necessary. */
+    if (u.mag.length <= SCHOENHAGE_BASE_CONVERSION_THRESHOLD) {
+        String s = u.smallToString(radix);
+        // Pad with internal zeros if necessary.
+        // Don't pad if we're at the beginning of the string.
+        if ((s.length() < digits) && (sb.length() > 0)) {
+            for (int i = s.length(); i < digits; i++) {
+                // May be a faster way to
+                // do this?
+                sb.append('0');
+            }
+        }
+        sb.append(s);
+        return;
+    }
+    int b, n;
+    b = u.bitLength();
+    // Calculate a value for n in the equation radix^(2^n) = u
+    // and subtract 1 from that value.  This is used to find the
+    // cache index that contains the best value to divide u.
+    n = (int) Math.round(Math.log(b * LOG_TWO / logCache[radix]) / LOG_TWO - 1.0);
+    BigInteger v = getRadixConversionCache(radix, n);
+    BigInteger[] results;
+    results = u.divideAndRemainder(v);
+    int expectedDigits = 1 << n;
+    // Now recursively build the two halves of each number.
+    toString(results[0], sb, radix, digits - expectedDigits);
+    toString(results[1], sb, radix, expectedDigits);
+}

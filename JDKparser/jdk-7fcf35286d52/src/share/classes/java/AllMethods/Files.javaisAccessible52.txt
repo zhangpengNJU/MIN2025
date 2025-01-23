@@ -1,0 +1,11 @@
+/**
+ * Used by isReadbale, isWritable, isExecutable to test access to a file.
+ */
+private static boolean isAccessible(Path path, AccessMode... modes) {
+    try {
+        provider(path).checkAccess(path, modes);
+        return true;
+    } catch (IOException x) {
+        return false;
+    }
+}

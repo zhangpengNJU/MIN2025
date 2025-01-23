@@ -1,0 +1,11 @@
+/**
+ * Returns <tt>true</tt> if this map contains a mapping for the specified
+ * key.
+ *
+ * @param key the key whose presence in this map is to be tested
+ * @return <tt>true</tt> if this map contains a mapping for the specified
+ *            key
+ */
+public boolean containsKey(Object key) {
+    return isValidKey(key) && vals[((Enum<?>) key).ordinal()] != null;
+}

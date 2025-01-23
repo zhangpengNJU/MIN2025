@@ -1,0 +1,8 @@
+/**
+ * Use the given ClassLoader rather than using the system class
+ */
+@SuppressWarnings("rawtypes")
+protected Class resolveClass(ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
+    String cname = classDesc.getName();
+    return ClassFinder.resolveClass(cname, this.loader);
+}

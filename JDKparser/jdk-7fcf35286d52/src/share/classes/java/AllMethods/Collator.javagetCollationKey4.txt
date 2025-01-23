@@ -1,0 +1,12 @@
+/**
+ * Transforms the String into a series of bits that can be compared bitwise
+ * to other CollationKeys. CollationKeys provide better performance than
+ * Collator.compare when Strings are involved in multiple comparisons.
+ * See the Collator class description for an example using CollationKeys.
+ * @param source the string to be transformed into a collation key.
+ * @return the CollationKey for the given String based on this Collator's collation
+ * rules. If the source String is null, a null CollationKey is returned.
+ * @see java.text.CollationKey
+ * @see java.text.Collator#compare
+ */
+public abstract CollationKey getCollationKey(String source);

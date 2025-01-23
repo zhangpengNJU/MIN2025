@@ -1,0 +1,35 @@
+/**
+ * Gets the location of a specified offset in the current composed text,
+ * or of the selection in committed text.
+ * This information is, for example, used to position the candidate window
+ * near the composed text, or a composition window near the location
+ * where committed text will be inserted.
+ *
+ * <p>
+ * If the component has composed text (because the most recent
+ * InputMethodEvent sent to it contained composed text), then the offset is
+ * relative to the composed text - offset 0 indicates the first character
+ * in the composed text. The location returned should be for this character.
+ *
+ * <p>
+ * If the component doesn't have composed text, the offset should be ignored,
+ * and the location returned should reflect the beginning (in line
+ * direction) of the highlight in the last line containing selected text.
+ * For example, for horizontal left-to-right text (such as English), the
+ * location to the left of the left-most character on the last line
+ * containing selected text is returned. For vertical top-to-bottom text,
+ * with lines proceeding from right to left, the location to the top of the
+ * left-most line containing selected text is returned.
+ *
+ * <p>
+ * The location is represented as a 0-thickness caret, that is, it has 0
+ * width if the text is drawn horizontally, and 0 height if the text is
+ * drawn vertically. Other text orientations need to be mapped to
+ * horizontal or vertical orientation. The rectangle uses absolute screen
+ * coordinates.
+ *
+ * @param offset the offset within the composed text, if there is composed
+ * text; null otherwise
+ * @return a rectangle representing the screen location of the offset
+ */
+Rectangle getTextLocation(TextHitInfo offset);

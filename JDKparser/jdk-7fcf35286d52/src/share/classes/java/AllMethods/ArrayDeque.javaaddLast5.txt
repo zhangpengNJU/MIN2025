@@ -1,0 +1,15 @@
+/**
+ * Inserts the specified element at the end of this deque.
+ *
+ * <p>This method is equivalent to {@link #add}.
+ *
+ * @param e the element to add
+ * @throws NullPointerException if the specified element is null
+ */
+public void addLast(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    elements[tail] = e;
+    if ((tail = (tail + 1) & (elements.length - 1)) == head)
+        doubleCapacity();
+}

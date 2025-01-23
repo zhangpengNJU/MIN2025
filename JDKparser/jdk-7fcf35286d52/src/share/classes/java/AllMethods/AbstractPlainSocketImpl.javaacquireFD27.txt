@@ -1,0 +1,12 @@
+/*
+     * "Acquires" and returns the FileDescriptor for this impl
+     *
+     * A corresponding releaseFD is required to "release" the
+     * FileDescriptor.
+     */
+FileDescriptor acquireFD() {
+    synchronized (fdLock) {
+        fdUseCount++;
+        return fd;
+    }
+}

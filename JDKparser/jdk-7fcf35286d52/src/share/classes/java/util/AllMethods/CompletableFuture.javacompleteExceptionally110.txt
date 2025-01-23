@@ -1,0 +1,15 @@
+/**
+ * If not already completed, causes invocations of {@link #get()}
+ * and related methods to throw the given exception.
+ *
+ * @param ex the exception
+ * @return {@code true} if this invocation caused this CompletableFuture
+ * to transition to a completed state, else {@code false}
+ */
+public boolean completeExceptionally(Throwable ex) {
+    if (ex == null)
+        throw new NullPointerException();
+    boolean triggered = internalComplete(new AltResult(ex));
+    postComplete();
+    return triggered;
+}

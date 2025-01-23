@@ -1,0 +1,13 @@
+private static void rotate2(List<?> list, int distance) {
+    int size = list.size();
+    if (size == 0)
+        return;
+    int mid = -distance % size;
+    if (mid < 0)
+        mid += size;
+    if (mid == 0)
+        return;
+    reverse(list.subList(0, mid));
+    reverse(list.subList(mid, size));
+    reverse(list);
+}

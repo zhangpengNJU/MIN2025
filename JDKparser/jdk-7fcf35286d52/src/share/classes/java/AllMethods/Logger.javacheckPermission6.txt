@@ -1,0 +1,9 @@
+private void checkPermission() throws SecurityException {
+    if (!anonymous) {
+        if (manager == null) {
+            // Complete initialization of the global Logger.
+            manager = LogManager.getLogManager();
+        }
+        manager.checkPermission();
+    }
+}

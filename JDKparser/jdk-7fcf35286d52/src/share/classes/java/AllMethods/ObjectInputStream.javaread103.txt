@@ -1,0 +1,11 @@
+public int read() throws IOException {
+    if (peekb >= 0) {
+        int v = peekb;
+        peekb = -1;
+        return v;
+    } else {
+        int nbytes = in.read();
+        totalBytesRead += nbytes >= 0 ? 1 : 0;
+        return nbytes;
+    }
+}

@@ -1,0 +1,8 @@
+// Make sure that the int array z (which is expected to contain
+// the result of a Montgomery multiplication) is present and
+// sufficiently large.
+private static int[] materialize(int[] z, int len) {
+    if (z == null || z.length < len)
+        z = new int[len];
+    return z;
+}

@@ -1,0 +1,15 @@
+/**
+ * Atomically removes all of the elements from this delay queue.
+ * The queue will be empty after this call returns.
+ * Elements with an unexpired delay are not waited for; they are
+ * simply discarded from the queue.
+ */
+public void clear() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        q.clear();
+    } finally {
+        lock.unlock();
+    }
+}

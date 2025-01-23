@@ -1,0 +1,10 @@
+private static Method getNanosMethod() {
+    try {
+        Class<?> c = Class.forName("java.sql.Timestamp", true, null);
+        return c.getMethod("getNanos");
+    } catch (ClassNotFoundException e) {
+        return null;
+    } catch (NoSuchMethodException e) {
+        throw new AssertionError(e);
+    }
+}

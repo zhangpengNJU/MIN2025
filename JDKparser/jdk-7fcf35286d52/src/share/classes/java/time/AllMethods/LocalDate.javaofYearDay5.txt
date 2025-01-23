@@ -1,0 +1,28 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code LocalDate} from a year and day-of-year.
+ * <p>
+ * This returns a {@code LocalDate} with the specified year and day-of-year.
+ * The day-of-year must be valid for the year, otherwise an exception will be thrown.
+ *
+ * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+ * @param dayOfYear  the day-of-year to represent, from 1 to 366
+ * @return the local date, not null
+ * @throws DateTimeException if the value of any field is out of range,
+ *  or if the day-of-year is invalid for the year
+ */
+public static LocalDate ofYearDay(int year, int dayOfYear) {
+    YEAR.checkValidValue(year);
+    DAY_OF_YEAR.checkValidValue(dayOfYear);
+    boolean leap = IsoChronology.INSTANCE.isLeapYear(year);
+    if (dayOfYear == 366 && leap == false) {
+        throw new DateTimeException("Invalid date 'DayOfYear 366' as '" + year + "' is not a leap year");
+    }
+    Month moy = Month.of((dayOfYear - 1) / 31 + 1);
+    int monthEnd = moy.firstDayOfYear(leap) + moy.length(leap) - 1;
+    if (dayOfYear > monthEnd) {
+        moy = moy.plus(1);
+    }
+    int dom = dayOfYear - moy.firstDayOfYear(leap) + 1;
+    return new LocalDate(year, moy.getValue(), dom);
+}

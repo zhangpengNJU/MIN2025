@@ -1,0 +1,57 @@
+/**
+ * Parse a single character or a character range in a character class
+ * and return its representative node.
+ */
+private CharProperty range(BitClass bits) {
+    int ch = peek();
+    if (ch == '\\') {
+        ch = nextEscaped();
+        if (ch == 'p' || ch == 'P') {
+            // A property
+            boolean comp = (ch == 'P');
+            boolean oneLetter = true;
+            // Consume { if present
+            ch = next();
+            if (ch != '{')
+                unread();
+            else
+                oneLetter = false;
+            return family(oneLetter, comp);
+        } else {
+            // ordinary escape
+            boolean isrange = temp[cursor + 1] == '-';
+            unread();
+            ch = escape(true, true, isrange);
+            if (ch == -1)
+                return (CharProperty) root;
+        }
+    } else {
+        next();
+    }
+    if (ch >= 0) {
+        if (peek() == '-') {
+            int endRange = temp[cursor + 1];
+            if (endRange == '[') {
+                return bitsOrSingle(bits, ch);
+            }
+            if (endRange != ']') {
+                next();
+                int m = peek();
+                if (m == '\\') {
+                    m = escape(true, false, true);
+                } else {
+                    next();
+                }
+                if (m < ch) {
+                    throw error("Illegal character range");
+                }
+                if (has(CASE_INSENSITIVE))
+                    return caseInsensitiveRangeFor(ch, m);
+                else
+                    return rangeFor(ch, m);
+            }
+        }
+        return bitsOrSingle(bits, ch);
+    }
+    throw error("Unexpected character '" + ((char) ch) + "'");
+}

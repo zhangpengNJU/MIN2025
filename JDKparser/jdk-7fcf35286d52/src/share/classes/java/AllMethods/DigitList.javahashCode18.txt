@@ -1,0 +1,10 @@
+/**
+ * Generates the hash code for the digit list.
+ */
+public int hashCode() {
+    int hashcode = decimalAt;
+    for (int i = 0; i < count; i++) {
+        hashcode = hashcode * 37 + digits[i];
+    }
+    return hashcode;
+}

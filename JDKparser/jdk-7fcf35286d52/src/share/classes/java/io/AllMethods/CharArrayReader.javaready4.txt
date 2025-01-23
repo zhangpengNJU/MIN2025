@@ -1,0 +1,12 @@
+/**
+ * Tells whether this stream is ready to be read.  Character-array readers
+ * are always ready to be read.
+ *
+ * @exception  IOException  If an I/O error occurs
+ */
+public boolean ready() throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        return (count - pos) > 0;
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns a {@code String} object representing the specified
+ * {@code long}.  The argument is converted to signed decimal
+ * representation and returned as a string, exactly as if the
+ * argument and the radix 10 were given as arguments to the {@link
+ * #toString(long, int)} method.
+ *
+ * @param   i   a {@code long} to be converted.
+ * @return  a string representation of the argument in base&nbsp;10.
+ */
+public static String toString(long i) {
+    if (i == Long.MIN_VALUE)
+        return "-9223372036854775808";
+    int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
+    char[] buf = new char[size];
+    getChars(i, size, buf);
+    return new String(buf, true);
+}

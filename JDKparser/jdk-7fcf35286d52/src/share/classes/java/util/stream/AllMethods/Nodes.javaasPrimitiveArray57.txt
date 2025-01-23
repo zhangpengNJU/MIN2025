@@ -1,0 +1,9 @@
+@Override
+public T_ARR asPrimitiveArray() {
+    long size = count();
+    if (size >= MAX_ARRAY_SIZE)
+        throw new IllegalArgumentException(BAD_SIZE);
+    T_ARR array = newArray((int) size);
+    copyInto(array, 0);
+    return array;
+}

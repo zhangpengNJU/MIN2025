@@ -1,0 +1,22 @@
+/**
+ * {@inheritDoc}
+ * <p>
+ * This method object may conservatively return false in
+ * cases where the specified rectangular area intersects a
+ * segment of the path, but that segment does not represent a
+ * boundary between the interior and exterior of the path.
+ * Such segments could lie entirely within the interior of the
+ * path if they are part of a path with a {@link #WIND_NON_ZERO}
+ * winding rule or if the segments are retraced in the reverse
+ * direction such that the two sets of segments cancel each
+ * other out without any exterior area falling between them.
+ * To determine whether segments represent true boundaries of
+ * the interior of the path would require extensive calculations
+ * involving all of the segments of the path and the winding
+ * rule and are thus beyond the scope of this implementation.
+ *
+ * @since 1.6
+ */
+public final boolean contains(Rectangle2D r) {
+    return contains(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+}

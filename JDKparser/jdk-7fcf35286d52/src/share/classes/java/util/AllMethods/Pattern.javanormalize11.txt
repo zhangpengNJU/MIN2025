@@ -1,0 +1,39 @@
+/**
+ * The pattern is converted to normalizedD form and then a pure group
+ * is constructed to match canonical equivalences of the characters.
+ */
+private void normalize() {
+    boolean inCharClass = false;
+    int lastCodePoint = -1;
+    // Convert pattern into normalizedD form
+    normalizedPattern = Normalizer.normalize(pattern, Normalizer.Form.NFD);
+    patternLength = normalizedPattern.length();
+    // Modify pattern to match canonical equivalences
+    StringBuilder newPattern = new StringBuilder(patternLength);
+    for (int i = 0; i < patternLength; ) {
+        int c = normalizedPattern.codePointAt(i);
+        StringBuilder sequenceBuffer;
+        if ((Character.getType(c) == Character.NON_SPACING_MARK) && (lastCodePoint != -1)) {
+            sequenceBuffer = new StringBuilder();
+            sequenceBuffer.appendCodePoint(lastCodePoint);
+            sequenceBuffer.appendCodePoint(c);
+            while (Character.getType(c) == Character.NON_SPACING_MARK) {
+                i += Character.charCount(c);
+                if (i >= patternLength)
+                    break;
+                c = normalizedPattern.codePointAt(i);
+                sequenceBuffer.appendCodePoint(c);
+            }
+            String ea = produceEquivalentAlternation(sequenceBuffer.toString());
+            newPattern.setLength(newPattern.length() - Character.charCount(lastCodePoint));
+            newPattern.append("(?:").append(ea).append(")");
+        } else if (c == '[' && lastCodePoint != '\\') {
+            i = normalizeCharClass(newPattern, i);
+        } else {
+            newPattern.appendCodePoint(c);
+        }
+        lastCodePoint = c;
+        i += Character.charCount(c);
+    }
+    normalizedPattern = newPattern.toString();
+}

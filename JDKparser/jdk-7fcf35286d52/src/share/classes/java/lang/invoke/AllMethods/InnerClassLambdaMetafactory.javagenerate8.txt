@@ -1,0 +1,23 @@
+void generate(MethodType methodType) {
+    visitCode();
+    if (implKind == MethodHandleInfo.REF_newInvokeSpecial) {
+        visitTypeInsn(NEW, implMethodClassName);
+        visitInsn(DUP);
+    }
+    for (int i = 0; i < argNames.length; i++) {
+        visitVarInsn(ALOAD, 0);
+        visitFieldInsn(GETFIELD, lambdaClassName, argNames[i], argDescs[i]);
+    }
+    convertArgumentTypes(methodType);
+    // Invoke the method we want to forward to
+    visitMethodInsn(invocationOpcode(), implMethodClassName, implMethodName, implMethodDesc, implDefiningClass.isInterface());
+    // Convert the return value (if any) and return it
+    // Note: if adapting from non-void to void, the 'return'
+    // instruction will pop the unneeded result
+    Class<?> samReturnClass = methodType.returnType();
+    convertType(implMethodReturnClass, samReturnClass, samReturnClass);
+    visitInsn(getReturnOpcode(samReturnClass));
+    // Maxs computed by ClassWriter.COMPUTE_MAXS,these arguments ignored
+    visitMaxs(-1, -1);
+    visitEnd();
+}

@@ -1,0 +1,20 @@
+/**
+ * Returns a contextual shaper for the provided unicode range(s).
+ * Latin-1 (EUROPEAN) digits will be converted to the decimal digits
+ * corresponding to the range of the preceding text, if the
+ * range is one of the provided ranges.  Multiple ranges are
+ * represented by or-ing the values together, for example,
+ * <code>NumericShaper.ARABIC | NumericShaper.THAI</code>.  The
+ * shaper uses defaultContext as the starting context.
+ * @param ranges the specified Unicode ranges
+ * @param defaultContext the starting context, such as
+ * <code>NumericShaper.EUROPEAN</code>
+ * @return a shaper for the specified Unicode ranges.
+ * @throws IllegalArgumentException if the specified
+ * <code>defaultContext</code> is not a single valid range.
+ */
+public static NumericShaper getContextualShaper(int ranges, int defaultContext) {
+    int key = getKeyFromMask(defaultContext);
+    ranges |= CONTEXTUAL_MASK;
+    return new NumericShaper(key, ranges);
+}

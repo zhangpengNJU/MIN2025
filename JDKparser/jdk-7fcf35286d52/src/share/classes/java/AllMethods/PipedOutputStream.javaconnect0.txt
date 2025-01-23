@@ -1,0 +1,29 @@
+/**
+ * Connects this piped output stream to a receiver. If this object
+ * is already connected to some other piped input stream, an
+ * <code>IOException</code> is thrown.
+ * <p>
+ * If <code>snk</code> is an unconnected piped input stream and
+ * <code>src</code> is an unconnected piped output stream, they may
+ * be connected by either the call:
+ * <blockquote><pre>
+ * src.connect(snk)</pre></blockquote>
+ * or the call:
+ * <blockquote><pre>
+ * snk.connect(src)</pre></blockquote>
+ * The two calls have the same effect.
+ *
+ * @param      snk   the piped input stream to connect to.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public synchronized void connect(PipedInputStream snk) throws IOException {
+    if (snk == null) {
+        throw new NullPointerException();
+    } else if (sink != null || snk.connected) {
+        throw new IOException("Already connected");
+    }
+    sink = snk;
+    snk.in = -1;
+    snk.out = 0;
+    snk.connected = true;
+}

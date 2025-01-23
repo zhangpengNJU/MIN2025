@@ -1,0 +1,62 @@
+/**
+ * Attempts to read in the next block data header (if any).  If
+ * canBlock is false and a full header cannot be read without possibly
+ * blocking, returns HEADER_BLOCKED, else if the next element in the
+ * stream is a block data header, returns the block data length
+ * specified by the header, else returns -1.
+ */
+private int readBlockHeader(boolean canBlock) throws IOException {
+    if (defaultDataEnd) {
+        /*
+                 * Fix for 4360508: stream is currently at the end of a field
+                 * value block written via default serialization; since there
+                 * is no terminating TC_ENDBLOCKDATA tag, simulate
+                 * end-of-custom-data behavior explicitly.
+                 */
+        return -1;
+    }
+    try {
+        for (; ; ) {
+            int avail = canBlock ? Integer.MAX_VALUE : in.available();
+            if (avail == 0) {
+                return HEADER_BLOCKED;
+            }
+            int tc = in.peek();
+            switch(tc) {
+                case TC_BLOCKDATA:
+                    if (avail < 2) {
+                        return HEADER_BLOCKED;
+                    }
+                    in.readFully(hbuf, 0, 2);
+                    return hbuf[1] & 0xFF;
+                case TC_BLOCKDATALONG:
+                    if (avail < 5) {
+                        return HEADER_BLOCKED;
+                    }
+                    in.readFully(hbuf, 0, 5);
+                    int len = Bits.getInt(hbuf, 1);
+                    if (len < 0) {
+                        throw new StreamCorruptedException("illegal block data header length: " + len);
+                    }
+                    return len;
+                /*
+                         * TC_RESETs may occur in between data blocks.
+                         * Unfortunately, this case must be parsed at a lower
+                         * level than other typecodes, since primitive data
+                         * reads may span data blocks separated by a TC_RESET.
+                         */
+                case TC_RESET:
+                    in.read();
+                    handleReset();
+                    break;
+                default:
+                    if (tc >= 0 && (tc < TC_BASE || tc > TC_MAX)) {
+                        throw new StreamCorruptedException(String.format("invalid type code: %02X", tc));
+                    }
+                    return -1;
+            }
+        }
+    } catch (EOFException ex) {
+        throw new StreamCorruptedException("unexpected EOF while reading block data header");
+    }
+}

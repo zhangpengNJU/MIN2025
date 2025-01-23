@@ -1,0 +1,11 @@
+@Override
+public void close() {
+    linkedOrConsumed = true;
+    sourceSupplier = null;
+    sourceSpliterator = null;
+    if (sourceStage.sourceCloseAction != null) {
+        Runnable closeAction = sourceStage.sourceCloseAction;
+        sourceStage.sourceCloseAction = null;
+        closeAction.run();
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Updates this <code>LineBreakMeasurer</code> after a single
+ * character is inserted into the text, and sets the current
+ * position to the beginning of the paragraph.
+ *
+ * @param newParagraph the text after the insertion
+ * @param insertPos the position in the text at which the character
+ *    is inserted
+ * @throws IndexOutOfBoundsException if <code>insertPos</code> is less
+ *         than the start of <code>newParagraph</code> or greater than
+ *         or equal to the end of <code>newParagraph</code>
+ * @throws NullPointerException if <code>newParagraph</code> is
+ *         <code>null</code>
+ * @see #deleteChar
+ */
+public void insertChar(AttributedCharacterIterator newParagraph, int insertPos) {
+    measurer.insertChar(newParagraph, insertPos);
+    limit = newParagraph.getEndIndex();
+    pos = start = newParagraph.getBeginIndex();
+    charIter.reset(measurer.getChars(), newParagraph.getBeginIndex());
+    breakIter.setText(charIter);
+}

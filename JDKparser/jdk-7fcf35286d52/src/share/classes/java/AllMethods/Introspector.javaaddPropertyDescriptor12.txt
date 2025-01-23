@@ -1,0 +1,40 @@
+/**
+ * Adds the property descriptor to the list store.
+ */
+private void addPropertyDescriptor(PropertyDescriptor pd) {
+    String propName = pd.getName();
+    List<PropertyDescriptor> list = pdStore.get(propName);
+    if (list == null) {
+        list = new ArrayList<>();
+        pdStore.put(propName, list);
+    }
+    if (this.beanClass != pd.getClass0()) {
+        // replace existing property descriptor
+        // only if we have types to resolve
+        // in the context of this.beanClass
+        Method read = pd.getReadMethod();
+        Method write = pd.getWriteMethod();
+        boolean cls = true;
+        if (read != null)
+            cls = cls && read.getGenericReturnType() instanceof Class;
+        if (write != null)
+            cls = cls && write.getGenericParameterTypes()[0] instanceof Class;
+        if (pd instanceof IndexedPropertyDescriptor) {
+            IndexedPropertyDescriptor ipd = (IndexedPropertyDescriptor) pd;
+            Method readI = ipd.getIndexedReadMethod();
+            Method writeI = ipd.getIndexedWriteMethod();
+            if (readI != null)
+                cls = cls && readI.getGenericReturnType() instanceof Class;
+            if (writeI != null)
+                cls = cls && writeI.getGenericParameterTypes()[1] instanceof Class;
+            if (!cls) {
+                pd = new IndexedPropertyDescriptor(ipd);
+                pd.updateGenericsFor(this.beanClass);
+            }
+        } else if (!cls) {
+            pd = new PropertyDescriptor(pd);
+            pd.updateGenericsFor(this.beanClass);
+        }
+    }
+    list.add(pd);
+}

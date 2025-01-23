@@ -1,0 +1,25 @@
+/**
+ * Return a Raster containing the colors generated for the graphics
+ * operation.
+ * @param x,y,w,h The area in device space for which colors are
+ * generated.
+ */
+public Raster getRaster(int x, int y, int w, int h) {
+    double rowrel = (x - x1) * dx + (y - y1) * dy;
+    Raster rast = saved;
+    if (rast == null || rast.getWidth() < w || rast.getHeight() < h) {
+        rast = getCachedRaster(model, w, h);
+        saved = rast;
+    }
+    IntegerComponentRaster irast = (IntegerComponentRaster) rast;
+    int off = irast.getDataOffset(0);
+    int adjust = irast.getScanlineStride() - w;
+    int[] pixels = irast.getDataStorage();
+    if (cyclic) {
+        cycleFillRaster(pixels, off, adjust, w, h, rowrel, dx, dy);
+    } else {
+        clipFillRaster(pixels, off, adjust, w, h, rowrel, dx, dy);
+    }
+    irast.markDirty();
+    return rast;
+}

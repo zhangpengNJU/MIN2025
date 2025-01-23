@@ -1,0 +1,34 @@
+/**
+ * Sets a rectangular region of the image to the contents of the
+ * specified <code>Raster</code> <code>r</code>, which is
+ * assumed to be in the same coordinate space as the
+ * <code>BufferedImage</code>. The operation is clipped to the bounds
+ * of the <code>BufferedImage</code>.
+ * @param r the specified <code>Raster</code>
+ * @see #getData
+ * @see #getData(Rectangle)
+ */
+public void setData(Raster r) {
+    int width = r.getWidth();
+    int height = r.getHeight();
+    int startX = r.getMinX();
+    int startY = r.getMinY();
+    int[] tdata = null;
+    // Clip to the current Raster
+    Rectangle rclip = new Rectangle(startX, startY, width, height);
+    Rectangle bclip = new Rectangle(0, 0, raster.width, raster.height);
+    Rectangle intersect = rclip.intersection(bclip);
+    if (intersect.isEmpty()) {
+        return;
+    }
+    width = intersect.width;
+    height = intersect.height;
+    startX = intersect.x;
+    startY = intersect.y;
+    // remind use get/setDataElements for speed if Rasters are
+    // compatible
+    for (int i = startY; i < startY + height; i++) {
+        tdata = r.getPixels(startX, i, width, 1, tdata);
+        raster.setPixels(startX, i, width, 1, tdata);
+    }
+}

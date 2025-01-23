@@ -1,0 +1,34 @@
+/**
+ * Adjusts the specified temporal object to have the same offset, date
+ * and time as this object.
+ * <p>
+ * This returns a temporal object of the same observable type as the input
+ * with the offset, date and time changed to be the same as this.
+ * <p>
+ * The adjustment is equivalent to using {@link Temporal#with(TemporalField, long)}
+ * three times, passing {@link ChronoField#EPOCH_DAY},
+ * {@link ChronoField#NANO_OF_DAY} and {@link ChronoField#OFFSET_SECONDS} as the fields.
+ * <p>
+ * In most cases, it is clearer to reverse the calling pattern by using
+ * {@link Temporal#with(TemporalAdjuster)}:
+ * <pre>
+ *   // these two lines are equivalent, but the second approach is recommended
+ *   temporal = thisOffsetDateTime.adjustInto(temporal);
+ *   temporal = temporal.with(thisOffsetDateTime);
+ * </pre>
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param temporal  the target object to be adjusted, not null
+ * @return the adjusted object, not null
+ * @throws DateTimeException if unable to make the adjustment
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+@Override
+public Temporal adjustInto(Temporal temporal) {
+    // OffsetDateTime is treated as three separate fields, not an instant
+    // this produces the most consistent set of results overall
+    // the offset is set after the date and time, as it is typically a small
+    // tweak to the result, with ZonedDateTime frequently ignoring the offset
+    return temporal.with(EPOCH_DAY, toLocalDate().toEpochDay()).with(NANO_OF_DAY, toLocalTime().toNanoOfDay()).with(OFFSET_SECONDS, getOffset().getTotalSeconds());
+}

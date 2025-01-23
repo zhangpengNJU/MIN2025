@@ -1,0 +1,17 @@
+// Check coefficient c is a valid element in ECField field.
+private static void checkValidity(ECField field, BigInteger c, String cName) {
+    // can only perform check if field is ECFieldFp or ECFieldF2m.
+    if (field instanceof ECFieldFp) {
+        BigInteger p = ((ECFieldFp) field).getP();
+        if (p.compareTo(c) != 1) {
+            throw new IllegalArgumentException(cName + " is too large");
+        } else if (c.signum() < 0) {
+            throw new IllegalArgumentException(cName + " is negative");
+        }
+    } else if (field instanceof ECFieldF2m) {
+        int m = ((ECFieldF2m) field).getM();
+        if (c.bitLength() > m) {
+            throw new IllegalArgumentException(cName + " is too large");
+        }
+    }
+}

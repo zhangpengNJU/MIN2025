@@ -1,0 +1,27 @@
+/**
+ * Calculate the quotient and remainder of dividing a negative long by
+ * another long.
+ *
+ * @param n the numerator; must be negative
+ * @param d the denominator; must not be unity
+ * @return a two-element {@long} array with the remainder and quotient in
+ *         the initial and final elements, respectively
+ */
+private static long[] divRemNegativeLong(long n, long d) {
+    assert n < 0 : "Non-negative numerator " + n;
+    assert d != 1 : "Unity denominator";
+    // Approximate the quotient and remainder
+    long q = (n >>> 1) / (d >>> 1);
+    long r = n - q * d;
+    // Correct the approximation
+    while (r < 0) {
+        r += d;
+        q--;
+    }
+    while (r >= d) {
+        r -= d;
+        q++;
+    }
+    // n - q*d == r && 0 <= r < d, hence we're done.
+    return new long[] { r, q };
+}

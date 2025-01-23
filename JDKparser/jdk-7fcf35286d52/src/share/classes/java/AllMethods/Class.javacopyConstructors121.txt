@@ -1,0 +1,8 @@
+private static <U> Constructor<U>[] copyConstructors(Constructor<U>[] arg) {
+    Constructor<U>[] out = arg.clone();
+    ReflectionFactory fact = getReflectionFactory();
+    for (int i = 0; i < out.length; i++) {
+        out[i] = fact.copyConstructor(out[i]);
+    }
+    return out;
+}

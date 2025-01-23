@@ -1,0 +1,19 @@
+/**
+ * Reports a bound property update to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if old and new values are equal and non-null.
+ * <p>
+ * This is merely a convenience wrapper around the more general
+ * {@link #firePropertyChange(PropertyChangeEvent)} method.
+ *
+ * @param propertyName  the programmatic name of the property that was changed
+ * @param oldValue      the old value of the property
+ * @param newValue      the new value of the property
+ */
+public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+    if (oldValue == null || newValue == null || !oldValue.equals(newValue)) {
+        firePropertyChange(new PropertyChangeEvent(this.source, propertyName, oldValue, newValue));
+    }
+}

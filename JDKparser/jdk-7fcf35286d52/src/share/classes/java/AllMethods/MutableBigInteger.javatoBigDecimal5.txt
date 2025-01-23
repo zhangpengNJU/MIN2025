@@ -1,0 +1,17 @@
+/**
+ * Convert this MutableBigInteger to BigDecimal object with the specified sign
+ * and scale.
+ */
+BigDecimal toBigDecimal(int sign, int scale) {
+    if (intLen == 0 || sign == 0)
+        return BigDecimal.zeroValueOf(scale);
+    int[] mag = getMagnitudeArray();
+    int len = mag.length;
+    int d = mag[0];
+    // If this MutableBigInteger can't be fit into long, we need to
+    // make a BigInteger object for the resultant BigDecimal object.
+    if (len > 2 || (d < 0 && len == 2))
+        return new BigDecimal(new BigInteger(mag, sign), INFLATED, scale, 0);
+    long v = (len == 2) ? ((mag[1] & LONG_MASK) | (d & LONG_MASK) << 32) : d & LONG_MASK;
+    return BigDecimal.valueOf(sign == -1 ? -v : v, scale);
+}

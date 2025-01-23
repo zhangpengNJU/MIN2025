@@ -1,0 +1,5 @@
+static Duration readExternal(DataInput in) throws IOException {
+    long seconds = in.readLong();
+    int nanos = in.readInt();
+    return Duration.ofSeconds(seconds, nanos);
+}

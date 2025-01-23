@@ -1,0 +1,7 @@
+public NavigableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+    if (!inRange(fromKey, fromInclusive))
+        throw new IllegalArgumentException("fromKey out of range");
+    if (!inRange(toKey, toInclusive))
+        throw new IllegalArgumentException("toKey out of range");
+    return new DescendingSubMap<>(m, false, toKey, toInclusive, false, fromKey, fromInclusive);
+}

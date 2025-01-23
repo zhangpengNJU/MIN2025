@@ -1,0 +1,12 @@
+/**
+ * Returns a String representation of this object.
+ */
+public String toString() {
+    String srcName = null;
+    if (source instanceof Component) {
+        srcName = ((Component) source).getName();
+    } else if (source instanceof MenuComponent) {
+        srcName = ((MenuComponent) source).getName();
+    }
+    return getClass().getName() + "[" + paramString() + "] on " + (srcName != null ? srcName : source);
+}

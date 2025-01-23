@@ -1,0 +1,20 @@
+/**
+ * BeanContextServiceProviders wishing to remove
+ * a currently registered service from this context
+ * may do so via invocation of this method. Upon revocation of
+ * the service, the <code>BeanContextServices</code> fires a
+ * <code>BeanContextServiceRevokedEvent</code> to its
+ * list of currently registered
+ * <code>BeanContextServiceRevokedListeners</code> and
+ * <code>BeanContextServicesListeners</code>.
+ * @param serviceClass the service to revoke from this BeanContextServices
+ * @param serviceProvider the BeanContextServiceProvider associated with
+ * this particular service that is being revoked
+ * @param revokeCurrentServicesNow a value of <code>true</code>
+ * indicates an exceptional circumstance where the
+ * <code>BeanContextServiceProvider</code> or
+ * <code>BeanContextServices</code> wishes to immediately
+ * terminate service to all currently outstanding references
+ * to the specified service.
+ */
+void revokeService(Class serviceClass, BeanContextServiceProvider serviceProvider, boolean revokeCurrentServicesNow);

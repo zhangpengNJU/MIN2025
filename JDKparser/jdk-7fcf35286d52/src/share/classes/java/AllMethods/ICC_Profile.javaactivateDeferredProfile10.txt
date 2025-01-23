@@ -1,0 +1,42 @@
+void activateDeferredProfile() throws ProfileDataException {
+    byte[] profileData;
+    FileInputStream fis;
+    final String fileName = deferralInfo.filename;
+    profileActivator = null;
+    deferralInfo = null;
+    PrivilegedAction<FileInputStream> pa = new PrivilegedAction<FileInputStream>() {
+
+        public FileInputStream run() {
+            File f = getStandardProfileFile(fileName);
+            if (f != null) {
+                try {
+                    return new FileInputStream(f);
+                } catch (FileNotFoundException e) {
+                }
+            }
+            return null;
+        }
+    };
+    if ((fis = AccessController.doPrivileged(pa)) == null) {
+        throw new ProfileDataException("Cannot open file " + fileName);
+    }
+    try {
+        profileData = getProfileDataFromStream(fis);
+        fis.close();
+    /* close the file */
+    } catch (IOException e) {
+        ProfileDataException pde = new ProfileDataException("Invalid ICC Profile Data" + fileName);
+        pde.initCause(e);
+        throw pde;
+    }
+    if (profileData == null) {
+        throw new ProfileDataException("Invalid ICC Profile Data" + fileName);
+    }
+    try {
+        cmmProfile = CMSManager.getModule().loadProfile(profileData);
+    } catch (CMMException c) {
+        ProfileDataException pde = new ProfileDataException("Invalid ICC Profile Data" + fileName);
+        pde.initCause(c);
+        throw pde;
+    }
+}

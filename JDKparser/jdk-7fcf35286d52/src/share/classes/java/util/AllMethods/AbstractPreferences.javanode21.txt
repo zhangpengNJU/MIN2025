@@ -1,0 +1,27 @@
+/**
+ * tokenizer contains <name> {'/' <name>}*
+ */
+private Preferences node(StringTokenizer path) {
+    String token = path.nextToken();
+    if (// Check for consecutive slashes
+    token.equals("/"))
+        throw new IllegalArgumentException("Consecutive slashes in path");
+    synchronized (lock) {
+        AbstractPreferences child = kidCache.get(token);
+        if (child == null) {
+            if (token.length() > MAX_NAME_LENGTH)
+                throw new IllegalArgumentException("Node name " + token + " too long");
+            child = childSpi(token);
+            if (child.newNode)
+                enqueueNodeAddedEvent(child);
+            kidCache.put(token, child);
+        }
+        if (!path.hasMoreTokens())
+            return child;
+        // Consume slash
+        path.nextToken();
+        if (!path.hasMoreTokens())
+            throw new IllegalArgumentException("Path ends with slash");
+        return child.node(path);
+    }
+}

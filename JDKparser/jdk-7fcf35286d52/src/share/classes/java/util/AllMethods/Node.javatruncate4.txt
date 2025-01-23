@@ -1,0 +1,28 @@
+/**
+ * Return a node describing a subsequence of the elements of this node,
+ * starting at the given inclusive start offset and ending at the given
+ * exclusive end offset.
+ *
+ * @param from The (inclusive) starting offset of elements to include, must
+ *             be in range 0..count().
+ * @param to The (exclusive) end offset of elements to include, must be
+ *           in range 0..count().
+ * @param generator A function to be used to create a new array, if needed,
+ *                  for reference nodes.
+ * @return the truncated node
+ */
+default Node<T> truncate(long from, long to, IntFunction<T[]> generator) {
+    if (from == 0 && to == count())
+        return this;
+    Spliterator<T> spliterator = spliterator();
+    long size = to - from;
+    Node.Builder<T> nodeBuilder = Nodes.builder(size, generator);
+    nodeBuilder.begin(size);
+    for (int i = 0; i < from && spliterator.tryAdvance(e -> {
+    }); i++) {
+    }
+    for (int i = 0; (i < size) && spliterator.tryAdvance(nodeBuilder); i++) {
+    }
+    nodeBuilder.end();
+    return nodeBuilder.build();
+}

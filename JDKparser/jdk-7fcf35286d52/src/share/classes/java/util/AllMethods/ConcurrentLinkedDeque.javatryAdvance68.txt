@@ -1,0 +1,21 @@
+public boolean tryAdvance(Consumer<? super E> action) {
+    Node<E> p;
+    if (action == null)
+        throw new NullPointerException();
+    final ConcurrentLinkedDeque<E> q = this.queue;
+    if (!exhausted && ((p = current) != null || (p = q.first()) != null)) {
+        E e;
+        do {
+            e = p.item;
+            if (p == (p = p.next))
+                p = q.first();
+        } while (e == null && p != null);
+        if ((current = p) == null)
+            exhausted = true;
+        if (e != null) {
+            action.accept(e);
+            return true;
+        }
+    }
+    return false;
+}

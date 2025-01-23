@@ -1,0 +1,5 @@
+@Override
+public OfLong trySplit() {
+    int lo = index, mid = (lo + fence) >>> 1;
+    return (lo >= mid) ? null : new LongArraySpliterator(array, lo, index = mid, characteristics);
+}

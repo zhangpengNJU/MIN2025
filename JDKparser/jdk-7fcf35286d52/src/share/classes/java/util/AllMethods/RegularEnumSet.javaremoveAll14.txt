@@ -1,0 +1,18 @@
+/**
+ * Removes from this set all of its elements that are contained in
+ * the specified collection.
+ *
+ * @param c elements to be removed from this set
+ * @return <tt>true</tt> if this set changed as a result of the call
+ * @throws NullPointerException if the specified collection is null
+ */
+public boolean removeAll(Collection<?> c) {
+    if (!(c instanceof RegularEnumSet))
+        return super.removeAll(c);
+    RegularEnumSet<?> es = (RegularEnumSet<?>) c;
+    if (es.elementType != elementType)
+        return false;
+    long oldElements = elements;
+    elements &= ~es.elements;
+    return elements != oldElements;
+}

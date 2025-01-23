@@ -1,0 +1,10 @@
+// request extensions; single extensions not supported
+/**
+ * Sets the optional OCSP request extensions.
+ *
+ * @param extensions a list of extensions. The list is copied to protect
+ *        against subsequent modification.
+ */
+public void setOcspExtensions(List<Extension> extensions) {
+    this.ocspExtensions = (extensions == null) ? Collections.<Extension>emptyList() : new ArrayList<Extension>(extensions);
+}

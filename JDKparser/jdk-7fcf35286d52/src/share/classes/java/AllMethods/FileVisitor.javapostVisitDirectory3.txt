@@ -1,0 +1,20 @@
+/**
+ * Invoked for a directory after entries in the directory, and all of their
+ * descendants, have been visited. This method is also invoked when iteration
+ * of the directory completes prematurely (by a {@link #visitFile visitFile}
+ * method returning {@link FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS},
+ * or an I/O error when iterating over the directory).
+ *
+ * @param   dir
+ *          a reference to the directory
+ * @param   exc
+ *          {@code null} if the iteration of the directory completes without
+ *          an error; otherwise the I/O exception that caused the iteration
+ *          of the directory to complete prematurely
+ *
+ * @return  the visit result
+ *
+ * @throws  IOException
+ *          if an I/O error occurs
+ */
+FileVisitResult postVisitDirectory(T dir, IOException exc) throws IOException;

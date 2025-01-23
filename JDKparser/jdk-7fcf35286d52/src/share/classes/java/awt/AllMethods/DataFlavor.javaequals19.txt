@@ -1,0 +1,48 @@
+/**
+ * This method has the same behavior as {@link #equals(Object)}.
+ * The only difference being that it takes a {@code DataFlavor} instance
+ * as a parameter.
+ *
+ * @param that the <code>DataFlavor</code> to compare with
+ *        <code>this</code>
+ * @return <code>true</code> if <code>that</code> is equivalent to this
+ *         <code>DataFlavor</code>; <code>false</code> otherwise
+ * @see #selectBestTextFlavor
+ */
+public boolean equals(DataFlavor that) {
+    if (that == null) {
+        return false;
+    }
+    if (this == that) {
+        return true;
+    }
+    if (!Objects.equals(this.getRepresentationClass(), that.getRepresentationClass())) {
+        return false;
+    }
+    if (mimeType == null) {
+        if (that.mimeType != null) {
+            return false;
+        }
+    } else {
+        if (!mimeType.match(that.mimeType)) {
+            return false;
+        }
+        if ("text".equals(getPrimaryType())) {
+            if (DataTransferer.doesSubtypeSupportCharset(this) && representationClass != null && !isStandardTextRepresentationClass()) {
+                String thisCharset = DataTransferer.canonicalName(this.getParameter("charset"));
+                String thatCharset = DataTransferer.canonicalName(that.getParameter("charset"));
+                if (!Objects.equals(thisCharset, thatCharset)) {
+                    return false;
+                }
+            }
+            if ("html".equals(getSubType())) {
+                String thisDocument = this.getParameter("document");
+                String thatDocument = that.getParameter("document");
+                if (!Objects.equals(thisDocument, thatDocument)) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}

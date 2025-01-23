@@ -1,0 +1,41 @@
+/**
+ * Returns an enumeration of the zip file entries
+ * excluding internal JAR mechanism entries and including
+ * signed entries missing from the ZIP directory.
+ */
+Enumeration<JarEntry> entries2() {
+    ensureInitialization();
+    if (jv != null) {
+        return jv.entries2(this, super.entries());
+    }
+    // screen out entries which are never signed
+    final Enumeration<? extends ZipEntry> enum_ = super.entries();
+    return new Enumeration<JarEntry>() {
+
+        ZipEntry entry;
+
+        public boolean hasMoreElements() {
+            if (entry != null) {
+                return true;
+            }
+            while (enum_.hasMoreElements()) {
+                ZipEntry ze = enum_.nextElement();
+                if (JarVerifier.isSigningRelated(ze.getName())) {
+                    continue;
+                }
+                entry = ze;
+                return true;
+            }
+            return false;
+        }
+
+        public JarFileEntry nextElement() {
+            if (hasMoreElements()) {
+                ZipEntry ze = entry;
+                entry = null;
+                return new JarFileEntry(ze);
+            }
+            throw new NoSuchElementException();
+        }
+    };
+}

@@ -1,0 +1,113 @@
+/**
+ * Checks if the incoming Permission's action are a proper subset of
+ * the this object's actions.
+ * <P>
+ * Check, in the following order:
+ * <ul>
+ * <li> Checks that "p" is an instanceof a SocketPermission
+ * <li> Checks that "p"'s actions are a proper subset of the
+ * current object's actions.
+ * <li> Checks that "p"'s port range is included in this port range
+ * <li> If this object was initialized with an IP address, checks that
+ *      one of "p"'s IP addresses is equal to this object's IP address.
+ * <li> If either object is a wildcard domain (i.e., "*.sun.com"),
+ *      attempt to match based on the wildcard.
+ * <li> If this object was not initialized with an IP address, attempt
+ *      to find a match based on the IP addresses in both objects.
+ * <li> Attempt to match on the canonical hostnames of both objects.
+ * </ul>
+ * @param that the incoming permission request
+ *
+ * @return true if "permission" is a proper subset of the current object,
+ * false if not.
+ */
+boolean impliesIgnoreMask(SocketPermission that) {
+    int i, j;
+    if ((that.mask & RESOLVE) != that.mask) {
+        // check simple port range
+        if ((that.portrange[0] < this.portrange[0]) || (that.portrange[1] > this.portrange[1])) {
+            // if either includes the ephemeral range, do full check
+            if (this.includesEphemerals() || that.includesEphemerals()) {
+                if (!inRange(this.portrange[0], this.portrange[1], that.portrange[0], that.portrange[1])) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+    // allow a "*" wildcard to always match anything
+    if (this.wildcard && "".equals(this.cname))
+        return true;
+    // return if either one of these NetPerm objects are invalid...
+    if (this.invalid || that.invalid) {
+        return compareHostnames(that);
+    }
+    try {
+        if (this.init_with_ip) {
+            // we only check IP addresses
+            if (that.wildcard)
+                return false;
+            if (that.init_with_ip) {
+                return (this.addresses[0].equals(that.addresses[0]));
+            } else {
+                if (that.addresses == null) {
+                    that.getIP();
+                }
+                for (i = 0; i < that.addresses.length; i++) {
+                    if (this.addresses[0].equals(that.addresses[i]))
+                        return true;
+                }
+            }
+            // since "this" was initialized with an IP address, we
+            // don't check any other cases
+            return false;
+        }
+        // check and see if we have any wildcards...
+        if (this.wildcard || that.wildcard) {
+            // if they are both wildcards, return true iff
+            // that's cname ends with this cname (i.e., *.sun.com
+            // implies *.eng.sun.com)
+            if (this.wildcard && that.wildcard)
+                return (that.cname.endsWith(this.cname));
+            // a non-wildcard can't imply a wildcard
+            if (that.wildcard)
+                return false;
+            // this is a wildcard, lets see if that's cname ends with
+            // it...
+            if (that.cname == null) {
+                that.getCanonName();
+            }
+            return (that.cname.endsWith(this.cname));
+        }
+        // comapare IP addresses
+        if (this.addresses == null) {
+            this.getIP();
+        }
+        if (that.addresses == null) {
+            that.getIP();
+        }
+        if (!(that.init_with_ip && this.isUntrusted())) {
+            for (j = 0; j < this.addresses.length; j++) {
+                for (i = 0; i < that.addresses.length; i++) {
+                    if (this.addresses[j].equals(that.addresses[i]))
+                        return true;
+                }
+            }
+            // XXX: if all else fails, compare hostnames?
+            // Do we really want this?
+            if (this.cname == null) {
+                this.getCanonName();
+            }
+            if (that.cname == null) {
+                that.getCanonName();
+            }
+            return (this.cname.equalsIgnoreCase(that.cname));
+        }
+    } catch (UnknownHostException uhe) {
+        return compareHostnames(that);
+    }
+    // make sure the first thing that is done here is to return
+    // false. If not, uncomment the return false in the above catch.
+    return false;
+}

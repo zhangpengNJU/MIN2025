@@ -1,0 +1,28 @@
+/**
+ * Atomically removes all of the elements from this queue.
+ * The queue will be empty after this call returns.
+ */
+public void clear() {
+    final Object[] items = this.items;
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        int k = count;
+        if (k > 0) {
+            final int putIndex = this.putIndex;
+            int i = takeIndex;
+            do {
+                items[i] = null;
+                if (++i == items.length)
+                    i = 0;
+            } while (i != putIndex);
+            takeIndex = putIndex;
+            count = 0;
+            if (itrs != null)
+                itrs.queueIsEmpty();
+            for (; k > 0 && lock.hasWaiters(notFull); k--) notFull.signal();
+        }
+    } finally {
+        lock.unlock();
+    }
+}

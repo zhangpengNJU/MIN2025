@@ -1,0 +1,15 @@
+@Override
+public boolean tryAdvance(T_CONS action) {
+    Objects.requireNonNull(action);
+    @SuppressWarnings("unchecked")
+    T_CONS consumer = (T_CONS) this;
+    while (permitStatus() != PermitStatus.NO_MORE) {
+        if (!s.tryAdvance(consumer))
+            return false;
+        else if (acquirePermits(1) == 1) {
+            acceptConsumed(action);
+            return true;
+        }
+    }
+    return false;
+}

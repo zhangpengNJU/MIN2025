@@ -1,0 +1,24 @@
+/**
+ * Returns an array of {@code Parameter} objects that represent
+ * all the parameters to the underlying executable represented by
+ * this object.  Returns an array of length 0 if the executable
+ * has no parameters.
+ *
+ * <p>The parameters of the underlying executable do not necessarily
+ * have unique names, or names that are legal identifiers in the
+ * Java programming language (JLS 3.8).
+ *
+ * @throws MalformedParametersException if the class file contains
+ * a MethodParameters attribute that is improperly formatted.
+ * @return an array of {@code Parameter} objects representing all
+ * the parameters to the executable this object represents.
+ */
+public Parameter[] getParameters() {
+    // TODO: This may eventually need to be guarded by security
+    // mechanisms similar to those in Field, Method, etc.
+    // 
+    // Need to copy the cached array to prevent users from messing
+    // with it.  Since parameters are immutable, we can
+    // shallow-copy.
+    return privateGetParameters().clone();
+}

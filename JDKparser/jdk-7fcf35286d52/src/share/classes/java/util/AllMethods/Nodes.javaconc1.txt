@@ -1,0 +1,34 @@
+/**
+ * Produces a concatenated {@link Node} that has two or more children.
+ * <p>The count of the concatenated node is equal to the sum of the count
+ * of each child. Traversal of the concatenated node traverses the content
+ * of each child in encounter order of the list of children. Splitting a
+ * spliterator obtained from the concatenated node preserves the encounter
+ * order of the list of children.
+ *
+ * <p>The result may be a concatenated node, the input sole node if the size
+ * of the list is 1, or an empty node.
+ *
+ * @param <T> the type of elements of the concatenated node
+ * @param shape the shape of the concatenated node to be created
+ * @param left the left input node
+ * @param right the right input node
+ * @return a {@code Node} covering the elements of the input nodes
+ * @throws IllegalStateException if all {@link Node} elements of the list
+ * are an not instance of type supported by this factory.
+ */
+@SuppressWarnings("unchecked")
+static <T> Node<T> conc(StreamShape shape, Node<T> left, Node<T> right) {
+    switch(shape) {
+        case REFERENCE:
+            return new ConcNode<>(left, right);
+        case INT_VALUE:
+            return (Node<T>) new ConcNode.OfInt((Node.OfInt) left, (Node.OfInt) right);
+        case LONG_VALUE:
+            return (Node<T>) new ConcNode.OfLong((Node.OfLong) left, (Node.OfLong) right);
+        case DOUBLE_VALUE:
+            return (Node<T>) new ConcNode.OfDouble((Node.OfDouble) left, (Node.OfDouble) right);
+        default:
+            throw new IllegalStateException("Unknown shape " + shape);
+    }
+}

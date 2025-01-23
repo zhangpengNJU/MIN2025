@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    SortedSet<?> set = new TreeSet<>((SortedSet<?>) oldInstance);
+    return new Expression(oldInstance, Collections.class, "synchronizedSortedSet", new Object[] { set });
+}

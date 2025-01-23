@@ -1,0 +1,18 @@
+/**
+ * Register a new <code>DragGestureListener</code>.
+ * <P>
+ * @param dgl the <code>DragGestureListener</code> to register
+ * with this <code>DragGestureRecognizer</code>.
+ * <P>
+ * @throws java.util.TooManyListenersException if a
+ * <code>DragGestureListener</code> has already been added.
+ */
+public synchronized void addDragGestureListener(DragGestureListener dgl) throws TooManyListenersException {
+    if (dragGestureListener != null)
+        throw new TooManyListenersException();
+    else {
+        dragGestureListener = dgl;
+        if (component != null)
+            registerListeners();
+    }
+}

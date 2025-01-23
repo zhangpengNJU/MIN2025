@@ -1,0 +1,6 @@
+public boolean cancel(boolean mayInterruptIfRunning) {
+    boolean cancelled = super.cancel(mayInterruptIfRunning);
+    if (cancelled && removeOnCancel && heapIndex >= 0)
+        remove(this);
+    return cancelled;
+}

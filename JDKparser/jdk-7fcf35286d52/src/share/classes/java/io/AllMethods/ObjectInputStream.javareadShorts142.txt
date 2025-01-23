@@ -1,0 +1,20 @@
+void readShorts(short[] v, int off, int len) throws IOException {
+    int stop, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            int span = Math.min(endoff - off, MAX_BLOCK_SIZE >> 1);
+            in.readFully(buf, 0, span << 1);
+            stop = off + span;
+            pos = 0;
+        } else if (end - pos < 2) {
+            v[off++] = din.readShort();
+            continue;
+        } else {
+            stop = Math.min(endoff, off + ((end - pos) >> 1));
+        }
+        while (off < stop) {
+            v[off++] = Bits.getShort(buf, pos);
+            pos += 2;
+        }
+    }
+}

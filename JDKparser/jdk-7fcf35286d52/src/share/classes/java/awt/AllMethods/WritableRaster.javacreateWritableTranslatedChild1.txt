@@ -1,0 +1,18 @@
+/**
+ * Create a WritableRaster with the same size, SampleModel and DataBuffer
+ * as this one, but with a different location.  The new WritableRaster
+ * will possess a reference to the current WritableRaster, accessible
+ * through its getParent() and getWritableParent() methods.
+ *
+ * @param childMinX X coord of the upper left corner of the new Raster.
+ * @param childMinY Y coord of the upper left corner of the new Raster.
+ * @return a <code>WritableRaster</code> the same as this one except
+ *         for the specified location.
+ * @throws RasterFormatException if  computing either
+ *         <code>childMinX + this.getWidth()</code> or
+ *         <code>childMinY + this.getHeight()</code> results in integer
+ *         overflow
+ */
+public WritableRaster createWritableTranslatedChild(int childMinX, int childMinY) {
+    return createWritableChild(minX, minY, width, height, childMinX, childMinY, null);
+}

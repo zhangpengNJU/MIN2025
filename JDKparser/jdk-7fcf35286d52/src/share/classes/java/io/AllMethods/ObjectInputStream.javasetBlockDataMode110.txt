@@ -1,0 +1,21 @@
+/**
+ * Sets block data mode to the given mode (true == on, false == off)
+ * and returns the previous mode value.  If the new mode is the same as
+ * the old mode, no action is taken.  Throws IllegalStateException if
+ * block data mode is being switched from on to off while unconsumed
+ * block data is still present in the stream.
+ */
+boolean setBlockDataMode(boolean newmode) throws IOException {
+    if (blkmode == newmode) {
+        return blkmode;
+    }
+    if (newmode) {
+        pos = 0;
+        end = 0;
+        unread = 0;
+    } else if (pos < end) {
+        throw new IllegalStateException("unread block data");
+    }
+    blkmode = newmode;
+    return !blkmode;
+}

@@ -1,0 +1,23 @@
+/*
+     * Used to process exceptions in dispatching focus event (in focusLost/focusGained callbacks).
+     * @param ex previously caught exception that may be processed right here, or null
+     * @param comp the component to dispatch the event to
+     * @param event the event to dispatch to the component
+     */
+static private Throwable dispatchAndCatchException(Throwable ex, Component comp, FocusEvent event) {
+    Throwable retEx = null;
+    try {
+        comp.dispatchEvent(event);
+    } catch (RuntimeException re) {
+        retEx = re;
+    } catch (Error er) {
+        retEx = er;
+    }
+    if (retEx != null) {
+        if (ex != null) {
+            handleException(ex);
+        }
+        return retEx;
+    }
+    return ex;
+}

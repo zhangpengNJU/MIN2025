@@ -1,0 +1,11 @@
+public CodeSigner[] getCodeSigners() {
+    try {
+        maybeInstantiateVerifier();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    if (signers == null && jv != null) {
+        signers = jv.getCodeSigners(JarFile.this, this);
+    }
+    return signers == null ? null : signers.clone();
+}

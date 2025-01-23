@@ -1,0 +1,8 @@
+/**
+ * Atomically decrements by one the current value.
+ *
+ * @return the updated value
+ */
+public final long decrementAndGet() {
+    return unsafe.getAndAddLong(this, valueOffset, -1L) - 1L;
+}

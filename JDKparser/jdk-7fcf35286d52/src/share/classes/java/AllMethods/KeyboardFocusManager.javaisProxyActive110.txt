@@ -1,0 +1,8 @@
+// Returns the value of this KeyEvent's field isProxyActive
+static boolean isProxyActive(KeyEvent e) {
+    if (!GraphicsEnvironment.isHeadless()) {
+        return isProxyActiveImpl(e);
+    } else {
+        return false;
+    }
+}

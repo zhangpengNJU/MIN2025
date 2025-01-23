@@ -1,0 +1,17 @@
+@Override
+public final LongStream mapToLong(DoubleToLongFunction mapper) {
+    Objects.requireNonNull(mapper);
+    return new LongPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Double> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedDouble<Long>(sink) {
+
+                @Override
+                public void accept(double t) {
+                    downstream.accept(mapper.applyAsLong(t));
+                }
+            };
+        }
+    };
+}

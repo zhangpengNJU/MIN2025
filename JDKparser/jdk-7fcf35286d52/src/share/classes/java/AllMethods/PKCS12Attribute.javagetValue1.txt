@@ -1,0 +1,26 @@
+/**
+ * Returns the attribute's ASN.1 DER-encoded value as a string.
+ * An ASN.1 DER-encoded value is returned in one of the following
+ * {@code String} formats:
+ * <ul>
+ * <li> the DER encoding of a basic ASN.1 type that has a natural
+ *      string representation is returned as the string itself.
+ *      Such types are currently limited to BOOLEAN, INTEGER,
+ *      OBJECT IDENTIFIER, UTCTime, GeneralizedTime and the
+ *      following six ASN.1 string types: UTF8String,
+ *      PrintableString, T61String, IA5String, BMPString and
+ *      GeneralString.
+ * <li> the DER encoding of any other ASN.1 type is not decoded but
+ *      returned as a binary string of colon-separated pairs of
+ *      hexadecimal digits.
+ * </ul>
+ * Multi-valued attributes are represented as a comma-separated
+ * list of values, enclosed in square brackets. See
+ * {@link Arrays#toString(java.lang.Object[])}.
+ *
+ * @return the attribute value's string encoding
+ */
+@Override
+public String getValue() {
+    return value;
+}

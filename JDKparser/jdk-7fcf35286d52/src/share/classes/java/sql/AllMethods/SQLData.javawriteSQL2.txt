@@ -1,0 +1,22 @@
+/**
+ * Writes this object to the given SQL data stream, converting it back to
+ * its SQL value in the data source.
+ * The implementation of the method must follow this protocol:<BR>
+ * It must write each of the attributes of the SQL type
+ * to the given output stream.  This is done by calling a
+ * method of the output stream to write each item, in the order that
+ * they appear in the SQL definition of the type.
+ * Specifically, it must call the appropriate <code>SQLOutput</code> writer
+ * method(s) (<code>writeInt</code>, <code>writeString</code>, and so on)
+ * to do the following: for a Distinct Type, write its single data element;
+ * for a Structured Type, write a value for each attribute of the SQL type.
+ *
+ * @param stream the <code>SQLOutput</code> object to which to write the data for
+ * the value that was custom mapped
+ * @exception SQLException if there is a database access error
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see SQLOutput
+ * @since 1.2
+ */
+void writeSQL(SQLOutput stream) throws SQLException;

@@ -1,0 +1,18 @@
+/**
+ * Gives the JDBC driver a hint as to the number of rows that should
+ * be fetched from the database when more rows are needed for this
+ * <code>ResultSet</code> object.
+ * If the fetch size specified is zero, the JDBC driver
+ * ignores the value and is free to make its own best guess as to what
+ * the fetch size should be.  The default value is set by the
+ * <code>Statement</code> object
+ * that created the result set.  The fetch size may be changed at any time.
+ *
+ * @param rows the number of rows to fetch
+ * @exception SQLException if a database access error occurs; this method
+ * is called on a closed result set or the
+ * condition {@code rows >= 0} is not satisfied
+ * @since 1.2
+ * @see #getFetchSize
+ */
+void setFetchSize(int rows) throws SQLException;

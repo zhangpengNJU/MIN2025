@@ -1,0 +1,35 @@
+/**
+ * Returns the boolean value represented by the string associated with the
+ * specified key in this preference node.  Valid strings
+ * are <tt>"true"</tt>, which represents true, and <tt>"false"</tt>, which
+ * represents false.  Case is ignored, so, for example, <tt>"TRUE"</tt>
+ * and <tt>"False"</tt> are also valid.  This method is intended for use in
+ * conjunction with {@link #putBoolean}.
+ *
+ * <p>Returns the specified default if there is no value
+ * associated with the key, the backing store is inaccessible, or if the
+ * associated value is something other than <tt>"true"</tt> or
+ * <tt>"false"</tt>, ignoring case.
+ *
+ * <p>If the implementation supports <i>stored defaults</i> and such a
+ * default exists and is accessible, it is used in preference to the
+ * specified default, unless the stored default is something other than
+ * <tt>"true"</tt> or <tt>"false"</tt>, ignoring case, in which case the
+ * specified default is used.
+ *
+ * @param key key whose associated value is to be returned as a boolean.
+ * @param def the value to be returned in the event that this
+ *        preference node has no value associated with <tt>key</tt>
+ *        or the associated value cannot be interpreted as a boolean,
+ *        or the backing store is inaccessible.
+ * @return the boolean value represented by the string associated with
+ *         <tt>key</tt> in this preference node, or <tt>def</tt> if the
+ *         associated value does not exist or cannot be interpreted as
+ *         a boolean.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.
+ * @see #get(String,String)
+ * @see #putBoolean(String,boolean)
+ */
+public abstract boolean getBoolean(String key, boolean def);

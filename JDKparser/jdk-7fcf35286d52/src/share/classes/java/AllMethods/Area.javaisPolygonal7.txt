@@ -1,0 +1,17 @@
+/**
+ * Tests whether this <code>Area</code> consists entirely of
+ * straight edged polygonal geometry.
+ * @return    <code>true</code> if the geometry of this
+ * <code>Area</code> consists entirely of line segments;
+ * <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean isPolygonal() {
+    Enumeration enum_ = curves.elements();
+    while (enum_.hasMoreElements()) {
+        if (((Curve) enum_.nextElement()).getOrder() > 1) {
+            return false;
+        }
+    }
+    return true;
+}

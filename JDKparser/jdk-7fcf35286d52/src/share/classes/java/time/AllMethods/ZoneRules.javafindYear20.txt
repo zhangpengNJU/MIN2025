@@ -1,0 +1,6 @@
+private int findYear(long epochSecond, ZoneOffset offset) {
+    // inline for performance
+    long localSecond = epochSecond + offset.getTotalSeconds();
+    long localEpochDay = Math.floorDiv(localSecond, 86400);
+    return LocalDate.ofEpochDay(localEpochDay).getYear();
+}

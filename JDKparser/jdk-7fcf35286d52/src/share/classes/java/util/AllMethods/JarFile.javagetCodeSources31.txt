@@ -1,0 +1,16 @@
+CodeSource[] getCodeSources(URL url) {
+    ensureInitialization();
+    if (jv != null) {
+        return jv.getCodeSources(this, url);
+    }
+    /*
+         * JAR file has no signed content. Is there a non-signing
+         * code source?
+         */
+    Enumeration<String> unsigned = unsignedEntryNames();
+    if (unsigned.hasMoreElements()) {
+        return new CodeSource[] { JarVerifier.getUnsignedCS(url) };
+    } else {
+        return null;
+    }
+}

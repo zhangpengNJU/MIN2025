@@ -1,0 +1,36 @@
+/**
+ * Registers the OUT parameter in ordinal position
+ * <code>parameterIndex</code> to the JDBC type
+ * <code>sqlType</code>.  All OUT parameters must be registered
+ * before a stored procedure is executed.
+ * <p>
+ * The JDBC type specified by <code>sqlType</code> for an OUT
+ * parameter determines the Java type that must be used
+ * in the <code>get</code> method to read the value of that parameter.
+ * <p>
+ * If the JDBC type expected to be returned to this output parameter
+ * is specific to this particular database, <code>sqlType</code>
+ * should be <code>java.sql.Types.OTHER</code>.  The method
+ * {@link #getObject} retrieves the value.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ *        and so on
+ * @param sqlType the JDBC type code defined by <code>java.sql.Types</code>.
+ *        If the parameter is of JDBC type <code>NUMERIC</code>
+ *        or <code>DECIMAL</code>, the version of
+ *        <code>registerOutParameter</code> that accepts a scale value
+ *        should be used.
+ *
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if <code>sqlType</code> is
+ * a <code>ARRAY</code>, <code>BLOB</code>, <code>CLOB</code>,
+ * <code>DATALINK</code>, <code>JAVA_OBJECT</code>, <code>NCHAR</code>,
+ * <code>NCLOB</code>, <code>NVARCHAR</code>, <code>LONGNVARCHAR</code>,
+ *  <code>REF</code>, <code>ROWID</code>, <code>SQLXML</code>
+ * or  <code>STRUCT</code> data type and the JDBC driver does not support
+ * this data type
+ * @see Types
+ */
+void registerOutParameter(int parameterIndex, int sqlType) throws SQLException;

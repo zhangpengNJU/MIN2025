@@ -1,0 +1,11 @@
+@Override
+public V replace(K key, V value) {
+    Node<K, V> e;
+    if ((e = getNode(hash(key), key)) != null) {
+        V oldValue = e.value;
+        e.value = value;
+        afterNodeAccess(e);
+        return oldValue;
+    }
+    return null;
+}

@@ -1,0 +1,20 @@
+/**
+ * Fires a property change event to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if the given event's old and new values are equal and non-null.
+ *
+ * @param event  the {@code PropertyChangeEvent} to be fired
+ */
+public void firePropertyChange(PropertyChangeEvent event) {
+    Object oldValue = event.getOldValue();
+    Object newValue = event.getNewValue();
+    if (oldValue == null || newValue == null || !oldValue.equals(newValue)) {
+        String name = event.getPropertyName();
+        PropertyChangeListener[] common = this.map.get(null);
+        PropertyChangeListener[] named = (name != null) ? this.map.get(name) : null;
+        fire(common, event);
+        fire(named, event);
+    }
+}

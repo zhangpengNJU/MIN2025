@@ -1,0 +1,14 @@
+@Override
+public final long estimateSize() {
+    if (curNode == null)
+        return 0;
+    // Will not reflect the effects of partial traversal.
+    // This is compliant with the specification
+    if (lastNodeSpliterator != null)
+        return lastNodeSpliterator.estimateSize();
+    else {
+        long size = 0;
+        for (int i = curChildIndex; i < curNode.getChildCount(); i++) size += curNode.getChild(i).count();
+        return size;
+    }
+}

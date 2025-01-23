@@ -1,0 +1,14 @@
+/**
+ * Gets the time zone.
+ *
+ * @return the time zone object associated with this calendar.
+ */
+public TimeZone getTimeZone() {
+    // If the TimeZone object is shared by other Calendar instances, then
+    // create a clone.
+    if (sharedZone) {
+        zone = (TimeZone) zone.clone();
+        sharedZone = false;
+    }
+    return zone;
+}

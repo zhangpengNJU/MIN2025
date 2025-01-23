@@ -1,0 +1,5 @@
+@Override
+public Spliterator<T> trySplit() {
+    int lo = index, mid = (lo + fence) >>> 1;
+    return (lo >= mid) ? null : new ArraySpliterator<>(array, lo, index = mid, characteristics);
+}

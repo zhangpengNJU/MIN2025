@@ -1,0 +1,20 @@
+/**
+ * Returns the last node, the unique node p for which:
+ *     p.next == null && p.prev != p
+ * The returned node may or may not be logically deleted.
+ * Guarantees that tail is set to the returned node.
+ */
+Node<E> last() {
+    restartFromTail: for (; ; ) for (Node<E> t = tail, p = t, q; ; ) {
+        if ((q = p.next) != null && (q = (p = q).next) != null)
+            // Check for tail updates every other hop.
+            // If p == q, we are sure to follow tail instead.
+            p = (t != (t = tail)) ? t : q;
+        else if (p == t || // It is possible that p is NEXT_TERMINATOR,
+        // but if so, the CAS is guaranteed to fail.
+        casTail(t, p))
+            return p;
+        else
+            continue restartFromTail;
+    }
+}

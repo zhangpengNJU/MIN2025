@@ -1,0 +1,12 @@
+/**
+ * Ends the parsing of an optional segment of the input.
+ *
+ * @param successful  whether the optional segment was successfully parsed
+ */
+void endOptional(boolean successful) {
+    if (successful) {
+        parsed.remove(parsed.size() - 2);
+    } else {
+        parsed.remove(parsed.size() - 1);
+    }
+}

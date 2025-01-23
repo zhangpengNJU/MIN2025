@@ -1,0 +1,15 @@
+/**
+ * Returns <tt>true</tt> if this set contains the specified element.
+ *
+ * @param e element to be checked for containment in this collection
+ * @return <tt>true</tt> if this set contains the specified element
+ */
+public boolean contains(Object e) {
+    if (e == null)
+        return false;
+    Class<?> eClass = e.getClass();
+    if (eClass != elementType && eClass.getSuperclass() != elementType)
+        return false;
+    int eOrdinal = ((Enum<?>) e).ordinal();
+    return (elements[eOrdinal >>> 6] & (1L << eOrdinal)) != 0;
+}

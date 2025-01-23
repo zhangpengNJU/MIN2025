@@ -1,0 +1,13 @@
+/**
+ * Check if a bean can be viewed as a given target type.
+ * The result will be true if the Beans.getInstanceof method
+ * can be used on the given bean to obtain an object that
+ * represents the specified targetType type view.
+ *
+ * @param bean  Bean from which we want to obtain a view.
+ * @param targetType  The type of view we'd like to get.
+ * @return "true" if the given bean supports the given targetType.
+ */
+public static boolean isInstanceOf(Object bean, Class<?> targetType) {
+    return Introspector.isSubclass(bean.getClass(), targetType);
+}

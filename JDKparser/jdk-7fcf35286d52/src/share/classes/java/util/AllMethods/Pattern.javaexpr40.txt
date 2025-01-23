@@ -1,0 +1,55 @@
+/**
+ *  The following methods handle the main parsing. They are sorted
+ *  according to their precedence order, the lowest one first.
+ */
+/**
+ * The expression is parsed with branch nodes added for alternations.
+ * This may be called recursively to parse sub expressions that may
+ * contain alternations.
+ */
+private Node expr(Node end) {
+    Node prev = null;
+    Node firstTail = null;
+    Branch branch = null;
+    Node branchConn = null;
+    for (; ; ) {
+        Node node = sequence(end);
+        // double return
+        Node nodeTail = root;
+        if (prev == null) {
+            prev = node;
+            firstTail = nodeTail;
+        } else {
+            // Branch
+            if (branchConn == null) {
+                branchConn = new BranchConn();
+                branchConn.next = end;
+            }
+            if (node == end) {
+                // if the node returned from sequence() is "end"
+                // we have an empty expr, set a null atom into
+                // the branch to indicate to go "next" directly.
+                node = null;
+            } else {
+                // the "tail.next" of each atom goes to branchConn
+                nodeTail.next = branchConn;
+            }
+            if (prev == branch) {
+                branch.add(node);
+            } else {
+                if (prev == end) {
+                    prev = null;
+                } else {
+                    // replace the "end" with "branchConn" at its tail.next
+                    // when put the "prev" into the branch as the first atom.
+                    firstTail.next = branchConn;
+                }
+                prev = branch = new Branch(prev, node, branchConn);
+            }
+        }
+        if (peek() != '|') {
+            return prev;
+        }
+        next();
+    }
+}

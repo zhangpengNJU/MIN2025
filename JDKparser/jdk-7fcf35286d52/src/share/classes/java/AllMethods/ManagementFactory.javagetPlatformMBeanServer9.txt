@@ -1,0 +1,78 @@
+/**
+ * Returns the platform {@link javax.management.MBeanServer MBeanServer}.
+ * On the first call to this method, it first creates the platform
+ * {@code MBeanServer} by calling the
+ * {@link javax.management.MBeanServerFactory#createMBeanServer
+ * MBeanServerFactory.createMBeanServer}
+ * method and registers each platform MXBean in this platform
+ * {@code MBeanServer} with its
+ * {@link PlatformManagedObject#getObjectName ObjectName}.
+ * This method, in subsequent calls, will simply return the
+ * initially created platform {@code MBeanServer}.
+ * <p>
+ * MXBeans that get created and destroyed dynamically, for example,
+ * memory {@link MemoryPoolMXBean pools} and
+ * {@link MemoryManagerMXBean managers},
+ * will automatically be registered and deregistered into the platform
+ * {@code MBeanServer}.
+ * <p>
+ * If the system property {@code javax.management.builder.initial}
+ * is set, the platform {@code MBeanServer} creation will be done
+ * by the specified {@link javax.management.MBeanServerBuilder}.
+ * <p>
+ * It is recommended that this platform MBeanServer also be used
+ * to register other application managed beans
+ * besides the platform MXBeans.
+ * This will allow all MBeans to be published through the same
+ * {@code MBeanServer} and hence allow for easier network publishing
+ * and discovery.
+ * Name conflicts with the platform MXBeans should be avoided.
+ *
+ * @return the platform {@code MBeanServer}; the platform
+ *         MXBeans are registered into the platform {@code MBeanServer}
+ *         at the first time this method is called.
+ *
+ * @exception SecurityException if there is a security manager
+ * and the caller does not have the permission required by
+ * {@link javax.management.MBeanServerFactory#createMBeanServer}.
+ *
+ * @see javax.management.MBeanServerFactory
+ * @see javax.management.MBeanServerFactory#createMBeanServer
+ */
+public static synchronized MBeanServer getPlatformMBeanServer() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        Permission perm = new MBeanServerPermission("createMBeanServer");
+        sm.checkPermission(perm);
+    }
+    if (platformMBeanServer == null) {
+        platformMBeanServer = MBeanServerFactory.createMBeanServer();
+        for (PlatformComponent pc : PlatformComponent.values()) {
+            List<? extends PlatformManagedObject> list = pc.getMXBeans(pc.getMXBeanInterface());
+            for (PlatformManagedObject o : list) {
+                // Each PlatformComponent represents one management
+                // interface. Some MXBean may extend another one.
+                // The MXBean instances for one platform component
+                // (returned by pc.getMXBeans()) might be also
+                // the MXBean instances for another platform component.
+                // e.g. com.sun.management.GarbageCollectorMXBean
+                // 
+                // So need to check if an MXBean instance is registered
+                // before registering into the platform MBeanServer
+                if (!platformMBeanServer.isRegistered(o.getObjectName())) {
+                    addMXBean(platformMBeanServer, o);
+                }
+            }
+        }
+        HashMap<ObjectName, DynamicMBean> dynmbeans = ManagementFactoryHelper.getPlatformDynamicMBeans();
+        for (Map.Entry<ObjectName, DynamicMBean> e : dynmbeans.entrySet()) {
+            addDynamicMBean(platformMBeanServer, e.getValue(), e.getKey());
+        }
+        for (final PlatformManagedObject o : ExtendedPlatformComponent.getMXBeans()) {
+            if (!platformMBeanServer.isRegistered(o.getObjectName())) {
+                addMXBean(platformMBeanServer, o);
+            }
+        }
+    }
+    return platformMBeanServer;
+}

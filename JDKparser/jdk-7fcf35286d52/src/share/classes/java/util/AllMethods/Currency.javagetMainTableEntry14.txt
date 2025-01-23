@@ -1,0 +1,10 @@
+/**
+ * Gets the main table entry for the country whose country code consists
+ * of char1 and char2.
+ */
+private static int getMainTableEntry(char char1, char char2) {
+    if (char1 < 'A' || char1 > 'Z' || char2 < 'A' || char2 > 'Z') {
+        throw new IllegalArgumentException();
+    }
+    return mainTable[(char1 - 'A') * A_TO_Z + (char2 - 'A')];
+}

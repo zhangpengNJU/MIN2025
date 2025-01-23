@@ -1,0 +1,29 @@
+/**
+ * Attempts to find the next subsequence of the input sequence that matches
+ * the pattern.
+ *
+ * <p> This method starts at the beginning of this matcher's region, or, if
+ * a previous invocation of the method was successful and the matcher has
+ * not since been reset, at the first character not matched by the previous
+ * match.
+ *
+ * <p> If the match succeeds then more information can be obtained via the
+ * <tt>start</tt>, <tt>end</tt>, and <tt>group</tt> methods.  </p>
+ *
+ * @return  <tt>true</tt> if, and only if, a subsequence of the input
+ *          sequence matches this matcher's pattern
+ */
+public boolean find() {
+    int nextSearchIndex = last;
+    if (nextSearchIndex == first)
+        nextSearchIndex++;
+    // If next search starts before region, start it at region
+    if (nextSearchIndex < from)
+        nextSearchIndex = from;
+    // If next search starts beyond region then it fails
+    if (nextSearchIndex > to) {
+        for (int i = 0; i < groups.length; i++) groups[i] = -1;
+        return false;
+    }
+    return search(nextSearchIndex);
+}

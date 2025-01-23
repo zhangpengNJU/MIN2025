@@ -1,0 +1,12 @@
+/**
+ * Returns a {@link Rectangle2D} that encloses all of the
+ * bits rendered by this <code>ImageGraphicAttribute</code>, relative
+ * to the rendering position.  A graphic can be rendered beyond its
+ * origin, ascent, descent, or advance;  but if it is, this
+ * method's implementation must indicate where the graphic is rendered.
+ * @return a <code>Rectangle2D</code> that encloses all of the bits
+ * rendered by this <code>ImageGraphicAttribute</code>.
+ */
+public Rectangle2D getBounds() {
+    return new Rectangle2D.Float(-fOriginX, -fOriginY, fImageWidth, fImageHeight);
+}

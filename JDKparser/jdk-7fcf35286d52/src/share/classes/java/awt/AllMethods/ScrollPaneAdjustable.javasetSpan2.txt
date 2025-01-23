@@ -1,0 +1,16 @@
+/**
+ * This is called by the scrollpane itself to update the
+ * <code>minimum</code>, <code>maximum</code> and
+ * <code>visible</code> values.  The scrollpane is the only one
+ * that should be changing these since it is the source of these
+ * values.
+ */
+void setSpan(int min, int max, int visible) {
+    // adjust the values to be reasonable
+    minimum = min;
+    maximum = Math.max(max, minimum + 1);
+    visibleAmount = Math.min(visible, maximum - minimum);
+    visibleAmount = Math.max(visibleAmount, 1);
+    blockIncrement = Math.max((int) (visible * .90), 1);
+    setValue(value);
+}

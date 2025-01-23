@@ -1,0 +1,17 @@
+private ReflectionData<T> newReflectionData(SoftReference<ReflectionData<T>> oldReflectionData, int classRedefinedCount) {
+    if (!useCaches)
+        return null;
+    while (true) {
+        ReflectionData<T> rd = new ReflectionData<>(classRedefinedCount);
+        // try to CAS it...
+        if (Atomic.casReflectionData(this, oldReflectionData, new SoftReference<>(rd))) {
+            return rd;
+        }
+        // else retry
+        oldReflectionData = this.reflectionData;
+        classRedefinedCount = this.classRedefinedCount;
+        if (oldReflectionData != null && (rd = oldReflectionData.get()) != null && rd.redefinedCount == classRedefinedCount) {
+            return rd;
+        }
+    }
+}

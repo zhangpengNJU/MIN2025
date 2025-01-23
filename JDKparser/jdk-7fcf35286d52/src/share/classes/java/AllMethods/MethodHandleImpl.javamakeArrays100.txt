@@ -1,0 +1,13 @@
+private static MethodHandle[] makeArrays() {
+    ArrayList<MethodHandle> mhs = new ArrayList<>();
+    for (; ; ) {
+        MethodHandle mh = findCollector("array", mhs.size(), Object[].class);
+        if (mh == null)
+            break;
+        mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
+        mhs.add(mh);
+    }
+    // current number of methods
+    assert (mhs.size() == 11);
+    return mhs.toArray(new MethodHandle[MAX_ARITY + 1]);
+}

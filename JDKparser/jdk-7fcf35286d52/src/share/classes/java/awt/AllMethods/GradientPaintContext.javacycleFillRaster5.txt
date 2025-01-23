@@ -1,0 +1,15 @@
+void cycleFillRaster(int[] pixels, int off, int adjust, int w, int h, double rowrel, double dx, double dy) {
+    rowrel = rowrel % 2.0;
+    int irowrel = ((int) (rowrel * (1 << 30))) << 1;
+    int idx = (int) (-dx * (1 << 31));
+    int idy = (int) (-dy * (1 << 31));
+    while (--h >= 0) {
+        int icolrel = irowrel;
+        for (int j = w; j > 0; j--) {
+            pixels[off++] = interp[icolrel >>> 23];
+            icolrel += idx;
+        }
+        off += adjust;
+        irowrel += idy;
+    }
+}

@@ -1,0 +1,8 @@
+private static boolean checkRef(Class<?> type, Object x) {
+    assert (!type.isPrimitive());
+    if (x == null)
+        return true;
+    if (type.isInterface())
+        return true;
+    return type.isInstance(x);
+}

@@ -1,0 +1,11 @@
+/* Check that you aren't exposing java.lang.Class.<init> or sensitive
+       fields in java.lang.Class. */
+private static void setAccessible0(AccessibleObject obj, boolean flag) throws SecurityException {
+    if (obj instanceof Constructor && flag == true) {
+        Constructor<?> c = (Constructor<?>) obj;
+        if (c.getDeclaringClass() == Class.class) {
+            throw new SecurityException("Cannot make a java.lang.Class" + " constructor accessible");
+        }
+    }
+    obj.override = flag;
+}

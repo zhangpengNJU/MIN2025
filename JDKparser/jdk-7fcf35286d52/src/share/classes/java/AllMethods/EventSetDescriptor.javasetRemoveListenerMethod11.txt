@@ -1,0 +1,10 @@
+private synchronized void setRemoveListenerMethod(Method method) {
+    if (method == null) {
+        return;
+    }
+    if (getClass0() == null) {
+        setClass0(method.getDeclaringClass());
+    }
+    removeMethodDescriptor = new MethodDescriptor(method);
+    setTransient(method.getAnnotation(Transient.class));
+}

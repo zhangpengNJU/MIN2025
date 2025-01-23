@@ -1,0 +1,101 @@
+private WritableRaster filterRasterImpl(Raster src, WritableRaster dst, int scaleConst, boolean sCheck) {
+    int numBands = src.getNumBands();
+    int width = src.getWidth();
+    int height = src.getHeight();
+    int[] srcPix = null;
+    int step = 0;
+    int tidx = 0;
+    // Create a new destination Raster, if needed
+    if (dst == null) {
+        dst = createCompatibleDestRaster(src);
+    } else if (height != dst.getHeight() || width != dst.getWidth()) {
+        throw new IllegalArgumentException("Width or height of Rasters do not " + "match");
+    } else if (numBands != dst.getNumBands()) {
+        // Make sure that the number of bands are equal
+        throw new IllegalArgumentException("Number of bands in src " + numBands + " does not equal number of bands in dest " + dst.getNumBands());
+    }
+    // Make sure that the arrays match
+    // Make sure that the low/high/constant arrays match
+    if (sCheck && scaleConst != 1 && scaleConst != src.getNumBands()) {
+        throw new IllegalArgumentException("Number of scaling constants " + "does not equal the number of" + " of bands in the src raster");
+    }
+    // 
+    // Try for a native raster rescale first
+    // 
+    if (ImagingLib.filter(this, src, dst) != null) {
+        return dst;
+    }
+    // 
+    // Native raster rescale failed.
+    // Try to see if a lookup operation can be used
+    // 
+    if (canUseLookup(src, dst)) {
+        int srcNgray = (1 << srcNbits);
+        int dstNgray = (1 << dstNbits);
+        if (dstNgray == 256) {
+            ByteLookupTable lut = createByteLut(scaleFactors, offsets, numBands, srcNgray);
+            LookupOp op = new LookupOp(lut, hints);
+            op.filter(src, dst);
+        } else {
+            ShortLookupTable lut = createShortLut(scaleFactors, offsets, numBands, srcNgray);
+            LookupOp op = new LookupOp(lut, hints);
+            op.filter(src, dst);
+        }
+    } else {
+        // 
+        // Fall back to the slow code
+        // 
+        if (scaleConst > 1) {
+            step = 1;
+        }
+        int sminX = src.getMinX();
+        int sY = src.getMinY();
+        int dminX = dst.getMinX();
+        int dY = dst.getMinY();
+        int sX;
+        int dX;
+        // 
+        // Determine bits per band to determine maxval for clamps.
+        // The min is assumed to be zero.
+        // REMIND: This must change if we ever support signed data types.
+        // 
+        int nbits;
+        int[] dstMax = new int[numBands];
+        int[] dstMask = new int[numBands];
+        SampleModel dstSM = dst.getSampleModel();
+        for (int z = 0; z < numBands; z++) {
+            nbits = dstSM.getSampleSize(z);
+            dstMax[z] = (1 << nbits) - 1;
+            dstMask[z] = ~(dstMax[z]);
+        }
+        int val;
+        for (int y = 0; y < height; y++, sY++, dY++) {
+            dX = dminX;
+            sX = sminX;
+            for (int x = 0; x < width; x++, sX++, dX++) {
+                // Get data for all bands at this x,y position
+                srcPix = src.getPixel(sX, sY, srcPix);
+                tidx = 0;
+                for (int z = 0; z < numBands; z++, tidx += step) {
+                    if ((scaleConst == 1 || scaleConst == 3) && (z == 3) && (numBands == 4)) {
+                        val = srcPix[z];
+                    } else {
+                        val = (int) (srcPix[z] * scaleFactors[tidx] + offsets[tidx]);
+                    }
+                    // Clamp
+                    if ((val & dstMask[z]) != 0) {
+                        if (val < 0) {
+                            val = 0;
+                        } else {
+                            val = dstMax[z];
+                        }
+                    }
+                    srcPix[z] = val;
+                }
+                // Put it back for all bands
+                dst.setPixel(dX, dY, srcPix);
+            }
+        }
+    }
+    return dst;
+}

@@ -1,0 +1,35 @@
+/**
+ * Returns the object representing the Unicode block
+ * containing the given character (Unicode code point), or
+ * {@code null} if the character is not a member of a
+ * defined block.
+ *
+ * @param   codePoint the character (Unicode code point) in question.
+ * @return  The {@code UnicodeBlock} instance representing the
+ *          Unicode block of which this character is a member, or
+ *          {@code null} if the character is not a member of any
+ *          Unicode block
+ * @exception IllegalArgumentException if the specified
+ * {@code codePoint} is an invalid Unicode code point.
+ * @see Character#isValidCodePoint(int)
+ * @since   1.5
+ */
+public static UnicodeBlock of(int codePoint) {
+    if (!isValidCodePoint(codePoint)) {
+        throw new IllegalArgumentException();
+    }
+    int top, bottom, current;
+    bottom = 0;
+    top = blockStarts.length;
+    current = top / 2;
+    // invariant: top > current >= bottom && codePoint >= unicodeBlockStarts[bottom]
+    while (top - bottom > 1) {
+        if (codePoint >= blockStarts[current]) {
+            bottom = current;
+        } else {
+            top = current;
+        }
+        current = (top + bottom) / 2;
+    }
+    return blocks[current];
+}

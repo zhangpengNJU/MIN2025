@@ -1,0 +1,14 @@
+/**
+ * Gets a value using a query.
+ *
+ * @param query  the query to use, not null
+ * @return the result, null if not found and optional is true
+ * @throws DateTimeException if the type is not available and the section is not optional
+ */
+<R> R getValue(TemporalQuery<R> query) {
+    R result = temporal.query(query);
+    if (result == null && optional == 0) {
+        throw new DateTimeException("Unable to extract value: " + temporal.getClass());
+    }
+    return result;
+}

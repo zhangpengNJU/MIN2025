@@ -1,0 +1,8 @@
+/**
+ * Notifies all waiting threads that the last byte of data has been
+ * received.
+ */
+synchronized void receivedLast() {
+    closedByWriter = true;
+    notifyAll();
+}

@@ -1,0 +1,10 @@
+@Override
+public void begin(long size) {
+    if (size > length)
+        throw new IllegalStateException("size passed to Sink.begin exceeds array length");
+    // Casts to int are safe since absolute size is verified to be within
+    // bounds when the root concrete SizedCollectorTask is constructed
+    // with the shared array
+    index = (int) offset;
+    fence = index + (int) length;
+}

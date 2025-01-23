@@ -1,0 +1,19 @@
+/**
+ * Preserves band ordering with new step factor...
+ */
+int[] orderBands(int[] orig, int step) {
+    int[] map = new int[orig.length];
+    int[] ret = new int[orig.length];
+    for (int i = 0; i < map.length; i++) map[i] = i;
+    for (int i = 0; i < ret.length; i++) {
+        int index = i;
+        for (int j = i + 1; j < ret.length; j++) {
+            if (orig[map[index]] > orig[map[j]]) {
+                index = j;
+            }
+        }
+        ret[map[index]] = i * step;
+        map[index] = map[i];
+    }
+    return ret;
+}

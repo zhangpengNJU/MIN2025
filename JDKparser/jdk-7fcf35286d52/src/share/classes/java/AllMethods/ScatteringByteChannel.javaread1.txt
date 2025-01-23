@@ -1,0 +1,35 @@
+/**
+ * Reads a sequence of bytes from this channel into the given buffers.
+ *
+ * <p> An invocation of this method of the form <tt>c.read(dsts)</tt>
+ * behaves in exactly the same manner as the invocation
+ *
+ * <blockquote><pre>
+ * c.read(dsts, 0, dsts.length);</pre></blockquote>
+ *
+ * @param  dsts
+ *         The buffers into which bytes are to be transferred
+ *
+ * @return The number of bytes read, possibly zero,
+ *         or <tt>-1</tt> if the channel has reached end-of-stream
+ *
+ * @throws  NonReadableChannelException
+ *          If this channel was not opened for reading
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the read operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the read operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public long read(ByteBuffer[] dsts) throws IOException;

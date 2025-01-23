@@ -1,0 +1,42 @@
+/**
+ *  Executes the given SQL statement and signals the driver that the
+ *  auto-generated keys indicated in the given array should be made available
+ *  for retrieval.   This array contains the names of the columns in the
+ *  target table that contain the auto-generated keys that should be made
+ *  available. The driver will ignore the array if the SQL statement
+ *  is not an <code>INSERT</code> statement, or an SQL statement able to return
+ *  auto-generated keys (the list of such statements is vendor-specific).
+ *  <p>
+ *  This method should be used when the returned row count may exceed
+ *  {@link Integer#MAX_VALUE}.
+ *  <p>
+ *  <strong>Note:</strong>This method cannot be called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>.
+ * <p>
+ *  The default implementation will throw {@code SQLFeatureNotSupportedException}
+ *
+ *  @param sql an SQL Data Manipulation Language (DML) statement,
+ *  such as <code>INSERT</code>, <code>UPDATE</code> or
+ *  <code>DELETE</code>; or an SQL statement that returns nothing,
+ *  such as a DDL statement.
+ *  @param columnNames an array of the names of the columns that should be
+ *         returned from the inserted row
+ *  @return either the row count for <code>INSERT</code>, <code>UPDATE</code>,
+ *          or <code>DELETE</code> statements, or 0 for SQL statements
+ *          that return nothing
+ *  @exception SQLException if a database access error occurs,
+ *   this method is called on a closed <code>Statement</code>, the SQL
+ *             statement returns a <code>ResultSet</code> object, the
+ *             second argument supplied to this method is not a <code>String</code> array
+ *             whose elements are valid column names, the method is called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>
+ *  @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ *  @throws SQLTimeoutException when the driver has determined that the
+ *  timeout value that was specified by the {@code setQueryTimeout}
+ *  method has been exceeded and has at least attempted to cancel
+ *  the currently running {@code Statement}
+ *  @since 1.8
+ */
+default long executeLargeUpdate(String sql, String[] columnNames) throws SQLException {
+    throw new SQLFeatureNotSupportedException("executeLargeUpdate not implemented");
+}

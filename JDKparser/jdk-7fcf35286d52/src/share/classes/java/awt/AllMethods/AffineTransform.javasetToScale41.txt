@@ -1,0 +1,29 @@
+/**
+ * Sets this transform to a scaling transformation.
+ * The matrix representing this transform becomes:
+ * <pre>
+ *          [   sx   0    0   ]
+ *          [   0    sy   0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param sx the factor by which coordinates are scaled along the
+ * X axis direction
+ * @param sy the factor by which coordinates are scaled along the
+ * Y axis direction
+ * @since 1.2
+ */
+public void setToScale(double sx, double sy) {
+    m00 = sx;
+    m10 = 0.0;
+    m01 = 0.0;
+    m11 = sy;
+    m02 = 0.0;
+    m12 = 0.0;
+    if (sx != 1.0 || sy != 1.0) {
+        state = APPLY_SCALE;
+        type = TYPE_UNKNOWN;
+    } else {
+        state = APPLY_IDENTITY;
+        type = TYPE_IDENTITY;
+    }
+}

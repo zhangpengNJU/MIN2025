@@ -1,0 +1,21 @@
+/**
+ * Creates an enum set initially containing the specified elements.
+ * This factory, whose parameter list uses the varargs feature, may
+ * be used to create an enum set initially containing an arbitrary
+ * number of elements, but it is likely to run slower than the overloadings
+ * that do not use varargs.
+ *
+ * @param <E> The class of the parameter elements and of the set
+ * @param first an element that the set is to contain initially
+ * @param rest the remaining elements the set is to contain initially
+ * @throws NullPointerException if any of the specified elements are null,
+ *     or if <tt>rest</tt> is null
+ * @return an enum set initially containing the specified elements
+ */
+@SafeVarargs
+public static <E extends Enum<E>> EnumSet<E> of(E first, E... rest) {
+    EnumSet<E> result = noneOf(first.getDeclaringClass());
+    result.add(first);
+    for (E e : rest) result.add(e);
+    return result;
+}

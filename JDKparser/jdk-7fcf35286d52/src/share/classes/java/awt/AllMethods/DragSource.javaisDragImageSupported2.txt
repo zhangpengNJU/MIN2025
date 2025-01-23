@@ -1,0 +1,18 @@
+/**
+ * Reports
+ * whether or not drag
+ * <code>Image</code> support
+ * is available on the underlying platform.
+ * <P>
+ * @return if the Drag Image support is available on this platform
+ */
+public static boolean isDragImageSupported() {
+    Toolkit t = Toolkit.getDefaultToolkit();
+    Boolean supported;
+    try {
+        supported = (Boolean) Toolkit.getDefaultToolkit().getDesktopProperty("DnD.isDragImageSupported");
+        return supported.booleanValue();
+    } catch (Exception e) {
+        return false;
+    }
+}

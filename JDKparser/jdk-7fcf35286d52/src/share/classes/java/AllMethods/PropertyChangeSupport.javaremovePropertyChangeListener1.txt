@@ -1,0 +1,23 @@
+/**
+ * Remove a PropertyChangeListener from the listener list.
+ * This removes a PropertyChangeListener that was registered
+ * for all properties.
+ * If <code>listener</code> was added more than once to the same event
+ * source, it will be notified one less time after being removed.
+ * If <code>listener</code> is null, or was never added, no exception is
+ * thrown and no action is taken.
+ *
+ * @param listener  The PropertyChangeListener to be removed
+ */
+public void removePropertyChangeListener(PropertyChangeListener listener) {
+    if (listener == null) {
+        return;
+    }
+    if (listener instanceof PropertyChangeListenerProxy) {
+        PropertyChangeListenerProxy proxy = (PropertyChangeListenerProxy) listener;
+        // Call two argument remove method.
+        removePropertyChangeListener(proxy.getPropertyName(), proxy.getListener());
+    } else {
+        this.map.remove(null, listener);
+    }
+}

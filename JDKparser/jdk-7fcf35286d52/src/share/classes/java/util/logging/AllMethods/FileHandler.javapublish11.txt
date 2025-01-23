@@ -1,0 +1,29 @@
+/**
+ * Format and publish a <tt>LogRecord</tt>.
+ *
+ * @param  record  description of the log event. A null record is
+ *                 silently ignored and is not published
+ */
+@Override
+public synchronized void publish(LogRecord record) {
+    if (!isLoggable(record)) {
+        return;
+    }
+    super.publish(record);
+    flush();
+    if (limit > 0 && meter.written >= limit) {
+        // We performed access checks in the "init" method to make sure
+        // we are only initialized from trusted code.  So we assume
+        // it is OK to write the target files, even if we are
+        // currently being called from untrusted code.
+        // So it is safe to raise privilege here.
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+            @Override
+            public Object run() {
+                rotate();
+                return null;
+            }
+        });
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * Gets the <tt>BeanContextServicesListener</tt> (if any) of the specified
+ * child.
+ *
+ * @param child the specified child
+ * @return the BeanContextServicesListener (if any) of the specified child
+ */
+protected static final BeanContextServicesListener getChildBeanContextServicesListener(Object child) {
+    try {
+        return (BeanContextServicesListener) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

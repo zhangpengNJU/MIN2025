@@ -1,0 +1,10 @@
+/**
+ * Sets the next time to run for a periodic task.
+ */
+private void setNextRunTime() {
+    long p = period;
+    if (p > 0)
+        time += p;
+    else
+        time = triggerTime(-p);
+}

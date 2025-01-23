@@ -1,0 +1,17 @@
+@Override
+public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+    if (isSupportedBy(temporal) == false) {
+        throw new UnsupportedTemporalTypeException("Unsupported field: DayOfQuarter");
+    }
+    long qoy = temporal.getLong(QUARTER_OF_YEAR);
+    if (qoy == 1) {
+        long year = temporal.getLong(YEAR);
+        return (IsoChronology.INSTANCE.isLeapYear(year) ? ValueRange.of(1, 91) : ValueRange.of(1, 90));
+    } else if (qoy == 2) {
+        return ValueRange.of(1, 91);
+    } else if (qoy == 3 || qoy == 4) {
+        return ValueRange.of(1, 92);
+    }
+    // else value not from 1 to 4, so drop through
+    return range();
+}

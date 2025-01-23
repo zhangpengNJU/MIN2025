@@ -1,0 +1,14 @@
+/**
+ * Peek at the packet to see who it is from. The data is copied into the specified
+ * {@code DatagramPacket}. The data is returned,
+ * but not consumed, so that a subsequent peekData/receive operation
+ * will see the same data.
+ * @param p the Packet Received.
+ * @return the port number which the packet came from.
+ * @exception IOException if an I/O exception occurs
+ * @exception  PortUnreachableException may be thrown if the socket is connected
+ *       to a currently unreachable destination. Note, there is no guarantee that the
+ *       exception will be thrown.
+ * @since 1.4
+ */
+protected abstract int peekData(DatagramPacket p) throws IOException;

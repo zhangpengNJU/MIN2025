@@ -1,0 +1,7 @@
+@Override
+public ThaiBuddhistDate date(TemporalAccessor temporal) {
+    if (temporal instanceof ThaiBuddhistDate) {
+        return (ThaiBuddhistDate) temporal;
+    }
+    return new ThaiBuddhistDate(LocalDate.from(temporal));
+}

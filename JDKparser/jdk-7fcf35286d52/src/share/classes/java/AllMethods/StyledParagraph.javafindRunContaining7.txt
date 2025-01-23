@@ -1,0 +1,12 @@
+/**
+ * Return i such that starts[i] &lt;= index &lt; starts[i+1].  starts
+ * must be in increasing order, with at least one element greater
+ * than index.
+ */
+private static int findRunContaining(int index, int[] starts) {
+    for (int i = 1; true; i++) {
+        if (starts[i] > index) {
+            return i - 1;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns an array of all the <code>VetoableChangeListener</code>s
+ * associated with the named property.
+ *
+ * @return all of the <code>VetoableChangeListener</code>s associated with
+ *         the named property or an empty array if no such listeners have
+ *         been added.
+ *
+ * @see #addVetoableChangeListener(java.lang.String,java.beans.VetoableChangeListener)
+ * @see #removeVetoableChangeListener(java.lang.String,java.beans.VetoableChangeListener)
+ * @see #getVetoableChangeListeners
+ * @since 1.4
+ */
+public synchronized VetoableChangeListener[] getVetoableChangeListeners(String propertyName) {
+    if (vetoableSupport == null) {
+        vetoableSupport = new VetoableChangeSupport(this);
+    }
+    return vetoableSupport.getVetoableChangeListeners(propertyName);
+}

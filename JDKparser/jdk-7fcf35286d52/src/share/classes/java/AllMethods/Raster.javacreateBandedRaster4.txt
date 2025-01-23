@@ -1,0 +1,75 @@
+/**
+ * Creates a Raster based on a BandedSampleModel with the
+ * specified data type, width, height, scanline stride, bank
+ * indices and band offsets.  The number of bands is inferred from
+ * bankIndices.length and bandOffsets.length, which must be the
+ * same.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  The dataType parameter should be one of the
+ * enumerated values defined in the DataBuffer class.
+ *
+ * <p> The only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,
+ * and TYPE_INT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param scanlineStride the line stride of the image data
+ * @param bankIndices the bank indices for each band
+ * @param bandOffsets the offsets of all bands
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height, scanline stride, bank indices and band
+ *         offsets.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types, which are
+ *         <code>DataBuffer.TYPE_BYTE</code>,
+ *         <code>DataBuffer.TYPE_USHORT</code>
+ *         or <code>DataBuffer.TYPE_INT</code>
+ * @throws ArrayIndexOutOfBoundsException if <code>bankIndices</code>
+ *         or <code>bandOffsets</code> is <code>null</code>
+ */
+public static WritableRaster createBandedRaster(int dataType, int w, int h, int scanlineStride, int[] bankIndices, int[] bandOffsets, Point location) {
+    DataBuffer d;
+    int bands = bandOffsets.length;
+    if (bankIndices == null) {
+        throw new ArrayIndexOutOfBoundsException("Bank indices array is null");
+    }
+    if (bandOffsets == null) {
+        throw new ArrayIndexOutOfBoundsException("Band offsets array is null");
+    }
+    // Figure out the #banks and the largest band offset
+    int maxBank = bankIndices[0];
+    int maxBandOff = bandOffsets[0];
+    for (int i = 1; i < bands; i++) {
+        if (bankIndices[i] > maxBank) {
+            maxBank = bankIndices[i];
+        }
+        if (bandOffsets[i] > maxBandOff) {
+            maxBandOff = bandOffsets[i];
+        }
+    }
+    int banks = maxBank + 1;
+    int size = maxBandOff + // fisrt (h - 1) scans
+    scanlineStride * (h - 1) + // last scan
+    w;
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            d = new DataBufferByte(size, banks);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            d = new DataBufferUShort(size, banks);
+            break;
+        case DataBuffer.TYPE_INT:
+            d = new DataBufferInt(size, banks);
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported data type " + dataType);
+    }
+    return createBandedRaster(d, w, h, scanlineStride, bankIndices, bandOffsets, location);
+}

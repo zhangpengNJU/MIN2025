@@ -1,0 +1,41 @@
+/**
+ * Constructs an ICC_Profile corresponding to the data in a file.
+ * fileName may be an absolute or a relative file specification.
+ * Relative file names are looked for in several places: first, relative
+ * to any directories specified by the java.iccprofile.path property;
+ * second, relative to any directories specified by the java.class.path
+ * property; finally, in a directory used to store profiles always
+ * available, such as the profile for sRGB.  Built-in profiles use .pf as
+ * the file name extension for profiles, e.g. sRGB.pf.
+ * This method throws an IOException if the specified file cannot be
+ * opened or if an I/O error occurs while reading the file.  It throws
+ * an IllegalArgumentException if the file does not contain valid ICC
+ * Profile data.
+ * @param fileName The file that contains the data for the profile.
+ *
+ * @return an <code>ICC_Profile</code> object corresponding to
+ *          the data in the specified file.
+ * @exception IOException If the specified file cannot be opened or
+ * an I/O error occurs while reading the file.
+ *
+ * @exception IllegalArgumentException If the file does not
+ * contain valid ICC Profile data.
+ *
+ * @exception SecurityException If a security manager is installed
+ * and it does not permit read access to the given file.
+ */
+public static ICC_Profile getInstance(String fileName) throws IOException {
+    ICC_Profile thisProfile;
+    FileInputStream fis = null;
+    File f = getProfileFile(fileName);
+    if (f != null) {
+        fis = new FileInputStream(f);
+    }
+    if (fis == null) {
+        throw new IOException("Cannot open file " + fileName);
+    }
+    thisProfile = getInstance(fis);
+    fis.close();
+    /* close the file */
+    return thisProfile;
+}

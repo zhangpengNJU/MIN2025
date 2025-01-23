@@ -1,0 +1,17 @@
+/**
+ * readObject is called to restore this filename.
+ * The original separator character is read.  If it is different
+ * than the separator character on this system, then the old separator
+ * is replaced by the local separator.
+ */
+private synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
+    ObjectInputStream.GetField fields = s.readFields();
+    String pathField = (String) fields.get("path", null);
+    // read the previous separator char
+    char sep = s.readChar();
+    if (sep != separatorChar)
+        pathField = pathField.replace(sep, separatorChar);
+    String path = fs.normalize(pathField);
+    UNSAFE.putObject(this, PATH_OFFSET, path);
+    UNSAFE.putIntVolatile(this, PREFIX_LENGTH_OFFSET, fs.prefixLength(path));
+}

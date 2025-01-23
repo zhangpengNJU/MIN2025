@@ -1,0 +1,17 @@
+/**
+ * Removes the specified window listener so that it no longer
+ * receives window events from this window.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window listener
+ * @see #addWindowListener
+ * @see #getWindowListeners
+ */
+public synchronized void removeWindowListener(WindowListener l) {
+    if (l == null) {
+        return;
+    }
+    windowListener = AWTEventMulticaster.remove(windowListener, l);
+}

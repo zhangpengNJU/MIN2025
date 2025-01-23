@@ -1,0 +1,7 @@
+// Capturing information from the Core Reflection API:
+private static int flagsMods(int flags, int mods, byte refKind) {
+    assert ((flags & RECOGNIZED_MODIFIERS) == 0);
+    assert ((mods & ~RECOGNIZED_MODIFIERS) == 0);
+    assert ((refKind & ~MN_REFERENCE_KIND_MASK) == 0);
+    return flags | mods | (refKind << MN_REFERENCE_KIND_SHIFT);
+}

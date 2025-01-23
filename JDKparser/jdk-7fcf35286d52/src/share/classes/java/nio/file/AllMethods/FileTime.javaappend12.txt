@@ -1,0 +1,9 @@
+// append year/month/day/hour/minute/second/nano with width and 0 padding
+private StringBuilder append(StringBuilder sb, int w, int d) {
+    while (w > 0) {
+        sb.append((char) (d / w + '0'));
+        d = d % w;
+        w /= 10;
+    }
+    return sb;
+}

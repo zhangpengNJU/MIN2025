@@ -1,0 +1,13 @@
+/**
+ * Returns an iterator over all the elements (both expired and
+ * unexpired) in this queue. The iterator does not return the
+ * elements in any particular order.
+ *
+ * <p>The returned iterator is
+ * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
+ *
+ * @return an iterator over the elements in this queue
+ */
+public Iterator<E> iterator() {
+    return new Itr(toArray());
+}

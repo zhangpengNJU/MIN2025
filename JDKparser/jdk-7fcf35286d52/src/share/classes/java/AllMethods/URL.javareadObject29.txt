@@ -1,0 +1,24 @@
+/**
+ * readObject is called to restore the state of the URL from the
+ * stream.  It reads the components of the URL and finds the local
+ * stream handler.
+ */
+private synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
+    GetField gf = s.readFields();
+    String protocol = (String) gf.get("protocol", null);
+    if (getURLStreamHandler(protocol) == null) {
+        throw new IOException("unknown protocol: " + protocol);
+    }
+    String host = (String) gf.get("host", null);
+    int port = gf.get("port", -1);
+    String authority = (String) gf.get("authority", null);
+    String file = (String) gf.get("file", null);
+    String ref = (String) gf.get("ref", null);
+    int hashCode = gf.get("hashCode", -1);
+    if (authority == null && ((host != null && host.length() > 0) || port != -1)) {
+        if (host == null)
+            host = "";
+        authority = (port == -1) ? host : host + ":" + port;
+    }
+    tempState = new UrlDeserializedState(protocol, host, port, authority, file, ref, hashCode);
+}

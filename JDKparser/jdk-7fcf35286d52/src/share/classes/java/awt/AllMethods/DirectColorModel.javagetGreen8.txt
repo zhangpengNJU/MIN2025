@@ -1,0 +1,22 @@
+/**
+ * Returns the green color component for the specified pixel, scaled
+ * from 0 to 255 in the default RGB <code>ColorSpace</code>, sRGB.  A
+ * color conversion is done if necessary.  The pixel value is specified
+ * as an <code>int</code>.
+ * The returned value is a non pre-multiplied value.  Thus, if the
+ * alpha is premultiplied, this method divides it out before returning
+ * the value.  If the alpha value is 0, for example, the green value
+ * is 0.
+ * @param pixel the specified pixel
+ * @return the green color component for the specified pixel, from
+ *         0 to 255 in the sRGB <code>ColorSpace</code>.
+ */
+final public int getGreen(int pixel) {
+    if (is_sRGB) {
+        return getsRGBComponentFromsRGB(pixel, 1);
+    } else if (is_LinearRGB) {
+        return getsRGBComponentFromLinearRGB(pixel, 1);
+    }
+    float[] rgb = getDefaultRGBComponents(pixel);
+    return (int) (rgb[1] * 255.0f + 0.5f);
+}

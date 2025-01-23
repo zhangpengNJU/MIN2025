@@ -1,0 +1,12 @@
+/**
+ * Flush all of the Introspector's internal caches.  This method is
+ * not normally required.  It is normally only needed by advanced
+ * tools that update existing "Class" objects in-place and need
+ * to make the Introspector re-analyze existing Class objects.
+ */
+public static void flushCaches() {
+    synchronized (declaredMethodCache) {
+        ThreadGroupContext.getContext().clearBeanInfoCache();
+        declaredMethodCache.clear();
+    }
+}

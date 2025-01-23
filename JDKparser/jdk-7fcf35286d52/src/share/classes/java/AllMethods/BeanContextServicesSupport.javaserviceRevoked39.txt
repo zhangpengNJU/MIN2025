@@ -1,0 +1,7 @@
+public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
+    // get the BCSChild values.
+    Iterator i = bcsChildren();
+    while (i.hasNext()) {
+        ((BCSSChild) i.next()).revokeService(bcsre.getServiceClass(), true, bcsre.isCurrentServiceInvalidNow());
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Throws an InvalidClassException if objects whose class is represented by
+ * this descriptor should not be permitted to use default serialization
+ * (e.g., if the class declares serializable fields that do not correspond
+ * to actual fields, and hence must use the GetField API).  This method
+ * does not apply to deserialization of enum constants.
+ */
+void checkDefaultSerialize() throws InvalidClassException {
+    requireInitialized();
+    if (defaultSerializeEx != null) {
+        throw defaultSerializeEx.newInvalidClassException();
+    }
+}

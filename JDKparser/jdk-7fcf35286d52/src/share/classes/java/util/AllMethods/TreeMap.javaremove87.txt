@@ -1,0 +1,12 @@
+public void remove() {
+    if (lastReturned == null)
+        throw new IllegalStateException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    // deleted entries are replaced by their successors
+    if (lastReturned.left != null && lastReturned.right != null)
+        next = lastReturned;
+    deleteEntry(lastReturned);
+    expectedModCount = modCount;
+    lastReturned = null;
+}

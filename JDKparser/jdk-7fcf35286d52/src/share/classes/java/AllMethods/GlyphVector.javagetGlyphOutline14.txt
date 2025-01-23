@@ -1,0 +1,23 @@
+/**
+ * Returns a <code>Shape</code> whose interior corresponds to the
+ * visual representation of the specified glyph
+ * within this <code>GlyphVector</code>, offset to x,&nbsp;y.
+ * The outline returned by this method is positioned around the
+ * origin of each individual glyph.
+ * @param glyphIndex the index into this <code>GlyphVector</code>
+ * @param x the X coordinate of the location of this {@code GlyphVector}
+ * @param y the Y coordinate of the location of this {@code GlyphVector}
+ * @return a <code>Shape</code> that is the outline of the glyph
+ *   at the specified <code>glyphIndex</code> of this
+ *   <code>GlyphVector</code> when rendered at the specified
+ *   coordinates.
+ * @throws IndexOutOfBoundsException if <code>glyphIndex</code>
+ *   is less than 0 or greater than or equal to the number
+ *   of glyphs in this <code>GlyphVector</code>
+ * @since 1.4
+ */
+public Shape getGlyphOutline(int glyphIndex, float x, float y) {
+    Shape s = getGlyphOutline(glyphIndex);
+    AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+    return at.createTransformedShape(s);
+}

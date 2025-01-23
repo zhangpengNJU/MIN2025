@@ -1,0 +1,27 @@
+/**
+ * Implements the "After_Soft_Dotted" condition
+ *
+ * Specification: The last preceding character with combining class
+ * of zero before C was Soft_Dotted, and there is no intervening
+ * combining character class 230 (ABOVE).
+ *
+ * Regular Expression:
+ *   Before C: [{Soft_Dotted==true}]([{cc!=230}&{cc!=0}])*
+ */
+private static boolean isAfterSoftDotted(String src, int index) {
+    int ch;
+    int cc;
+    // Look for the last preceding character
+    for (int i = index; i > 0; i -= Character.charCount(ch)) {
+        ch = src.codePointBefore(i);
+        if (isSoftDotted(ch)) {
+            return true;
+        } else {
+            cc = Normalizer.getCombiningClass(ch);
+            if ((cc == 0) || (cc == COMBINING_CLASS_ABOVE)) {
+                return false;
+            }
+        }
+    }
+    return false;
+}

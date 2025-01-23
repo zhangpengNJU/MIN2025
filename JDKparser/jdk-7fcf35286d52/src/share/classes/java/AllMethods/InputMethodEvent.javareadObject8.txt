@@ -1,0 +1,12 @@
+/**
+ * Initializes the <code>when</code> field if it is not present in the
+ * object input stream. In that case, the field will be initialized by
+ * invoking {@link java.awt.EventQueue#getMostRecentEventTime()}.
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    s.defaultReadObject();
+    if (when == 0) {
+        // Can't use getMostRecentEventTimeForSource because source is always null during deserialization
+        when = EventQueue.getMostRecentEventTime();
+    }
+}

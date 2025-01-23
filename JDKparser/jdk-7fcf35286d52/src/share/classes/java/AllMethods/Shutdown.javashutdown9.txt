@@ -1,0 +1,21 @@
+/* Invoked by the JNI DestroyJavaVM procedure when the last non-daemon
+     * thread has finished.  Unlike the exit method, this method does not
+     * actually halt the VM.
+     */
+static void shutdown() {
+    synchronized (lock) {
+        switch(state) {
+            case RUNNING:
+                /* Initiate shutdown */
+                state = HOOKS;
+                break;
+            case HOOKS:
+            /* Stall and then return */
+            case FINALIZERS:
+                break;
+        }
+    }
+    synchronized (Shutdown.class) {
+        sequence();
+    }
+}

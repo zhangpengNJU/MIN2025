@@ -1,0 +1,17 @@
+/**
+ * rounds 128-bit value according {@code MathContext}
+ * returns null if result can't be repsented as compact BigDecimal.
+ */
+private static BigDecimal doRound128(long hi, long lo, int sign, int scale, MathContext mc) {
+    int mcp = mc.precision;
+    int drop;
+    BigDecimal res = null;
+    if (((drop = precision(hi, lo) - mcp) > 0) && (drop < LONG_TEN_POWERS_TABLE.length)) {
+        scale = checkScaleNonZero((long) scale - drop);
+        res = divideAndRound128(hi, lo, LONG_TEN_POWERS_TABLE[drop], sign, scale, mc.roundingMode.oldMode, scale);
+    }
+    if (res != null) {
+        return doRound(res, mc);
+    }
+    return null;
+}

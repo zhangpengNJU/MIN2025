@@ -1,0 +1,21 @@
+/**
+ * Calls <code>dragOver</code> on the registered
+ * <code>DropTargetListener</code> and passes it
+ * the specified <code>DropTargetDragEvent</code>.
+ * Has no effect if this <code>DropTarget</code>
+ * is not active.
+ *
+ * @param dtde the <code>DropTargetDragEvent</code>
+ *
+ * @throws NullPointerException if this <code>DropTarget</code>
+ *         is active and <code>dtde</code> is <code>null</code>
+ *
+ * @see #isActive
+ */
+public synchronized void dragOver(DropTargetDragEvent dtde) {
+    if (!active)
+        return;
+    if (dtListener != null && active)
+        dtListener.dragOver(dtde);
+    updateAutoscroll(dtde.getLocation());
+}

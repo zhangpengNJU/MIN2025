@@ -1,0 +1,31 @@
+/**
+ * Tests if the interior of the specified {@link PathIterator}
+ * intersects the interior of a specified {@link Rectangle2D}.
+ * <p>
+ * This method provides a basic facility for implementors of
+ * the {@link Shape} interface to implement support for the
+ * {@link Shape#intersects(Rectangle2D)} method.
+ * <p>
+ * This method object may conservatively return true in
+ * cases where the specified rectangular area intersects a
+ * segment of the path, but that segment does not represent a
+ * boundary between the interior and exterior of the path.
+ * Such a case may occur if some set of segments of the
+ * path are retraced in the reverse direction such that the
+ * two sets of segments cancel each other out without any
+ * interior area between them.
+ * To determine whether segments represent true boundaries of
+ * the interior of the path would require extensive calculations
+ * involving all of the segments of the path and the winding
+ * rule and are thus beyond the scope of this implementation.
+ *
+ * @param pi the specified {@code PathIterator}
+ * @param r the specified {@code Rectangle2D}
+ * @return {@code true} if the specified {@code PathIterator} and
+ *         the interior of the specified {@code Rectangle2D}
+ *         intersect each other; {@code false} otherwise.
+ * @since 1.6
+ */
+public static boolean intersects(PathIterator pi, Rectangle2D r) {
+    return intersects(pi, r.getX(), r.getY(), r.getWidth(), r.getHeight());
+}

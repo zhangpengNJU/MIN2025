@@ -1,0 +1,69 @@
+/**
+ * Return a new instance of the implementation described by this
+ * service. The security provider framework uses this method to
+ * construct implementations. Applications will typically not need
+ * to call it.
+ *
+ * <p>The default implementation uses reflection to invoke the
+ * standard constructor for this type of service.
+ * Security providers can override this method to implement
+ * instantiation in a different way.
+ * For details and the values of constructorParameter that are
+ * valid for the various types of services see the
+ * <a href="../../../technotes/guides/security/crypto/CryptoSpec.html">
+ * Java Cryptography Architecture API Specification &amp;
+ * Reference</a>.
+ *
+ * @param constructorParameter the value to pass to the constructor,
+ * or null if this type of service does not use a constructorParameter.
+ *
+ * @return a new implementation of this service
+ *
+ * @throws InvalidParameterException if the value of
+ * constructorParameter is invalid for this type of service.
+ * @throws NoSuchAlgorithmException if instantiation failed for
+ * any other reason.
+ */
+public Object newInstance(Object constructorParameter) throws NoSuchAlgorithmException {
+    if (registered == false) {
+        if (provider.getService(type, algorithm) != this) {
+            throw new NoSuchAlgorithmException("Service not registered with Provider " + provider.getName() + ": " + this);
+        }
+        registered = true;
+    }
+    try {
+        EngineDescription cap = knownEngines.get(type);
+        if (cap == null) {
+            // unknown engine type, use generic code
+            // this is the code path future for non-core
+            // optional packages
+            return newInstanceGeneric(constructorParameter);
+        }
+        if (cap.constructorParameterClassName == null) {
+            if (constructorParameter != null) {
+                throw new InvalidParameterException("constructorParameter not used with " + type + " engines");
+            }
+            Class<?> clazz = getImplClass();
+            Class<?>[] empty = {};
+            Constructor<?> con = clazz.getConstructor(empty);
+            return con.newInstance();
+        } else {
+            Class<?> paramClass = cap.getConstructorParameterClass();
+            if (constructorParameter != null) {
+                Class<?> argClass = constructorParameter.getClass();
+                if (paramClass.isAssignableFrom(argClass) == false) {
+                    throw new InvalidParameterException("constructorParameter must be instanceof " + cap.constructorParameterClassName.replace('$', '.') + " for engine type " + type);
+                }
+            }
+            Class<?> clazz = getImplClass();
+            Constructor<?> cons = clazz.getConstructor(paramClass);
+            return cons.newInstance(constructorParameter);
+        }
+    } catch (NoSuchAlgorithmException e) {
+        throw e;
+    } catch (InvocationTargetException e) {
+        throw new NoSuchAlgorithmException("Error constructing implementation (algorithm: " + algorithm + ", provider: " + provider.getName() + ", class: " + className + ")", e.getCause());
+    } catch (Exception e) {
+        throw new NoSuchAlgorithmException("Error constructing implementation (algorithm: " + algorithm + ", provider: " + provider.getName() + ", class: " + className + ")", e);
+    }
+}

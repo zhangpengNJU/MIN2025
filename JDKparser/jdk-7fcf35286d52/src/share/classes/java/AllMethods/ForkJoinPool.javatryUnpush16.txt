@@ -1,0 +1,13 @@
+/**
+ * Pops the given task only if it is at the current top.
+ * (A shared version is available only via FJP.tryExternalUnpush)
+ */
+final boolean tryUnpush(ForkJoinTask<?> t) {
+    ForkJoinTask<?>[] a;
+    int s;
+    if ((a = array) != null && (s = top) != base && U.compareAndSwapObject(a, (((a.length - 1) & --s) << ASHIFT) + ABASE, t, null)) {
+        U.putOrderedInt(this, QTOP, s);
+        return true;
+    }
+    return false;
+}

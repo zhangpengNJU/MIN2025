@@ -1,0 +1,23 @@
+/**
+ * The variant number associated with this {@code UUID}.  The variant
+ * number describes the layout of the {@code UUID}.
+ *
+ * The variant number has the following meaning:
+ * <ul>
+ * <li>0    Reserved for NCS backward compatibility
+ * <li>2    <a href="http://www.ietf.org/rfc/rfc4122.txt">IETF&nbsp;RFC&nbsp;4122</a>
+ * (Leach-Salz), used by this class
+ * <li>6    Reserved, Microsoft Corporation backward compatibility
+ * <li>7    Reserved for future definition
+ * </ul>
+ *
+ * @return  The variant number of this {@code UUID}
+ */
+public int variant() {
+    // This field is composed of a varying number of bits.
+    // 0    -    -    Reserved for NCS backward compatibility
+    // 1    0    -    The IETF aka Leach-Salz variant (used by this class)
+    // 1    1    0    Reserved, Microsoft backward compatibility
+    // 1    1    1    Reserved for future definition.
+    return (int) ((leastSigBits >>> (64 - (leastSigBits >>> 62))) & (leastSigBits >> 63));
+}

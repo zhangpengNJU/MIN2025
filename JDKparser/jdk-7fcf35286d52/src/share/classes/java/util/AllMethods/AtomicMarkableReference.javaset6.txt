@@ -1,0 +1,11 @@
+/**
+ * Unconditionally sets the value of both the reference and mark.
+ *
+ * @param newReference the new value for the reference
+ * @param newMark the new value for the mark
+ */
+public void set(V newReference, boolean newMark) {
+    Pair<V> current = pair;
+    if (newReference != current.reference || newMark != current.mark)
+        this.pair = Pair.of(newReference, newMark);
+}

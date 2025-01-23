@@ -1,0 +1,19 @@
+/**
+ * True if the new parameters can be viewed (w/o casting) under the old parameter types.
+ */
+/*non-public*/
+boolean parametersAreViewableAs(MethodType newType, boolean keepInterfaces) {
+    if (form == newType.form && form.erasedType == this)
+        // my reference parameters are all Object
+        return true;
+    if (ptypes == newType.ptypes)
+        return true;
+    int argc = parameterCount();
+    if (argc != newType.parameterCount())
+        return false;
+    for (int i = 0; i < argc; i++) {
+        if (!VerifyType.isNullConversion(newType.parameterType(i), parameterType(i), keepInterfaces))
+            return false;
+    }
+    return true;
+}

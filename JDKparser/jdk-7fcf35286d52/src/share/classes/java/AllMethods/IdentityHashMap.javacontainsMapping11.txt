@@ -1,0 +1,22 @@
+/**
+ * Tests if the specified key-value mapping is in the map.
+ *
+ * @param   key   possible key
+ * @param   value possible value
+ * @return  <code>true</code> if and only if the specified key-value
+ *          mapping is in the map
+ */
+private boolean containsMapping(Object key, Object value) {
+    Object k = maskNull(key);
+    Object[] tab = table;
+    int len = tab.length;
+    int i = hash(k, len);
+    while (true) {
+        Object item = tab[i];
+        if (item == k)
+            return tab[i + 1] == value;
+        if (item == null)
+            return false;
+        i = nextKeyIndex(i, len);
+    }
+}

@@ -1,0 +1,32 @@
+// Should only be called while holding the tree lock
+int createHierarchyEvents(int id, Component changed, Container changedParent, long changeFlags, boolean enabledOnToolkit) {
+    switch(id) {
+        case HierarchyEvent.HIERARCHY_CHANGED:
+            if (hierarchyListener != null || (eventMask & AWTEvent.HIERARCHY_EVENT_MASK) != 0 || enabledOnToolkit) {
+                HierarchyEvent e = new HierarchyEvent(this, id, changed, changedParent, changeFlags);
+                dispatchEvent(e);
+                return 1;
+            }
+            break;
+        case HierarchyEvent.ANCESTOR_MOVED:
+        case HierarchyEvent.ANCESTOR_RESIZED:
+            if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+                if (changeFlags != 0) {
+                    eventLog.fine("Assertion (changeFlags == 0) failed");
+                }
+            }
+            if (hierarchyBoundsListener != null || (eventMask & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) != 0 || enabledOnToolkit) {
+                HierarchyEvent e = new HierarchyEvent(this, id, changed, changedParent);
+                dispatchEvent(e);
+                return 1;
+            }
+            break;
+        default:
+            // assert false
+            if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+                eventLog.fine("This code must never be reached");
+            }
+            break;
+    }
+    return 0;
+}

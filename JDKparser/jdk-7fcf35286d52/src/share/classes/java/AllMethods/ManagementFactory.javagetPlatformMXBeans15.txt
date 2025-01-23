@@ -1,0 +1,41 @@
+/**
+ * Returns the list of the platform MXBean proxies for
+ * forwarding the method calls of the {@code mxbeanInterface}
+ * through the given {@code MBeanServerConnection}.
+ * The returned list may contain zero, one, or more instances.
+ * The number of instances in the returned list is defined
+ * in the specification of the given management interface.
+ * The order is undefined and there is no guarantee that
+ * the list returned is in the same order as previous invocations.
+ *
+ * @param connection the {@code MBeanServerConnection} to forward to.
+ * @param mxbeanInterface a management interface for a platform
+ *                        MXBean
+ * @param <T> an {@code mxbeanInterface} type parameter
+ *
+ * @return the list of platform MXBean proxies for
+ * forwarding the method calls of the {@code mxbeanInterface}
+ * through the given {@code MBeanServerConnection}.
+ *
+ * @throws IllegalArgumentException if {@code mxbeanInterface}
+ * is not a platform management interface.
+ *
+ * @throws java.io.IOException if a communication problem
+ * occurred when accessing the {@code MBeanServerConnection}.
+ *
+ * @see #newPlatformMXBeanProxy
+ * @since 1.7
+ */
+public static <T extends PlatformManagedObject> List<T> getPlatformMXBeans(MBeanServerConnection connection, Class<T> mxbeanInterface) throws java.io.IOException {
+    PlatformComponent pc = PlatformComponent.getPlatformComponent(mxbeanInterface);
+    if (pc == null) {
+        T mbean = ExtendedPlatformComponent.getMXBean(mxbeanInterface);
+        if (mbean != null) {
+            ObjectName on = mbean.getObjectName();
+            T proxy = ManagementFactory.newPlatformMXBeanProxy(connection, on.getCanonicalName(), mxbeanInterface);
+            return Collections.singletonList(proxy);
+        }
+        throw new IllegalArgumentException(mxbeanInterface.getName() + " is not a platform management interface");
+    }
+    return Collections.unmodifiableList(pc.getMXBeans(connection, mxbeanInterface));
+}

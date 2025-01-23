@@ -1,0 +1,17 @@
+void blockWindows(java.util.List<Window> toBlock) {
+    DialogPeer dpeer = (DialogPeer) peer;
+    if (dpeer == null) {
+        return;
+    }
+    Iterator<Window> it = toBlock.iterator();
+    while (it.hasNext()) {
+        Window w = it.next();
+        if (!w.isModalBlocked()) {
+            w.setModalBlocked(this, true, false);
+        } else {
+            it.remove();
+        }
+    }
+    dpeer.blockWindows(toBlock);
+    blockedWindows.addAll(toBlock);
+}

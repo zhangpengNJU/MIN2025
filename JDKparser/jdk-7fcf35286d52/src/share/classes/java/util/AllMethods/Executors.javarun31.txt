@@ -1,0 +1,10 @@
+public void run() {
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+        public Void run() {
+            Thread.currentThread().setContextClassLoader(ccl);
+            r.run();
+            return null;
+        }
+    }, acc);
+}

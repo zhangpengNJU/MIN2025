@@ -1,0 +1,53 @@
+/**
+ * Returns the String after a given index.
+ *
+ * @param part the AccessibleText.CHARACTER, AccessibleText.WORD,
+ * or AccessibleText.SENTENCE to retrieve
+ * @param index an index within the text &gt;= 0
+ * @return the letter, word, or sentence, null for an invalid
+ *  index or part
+ */
+public String getAfterIndex(int part, int index) {
+    if (index < 0 || index >= TextComponent.this.getText().length()) {
+        return null;
+    }
+    switch(part) {
+        case AccessibleText.CHARACTER:
+            if (index + 1 >= TextComponent.this.getText().length()) {
+                return null;
+            }
+            return TextComponent.this.getText().substring(index + 1, index + 2);
+        case AccessibleText.WORD:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator words = BreakIterator.getWordInstance();
+                words.setText(s);
+                int start = findWordLimit(index, words, NEXT, s);
+                if (start == BreakIterator.DONE || start >= s.length()) {
+                    return null;
+                }
+                int end = words.following(start);
+                if (end == BreakIterator.DONE || end >= s.length()) {
+                    return null;
+                }
+                return s.substring(start, end);
+            }
+        case AccessibleText.SENTENCE:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator sentence = BreakIterator.getSentenceInstance();
+                sentence.setText(s);
+                int start = sentence.following(index);
+                if (start == BreakIterator.DONE || start >= s.length()) {
+                    return null;
+                }
+                int end = sentence.following(start);
+                if (end == BreakIterator.DONE || end >= s.length()) {
+                    return null;
+                }
+                return s.substring(start, end);
+            }
+        default:
+            return null;
+    }
+}

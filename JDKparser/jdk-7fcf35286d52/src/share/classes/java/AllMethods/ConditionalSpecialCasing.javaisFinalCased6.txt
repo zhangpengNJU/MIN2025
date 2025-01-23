@@ -1,0 +1,31 @@
+/**
+ * Implements the "Final_Cased" condition
+ *
+ * Specification: Within the closest word boundaries containing C, there is a cased
+ * letter before C, and there is no cased letter after C.
+ *
+ * Regular Expression:
+ *   Before C: [{cased==true}][{wordBoundary!=true}]*
+ *   After C: !([{wordBoundary!=true}]*[{cased}])
+ */
+private static boolean isFinalCased(String src, int index, Locale locale) {
+    BreakIterator wordBoundary = BreakIterator.getWordInstance(locale);
+    wordBoundary.setText(src);
+    int ch;
+    // Look for a preceding 'cased' letter
+    for (int i = index; (i >= 0) && !wordBoundary.isBoundary(i); i -= Character.charCount(ch)) {
+        ch = src.codePointBefore(i);
+        if (isCased(ch)) {
+            int len = src.length();
+            // Check that there is no 'cased' letter after the index
+            for (i = index + Character.charCount(src.codePointAt(index)); (i < len) && !wordBoundary.isBoundary(i); i += Character.charCount(ch)) {
+                ch = src.codePointAt(i);
+                if (isCased(ch)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,38 @@
+/**
+ * Specifies, for jobs using these attributes, the ranges of pages to be
+ * printed, if a range of pages is to be printed. All range numbers are
+ * inclusive. This attribute is updated to the value chosen by the user.
+ * An application should ignore this attribute on output, unless the
+ * return value of the <code>getDefaultSelection</code> method is
+ * DefaultSelectionType.RANGE.
+ *
+ * @return  an array of integer arrays of 2 elements. An array
+ *          is interpreted as a range spanning all pages including and
+ *          between the specified pages. Ranges must be in ascending
+ *          order and must not overlap. Specified page numbers cannot be
+ *          less than <i>minPage</i> nor greater than <i>maxPage</i>.
+ *          For example:
+ *          (new int[][] { new int[] { 1, 3 }, new int[] { 5, 5 },
+ *                         new int[] { 15, 19 } }),
+ *          specifies pages 1, 2, 3, 5, 15, 16, 17, 18, and 19.
+ */
+public int[][] getPageRanges() {
+    if (pageRanges != null) {
+        // Return a copy because otherwise client code could circumvent the
+        // the checks made in setPageRanges by modifying the returned
+        // array.
+        int[][] copy = new int[pageRanges.length][2];
+        for (int i = 0; i < pageRanges.length; i++) {
+            copy[i][0] = pageRanges[i][0];
+            copy[i][1] = pageRanges[i][1];
+        }
+        return copy;
+    } else if (fromPage != 0 || toPage != 0) {
+        int fromPage = getFromPage();
+        int toPage = getToPage();
+        return new int[][] { new int[] { fromPage, toPage } };
+    } else {
+        int minPage = getMinPage();
+        return new int[][] { new int[] { minPage, minPage } };
+    }
+}

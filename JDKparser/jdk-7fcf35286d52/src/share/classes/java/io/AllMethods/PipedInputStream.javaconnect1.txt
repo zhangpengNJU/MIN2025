@@ -1,0 +1,26 @@
+/**
+ * Causes this piped input stream to be connected
+ * to the piped  output stream <code>src</code>.
+ * If this object is already connected to some
+ * other piped output  stream, an <code>IOException</code>
+ * is thrown.
+ * <p>
+ * If <code>src</code> is an
+ * unconnected piped output stream and <code>snk</code>
+ * is an unconnected piped input stream, they
+ * may be connected by either the call:
+ *
+ * <pre><code>snk.connect(src)</code> </pre>
+ * <p>
+ * or the call:
+ *
+ * <pre><code>src.connect(snk)</code> </pre>
+ * <p>
+ * The two calls have the same effect.
+ *
+ * @param      src   The piped output stream to connect to.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public void connect(PipedOutputStream src) throws IOException {
+    src.connect(this);
+}

@@ -1,0 +1,20 @@
+/**
+ * Returns an estimate of the number of remaining bytes that can be read (or
+ * skipped over) from this input stream without blocking by the next
+ * invocation of a method for this input stream. Returns 0 when the file
+ * position is beyond EOF. The next invocation might be the same thread
+ * or another thread. A single read or skip of this many bytes will not
+ * block, but may read or skip fewer bytes.
+ *
+ * <p> In some cases, a non-blocking read (or skip) may appear to be
+ * blocked when it is merely slow, for example when reading large
+ * files over slow networks.
+ *
+ * @return     an estimate of the number of remaining bytes that can be read
+ *             (or skipped over) from this input stream without blocking.
+ * @exception  IOException  if this file input stream has been closed by calling
+ *             {@code close} or an I/O error occurs.
+ */
+public int available() throws IOException {
+    return available0();
+}

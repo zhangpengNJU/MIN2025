@@ -1,0 +1,6 @@
+private void expungeStaleEntries() {
+    CacheKey<K> cacheKey;
+    while ((cacheKey = (CacheKey<K>) refQueue.poll()) != null) {
+        cacheKey.expungeFrom(map, reverseMap);
+    }
+}

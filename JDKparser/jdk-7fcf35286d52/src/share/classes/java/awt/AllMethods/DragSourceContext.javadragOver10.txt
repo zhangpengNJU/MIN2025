@@ -1,0 +1,17 @@
+/**
+ * Calls <code>dragOver</code> on the
+ * <code>DragSourceListener</code>s registered with this
+ * <code>DragSourceContext</code> and with the associated
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceDragEvent</code>.
+ *
+ * @param dsde the <code>DragSourceDragEvent</code>
+ */
+public void dragOver(DragSourceDragEvent dsde) {
+    DragSourceListener dsl = listener;
+    if (dsl != null) {
+        dsl.dragOver(dsde);
+    }
+    getDragSource().processDragOver(dsde);
+    updateCurrentCursor(getSourceActions(), dsde.getTargetActions(), OVER);
+}

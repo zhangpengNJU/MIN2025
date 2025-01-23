@@ -1,0 +1,21 @@
+/**
+ * Returns the <i>precision</i> of this {@code BigDecimal}.  (The
+ * precision is the number of digits in the unscaled value.)
+ *
+ * <p>The precision of a zero value is 1.
+ *
+ * @return the precision of this {@code BigDecimal}.
+ * @since  1.5
+ */
+public int precision() {
+    int result = precision;
+    if (result == 0) {
+        long s = intCompact;
+        if (s != INFLATED)
+            result = longDigitLength(s);
+        else
+            result = bigDigitLength(intVal);
+        precision = result;
+    }
+    return result;
+}

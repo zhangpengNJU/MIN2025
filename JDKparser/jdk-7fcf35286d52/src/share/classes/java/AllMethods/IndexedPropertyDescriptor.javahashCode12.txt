@@ -1,0 +1,14 @@
+/**
+ * Returns a hash code value for the object.
+ * See {@link java.lang.Object#hashCode} for a complete description.
+ *
+ * @return a hash code value for this object.
+ * @since 1.5
+ */
+public int hashCode() {
+    int result = super.hashCode();
+    result = 37 * result + ((indexedWriteMethodName == null) ? 0 : indexedWriteMethodName.hashCode());
+    result = 37 * result + ((indexedReadMethodName == null) ? 0 : indexedReadMethodName.hashCode());
+    result = 37 * result + ((getIndexedPropertyType() == null) ? 0 : getIndexedPropertyType().hashCode());
+    return result;
+}

@@ -1,0 +1,24 @@
+/**
+ * Sets the <code>ComponentOrientation</code> property of this container
+ * and all components contained within it.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy.
+ *
+ * @param o the new component orientation of this container and
+ *        the components contained within it.
+ * @exception NullPointerException if <code>orientation</code> is null.
+ * @see Component#setComponentOrientation
+ * @see Component#getComponentOrientation
+ * @see #invalidate
+ * @since 1.4
+ */
+public void applyComponentOrientation(ComponentOrientation o) {
+    super.applyComponentOrientation(o);
+    synchronized (getTreeLock()) {
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            comp.applyComponentOrientation(o);
+        }
+    }
+}

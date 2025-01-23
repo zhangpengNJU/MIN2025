@@ -1,0 +1,16 @@
+private void setPData(long pData) {
+    this.pData = pData;
+    if (GraphicsEnvironment.isHeadless()) {
+        return;
+    }
+    if (disposer == null) {
+        disposer = new CursorDisposer(pData);
+        // anchor is null after deserialization
+        if (anchor == null) {
+            anchor = new Object();
+        }
+        sun.java2d.Disposer.addRecord(anchor, disposer);
+    } else {
+        disposer.pData = pData;
+    }
+}

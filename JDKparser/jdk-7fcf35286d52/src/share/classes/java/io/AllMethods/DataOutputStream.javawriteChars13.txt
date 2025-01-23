@@ -1,0 +1,21 @@
+/**
+ * Writes a string to the underlying output stream as a sequence of
+ * characters. Each character is written to the data output stream as
+ * if by the <code>writeChar</code> method. If no exception is
+ * thrown, the counter <code>written</code> is incremented by twice
+ * the length of <code>s</code>.
+ *
+ * @param      s   a <code>String</code> value to be written.
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.DataOutputStream#writeChar(int)
+ * @see        java.io.FilterOutputStream#out
+ */
+public final void writeChars(String s) throws IOException {
+    int len = s.length();
+    for (int i = 0; i < len; i++) {
+        int v = s.charAt(i);
+        out.write((v >>> 8) & 0xFF);
+        out.write((v >>> 0) & 0xFF);
+    }
+    incCount(len * 2);
+}

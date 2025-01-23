@@ -1,0 +1,25 @@
+/**
+ * Sets the specified logger to the specified new level.
+ * If the <tt>levelName</tt> is not <tt>null</tt>, the level
+ * of the specified logger is set to the parsed <tt>Level</tt>
+ * matching the <tt>levelName</tt>.
+ * If the <tt>levelName</tt> is <tt>null</tt>, the level
+ * of the specified logger is set to <tt>null</tt> and
+ * the effective level of the logger is inherited from
+ * its nearest ancestor with a specific (non-null) level value.
+ *
+ * @param loggerName The name of the <tt>Logger</tt> to be set.
+ *                   Must be non-null.
+ * @param levelName The name of the level to set on the specified logger,
+ *                 or <tt>null</tt> if setting the level to inherit
+ *                 from its nearest ancestor.
+ *
+ * @throws IllegalArgumentException if the specified logger
+ * does not exist, or <tt>levelName</tt> is not a valid level name.
+ *
+ * @throws SecurityException if a security manager exists and if
+ * the caller does not have LoggingPermission("control").
+ *
+ * @see Logger#setLevel
+ */
+public void setLoggerLevel(String loggerName, String levelName);

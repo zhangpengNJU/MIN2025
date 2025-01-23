@@ -1,0 +1,14 @@
+/**
+ * Helper function to convert a color component in linear RGB space to
+ * SRGB space.  Used to build a static lookup table.
+ */
+private static int convertLinearRGBtoSRGB(int color) {
+    float input, output;
+    input = color / 255.0f;
+    if (input <= 0.0031308) {
+        output = input * 12.92f;
+    } else {
+        output = (1.055f * ((float) Math.pow(input, (1.0 / 2.4)))) - 0.055f;
+    }
+    return Math.round(output * 255.0f);
+}

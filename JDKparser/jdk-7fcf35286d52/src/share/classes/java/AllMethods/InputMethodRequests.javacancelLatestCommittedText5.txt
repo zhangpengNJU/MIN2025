@@ -1,0 +1,25 @@
+/**
+ * Gets the latest committed text from the text editing component and
+ * removes it from the component's text body.
+ * This is used for the "Undo Commit" feature in some input methods, where
+ * the committed text reverts to its previous composed state. The composed
+ * text will be sent to the component using an InputMethodEvent.
+ *
+ * <p>
+ * Generally, this feature should only be supported immediately after the
+ * text was committed, not after the user performed other operations on the
+ * text. When the feature is not supported, return null.
+ *
+ * <p>
+ * The input method may provide a list of attributes that it is
+ * interested in. In that case, information about other attributes that
+ * the implementor may have need not be made accessible through the
+ * iterator. If the list is null, all available attribute information
+ * should be made accessible.
+ *
+ * @param attributes a list of attributes that the input method is
+ * interested in
+ * @return the latest committed text, or null when the "Undo Commit"
+ * feature is not supported
+ */
+AttributedCharacterIterator cancelLatestCommittedText(Attribute[] attributes);

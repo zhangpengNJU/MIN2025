@@ -1,0 +1,16 @@
+/**
+ * Returns an iterator object that iterates along the boundary of this
+ * <code>Polygon</code> and provides access to the geometry
+ * of the outline of this <code>Polygon</code>.  An optional
+ * {@link AffineTransform} can be specified so that the coordinates
+ * returned in the iteration are transformed accordingly.
+ * @param at an optional <code>AffineTransform</code> to be applied to the
+ *          coordinates as they are returned in the iteration, or
+ *          <code>null</code> if untransformed coordinates are desired
+ * @return a {@link PathIterator} object that provides access to the
+ *          geometry of this <code>Polygon</code>.
+ * @since 1.2
+ */
+public PathIterator getPathIterator(AffineTransform at) {
+    return new PolygonPathIterator(this, at);
+}

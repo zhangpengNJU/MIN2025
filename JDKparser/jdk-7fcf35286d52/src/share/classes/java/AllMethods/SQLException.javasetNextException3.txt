@@ -1,0 +1,21 @@
+/**
+ * Adds an <code>SQLException</code> object to the end of the chain.
+ *
+ * @param ex the new exception that will be added to the end of
+ *            the <code>SQLException</code> chain
+ * @see #getNextException
+ */
+public void setNextException(SQLException ex) {
+    SQLException current = this;
+    for (; ; ) {
+        SQLException next = current.next;
+        if (next != null) {
+            current = next;
+            continue;
+        }
+        if (nextUpdater.compareAndSet(current, null, ex)) {
+            return;
+        }
+        current = current.next;
+    }
+}

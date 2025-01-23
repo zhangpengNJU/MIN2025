@@ -1,0 +1,27 @@
+/**
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ */
+public int drainTo(Collection<? super E> c, int maxElements) {
+    if (c == null)
+        throw new NullPointerException();
+    if (c == this)
+        throw new IllegalArgumentException();
+    if (maxElements <= 0)
+        return 0;
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        int n = Math.min(maxElements, count);
+        for (int i = 0; i < n; i++) {
+            // In this order, in case add() throws.
+            c.add(first.item);
+            unlinkFirst();
+        }
+        return n;
+    } finally {
+        lock.unlock();
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ *
+ * @throws NullPointerException if the specified key is null
+ */
+public boolean remove(Object key, Object value) {
+    if (key == null)
+        throw new NullPointerException();
+    return value != null && replaceNode(key, null, value) != null;
+}

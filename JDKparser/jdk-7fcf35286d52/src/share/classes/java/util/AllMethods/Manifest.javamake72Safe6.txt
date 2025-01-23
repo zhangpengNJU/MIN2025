@@ -1,0 +1,15 @@
+/**
+ * Adds line breaks to enforce a maximum 72 bytes per line.
+ */
+static void make72Safe(StringBuffer line) {
+    int length = line.length();
+    if (length > 72) {
+        int index = 70;
+        while (index < length - 2) {
+            line.insert(index, "\r\n ");
+            index += 72;
+            length += 3;
+        }
+    }
+    return;
+}

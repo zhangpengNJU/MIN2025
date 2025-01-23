@@ -1,0 +1,9 @@
+static Component getHeavyweight(Component comp) {
+    if (comp == null || comp.getPeer() == null) {
+        return null;
+    } else if (comp.getPeer() instanceof LightweightPeer) {
+        return comp.getNativeContainer();
+    } else {
+        return comp;
+    }
+}

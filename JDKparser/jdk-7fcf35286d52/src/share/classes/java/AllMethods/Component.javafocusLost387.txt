@@ -1,0 +1,5 @@
+public void focusLost(FocusEvent event) {
+    if (accessibleContext != null) {
+        accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, AccessibleState.FOCUSED, null);
+    }
+}

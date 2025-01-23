@@ -1,0 +1,19 @@
+/**
+ * Register an object descriptor for an activatable remote
+ * object so that is can be activated on demand.
+ *
+ * @param desc  the object's descriptor
+ * @return the stub for the activatable remote object
+ * @exception UnknownGroupException if group id in <code>desc</code>
+ * is not registered with the activation system
+ * @exception ActivationException if activation system is not running
+ * @exception RemoteException if remote call fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static Remote register(ActivationDesc desc) throws UnknownGroupException, ActivationException, RemoteException {
+    // register object with activator.
+    ActivationID id = ActivationGroup.getSystem().registerObject(desc);
+    return sun.rmi.server.ActivatableRef.getStub(desc, id);
+}

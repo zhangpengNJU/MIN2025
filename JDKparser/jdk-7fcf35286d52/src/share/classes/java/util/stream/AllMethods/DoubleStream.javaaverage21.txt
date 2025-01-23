@@ -1,0 +1,28 @@
+/**
+ * Returns an {@code OptionalDouble} describing the arithmetic
+ * mean of elements of this stream, or an empty optional if this
+ * stream is empty.
+ *
+ * If any recorded value is a NaN or the sum is at any point a NaN
+ * then the average will be NaN.
+ *
+ * <p>The average returned can vary depending upon the order in
+ * which values are recorded.
+ *
+ * This method may be implemented using compensated summation or
+ * other technique to reduce the error bound in the {@link #sum
+ * numerical sum} used to compute the average.
+ *
+ *  <p>The average is a special case of a <a
+ *  href="package-summary.html#Reduction">reduction</a>.
+ *
+ * <p>This is a <a href="package-summary.html#StreamOps">terminal
+ * operation</a>.
+ *
+ * @apiNote Elements sorted by increasing absolute magnitude tend
+ * to yield more accurate results.
+ *
+ * @return an {@code OptionalDouble} containing the average element of this
+ * stream, or an empty optional if the stream is empty
+ */
+OptionalDouble average();

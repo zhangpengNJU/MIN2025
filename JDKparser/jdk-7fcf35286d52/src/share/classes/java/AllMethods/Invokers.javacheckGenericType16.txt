@@ -1,0 +1,29 @@
+/**
+ * Static definition of MethodHandle.invokeGeneric checking code.
+ * Directly returns the type-adjusted MH to invoke, as follows:
+ * {@code (R)MH.invoke(a*) => MH.asType(TYPEOF(a*:R)).invokeBasic(a*)}
+ */
+/*non-public*/
+@ForceInline
+static Object checkGenericType(Object mhObj, Object expectedObj) {
+    MethodHandle mh = (MethodHandle) mhObj;
+    MethodType expected = (MethodType) expectedObj;
+    return mh.asType(expected);
+/* Maybe add more paths here.  Possible optimizations:
+         * for (R)MH.invoke(a*),
+         * let MT0 = TYPEOF(a*:R), MT1 = MH.type
+         *
+         * if MT0==MT1 or MT1 can be safely called by MT0
+         *  => MH.invokeBasic(a*)
+         * if MT1 can be safely called by MT0[R := Object]
+         *  => MH.invokeBasic(a*) & checkcast(R)
+         * if MT1 can be safely called by MT0[* := Object]
+         *  => checkcast(A)* & MH.invokeBasic(a*) & checkcast(R)
+         * if a big adapter BA can be pulled out of (MT0,MT1)
+         *  => BA.invokeBasic(MT0,MH,a*)
+         * if a local adapter LA can cached on static CS0 = new GICS(MT0)
+         *  => CS0.LA.invokeBasic(MH,a*)
+         * else
+         *  => MH.asType(MT0).invokeBasic(A*)
+         */
+}

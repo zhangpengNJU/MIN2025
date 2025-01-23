@@ -1,0 +1,5 @@
+public void forEachRemaining(Consumer<? super K> action) {
+    if (action == null)
+        throw new NullPointerException();
+    for (Node<K, V> p; (p = advance()) != null; ) action.accept(p.key);
+}

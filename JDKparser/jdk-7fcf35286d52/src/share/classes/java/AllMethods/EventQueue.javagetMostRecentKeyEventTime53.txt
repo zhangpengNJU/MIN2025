@@ -1,0 +1,8 @@
+synchronized long getMostRecentKeyEventTime() {
+    pushPopLock.lock();
+    try {
+        return mostRecentKeyEventTime;
+    } finally {
+        pushPopLock.unlock();
+    }
+}

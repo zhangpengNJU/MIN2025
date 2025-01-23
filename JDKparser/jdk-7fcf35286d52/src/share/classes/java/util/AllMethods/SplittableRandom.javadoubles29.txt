@@ -1,0 +1,23 @@
+/**
+ * Returns a stream producing the given {@code streamSize} number of
+ * pseudorandom {@code double} values from this generator and/or one split
+ * from it; each value conforms to the given origin (inclusive) and bound
+ * (exclusive).
+ *
+ * @param streamSize the number of values to generate
+ * @param randomNumberOrigin the origin (inclusive) of each random value
+ * @param randomNumberBound the bound (exclusive) of each random value
+ * @return a stream of pseudorandom {@code double} values,
+ *         each with the given origin (inclusive) and bound (exclusive)
+ * @throws IllegalArgumentException if {@code streamSize} is
+ *         less than zero
+ * @throws IllegalArgumentException if {@code randomNumberOrigin}
+ *         is greater than or equal to {@code randomNumberBound}
+ */
+public DoubleStream doubles(long streamSize, double randomNumberOrigin, double randomNumberBound) {
+    if (streamSize < 0L)
+        throw new IllegalArgumentException(BadSize);
+    if (!(randomNumberOrigin < randomNumberBound))
+        throw new IllegalArgumentException(BadRange);
+    return StreamSupport.doubleStream(new RandomDoublesSpliterator(this, 0L, streamSize, randomNumberOrigin, randomNumberBound), false);
+}

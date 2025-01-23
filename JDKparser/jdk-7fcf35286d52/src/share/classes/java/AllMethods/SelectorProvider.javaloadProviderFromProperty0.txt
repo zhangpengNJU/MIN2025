@@ -1,0 +1,18 @@
+private static boolean loadProviderFromProperty() {
+    String cn = System.getProperty("java.nio.channels.spi.SelectorProvider");
+    if (cn == null)
+        return false;
+    try {
+        Class<?> c = Class.forName(cn, true, ClassLoader.getSystemClassLoader());
+        provider = (SelectorProvider) c.newInstance();
+        return true;
+    } catch (ClassNotFoundException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (IllegalAccessException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (InstantiationException x) {
+        throw new ServiceConfigurationError(null, x);
+    } catch (SecurityException x) {
+        throw new ServiceConfigurationError(null, x);
+    }
+}

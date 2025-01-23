@@ -1,0 +1,3 @@
+private static Locale initDefault(Locale.Category category) {
+    return getInstance(AccessController.doPrivileged(new GetPropertyAction(category.languageKey, defaultLocale.getLanguage())), AccessController.doPrivileged(new GetPropertyAction(category.scriptKey, defaultLocale.getScript())), AccessController.doPrivileged(new GetPropertyAction(category.countryKey, defaultLocale.getCountry())), AccessController.doPrivileged(new GetPropertyAction(category.variantKey, defaultLocale.getVariant())), null);
+}

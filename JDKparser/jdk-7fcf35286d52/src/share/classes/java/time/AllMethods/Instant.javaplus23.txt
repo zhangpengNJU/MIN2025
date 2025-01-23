@@ -1,0 +1,22 @@
+/**
+ * Returns a copy of this instant with the specified duration added.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param secondsToAdd  the seconds to add, positive or negative
+ * @param nanosToAdd  the nanos to add, positive or negative
+ * @return an {@code Instant} based on this instant with the specified seconds added, not null
+ * @throws DateTimeException if the result exceeds the maximum or minimum instant
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+private Instant plus(long secondsToAdd, long nanosToAdd) {
+    if ((secondsToAdd | nanosToAdd) == 0) {
+        return this;
+    }
+    long epochSec = Math.addExact(seconds, secondsToAdd);
+    epochSec = Math.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
+    nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
+    // safe int+NANOS_PER_SECOND
+    long nanoAdjustment = nanos + nanosToAdd;
+    return ofEpochSecond(epochSec, nanoAdjustment);
+}

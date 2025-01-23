@@ -1,0 +1,17 @@
+/*
+     * Methods for setting control state
+     */
+/**
+ * Transitions runState to given target, or leaves it alone if
+ * already at least the given target.
+ *
+ * @param targetState the desired state, either SHUTDOWN or STOP
+ *        (but not TIDYING or TERMINATED -- use tryTerminate for that)
+ */
+private void advanceRunState(int targetState) {
+    for (; ; ) {
+        int c = ctl.get();
+        if (runStateAtLeast(c, targetState) || ctl.compareAndSet(c, ctlOf(targetState, workerCountOf(c))))
+            break;
+    }
+}

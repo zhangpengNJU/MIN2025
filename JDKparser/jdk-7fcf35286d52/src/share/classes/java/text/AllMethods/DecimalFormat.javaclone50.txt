@@ -1,0 +1,22 @@
+/**
+ * Standard override; no change in semantics.
+ */
+@Override
+public Object clone() {
+    DecimalFormat other = (DecimalFormat) super.clone();
+    other.symbols = (DecimalFormatSymbols) symbols.clone();
+    other.digitList = (DigitList) digitList.clone();
+    // Fast-path is almost stateless algorithm. The only logical state is the
+    // isFastPath flag. In addition fastPathCheckNeeded is a sentinel flag
+    // that forces recalculation of all fast-path fields when set to true.
+    // 
+    // There is thus no need to clone all the fast-path fields.
+    // We just only need to set fastPathCheckNeeded to true when cloning,
+    // and init fastPathData to null as if it were a truly new instance.
+    // Every fast-path field will be recalculated (only once) at next usage of
+    // fast-path algorithm.
+    other.fastPathCheckNeeded = true;
+    other.isFastPath = false;
+    other.fastPathData = null;
+    return other;
+}

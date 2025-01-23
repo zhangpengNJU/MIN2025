@@ -1,0 +1,11 @@
+public boolean remove(Object o) {
+    o = maskNull(o);
+    for (int i = 0; i < vals.length; i++) {
+        if (o.equals(vals[i])) {
+            vals[i] = null;
+            size--;
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,10 @@
+/**
+ * Determines if character is a line separator in the current mode
+ */
+private boolean isLineSeparator(int ch) {
+    if (has(UNIX_LINES)) {
+        return ch == '\n';
+    } else {
+        return (ch == '\n' || ch == '\r' || (ch | 1) == '\u2029' || ch == '\u0085');
+    }
+}

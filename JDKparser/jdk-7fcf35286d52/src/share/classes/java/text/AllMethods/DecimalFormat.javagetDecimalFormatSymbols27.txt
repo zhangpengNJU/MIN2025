@@ -1,0 +1,15 @@
+/**
+ * Returns a copy of the decimal format symbols, which is generally not
+ * changed by the programmer or user.
+ * @return a copy of the desired DecimalFormatSymbols
+ * @see java.text.DecimalFormatSymbols
+ */
+public DecimalFormatSymbols getDecimalFormatSymbols() {
+    try {
+        // don't allow multiple references
+        return (DecimalFormatSymbols) symbols.clone();
+    } catch (Exception foo) {
+        // should never happen
+        return null;
+    }
+}

@@ -1,0 +1,16 @@
+/**
+ * Removes a listener for the value change.
+ * <p>
+ * If the same listener was added more than once,
+ * it will be notified one less time after being removed.
+ * If {@code listener} is {@code null}, or was never added,
+ * no exception is thrown and no action is taken.
+ *
+ * @param listener  the {@link PropertyChangeListener} to remove
+ */
+public synchronized void removePropertyChangeListener(PropertyChangeListener listener) {
+    if (listeners == null) {
+        return;
+    }
+    listeners.removeElement(listener);
+}

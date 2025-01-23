@@ -1,0 +1,59 @@
+private boolean isRequestFocusAccepted(boolean temporary, boolean focusedWindowChangeAllowed, CausedFocusEvent.Cause cause) {
+    if (!isFocusable() || !isVisible()) {
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("Not focusable or not visible");
+        }
+        return false;
+    }
+    ComponentPeer peer = this.peer;
+    if (peer == null) {
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("peer is null");
+        }
+        return false;
+    }
+    Window window = getContainingWindow();
+    if (window == null || !window.isFocusableWindow()) {
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("Component doesn't have toplevel");
+        }
+        return false;
+    }
+    // We have passed all regular checks for focus request,
+    // now let's call RequestFocusController and see what it says.
+    Component focusOwner = KeyboardFocusManager.getMostRecentFocusOwner(window);
+    if (focusOwner == null) {
+        // sometimes most recent focus owner may be null, but focus owner is not
+        // e.g. we reset most recent focus owner if user removes focus owner
+        focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        if (focusOwner != null && focusOwner.getContainingWindow() != window) {
+            focusOwner = null;
+        }
+    }
+    if (focusOwner == this || focusOwner == null) {
+        // Controller is supposed to verify focus transfers and for this it
+        // should know both from and to components.  And it shouldn't verify
+        // transfers from when these components are equal.
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("focus owner is null or this");
+        }
+        return true;
+    }
+    if (CausedFocusEvent.Cause.ACTIVATION == cause) {
+        // we shouldn't call RequestFocusController in case we are
+        // in activation.  We do request focus on component which
+        // has got temporary focus lost and then on component which is
+        // most recent focus owner.  But most recent focus owner can be
+        // changed by requestFocsuXXX() call only, so this transfer has
+        // been already approved.
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("cause is activation");
+        }
+        return true;
+    }
+    boolean ret = Component.requestFocusController.acceptRequestFocus(focusOwner, this, temporary, focusedWindowChangeAllowed, cause);
+    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        focusLog.finest("RequestFocusController returns {0}", ret);
+    }
+    return ret;
+}

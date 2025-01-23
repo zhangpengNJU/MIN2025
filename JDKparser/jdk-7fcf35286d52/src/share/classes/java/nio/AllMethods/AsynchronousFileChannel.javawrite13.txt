@@ -1,0 +1,30 @@
+/**
+ * Writes a sequence of bytes to this channel from the given buffer, starting
+ * at the given file position.
+ *
+ * <p> This method works in the same manner as the {@link
+ * AsynchronousByteChannel#write(ByteBuffer,Object,CompletionHandler)}
+ * method, except that bytes are written starting at the given file position.
+ * If the given position is greater than the file's size, at the time that
+ * the write is attempted, then the file will be grown to accommodate the new
+ * bytes; the values of any bytes between the previous end-of-file and the
+ * newly-written bytes are unspecified.
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   src
+ *          The buffer from which bytes are to be transferred
+ * @param   position
+ *          The file position at which the transfer is to begin;
+ *          must be non-negative
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  IllegalArgumentException
+ *          If the position is negative
+ * @throws  NonWritableChannelException
+ *          If this channel was not opened for writing
+ */
+public abstract <A> void write(ByteBuffer src, long position, A attachment, CompletionHandler<Integer, ? super A> handler);

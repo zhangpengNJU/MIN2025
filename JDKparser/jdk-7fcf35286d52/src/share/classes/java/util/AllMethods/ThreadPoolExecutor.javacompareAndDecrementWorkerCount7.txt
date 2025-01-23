@@ -1,0 +1,6 @@
+/**
+ * Attempts to CAS-decrement the workerCount field of ctl.
+ */
+private boolean compareAndDecrementWorkerCount(int expect) {
+    return ctl.compareAndSet(expect, expect - 1);
+}

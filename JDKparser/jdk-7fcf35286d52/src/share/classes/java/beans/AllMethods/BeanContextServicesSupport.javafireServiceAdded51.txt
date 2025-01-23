@@ -1,0 +1,15 @@
+/**
+ * Fires a <tt>BeanContextServiceAvailableEvent</tt> indicating that a new
+ * service has become available.
+ *
+ * @param bcssae the <tt>BeanContextServiceAvailableEvent</tt>
+ */
+protected final void fireServiceAdded(BeanContextServiceAvailableEvent bcssae) {
+    Object[] copy;
+    synchronized (bcsListeners) {
+        copy = bcsListeners.toArray();
+    }
+    for (int i = 0; i < copy.length; i++) {
+        ((BeanContextServicesListener) copy[i]).serviceAvailable(bcssae);
+    }
+}

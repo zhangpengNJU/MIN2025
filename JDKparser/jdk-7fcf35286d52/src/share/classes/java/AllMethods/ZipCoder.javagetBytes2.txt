@@ -1,0 +1,30 @@
+byte[] getBytes(String s) {
+    CharsetEncoder ce = encoder().reset();
+    char[] ca = s.toCharArray();
+    int len = (int) (ca.length * ce.maxBytesPerChar());
+    byte[] ba = new byte[len];
+    if (len == 0)
+        return ba;
+    // UTF-8 only for now. Other ArrayDeocder only handles
+    // CodingErrorAction.REPLACE mode.
+    if (isUTF8 && ce instanceof ArrayEncoder) {
+        int blen = ((ArrayEncoder) ce).encode(ca, 0, ca.length, ba);
+        if (// malformed
+        blen == -1)
+            throw new IllegalArgumentException("MALFORMED");
+        return Arrays.copyOf(ba, blen);
+    }
+    ByteBuffer bb = ByteBuffer.wrap(ba);
+    CharBuffer cb = CharBuffer.wrap(ca);
+    CoderResult cr = ce.encode(cb, bb, true);
+    if (!cr.isUnderflow())
+        throw new IllegalArgumentException(cr.toString());
+    cr = ce.flush(bb);
+    if (!cr.isUnderflow())
+        throw new IllegalArgumentException(cr.toString());
+    if (// defensive copy?
+    bb.position() == ba.length)
+        return ba;
+    else
+        return Arrays.copyOf(ba, bb.position());
+}

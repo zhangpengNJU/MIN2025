@@ -1,0 +1,14 @@
+String printCertificates() {
+    String out = "";
+    if (certificates == null) {
+        return "\tno certificates";
+    } else {
+        out += "\tcertificates: \n";
+        int i = 1;
+        for (Certificate cert : certificates) {
+            out += "\tcertificate " + i++ + "\tfor  : " + cert.getPrincipal() + "\n";
+            out += "\t\t\tfrom : " + cert.getGuarantor() + "\n";
+        }
+    }
+    return out;
+}

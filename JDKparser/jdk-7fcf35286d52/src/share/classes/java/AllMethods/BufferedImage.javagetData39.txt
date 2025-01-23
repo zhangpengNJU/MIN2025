@@ -1,0 +1,26 @@
+/**
+ * Computes and returns an arbitrary region of the
+ * <code>BufferedImage</code>.  The <code>Raster</code> returned is a
+ * copy of the image data and is not updated if the image is
+ * changed.
+ * @param rect the region of the <code>BufferedImage</code> to be
+ * returned.
+ * @return a <code>Raster</code> that is a copy of the image data of
+ *          the specified region of the <code>BufferedImage</code>
+ * @see #setData(Raster)
+ */
+public Raster getData(Rectangle rect) {
+    SampleModel sm = raster.getSampleModel();
+    SampleModel nsm = sm.createCompatibleSampleModel(rect.width, rect.height);
+    WritableRaster wr = Raster.createWritableRaster(nsm, rect.getLocation());
+    int width = rect.width;
+    int height = rect.height;
+    int startX = rect.x;
+    int startY = rect.y;
+    Object tdata = null;
+    for (int i = startY; i < startY + height; i++) {
+        tdata = raster.getDataElements(startX, i, width, 1, tdata);
+        wr.setDataElements(startX, i, width, 1, tdata);
+    }
+    return wr;
+}

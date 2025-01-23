@@ -1,0 +1,25 @@
+/**
+ * Inserts the specified element at the tail of this queue, waiting
+ * up to the specified wait time for space to become available if
+ * the queue is full.
+ *
+ * @throws InterruptedException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+    checkNotNull(e);
+    long nanos = unit.toNanos(timeout);
+    final ReentrantLock lock = this.lock;
+    lock.lockInterruptibly();
+    try {
+        while (count == items.length) {
+            if (nanos <= 0)
+                return false;
+            nanos = notFull.awaitNanos(nanos);
+        }
+        enqueue(e);
+        return true;
+    } finally {
+        lock.unlock();
+    }
+}

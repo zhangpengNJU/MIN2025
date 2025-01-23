@@ -1,0 +1,50 @@
+/**
+ * Reads the next byte of data from this piped input stream. The
+ * value byte is returned as an <code>int</code> in the range
+ * <code>0</code> to <code>255</code>.
+ * This method blocks until input data is available, the end of the
+ * stream is detected, or an exception is thrown.
+ *
+ * @return     the next byte of data, or <code>-1</code> if the end of the
+ *             stream is reached.
+ * @exception  IOException  if the pipe is
+ *           {@link #connect(java.io.PipedOutputStream) unconnected},
+ *           <a href="#BROKEN"> <code>broken</code></a>, closed,
+ *           or if an I/O error occurs.
+ */
+public synchronized int read() throws IOException {
+    if (!connected) {
+        throw new IOException("Pipe not connected");
+    } else if (closedByReader) {
+        throw new IOException("Pipe closed");
+    } else if (writeSide != null && !writeSide.isAlive() && !closedByWriter && (in < 0)) {
+        throw new IOException("Write end dead");
+    }
+    readSide = Thread.currentThread();
+    int trials = 2;
+    while (in < 0) {
+        if (closedByWriter) {
+            /* closed by writer, return EOF */
+            return -1;
+        }
+        if ((writeSide != null) && (!writeSide.isAlive()) && (--trials < 0)) {
+            throw new IOException("Pipe broken");
+        }
+        /* might be a writer waiting */
+        notifyAll();
+        try {
+            wait(1000);
+        } catch (InterruptedException ex) {
+            throw new java.io.InterruptedIOException();
+        }
+    }
+    int ret = buffer[out++] & 0xFF;
+    if (out >= buffer.length) {
+        out = 0;
+    }
+    if (in == out) {
+        /* now empty */
+        in = -1;
+    }
+    return ret;
+}

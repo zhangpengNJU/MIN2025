@@ -1,0 +1,4 @@
+private static XmlPropertiesProvider loadProviderAsService(ClassLoader cl) {
+    Iterator<XmlPropertiesProvider> iterator = ServiceLoader.load(XmlPropertiesProvider.class, cl).iterator();
+    return iterator.hasNext() ? iterator.next() : null;
+}

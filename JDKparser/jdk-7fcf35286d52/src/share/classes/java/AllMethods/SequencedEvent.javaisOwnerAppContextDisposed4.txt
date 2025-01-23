@@ -1,0 +1,12 @@
+/**
+ * true only if event exists and nested source appContext is disposed.
+ */
+private final static boolean isOwnerAppContextDisposed(SequencedEvent se) {
+    if (se != null) {
+        Object target = se.nested.getSource();
+        if (target instanceof Component) {
+            return ((Component) target).appContext.isDisposed();
+        }
+    }
+    return false;
+}

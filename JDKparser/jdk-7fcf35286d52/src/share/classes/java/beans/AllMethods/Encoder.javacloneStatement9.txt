@@ -1,0 +1,12 @@
+private Statement cloneStatement(Statement oldExp) {
+    Object oldTarget = oldExp.getTarget();
+    Object newTarget = writeObject1(oldTarget);
+    Object[] oldArgs = oldExp.getArguments();
+    Object[] newArgs = new Object[oldArgs.length];
+    for (int i = 0; i < oldArgs.length; i++) {
+        newArgs[i] = writeObject1(oldArgs[i]);
+    }
+    Statement newExp = Statement.class.equals(oldExp.getClass()) ? new Statement(newTarget, oldExp.getMethodName(), newArgs) : new Expression(newTarget, oldExp.getMethodName(), newArgs);
+    newExp.loader = oldExp.loader;
+    return newExp;
+}

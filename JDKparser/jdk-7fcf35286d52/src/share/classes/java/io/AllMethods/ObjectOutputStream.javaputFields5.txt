@@ -1,0 +1,22 @@
+/**
+ * Retrieve the object used to buffer persistent fields to be written to
+ * the stream.  The fields will be written to the stream when writeFields
+ * method is called.
+ *
+ * @return  an instance of the class Putfield that holds the serializable
+ *          fields
+ * @throws  IOException if I/O errors occur
+ * @since 1.2
+ */
+public ObjectOutputStream.PutField putFields() throws IOException {
+    if (curPut == null) {
+        SerialCallbackContext ctx = curContext;
+        if (ctx == null) {
+            throw new NotActiveException("not in call to writeObject");
+        }
+        Object curObj = ctx.getObj();
+        ObjectStreamClass curDesc = ctx.getDesc();
+        curPut = new PutFieldImpl(curDesc);
+    }
+    return curPut;
+}

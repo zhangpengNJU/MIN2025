@@ -1,0 +1,11 @@
+private static Charset lookup(String charsetName) {
+    if (charsetName == null)
+        throw new IllegalArgumentException("Null charset name");
+    Object[] a;
+    if ((a = cache1) != null && charsetName.equals(a[0]))
+        return (Charset) a[1];
+    // We expect most programs to use one Charset repeatedly.
+    // We convey a hint to this effect to the VM by putting the
+    // level 1 cache miss code in a separate method.
+    return lookup2(charsetName);
+}

@@ -1,0 +1,27 @@
+/**
+ * Parse once a prefix is established.
+ *
+ * @param zoneId  the time-zone ID, not null
+ * @param prefixLength  the length of the prefix, 2 or 3
+ * @return the zone ID, not null
+ * @throws DateTimeException if the zone ID has an invalid format
+ */
+private static ZoneId ofWithPrefix(String zoneId, int prefixLength, boolean checkAvailable) {
+    String prefix = zoneId.substring(0, prefixLength);
+    if (zoneId.length() == prefixLength) {
+        return ofOffset(prefix, ZoneOffset.UTC);
+    }
+    if (zoneId.charAt(prefixLength) != '+' && zoneId.charAt(prefixLength) != '-') {
+        // drop through to ZoneRulesProvider
+        return ZoneRegion.ofId(zoneId, checkAvailable);
+    }
+    try {
+        ZoneOffset offset = ZoneOffset.of(zoneId.substring(prefixLength));
+        if (offset == ZoneOffset.UTC) {
+            return ofOffset(prefix, offset);
+        }
+        return ofOffset(prefix, offset);
+    } catch (DateTimeException ex) {
+        throw new DateTimeException("Invalid ID for offset-based ZoneId: " + zoneId, ex);
+    }
+}

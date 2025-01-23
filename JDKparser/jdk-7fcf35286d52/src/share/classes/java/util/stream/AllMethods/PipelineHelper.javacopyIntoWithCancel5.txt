@@ -1,0 +1,15 @@
+/**
+ * Pushes elements obtained from the {@code Spliterator} into the provided
+ * {@code Sink}, checking {@link Sink#cancellationRequested()} after each
+ * element, and stopping if cancellation is requested.
+ *
+ * @implSpec
+ * This method conforms to the {@code Sink} protocol of calling
+ * {@code Sink.begin} before pushing elements, via {@code Sink.accept}, and
+ * calling {@code Sink.end} after all elements have been pushed or if
+ * cancellation is requested.
+ *
+ * @param wrappedSink the destination {@code Sink}
+ * @param spliterator the source {@code Spliterator}
+ */
+abstract <P_IN> void copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator);

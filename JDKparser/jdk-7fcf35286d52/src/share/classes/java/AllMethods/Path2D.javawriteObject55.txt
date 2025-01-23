@@ -1,0 +1,124 @@
+/**
+ * Writes the default serializable fields to the
+ * {@code ObjectOutputStream} followed by an explicit
+ * serialization of the path segments stored in this
+ * path.
+ *
+ * @serialData
+ * <a name="Path2DSerialData"><!-- --></a>
+ * <ol>
+ * <li>The default serializable fields.
+ * There are no default serializable fields as of 1.6.
+ * <li>followed by
+ * a byte indicating the storage type of the original object
+ * as a hint (SERIAL_STORAGE_DBL_ARRAY)
+ * <li>followed by
+ * an integer indicating the number of path segments to follow (NP)
+ * or -1 to indicate an unknown number of path segments follows
+ * <li>followed by
+ * an integer indicating the total number of coordinates to follow (NC)
+ * or -1 to indicate an unknown number of coordinates follows
+ * (NC should always be even since coordinates always appear in pairs
+ *  representing an x,y pair)
+ * <li>followed by
+ * a byte indicating the winding rule
+ * ({@link #WIND_EVEN_ODD WIND_EVEN_ODD} or
+ *  {@link #WIND_NON_ZERO WIND_NON_ZERO})
+ * <li>followed by
+ * {@code NP} (or unlimited if {@code NP < 0}) sets of values consisting of
+ * a single byte indicating a path segment type
+ * followed by one or more pairs of float or double
+ * values representing the coordinates of the path segment
+ * <li>followed by
+ * a byte indicating the end of the path (SERIAL_PATH_END).
+ * </ol>
+ * <p>
+ * The following byte value constants are used in the serialized form
+ * of {@code Path2D} objects:
+ * <table>
+ * <tr>
+ * <th>Constant Name</th>
+ * <th>Byte Value</th>
+ * <th>Followed by</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_STORAGE_FLT_ARRAY}</td>
+ * <td>0x30</td>
+ * <td></td>
+ * <td>A hint that the original {@code Path2D} object stored
+ * the coordinates in a Java array of floats.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_STORAGE_DBL_ARRAY}</td>
+ * <td>0x31</td>
+ * <td></td>
+ * <td>A hint that the original {@code Path2D} object stored
+ * the coordinates in a Java array of doubles.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_FLT_MOVETO}</td>
+ * <td>0x40</td>
+ * <td>2 floats</td>
+ * <td>A {@link #moveTo moveTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_FLT_LINETO}</td>
+ * <td>0x41</td>
+ * <td>2 floats</td>
+ * <td>A {@link #lineTo lineTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_FLT_QUADTO}</td>
+ * <td>0x42</td>
+ * <td>4 floats</td>
+ * <td>A {@link #quadTo quadTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_FLT_CUBICTO}</td>
+ * <td>0x43</td>
+ * <td>6 floats</td>
+ * <td>A {@link #curveTo curveTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_DBL_MOVETO}</td>
+ * <td>0x50</td>
+ * <td>2 doubles</td>
+ * <td>A {@link #moveTo moveTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_DBL_LINETO}</td>
+ * <td>0x51</td>
+ * <td>2 doubles</td>
+ * <td>A {@link #lineTo lineTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_DBL_QUADTO}</td>
+ * <td>0x52</td>
+ * <td>4 doubles</td>
+ * <td>A {@link #curveTo curveTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_DBL_CUBICTO}</td>
+ * <td>0x53</td>
+ * <td>6 doubles</td>
+ * <td>A {@link #curveTo curveTo} path segment follows.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_SEG_CLOSE}</td>
+ * <td>0x60</td>
+ * <td></td>
+ * <td>A {@link #closePath closePath} path segment.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code SERIAL_PATH_END}</td>
+ * <td>0x61</td>
+ * <td></td>
+ * <td>There are no more path segments following.</td>
+ * </table>
+ *
+ * @since 1.6
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    super.writeObject(s, true);
+}

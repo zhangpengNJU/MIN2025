@@ -1,0 +1,38 @@
+/**
+ * Find a random number of the specified bitLength that is probably prime.
+ * This method is used for smaller primes, its performance degrades on
+ * larger bitlengths.
+ *
+ * This method assumes bitLength > 1.
+ */
+private static BigInteger smallPrime(int bitLength, int certainty, Random rnd) {
+    int magLen = (bitLength + 31) >>> 5;
+    int[] temp = new int[magLen];
+    // High bit of high int
+    int highBit = 1 << ((bitLength + 31) & 0x1f);
+    // Bits to keep in high int
+    int highMask = (highBit << 1) - 1;
+    while (true) {
+        // Construct a candidate
+        for (int i = 0; i < magLen; i++) temp[i] = rnd.nextInt();
+        // Ensure exact length
+        temp[0] = (temp[0] & highMask) | highBit;
+        if (bitLength > 2)
+            // Make odd if bitlen > 2
+            temp[magLen - 1] |= 1;
+        BigInteger p = new BigInteger(temp, 1);
+        // Do cheap "pre-test" if applicable
+        if (bitLength > 6) {
+            long r = p.remainder(SMALL_PRIME_PRODUCT).longValue();
+            if ((r % 3 == 0) || (r % 5 == 0) || (r % 7 == 0) || (r % 11 == 0) || (r % 13 == 0) || (r % 17 == 0) || (r % 19 == 0) || (r % 23 == 0) || (r % 29 == 0) || (r % 31 == 0) || (r % 37 == 0) || (r % 41 == 0))
+                // Candidate is composite; try another
+                continue;
+        }
+        // All candidates of bitLength 2 and 3 are prime by this point
+        if (bitLength < 4)
+            return p;
+        // Do expensive test if we survive pre-test (or it's inapplicable)
+        if (p.primeToCertainty(certainty, rnd))
+            return p;
+    }
+}

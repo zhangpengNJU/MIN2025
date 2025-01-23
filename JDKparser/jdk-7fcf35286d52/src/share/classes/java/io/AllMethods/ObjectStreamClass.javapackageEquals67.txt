@@ -1,0 +1,7 @@
+/**
+ * Returns true if classes are defined in the same runtime package, false
+ * otherwise.
+ */
+private static boolean packageEquals(Class<?> cl1, Class<?> cl2) {
+    return (cl1.getClassLoader() == cl2.getClassLoader() && getPackageName(cl1).equals(getPackageName(cl2)));
+}

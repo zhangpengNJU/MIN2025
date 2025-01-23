@@ -1,0 +1,19 @@
+/*
+     * Returns true if the specified package name is sealed according to the
+     * given manifest.
+     *
+     * @throws SecurityException if the package name is untrusted in the manifest
+     */
+private boolean isSealed(String name, Manifest man) {
+    Attributes attr = SharedSecrets.javaUtilJarAccess().getTrustedAttributes(man, name.replace('.', '/').concat("/"));
+    String sealed = null;
+    if (attr != null) {
+        sealed = attr.getValue(Name.SEALED);
+    }
+    if (sealed == null) {
+        if ((attr = man.getMainAttributes()) != null) {
+            sealed = attr.getValue(Name.SEALED);
+        }
+    }
+    return "true".equalsIgnoreCase(sealed);
+}

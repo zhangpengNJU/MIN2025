@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains a local date in this chronology from another temporal object.
+ * <p>
+ * This obtains a date in this chronology based on the specified temporal.
+ * A {@code TemporalAccessor} represents an arbitrary set of date and time information,
+ * which this factory converts to an instance of {@code ChronoLocalDate}.
+ * <p>
+ * The conversion typically uses the {@link ChronoField#EPOCH_DAY EPOCH_DAY}
+ * field, which is standardized across calendar systems.
+ * <p>
+ * This method matches the signature of the functional interface {@link TemporalQuery}
+ * allowing it to be used as a query via method reference, {@code aChronology::date}.
+ *
+ * @param temporal  the temporal object to convert, not null
+ * @return the local date in this chronology, not null
+ * @throws DateTimeException if unable to create the date
+ * @see ChronoLocalDate#from(TemporalAccessor)
+ */
+ChronoLocalDate date(TemporalAccessor temporal);

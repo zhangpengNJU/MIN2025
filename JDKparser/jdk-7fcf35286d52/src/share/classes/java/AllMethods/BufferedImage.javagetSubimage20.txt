@@ -1,0 +1,18 @@
+/**
+ * Returns a subimage defined by a specified rectangular region.
+ * The returned <code>BufferedImage</code> shares the same
+ * data array as the original image.
+ * @param x the X coordinate of the upper-left corner of the
+ *          specified rectangular region
+ * @param y the Y coordinate of the upper-left corner of the
+ *          specified rectangular region
+ * @param w the width of the specified rectangular region
+ * @param h the height of the specified rectangular region
+ * @return a <code>BufferedImage</code> that is the subimage of this
+ *          <code>BufferedImage</code>.
+ * @exception RasterFormatException if the specified
+ * area is not contained within this <code>BufferedImage</code>.
+ */
+public BufferedImage getSubimage(int x, int y, int w, int h) {
+    return new BufferedImage(colorModel, raster.createWritableChild(x, y, w, h, 0, 0, null), colorModel.isAlphaPremultiplied(), properties);
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns the default charset of this Java virtual machine.
+ *
+ * <p> The default charset is determined during virtual-machine startup and
+ * typically depends upon the locale and charset of the underlying
+ * operating system.
+ *
+ * @return  A charset object for the default charset
+ *
+ * @since 1.5
+ */
+public static Charset defaultCharset() {
+    if (defaultCharset == null) {
+        synchronized (Charset.class) {
+            String csn = AccessController.doPrivileged(new GetPropertyAction("file.encoding"));
+            Charset cs = lookup(csn);
+            if (cs != null)
+                defaultCharset = cs;
+            else
+                defaultCharset = forName("UTF-8");
+        }
+    }
+    return defaultCharset;
+}

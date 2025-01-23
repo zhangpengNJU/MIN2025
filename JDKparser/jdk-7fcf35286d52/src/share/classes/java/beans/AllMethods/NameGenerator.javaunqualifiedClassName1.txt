@@ -1,0 +1,11 @@
+/**
+ * Returns the root name of the class.
+ */
+@SuppressWarnings("rawtypes")
+public static String unqualifiedClassName(Class type) {
+    if (type.isArray()) {
+        return unqualifiedClassName(type.getComponentType()) + "Array";
+    }
+    String name = type.getName();
+    return name.substring(name.lastIndexOf('.') + 1);
+}

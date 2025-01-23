@@ -1,0 +1,20 @@
+/**
+ * Reparents child component peer to this container peer.
+ * Container must be heavyweight.
+ * @since 1.5
+ */
+private void reparentChild(Component comp) {
+    checkTreeLock();
+    if (comp == null) {
+        return;
+    }
+    if (comp.isLightweight()) {
+        // If component is lightweight container we need to reparent all its explicit  heavyweight children
+        if (comp instanceof Container) {
+            // Traverse component's tree till depth-first until encountering heavyweight component
+            reparentTraverse((ContainerPeer) getPeer(), (Container) comp);
+        }
+    } else {
+        comp.getPeer().reparent((ContainerPeer) getPeer());
+    }
+}

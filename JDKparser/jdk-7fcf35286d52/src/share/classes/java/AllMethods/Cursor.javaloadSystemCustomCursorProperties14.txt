@@ -1,0 +1,27 @@
+/*
+     * load the cursor.properties file
+     */
+private static void loadSystemCustomCursorProperties() throws AWTException {
+    synchronized (systemCustomCursors) {
+        systemCustomCursorProperties = new Properties();
+        try {
+            AccessController.<Object>doPrivileged(new java.security.PrivilegedExceptionAction<Object>() {
+
+                public Object run() throws Exception {
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(systemCustomCursorPropertiesFile);
+                        systemCustomCursorProperties.load(fis);
+                    } finally {
+                        if (fis != null)
+                            fis.close();
+                    }
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            systemCustomCursorProperties = null;
+            throw new AWTException("Exception: " + e.getClass() + " " + e.getMessage() + " occurred while loading: " + systemCustomCursorPropertiesFile);
+        }
+    }
+}

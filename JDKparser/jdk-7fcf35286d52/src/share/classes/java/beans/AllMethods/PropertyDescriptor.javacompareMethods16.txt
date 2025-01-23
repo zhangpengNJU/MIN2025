@@ -1,0 +1,19 @@
+/**
+ * Package private helper method for Descriptor .equals methods.
+ *
+ * @param a first method to compare
+ * @param b second method to compare
+ * @return boolean to indicate that the methods are equivalent
+ */
+boolean compareMethods(Method a, Method b) {
+    // Note: perhaps this should be a protected method in FeatureDescriptor
+    if ((a == null) != (b == null)) {
+        return false;
+    }
+    if (a != null && b != null) {
+        if (!a.equals(b)) {
+            return false;
+        }
+    }
+    return true;
+}

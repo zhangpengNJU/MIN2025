@@ -1,0 +1,70 @@
+/**
+ * find time zone 'text' matched zoneStrings and set to internal
+ * calendar.
+ */
+private int subParseZoneString(String text, int start, CalendarBuilder calb) {
+    // true if standard and daylight time use the same abbreviation.
+    boolean useSameName = false;
+    TimeZone currentTimeZone = getTimeZone();
+    // At this point, check for named time zones by looking through
+    // the locale data from the TimeZoneNames strings.
+    // Want to be able to parse both short and long forms.
+    int zoneIndex = formatData.getZoneIndex(currentTimeZone.getID());
+    TimeZone tz = null;
+    String[][] zoneStrings = formatData.getZoneStringsWrapper();
+    String[] zoneNames = null;
+    int nameIndex = 0;
+    if (zoneIndex != -1) {
+        zoneNames = zoneStrings[zoneIndex];
+        if ((nameIndex = matchZoneString(text, start, zoneNames)) > 0) {
+            if (nameIndex <= 2) {
+                // Check if the standard name (abbr) and the daylight name are the same.
+                useSameName = zoneNames[nameIndex].equalsIgnoreCase(zoneNames[nameIndex + 2]);
+            }
+            tz = TimeZone.getTimeZone(zoneNames[0]);
+        }
+    }
+    if (tz == null) {
+        zoneIndex = formatData.getZoneIndex(TimeZone.getDefault().getID());
+        if (zoneIndex != -1) {
+            zoneNames = zoneStrings[zoneIndex];
+            if ((nameIndex = matchZoneString(text, start, zoneNames)) > 0) {
+                if (nameIndex <= 2) {
+                    useSameName = zoneNames[nameIndex].equalsIgnoreCase(zoneNames[nameIndex + 2]);
+                }
+                tz = TimeZone.getTimeZone(zoneNames[0]);
+            }
+        }
+    }
+    if (tz == null) {
+        int len = zoneStrings.length;
+        for (int i = 0; i < len; i++) {
+            zoneNames = zoneStrings[i];
+            if ((nameIndex = matchZoneString(text, start, zoneNames)) > 0) {
+                if (nameIndex <= 2) {
+                    useSameName = zoneNames[nameIndex].equalsIgnoreCase(zoneNames[nameIndex + 2]);
+                }
+                tz = TimeZone.getTimeZone(zoneNames[0]);
+                break;
+            }
+        }
+    }
+    if (tz != null) {
+        // Matched any ?
+        if (!tz.equals(currentTimeZone)) {
+            setTimeZone(tz);
+        }
+        // If the time zone matched uses the same name
+        // (abbreviation) for both standard and daylight time,
+        // let the time zone in the Calendar decide which one.
+        // 
+        // Also if tz.getDSTSaving() returns 0 for DST, use tz to
+        // determine the local time. (6645292)
+        int dstAmount = (nameIndex >= 3) ? tz.getDSTSavings() : 0;
+        if (!(useSameName || (nameIndex >= 3 && dstAmount == 0))) {
+            calb.clear(Calendar.ZONE_OFFSET).set(Calendar.DST_OFFSET, dstAmount);
+        }
+        return (start + zoneNames[nameIndex].length());
+    }
+    return -start;
+}

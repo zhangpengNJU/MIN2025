@@ -1,0 +1,17 @@
+private void checkOldImpl() {
+    if (impl == null)
+        return;
+    // SocketImpl.connect() is a protected method, therefore we need to use
+    // getDeclaredMethod, therefore we need permission to access the member
+    try {
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+            public Void run() throws NoSuchMethodException {
+                impl.getClass().getDeclaredMethod("connect", SocketAddress.class, int.class);
+                return null;
+            }
+        });
+    } catch (java.security.PrivilegedActionException e) {
+        oldImpl = true;
+    }
+}

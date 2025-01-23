@@ -1,0 +1,11 @@
+/**
+ * Override equals
+ */
+public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (obj == null || getClass() != obj.getClass())
+        return false;
+    DateFormatSymbols that = (DateFormatSymbols) obj;
+    return (Arrays.equals(eras, that.eras) && Arrays.equals(months, that.months) && Arrays.equals(shortMonths, that.shortMonths) && Arrays.equals(weekdays, that.weekdays) && Arrays.equals(shortWeekdays, that.shortWeekdays) && Arrays.equals(ampms, that.ampms) && Arrays.deepEquals(getZoneStringsWrapper(), that.getZoneStringsWrapper()) && ((localPatternChars != null && localPatternChars.equals(that.localPatternChars)) || (localPatternChars == null && that.localPatternChars == null)));
+}

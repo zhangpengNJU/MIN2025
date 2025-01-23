@@ -1,0 +1,41 @@
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // We have to call defaultReadObject first.
+    in.defaultReadObject();
+    // Read version number.
+    byte major = in.readByte();
+    byte minor = in.readByte();
+    if (major != 1) {
+        throw new IOException("LogRecord: bad version: " + major + "." + minor);
+    }
+    int len = in.readInt();
+    if (len < -1) {
+        throw new NegativeArraySizeException();
+    } else if (len == -1) {
+        parameters = null;
+    } else if (len < 255) {
+        parameters = new Object[len];
+        for (int i = 0; i < parameters.length; i++) {
+            parameters[i] = in.readObject();
+        }
+    } else {
+        List<Object> params = new ArrayList<>(Math.min(len, 1024));
+        for (int i = 0; i < len; i++) {
+            params.add(in.readObject());
+        }
+        parameters = params.toArray(new Object[params.size()]);
+    }
+    // If necessary, try to regenerate the resource bundle.
+    if (resourceBundleName != null) {
+        try {
+            // use system class loader to ensure the ResourceBundle
+            // instance is a different instance than null loader uses
+            final ResourceBundle bundle = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault(), ClassLoader.getSystemClassLoader());
+            resourceBundle = bundle;
+        } catch (MissingResourceException ex) {
+            // This is not a good place to throw an exception,
+            // so we simply leave the resourceBundle null.
+            resourceBundle = null;
+        }
+    }
+    needToInferCaller = false;
+}

@@ -1,0 +1,21 @@
+/**
+ * Divides {@code long} by {@code long} and do rounding based on the
+ * passed in roundingMode.
+ */
+private static long divideAndRound(long ldividend, long ldivisor, int roundingMode) {
+    // quotient sign
+    int qsign;
+    // store quotient in long
+    long q = ldividend / ldivisor;
+    if (roundingMode == ROUND_DOWN)
+        return q;
+    // store remainder in long
+    long r = ldividend % ldivisor;
+    qsign = ((ldividend < 0) == (ldivisor < 0)) ? 1 : -1;
+    if (r != 0) {
+        boolean increment = needIncrement(ldivisor, roundingMode, qsign, q, r);
+        return increment ? q + qsign : q;
+    } else {
+        return q;
+    }
+}

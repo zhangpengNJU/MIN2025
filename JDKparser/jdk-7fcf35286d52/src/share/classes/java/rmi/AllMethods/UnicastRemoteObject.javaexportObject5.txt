@@ -1,0 +1,20 @@
+/**
+ * Exports the remote object to make it available to receive incoming
+ * calls, using a transport specified by the given socket factory.
+ *
+ * <p>Either socket factory may be {@code null}, in which case
+ * the corresponding client or server socket creation method of
+ * {@link RMISocketFactory} is used instead.
+ *
+ * @param obj the remote object to be exported
+ * @param port the port to export the object on
+ * @param csf the client-side socket factory for making calls to the
+ * remote object
+ * @param ssf the server-side socket factory for receiving remote calls
+ * @return remote object stub
+ * @exception RemoteException if export fails
+ * @since 1.2
+ */
+public static Remote exportObject(Remote obj, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws RemoteException {
+    return exportObject(obj, new UnicastServerRef2(port, csf, ssf));
+}

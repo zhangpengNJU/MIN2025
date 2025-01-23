@@ -1,0 +1,17 @@
+/**
+ * Gets the offset for the first band of pixel (x,y).
+ *  A sample of the first band can be retrieved from a
+ * <code>DataBuffer</code>
+ *  <code>data</code> with a <code>ComponentSampleModel</code>
+ * <code>csm</code> as
+ * <pre>
+ *        data.getElem(csm.getOffset(x, y));
+ * </pre>
+ * @param x the X location of the pixel
+ * @param y the Y location of the pixel
+ * @return the offset for the first band of the specified pixel.
+ */
+public int getOffset(int x, int y) {
+    int offset = y * scanlineStride + x * pixelStride + bandOffsets[0];
+    return offset;
+}

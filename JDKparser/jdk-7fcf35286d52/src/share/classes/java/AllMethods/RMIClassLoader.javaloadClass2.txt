@@ -1,0 +1,31 @@
+/**
+ * Loads a class from a codebase URL.
+ *
+ * If <code>codebase</code> is <code>null</code>, then this method
+ * will behave the same as {@link #loadClass(String,String)} with a
+ * <code>null</code> <code>codebase</code> and the given class name.
+ *
+ * <p>This method delegates to the
+ * {@link RMIClassLoaderSpi#loadClass(String,String,ClassLoader)}
+ * method of the provider instance, passing the result of invoking
+ * {@link URL#toString} on the given URL (or <code>null</code> if
+ * <code>codebase</code> is null) as the first argument,
+ * <code>name</code> as the second argument,
+ * and <code>null</code> as the third argument.
+ *
+ * @param   codebase the URL to load the class from, or <code>null</code>
+ *
+ * @param   name the name of the class to load
+ *
+ * @return  the <code>Class</code> object representing the loaded class
+ *
+ * @throws MalformedURLException if <code>codebase</code> is
+ * <code>null</code> and a provider-specific URL used
+ * to load classes is invalid
+ *
+ * @throws  ClassNotFoundException if a definition for the class
+ * could not be found at the specified URL
+ */
+public static Class<?> loadClass(URL codebase, String name) throws MalformedURLException, ClassNotFoundException {
+    return provider.loadClass(codebase != null ? codebase.toString() : null, name, null);
+}

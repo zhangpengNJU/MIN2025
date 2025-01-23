@@ -1,0 +1,10 @@
+private void stopListeningForOtherDrags() {
+    // System.out.println("Removing AWTEventListener");
+    java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Object>() {
+
+        public Object run() {
+            nativeContainer.getToolkit().removeAWTEventListener(LightweightDispatcher.this);
+            return null;
+        }
+    });
+}

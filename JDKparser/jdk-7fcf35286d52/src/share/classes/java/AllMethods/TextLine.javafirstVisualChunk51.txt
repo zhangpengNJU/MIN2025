@@ -1,0 +1,12 @@
+/*
+   * The new version requires that chunks be at the same level.
+   */
+private static int firstVisualChunk(int[] order, byte[] direction, int start, int limit) {
+    if (order != null && direction != null) {
+        byte dir = direction[start];
+        while (++start < limit && direction[start] == dir) {
+        }
+        return start;
+    }
+    return limit;
+}

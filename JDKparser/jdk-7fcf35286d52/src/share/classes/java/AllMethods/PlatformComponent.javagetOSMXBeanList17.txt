@@ -1,0 +1,11 @@
+/*
+     * Returns the OS mxbean instance of the given type.
+     */
+private static <T extends OperatingSystemMXBean> List<T> getOSMXBeanList(Class<T> osMXBeanIntf) {
+    OperatingSystemMXBean m = ManagementFactoryHelper.getOperatingSystemMXBean();
+    if (osMXBeanIntf.isInstance(m)) {
+        return Collections.singletonList(osMXBeanIntf.cast(m));
+    } else {
+        return Collections.emptyList();
+    }
+}

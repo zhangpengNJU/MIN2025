@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Date date = (Date) oldInstance;
+    return new Expression(date, date.getClass(), "new", new Object[] { date.getTime() });
+}

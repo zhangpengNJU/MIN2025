@@ -1,0 +1,11 @@
+private static int parseNumber(CharSequence text, String str, int negate) {
+    if (str == null) {
+        return 0;
+    }
+    int val = Integer.parseInt(str);
+    try {
+        return Math.multiplyExact(val, negate);
+    } catch (ArithmeticException ex) {
+        throw new DateTimeParseException("Text cannot be parsed to a Period", text, 0, ex);
+    }
+}

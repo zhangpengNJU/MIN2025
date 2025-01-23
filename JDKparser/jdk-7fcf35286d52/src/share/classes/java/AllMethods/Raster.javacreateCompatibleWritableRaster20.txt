@@ -1,0 +1,22 @@
+/**
+ * Create a compatible WritableRaster with the specified
+ * location (minX, minY) and size (width, height), a
+ * new SampleModel, and a new initialized DataBuffer.
+ * @param x the X coordinate of the upper-left corner of
+ *        the <code>WritableRaster</code>
+ * @param y the Y coordinate of the upper-left corner of
+ *        the <code>WritableRaster</code>
+ * @param w the specified width of the <code>WritableRaster</code>
+ * @param h the specified height of the <code>WritableRaster</code>
+ * @return a compatible <code>WritableRaster</code> with the specified
+ *         size and location and a new sample model and data buffer.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>x + w</code> or
+ *         <code>y + h</code> results in integer
+ *         overflow
+ */
+public WritableRaster createCompatibleWritableRaster(int x, int y, int w, int h) {
+    WritableRaster ret = createCompatibleWritableRaster(w, h);
+    return ret.createWritableChild(0, 0, w, h, x, y, null);
+}

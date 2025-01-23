@@ -1,0 +1,24 @@
+/**
+ * Returns the hash code value for this object.
+ *
+ * @return a hash code value for this object.
+ */
+public int hashCode() {
+    /*
+         * If this SocketPermission was initialized with an IP address
+         * or a wildcard, use getName().hashCode(), otherwise use
+         * the hashCode() of the host name returned from
+         * java.net.InetAddress.getHostName method.
+         */
+    if (init_with_ip || wildcard) {
+        return this.getName().hashCode();
+    }
+    try {
+        getCanonName();
+    } catch (UnknownHostException uhe) {
+    }
+    if (invalid || cname == null)
+        return this.getName().hashCode();
+    else
+        return this.cname.hashCode();
+}

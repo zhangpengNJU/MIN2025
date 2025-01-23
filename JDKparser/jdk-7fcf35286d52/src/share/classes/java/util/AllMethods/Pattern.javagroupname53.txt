@@ -1,0 +1,16 @@
+/**
+ * Parses and returns the name of a "named capturing group", the trailing
+ * ">" is consumed after parsing.
+ */
+private String groupname(int ch) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(Character.toChars(ch));
+    while (ASCII.isLower(ch = read()) || ASCII.isUpper(ch) || ASCII.isDigit(ch)) {
+        sb.append(Character.toChars(ch));
+    }
+    if (sb.length() == 0)
+        throw error("named capturing group has 0 length name");
+    if (ch != '>')
+        throw error("named capturing group is missing trailing '>'");
+    return sb.toString();
+}

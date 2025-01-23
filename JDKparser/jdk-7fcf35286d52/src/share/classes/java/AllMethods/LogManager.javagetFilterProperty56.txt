@@ -1,0 +1,19 @@
+// Package private method to get a filter property.
+// We return an instance of the class named by the "name"
+// property. If the property is not defined or has problems
+// we return the defaultValue.
+Filter getFilterProperty(String name, Filter defaultValue) {
+    String val = getProperty(name);
+    try {
+        if (val != null) {
+            Class<?> clz = ClassLoader.getSystemClassLoader().loadClass(val);
+            return (Filter) clz.newInstance();
+        }
+    } catch (Exception ex) {
+    // We got one of a variety of exceptions in creating the
+    // class or creating an instance.
+    // Drop through.
+    }
+    // We got an exception.  Return the defaultValue.
+    return defaultValue;
+}

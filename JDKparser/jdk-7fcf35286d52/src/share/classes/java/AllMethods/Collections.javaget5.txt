@@ -1,0 +1,18 @@
+/**
+ * Gets the ith element from the given list by repositioning the specified
+ * list listIterator.
+ */
+private static <T> T get(ListIterator<? extends T> i, int index) {
+    T obj = null;
+    int pos = i.nextIndex();
+    if (pos <= index) {
+        do {
+            obj = i.next();
+        } while (pos++ < index);
+    } else {
+        do {
+            obj = i.previous();
+        } while (--pos > index);
+    }
+    return obj;
+}

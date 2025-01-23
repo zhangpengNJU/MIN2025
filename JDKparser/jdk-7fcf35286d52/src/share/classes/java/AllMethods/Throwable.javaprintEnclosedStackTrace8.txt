@@ -1,0 +1,32 @@
+/**
+ * Print our stack trace as an enclosed exception for the specified
+ * stack trace.
+ */
+private void printEnclosedStackTrace(PrintStreamOrWriter s, StackTraceElement[] enclosingTrace, String caption, String prefix, Set<Throwable> dejaVu) {
+    assert Thread.holdsLock(s.lock());
+    if (dejaVu.contains(this)) {
+        s.println(prefix + caption + "[CIRCULAR REFERENCE: " + this + "]");
+    } else {
+        dejaVu.add(this);
+        // Compute number of frames in common between this and enclosing trace
+        StackTraceElement[] trace = getOurStackTrace();
+        int m = trace.length - 1;
+        int n = enclosingTrace.length - 1;
+        while (m >= 0 && n >= 0 && trace[m].equals(enclosingTrace[n])) {
+            m--;
+            n--;
+        }
+        int framesInCommon = trace.length - 1 - m;
+        // Print our stack trace
+        s.println(prefix + caption + this);
+        for (int i = 0; i <= m; i++) s.println(prefix + "\tat " + trace[i]);
+        if (framesInCommon != 0)
+            s.println(prefix + "\t... " + framesInCommon + " more");
+        // Print suppressed exceptions, if any
+        for (Throwable se : getSuppressed()) se.printEnclosedStackTrace(s, trace, SUPPRESSED_CAPTION, prefix + "\t", dejaVu);
+        // Print cause, if any
+        Throwable ourCause = getCause();
+        if (ourCause != null)
+            ourCause.printEnclosedStackTrace(s, trace, CAUSE_CAPTION, prefix, dejaVu);
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Called whenever an element has been dequeued (at takeIndex).
+ */
+void elementDequeued() {
+    // assert lock.getHoldCount() == 1;
+    if (count == 0)
+        queueIsEmpty();
+    else if (takeIndex == 0)
+        takeIndexWrapped();
+}

@@ -1,0 +1,22 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * If the action is an instance of {@code DoubleConsumer} then it is
+ * cast to {@code DoubleConsumer} and passed to
+ * {@link #forEachRemaining}; otherwise the action is adapted to
+ * an instance of {@code DoubleConsumer}, by boxing the argument of
+ * {@code DoubleConsumer}, and then passed to
+ * {@link #forEachRemaining}.
+ */
+@Override
+default void forEachRemaining(Consumer<? super Double> action) {
+    if (action instanceof DoubleConsumer) {
+        forEachRemaining((DoubleConsumer) action);
+    } else {
+        // The method reference action::accept is never null
+        Objects.requireNonNull(action);
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling PrimitiveIterator.OfDouble.forEachRemainingDouble(action::accept)");
+        forEachRemaining((DoubleConsumer) action::accept);
+    }
+}

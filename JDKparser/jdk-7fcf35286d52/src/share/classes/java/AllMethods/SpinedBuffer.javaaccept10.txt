@@ -1,0 +1,12 @@
+@Override
+public void accept(E e) {
+    if (elementIndex == curChunk.length) {
+        inflateSpine();
+        if (spineIndex + 1 >= spine.length || spine[spineIndex + 1] == null)
+            increaseCapacity();
+        elementIndex = 0;
+        ++spineIndex;
+        curChunk = spine[spineIndex];
+    }
+    curChunk[elementIndex++] = e;
+}

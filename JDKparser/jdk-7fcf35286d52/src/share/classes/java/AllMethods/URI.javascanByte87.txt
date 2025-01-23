@@ -1,0 +1,11 @@
+// Scan a string of decimal digits whose value fits in a byte
+// 
+private int scanByte(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q = scan(p, n, L_DIGIT, H_DIGIT);
+    if (q <= p)
+        return q;
+    if (Integer.parseInt(substring(p, q)) > 255)
+        return p;
+    return q;
+}

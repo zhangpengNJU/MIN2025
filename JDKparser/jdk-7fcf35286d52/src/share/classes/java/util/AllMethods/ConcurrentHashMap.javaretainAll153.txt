@@ -1,0 +1,12 @@
+public final boolean retainAll(Collection<?> c) {
+    if (c == null)
+        throw new NullPointerException();
+    boolean modified = false;
+    for (Iterator<E> it = iterator(); it.hasNext(); ) {
+        if (!c.contains(it.next())) {
+            it.remove();
+            modified = true;
+        }
+    }
+    return modified;
+}

@@ -1,0 +1,43 @@
+/**
+ * Returns a slice of a BigInteger for use in Toom-Cook multiplication.
+ *
+ * @param lowerSize The size of the lower-order bit slices.
+ * @param upperSize The size of the higher-order bit slices.
+ * @param slice The index of which slice is requested, which must be a
+ * number from 0 to size-1. Slice 0 is the highest-order bits, and slice
+ * size-1 are the lowest-order bits. Slice 0 may be of different size than
+ * the other slices.
+ * @param fullsize The size of the larger integer array, used to align
+ * slices to the appropriate position when multiplying different-sized
+ * numbers.
+ */
+private BigInteger getToomSlice(int lowerSize, int upperSize, int slice, int fullsize) {
+    int start, end, sliceSize, len, offset;
+    len = mag.length;
+    offset = fullsize - len;
+    if (slice == 0) {
+        start = 0 - offset;
+        end = upperSize - 1 - offset;
+    } else {
+        start = upperSize + (slice - 1) * lowerSize - offset;
+        end = start + lowerSize - 1;
+    }
+    if (start < 0) {
+        start = 0;
+    }
+    if (end < 0) {
+        return ZERO;
+    }
+    sliceSize = (end - start) + 1;
+    if (sliceSize <= 0) {
+        return ZERO;
+    }
+    // While performing Toom-Cook, all slices are positive and
+    // the sign is adjusted when the final number is composed.
+    if (start == 0 && sliceSize >= len) {
+        return this.abs();
+    }
+    int[] intSlice = new int[sliceSize];
+    System.arraycopy(mag, start, intSlice, 0, sliceSize);
+    return new BigInteger(trustedStripLeadingZeroInts(intSlice), 1);
+}

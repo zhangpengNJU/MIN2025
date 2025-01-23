@@ -1,0 +1,11 @@
+/*non-public*/
+MethodHandle viewAsType(MethodType newType, boolean strict) {
+    // No actual conversions, just a new view of the same method.
+    // Note that this operation must not produce a DirectMethodHandle,
+    // because retyped DMHs, like any transformed MHs,
+    // cannot be cracked into MethodHandleInfo.
+    assert viewAsTypeChecks(newType, strict);
+    BoundMethodHandle mh = rebind();
+    assert (!((MethodHandle) mh instanceof DirectMethodHandle));
+    return mh.copyWith(newType, mh.form);
+}

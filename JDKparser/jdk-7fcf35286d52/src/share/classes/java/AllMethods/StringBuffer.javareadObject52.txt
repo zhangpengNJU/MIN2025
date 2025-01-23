@@ -1,0 +1,9 @@
+/**
+ * readObject is called to restore the state of the StringBuffer from
+ * a stream.
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    java.io.ObjectInputStream.GetField fields = s.readFields();
+    value = (char[]) fields.get("value", null);
+    count = fields.get("count", 0);
+}

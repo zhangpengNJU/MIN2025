@@ -1,0 +1,12 @@
+public String next() {
+    if (!hasNext())
+        throw new NoSuchElementException();
+    if (emptyElementCount == 0) {
+        String n = nextElement;
+        nextElement = null;
+        return n;
+    } else {
+        emptyElementCount--;
+        return "";
+    }
+}

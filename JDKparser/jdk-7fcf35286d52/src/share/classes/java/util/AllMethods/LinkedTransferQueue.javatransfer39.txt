@@ -1,0 +1,18 @@
+/**
+ * Transfers the element to a consumer, waiting if necessary to do so.
+ *
+ * <p>More precisely, transfers the specified element immediately
+ * if there exists a consumer already waiting to receive it (in
+ * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+ * else inserts the specified element at the tail of this queue
+ * and waits until the element is received by a consumer.
+ *
+ * @throws NullPointerException if the specified element is null
+ */
+public void transfer(E e) throws InterruptedException {
+    if (xfer(e, true, SYNC, 0) != null) {
+        // failure possible only due to interrupt
+        Thread.interrupted();
+        throw new InterruptedException();
+    }
+}

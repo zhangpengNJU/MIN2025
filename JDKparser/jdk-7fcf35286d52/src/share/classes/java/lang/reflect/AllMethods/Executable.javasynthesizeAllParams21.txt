@@ -1,0 +1,10 @@
+private Parameter[] synthesizeAllParams() {
+    final int realparams = getParameterCount();
+    final Parameter[] out = new Parameter[realparams];
+    for (int i = 0; i < realparams; i++) // TODO: is there a way to synthetically derive the
+    // modifiers?  Probably not in the general case, since
+    // we'd have no way of knowing about them, but there
+    // may be specific cases.
+    out[i] = new Parameter("arg" + i, 0, this, i);
+    return out;
+}

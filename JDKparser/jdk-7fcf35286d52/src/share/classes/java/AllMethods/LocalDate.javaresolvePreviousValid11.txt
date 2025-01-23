@@ -1,0 +1,22 @@
+/**
+ * Resolves the date, resolving days past the end of month.
+ *
+ * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
+ * @param month  the month-of-year to represent, validated from 1 to 12
+ * @param day  the day-of-month to represent, validated from 1 to 31
+ * @return the resolved date, not null
+ */
+private static LocalDate resolvePreviousValid(int year, int month, int day) {
+    switch(month) {
+        case 2:
+            day = Math.min(day, IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            day = Math.min(day, 30);
+            break;
+    }
+    return new LocalDate(year, month, day);
+}

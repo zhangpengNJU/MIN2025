@@ -1,0 +1,19 @@
+// Comparison Operations
+/**
+ * Compares this UUID with the specified UUID.
+ *
+ * <p> The first of two UUIDs is greater than the second if the most
+ * significant field in which the UUIDs differ is greater for the first
+ * UUID.
+ *
+ * @param  val
+ *         {@code UUID} to which this {@code UUID} is to be compared
+ *
+ * @return  -1, 0 or 1 as this {@code UUID} is less than, equal to, or
+ *          greater than {@code val}
+ */
+public int compareTo(UUID val) {
+    // The ordering is intentionally set up so that the UUIDs
+    // can simply be numerically compared as two numbers
+    return (this.mostSigBits < val.mostSigBits ? -1 : (this.mostSigBits > val.mostSigBits ? 1 : (this.leastSigBits < val.leastSigBits ? -1 : (this.leastSigBits > val.leastSigBits ? 1 : 0))));
+}

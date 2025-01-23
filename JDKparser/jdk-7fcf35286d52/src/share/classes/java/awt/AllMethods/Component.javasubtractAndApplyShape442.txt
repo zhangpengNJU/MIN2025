@@ -1,0 +1,7 @@
+final void subtractAndApplyShape(Region s) {
+    checkTreeLock();
+    if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+        mixingLog.fine("this = " + this + "; s=" + s);
+    }
+    applyCompoundShape(getAppliedShape().getDifference(s));
+}

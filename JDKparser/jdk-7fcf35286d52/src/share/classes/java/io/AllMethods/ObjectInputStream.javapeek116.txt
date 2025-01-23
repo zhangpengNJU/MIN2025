@@ -1,0 +1,15 @@
+/**
+ * Peeks at (but does not consume) and returns the next byte value in
+ * the stream, or -1 if the end of the stream/block data (if in block
+ * data mode) has been reached.
+ */
+int peek() throws IOException {
+    if (blkmode) {
+        if (pos == end) {
+            refill();
+        }
+        return (end >= 0) ? (buf[pos] & 0xFF) : -1;
+    } else {
+        return in.peek();
+    }
+}

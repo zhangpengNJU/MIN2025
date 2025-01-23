@@ -1,0 +1,33 @@
+/**
+ * Parse an argument of the form passed to setSubjectAlternativeNames,
+ * returning a {@code Collection} of
+ * {@code GeneralNameInterface}s.
+ * Throw an IllegalArgumentException or a ClassCastException
+ * if the argument is malformed.
+ *
+ * @param names a Collection with one entry per name.
+ *              Each entry is a {@code List} whose first entry
+ *              is an Integer (the name type, 0-8) and whose second
+ *              entry is a String or a byte array (the name, in
+ *              string or ASN.1 DER encoded form, respectively).
+ *              There can be multiple names of the same type. Null is
+ *              not an acceptable value.
+ * @return a Set of {@code GeneralNameInterface}s
+ * @throws IOException if a parsing error occurs
+ */
+private static Set<GeneralNameInterface> parseNames(Collection<List<?>> names) throws IOException {
+    Set<GeneralNameInterface> genNames = new HashSet<GeneralNameInterface>();
+    for (List<?> nameList : names) {
+        if (nameList.size() != 2) {
+            throw new IOException("name list size not 2");
+        }
+        Object o = nameList.get(0);
+        if (!(o instanceof Integer)) {
+            throw new IOException("expected an Integer");
+        }
+        int nameType = ((Integer) o).intValue();
+        o = nameList.get(1);
+        genNames.add(makeGeneralNameInterface(nameType, o));
+    }
+    return genNames;
+}

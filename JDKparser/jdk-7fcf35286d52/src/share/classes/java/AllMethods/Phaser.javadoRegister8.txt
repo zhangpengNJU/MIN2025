@@ -1,0 +1,58 @@
+/**
+ * Implementation of register, bulkRegister
+ *
+ * @param registrations number to add to both parties and
+ * unarrived fields. Must be greater than zero.
+ */
+private int doRegister(int registrations) {
+    // adjustment to state
+    long adjust = ((long) registrations << PARTIES_SHIFT) | registrations;
+    final Phaser parent = this.parent;
+    int phase;
+    for (; ; ) {
+        long s = (parent == null) ? state : reconcileState();
+        int counts = (int) s;
+        int parties = counts >>> PARTIES_SHIFT;
+        int unarrived = counts & UNARRIVED_MASK;
+        if (registrations > MAX_PARTIES - parties)
+            throw new IllegalStateException(badRegister(s));
+        phase = (int) (s >>> PHASE_SHIFT);
+        if (phase < 0)
+            break;
+        if (counts != EMPTY) {
+            // not 1st registration
+            if (parent == null || reconcileState() == s) {
+                if (// wait out advance
+                unarrived == 0)
+                    root.internalAwaitAdvance(phase, null);
+                else if (UNSAFE.compareAndSwapLong(this, stateOffset, s, s + adjust))
+                    break;
+            }
+        } else if (parent == null) {
+            // 1st root registration
+            long next = ((long) phase << PHASE_SHIFT) | adjust;
+            if (UNSAFE.compareAndSwapLong(this, stateOffset, s, next))
+                break;
+        } else {
+            synchronized (this) {
+                // 1st sub registration
+                if (state == s) {
+                    // recheck under lock
+                    phase = parent.doRegister(1);
+                    if (phase < 0)
+                        break;
+                    // finish registration whenever parent registration
+                    // succeeded, even when racing with termination,
+                    // since these are part of the same "transaction".
+                    while (!UNSAFE.compareAndSwapLong(this, stateOffset, s, ((long) phase << PHASE_SHIFT) | adjust)) {
+                        s = state;
+                        phase = (int) (root.state >>> PHASE_SHIFT);
+                    // assert (int)s == EMPTY;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return phase;
+}

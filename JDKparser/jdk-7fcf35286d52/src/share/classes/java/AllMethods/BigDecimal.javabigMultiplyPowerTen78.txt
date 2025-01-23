@@ -1,0 +1,12 @@
+/**
+ * Compute this * 10 ^ n.
+ * Needed mainly to allow special casing to trap zero value
+ */
+private BigInteger bigMultiplyPowerTen(int n) {
+    if (n <= 0)
+        return this.inflated();
+    if (intCompact != INFLATED)
+        return bigTenToThe(n).multiply(intCompact);
+    else
+        return intVal.multiply(bigTenToThe(n));
+}

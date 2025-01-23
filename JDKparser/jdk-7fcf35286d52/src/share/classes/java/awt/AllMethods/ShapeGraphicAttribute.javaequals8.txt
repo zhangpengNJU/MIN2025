@@ -1,0 +1,27 @@
+/**
+ * Compares this <code>ShapeGraphicAttribute</code> to the specified
+ * <code>ShapeGraphicAttribute</code>.
+ * @param rhs the <code>ShapeGraphicAttribute</code> to compare for
+ * equality
+ * @return <code>true</code> if this
+ * <code>ShapeGraphicAttribute</code> equals <code>rhs</code>;
+ * <code>false</code> otherwise.
+ */
+public boolean equals(ShapeGraphicAttribute rhs) {
+    if (rhs == null) {
+        return false;
+    }
+    if (this == rhs) {
+        return true;
+    }
+    if (fStroke != rhs.fStroke) {
+        return false;
+    }
+    if (getAlignment() != rhs.getAlignment()) {
+        return false;
+    }
+    if (!fShape.equals(rhs.fShape)) {
+        return false;
+    }
+    return true;
+}

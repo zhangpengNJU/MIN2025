@@ -1,0 +1,6 @@
+/* Invoked by Runtime.runFinalizersOnExit */
+static void setRunFinalizersOnExit(boolean run) {
+    synchronized (lock) {
+        runFinalizersOnExit = run;
+    }
+}

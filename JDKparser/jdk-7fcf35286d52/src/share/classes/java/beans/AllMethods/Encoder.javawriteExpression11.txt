@@ -1,0 +1,20 @@
+/**
+ * The implementation first checks to see if an
+ * expression with this value has already been written.
+ * If not, the expression is cloned, using
+ * the same procedure as <code>writeStatement</code>,
+ * and the value of this expression is reconciled
+ * with the value of the cloned expression
+ * by calling <code>writeObject</code>.
+ *
+ * @param oldExp The expression to be written to the stream.
+ */
+public void writeExpression(Expression oldExp) {
+    // System.out.println("Encoder::writeExpression: " + oldExp);
+    Object oldValue = getValue(oldExp);
+    if (get(oldValue) != null) {
+        return;
+    }
+    bindings.put(oldValue, (Expression) cloneStatement(oldExp));
+    writeObject(oldValue);
+}

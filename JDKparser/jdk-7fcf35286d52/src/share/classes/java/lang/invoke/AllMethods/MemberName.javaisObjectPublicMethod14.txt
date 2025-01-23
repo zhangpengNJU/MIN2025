@@ -1,0 +1,12 @@
+private boolean isObjectPublicMethod() {
+    if (clazz == Object.class)
+        return true;
+    MethodType mtype = getMethodType();
+    if (name.equals("toString") && mtype.returnType() == String.class && mtype.parameterCount() == 0)
+        return true;
+    if (name.equals("hashCode") && mtype.returnType() == int.class && mtype.parameterCount() == 0)
+        return true;
+    if (name.equals("equals") && mtype.returnType() == boolean.class && mtype.parameterCount() == 1 && mtype.parameterType(0) == Object.class)
+        return true;
+    return false;
+}

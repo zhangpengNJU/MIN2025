@@ -1,0 +1,17 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return  A string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case INVOCATION_DEFAULT:
+            typeStr = "INVOCATION_DEFAULT";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr + ",runnable=" + runnable + ",notifier=" + notifier + ",catchExceptions=" + catchExceptions + ",when=" + when;
+}

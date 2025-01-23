@@ -1,0 +1,13 @@
+/**
+ * Initialize the paragraph-specific data.
+ */
+private void paragraphInit(byte aBaseline, CoreMetrics lm, Map<? extends Attribute, ?> paragraphAttrs, char[] text) {
+    baseline = aBaseline;
+    // normalize to current baseline
+    baselineOffsets = TextLine.getNormalizedOffsets(lm.baselineOffsets, baseline);
+    justifyRatio = AttributeValues.getJustification(paragraphAttrs);
+    NumericShaper shaper = AttributeValues.getNumericShaping(paragraphAttrs);
+    if (shaper != null) {
+        shaper.shape(text, 0, text.length);
+    }
+}

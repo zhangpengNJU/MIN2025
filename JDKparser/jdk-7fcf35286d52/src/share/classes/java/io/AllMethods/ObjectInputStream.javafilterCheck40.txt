@@ -1,0 +1,38 @@
+/**
+ * Invoke the serialization filter if non-null.
+ * If the filter rejects or an exception is thrown, throws InvalidClassException.
+ *
+ * @param clazz the class; may be null
+ * @param arrayLength the array length requested; use {@code -1} if not creating an array
+ * @throws InvalidClassException if it rejected by the filter or
+ *        a {@link RuntimeException} is thrown
+ */
+private void filterCheck(Class<?> clazz, int arrayLength) throws InvalidClassException {
+    if (serialFilter != null) {
+        RuntimeException ex = null;
+        ObjectInputFilter.Status status;
+        // Info about the stream is not available if overridden by subclass, return 0
+        long bytesRead = (bin == null) ? 0 : bin.getBytesRead();
+        try {
+            status = serialFilter.checkInput(new FilterValues(clazz, arrayLength, totalObjectRefs, depth, bytesRead));
+        } catch (RuntimeException e) {
+            // Preventive interception of an exception to log
+            status = ObjectInputFilter.Status.REJECTED;
+            ex = e;
+        }
+        if (status == null || status == ObjectInputFilter.Status.REJECTED) {
+            // Debug logging of filter checks that fail
+            if (Logging.infoLogger != null) {
+                Logging.infoLogger.info("ObjectInputFilter {0}: {1}, array length: {2}, nRefs: {3}, depth: {4}, bytes: {5}, ex: {6}", status, clazz, arrayLength, totalObjectRefs, depth, bytesRead, Objects.toString(ex, "n/a"));
+            }
+            InvalidClassException ice = new InvalidClassException("filter status: " + status);
+            ice.initCause(ex);
+            throw ice;
+        } else {
+            // Trace logging for those that succeed
+            if (Logging.traceLogger != null) {
+                Logging.traceLogger.finer("ObjectInputFilter {0}: {1}, array length: {2}, nRefs: {3}, depth: {4}, bytes: {5}, ex: {6}", status, clazz, arrayLength, totalObjectRefs, depth, bytesRead, Objects.toString(ex, "n/a"));
+            }
+        }
+    }
+}

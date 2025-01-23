@@ -1,0 +1,22 @@
+/**
+ * Marks the present position in the stream.  Subsequent calls to reset()
+ * will reposition the stream to this point.
+ *
+ * @param  readAheadLimit  Limit on the number of characters that may be
+ *                         read while still preserving the mark.  Because
+ *                         the stream's input comes from a string, there
+ *                         is no actual limit, so this argument must not
+ *                         be negative, but is otherwise ignored.
+ *
+ * @exception  IllegalArgumentException  If {@code readAheadLimit < 0}
+ * @exception  IOException  If an I/O error occurs
+ */
+public void mark(int readAheadLimit) throws IOException {
+    if (readAheadLimit < 0) {
+        throw new IllegalArgumentException("Read-ahead limit < 0");
+    }
+    synchronized (lock) {
+        ensureOpen();
+        mark = next;
+    }
+}

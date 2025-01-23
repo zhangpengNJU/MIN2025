@@ -1,0 +1,20 @@
+/**
+ * Write the data and fields to the specified ObjectOutput stream,
+ * which must be the same stream that produced this
+ * <code>PutField</code> object.
+ *
+ * @param  out the stream to write the data and fields to
+ * @throws IOException if I/O errors occur while writing to the
+ *         underlying stream
+ * @throws IllegalArgumentException if the specified stream is not
+ *         the same stream that produced this <code>PutField</code>
+ *         object
+ * @deprecated This method does not write the values contained by this
+ *         <code>PutField</code> object in a proper format, and may
+ *         result in corruption of the serialization stream.  The
+ *         correct way to write <code>PutField</code> data is by
+ *         calling the {@link java.io.ObjectOutputStream#writeFields()}
+ *         method.
+ */
+@Deprecated
+public abstract void write(ObjectOutput out) throws IOException;

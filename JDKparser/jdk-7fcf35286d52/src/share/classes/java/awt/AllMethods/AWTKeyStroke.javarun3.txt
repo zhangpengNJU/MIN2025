@@ -1,0 +1,12 @@
+public Constructor run() {
+    try {
+        Constructor ctor = clazz.getDeclaredConstructor((Class[]) null);
+        if (ctor != null) {
+            ctor.setAccessible(true);
+        }
+        return ctor;
+    } catch (SecurityException e) {
+    } catch (NoSuchMethodException e) {
+    }
+    return null;
+}

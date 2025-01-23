@@ -1,0 +1,10 @@
+private Method getMethod0(String name, Class<?>[] parameterTypes, boolean includeStaticMethods) {
+    MethodArray interfaceCandidates = new MethodArray(2);
+    Method res = privateGetMethodRecursive(name, parameterTypes, includeStaticMethods, interfaceCandidates);
+    if (res != null)
+        return res;
+    // Not found on class or superclass directly
+    interfaceCandidates.removeLessSpecifics();
+    // may be null
+    return interfaceCandidates.getFirst();
+}

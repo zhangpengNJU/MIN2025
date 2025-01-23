@@ -1,0 +1,20 @@
+private static Method[] getSingleNameMethods(Class<?> intfc) {
+    ArrayList<Method> methods = new ArrayList<Method>();
+    String uniqueName = null;
+    for (Method m : intfc.getMethods()) {
+        if (isObjectMethod(m))
+            continue;
+        if (!Modifier.isAbstract(m.getModifiers()))
+            continue;
+        String mname = m.getName();
+        if (uniqueName == null)
+            uniqueName = mname;
+        else if (!uniqueName.equals(mname))
+            // too many abstract methods
+            return null;
+        methods.add(m);
+    }
+    if (uniqueName == null)
+        return null;
+    return methods.toArray(new Method[methods.size()]);
+}

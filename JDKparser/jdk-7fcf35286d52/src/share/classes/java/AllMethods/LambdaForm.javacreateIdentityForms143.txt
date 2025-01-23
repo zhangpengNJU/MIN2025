@@ -1,0 +1,61 @@
+private static void createIdentityForms() {
+    for (BasicType type : BasicType.ALL_TYPES) {
+        int ord = type.ordinal();
+        char btChar = type.basicTypeChar();
+        boolean isVoid = (type == V_TYPE);
+        Class<?> btClass = type.btClass;
+        MethodType zeType = MethodType.methodType(btClass);
+        MethodType idType = isVoid ? zeType : zeType.appendParameterTypes(btClass);
+        // Look up some symbolic names.  It might not be necessary to have these,
+        // but if we need to emit direct references to bytecodes, it helps.
+        // Zero is built from a call to an identity function with a constant zero input.
+        MemberName idMem = new MemberName(LambdaForm.class, "identity_" + btChar, idType, REF_invokeStatic);
+        MemberName zeMem = new MemberName(LambdaForm.class, "zero_" + btChar, zeType, REF_invokeStatic);
+        try {
+            zeMem = IMPL_NAMES.resolveOrFail(REF_invokeStatic, zeMem, null, NoSuchMethodException.class);
+            idMem = IMPL_NAMES.resolveOrFail(REF_invokeStatic, idMem, null, NoSuchMethodException.class);
+        } catch (IllegalAccessException | NoSuchMethodException ex) {
+            throw newInternalError(ex);
+        }
+        NamedFunction idFun = new NamedFunction(idMem);
+        LambdaForm idForm;
+        if (isVoid) {
+            Name[] idNames = new Name[] { argument(0, L_TYPE) };
+            idForm = new LambdaForm(idMem.getName(), 1, idNames, VOID_RESULT);
+        } else {
+            Name[] idNames = new Name[] { argument(0, L_TYPE), argument(1, type) };
+            idForm = new LambdaForm(idMem.getName(), 2, idNames, 1);
+        }
+        LF_identityForm[ord] = idForm;
+        NF_identity[ord] = idFun;
+        NamedFunction zeFun = new NamedFunction(zeMem);
+        LambdaForm zeForm;
+        if (isVoid) {
+            zeForm = idForm;
+        } else {
+            Object zeValue = Wrapper.forBasicType(btChar).zero();
+            Name[] zeNames = new Name[] { argument(0, L_TYPE), new Name(idFun, zeValue) };
+            zeForm = new LambdaForm(zeMem.getName(), 1, zeNames, 1);
+        }
+        LF_zeroForm[ord] = zeForm;
+        NF_zero[ord] = zeFun;
+        assert (idFun.isIdentity());
+        assert (zeFun.isConstantZero());
+        assert (new Name(zeFun).isConstantZero());
+    }
+    // Do this in a separate pass, so that SimpleMethodHandle.make can see the tables.
+    for (BasicType type : BasicType.ALL_TYPES) {
+        int ord = type.ordinal();
+        NamedFunction idFun = NF_identity[ord];
+        LambdaForm idForm = LF_identityForm[ord];
+        MemberName idMem = idFun.member;
+        idFun.resolvedHandle = SimpleMethodHandle.make(idMem.getInvocationType(), idForm);
+        NamedFunction zeFun = NF_zero[ord];
+        LambdaForm zeForm = LF_zeroForm[ord];
+        MemberName zeMem = zeFun.member;
+        zeFun.resolvedHandle = SimpleMethodHandle.make(zeMem.getInvocationType(), zeForm);
+        assert (idFun.isIdentity());
+        assert (zeFun.isConstantZero());
+        assert (new Name(zeFun).isConstantZero());
+    }
+}

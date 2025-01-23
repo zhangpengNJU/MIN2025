@@ -1,0 +1,13 @@
+/**
+ * Performs the given action for each (key, value).
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param action the action
+ * @since 1.8
+ */
+public void forEach(long parallelismThreshold, BiConsumer<? super K, ? super V> action) {
+    if (action == null)
+        throw new NullPointerException();
+    new ForEachMappingTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, action).invoke();
+}

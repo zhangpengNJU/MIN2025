@@ -1,0 +1,26 @@
+/**
+ * Returns the attributes of the given file, taking into account whether
+ * the walk is following sym links is not. The {@code canUseCached}
+ * argument determines whether this method can use cached attributes.
+ */
+private BasicFileAttributes getAttributes(Path file, boolean canUseCached) throws IOException {
+    // if attributes are cached then use them if possible
+    if (canUseCached && (file instanceof BasicFileAttributesHolder) && (System.getSecurityManager() == null)) {
+        BasicFileAttributes cached = ((BasicFileAttributesHolder) file).get();
+        if (cached != null && (!followLinks || !cached.isSymbolicLink())) {
+            return cached;
+        }
+    }
+    // attempt to get attributes of file. If fails and we are following
+    // links then a link target might not exist so get attributes of link
+    BasicFileAttributes attrs;
+    try {
+        attrs = Files.readAttributes(file, BasicFileAttributes.class, linkOptions);
+    } catch (IOException ioe) {
+        if (!followLinks)
+            throw ioe;
+        // attempt to get attrmptes without following links
+        attrs = Files.readAttributes(file, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+    }
+    return attrs;
+}

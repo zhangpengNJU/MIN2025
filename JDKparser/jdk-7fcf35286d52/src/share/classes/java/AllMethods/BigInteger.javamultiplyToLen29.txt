@@ -1,0 +1,27 @@
+/**
+ * Multiplies int arrays x and y to the specified lengths and places
+ * the result into z. There will be no leading zeros in the resultant array.
+ */
+private static int[] multiplyToLen(int[] x, int xlen, int[] y, int ylen, int[] z) {
+    int xstart = xlen - 1;
+    int ystart = ylen - 1;
+    if (z == null || z.length < (xlen + ylen))
+        z = new int[xlen + ylen];
+    long carry = 0;
+    for (int j = ystart, k = ystart + 1 + xstart; j >= 0; j--, k--) {
+        long product = (y[j] & LONG_MASK) * (x[xstart] & LONG_MASK) + carry;
+        z[k] = (int) product;
+        carry = product >>> 32;
+    }
+    z[xstart] = (int) carry;
+    for (int i = xstart - 1; i >= 0; i--) {
+        carry = 0;
+        for (int j = ystart, k = ystart + 1 + i; j >= 0; j--, k--) {
+            long product = (y[j] & LONG_MASK) * (x[i] & LONG_MASK) + (z[k] & LONG_MASK) + carry;
+            z[k] = (int) product;
+            carry = product >>> 32;
+        }
+        z[i] = (int) carry;
+    }
+    return z;
+}

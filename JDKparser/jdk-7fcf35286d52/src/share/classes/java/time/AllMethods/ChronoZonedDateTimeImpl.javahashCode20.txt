@@ -1,0 +1,4 @@
+@Override
+public int hashCode() {
+    return toLocalDateTime().hashCode() ^ getOffset().hashCode() ^ Integer.rotateLeft(getZone().hashCode(), 3);
+}

@@ -1,0 +1,26 @@
+/**
+ * Inserts the string representation of the {@code char}
+ * argument into this sequence.
+ * <p>
+ * The overall effect is exactly as if the second argument were
+ * converted to a string by the method {@link String#valueOf(char)},
+ * and the character in that string were then
+ * {@link #insert(int,String) inserted} into this character
+ * sequence at the indicated offset.
+ * <p>
+ * The {@code offset} argument must be greater than or equal to
+ * {@code 0}, and less than or equal to the {@linkplain #length() length}
+ * of this sequence.
+ *
+ * @param      offset   the offset.
+ * @param      c        a {@code char}.
+ * @return     a reference to this object.
+ * @throws     IndexOutOfBoundsException  if the offset is invalid.
+ */
+public AbstractStringBuilder insert(int offset, char c) {
+    ensureCapacityInternal(count + 1);
+    System.arraycopy(value, offset, value, offset + 1, count - offset);
+    value[offset] = c;
+    count += 1;
+    return this;
+}

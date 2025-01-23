@@ -1,0 +1,91 @@
+/**
+ * Creates a Raster based on a packed SampleModel with the
+ * specified data type, width, height, number of bands, and bits
+ * per band.  If the number of bands is one, the SampleModel will
+ * be a MultiPixelPackedSampleModel.
+ *
+ * <p> If the number of bands is more than one, the SampleModel
+ * will be a SinglePixelPackedSampleModel, with each band having
+ * bitsPerBand bits.  In either case, the requirements on dataType
+ * and bitsPerBand imposed by the corresponding SampleModel must
+ * be met.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  If location is null, (0, 0) will be used.
+ * The dataType parameter should be one of the enumerated values
+ * defined in the DataBuffer class.
+ *
+ * <p> The only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,
+ * and TYPE_INT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param bands     the number of bands
+ * @param bitsPerBand the number of bits per band
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height, number of bands, and bits per band.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws IllegalArgumentException if the product of
+ *         <code>bitsPerBand</code> and <code>bands</code> is
+ *         greater than the number of bits held by
+ *         <code>dataType</code>
+ * @throws IllegalArgumentException if <code>bitsPerBand</code> or
+ *         <code>bands</code> is not greater than zero
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types, which are
+ *         <code>DataBuffer.TYPE_BYTE</code>,
+ *         <code>DataBuffer.TYPE_USHORT</code>
+ *         or <code>DataBuffer.TYPE_INT</code>
+ */
+public static WritableRaster createPackedRaster(int dataType, int w, int h, int bands, int bitsPerBand, Point location) {
+    DataBuffer d;
+    if (bands <= 0) {
+        throw new IllegalArgumentException("Number of bands (" + bands + ") must be greater than 0");
+    }
+    if (bitsPerBand <= 0) {
+        throw new IllegalArgumentException("Bits per band (" + bitsPerBand + ") must be greater than 0");
+    }
+    if (bands != 1) {
+        int[] masks = new int[bands];
+        int mask = (1 << bitsPerBand) - 1;
+        int shift = (bands - 1) * bitsPerBand;
+        /* Make sure the total mask size will fit in the data type */
+        if (shift + bitsPerBand > DataBuffer.getDataTypeSize(dataType)) {
+            throw new IllegalArgumentException("bitsPerBand(" + bitsPerBand + ") * bands is " + " greater than data type " + "size.");
+        }
+        switch(dataType) {
+            case DataBuffer.TYPE_BYTE:
+            case DataBuffer.TYPE_USHORT:
+            case DataBuffer.TYPE_INT:
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported data type " + dataType);
+        }
+        for (int i = 0; i < bands; i++) {
+            masks[i] = mask << shift;
+            shift = shift - bitsPerBand;
+        }
+        return createPackedRaster(dataType, w, h, masks, location);
+    } else {
+        double fw = w;
+        switch(dataType) {
+            case DataBuffer.TYPE_BYTE:
+                d = new DataBufferByte((int) (Math.ceil(fw / (8 / bitsPerBand))) * h);
+                break;
+            case DataBuffer.TYPE_USHORT:
+                d = new DataBufferUShort((int) (Math.ceil(fw / (16 / bitsPerBand))) * h);
+                break;
+            case DataBuffer.TYPE_INT:
+                d = new DataBufferInt((int) (Math.ceil(fw / (32 / bitsPerBand))) * h);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported data type " + dataType);
+        }
+        return createPackedRaster(d, w, h, bitsPerBand, location);
+    }
+}

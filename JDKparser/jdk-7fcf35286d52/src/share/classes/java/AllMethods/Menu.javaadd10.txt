@@ -1,0 +1,25 @@
+/**
+ * Adds the specified menu item to this menu. If the
+ * menu item has been part of another menu, removes it
+ * from that menu.
+ *
+ * @param       mi   the menu item to be added
+ * @return      the menu item added
+ * @see         java.awt.Menu#insert(java.lang.String, int)
+ * @see         java.awt.Menu#insert(java.awt.MenuItem, int)
+ */
+public MenuItem add(MenuItem mi) {
+    synchronized (getTreeLock()) {
+        if (mi.parent != null) {
+            mi.parent.remove(mi);
+        }
+        items.addElement(mi);
+        mi.parent = this;
+        MenuPeer peer = (MenuPeer) this.peer;
+        if (peer != null) {
+            mi.addNotify();
+            peer.addItem(mi);
+        }
+        return mi;
+    }
+}

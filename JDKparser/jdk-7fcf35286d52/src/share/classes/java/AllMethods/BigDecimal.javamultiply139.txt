@@ -1,0 +1,6 @@
+private static BigDecimal multiply(long x, BigInteger y, int scale) {
+    if (x == 0) {
+        return zeroValueOf(scale);
+    }
+    return new BigDecimal(y.multiply(x), INFLATED, scale, 0);
+}

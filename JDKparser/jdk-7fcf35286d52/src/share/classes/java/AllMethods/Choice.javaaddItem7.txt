@@ -1,0 +1,16 @@
+/**
+ * Obsolete as of Java 2 platform v1.1.  Please use the
+ * <code>add</code> method instead.
+ * <p>
+ * Adds an item to this <code>Choice</code> menu.
+ * @param item the item to be added
+ * @exception NullPointerException if the item's value is equal to
+ *          <code>null</code>
+ */
+public void addItem(String item) {
+    synchronized (this) {
+        insertNoInvalidate(item, pItems.size());
+    }
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

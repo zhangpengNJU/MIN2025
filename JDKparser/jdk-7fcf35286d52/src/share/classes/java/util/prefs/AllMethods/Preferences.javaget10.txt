@@ -1,0 +1,22 @@
+/**
+ * Returns the value associated with the specified key in this preference
+ * node.  Returns the specified default if there is no value associated
+ * with the key, or the backing store is inaccessible.
+ *
+ * <p>Some implementations may store default values in their backing
+ * stores.  If there is no value associated with the specified key
+ * but there is such a <i>stored default</i>, it is returned in
+ * preference to the specified default.
+ *
+ * @param key key whose associated value is to be returned.
+ * @param def the value to be returned in the event that this
+ *        preference node has no value associated with <tt>key</tt>.
+ * @return the value associated with <tt>key</tt>, or <tt>def</tt>
+ *         if no value is associated with <tt>key</tt>, or the backing
+ *         store is inaccessible.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.  (A
+ *         <tt>null</tt> value for <tt>def</tt> <i>is</i> permitted.)
+ */
+public abstract String get(String key, String def);

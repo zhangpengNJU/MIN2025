@@ -1,0 +1,14 @@
+private void setTransparency(int transparency) {
+    if (this.transparency != transparency) {
+        this.transparency = transparency;
+        if (transparency == OPAQUE) {
+            supportsAlpha = false;
+            numComponents = 3;
+            nBits = opaqueBits;
+        } else {
+            supportsAlpha = true;
+            numComponents = 4;
+            nBits = alphaBits;
+        }
+    }
+}

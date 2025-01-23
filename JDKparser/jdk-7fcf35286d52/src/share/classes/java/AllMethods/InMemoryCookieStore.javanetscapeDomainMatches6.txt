@@ -1,0 +1,46 @@
+/* ---------------- Private operations -------------- */
+/*
+     * This is almost the same as HttpCookie.domainMatches except for
+     * one difference: It won't reject cookies when the 'H' part of the
+     * domain contains a dot ('.').
+     * I.E.: RFC 2965 section 3.3.2 says that if host is x.y.domain.com
+     * and the cookie domain is .domain.com, then it should be rejected.
+     * However that's not how the real world works. Browsers don't reject and
+     * some sites, like yahoo.com do actually expect these cookies to be
+     * passed along.
+     * And should be used for 'old' style cookies (aka Netscape type of cookies)
+     */
+private boolean netscapeDomainMatches(String domain, String host) {
+    if (domain == null || host == null) {
+        return false;
+    }
+    // if there's no embedded dot in domain and domain is not .local
+    boolean isLocalDomain = ".local".equalsIgnoreCase(domain);
+    int embeddedDotInDomain = domain.indexOf('.');
+    if (embeddedDotInDomain == 0) {
+        embeddedDotInDomain = domain.indexOf('.', 1);
+    }
+    if (!isLocalDomain && (embeddedDotInDomain == -1 || embeddedDotInDomain == domain.length() - 1)) {
+        return false;
+    }
+    // if the host name contains no dot and the domain name is .local
+    int firstDotInHost = host.indexOf('.');
+    if (firstDotInHost == -1 && isLocalDomain) {
+        return true;
+    }
+    int domainLength = domain.length();
+    int lengthDiff = host.length() - domainLength;
+    if (lengthDiff == 0) {
+        // if the host name and the domain name are just string-compare euqal
+        return host.equalsIgnoreCase(domain);
+    } else if (lengthDiff > 0) {
+        // need to check H & D component
+        String H = host.substring(0, lengthDiff);
+        String D = host.substring(lengthDiff);
+        return (D.equalsIgnoreCase(domain));
+    } else if (lengthDiff == -1) {
+        // if domain is actually .host
+        return (domain.charAt(0) == '.' && host.equalsIgnoreCase(domain.substring(1)));
+    }
+    return false;
+}

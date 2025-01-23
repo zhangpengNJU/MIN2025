@@ -1,0 +1,29 @@
+/**
+ * Special version of remove needed by Entry set
+ */
+boolean removeMapping(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Entry<K, V>[] tab = getTable();
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    Object k = maskNull(entry.getKey());
+    int h = hash(k);
+    int i = indexFor(h, tab.length);
+    Entry<K, V> prev = tab[i];
+    Entry<K, V> e = prev;
+    while (e != null) {
+        Entry<K, V> next = e.next;
+        if (h == e.hash && e.equals(entry)) {
+            modCount++;
+            size--;
+            if (prev == e)
+                tab[i] = next;
+            else
+                prev.next = next;
+            return true;
+        }
+        prev = e;
+        e = next;
+    }
+    return false;
+}

@@ -1,0 +1,21 @@
+private void stopLWModal() {
+    synchronized (getTreeLock()) {
+        if (modalAppContext != null) {
+            Container nativeContainer = getHeavyweightContainer();
+            if (nativeContainer != null) {
+                if (this.modalComp != null) {
+                    nativeContainer.modalComp = this.modalComp;
+                    this.modalComp = null;
+                    return;
+                } else {
+                    nativeContainer.modalComp = null;
+                }
+            }
+            // Wake up event dispatch thread on which the dialog was
+            // initially shown
+            SunToolkit.postEvent(modalAppContext, new PeerEvent(this, new WakingRunnable(), PeerEvent.PRIORITY_EVENT));
+        }
+        EventQueue.invokeLater(new WakingRunnable());
+        getTreeLock().notifyAll();
+    }
+}

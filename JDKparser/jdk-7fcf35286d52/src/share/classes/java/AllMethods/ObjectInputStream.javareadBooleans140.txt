@@ -1,0 +1,26 @@
+/* -------------- primitive data array input methods --------------- */
+/*
+         * The following methods read in spans of primitive data values.
+         * Though equivalent to calling the corresponding primitive read
+         * methods repeatedly, these methods are optimized for reading groups
+         * of primitive data values more efficiently.
+         */
+void readBooleans(boolean[] v, int off, int len) throws IOException {
+    int stop, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            int span = Math.min(endoff - off, MAX_BLOCK_SIZE);
+            in.readFully(buf, 0, span);
+            stop = off + span;
+            pos = 0;
+        } else if (end - pos < 1) {
+            v[off++] = din.readBoolean();
+            continue;
+        } else {
+            stop = Math.min(endoff, off + end - pos);
+        }
+        while (off < stop) {
+            v[off++] = Bits.getBoolean(buf, pos++);
+        }
+    }
+}

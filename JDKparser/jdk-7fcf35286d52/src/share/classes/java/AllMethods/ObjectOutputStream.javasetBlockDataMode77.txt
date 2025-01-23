@@ -1,0 +1,15 @@
+/**
+ * Sets block data mode to the given mode (true == on, false == off)
+ * and returns the previous mode value.  If the new mode is the same as
+ * the old mode, no action is taken.  If the new mode differs from the
+ * old mode, any buffered data is flushed before switching to the new
+ * mode.
+ */
+boolean setBlockDataMode(boolean mode) throws IOException {
+    if (blkmode == mode) {
+        return blkmode;
+    }
+    drain();
+    blkmode = mode;
+    return !blkmode;
+}

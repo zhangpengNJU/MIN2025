@@ -1,0 +1,7 @@
+@Override
+public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+    if (isSupportedBy(temporal) == false) {
+        throw new UnsupportedTemporalTypeException("Unsupported field: WeekOfWeekBasedYear");
+    }
+    return getWeekRange(LocalDate.from(temporal));
+}

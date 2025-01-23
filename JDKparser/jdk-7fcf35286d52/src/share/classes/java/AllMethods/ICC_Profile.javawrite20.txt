@@ -1,0 +1,15 @@
+/**
+ * Write this ICC_Profile to an OutputStream.
+ *
+ * @param s The stream to write the profile data to.
+ *
+ * @exception IOException If an I/O error occurs while writing to the
+ * stream.
+ */
+public void write(OutputStream s) throws IOException {
+    byte[] profileData;
+    profileData = getData();
+    /* this will activate deferred
+                                    profiles if necessary */
+    s.write(profileData);
+}

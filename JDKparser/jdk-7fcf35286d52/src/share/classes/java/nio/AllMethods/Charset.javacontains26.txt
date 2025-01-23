@@ -1,0 +1,28 @@
+/**
+ * Tells whether or not this charset contains the given charset.
+ *
+ * <p> A charset <i>C</i> is said to <i>contain</i> a charset <i>D</i> if,
+ * and only if, every character representable in <i>D</i> is also
+ * representable in <i>C</i>.  If this relationship holds then it is
+ * guaranteed that every string that can be encoded in <i>D</i> can also be
+ * encoded in <i>C</i> without performing any replacements.
+ *
+ * <p> That <i>C</i> contains <i>D</i> does not imply that each character
+ * representable in <i>C</i> by a particular byte sequence is represented
+ * in <i>D</i> by the same byte sequence, although sometimes this is the
+ * case.
+ *
+ * <p> Every charset contains itself.
+ *
+ * <p> This method computes an approximation of the containment relation:
+ * If it returns <tt>true</tt> then the given charset is known to be
+ * contained by this charset; if it returns <tt>false</tt>, however, then
+ * it is not necessarily the case that the given charset is not contained
+ * in this charset.
+ *
+ * @param   cs
+ *          The given charset
+ *
+ * @return  <tt>true</tt> if the given charset is contained in this charset
+ */
+public abstract boolean contains(Charset cs);

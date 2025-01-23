@@ -1,0 +1,7 @@
+private long toExcessNanos(long days) {
+    if (unit != null) {
+        return unit.toNanos(value - unit.convert(days, TimeUnit.DAYS));
+    } else {
+        return TimeUnit.SECONDS.toNanos(toInstant().getEpochSecond() - TimeUnit.DAYS.toSeconds(days));
+    }
+}

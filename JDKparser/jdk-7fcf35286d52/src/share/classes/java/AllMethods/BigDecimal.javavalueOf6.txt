@@ -1,0 +1,9 @@
+static BigDecimal valueOf(BigInteger intVal, int scale, int prec) {
+    long val = compactValFor(intVal);
+    if (val == 0) {
+        return zeroValueOf(scale);
+    } else if (scale == 0 && val >= 0 && val < zeroThroughTen.length) {
+        return zeroThroughTen[(int) val];
+    }
+    return new BigDecimal(intVal, val, scale, prec);
+}

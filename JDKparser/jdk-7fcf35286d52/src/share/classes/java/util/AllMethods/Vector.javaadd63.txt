@@ -1,0 +1,10 @@
+public void add(E e) {
+    int i = cursor;
+    synchronized (Vector.this) {
+        checkForComodification();
+        Vector.this.add(i, e);
+        expectedModCount = modCount;
+    }
+    cursor = i + 1;
+    lastRet = -1;
+}

@@ -1,0 +1,20 @@
+/**
+ * Read a line of text.  Whenever a <a href="#lt">line terminator</a> is
+ * read the current line number is incremented.
+ *
+ * @return  A String containing the contents of the line, not including
+ *          any <a href="#lt">line termination characters</a>, or
+ *          <tt>null</tt> if the end of the stream has been reached
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+public String readLine() throws IOException {
+    synchronized (lock) {
+        String l = super.readLine(skipLF);
+        skipLF = false;
+        if (l != null)
+            lineNumber++;
+        return l;
+    }
+}

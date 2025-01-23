@@ -1,0 +1,9 @@
+@Override
+public void accept(int t) {
+    if (empty) {
+        empty = false;
+        state = t;
+    } else {
+        state = operator.applyAsInt(state, t);
+    }
+}

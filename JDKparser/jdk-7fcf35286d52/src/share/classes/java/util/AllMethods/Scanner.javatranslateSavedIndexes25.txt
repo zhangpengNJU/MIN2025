@@ -1,0 +1,6 @@
+// When a buffer compaction/reallocation occurs the saved indexes must
+// be modified appropriately
+private void translateSavedIndexes(int offset) {
+    if (savedScannerPosition != -1)
+        savedScannerPosition -= offset;
+}

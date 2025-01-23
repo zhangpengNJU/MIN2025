@@ -1,0 +1,28 @@
+/**
+ * Lays out the specified container using this card layout.
+ * <p>
+ * Each component in the <code>parent</code> container is reshaped
+ * to be the size of the container, minus space for surrounding
+ * insets, horizontal gaps, and vertical gaps.
+ *
+ * @param     parent the parent container in which to do the layout
+ * @see       java.awt.Container#doLayout
+ */
+public void layoutContainer(Container parent) {
+    synchronized (parent.getTreeLock()) {
+        Insets insets = parent.getInsets();
+        int ncomponents = parent.getComponentCount();
+        Component comp = null;
+        boolean currentFound = false;
+        for (int i = 0; i < ncomponents; i++) {
+            comp = parent.getComponent(i);
+            comp.setBounds(hgap + insets.left, vgap + insets.top, parent.width - (hgap * 2 + insets.left + insets.right), parent.height - (vgap * 2 + insets.top + insets.bottom));
+            if (comp.isVisible()) {
+                currentFound = true;
+            }
+        }
+        if (!currentFound && ncomponents > 0) {
+            parent.getComponent(0).setVisible(true);
+        }
+    }
+}

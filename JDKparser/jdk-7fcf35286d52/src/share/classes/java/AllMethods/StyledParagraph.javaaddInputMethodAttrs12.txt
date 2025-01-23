@@ -1,0 +1,33 @@
+/**
+ * Return a Map with entries from oldStyles, as well as input
+ * method entries, if any.
+ */
+static Map<? extends Attribute, ?> addInputMethodAttrs(Map<? extends Attribute, ?> oldStyles) {
+    Object value = oldStyles.get(TextAttribute.INPUT_METHOD_HIGHLIGHT);
+    try {
+        if (value != null) {
+            if (value instanceof Annotation) {
+                value = ((Annotation) value).getValue();
+            }
+            InputMethodHighlight hl;
+            hl = (InputMethodHighlight) value;
+            Map<? extends Attribute, ?> imStyles = null;
+            try {
+                imStyles = hl.getStyle();
+            } catch (NoSuchMethodError e) {
+            }
+            if (imStyles == null) {
+                Toolkit tk = Toolkit.getDefaultToolkit();
+                imStyles = tk.mapInputMethodHighlight(hl);
+            }
+            if (imStyles != null) {
+                HashMap<Attribute, Object> newStyles = new HashMap<>(5, (float) 0.9);
+                newStyles.putAll(oldStyles);
+                newStyles.putAll(imStyles);
+                return newStyles;
+            }
+        }
+    } catch (ClassCastException e) {
+    }
+    return oldStyles;
+}

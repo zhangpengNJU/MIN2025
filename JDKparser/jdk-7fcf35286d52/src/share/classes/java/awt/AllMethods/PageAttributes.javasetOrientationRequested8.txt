@@ -1,0 +1,15 @@
+/**
+ * Specifies the print orientation for pages using these attributes. Not
+ * specifying the property is equivalent to specifying
+ * OrientationRequestedType.PORTRAIT.
+ *
+ * @param   orientationRequested OrientationRequestedType.PORTRAIT or
+ *          OrientationRequestedType.LANDSCAPE.
+ * @throws  IllegalArgumentException if orientationRequested is null.
+ */
+public void setOrientationRequested(OrientationRequestedType orientationRequested) {
+    if (orientationRequested == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "orientationRequested");
+    }
+    this.orientationRequested = orientationRequested;
+}

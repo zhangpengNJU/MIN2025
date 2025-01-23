@@ -1,0 +1,24 @@
+/**
+ * Sets whether this window should receive focus on
+ * subsequently being shown (with a call to {@link #setVisible setVisible(true)}),
+ * or being moved to the front (with a call to {@link #toFront}).
+ * <p>
+ * Note that {@link #setVisible setVisible(true)} may be called indirectly
+ * (e.g. when showing an owner of the window makes the window to be shown).
+ * {@link #toFront} may also be called indirectly (e.g. when
+ * {@link #setVisible setVisible(true)} is called on already visible window).
+ * In all such cases this property takes effect as well.
+ * <p>
+ * The value of the property is not inherited by owned windows.
+ *
+ * @param autoRequestFocus whether this window should be focused on
+ *        subsequently being shown or being moved to the front
+ * @see #isAutoRequestFocus
+ * @see #isFocusableWindow
+ * @see #setVisible
+ * @see #toFront
+ * @since 1.7
+ */
+public void setAutoRequestFocus(boolean autoRequestFocus) {
+    this.autoRequestFocus = autoRequestFocus;
+}

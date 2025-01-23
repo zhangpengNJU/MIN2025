@@ -1,0 +1,7 @@
+<T extends PlatformManagedObject> T getSingletonMXBean(Class<T> mxbeanInterface) {
+    if (!singleton)
+        throw new IllegalArgumentException(mxbeanInterfaceName + " can have zero or more than one instances");
+    List<T> list = getMXBeans(mxbeanInterface);
+    assert list.size() == 1;
+    return list.isEmpty() ? null : list.get(0);
+}

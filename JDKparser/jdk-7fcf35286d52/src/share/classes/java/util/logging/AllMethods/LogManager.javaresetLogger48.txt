@@ -1,0 +1,21 @@
+// Private method to reset an individual target logger.
+private void resetLogger(Logger logger) {
+    // Close all the Logger's handlers.
+    Handler[] targets = logger.getHandlers();
+    for (int i = 0; i < targets.length; i++) {
+        Handler h = targets[i];
+        logger.removeHandler(h);
+        try {
+            h.close();
+        } catch (Exception ex) {
+        // Problems closing a handler?  Keep going...
+        }
+    }
+    String name = logger.getName();
+    if (name != null && name.equals("")) {
+        // This is the root logger.
+        logger.setLevel(defaultLevel);
+    } else {
+        logger.setLevel(null);
+    }
+}

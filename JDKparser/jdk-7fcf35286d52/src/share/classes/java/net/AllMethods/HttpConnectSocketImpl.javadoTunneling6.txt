@@ -1,0 +1,7 @@
+private void doTunneling(HttpURLConnection conn) {
+    try {
+        doTunneling.invoke(conn);
+    } catch (ReflectiveOperationException x) {
+        throw new InternalError("Should not reach here", x);
+    }
+}

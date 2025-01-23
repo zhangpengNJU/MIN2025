@@ -1,0 +1,29 @@
+/*
+     * Return a short LUT that converts 16-bit gray values in the CS_GRAY
+     * linear gray ColorSpace to the appropriate 16-bit value in the
+     * grayCS ColorSpace.  Cache references to any computed LUT in a Map.
+     */
+static short[] getLinearGray16ToOtherGray16LUT(ICC_ColorSpace grayCS) {
+    if (lg16Toog16Map != null) {
+        short[] lg16Toog16LUT = lg16Toog16Map.get(grayCS);
+        if (lg16Toog16LUT != null) {
+            return lg16Toog16LUT;
+        }
+    }
+    short[] tmp = new short[65536];
+    for (int i = 0; i <= 65535; i++) {
+        tmp[i] = (short) i;
+    }
+    ColorTransform[] transformList = new ColorTransform[2];
+    PCMM mdl = CMSManager.getModule();
+    ICC_ColorSpace lgCS = (ICC_ColorSpace) ColorSpace.getInstance(ColorSpace.CS_GRAY);
+    transformList[0] = mdl.createTransform(lgCS.getProfile(), ColorTransform.Any, ColorTransform.In);
+    transformList[1] = mdl.createTransform(grayCS.getProfile(), ColorTransform.Any, ColorTransform.Out);
+    ColorTransform t = mdl.createTransform(transformList);
+    short[] lg16Toog16LUT = t.colorConvert(tmp, null);
+    if (lg16Toog16Map == null) {
+        lg16Toog16Map = Collections.synchronizedMap(new WeakHashMap<ICC_ColorSpace, short[]>(2));
+    }
+    lg16Toog16Map.put(grayCS, lg16Toog16LUT);
+    return lg16Toog16LUT;
+}

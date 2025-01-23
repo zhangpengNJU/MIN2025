@@ -1,0 +1,13 @@
+/**
+ * Throw a MissingResourceException with proper message
+ */
+private static void throwMissingResourceException(String baseName, Locale locale, Throwable cause) {
+    // If the cause is a MissingResourceException, avoid creating
+    // a long chain. (6355009)
+    if (cause instanceof MissingResourceException) {
+        cause = null;
+    }
+    throw new MissingResourceException("Can't find bundle for base name " + baseName + ", locale " + locale, // className
+    baseName + "_" + locale, // key
+    "", cause);
+}

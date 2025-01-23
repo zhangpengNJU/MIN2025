@@ -1,0 +1,32 @@
+/**
+ * Read the ObjectInputStream and if it isn't null,
+ * add a listener to receive action events fired by the
+ * TextField.  Unrecognized keys or values will be
+ * ignored.
+ *
+ * @exception HeadlessException if
+ * <code>GraphicsEnvironment.isHeadless()</code> returns
+ * <code>true</code>
+ * @see #removeActionListener(ActionListener)
+ * @see #addActionListener(ActionListener)
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    // HeadlessException will be thrown by TextComponent's readObject
+    s.defaultReadObject();
+    // Make sure the state we just read in for columns has legal values
+    if (columns < 0) {
+        columns = 0;
+    }
+    // Read in listeners, if any
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (actionListenerK == key) {
+            addActionListener((ActionListener) (s.readObject()));
+        } else {
+            // skip value for unrecognized key
+            s.readObject();
+        }
+    }
+}

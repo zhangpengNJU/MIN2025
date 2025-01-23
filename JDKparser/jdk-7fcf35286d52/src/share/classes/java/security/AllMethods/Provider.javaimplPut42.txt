@@ -1,0 +1,9 @@
+private Object implPut(Object key, Object value) {
+    if ((key instanceof String) && (value instanceof String)) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.put((String) key, (String) value);
+    }
+    return super.put(key, value);
+}

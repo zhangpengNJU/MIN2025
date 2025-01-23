@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ */
+@Override
+public void setOpacity(float opacity) {
+    synchronized (getTreeLock()) {
+        if ((opacity < 1.0f) && !isUndecorated()) {
+            throw new IllegalComponentStateException("The dialog is decorated");
+        }
+        super.setOpacity(opacity);
+    }
+}

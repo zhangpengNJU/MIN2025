@@ -1,0 +1,10 @@
+/**
+ * Atomically adds the given value to the element at index {@code i}.
+ *
+ * @param i the index
+ * @param delta the value to add
+ * @return the previous value
+ */
+public final long getAndAdd(int i, long delta) {
+    return unsafe.getAndAddLong(array, checkedByteOffset(i), delta);
+}

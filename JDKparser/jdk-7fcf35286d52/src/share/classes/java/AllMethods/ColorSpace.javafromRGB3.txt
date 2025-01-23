@@ -1,0 +1,22 @@
+/**
+ * Transforms a color value assumed to be in the default CS_sRGB
+ * color space into this ColorSpace.
+ * <p>
+ * This method transforms color values using algorithms designed
+ * to produce the best perceptual match between input and output
+ * colors.  In order to do colorimetric conversion of color values,
+ * you should use the <code>toCIEXYZ</code>
+ * method of the CS_sRGB color space to first convert from the input
+ * color space to the CS_CIEXYZ color space, and then use the
+ * <code>fromCIEXYZ</code> method of this color space to
+ * convert from CS_CIEXYZ to the output color space.
+ * See {@link #toCIEXYZ(float[]) toCIEXYZ} and
+ * {@link #fromCIEXYZ(float[]) fromCIEXYZ} for further information.
+ * <p>
+ * @param rgbvalue a float array with length of at least 3
+ * @return a float array with length equal to the number of
+ *         components in this ColorSpace
+ * @throws ArrayIndexOutOfBoundsException if array length is not
+ *         at least 3
+ */
+public abstract float[] fromRGB(float[] rgbvalue);

@@ -1,0 +1,9 @@
+/**
+ * readObject is called to restore the state of the PropertyPermission from
+ * a stream.
+ */
+private synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
+    // Read in the action, then initialize the rest
+    s.defaultReadObject();
+    init(getMask(actions));
+}

@@ -1,0 +1,14 @@
+private static byte[] randomBits(int numBits, Random rnd) {
+    if (numBits < 0)
+        throw new IllegalArgumentException("numBits must be non-negative");
+    // avoid overflow
+    int numBytes = (int) (((long) numBits + 7) / 8);
+    byte[] randomBits = new byte[numBytes];
+    // Generate random bytes and mask out any excess bits
+    if (numBytes > 0) {
+        rnd.nextBytes(randomBits);
+        int excessBits = 8 * numBytes - numBits;
+        randomBits[0] &= (1 << (8 - excessBits)) - 1;
+    }
+    return randomBits;
+}

@@ -1,0 +1,33 @@
+/**
+ * Creates a <code>WritableRaster</code> with the specified width
+ * and height that has a data layout (<code>SampleModel</code>)
+ * compatible with this <code>ColorModel</code>.  This method
+ * only works for color models with 16 or fewer bits per pixel.
+ * <p>
+ * Since <code>IndexColorModel</code> can be subclassed, any
+ * subclass that supports greater than 16 bits per pixel must
+ * override this method.
+ *
+ * @param w the width to apply to the new <code>WritableRaster</code>
+ * @param h the height to apply to the new <code>WritableRaster</code>
+ * @return a <code>WritableRaster</code> object with the specified
+ * width and height.
+ * @throws UnsupportedOperationException if the number of bits in a
+ *         pixel is greater than 16
+ * @see WritableRaster
+ * @see SampleModel
+ */
+public WritableRaster createCompatibleWritableRaster(int w, int h) {
+    WritableRaster raster;
+    if (pixel_bits == 1 || pixel_bits == 2 || pixel_bits == 4) {
+        // TYPE_BINARY
+        raster = Raster.createPackedRaster(DataBuffer.TYPE_BYTE, w, h, 1, pixel_bits, null);
+    } else if (pixel_bits <= 8) {
+        raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, w, h, 1, null);
+    } else if (pixel_bits <= 16) {
+        raster = Raster.createInterleavedRaster(DataBuffer.TYPE_USHORT, w, h, 1, null);
+    } else {
+        throw new UnsupportedOperationException("This method is not supported " + " for pixel bits > 16.");
+    }
+    return raster;
+}

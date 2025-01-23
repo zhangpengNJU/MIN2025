@@ -1,0 +1,28 @@
+/**
+ * Add one cookie into cookie store.
+ */
+public void add(URI uri, HttpCookie cookie) {
+    // pre-condition : argument can't be null
+    if (cookie == null) {
+        throw new NullPointerException("cookie is null");
+    }
+    lock.lock();
+    try {
+        // remove the ole cookie if there has had one
+        cookieJar.remove(cookie);
+        // add new cookie if it has a non-zero max-age
+        if (cookie.getMaxAge() != 0) {
+            cookieJar.add(cookie);
+            // and add it to domain index
+            if (cookie.getDomain() != null) {
+                addIndex(domainIndex, cookie.getDomain(), cookie);
+            }
+            if (uri != null) {
+                // add it to uri index, too
+                addIndex(uriIndex, getEffectiveURI(uri), cookie);
+            }
+        }
+    } finally {
+        lock.unlock();
+    }
+}

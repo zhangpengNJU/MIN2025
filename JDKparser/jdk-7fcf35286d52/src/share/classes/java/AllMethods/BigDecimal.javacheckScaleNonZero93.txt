@@ -1,0 +1,8 @@
+/* the same as checkScale where value!=0 */
+private static int checkScaleNonZero(long val) {
+    int asInt = (int) val;
+    if (asInt != val) {
+        throw new ArithmeticException(asInt > 0 ? "Underflow" : "Overflow");
+    }
+    return asInt;
+}

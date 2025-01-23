@@ -1,0 +1,11 @@
+// returns whether all specified attributes have equal values in the runs with the given indices
+private boolean attributeValuesMatch(Set<? extends Attribute> attributes, int runIndex1, int runIndex2) {
+    Iterator<? extends Attribute> iterator = attributes.iterator();
+    while (iterator.hasNext()) {
+        Attribute key = iterator.next();
+        if (!valuesMatch(getAttribute(key, runIndex1), getAttribute(key, runIndex2))) {
+            return false;
+        }
+    }
+    return true;
+}

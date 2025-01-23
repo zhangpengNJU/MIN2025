@@ -1,0 +1,16 @@
+private boolean getNext() {
+    while (next == null) {
+        try {
+            if (!i.hasNext())
+                return false;
+            next = i.next();
+        } catch (ServiceConfigurationError sce) {
+            if (sce.getCause() instanceof SecurityException) {
+                // Ignore security exceptions
+                continue;
+            }
+            throw sce;
+        }
+    }
+    return true;
+}

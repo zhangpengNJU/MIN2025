@@ -1,0 +1,10 @@
+/**
+ * Checks if the representation class is one of the standard text
+ * representation classes.
+ *
+ * @return true if the representation class is one of the standard text
+ *              representation classes, otherwise false
+ */
+private boolean isStandardTextRepresentationClass() {
+    return isRepresentationClassReader() || String.class.equals(representationClass) || isRepresentationClassCharBuffer() || char[].class.equals(representationClass);
+}

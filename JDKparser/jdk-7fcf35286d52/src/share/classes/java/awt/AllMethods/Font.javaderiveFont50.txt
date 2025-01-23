@@ -1,0 +1,16 @@
+/**
+ * Creates a new <code>Font</code> object by replicating the current
+ * <code>Font</code> object and applying a new style to it.
+ * @param style the style for the new <code>Font</code>
+ * @return a new <code>Font</code> object.
+ * @since 1.2
+ */
+public Font deriveFont(int style) {
+    if (values == null) {
+        return new Font(name, style, size, createdFont, font2DHandle);
+    }
+    AttributeValues newValues = getAttributeValues().clone();
+    int oldStyle = (this.style != style) ? this.style : -1;
+    applyStyle(style, newValues);
+    return new Font(newValues, null, oldStyle, createdFont, font2DHandle);
+}

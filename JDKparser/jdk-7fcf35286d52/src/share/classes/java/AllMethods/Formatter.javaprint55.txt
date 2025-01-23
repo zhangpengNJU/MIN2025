@@ -1,0 +1,45 @@
+private void print(BigInteger value, Locale l) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    boolean neg = value.signum() == -1;
+    BigInteger v = value.abs();
+    // leading sign indicator
+    leadingSign(sb, neg);
+    // the value
+    if (c == Conversion.DECIMAL_INTEGER) {
+        char[] va = v.toString().toCharArray();
+        localizedMagnitude(sb, va, f, adjustWidth(width, f, neg), l);
+    } else if (c == Conversion.OCTAL_INTEGER) {
+        String s = v.toString(8);
+        int len = s.length() + sb.length();
+        if (neg && f.contains(Flags.PARENTHESES))
+            len++;
+        // apply ALTERNATE (radix indicator for octal) before ZERO_PAD
+        if (f.contains(Flags.ALTERNATE)) {
+            len++;
+            sb.append('0');
+        }
+        if (f.contains(Flags.ZERO_PAD)) {
+            for (int i = 0; i < width - len; i++) sb.append('0');
+        }
+        sb.append(s);
+    } else if (c == Conversion.HEXADECIMAL_INTEGER) {
+        String s = v.toString(16);
+        int len = s.length() + sb.length();
+        if (neg && f.contains(Flags.PARENTHESES))
+            len++;
+        // apply ALTERNATE (radix indicator for hex) before ZERO_PAD
+        if (f.contains(Flags.ALTERNATE)) {
+            len += 2;
+            sb.append(f.contains(Flags.UPPERCASE) ? "0X" : "0x");
+        }
+        if (f.contains(Flags.ZERO_PAD))
+            for (int i = 0; i < width - len; i++) sb.append('0');
+        if (f.contains(Flags.UPPERCASE))
+            s = s.toUpperCase();
+        sb.append(s);
+    }
+    // trailing sign indicator
+    trailingSign(sb, (value.signum() == -1));
+    // justify based on width
+    a.append(justify(sb.toString()));
+}

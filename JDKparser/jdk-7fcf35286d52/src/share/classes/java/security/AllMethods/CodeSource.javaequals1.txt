@@ -1,0 +1,32 @@
+/**
+ * Tests for equality between the specified object and this
+ * object. Two CodeSource objects are considered equal if their
+ * locations are of identical value and if their signer certificate
+ * chains are of identical value. It is not required that
+ * the certificate chains be in the same order.
+ *
+ * @param obj the object to test for equality with this object.
+ *
+ * @return true if the objects are considered equal, false otherwise.
+ */
+@Override
+public boolean equals(Object obj) {
+    if (obj == this)
+        return true;
+    // objects types must be equal
+    if (!(obj instanceof CodeSource))
+        return false;
+    CodeSource cs = (CodeSource) obj;
+    // URLs must match
+    if (location == null) {
+        // if location is null, then cs.location must be null as well
+        if (cs.location != null)
+            return false;
+    } else {
+        // if location is not null, then it must equal cs.location
+        if (!location.equals(cs.location))
+            return false;
+    }
+    // certs must match
+    return matchCerts(cs, true);
+}

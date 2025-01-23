@@ -1,0 +1,13 @@
+/**
+ * Returns the hash code value for this map.  The hash code of a map is
+ * defined to be the sum of the hash codes of each entry in the map.
+ */
+public int hashCode() {
+    int h = 0;
+    for (int i = 0; i < keyUniverse.length; i++) {
+        if (null != vals[i]) {
+            h += entryHashCode(i);
+        }
+    }
+    return h;
+}

@@ -1,0 +1,45 @@
+/**
+ * Sets the minimum size of this window to a constant
+ * value.  Subsequent calls to {@code getMinimumSize}
+ * will always return this value. If current window's
+ * size is less than {@code minimumSize} the size of the
+ * window is automatically enlarged to honor the minimum size.
+ * <p>
+ * If the {@code setSize} or {@code setBounds} methods
+ * are called afterwards with a width or height less than
+ * that was specified by the {@code setMinimumSize} method
+ * the window is automatically enlarged to meet
+ * the {@code minimumSize} value. The {@code minimumSize}
+ * value also affects the behaviour of the {@code pack} method.
+ * <p>
+ * The default behavior is restored by setting the minimum size
+ * parameter to the {@code null} value.
+ * <p>
+ * Resizing operation may be restricted if the user tries
+ * to resize window below the {@code minimumSize} value.
+ * This behaviour is platform-dependent.
+ *
+ * @param minimumSize the new minimum size of this window
+ * @see Component#setMinimumSize
+ * @see #getMinimumSize
+ * @see #isMinimumSizeSet
+ * @see #setSize(Dimension)
+ * @see #pack
+ * @since 1.6
+ */
+public void setMinimumSize(Dimension minimumSize) {
+    synchronized (getTreeLock()) {
+        super.setMinimumSize(minimumSize);
+        Dimension size = getSize();
+        if (isMinimumSizeSet()) {
+            if (size.width < minimumSize.width || size.height < minimumSize.height) {
+                int nw = Math.max(width, minimumSize.width);
+                int nh = Math.max(height, minimumSize.height);
+                setSize(nw, nh);
+            }
+        }
+        if (peer != null) {
+            ((WindowPeer) peer).updateMinimumSize();
+        }
+    }
+}

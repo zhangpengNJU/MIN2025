@@ -1,0 +1,35 @@
+/**
+ * Compares this {@code BigDecimal} with the specified
+ * {@code Object} for equality.  Unlike {@link
+ * #compareTo(BigDecimal) compareTo}, this method considers two
+ * {@code BigDecimal} objects equal only if they are equal in
+ * value and scale (thus 2.0 is not equal to 2.00 when compared by
+ * this method).
+ *
+ * @param  x {@code Object} to which this {@code BigDecimal} is
+ *         to be compared.
+ * @return {@code true} if and only if the specified {@code Object} is a
+ *         {@code BigDecimal} whose value and scale are equal to this
+ *         {@code BigDecimal}'s.
+ * @see    #compareTo(java.math.BigDecimal)
+ * @see    #hashCode
+ */
+@Override
+public boolean equals(Object x) {
+    if (!(x instanceof BigDecimal))
+        return false;
+    BigDecimal xDec = (BigDecimal) x;
+    if (x == this)
+        return true;
+    if (scale != xDec.scale)
+        return false;
+    long s = this.intCompact;
+    long xs = xDec.intCompact;
+    if (s != INFLATED) {
+        if (xs == INFLATED)
+            xs = compactValFor(xDec.intVal);
+        return xs == s;
+    } else if (xs != INFLATED)
+        return xs == compactValFor(this.intVal);
+    return this.inflated().equals(xDec.inflated());
+}

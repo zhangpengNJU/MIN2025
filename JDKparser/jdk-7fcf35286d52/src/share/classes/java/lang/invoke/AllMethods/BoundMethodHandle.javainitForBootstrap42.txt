@@ -1,0 +1,10 @@
+private void initForBootstrap() {
+    assert (!INIT_DONE);
+    if (constructor() == null) {
+        String types = typeChars;
+        CACHE.put(types, this);
+        Factory.makeCtors(clazz, types, this.constructor);
+        Factory.makeGetters(clazz, types, this.getters);
+        Factory.makeNominalGetters(types, this.nominalGetters, this.getters);
+    }
+}

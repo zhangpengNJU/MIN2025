@@ -1,0 +1,15 @@
+private static void computeInitialPreparedForms() {
+    // Find all predefined invokers and associate them with canonical empty lambda forms.
+    for (MemberName m : MemberName.getFactory().getMethods(LambdaForm.class, false, null, null, null)) {
+        if (!m.isStatic() || !m.isPackage())
+            continue;
+        MethodType mt = m.getMethodType();
+        if (mt.parameterCount() > 0 && mt.parameterType(0) == MethodHandle.class && m.getName().startsWith("interpret_")) {
+            String sig = basicTypeSignature(mt);
+            assert (m.getName().equals("interpret" + sig.substring(sig.indexOf('_'))));
+            LambdaForm form = new LambdaForm(sig);
+            form.vmentry = m;
+            form = mt.form().setCachedLambdaForm(MethodTypeForm.LF_INTERPRET, form);
+        }
+    }
+}

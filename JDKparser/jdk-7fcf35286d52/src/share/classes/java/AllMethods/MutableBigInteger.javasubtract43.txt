@@ -1,0 +1,43 @@
+/**
+ * Subtracts the smaller of this and b from the larger and places the
+ * result into this MutableBigInteger.
+ */
+int subtract(MutableBigInteger b) {
+    MutableBigInteger a = this;
+    int[] result = value;
+    int sign = a.compare(b);
+    if (sign == 0) {
+        reset();
+        return 0;
+    }
+    if (sign < 0) {
+        MutableBigInteger tmp = a;
+        a = b;
+        b = tmp;
+    }
+    int resultLen = a.intLen;
+    if (result.length < resultLen)
+        result = new int[resultLen];
+    long diff = 0;
+    int x = a.intLen;
+    int y = b.intLen;
+    int rstart = result.length - 1;
+    // Subtract common parts of both numbers
+    while (y > 0) {
+        x--;
+        y--;
+        diff = (a.value[x + a.offset] & LONG_MASK) - (b.value[y + b.offset] & LONG_MASK) - ((int) -(diff >> 32));
+        result[rstart--] = (int) diff;
+    }
+    // Subtract remainder of longer number
+    while (x > 0) {
+        x--;
+        diff = (a.value[x + a.offset] & LONG_MASK) - ((int) -(diff >> 32));
+        result[rstart--] = (int) diff;
+    }
+    value = result;
+    intLen = resultLen;
+    offset = value.length - resultLen;
+    normalize();
+    return sign;
+}

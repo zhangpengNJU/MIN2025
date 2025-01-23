@@ -1,0 +1,20 @@
+/**
+ * Returns the shape of the window.
+ *
+ * The value returned by this method may not be the same as
+ * previously set with {@code setShape(shape)}, but it is guaranteed
+ * to represent the same shape.
+ *
+ * @return the shape of the window or {@code null} if no
+ *     shape is specified for the window
+ *
+ * @see Window#setShape(Shape)
+ * @see GraphicsDevice.WindowTranslucency
+ *
+ * @since 1.7
+ */
+public Shape getShape() {
+    synchronized (getTreeLock()) {
+        return shape == null ? null : new Path2D.Float(shape);
+    }
+}

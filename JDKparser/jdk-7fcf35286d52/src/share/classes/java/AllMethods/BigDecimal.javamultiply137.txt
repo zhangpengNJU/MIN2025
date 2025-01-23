@@ -1,0 +1,9 @@
+private static long multiply(long x, long y) {
+    long product = x * y;
+    long ax = Math.abs(x);
+    long ay = Math.abs(y);
+    if (((ax | ay) >>> 31 == 0) || (y == 0) || (product / y == x)) {
+        return product;
+    }
+    return INFLATED;
+}

@@ -1,0 +1,22 @@
+@Override
+public Object run() {
+    assert rootLogger == null;
+    assert initializedCalled && !initializationDone;
+    // Read configuration.
+    owner.readPrimordialConfiguration();
+    // Create and retain Logger for the root of the namespace.
+    owner.rootLogger = owner.new RootLogger();
+    owner.addLogger(owner.rootLogger);
+    if (!owner.rootLogger.isLevelInitialized()) {
+        owner.rootLogger.setLevel(defaultLevel);
+    }
+    // Adding the global Logger.
+    // Do not call Logger.getGlobal() here as this might trigger
+    // subtle inter-dependency issues.
+    @SuppressWarnings("deprecation")
+    final Logger global = Logger.global;
+    // Make sure the global logger will be registered in the
+    // global manager
+    owner.addLogger(global);
+    return null;
+}

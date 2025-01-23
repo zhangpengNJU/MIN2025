@@ -1,0 +1,29 @@
+private static boolean containsAllPDs(ProtectionDomain[] thisContext, ProtectionDomain[] thatContext) {
+    boolean match = false;
+    // 
+    // ProtectionDomains within an ACC currently cannot be null
+    // and this is enforced by the constructor and the various
+    // optimize methods. However, historically this logic made attempts
+    // to support the notion of a null PD and therefore this logic continues
+    // to support that notion.
+    ProtectionDomain thisPd;
+    for (int i = 0; i < thisContext.length; i++) {
+        match = false;
+        if ((thisPd = thisContext[i]) == null) {
+            for (int j = 0; (j < thatContext.length) && !match; j++) {
+                match = (thatContext[j] == null);
+            }
+        } else {
+            Class<?> thisPdClass = thisPd.getClass();
+            ProtectionDomain thatPd;
+            for (int j = 0; (j < thatContext.length) && !match; j++) {
+                thatPd = thatContext[j];
+                // Class check required to avoid PD exposure (4285406)
+                match = (thatPd != null && thisPdClass == thatPd.getClass() && thisPd.equals(thatPd));
+            }
+        }
+        if (!match)
+            return false;
+    }
+    return match;
+}

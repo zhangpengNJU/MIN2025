@@ -1,0 +1,34 @@
+// We define these methods so that Container does not need to repeat this
+// code. Container cannot call super.<method> because Container allows
+// DOWN_CYCLE_TRAVERSAL_KEY while Component does not. The Component method
+// would erroneously generate an IllegalArgumentException for
+// DOWN_CYCLE_TRAVERSAL_KEY.
+final void setFocusTraversalKeys_NoIDCheck(int id, Set<? extends AWTKeyStroke> keystrokes) {
+    Set<AWTKeyStroke> oldKeys;
+    synchronized (this) {
+        if (focusTraversalKeys == null) {
+            initializeFocusTraversalKeys();
+        }
+        if (keystrokes != null) {
+            for (AWTKeyStroke keystroke : keystrokes) {
+                if (keystroke == null) {
+                    throw new IllegalArgumentException("cannot set null focus traversal key");
+                }
+                if (keystroke.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
+                    throw new IllegalArgumentException("focus traversal keys cannot map to KEY_TYPED events");
+                }
+                for (int i = 0; i < focusTraversalKeys.length; i++) {
+                    if (i == id) {
+                        continue;
+                    }
+                    if (getFocusTraversalKeys_NoIDCheck(i).contains(keystroke)) {
+                        throw new IllegalArgumentException("focus traversal keys must be unique for a Component");
+                    }
+                }
+            }
+        }
+        oldKeys = focusTraversalKeys[id];
+        focusTraversalKeys[id] = (keystrokes != null) ? Collections.unmodifiableSet(new HashSet<AWTKeyStroke>(keystrokes)) : null;
+    }
+    firePropertyChange(focusTraversalKeyPropertyNames[id], oldKeys, keystrokes);
+}

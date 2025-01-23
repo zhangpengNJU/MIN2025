@@ -1,0 +1,30 @@
+/**
+ * Returns a <code>float</code> array containing only the color
+ * components of the <code>Color</code>, in the
+ * <code>ColorSpace</code> of the <code>Color</code>.
+ * If <code>compArray</code> is <code>null</code>, an array with
+ * length equal to the number of components in the associated
+ * <code>ColorSpace</code> is created for
+ * the return value.  Otherwise, <code>compArray</code> must have at
+ * least this length and it is filled in with the components and
+ * returned.
+ * @param compArray an array that this method fills with the color
+ *          components of this <code>Color</code> in its
+ *          <code>ColorSpace</code> and returns
+ * @return the color components in a <code>float</code> array.
+ */
+public float[] getColorComponents(float[] compArray) {
+    if (fvalue == null)
+        return getRGBColorComponents(compArray);
+    float[] f;
+    int n = fvalue.length;
+    if (compArray == null) {
+        f = new float[n];
+    } else {
+        f = compArray;
+    }
+    for (int i = 0; i < n; i++) {
+        f[i] = fvalue[i];
+    }
+    return f;
+}

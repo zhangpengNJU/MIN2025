@@ -1,0 +1,12 @@
+/*
+     * Fix for 4872170.
+     * If dispose() is called on parent then its children have to be disposed as well
+     * as reported in javadoc. So we need to implement this functionality even if a
+     * child overrides dispose() in a wrong way without calling super.dispose().
+     */
+void disposeImpl() {
+    dispose();
+    if (getPeer() != null) {
+        doDispose();
+    }
+}

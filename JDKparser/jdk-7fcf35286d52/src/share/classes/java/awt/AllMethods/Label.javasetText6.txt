@@ -1,0 +1,25 @@
+/**
+ * Sets the text for this label to the specified text.
+ * @param      text the text that this label displays. If
+ *             <code>text</code> is <code>null</code>, it is
+ *             treated for display purposes like an empty
+ *             string <code>""</code>.
+ * @see        java.awt.Label#getText
+ */
+public void setText(String text) {
+    boolean testvalid = false;
+    synchronized (this) {
+        if (text != this.text && (this.text == null || !this.text.equals(text))) {
+            this.text = text;
+            LabelPeer peer = (LabelPeer) this.peer;
+            if (peer != null) {
+                peer.setText(text);
+            }
+            testvalid = true;
+        }
+    }
+    // This could change the preferred size of the Component.
+    if (testvalid) {
+        invalidateIfValid();
+    }
+}

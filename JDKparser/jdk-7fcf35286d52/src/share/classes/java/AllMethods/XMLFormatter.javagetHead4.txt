@@ -1,0 +1,35 @@
+/**
+ * Return the header string for a set of XML formatted records.
+ *
+ * @param   h  The target handler (can be null)
+ * @return  a valid XML string
+ */
+public String getHead(Handler h) {
+    StringBuilder sb = new StringBuilder();
+    String encoding;
+    sb.append("<?xml version=\"1.0\"");
+    if (h != null) {
+        encoding = h.getEncoding();
+    } else {
+        encoding = null;
+    }
+    if (encoding == null) {
+        // Figure out the default encoding.
+        encoding = java.nio.charset.Charset.defaultCharset().name();
+    }
+    // Try to map the encoding name to a canonical name.
+    try {
+        Charset cs = Charset.forName(encoding);
+        encoding = cs.name();
+    } catch (Exception ex) {
+    // We hit problems finding a canonical name.
+    // Just use the raw encoding name.
+    }
+    sb.append(" encoding=\"");
+    sb.append(encoding);
+    sb.append("\"");
+    sb.append(" standalone=\"no\"?>\n");
+    sb.append("<!DOCTYPE log SYSTEM \"logger.dtd\">\n");
+    sb.append("<log>\n");
+    return sb.toString();
+}

@@ -1,0 +1,13 @@
+/**
+ * Converts the given FormatStyle to the java.text.DateFormat style.
+ *
+ * @param style  the FormatStyle style
+ * @return the int style, or -1 if style is null, indicating un-required
+ */
+private static int convertStyle(FormatStyle style) {
+    if (style == null) {
+        return -1;
+    }
+    // indices happen to align
+    return style.ordinal();
+}

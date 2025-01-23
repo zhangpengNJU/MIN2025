@@ -1,0 +1,6 @@
+static DirectMethodHandle make(Class<?> receiver, MemberName member) {
+    byte refKind = member.getReferenceKind();
+    if (refKind == REF_invokeSpecial)
+        refKind = REF_invokeVirtual;
+    return make(refKind, receiver, member);
+}

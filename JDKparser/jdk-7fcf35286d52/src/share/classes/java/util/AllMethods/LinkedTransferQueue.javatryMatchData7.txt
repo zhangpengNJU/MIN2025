@@ -1,0 +1,12 @@
+/**
+ * Tries to artificially match a data node -- used by remove.
+ */
+final boolean tryMatchData() {
+    // assert isData;
+    Object x = item;
+    if (x != null && x != this && casItem(x, null)) {
+        LockSupport.unpark(waiter);
+        return true;
+    }
+    return false;
+}

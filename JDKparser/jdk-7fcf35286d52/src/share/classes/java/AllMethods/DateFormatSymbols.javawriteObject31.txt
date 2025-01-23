@@ -1,0 +1,13 @@
+/**
+ * Write out the default serializable data, after ensuring the
+ * <code>zoneStrings</code> field is initialized in order to make
+ * sure the backward compatibility.
+ *
+ * @since 1.6
+ */
+private void writeObject(ObjectOutputStream stream) throws IOException {
+    if (zoneStrings == null) {
+        zoneStrings = TimeZoneNameUtility.getZoneStrings(locale);
+    }
+    stream.defaultWriteObject();
+}

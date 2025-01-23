@@ -1,0 +1,24 @@
+/**
+ * Copies all private data from this event into that.
+ * Space is allocated for the copied data that will be
+ * freed when the that is finalized. Upon completion,
+ * this event is not changed.
+ */
+void copyPrivateDataInto(AWTEvent that) {
+    that.bdata = this.bdata;
+    // Copy canAccessSystemClipboard value from this into that.
+    if (this instanceof InputEvent && that instanceof InputEvent) {
+        Field field = get_InputEvent_CanAccessSystemClipboard();
+        if (field != null) {
+            try {
+                boolean b = field.getBoolean(this);
+                field.setBoolean(that, b);
+            } catch (IllegalAccessException e) {
+                if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                    log.fine("AWTEvent.copyPrivateDataInto() got IllegalAccessException ", e);
+                }
+            }
+        }
+    }
+    that.isSystemGenerated = this.isSystemGenerated;
+}

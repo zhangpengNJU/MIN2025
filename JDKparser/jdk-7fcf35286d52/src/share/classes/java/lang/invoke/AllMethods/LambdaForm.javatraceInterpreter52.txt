@@ -1,0 +1,5 @@
+static void traceInterpreter(String event, Object obj, Object... args) {
+    if (TRACE_INTERPRETER) {
+        System.out.println("LFI: " + event + " " + (obj != null ? obj : "") + (args != null && args.length != 0 ? Arrays.asList(args) : ""));
+    }
+}

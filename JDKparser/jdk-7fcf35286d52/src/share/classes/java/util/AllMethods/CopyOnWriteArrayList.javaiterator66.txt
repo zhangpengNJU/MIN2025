@@ -1,0 +1,10 @@
+public Iterator<E> iterator() {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        return new COWSubListIterator<E>(l, 0, offset, size);
+    } finally {
+        lock.unlock();
+    }
+}

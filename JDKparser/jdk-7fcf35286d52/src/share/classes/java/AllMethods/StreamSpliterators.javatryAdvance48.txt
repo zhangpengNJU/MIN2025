@@ -1,0 +1,14 @@
+@Override
+public boolean tryAdvance(T_CONS action) {
+    Objects.requireNonNull(action);
+    if (sliceOrigin >= fence)
+        return false;
+    while (sliceOrigin > index) {
+        s.tryAdvance(emptyConsumer());
+        index++;
+    }
+    if (index >= fence)
+        return false;
+    index++;
+    return s.tryAdvance(action);
+}

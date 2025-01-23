@@ -1,0 +1,17 @@
+/**
+ * The group's <code>activeObject</code> method is called when an
+ * object is exported (either by <code>Activatable</code> object
+ * construction or an explicit call to
+ * <code>Activatable.exportObject</code>. The group must inform its
+ * <code>ActivationMonitor</code> that the object is active (via
+ * the monitor's <code>activeObject</code> method) if the group
+ * hasn't already done so.
+ *
+ * @param id the object's identifier
+ * @param obj the remote object implementation
+ * @exception UnknownObjectException if object is not registered
+ * @exception RemoteException if call informing monitor fails
+ * @exception ActivationException if group is inactive
+ * @since 1.2
+ */
+public abstract void activeObject(ActivationID id, Remote obj) throws ActivationException, UnknownObjectException, RemoteException;

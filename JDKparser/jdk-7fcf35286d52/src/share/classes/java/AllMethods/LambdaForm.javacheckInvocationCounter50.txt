@@ -1,0 +1,10 @@
+private void checkInvocationCounter() {
+    if (COMPILE_THRESHOLD != 0 && invocationCounter < COMPILE_THRESHOLD) {
+        // benign race
+        invocationCounter++;
+        if (invocationCounter >= COMPILE_THRESHOLD) {
+            // Replace vmentry with a bytecode version of this LF.
+            compileToBytecode();
+        }
+    }
+}

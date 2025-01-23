@@ -1,0 +1,36 @@
+/**
+ * Prepares an image for rendering.
+ * <p>
+ * If the values of the width and height arguments are both
+ * <code>-1</code>, this method prepares the image for rendering
+ * on the default screen; otherwise, this method prepares an image
+ * for rendering on the default screen at the specified width and height.
+ * <p>
+ * The image data is downloaded asynchronously in another thread,
+ * and an appropriately scaled screen representation of the image is
+ * generated.
+ * <p>
+ * This method is called by components <code>prepareImage</code>
+ * methods.
+ * <p>
+ * Information on the flags returned by this method can be found
+ * with the definition of the <code>ImageObserver</code> interface.
+ *
+ * @param     image      the image for which to prepare a
+ *                           screen representation.
+ * @param     width      the width of the desired screen
+ *                           representation, or <code>-1</code>.
+ * @param     height     the height of the desired screen
+ *                           representation, or <code>-1</code>.
+ * @param     observer   the <code>ImageObserver</code>
+ *                           object to be notified as the
+ *                           image is being prepared.
+ * @return    <code>true</code> if the image has already been
+ *                 fully prepared; <code>false</code> otherwise.
+ * @see       java.awt.Component#prepareImage(java.awt.Image,
+ *                 java.awt.image.ImageObserver)
+ * @see       java.awt.Component#prepareImage(java.awt.Image,
+ *                 int, int, java.awt.image.ImageObserver)
+ * @see       java.awt.image.ImageObserver
+ */
+public abstract boolean prepareImage(Image image, int width, int height, ImageObserver observer);

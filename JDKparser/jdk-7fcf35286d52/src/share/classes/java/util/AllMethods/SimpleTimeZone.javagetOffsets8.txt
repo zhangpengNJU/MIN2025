@@ -1,0 +1,31 @@
+/**
+ * @see TimeZone#getOffsets
+ */
+int getOffsets(long date, int[] offsets) {
+    int offset = rawOffset;
+    computeOffset: if (useDaylight) {
+        synchronized (this) {
+            if (cacheStart != 0) {
+                if (date >= cacheStart && date < cacheEnd) {
+                    offset += dstSavings;
+                    break computeOffset;
+                }
+            }
+        }
+        BaseCalendar cal = date >= GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER ? gcal : (BaseCalendar) CalendarSystem.forName("julian");
+        BaseCalendar.Date cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
+        // Get the year in local time
+        cal.getCalendarDate(date + rawOffset, cdate);
+        int year = cdate.getNormalizedYear();
+        if (year >= startYear) {
+            // Clear time elements for the transition calculations
+            cdate.setTimeOfDay(0, 0, 0, 0);
+            offset = getOffset(cal, cdate, year, date);
+        }
+    }
+    if (offsets != null) {
+        offsets[0] = rawOffset;
+        offsets[1] = offset - rawOffset;
+    }
+    return offset;
+}

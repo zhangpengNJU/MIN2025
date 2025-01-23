@@ -1,0 +1,16 @@
+/**
+ * Gets the constraints for the specified component.  A copy of
+ * the actual <code>GridBagConstraints</code> object is returned.
+ * @param       comp the component to be queried
+ * @return      the constraint for the specified component in this
+ *                  grid bag layout; a copy of the actual constraint
+ *                  object is returned
+ */
+public GridBagConstraints getConstraints(Component comp) {
+    GridBagConstraints constraints = comptable.get(comp);
+    if (constraints == null) {
+        setConstraints(comp, defaultConstraints);
+        constraints = comptable.get(comp);
+    }
+    return (GridBagConstraints) constraints.clone();
+}

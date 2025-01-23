@@ -1,0 +1,11 @@
+/**
+ * Returns profile minor version.
+ * @return The minor version of the profile.
+ */
+public int getMinorVersion() {
+    byte[] theHeader;
+    theHeader = getData(icSigHead);
+    /* getData will activate deferred
+                                           profiles if necessary */
+    return (int) theHeader[9];
+}

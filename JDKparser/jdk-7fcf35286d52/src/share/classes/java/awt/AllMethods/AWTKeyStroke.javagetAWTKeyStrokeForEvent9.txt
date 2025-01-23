@@ -1,0 +1,27 @@
+/**
+ * Returns an <code>AWTKeyStroke</code> which represents the
+ * stroke which generated a given <code>KeyEvent</code>.
+ * <p>
+ * This method obtains the keyChar from a <code>KeyTyped</code>
+ * event, and the keyCode from a <code>KeyPressed</code> or
+ * <code>KeyReleased</code> event. The <code>KeyEvent</code> modifiers are
+ * obtained for all three types of <code>KeyEvent</code>.
+ *
+ * @param anEvent the <code>KeyEvent</code> from which to
+ *      obtain the <code>AWTKeyStroke</code>
+ * @throws NullPointerException if <code>anEvent</code> is null
+ * @return the <code>AWTKeyStroke</code> that precipitated the event
+ */
+public static AWTKeyStroke getAWTKeyStrokeForEvent(KeyEvent anEvent) {
+    int id = anEvent.getID();
+    switch(id) {
+        case KeyEvent.KEY_PRESSED:
+        case KeyEvent.KEY_RELEASED:
+            return getCachedStroke(KeyEvent.CHAR_UNDEFINED, anEvent.getKeyCode(), anEvent.getModifiers(), (id == KeyEvent.KEY_RELEASED));
+        case KeyEvent.KEY_TYPED:
+            return getCachedStroke(anEvent.getKeyChar(), KeyEvent.VK_UNDEFINED, anEvent.getModifiers(), false);
+        default:
+            // Invalid ID for this KeyEvent
+            return null;
+    }
+}

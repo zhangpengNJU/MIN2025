@@ -1,0 +1,18 @@
+/*
+     * Writes extra data descriptor (EXT) for specified entry.
+     */
+private void writeEXT(ZipEntry e) throws IOException {
+    // EXT header signature
+    writeInt(EXTSIG);
+    // crc-32
+    writeInt(e.crc);
+    if (e.csize >= ZIP64_MAGICVAL || e.size >= ZIP64_MAGICVAL) {
+        writeLong(e.csize);
+        writeLong(e.size);
+    } else {
+        // compressed size
+        writeInt(e.csize);
+        // uncompressed size
+        writeInt(e.size);
+    }
+}

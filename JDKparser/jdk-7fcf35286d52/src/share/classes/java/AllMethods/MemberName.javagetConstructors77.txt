@@ -1,0 +1,8 @@
+/**
+ * Return a list of all constructors defined by the given class.
+ *  Access checking is performed on behalf of the given {@code lookupClass}.
+ *  Inaccessible members are not added to the last.
+ */
+public List<MemberName> getConstructors(Class<?> defc, Class<?> lookupClass) {
+    return getMembers(defc, null, null, IS_CONSTRUCTOR, lookupClass);
+}

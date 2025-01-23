@@ -1,0 +1,31 @@
+/**
+ * The imageComplete method is part of the ImageConsumer API which
+ * this class must implement to retrieve the pixels.
+ * <p>
+ * Note: This method is intended to be called by the ImageProducer
+ * of the Image whose pixels are being grabbed.  Developers using
+ * this class to retrieve pixels from an image should avoid calling
+ * this method directly since that operation could result in problems
+ * with retrieving the requested pixels.
+ * @param status the status of image loading
+ */
+public synchronized void imageComplete(int status) {
+    grabbing = false;
+    switch(status) {
+        default:
+        case IMAGEERROR:
+            flags |= ImageObserver.ERROR | ImageObserver.ABORT;
+            break;
+        case IMAGEABORTED:
+            flags |= ImageObserver.ABORT;
+            break;
+        case STATICIMAGEDONE:
+            flags |= ImageObserver.ALLBITS;
+            break;
+        case SINGLEFRAMEDONE:
+            flags |= ImageObserver.FRAMEBITS;
+            break;
+    }
+    producer.removeConsumer(this);
+    notifyAll();
+}

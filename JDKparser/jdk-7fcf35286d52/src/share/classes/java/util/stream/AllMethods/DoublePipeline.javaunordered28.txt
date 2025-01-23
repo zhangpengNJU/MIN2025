@@ -1,0 +1,12 @@
+@Override
+public DoubleStream unordered() {
+    if (!isOrdered())
+        return this;
+    return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_ORDERED) {
+
+        @Override
+        Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
+            return sink;
+        }
+    };
+}

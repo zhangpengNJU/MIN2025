@@ -1,0 +1,9 @@
+private void checkKeycodeArgument(int keycode) {
+    // rather than build a big table or switch statement here, we'll
+    // just check that the key isn't VK_UNDEFINED and assume that the
+    // peer implementations will throw an exception for other bogus
+    // values e.g. -1, 999999
+    if (keycode == KeyEvent.VK_UNDEFINED) {
+        throw new IllegalArgumentException("Invalid key code");
+    }
+}

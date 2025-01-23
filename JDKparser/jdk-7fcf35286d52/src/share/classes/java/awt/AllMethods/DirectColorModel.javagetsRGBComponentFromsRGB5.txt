@@ -1,0 +1,10 @@
+private int getsRGBComponentFromsRGB(int pixel, int idx) {
+    int c = ((pixel & maskArray[idx]) >>> maskOffsets[idx]);
+    if (isAlphaPremultiplied) {
+        int a = ((pixel & maskArray[3]) >>> maskOffsets[3]);
+        c = (a == 0) ? 0 : (int) (((c * scaleFactors[idx]) * 255.0f / (a * scaleFactors[3])) + 0.5f);
+    } else if (scaleFactors[idx] != 1.0f) {
+        c = (int) ((c * scaleFactors[idx]) + 0.5f);
+    }
+    return c;
+}

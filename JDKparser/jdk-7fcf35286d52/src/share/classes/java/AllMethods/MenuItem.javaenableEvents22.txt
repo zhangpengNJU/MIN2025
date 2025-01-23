@@ -1,0 +1,20 @@
+/**
+ * Enables event delivery to this menu item for events
+ * to be defined by the specified event mask parameter
+ * <p>
+ * Since event types are automatically enabled when a listener for
+ * that type is added to the menu item, this method only needs
+ * to be invoked by subclasses of <code>MenuItem</code> which desire to
+ * have the specified event types delivered to <code>processEvent</code>
+ * regardless of whether a listener is registered.
+ *
+ * @param       eventsToEnable the event mask defining the event types
+ * @see         java.awt.MenuItem#processEvent
+ * @see         java.awt.MenuItem#disableEvents
+ * @see         java.awt.Component#enableEvents
+ * @since       JDK1.1
+ */
+protected final void enableEvents(long eventsToEnable) {
+    eventMask |= eventsToEnable;
+    newEventsOnly = true;
+}

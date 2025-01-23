@@ -1,0 +1,20 @@
+protected PrefixTree getTree(DateTimeParseContext context) {
+    // prepare parse tree
+    Set<String> regionIds = ZoneRulesProvider.getAvailableZoneIds();
+    final int regionIdsSize = regionIds.size();
+    Entry<Integer, PrefixTree> cached = context.isCaseSensitive() ? cachedPrefixTree : cachedPrefixTreeCI;
+    if (cached == null || cached.getKey() != regionIdsSize) {
+        synchronized (this) {
+            cached = context.isCaseSensitive() ? cachedPrefixTree : cachedPrefixTreeCI;
+            if (cached == null || cached.getKey() != regionIdsSize) {
+                cached = new SimpleImmutableEntry<>(regionIdsSize, PrefixTree.newTree(regionIds, context));
+                if (context.isCaseSensitive()) {
+                    cachedPrefixTree = cached;
+                } else {
+                    cachedPrefixTreeCI = cached;
+                }
+            }
+        }
+    }
+    return cached.getValue();
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns the greater of two {@code double} values.  That
+ * is, the result is the argument closer to positive infinity. If
+ * the arguments have the same value, the result is that same
+ * value. If either value is NaN, then the result is NaN.  Unlike
+ * the numerical comparison operators, this method considers
+ * negative zero to be strictly smaller than positive zero. If one
+ * argument is positive zero and the other negative zero, the
+ * result is positive zero.
+ *
+ * @param   a   an argument.
+ * @param   b   another argument.
+ * @return  the larger of {@code a} and {@code b}.
+ */
+public static double max(double a, double b) {
+    if (a != a)
+        // a is NaN
+        return a;
+    if ((a == 0.0d) && (b == 0.0d) && (Double.doubleToRawLongBits(a) == negativeZeroDoubleBits)) {
+        // Raw conversion ok since NaN can't map to -0.0.
+        return b;
+    }
+    return (a >= b) ? a : b;
+}

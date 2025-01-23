@@ -1,0 +1,11 @@
+private void initElementsFromCollection(Collection<? extends E> c) {
+    Object[] a = c.toArray();
+    if (c.getClass() != ArrayList.class)
+        a = Arrays.copyOf(a, a.length, Object[].class);
+    int len = a.length;
+    if (len == 1 || this.comparator != null)
+        for (int i = 0; i < len; i++) if (a[i] == null)
+            throw new NullPointerException();
+    this.queue = a;
+    this.size = a.length;
+}

@@ -1,0 +1,33 @@
+/**
+ * Determines if the specified character (Unicode code point) is a digit.
+ * <p>
+ * A character is a digit if its general category type, provided
+ * by {@link Character#getType(int) getType(codePoint)}, is
+ * {@code DECIMAL_DIGIT_NUMBER}.
+ * <p>
+ * Some Unicode character ranges that contain digits:
+ * <ul>
+ * <li>{@code '\u005Cu0030'} through {@code '\u005Cu0039'},
+ *     ISO-LATIN-1 digits ({@code '0'} through {@code '9'})
+ * <li>{@code '\u005Cu0660'} through {@code '\u005Cu0669'},
+ *     Arabic-Indic digits
+ * <li>{@code '\u005Cu06F0'} through {@code '\u005Cu06F9'},
+ *     Extended Arabic-Indic digits
+ * <li>{@code '\u005Cu0966'} through {@code '\u005Cu096F'},
+ *     Devanagari digits
+ * <li>{@code '\u005CuFF10'} through {@code '\u005CuFF19'},
+ *     Fullwidth digits
+ * </ul>
+ *
+ * Many other character ranges contain digits as well.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is a digit;
+ *          {@code false} otherwise.
+ * @see     Character#forDigit(int, int)
+ * @see     Character#getType(int)
+ * @since   1.5
+ */
+public static boolean isDigit(int codePoint) {
+    return getType(codePoint) == Character.DECIMAL_DIGIT_NUMBER;
+}

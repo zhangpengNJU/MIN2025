@@ -1,0 +1,57 @@
+/**
+ * Retrieve the address of the network interface used for
+ * multicast packets.
+ *
+ * @return An {@code InetAddress} representing
+ *  the address of the network interface used for
+ *  multicast packets.
+ *
+ * @exception SocketException if there is an error in
+ * the underlying protocol, such as a TCP error.
+ *
+ * @see #setInterface(java.net.InetAddress)
+ */
+public InetAddress getInterface() throws SocketException {
+    if (isClosed()) {
+        throw new SocketException("Socket is closed");
+    }
+    synchronized (infLock) {
+        InetAddress ia = (InetAddress) getImpl().getOption(SocketOptions.IP_MULTICAST_IF);
+        /**
+         * No previous setInterface or interface can be
+         * set using setNetworkInterface
+         */
+        if (infAddress == null) {
+            return ia;
+        }
+        /**
+         * Same interface set with setInterface?
+         */
+        if (ia.equals(infAddress)) {
+            return ia;
+        }
+        /**
+         * Different InetAddress from what we set with setInterface
+         * so enumerate the current interface to see if the
+         * address set by setInterface is bound to this interface.
+         */
+        try {
+            NetworkInterface ni = NetworkInterface.getByInetAddress(ia);
+            Enumeration<InetAddress> addrs = ni.getInetAddresses();
+            while (addrs.hasMoreElements()) {
+                InetAddress addr = addrs.nextElement();
+                if (addr.equals(infAddress)) {
+                    return infAddress;
+                }
+            }
+            /**
+             * No match so reset infAddress to indicate that the
+             * interface has changed via means
+             */
+            infAddress = null;
+            return ia;
+        } catch (Exception e) {
+            return ia;
+        }
+    }
+}

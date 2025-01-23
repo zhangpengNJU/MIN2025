@@ -1,0 +1,21 @@
+/**
+ * Returns <tt>LoggingMXBean</tt> for managing loggers.
+ * An alternative way to manage loggers is through the
+ * {@link java.lang.management.PlatformLoggingMXBean} interface
+ * that can be obtained by calling:
+ * <pre>
+ *     PlatformLoggingMXBean logging = {@link java.lang.management.ManagementFactory#getPlatformMXBean(Class)
+ *         ManagementFactory.getPlatformMXBean}(PlatformLoggingMXBean.class);
+ * </pre>
+ *
+ * @return a {@link LoggingMXBean} object.
+ *
+ * @see java.lang.management.PlatformLoggingMXBean
+ * @since 1.5
+ */
+public static synchronized LoggingMXBean getLoggingMXBean() {
+    if (loggingMXBean == null) {
+        loggingMXBean = new Logging();
+    }
+    return loggingMXBean;
+}

@@ -1,0 +1,18 @@
+/**
+ * Called whenever the queue becomes empty.
+ *
+ * Notifies all active iterators that the queue is empty,
+ * clears all weak refs, and unlinks the itrs datastructure.
+ */
+void queueIsEmpty() {
+    // assert lock.getHoldCount() == 1;
+    for (Node p = head; p != null; p = p.next) {
+        Itr it = p.get();
+        if (it != null) {
+            p.clear();
+            it.shutdown();
+        }
+    }
+    head = null;
+    itrs = null;
+}

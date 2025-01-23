@@ -1,0 +1,7 @@
+// ------------------------------------------------------------------------
+// Indicates whether the class object that would be created if the code calling
+// DriverManager is accessible.
+private static boolean isDriverAllowed(Driver driver, Class<?> caller) {
+    ClassLoader callerCL = caller != null ? caller.getClassLoader() : null;
+    return isDriverAllowed(driver, callerCL);
+}

@@ -1,0 +1,14 @@
+/**
+ * Sets a local result for this task.  If this task is the root, set the
+ * shared result instead (if not already set).
+ *
+ * @param localResult The result to set for this task
+ */
+@Override
+protected void setLocalResult(R localResult) {
+    if (isRoot()) {
+        if (localResult != null)
+            sharedResult.compareAndSet(null, localResult);
+    } else
+        super.setLocalResult(localResult);
+}

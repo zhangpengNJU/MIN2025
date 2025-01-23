@@ -1,0 +1,33 @@
+// override for special Japanese behavior
+@Override
+ChronoLocalDate resolveYearOfEra(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    // validate era and year-of-era
+    Long eraLong = fieldValues.get(ERA);
+    JapaneseEra era = null;
+    if (eraLong != null) {
+        // always validated
+        era = eraOf(range(ERA).checkValidIntValue(eraLong, ERA));
+    }
+    Long yoeLong = fieldValues.get(YEAR_OF_ERA);
+    int yoe = 0;
+    if (yoeLong != null) {
+        // always validated
+        yoe = range(YEAR_OF_ERA).checkValidIntValue(yoeLong, YEAR_OF_ERA);
+    }
+    // if only year-of-era and no year then invent era unless strict
+    if (era == null && yoeLong != null && fieldValues.containsKey(YEAR) == false && resolverStyle != ResolverStyle.STRICT) {
+        era = JapaneseEra.values()[JapaneseEra.values().length - 1];
+    }
+    // if both present, then try to create date
+    if (yoeLong != null && era != null) {
+        if (fieldValues.containsKey(MONTH_OF_YEAR)) {
+            if (fieldValues.containsKey(DAY_OF_MONTH)) {
+                return resolveYMD(era, yoe, fieldValues, resolverStyle);
+            }
+        }
+        if (fieldValues.containsKey(DAY_OF_YEAR)) {
+            return resolveYD(era, yoe, fieldValues, resolverStyle);
+        }
+    }
+    return null;
+}

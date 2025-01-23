@@ -1,0 +1,11 @@
+private CompletableFuture<T> uniExceptionallyStage(Function<Throwable, ? extends T> f) {
+    if (f == null)
+        throw new NullPointerException();
+    CompletableFuture<T> d = new CompletableFuture<T>();
+    if (!d.uniExceptionally(this, f, null)) {
+        UniExceptionally<T> c = new UniExceptionally<T>(d, this, f);
+        push(c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

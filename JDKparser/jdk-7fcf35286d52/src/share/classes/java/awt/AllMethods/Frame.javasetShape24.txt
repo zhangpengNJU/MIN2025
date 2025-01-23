@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ */
+@Override
+public void setShape(Shape shape) {
+    synchronized (getTreeLock()) {
+        if ((shape != null) && !isUndecorated()) {
+            throw new IllegalComponentStateException("The frame is decorated");
+        }
+        super.setShape(shape);
+    }
+}

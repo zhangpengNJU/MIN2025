@@ -1,0 +1,14 @@
+public boolean remove(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+    Object key = entry.getKey();
+    if (!inRange(key))
+        return false;
+    TreeMap.Entry<K, V> node = m.getEntry(key);
+    if (node != null && valEquals(node.getValue(), entry.getValue())) {
+        m.deleteEntry(node);
+        return true;
+    }
+    return false;
+}

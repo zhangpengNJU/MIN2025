@@ -1,0 +1,8 @@
+final long nextSeed() {
+    // read and update per-thread seed
+    Thread t;
+    // read and update per-thread seed
+    long r;
+    UNSAFE.putLong(t = Thread.currentThread(), SEED, r = UNSAFE.getLong(t, SEED) + GAMMA);
+    return r;
+}

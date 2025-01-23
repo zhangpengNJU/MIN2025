@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoPeriod normalized() {
+    long monthRange = monthRange();
+    if (monthRange > 0) {
+        long totalMonths = years * monthRange + months;
+        long splitYears = totalMonths / monthRange;
+        // no overflow
+        int splitMonths = (int) (totalMonths % monthRange);
+        if (splitYears == years && splitMonths == months) {
+            return this;
+        }
+        return new ChronoPeriodImpl(chrono, Math.toIntExact(splitYears), splitMonths, days);
+    }
+    return this;
+}

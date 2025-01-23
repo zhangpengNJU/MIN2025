@@ -1,0 +1,15 @@
+static synchronized KnownLevel matches(Level l) {
+    List<KnownLevel> list = nameToLevels.get(l.name);
+    if (list != null) {
+        for (KnownLevel level : list) {
+            Level other = level.mirroredLevel;
+            Class<? extends Level> type = level.levelObject.getClass();
+            if (l.value == other.value && (l.resourceBundleName == other.resourceBundleName || (l.resourceBundleName != null && l.resourceBundleName.equals(other.resourceBundleName)))) {
+                if (type == l.getClass()) {
+                    return level;
+                }
+            }
+        }
+    }
+    return null;
+}

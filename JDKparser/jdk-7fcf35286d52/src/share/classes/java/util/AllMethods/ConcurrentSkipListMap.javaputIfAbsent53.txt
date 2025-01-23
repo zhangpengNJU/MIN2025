@@ -1,0 +1,15 @@
+/* ------ ConcurrentMap API methods ------ */
+/**
+ * {@inheritDoc}
+ *
+ * @return the previous value associated with the specified key,
+ *         or {@code null} if there was no mapping for the key
+ * @throws ClassCastException if the specified key cannot be compared
+ *         with the keys currently in the map
+ * @throws NullPointerException if the specified key or value is null
+ */
+public V putIfAbsent(K key, V value) {
+    if (value == null)
+        throw new NullPointerException();
+    return doPut(key, value, true);
+}

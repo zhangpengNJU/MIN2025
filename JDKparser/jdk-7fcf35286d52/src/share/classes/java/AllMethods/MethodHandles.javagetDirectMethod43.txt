@@ -1,0 +1,8 @@
+/**
+ * Check access and get the requested method.
+ */
+private MethodHandle getDirectMethod(byte refKind, Class<?> refc, MemberName method, Class<?> callerClass) throws IllegalAccessException {
+    final boolean doRestrict = true;
+    final boolean checkSecurity = true;
+    return getDirectMethodCommon(refKind, refc, method, checkSecurity, doRestrict, callerClass);
+}

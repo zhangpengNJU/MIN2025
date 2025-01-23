@@ -1,0 +1,14 @@
+/**
+ * Forces the data to match the state specified in the
+ * <code>isAlphaPremultiplied</code> variable.  It may multiply or
+ * divide the color raster data by alpha, or do nothing if the data is
+ * in the correct state.
+ * @param isAlphaPremultiplied <code>true</code> if the alpha has been
+ *          premultiplied; <code>false</code> otherwise.
+ */
+public void coerceData(boolean isAlphaPremultiplied) {
+    if (colorModel.hasAlpha() && colorModel.isAlphaPremultiplied() != isAlphaPremultiplied) {
+        // Make the color model do the conversion
+        colorModel = colorModel.coerceData(raster, isAlphaPremultiplied);
+    }
+}

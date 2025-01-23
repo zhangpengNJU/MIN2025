@@ -1,0 +1,16 @@
+/**
+ * Creates a <code>SampleModel</code> with the specified width and
+ * height that has a data layout compatible with this
+ * <code>ColorModel</code>.
+ * @param w the width (in pixels) of the region of the image data
+ *          described
+ * @param h the height (in pixels) of the region of the image data
+ *          described
+ * @return the newly created <code>SampleModel</code>.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ * @see SampleModel
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    return new SinglePixelPackedSampleModel(transferType, w, h, maskArray);
+}

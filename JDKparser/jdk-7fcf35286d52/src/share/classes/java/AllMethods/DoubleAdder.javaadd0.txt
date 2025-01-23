@@ -1,0 +1,16 @@
+/**
+ * Adds the given value.
+ *
+ * @param x the value to add
+ */
+public void add(double x) {
+    Cell[] as;
+    long b, v;
+    int m;
+    Cell a;
+    if ((as = cells) != null || !casBase(b = base, Double.doubleToRawLongBits(Double.longBitsToDouble(b) + x))) {
+        boolean uncontended = true;
+        if (as == null || (m = as.length - 1) < 0 || (a = as[getProbe() & m]) == null || !(uncontended = a.cas(v = a.value, Double.doubleToRawLongBits(Double.longBitsToDouble(v) + x))))
+            doubleAccumulate(x, null, uncontended);
+    }
+}

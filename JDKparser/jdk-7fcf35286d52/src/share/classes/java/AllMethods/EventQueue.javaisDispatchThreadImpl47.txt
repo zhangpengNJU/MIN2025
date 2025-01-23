@@ -1,0 +1,17 @@
+final boolean isDispatchThreadImpl() {
+    EventQueue eq = this;
+    pushPopLock.lock();
+    try {
+        EventQueue next = eq.nextQueue;
+        while (next != null) {
+            eq = next;
+            next = eq.nextQueue;
+        }
+        if (eq.fwDispatcher != null) {
+            return eq.fwDispatcher.isDispatchThread();
+        }
+        return (Thread.currentThread() == eq.dispatchThread);
+    } finally {
+        pushPopLock.unlock();
+    }
+}

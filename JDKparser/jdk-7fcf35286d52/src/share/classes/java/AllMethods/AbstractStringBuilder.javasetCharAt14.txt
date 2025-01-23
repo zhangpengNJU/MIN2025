@@ -1,0 +1,19 @@
+/**
+ * The character at the specified index is set to {@code ch}. This
+ * sequence is altered to represent a new character sequence that is
+ * identical to the old character sequence, except that it contains the
+ * character {@code ch} at position {@code index}.
+ * <p>
+ * The index argument must be greater than or equal to
+ * {@code 0}, and less than the length of this sequence.
+ *
+ * @param      index   the index of the character to modify.
+ * @param      ch      the new character.
+ * @throws     IndexOutOfBoundsException  if {@code index} is
+ *             negative or greater than or equal to {@code length()}.
+ */
+public void setCharAt(int index, char ch) {
+    if ((index < 0) || (index >= count))
+        throw new StringIndexOutOfBoundsException(index);
+    value[index] = ch;
+}

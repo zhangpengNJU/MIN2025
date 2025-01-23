@@ -1,0 +1,245 @@
+// ======== End fast-path formating logic for double =========================
+/**
+ * Complete the formatting of a finite number.  On entry, the digitList must
+ * be filled in with the correct digits.
+ */
+private StringBuffer subformat(StringBuffer result, FieldDelegate delegate, boolean isNegative, boolean isInteger, int maxIntDigits, int minIntDigits, int maxFraDigits, int minFraDigits) {
+    // NOTE: This isn't required anymore because DigitList takes care of this.
+    // 
+    // // The negative of the exponent represents the number of leading
+    // // zeros between the decimal and the first non-zero digit, for
+    // // a value < 0.1 (e.g., for 0.00123, -fExponent == 2).  If this
+    // // is more than the maximum fraction digits, then we have an underflow
+    // // for the printed representation.  We recognize this here and set
+    // // the DigitList representation to zero in this situation.
+    // 
+    // if (-digitList.decimalAt >= getMaximumFractionDigits())
+    // {
+    // digitList.count = 0;
+    // }
+    char zero = symbols.getZeroDigit();
+    // '0' is the DigitList representation of zero
+    int zeroDelta = zero - '0';
+    char grouping = symbols.getGroupingSeparator();
+    char decimal = isCurrencyFormat ? symbols.getMonetaryDecimalSeparator() : symbols.getDecimalSeparator();
+    /* Per bug 4147706, DecimalFormat must respect the sign of numbers which
+         * format as zero.  This allows sensible computations and preserves
+         * relations such as signum(1/x) = signum(x), where x is +Infinity or
+         * -Infinity.  Prior to this fix, we always formatted zero values as if
+         * they were positive.  Liu 7/6/98.
+         */
+    if (digitList.isZero()) {
+        // Normalize
+        digitList.decimalAt = 0;
+    }
+    if (isNegative) {
+        append(result, negativePrefix, delegate, getNegativePrefixFieldPositions(), Field.SIGN);
+    } else {
+        append(result, positivePrefix, delegate, getPositivePrefixFieldPositions(), Field.SIGN);
+    }
+    if (useExponentialNotation) {
+        int iFieldStart = result.length();
+        int iFieldEnd = -1;
+        int fFieldStart = -1;
+        // Minimum integer digits are handled in exponential format by
+        // adjusting the exponent.  For example, 0.01234 with 3 minimum
+        // integer digits is "123.4E-4".
+        // Maximum integer digits are interpreted as indicating the
+        // repeating range.  This is useful for engineering notation, in
+        // which the exponent is restricted to a multiple of 3.  For
+        // example, 0.01234 with 3 maximum integer digits is "12.34e-3".
+        // If maximum integer digits are > 1 and are larger than
+        // minimum integer digits, then minimum integer digits are
+        // ignored.
+        int exponent = digitList.decimalAt;
+        int repeat = maxIntDigits;
+        int minimumIntegerDigits = minIntDigits;
+        if (repeat > 1 && repeat > minIntDigits) {
+            // A repeating range is defined; adjust to it as follows.
+            // If repeat == 3, we have 6,5,4=>3; 3,2,1=>0; 0,-1,-2=>-3;
+            // -3,-4,-5=>-6, etc. This takes into account that the
+            // exponent we have here is off by one from what we expect;
+            // it is for the format 0.MMMMMx10^n.
+            if (exponent >= 1) {
+                exponent = ((exponent - 1) / repeat) * repeat;
+            } else {
+                // integer division rounds towards 0
+                exponent = ((exponent - repeat) / repeat) * repeat;
+            }
+            minimumIntegerDigits = 1;
+        } else {
+            // No repeating range is defined; use minimum integer digits.
+            exponent -= minimumIntegerDigits;
+        }
+        // We now output a minimum number of digits, and more if there
+        // are more digits, up to the maximum number of digits.  We
+        // place the decimal point after the "integer" digits, which
+        // are the first (decimalAt - exponent) digits.
+        int minimumDigits = minIntDigits + minFraDigits;
+        if (minimumDigits < 0) {
+            // overflow?
+            minimumDigits = Integer.MAX_VALUE;
+        }
+        // The number of integer digits is handled specially if the number
+        // is zero, since then there may be no digits.
+        int integerDigits = digitList.isZero() ? minimumIntegerDigits : digitList.decimalAt - exponent;
+        if (minimumDigits < integerDigits) {
+            minimumDigits = integerDigits;
+        }
+        int totalDigits = digitList.count;
+        if (minimumDigits > totalDigits) {
+            totalDigits = minimumDigits;
+        }
+        boolean addedDecimalSeparator = false;
+        for (int i = 0; i < totalDigits; ++i) {
+            if (i == integerDigits) {
+                // Record field information for caller.
+                iFieldEnd = result.length();
+                result.append(decimal);
+                addedDecimalSeparator = true;
+                // Record field information for caller.
+                fFieldStart = result.length();
+            }
+            result.append((i < digitList.count) ? (char) (digitList.digits[i] + zeroDelta) : zero);
+        }
+        if (decimalSeparatorAlwaysShown && totalDigits == integerDigits) {
+            // Record field information for caller.
+            iFieldEnd = result.length();
+            result.append(decimal);
+            addedDecimalSeparator = true;
+            // Record field information for caller.
+            fFieldStart = result.length();
+        }
+        // Record field information
+        if (iFieldEnd == -1) {
+            iFieldEnd = result.length();
+        }
+        delegate.formatted(INTEGER_FIELD, Field.INTEGER, Field.INTEGER, iFieldStart, iFieldEnd, result);
+        if (addedDecimalSeparator) {
+            delegate.formatted(Field.DECIMAL_SEPARATOR, Field.DECIMAL_SEPARATOR, iFieldEnd, fFieldStart, result);
+        }
+        if (fFieldStart == -1) {
+            fFieldStart = result.length();
+        }
+        delegate.formatted(FRACTION_FIELD, Field.FRACTION, Field.FRACTION, fFieldStart, result.length(), result);
+        // The exponent is output using the pattern-specified minimum
+        // exponent digits.  There is no maximum limit to the exponent
+        // digits, since truncating the exponent would result in an
+        // unacceptable inaccuracy.
+        int fieldStart = result.length();
+        result.append(symbols.getExponentSeparator());
+        delegate.formatted(Field.EXPONENT_SYMBOL, Field.EXPONENT_SYMBOL, fieldStart, result.length(), result);
+        // For zero values, we force the exponent to zero.  We
+        // must do this here, and not earlier, because the value
+        // is used to determine integer digit count above.
+        if (digitList.isZero()) {
+            exponent = 0;
+        }
+        boolean negativeExponent = exponent < 0;
+        if (negativeExponent) {
+            exponent = -exponent;
+            fieldStart = result.length();
+            result.append(symbols.getMinusSign());
+            delegate.formatted(Field.EXPONENT_SIGN, Field.EXPONENT_SIGN, fieldStart, result.length(), result);
+        }
+        digitList.set(negativeExponent, exponent);
+        int eFieldStart = result.length();
+        for (int i = digitList.decimalAt; i < minExponentDigits; ++i) {
+            result.append(zero);
+        }
+        for (int i = 0; i < digitList.decimalAt; ++i) {
+            result.append((i < digitList.count) ? (char) (digitList.digits[i] + zeroDelta) : zero);
+        }
+        delegate.formatted(Field.EXPONENT, Field.EXPONENT, eFieldStart, result.length(), result);
+    } else {
+        int iFieldStart = result.length();
+        // Output the integer portion.  Here 'count' is the total
+        // number of integer digits we will display, including both
+        // leading zeros required to satisfy getMinimumIntegerDigits,
+        // and actual digits present in the number.
+        int count = minIntDigits;
+        // Index into digitList.fDigits[]
+        int digitIndex = 0;
+        if (digitList.decimalAt > 0 && count < digitList.decimalAt) {
+            count = digitList.decimalAt;
+        }
+        // Handle the case where getMaximumIntegerDigits() is smaller
+        // than the real number of integer digits.  If this is so, we
+        // output the least significant max integer digits.  For example,
+        // the value 1997 printed with 2 max integer digits is just "97".
+        if (count > maxIntDigits) {
+            count = maxIntDigits;
+            digitIndex = digitList.decimalAt - count;
+        }
+        int sizeBeforeIntegerPart = result.length();
+        for (int i = count - 1; i >= 0; --i) {
+            if (i < digitList.decimalAt && digitIndex < digitList.count) {
+                // Output a real digit
+                result.append((char) (digitList.digits[digitIndex++] + zeroDelta));
+            } else {
+                // Output a leading zero
+                result.append(zero);
+            }
+            // Output grouping separator if necessary.  Don't output a
+            // grouping separator if i==0 though; that's at the end of
+            // the integer part.
+            if (isGroupingUsed() && i > 0 && (groupingSize != 0) && (i % groupingSize == 0)) {
+                int gStart = result.length();
+                result.append(grouping);
+                delegate.formatted(Field.GROUPING_SEPARATOR, Field.GROUPING_SEPARATOR, gStart, result.length(), result);
+            }
+        }
+        // Determine whether or not there are any printable fractional
+        // digits.  If we've used up the digits we know there aren't.
+        boolean fractionPresent = (minFraDigits > 0) || (!isInteger && digitIndex < digitList.count);
+        // If there is no fraction present, and we haven't printed any
+        // integer digits, then print a zero.  Otherwise we won't print
+        // _any_ digits, and we won't be able to parse this string.
+        if (!fractionPresent && result.length() == sizeBeforeIntegerPart) {
+            result.append(zero);
+        }
+        delegate.formatted(INTEGER_FIELD, Field.INTEGER, Field.INTEGER, iFieldStart, result.length(), result);
+        // Output the decimal separator if we always do so.
+        int sStart = result.length();
+        if (decimalSeparatorAlwaysShown || fractionPresent) {
+            result.append(decimal);
+        }
+        if (sStart != result.length()) {
+            delegate.formatted(Field.DECIMAL_SEPARATOR, Field.DECIMAL_SEPARATOR, sStart, result.length(), result);
+        }
+        int fFieldStart = result.length();
+        for (int i = 0; i < maxFraDigits; ++i) {
+            // Here is where we escape from the loop.  We escape if we've
+            // output the maximum fraction digits (specified in the for
+            // expression above).
+            // We also stop when we've output the minimum digits and either:
+            // we have an integer, so there is no fractional stuff to
+            // display, or we're out of significant digits.
+            if (i >= minFraDigits && (isInteger || digitIndex >= digitList.count)) {
+                break;
+            }
+            // Output leading fractional zeros. These are zeros that come
+            // after the decimal but before any significant digits. These
+            // are only output if abs(number being formatted) < 1.0.
+            if (-1 - i > (digitList.decimalAt - 1)) {
+                result.append(zero);
+                continue;
+            }
+            // Output a digit, if we have any precision left, or a
+            // zero if we don't.  We don't want to output noise digits.
+            if (!isInteger && digitIndex < digitList.count) {
+                result.append((char) (digitList.digits[digitIndex++] + zeroDelta));
+            } else {
+                result.append(zero);
+            }
+        }
+        // Record field information for caller.
+        delegate.formatted(FRACTION_FIELD, Field.FRACTION, Field.FRACTION, fFieldStart, result.length(), result);
+    }
+    if (isNegative) {
+        append(result, negativeSuffix, delegate, getNegativeSuffixFieldPositions(), Field.SIGN);
+    } else {
+        append(result, positiveSuffix, delegate, getPositiveSuffixFieldPositions(), Field.SIGN);
+    }
+    return result;
+}

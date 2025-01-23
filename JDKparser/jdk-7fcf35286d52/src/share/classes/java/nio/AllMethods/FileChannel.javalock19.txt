@@ -1,0 +1,91 @@
+// -- Locks --
+/**
+ * Acquires a lock on the given region of this channel's file.
+ *
+ * <p> An invocation of this method will block until the region can be
+ * locked, this channel is closed, or the invoking thread is interrupted,
+ * whichever comes first.
+ *
+ * <p> If this channel is closed by another thread during an invocation of
+ * this method then an {@link AsynchronousCloseException} will be thrown.
+ *
+ * <p> If the invoking thread is interrupted while waiting to acquire the
+ * lock then its interrupt status will be set and a {@link
+ * FileLockInterruptionException} will be thrown.  If the invoker's
+ * interrupt status is set when this method is invoked then that exception
+ * will be thrown immediately; the thread's interrupt status will not be
+ * changed.
+ *
+ * <p> The region specified by the <tt>position</tt> and <tt>size</tt>
+ * parameters need not be contained within, or even overlap, the actual
+ * underlying file.  Lock regions are fixed in size; if a locked region
+ * initially contains the end of the file and the file grows beyond the
+ * region then the new portion of the file will not be covered by the lock.
+ * If a file is expected to grow in size and a lock on the entire file is
+ * required then a region starting at zero, and no smaller than the
+ * expected maximum size of the file, should be locked.  The zero-argument
+ * {@link #lock()} method simply locks a region of size {@link
+ * Long#MAX_VALUE}.
+ *
+ * <p> Some operating systems do not support shared locks, in which case a
+ * request for a shared lock is automatically converted into a request for
+ * an exclusive lock.  Whether the newly-acquired lock is shared or
+ * exclusive may be tested by invoking the resulting lock object's {@link
+ * FileLock#isShared() isShared} method.
+ *
+ * <p> File locks are held on behalf of the entire Java virtual machine.
+ * They are not suitable for controlling access to a file by multiple
+ * threads within the same virtual machine.  </p>
+ *
+ * @param  position
+ *         The position at which the locked region is to start; must be
+ *         non-negative
+ *
+ * @param  size
+ *         The size of the locked region; must be non-negative, and the sum
+ *         <tt>position</tt>&nbsp;+&nbsp;<tt>size</tt> must be non-negative
+ *
+ * @param  shared
+ *         <tt>true</tt> to request a shared lock, in which case this
+ *         channel must be open for reading (and possibly writing);
+ *         <tt>false</tt> to request an exclusive lock, in which case this
+ *         channel must be open for writing (and possibly reading)
+ *
+ * @return  A lock object representing the newly-acquired lock
+ *
+ * @throws  IllegalArgumentException
+ *          If the preconditions on the parameters do not hold
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel while the invoking
+ *          thread is blocked in this method
+ *
+ * @throws  FileLockInterruptionException
+ *          If the invoking thread is interrupted while blocked in this
+ *          method
+ *
+ * @throws  OverlappingFileLockException
+ *          If a lock that overlaps the requested region is already held by
+ *          this Java virtual machine, or if another thread is already
+ *          blocked in this method and is attempting to lock an overlapping
+ *          region
+ *
+ * @throws  NonReadableChannelException
+ *          If <tt>shared</tt> is <tt>true</tt> this channel was not
+ *          opened for reading
+ *
+ * @throws  NonWritableChannelException
+ *          If <tt>shared</tt> is <tt>false</tt> but this channel was not
+ *          opened for writing
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ *
+ * @see     #lock()
+ * @see     #tryLock()
+ * @see     #tryLock(long,long,boolean)
+ */
+public abstract FileLock lock(long position, long size, boolean shared) throws IOException;

@@ -1,0 +1,26 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to delete the specified file.
+ * <p>
+ * This method is invoked for the current security manager by the
+ * <code>delete</code> method of class <code>File</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>FilePermission(file,"delete")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkDelete</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      file   the system-dependent filename.
+ * @exception  SecurityException if the calling thread does not
+ *             have permission to delete the file.
+ * @exception  NullPointerException if the <code>file</code> argument is
+ *             <code>null</code>.
+ * @see        java.io.File#delete()
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkDelete(String file) {
+    checkPermission(new FilePermission(file, SecurityConstants.FILE_DELETE_ACTION));
+}

@@ -1,0 +1,14 @@
+public Class<?>[] run() {
+    List<Class<?>> list = new ArrayList<>();
+    Class<?> currentClass = Class.this;
+    while (currentClass != null) {
+        Class<?>[] members = currentClass.getDeclaredClasses();
+        for (int i = 0; i < members.length; i++) {
+            if (Modifier.isPublic(members[i].getModifiers())) {
+                list.add(members[i]);
+            }
+        }
+        currentClass = currentClass.getSuperclass();
+    }
+    return list.toArray(new Class<?>[0]);
+}

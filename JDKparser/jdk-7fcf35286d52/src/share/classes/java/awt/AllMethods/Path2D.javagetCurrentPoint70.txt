@@ -1,0 +1,34 @@
+/**
+ * Returns the coordinates most recently added to the end of the path
+ * as a {@link Point2D} object.
+ *
+ * @return a {@code Point2D} object containing the ending coordinates of
+ *         the path or {@code null} if there are no points in the path.
+ * @since 1.6
+ */
+public final synchronized Point2D getCurrentPoint() {
+    int index = numCoords;
+    if (numTypes < 1 || index < 1) {
+        return null;
+    }
+    if (pointTypes[numTypes - 1] == SEG_CLOSE) {
+        loop: for (int i = numTypes - 2; i > 0; i--) {
+            switch(pointTypes[i]) {
+                case SEG_MOVETO:
+                    break loop;
+                case SEG_LINETO:
+                    index -= 2;
+                    break;
+                case SEG_QUADTO:
+                    index -= 4;
+                    break;
+                case SEG_CUBICTO:
+                    index -= 6;
+                    break;
+                case SEG_CLOSE:
+                    break;
+            }
+        }
+    }
+    return getPoint(index - 2);
+}

@@ -1,0 +1,19 @@
+static MethodHandle makeGuardWithTest(MethodHandle test, MethodHandle target, MethodHandle fallback) {
+    MethodType type = target.type();
+    assert (test.type().equals(type.changeReturnType(boolean.class)) && fallback.type().equals(type));
+    MethodType basicType = type.basicType();
+    LambdaForm form = makeGuardWithTestForm(basicType);
+    BoundMethodHandle mh;
+    try {
+        if (PROFILE_GWT) {
+            int[] counts = new int[2];
+            mh = (BoundMethodHandle) BoundMethodHandle.speciesData_LLLL().constructor().invokeBasic(type, form, (Object) test, (Object) profile(target), (Object) profile(fallback), counts);
+        } else {
+            mh = (BoundMethodHandle) BoundMethodHandle.speciesData_LLL().constructor().invokeBasic(type, form, (Object) test, (Object) profile(target), (Object) profile(fallback));
+        }
+    } catch (Throwable ex) {
+        throw uncaughtException(ex);
+    }
+    assert (mh.type() == type);
+    return mh;
+}

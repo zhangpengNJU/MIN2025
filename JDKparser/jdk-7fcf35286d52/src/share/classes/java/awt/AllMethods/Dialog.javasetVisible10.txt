@@ -1,0 +1,32 @@
+/**
+ * Shows or hides this {@code Dialog} depending on the value of parameter
+ * {@code b}.
+ * @param b if {@code true}, makes the {@code Dialog} visible,
+ * otherwise hides the {@code Dialog}.
+ * If the dialog and/or its owner
+ * are not yet displayable, both are made displayable.  The
+ * dialog will be validated prior to being made visible.
+ * If {@code false}, hides the {@code Dialog} and then causes {@code setVisible(true)}
+ * to return if it is currently blocked.
+ * <p>
+ * <b>Notes for modal dialogs</b>.
+ * <ul>
+ * <li>{@code setVisible(true)}:  If the dialog is not already
+ * visible, this call will not return until the dialog is
+ * hidden by calling {@code setVisible(false)} or
+ * {@code dispose}.
+ * <li>{@code setVisible(false)}:  Hides the dialog and then
+ * returns on {@code setVisible(true)} if it is currently blocked.
+ * <li>It is OK to call this method from the event dispatching
+ * thread because the toolkit ensures that other events are
+ * not blocked while this method is blocked.
+ * </ul>
+ * @see java.awt.Window#setVisible
+ * @see java.awt.Window#dispose
+ * @see java.awt.Component#isDisplayable
+ * @see java.awt.Component#validate
+ * @see java.awt.Dialog#isModal
+ */
+public void setVisible(boolean b) {
+    super.setVisible(b);
+}

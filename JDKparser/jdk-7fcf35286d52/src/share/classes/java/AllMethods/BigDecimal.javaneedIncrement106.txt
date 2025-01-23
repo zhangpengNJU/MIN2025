@@ -1,0 +1,14 @@
+/**
+ * Tests if quotient has to be incremented according the roundingMode
+ */
+private static boolean needIncrement(long ldivisor, int roundingMode, int qsign, MutableBigInteger mq, long r) {
+    assert r != 0L;
+    int cmpFracHalf;
+    if (r <= HALF_LONG_MIN_VALUE || r > HALF_LONG_MAX_VALUE) {
+        // 2 * r can't fit into long
+        cmpFracHalf = 1;
+    } else {
+        cmpFracHalf = longCompareMagnitude(2 * r, ldivisor);
+    }
+    return commonNeedIncrement(roundingMode, qsign, cmpFracHalf, mq.isOdd());
+}

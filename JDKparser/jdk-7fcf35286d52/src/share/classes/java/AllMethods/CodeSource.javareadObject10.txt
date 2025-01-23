@@ -1,0 +1,56 @@
+/**
+ * Restores this object from a stream (i.e., deserializes it).
+ */
+private void readObject(java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    CertificateFactory cf;
+    Hashtable<String, CertificateFactory> cfs = null;
+    List<java.security.cert.Certificate> certList = null;
+    // location
+    ois.defaultReadObject();
+    // process any new-style certs in the stream (if present)
+    int size = ois.readInt();
+    if (size > 0) {
+        // we know of 3 different cert types: X.509, PGP, SDSI, which
+        // could all be present in the stream at the same time
+        cfs = new Hashtable<String, CertificateFactory>(3);
+        certList = new ArrayList<>(size > 20 ? 20 : size);
+    } else if (size < 0) {
+        throw new IOException("size cannot be negative");
+    }
+    for (int i = 0; i < size; i++) {
+        // read the certificate type, and instantiate a certificate
+        // factory of that type (reuse existing factory if possible)
+        String certType = ois.readUTF();
+        if (cfs.containsKey(certType)) {
+            // reuse certificate factory
+            cf = cfs.get(certType);
+        } else {
+            // create new certificate factory
+            try {
+                cf = CertificateFactory.getInstance(certType);
+            } catch (CertificateException ce) {
+                throw new ClassNotFoundException("Certificate factory for " + certType + " not found");
+            }
+            // store the certificate factory so we can reuse it later
+            cfs.put(certType, cf);
+        }
+        // parse the certificate
+        byte[] encoded = IOUtils.readExactlyNBytes(ois, ois.readInt());
+        ByteArrayInputStream bais = new ByteArrayInputStream(encoded);
+        try {
+            certList.add(cf.generateCertificate(bais));
+        } catch (CertificateException ce) {
+            throw new IOException(ce.getMessage());
+        }
+        bais.close();
+    }
+    if (certList != null) {
+        this.certs = certList.toArray(new java.security.cert.Certificate[size]);
+    }
+    // Deserialize array of code signers (if any)
+    try {
+        this.signers = ((CodeSigner[]) ois.readObject()).clone();
+    } catch (IOException ioe) {
+    // no signers present
+    }
+}

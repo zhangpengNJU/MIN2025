@@ -1,0 +1,9 @@
+private boolean implReplace(Object key, Object oldValue, Object newValue) {
+    if ((key instanceof String) && (oldValue instanceof String) && (newValue instanceof String)) {
+        if (!checkLegacy(key)) {
+            return false;
+        }
+        legacyStrings.replace((String) key, (String) oldValue, (String) newValue);
+    }
+    return super.replace(key, oldValue, newValue);
+}

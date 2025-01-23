@@ -1,0 +1,17 @@
+/**
+ * Calculates the proleptic-year given the era and year-of-era.
+ * <p>
+ * This combines the era and year-of-era into the single proleptic-year field.
+ * <p>
+ * If the chronology makes active use of eras, such as {@code JapaneseChronology}
+ * then the year-of-era will be validated against the era.
+ * For other chronologies, validation is optional.
+ *
+ * @param era  the era of the correct type for the chronology, not null
+ * @param yearOfEra  the chronology year-of-era
+ * @return the proleptic-year
+ * @throws DateTimeException if unable to convert to a proleptic-year,
+ *  such as if the year is invalid for the era
+ * @throws ClassCastException if the {@code era} is not of the correct type for the chronology
+ */
+int prolepticYear(Era era, int yearOfEra);

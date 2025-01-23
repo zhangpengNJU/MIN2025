@@ -1,0 +1,38 @@
+/**
+ * Performs the specified {@code PrivilegedExceptionAction} with
+ * privileges enabled and restricted by the specified
+ * {@code AccessControlContext}.  The action is performed with the
+ * intersection of the permissions possessed by the caller's
+ * protection domain, and those possessed by the domains represented by the
+ * specified {@code AccessControlContext}.
+ * <p>
+ * If the action's {@code run} method throws an <i>unchecked</i>
+ * exception, it will propagate through this method.
+ * <p>
+ * If a security manager is installed and the specified
+ * {@code AccessControlContext} was not created by system code and the
+ * caller's {@code ProtectionDomain} has not been granted the
+ * {@literal "createAccessControlContext"}
+ * {@link java.security.SecurityPermission}, then the action is performed
+ * with no permissions.
+ *
+ * @param <T> the type of the value returned by the
+ *                  PrivilegedExceptionAction's {@code run} method.
+ * @param action the action to be performed
+ * @param context an <i>access control context</i>
+ *                representing the restriction to be applied to the
+ *                caller's domain's privileges before performing
+ *                the specified action.  If the context is
+ *                {@code null}, then no additional restriction is applied.
+ *
+ * @return the value returned by the action's {@code run} method
+ *
+ * @exception PrivilegedActionException if the specified action's
+ *         {@code run} method threw a <i>checked</i> exception
+ * @exception NullPointerException if the action is {@code null}
+ *
+ * @see #doPrivileged(PrivilegedAction)
+ * @see #doPrivileged(PrivilegedAction,AccessControlContext)
+ */
+@CallerSensitive
+public static native <T> T doPrivileged(PrivilegedExceptionAction<T> action, AccessControlContext context) throws PrivilegedActionException;

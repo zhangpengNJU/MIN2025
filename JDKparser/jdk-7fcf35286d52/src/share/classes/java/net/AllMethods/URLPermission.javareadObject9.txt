@@ -1,0 +1,8 @@
+/**
+ * restore the state of this object from stream
+ */
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    ObjectInputStream.GetField fields = s.readFields();
+    String actions = (String) fields.get("actions", null);
+    init(actions);
+}

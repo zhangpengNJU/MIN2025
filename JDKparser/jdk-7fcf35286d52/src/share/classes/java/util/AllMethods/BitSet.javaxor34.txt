@@ -1,0 +1,28 @@
+/**
+ * Performs a logical <b>XOR</b> of this bit set with the bit set
+ * argument. This bit set is modified so that a bit in it has the
+ * value {@code true} if and only if one of the following
+ * statements holds:
+ * <ul>
+ * <li>The bit initially has the value {@code true}, and the
+ *     corresponding bit in the argument has the value {@code false}.
+ * <li>The bit initially has the value {@code false}, and the
+ *     corresponding bit in the argument has the value {@code true}.
+ * </ul>
+ *
+ * @param  set a bit set
+ */
+public void xor(BitSet set) {
+    int wordsInCommon = Math.min(wordsInUse, set.wordsInUse);
+    if (wordsInUse < set.wordsInUse) {
+        ensureCapacity(set.wordsInUse);
+        wordsInUse = set.wordsInUse;
+    }
+    // Perform logical XOR on words in common
+    for (int i = 0; i < wordsInCommon; i++) words[i] ^= set.words[i];
+    // Copy any remaining words
+    if (wordsInCommon < set.wordsInUse)
+        System.arraycopy(set.words, wordsInCommon, words, wordsInCommon, set.wordsInUse - wordsInCommon);
+    recalculateWordsInUse();
+    checkInvariants();
+}

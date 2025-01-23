@@ -1,0 +1,11 @@
+// Package private method to get a Level property.
+// If the property is not defined or cannot be parsed
+// we return the given default value.
+Level getLevelProperty(String name, Level defaultValue) {
+    String val = getProperty(name);
+    if (val == null) {
+        return defaultValue;
+    }
+    Level l = Level.findLevel(val.trim());
+    return l != null ? l : defaultValue;
+}

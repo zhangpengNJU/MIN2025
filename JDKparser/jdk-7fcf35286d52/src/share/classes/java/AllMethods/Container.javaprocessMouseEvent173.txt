@@ -1,0 +1,66 @@
+/**
+ * This method attempts to distribute a mouse event to a lightweight
+ * component.  It tries to avoid doing any unnecessary probes down
+ * into the component tree to minimize the overhead of determining
+ * where to route the event, since mouse movement events tend to
+ * come in large and frequent amounts.
+ */
+private boolean processMouseEvent(MouseEvent e) {
+    int id = e.getID();
+    // sensitive to mouse events
+    Component mouseOver = nativeContainer.getMouseEventTarget(e.getX(), e.getY(), Container.INCLUDE_SELF);
+    trackMouseEnterExit(mouseOver, e);
+    Component met = mouseEventTarget.get();
+    // 4508327 : MOUSE_CLICKED should only go to the recipient of
+    // the accompanying MOUSE_PRESSED, so don't reset mouseEventTarget on a
+    // MOUSE_CLICKED.
+    if (!isMouseGrab(e) && id != MouseEvent.MOUSE_CLICKED) {
+        met = (mouseOver != nativeContainer) ? mouseOver : null;
+        mouseEventTarget = new WeakReference<>(met);
+    }
+    if (met != null) {
+        switch(id) {
+            case MouseEvent.MOUSE_ENTERED:
+            case MouseEvent.MOUSE_EXITED:
+                break;
+            case MouseEvent.MOUSE_PRESSED:
+                retargetMouseEvent(met, id, e);
+                break;
+            case MouseEvent.MOUSE_RELEASED:
+                retargetMouseEvent(met, id, e);
+                break;
+            case MouseEvent.MOUSE_CLICKED:
+                // 4508327: MOUSE_CLICKED should never be dispatched to a Component
+                // other than that which received the MOUSE_PRESSED event.  If the
+                // mouse is now over a different Component, don't dispatch the event.
+                // The previous fix for a similar problem was associated with bug
+                // 4155217.
+                if (mouseOver == met) {
+                    retargetMouseEvent(mouseOver, id, e);
+                }
+                break;
+            case MouseEvent.MOUSE_MOVED:
+                retargetMouseEvent(met, id, e);
+                break;
+            case MouseEvent.MOUSE_DRAGGED:
+                if (isMouseGrab(e)) {
+                    retargetMouseEvent(met, id, e);
+                }
+                break;
+            case MouseEvent.MOUSE_WHEEL:
+                // This may send it somewhere that doesn't have MouseWheelEvents
+                // enabled.  In this case, Component.dispatchEventImpl() will
+                // retarget the event to a parent that DOES have the events enabled.
+                if (eventLog.isLoggable(PlatformLogger.Level.FINEST) && (mouseOver != null)) {
+                    eventLog.finest("retargeting mouse wheel to " + mouseOver.getName() + ", " + mouseOver.getClass());
+                }
+                retargetMouseEvent(mouseOver, id, e);
+                break;
+        }
+        // Consuming of wheel events is implemented in "retargetMouseEvent".
+        if (id != MouseEvent.MOUSE_WHEEL) {
+            e.consume();
+        }
+    }
+    return e.isConsumed();
+}

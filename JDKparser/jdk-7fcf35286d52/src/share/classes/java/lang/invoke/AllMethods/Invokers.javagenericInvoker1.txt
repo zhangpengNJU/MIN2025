@@ -1,0 +1,8 @@
+/*non-public*/
+MethodHandle genericInvoker() {
+    MethodHandle invoker = cachedInvoker(INV_GENERIC);
+    if (invoker != null)
+        return invoker;
+    invoker = makeExactOrGeneralInvoker(false);
+    return setCachedInvoker(INV_GENERIC, invoker);
+}

@@ -1,0 +1,21 @@
+static byte[] getLinearRGB8TosRGB8LUT() {
+    if (l8Tos8 == null) {
+        l8Tos8 = new byte[256];
+        float input, output;
+        // algorithm for linear RGB to nonlinear sRGB conversion
+        // is from the IEC 61966-2-1 International Standard,
+        // Colour Management - Default RGB colour space - sRGB,
+        // First Edition, 1999-10,
+        // avaiable for order at http://www.iec.ch
+        for (int i = 0; i <= 255; i++) {
+            input = ((float) i) / 255.0f;
+            if (input <= 0.0031308f) {
+                output = input * 12.92f;
+            } else {
+                output = 1.055f * ((float) Math.pow(input, (1.0 / 2.4))) - 0.055f;
+            }
+            l8Tos8[i] = (byte) Math.round(output * 255.0f);
+        }
+    }
+    return l8Tos8;
+}

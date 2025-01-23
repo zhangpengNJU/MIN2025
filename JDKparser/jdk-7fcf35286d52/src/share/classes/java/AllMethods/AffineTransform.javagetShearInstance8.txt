@@ -1,0 +1,21 @@
+/**
+ * Returns a transform representing a shearing transformation.
+ * The matrix representing the returned transform is:
+ * <pre>
+ *          [   1   shx   0   ]
+ *          [  shy   1    0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param shx the multiplier by which coordinates are shifted in the
+ * direction of the positive X axis as a factor of their Y coordinate
+ * @param shy the multiplier by which coordinates are shifted in the
+ * direction of the positive Y axis as a factor of their X coordinate
+ * @return an <code>AffineTransform</code> object that shears
+ *  coordinates by the specified multipliers.
+ * @since 1.2
+ */
+public static AffineTransform getShearInstance(double shx, double shy) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToShear(shx, shy);
+    return Tx;
+}

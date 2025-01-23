@@ -1,0 +1,9 @@
+void setGlobalCurrentFocusCycleRootPriv(final Container newFocusCycleRoot) {
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+        public Void run() {
+            setGlobalCurrentFocusCycleRoot(newFocusCycleRoot);
+            return null;
+        }
+    });
+}

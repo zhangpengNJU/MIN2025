@@ -1,0 +1,5 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Color color = (Color) oldInstance;
+    Object[] args = new Object[] { color.getRGB() };
+    return new Expression(color, ColorUIResource.class, "new", args);
+}

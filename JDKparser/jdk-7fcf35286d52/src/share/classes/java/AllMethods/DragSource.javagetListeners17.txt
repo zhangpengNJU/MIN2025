@@ -1,0 +1,30 @@
+/**
+ * Gets all the objects currently registered as
+ * <code><em>Foo</em>Listener</code>s upon this <code>DragSource</code>.
+ * <code><em>Foo</em>Listener</code>s are registered using the
+ * <code>add<em>Foo</em>Listener</code> method.
+ *
+ * @param listenerType the type of listeners requested; this parameter
+ *          should specify an interface that descends from
+ *          <code>java.util.EventListener</code>
+ * @return an array of all objects registered as
+ *          <code><em>Foo</em>Listener</code>s on this
+ *          <code>DragSource</code>, or an empty array if no such listeners
+ *          have been added
+ * @exception ClassCastException if <code>listenerType</code>
+ *          doesn't specify a class or interface that implements
+ *          <code>java.util.EventListener</code>
+ *
+ * @see #getDragSourceListeners
+ * @see #getDragSourceMotionListeners
+ * @since 1.4
+ */
+public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
+    EventListener l = null;
+    if (listenerType == DragSourceListener.class) {
+        l = listener;
+    } else if (listenerType == DragSourceMotionListener.class) {
+        l = motionListener;
+    }
+    return DnDEventMulticaster.getListeners(l, listenerType);
+}

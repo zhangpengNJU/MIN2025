@@ -1,0 +1,11 @@
+private BeanDescriptor getTargetBeanDescriptor() {
+    // Use explicit info, if available,
+    if (explicitBeanInfo != null) {
+        BeanDescriptor bd = explicitBeanInfo.getBeanDescriptor();
+        if (bd != null) {
+            return (bd);
+        }
+    }
+    // OK, fabricate a default BeanDescriptor.
+    return new BeanDescriptor(this.beanClass, findCustomizerClass(this.beanClass));
+}

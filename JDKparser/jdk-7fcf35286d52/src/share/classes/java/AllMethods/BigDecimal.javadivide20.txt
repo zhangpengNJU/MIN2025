@@ -1,0 +1,57 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this /
+ * divisor)}, and whose preferred scale is {@code (this.scale() -
+ * divisor.scale())}; if the exact quotient cannot be
+ * represented (because it has a non-terminating decimal
+ * expansion) an {@code ArithmeticException} is thrown.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @throws ArithmeticException if the exact quotient does not have a
+ *         terminating decimal expansion
+ * @return {@code this / divisor}
+ * @since 1.5
+ * @author Joseph D. Darcy
+ */
+public BigDecimal divide(BigDecimal divisor) {
+    /*
+         * Handle zero cases first.
+         */
+    if (divisor.signum() == 0) {
+        // x/0
+        if (// 0/0
+        this.signum() == 0)
+            // NaN
+            throw new ArithmeticException("Division undefined");
+        throw new ArithmeticException("Division by zero");
+    }
+    // Calculate preferred scale
+    int preferredScale = saturateLong((long) this.scale - divisor.scale);
+    if (// 0/y
+    this.signum() == 0)
+        return zeroValueOf(preferredScale);
+    else {
+        /*
+             * If the quotient this/divisor has a terminating decimal
+             * expansion, the expansion can have no more than
+             * (a.precision() + ceil(10*b.precision)/3) digits.
+             * Therefore, create a MathContext object with this
+             * precision and do a divide with the UNNECESSARY rounding
+             * mode.
+             */
+        MathContext mc = new MathContext((int) Math.min(this.precision() + (long) Math.ceil(10.0 * divisor.precision() / 3.0), Integer.MAX_VALUE), RoundingMode.UNNECESSARY);
+        BigDecimal quotient;
+        try {
+            quotient = this.divide(divisor, mc);
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException("Non-terminating decimal expansion; " + "no exact representable decimal result.");
+        }
+        int quotientScale = quotient.scale();
+        // divide(BigDecimal, mc) tries to adjust the quotient to
+        // the desired one by removing trailing zeros; since the
+        // exact divide method does not have an explicit digit
+        // limit, we can add zeros too.
+        if (preferredScale > quotientScale)
+            return quotient.setScale(preferredScale, ROUND_UNNECESSARY);
+        return quotient;
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Find or create an invoker which passes unchanged a given number of arguments
+ * and spreads the rest from a trailing array argument.
+ * The invoker target type is the post-spread type {@code (TYPEOF(uarg*), TYPEOF(sarg*))=>RT}.
+ * All the {@code sarg}s must have a common type {@code C}.  (If there are none, {@code Object} is assumed.}
+ * @param leadingArgCount the number of unchanged (non-spread) arguments
+ * @return {@code invoker.invokeExact(mh, uarg*, C[]{sarg*}) := (RT)mh.invoke(uarg*, sarg*)}
+ */
+/*non-public*/
+MethodHandle spreadInvoker(int leadingArgCount) {
+    int spreadArgCount = targetType.parameterCount() - leadingArgCount;
+    MethodType postSpreadType = targetType;
+    Class<?> argArrayType = impliedRestargType(postSpreadType, leadingArgCount);
+    if (postSpreadType.parameterSlotCount() <= MethodType.MAX_MH_INVOKER_ARITY) {
+        return genericInvoker().asSpreader(argArrayType, spreadArgCount);
+    }
+    // Cannot build a generic invoker here of type ginvoker.invoke(mh, a*[254]).
+    // Instead, factor sinvoker.invoke(mh, a) into ainvoker.invoke(filter(mh), a)
+    // where filter(mh) == mh.asSpreader(Object[], spreadArgCount)
+    MethodType preSpreadType = postSpreadType.replaceParameterTypes(leadingArgCount, postSpreadType.parameterCount(), argArrayType);
+    MethodHandle arrayInvoker = MethodHandles.invoker(preSpreadType);
+    MethodHandle makeSpreader = MethodHandles.insertArguments(Lazy.MH_asSpreader, 1, argArrayType, spreadArgCount);
+    return MethodHandles.filterArgument(arrayInvoker, 0, makeSpreader);
+}

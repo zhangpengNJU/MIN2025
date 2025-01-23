@@ -1,0 +1,10 @@
+/*
+     * Unlike Values and EntrySet, the KeySet class is static,
+     * delegating to a NavigableMap to allow use by SubMaps, which
+     * outweighs the ugliness of needing type-tests for the following
+     * Iterator methods that are defined appropriately in main versus
+     * submap classes.
+     */
+Iterator<K> keyIterator() {
+    return new KeyIterator(getFirstEntry());
+}

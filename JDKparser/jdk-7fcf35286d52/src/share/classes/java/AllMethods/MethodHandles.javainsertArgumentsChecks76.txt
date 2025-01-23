@@ -1,0 +1,10 @@
+private static Class<?>[] insertArgumentsChecks(MethodHandle target, int insCount, int pos) throws RuntimeException {
+    MethodType oldType = target.type();
+    int outargs = oldType.parameterCount();
+    int inargs = outargs - insCount;
+    if (inargs < 0)
+        throw newIllegalArgumentException("too many values to insert");
+    if (pos < 0 || pos > inargs)
+        throw newIllegalArgumentException("no argument type to append");
+    return oldType.ptypes();
+}

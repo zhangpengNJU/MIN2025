@@ -1,0 +1,7 @@
+@Override
+public HijrahDate date(TemporalAccessor temporal) {
+    if (temporal instanceof HijrahDate) {
+        return (HijrahDate) temporal;
+    }
+    return HijrahDate.ofEpochDay(this, temporal.getLong(EPOCH_DAY));
+}

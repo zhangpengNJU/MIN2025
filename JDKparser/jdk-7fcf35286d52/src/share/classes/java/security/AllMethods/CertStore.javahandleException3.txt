@@ -1,0 +1,7 @@
+private static CertStore handleException(NoSuchAlgorithmException e) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    Throwable cause = e.getCause();
+    if (cause instanceof InvalidAlgorithmParameterException) {
+        throw (InvalidAlgorithmParameterException) cause;
+    }
+    throw e;
+}

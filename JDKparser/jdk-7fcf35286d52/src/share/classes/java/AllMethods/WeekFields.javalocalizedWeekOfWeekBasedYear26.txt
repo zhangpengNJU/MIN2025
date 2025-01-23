@@ -1,0 +1,34 @@
+/**
+ * Returns the week of week-based-year for the temporal.
+ * The week can be part of the previous year, the current year,
+ * or the next year depending on the week start and minimum number
+ * of days.
+ * @param temporal  a date of any chronology
+ * @return the week of the year
+ * @see #localizedWeekBasedYear(java.time.temporal.TemporalAccessor)
+ */
+private int localizedWeekOfWeekBasedYear(TemporalAccessor temporal) {
+    int dow = localizedDayOfWeek(temporal);
+    int doy = temporal.get(DAY_OF_YEAR);
+    int offset = startOfWeekOffset(doy, dow);
+    int week = computeWeek(offset, doy);
+    if (week == 0) {
+        // Day is in end of week of previous year
+        // Recompute from the last day of the previous year
+        ChronoLocalDate date = Chronology.from(temporal).date(temporal);
+        // Back down into previous year
+        date = date.minus(doy, DAYS);
+        return localizedWeekOfWeekBasedYear(date);
+    } else if (week > 50) {
+        // If getting close to end of year, use higher precision logic
+        // Check if date of year is in partial week associated with next year
+        ValueRange dayRange = temporal.range(DAY_OF_YEAR);
+        int yearLen = (int) dayRange.getMaximum();
+        int newYearWeek = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+        if (week >= newYearWeek) {
+            // Overlaps with week of following year; reduce to week in following year
+            week = week - newYearWeek + 1;
+        }
+    }
+    return week;
+}

@@ -1,0 +1,33 @@
+/**
+ * This method implements algorithm 1 from pg. 4 of the Burnikel-Ziegler paper.
+ * It divides a 2n-digit number by a n-digit number.<br/>
+ * The parameter beta is 2<sup>32</sup> so all shifts are multiples of 32 bits.
+ * <br/>
+ * {@code this} must be a nonnegative number such that {@code this.bitLength() <= 2*b.bitLength()}
+ * @param b a positive number such that {@code b.bitLength()} is even
+ * @param quotient output parameter for {@code this/b}
+ * @return {@code this%b}
+ */
+private MutableBigInteger divide2n1n(MutableBigInteger b, MutableBigInteger quotient) {
+    int n = b.intLen;
+    // step 1: base case
+    if (n % 2 != 0 || n < BigInteger.BURNIKEL_ZIEGLER_THRESHOLD) {
+        return divideKnuth(b, quotient);
+    }
+    // step 2: view this as [a1,a2,a3,a4] where each ai is n/2 ints or less
+    MutableBigInteger aUpper = new MutableBigInteger(this);
+    // aUpper = [a1,a2,a3]
+    aUpper.safeRightShift(32 * (n / 2));
+    // this = a4
+    keepLower(n / 2);
+    // step 3: q1=aUpper/b, r1=aUpper%b
+    MutableBigInteger q1 = new MutableBigInteger();
+    MutableBigInteger r1 = aUpper.divide3n2n(b, q1);
+    // step 4: quotient=[r1,this]/b, r2=[r1,this]%b
+    // this = [r1,this]
+    addDisjoint(r1, n / 2);
+    MutableBigInteger r2 = divide3n2n(b, quotient);
+    // step 5: let quotient=[q1,quotient] and return r2
+    quotient.addDisjoint(q1, n / 2);
+    return r2;
+}

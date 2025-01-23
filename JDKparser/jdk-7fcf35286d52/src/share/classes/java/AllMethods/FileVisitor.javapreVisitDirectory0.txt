@@ -1,0 +1,20 @@
+/**
+ * Invoked for a directory before entries in the directory are visited.
+ *
+ * <p> If this method returns {@link FileVisitResult#CONTINUE CONTINUE},
+ * then entries in the directory are visited. If this method returns {@link
+ * FileVisitResult#SKIP_SUBTREE SKIP_SUBTREE} or {@link
+ * FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS} then entries in the
+ * directory (and any descendants) will not be visited.
+ *
+ * @param   dir
+ *          a reference to the directory
+ * @param   attrs
+ *          the directory's basic attributes
+ *
+ * @return  the visit result
+ *
+ * @throws  IOException
+ *          if an I/O error occurs
+ */
+FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs) throws IOException;

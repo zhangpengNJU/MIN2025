@@ -1,0 +1,26 @@
+/**
+ * Expand the affix pattern strings into the expanded affix strings.  If any
+ * affix pattern string is null, do not expand it.  This method should be
+ * called any time the symbols or the affix patterns change in order to keep
+ * the expanded affix strings up to date.
+ */
+private void expandAffixes() {
+    // Reuse one StringBuffer for better performance
+    StringBuffer buffer = new StringBuffer();
+    if (posPrefixPattern != null) {
+        positivePrefix = expandAffix(posPrefixPattern, buffer);
+        positivePrefixFieldPositions = null;
+    }
+    if (posSuffixPattern != null) {
+        positiveSuffix = expandAffix(posSuffixPattern, buffer);
+        positiveSuffixFieldPositions = null;
+    }
+    if (negPrefixPattern != null) {
+        negativePrefix = expandAffix(negPrefixPattern, buffer);
+        negativePrefixFieldPositions = null;
+    }
+    if (negSuffixPattern != null) {
+        negativeSuffix = expandAffix(negSuffixPattern, buffer);
+        negativeSuffixFieldPositions = null;
+    }
+}

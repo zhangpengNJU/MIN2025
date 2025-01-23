@@ -1,0 +1,13 @@
+/**
+ * Constructs a {@code TerminalOp} that perform an action for every element
+ * of an {@code IntStream}.
+ *
+ * @param action the {@code IntConsumer} that receives all elements of a
+ *        stream
+ * @param ordered whether an ordered traversal is requested
+ * @return the {@code TerminalOp} instance
+ */
+public static TerminalOp<Integer, Void> makeInt(IntConsumer action, boolean ordered) {
+    Objects.requireNonNull(action);
+    return new ForEachOp.OfInt(action, ordered);
+}

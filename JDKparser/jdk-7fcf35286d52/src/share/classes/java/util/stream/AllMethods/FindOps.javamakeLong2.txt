@@ -1,0 +1,10 @@
+/**
+ * Constructs a {@code TerminalOp} for streams of longs.
+ *
+ * @param mustFindFirst whether the {@code TerminalOp} must produce the
+ *        first element in the encounter order
+ * @return a {@code TerminalOp} implementing the find operation
+ */
+public static TerminalOp<Long, OptionalLong> makeLong(boolean mustFindFirst) {
+    return new FindOp<>(mustFindFirst, StreamShape.LONG_VALUE, OptionalLong.empty(), OptionalLong::isPresent, FindSink.OfLong::new);
+}

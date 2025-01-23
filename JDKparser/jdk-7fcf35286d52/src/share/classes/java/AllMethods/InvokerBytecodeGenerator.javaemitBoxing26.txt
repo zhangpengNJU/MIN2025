@@ -1,0 +1,11 @@
+/**
+ * Emit a boxing call.
+ *
+ * @param wrapper primitive type class to box.
+ */
+private void emitBoxing(Wrapper wrapper) {
+    String owner = "java/lang/" + wrapper.wrapperType().getSimpleName();
+    String name = "valueOf";
+    String desc = "(" + wrapper.basicTypeChar() + ")L" + owner + ";";
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc, false);
+}

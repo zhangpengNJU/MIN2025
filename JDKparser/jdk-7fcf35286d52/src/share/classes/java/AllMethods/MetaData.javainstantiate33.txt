@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    List<?> list = new LinkedList<>((Collection<?>) oldInstance);
+    return new Expression(oldInstance, Collections.class, "unmodifiableList", new Object[] { list });
+}

@@ -1,0 +1,91 @@
+/**
+ * Print the layout information.  Useful for debugging.
+ */
+/* DEBUG
+     *
+     *  protected void dumpLayoutInfo(GridBagLayoutInfo s) {
+     *    int x;
+     *
+     *    System.out.println("Col\tWidth\tWeight");
+     *    for (x=0; x<s.width; x++) {
+     *      System.out.println(x + "\t" +
+     *                   s.minWidth[x] + "\t" +
+     *                   s.weightX[x]);
+     *    }
+     *    System.out.println("Row\tHeight\tWeight");
+     *    for (x=0; x<s.height; x++) {
+     *      System.out.println(x + "\t" +
+     *                   s.minHeight[x] + "\t" +
+     *                   s.weightY[x]);
+     *    }
+     *  }
+     */
+/**
+ * Print the layout constraints.  Useful for debugging.
+ */
+/* DEBUG
+     *
+     *  protected void dumpConstraints(GridBagConstraints constraints) {
+     *    System.out.println(
+     *                 "wt " +
+     *                 constraints.weightx +
+     *                 " " +
+     *                 constraints.weighty +
+     *                 ", " +
+     *
+     *                 "box " +
+     *                 constraints.gridx +
+     *                 " " +
+     *                 constraints.gridy +
+     *                 " " +
+     *                 constraints.gridwidth +
+     *                 " " +
+     *                 constraints.gridheight +
+     *                 ", " +
+     *
+     *                 "min " +
+     *                 constraints.minWidth +
+     *                 " " +
+     *                 constraints.minHeight +
+     *                 ", " +
+     *
+     *                 "pad " +
+     *                 constraints.insets.bottom +
+     *                 " " +
+     *                 constraints.insets.left +
+     *                 " " +
+     *                 constraints.insets.right +
+     *                 " " +
+     *                 constraints.insets.top +
+     *                 " " +
+     *                 constraints.ipadx +
+     *                 " " +
+     *                 constraints.ipady);
+     *  }
+     */
+/**
+ * Fills in an instance of <code>GridBagLayoutInfo</code> for the
+ * current set of managed children. This requires three passes through the
+ * set of children:
+ *
+ * <ol>
+ * <li>Figure out the dimensions of the layout grid.
+ * <li>Determine which cells the components occupy.
+ * <li>Distribute the weights and min sizes among the rows/columns.
+ * </ol>
+ *
+ * This also caches the minsizes for all the children when they are
+ * first encountered (so subsequent loops don't need to ask again).
+ * <p>
+ * This method should only be used internally by
+ * <code>GridBagLayout</code>.
+ *
+ * @param parent  the layout container
+ * @param sizeflag either <code>PREFERREDSIZE</code> or
+ *   <code>MINSIZE</code>
+ * @return the <code>GridBagLayoutInfo</code> for the set of children
+ * @since 1.4
+ */
+protected GridBagLayoutInfo getLayoutInfo(Container parent, int sizeflag) {
+    return GetLayoutInfo(parent, sizeflag);
+}

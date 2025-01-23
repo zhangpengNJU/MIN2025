@@ -1,0 +1,11 @@
+private int validateSuppressedExceptionsList(List<Throwable> deserSuppressedExceptions) throws IOException {
+    if (Object.class.getClassLoader() != deserSuppressedExceptions.getClass().getClassLoader()) {
+        throw new StreamCorruptedException("List implementation not on the bootclasspath.");
+    } else {
+        int size = deserSuppressedExceptions.size();
+        if (size < 0) {
+            throw new StreamCorruptedException("Negative list size reported.");
+        }
+        return size;
+    }
+}

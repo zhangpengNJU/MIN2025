@@ -1,0 +1,14 @@
+// -- End of public methods --
+// -- Utility methods for string-field comparison and hashing --
+// These methods return appropriate values for null string arguments,
+// thereby simplifying the equals, hashCode, and compareTo methods.
+// 
+// The case-ignoring methods should only be applied to strings whose
+// characters are all known to be US-ASCII.  Because of this restriction,
+// these methods are faster than the similar methods in the String class.
+// US-ASCII only
+private static int toLower(char c) {
+    if ((c >= 'A') && (c <= 'Z'))
+        return c + ('a' - 'A');
+    return c;
+}

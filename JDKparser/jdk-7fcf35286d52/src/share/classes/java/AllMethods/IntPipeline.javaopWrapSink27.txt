@@ -1,0 +1,10 @@
+@Override
+Sink<Integer> opWrapSink(int flags, Sink<Double> sink) {
+    return new Sink.ChainedInt<Double>(sink) {
+
+        @Override
+        public void accept(int t) {
+            downstream.accept(mapper.applyAsDouble(t));
+        }
+    };
+}

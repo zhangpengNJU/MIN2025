@@ -1,0 +1,22 @@
+/**
+ *  Adds the expanding string into the collation table.
+ */
+private final void addExpandOrder(String contractChars, String expandChars, int anOrder) throws ParseException {
+    // Create an expansion table entry
+    int tableIndex = addExpansion(anOrder, expandChars);
+    // And add its index into the main mapping table
+    if (contractChars.length() > 1) {
+        char ch = contractChars.charAt(0);
+        if (Character.isHighSurrogate(ch) && contractChars.length() == 2) {
+            char ch2 = contractChars.charAt(1);
+            if (Character.isLowSurrogate(ch2)) {
+                // only add into table when it is a legal surrogate
+                addOrder(Character.toCodePoint(ch, ch2), tableIndex);
+            }
+        } else {
+            addContractOrder(contractChars, tableIndex);
+        }
+    } else {
+        addOrder(contractChars.charAt(0), tableIndex);
+    }
+}

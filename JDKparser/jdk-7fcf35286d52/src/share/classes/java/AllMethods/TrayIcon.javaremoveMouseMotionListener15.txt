@@ -1,0 +1,18 @@
+/**
+ * Removes the specified mouse-motion listener.  Calling this method with
+ * <code>null</code> or an invalid value has no effect.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param    listener   the mouse listener
+ * @see      java.awt.event.MouseEvent
+ * @see      java.awt.event.MouseMotionListener
+ * @see      #addMouseMotionListener(MouseMotionListener)
+ * @see      #getMouseMotionListeners
+ */
+public synchronized void removeMouseMotionListener(MouseMotionListener listener) {
+    if (listener == null) {
+        return;
+    }
+    mouseMotionListener = AWTEventMulticaster.remove(mouseMotionListener, listener);
+}

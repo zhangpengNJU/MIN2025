@@ -1,0 +1,53 @@
+/**
+ * Writes two bytes of length information
+ * to the output stream, followed
+ * by the
+ * <a href="DataInput.html#modified-utf-8">modified UTF-8</a>
+ * representation
+ * of  every character in the string <code>s</code>.
+ * If <code>s</code> is <code>null</code>,
+ * a <code>NullPointerException</code> is thrown.
+ * Each character in the string <code>s</code>
+ * is converted to a group of one, two, or
+ * three bytes, depending on the value of the
+ * character.<p>
+ * If a character <code>c</code>
+ * is in the range <code>&#92;u0001</code> through
+ * <code>&#92;u007f</code>, it is represented
+ * by one byte:
+ * <pre>(byte)c </pre>  <p>
+ * If a character <code>c</code> is <code>&#92;u0000</code>
+ * or is in the range <code>&#92;u0080</code>
+ * through <code>&#92;u07ff</code>, then it is
+ * represented by two bytes, to be written
+ * in the order shown: <pre>{@code
+ * (byte)(0xc0 | (0x1f & (c >> 6)))
+ * (byte)(0x80 | (0x3f & c))
+ * }</pre> <p> If a character
+ * <code>c</code> is in the range <code>&#92;u0800</code>
+ * through <code>uffff</code>, then it is
+ * represented by three bytes, to be written
+ * in the order shown: <pre>{@code
+ * (byte)(0xe0 | (0x0f & (c >> 12)))
+ * (byte)(0x80 | (0x3f & (c >>  6)))
+ * (byte)(0x80 | (0x3f & c))
+ * }</pre>  <p> First,
+ * the total number of bytes needed to represent
+ * all the characters of <code>s</code> is
+ * calculated. If this number is larger than
+ * <code>65535</code>, then a <code>UTFDataFormatException</code>
+ * is thrown. Otherwise, this length is written
+ * to the output stream in exactly the manner
+ * of the <code>writeShort</code> method;
+ * after this, the one-, two-, or three-byte
+ * representation of each character in the
+ * string <code>s</code> is written.<p>  The
+ * bytes written by this method may be read
+ * by the <code>readUTF</code> method of interface
+ * <code>DataInput</code> , which will then
+ * return a <code>String</code> equal to <code>s</code>.
+ *
+ * @param      s   the string value to be written.
+ * @throws     IOException  if an I/O error occurs.
+ */
+void writeUTF(String s) throws IOException;

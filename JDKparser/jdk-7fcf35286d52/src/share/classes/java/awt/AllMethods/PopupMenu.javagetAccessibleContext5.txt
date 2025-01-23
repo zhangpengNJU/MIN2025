@@ -1,0 +1,17 @@
+// ///////////////
+// Accessibility support
+// //////////////
+/**
+ * Gets the <code>AccessibleContext</code> associated with this
+ * <code>PopupMenu</code>.
+ *
+ * @return the <code>AccessibleContext</code> of this
+ *                <code>PopupMenu</code>
+ * @since 1.3
+ */
+public AccessibleContext getAccessibleContext() {
+    if (accessibleContext == null) {
+        accessibleContext = new AccessibleAWTPopupMenu();
+    }
+    return accessibleContext;
+}

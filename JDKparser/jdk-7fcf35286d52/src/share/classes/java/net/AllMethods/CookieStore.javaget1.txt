@@ -1,0 +1,15 @@
+/**
+ * Retrieve cookies associated with given URI, or whose domain matches the
+ * given URI. Only cookies that have not expired are returned.
+ * This is called for every outgoing HTTP request.
+ *
+ * @return          an immutable list of HttpCookie,
+ *                  return empty list if no cookies match the given URI
+ *
+ * @param uri       the uri associated with the cookies to be returned
+ *
+ * @throws NullPointerException if {@code uri} is {@code null}
+ *
+ * @see #add
+ */
+public List<HttpCookie> get(URI uri);

@@ -1,0 +1,20 @@
+/*
+     * --- Accessibility Support ---
+     *
+     */
+/**
+ * Gets the AccessibleContext associated with this Window.
+ * For windows, the AccessibleContext takes the form of an
+ * AccessibleAWTWindow.
+ * A new AccessibleAWTWindow instance is created if necessary.
+ *
+ * @return an AccessibleAWTWindow that serves as the
+ *         AccessibleContext of this Window
+ * @since 1.3
+ */
+public AccessibleContext getAccessibleContext() {
+    if (accessibleContext == null) {
+        accessibleContext = new AccessibleAWTWindow();
+    }
+    return accessibleContext;
+}

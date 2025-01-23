@@ -1,0 +1,16 @@
+private static void writeInternal(byte type, Object object, DataOutput out) throws IOException {
+    out.writeByte(type);
+    switch(type) {
+        case ZRULES:
+            ((ZoneRules) object).writeExternal(out);
+            break;
+        case ZOT:
+            ((ZoneOffsetTransition) object).writeExternal(out);
+            break;
+        case ZOTRULE:
+            ((ZoneOffsetTransitionRule) object).writeExternal(out);
+            break;
+        default:
+            throw new InvalidClassException("Unknown serialized type");
+    }
+}

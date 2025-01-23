@@ -1,0 +1,27 @@
+// Comparison Operations
+/**
+ * Compares this BigInteger with the specified BigInteger.  This
+ * method is provided in preference to individual methods for each
+ * of the six boolean comparison operators ({@literal <}, ==,
+ * {@literal >}, {@literal >=}, !=, {@literal <=}).  The suggested
+ * idiom for performing these comparisons is: {@code
+ * (x.compareTo(y)} &lt;<i>op</i>&gt; {@code 0)}, where
+ * &lt;<i>op</i>&gt; is one of the six comparison operators.
+ *
+ * @param  val BigInteger to which this BigInteger is to be compared.
+ * @return -1, 0 or 1 as this BigInteger is numerically less than, equal
+ *         to, or greater than {@code val}.
+ */
+public int compareTo(BigInteger val) {
+    if (signum == val.signum) {
+        switch(signum) {
+            case 1:
+                return compareMagnitude(val);
+            case -1:
+                return val.compareMagnitude(this);
+            default:
+                return 0;
+        }
+    }
+    return signum > val.signum ? 1 : -1;
+}

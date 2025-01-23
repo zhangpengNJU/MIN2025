@@ -1,0 +1,20 @@
+/**
+ * Checks the error status of all of the images tracked by this
+ * media tracker with the specified identifier.
+ * @param        id   the identifier of the images to check
+ * @return       <code>true</code> if any of the images with the
+ *                          specified identifier had an error during
+ *                          loading; <code>false</code> otherwise
+ * @see          java.awt.MediaTracker#isErrorAny
+ * @see          java.awt.MediaTracker#getErrorsID
+ */
+public synchronized boolean isErrorID(int id) {
+    MediaEntry cur = head;
+    while (cur != null) {
+        if (cur.getID() == id && (cur.getStatus(false, true) & ERRORED) != 0) {
+            return true;
+        }
+        cur = cur.next;
+    }
+    return false;
+}

@@ -1,0 +1,10 @@
+/**
+ * Adds a permission to the PermissionsHash.
+ *
+ * @param permission the Permission object to add.
+ */
+public void add(Permission permission) {
+    synchronized (this) {
+        permsMap.put(permission, permission);
+    }
+}

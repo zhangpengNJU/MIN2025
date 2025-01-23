@@ -1,0 +1,17 @@
+/**
+ * Returns <code>true</code> if this <code>AffineTransform</code>
+ * represents the same affine coordinate transform as the specified
+ * argument.
+ * @param obj the <code>Object</code> to test for equality with this
+ * <code>AffineTransform</code>
+ * @return <code>true</code> if <code>obj</code> equals this
+ * <code>AffineTransform</code> object; <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (!(obj instanceof AffineTransform)) {
+        return false;
+    }
+    AffineTransform a = (AffineTransform) obj;
+    return ((m00 == a.m00) && (m01 == a.m01) && (m02 == a.m02) && (m10 == a.m10) && (m11 == a.m11) && (m12 == a.m12));
+}

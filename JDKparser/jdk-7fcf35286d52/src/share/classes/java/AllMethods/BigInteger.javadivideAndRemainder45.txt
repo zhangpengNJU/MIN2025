@@ -1,0 +1,18 @@
+/**
+ * Returns an array of two BigIntegers containing {@code (this / val)}
+ * followed by {@code (this % val)}.
+ *
+ * @param  val value by which this BigInteger is to be divided, and the
+ *         remainder computed.
+ * @return an array of two BigIntegers: the quotient {@code (this / val)}
+ *         is the initial element, and the remainder {@code (this % val)}
+ *         is the final element.
+ * @throws ArithmeticException if {@code val} is zero.
+ */
+public BigInteger[] divideAndRemainder(BigInteger val) {
+    if (val.mag.length < BURNIKEL_ZIEGLER_THRESHOLD || mag.length - val.mag.length < BURNIKEL_ZIEGLER_OFFSET) {
+        return divideAndRemainderKnuth(val);
+    } else {
+        return divideAndRemainderBurnikelZiegler(val);
+    }
+}

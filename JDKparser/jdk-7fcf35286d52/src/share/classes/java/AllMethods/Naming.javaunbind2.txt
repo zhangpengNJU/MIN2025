@@ -1,0 +1,18 @@
+/**
+ * Destroys the binding for the specified name that is associated
+ * with a remote object.
+ *
+ * @param name a name in URL format (without the scheme component)
+ * @exception NotBoundException if name is not currently bound
+ * @exception MalformedURLException if the name is not an appropriately
+ *  formatted URL
+ * @exception RemoteException if registry could not be contacted
+ * @exception AccessException if this operation is not permitted (if
+ * originating from a non-local host, for example)
+ * @since JDK1.1
+ */
+public static void unbind(String name) throws RemoteException, NotBoundException, java.net.MalformedURLException {
+    ParsedNamingURL parsed = parseURL(name);
+    Registry registry = getRegistry(parsed);
+    registry.unbind(parsed.name);
+}

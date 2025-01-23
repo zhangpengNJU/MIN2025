@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if this object equals another.
+ * <p>
+ * The entire state of the object is compared.
+ *
+ * @param otherRule  the other object to compare to, null returns false
+ * @return true if equal
+ */
+@Override
+public boolean equals(Object otherRule) {
+    if (otherRule == this) {
+        return true;
+    }
+    if (otherRule instanceof ZoneOffsetTransitionRule) {
+        ZoneOffsetTransitionRule other = (ZoneOffsetTransitionRule) otherRule;
+        return month == other.month && dom == other.dom && dow == other.dow && timeDefinition == other.timeDefinition && time.equals(other.time) && timeEndOfDay == other.timeEndOfDay && standardOffset.equals(other.standardOffset) && offsetBefore.equals(other.offsetBefore) && offsetAfter.equals(other.offsetAfter);
+    }
+    return false;
+}

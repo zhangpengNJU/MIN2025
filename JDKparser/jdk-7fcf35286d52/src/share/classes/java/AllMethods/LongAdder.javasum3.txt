@@ -1,0 +1,21 @@
+/**
+ * Returns the current sum.  The returned value is <em>NOT</em> an
+ * atomic snapshot; invocation in the absence of concurrent
+ * updates returns an accurate result, but concurrent updates that
+ * occur while the sum is being calculated might not be
+ * incorporated.
+ *
+ * @return the sum
+ */
+public long sum() {
+    Cell[] as = cells;
+    Cell a;
+    long sum = base;
+    if (as != null) {
+        for (int i = 0; i < as.length; ++i) {
+            if ((a = as[i]) != null)
+                sum += a.value;
+        }
+    }
+    return sum;
+}

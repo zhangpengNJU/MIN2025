@@ -1,0 +1,7 @@
+// Stateful intermediate ops from DoubleStream
+@Override
+public final DoubleStream limit(long maxSize) {
+    if (maxSize < 0)
+        throw new IllegalArgumentException(Long.toString(maxSize));
+    return SliceOps.makeDouble(this, (long) 0, maxSize);
+}

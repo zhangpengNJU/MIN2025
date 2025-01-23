@@ -1,0 +1,8 @@
+void setBoundsOp(int op) {
+    assert Thread.holdsLock(getTreeLock());
+    if (op == ComponentPeer.RESET_OPERATION) {
+        boundsOp = ComponentPeer.DEFAULT_OPERATION;
+    } else if (boundsOp == ComponentPeer.DEFAULT_OPERATION) {
+        boundsOp = op;
+    }
+}

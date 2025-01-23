@@ -1,0 +1,11 @@
+/**
+ * @return most recent event time on all threads.
+ */
+long getMostRecentEventTimeEx() {
+    pushPopLock.lock();
+    try {
+        return mostRecentEventTime;
+    } finally {
+        pushPopLock.unlock();
+    }
+}

@@ -1,0 +1,5 @@
+public NavigableSet<K> descendingKeySet() {
+    synchronized (mutex) {
+        return new SynchronizedNavigableSet<>(nm.descendingKeySet(), mutex);
+    }
+}

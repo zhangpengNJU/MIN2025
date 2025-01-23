@@ -1,0 +1,11 @@
+/*
+     * return true if event was consumed
+     */
+private boolean consumeProcessedKeyEvent(KeyEvent e) {
+    if ((e.getID() == KeyEvent.KEY_TYPED) && consumeNextKeyTyped) {
+        e.consume();
+        consumeNextKeyTyped = false;
+        return true;
+    }
+    return false;
+}

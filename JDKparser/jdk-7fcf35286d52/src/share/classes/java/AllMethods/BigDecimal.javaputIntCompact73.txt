@@ -1,0 +1,39 @@
+/**
+ * Places characters representing the intCompact in {@code long} into
+ * cmpCharArray and returns the offset to the array where the
+ * representation starts.
+ *
+ * @param intCompact the number to put into the cmpCharArray.
+ * @return offset to the array where the representation starts.
+ * Note: intCompact must be greater or equal to zero.
+ */
+int putIntCompact(long intCompact) {
+    assert intCompact >= 0;
+    long q;
+    int r;
+    // since we start from the least significant digit, charPos points to
+    // the last character in cmpCharArray.
+    int charPos = cmpCharArray.length;
+    // Get 2 digits/iteration using longs until quotient fits into an int
+    while (intCompact > Integer.MAX_VALUE) {
+        q = intCompact / 100;
+        r = (int) (intCompact - q * 100);
+        intCompact = q;
+        cmpCharArray[--charPos] = DIGIT_ONES[r];
+        cmpCharArray[--charPos] = DIGIT_TENS[r];
+    }
+    // Get 2 digits/iteration using ints when i2 >= 100
+    int q2;
+    int i2 = (int) intCompact;
+    while (i2 >= 100) {
+        q2 = i2 / 100;
+        r = i2 - q2 * 100;
+        i2 = q2;
+        cmpCharArray[--charPos] = DIGIT_ONES[r];
+        cmpCharArray[--charPos] = DIGIT_TENS[r];
+    }
+    cmpCharArray[--charPos] = DIGIT_ONES[i2];
+    if (i2 >= 10)
+        cmpCharArray[--charPos] = DIGIT_TENS[i2];
+    return charPos;
+}

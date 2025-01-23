@@ -1,0 +1,16 @@
+/**
+ * Returns a string that displays and identifies this object's properties.
+ * The <code>String</code> returned by this method can be passed
+ * as a parameter to <code>getAWTKeyStroke(String)</code> to produce
+ * a key stroke equal to this key stroke.
+ *
+ * @return a String representation of this object
+ * @see #getAWTKeyStroke(String)
+ */
+public String toString() {
+    if (keyCode == KeyEvent.VK_UNDEFINED) {
+        return getModifiersText(modifiers) + "typed " + keyChar;
+    } else {
+        return getModifiersText(modifiers) + (onKeyRelease ? "released" : "pressed") + " " + getVKText(keyCode);
+    }
+}

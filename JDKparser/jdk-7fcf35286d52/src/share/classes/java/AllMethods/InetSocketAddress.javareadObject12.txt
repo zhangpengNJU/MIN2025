@@ -1,0 +1,13 @@
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    ObjectInputStream.GetField oisFields = in.readFields();
+    final String oisHostname = (String) oisFields.get("hostname", null);
+    final InetAddress oisAddr = (InetAddress) oisFields.get("addr", null);
+    final int oisPort = oisFields.get("port", -1);
+    // Check that our invariants are satisfied
+    checkPort(oisPort);
+    if (oisHostname == null && oisAddr == null)
+        throw new InvalidObjectException("hostname and addr " + "can't both be null");
+    InetSocketAddressHolder h = new InetSocketAddressHolder(oisHostname, oisAddr, oisPort);
+    UNSAFE.putObject(this, FIELDS_OFFSET, h);
+}

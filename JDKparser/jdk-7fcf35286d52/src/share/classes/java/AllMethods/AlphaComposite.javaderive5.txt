@@ -1,0 +1,19 @@
+/**
+ * Returns a similar <code>AlphaComposite</code> object that uses
+ * the specified compositing rule.
+ * If this object already uses the specified compositing rule,
+ * this object is returned.
+ * @return an <code>AlphaComposite</code> object derived from
+ * this object that uses the specified compositing rule.
+ * @param rule the compositing rule
+ * @throws IllegalArgumentException if
+ *         <code>rule</code> is not one of
+ *         the following:  {@link #CLEAR}, {@link #SRC}, {@link #DST},
+ *         {@link #SRC_OVER}, {@link #DST_OVER}, {@link #SRC_IN},
+ *         {@link #DST_IN}, {@link #SRC_OUT}, {@link #DST_OUT},
+ *         {@link #SRC_ATOP}, {@link #DST_ATOP}, or {@link #XOR}
+ * @since 1.6
+ */
+public AlphaComposite derive(int rule) {
+    return (this.rule == rule) ? this : getInstance(rule, this.extraAlpha);
+}

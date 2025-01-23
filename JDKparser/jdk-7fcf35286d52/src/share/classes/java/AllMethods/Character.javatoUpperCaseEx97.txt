@@ -1,0 +1,19 @@
+/**
+ * Converts the character (Unicode code point) argument to uppercase using
+ * information from the UnicodeData file.
+ * <p>
+ *
+ * @param   codePoint   the character (Unicode code point) to be converted.
+ * @return  either the uppercase equivalent of the character, if
+ *          any, or an error flag ({@code Character.ERROR})
+ *          that indicates that a 1:M {@code char} mapping exists.
+ * @see     Character#isLowerCase(char)
+ * @see     Character#isUpperCase(char)
+ * @see     Character#toLowerCase(char)
+ * @see     Character#toTitleCase(char)
+ * @since 1.4
+ */
+static int toUpperCaseEx(int codePoint) {
+    assert isValidCodePoint(codePoint);
+    return CharacterData.of(codePoint).toUpperCaseEx(codePoint);
+}

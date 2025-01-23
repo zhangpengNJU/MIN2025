@@ -1,0 +1,24 @@
+/**
+ * Draws the text given by the specified byte array, using this
+ * graphics context's current font and color. The baseline of the
+ * first character is at position (<i>x</i>,&nbsp;<i>y</i>) in this
+ * graphics context's coordinate system.
+ * <p>
+ * Use of this method is not recommended as each byte is interpreted
+ * as a Unicode code point in the range 0 to 255, and so can only be
+ * used to draw Latin characters in that range.
+ * @param data the data to be drawn
+ * @param offset the start offset in the data
+ * @param length the number of bytes that are drawn
+ * @param x the <i>x</i> coordinate of the baseline of the text
+ * @param y the <i>y</i> coordinate of the baseline of the text
+ * @throws NullPointerException if <code>data</code> is <code>null</code>.
+ * @throws IndexOutOfBoundsException if <code>offset</code> or
+ * <code>length</code>is less than zero, or <code>offset+length</code>
+ * is greater than the length of the <code>data</code> array.
+ * @see         java.awt.Graphics#drawChars
+ * @see         java.awt.Graphics#drawString
+ */
+public void drawBytes(byte[] data, int offset, int length, int x, int y) {
+    drawString(new String(data, 0, offset, length), x, y);
+}

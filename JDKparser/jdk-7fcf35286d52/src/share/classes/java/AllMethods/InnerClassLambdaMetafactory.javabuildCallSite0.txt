@@ -1,0 +1,47 @@
+/**
+ * Build the CallSite. Generate a class file which implements the functional
+ * interface, define the class, if there are no parameters create an instance
+ * of the class which the CallSite will return, otherwise, generate handles
+ * which will call the class' constructor.
+ *
+ * @return a CallSite, which, when invoked, will return an instance of the
+ * functional interface
+ * @throws ReflectiveOperationException
+ * @throws LambdaConversionException If properly formed functional interface
+ * is not found
+ */
+@Override
+CallSite buildCallSite() throws LambdaConversionException {
+    final Class<?> innerClass = spinInnerClass();
+    if (invokedType.parameterCount() == 0) {
+        final Constructor<?>[] ctrs = AccessController.doPrivileged(new PrivilegedAction<Constructor<?>[]>() {
+
+            @Override
+            public Constructor<?>[] run() {
+                Constructor<?>[] ctrs = innerClass.getDeclaredConstructors();
+                if (ctrs.length == 1) {
+                    // The lambda implementing inner class constructor is private, set
+                    // it accessible (by us) before creating the constant sole instance
+                    ctrs[0].setAccessible(true);
+                }
+                return ctrs;
+            }
+        });
+        if (ctrs.length != 1) {
+            throw new LambdaConversionException("Expected one lambda constructor for " + innerClass.getCanonicalName() + ", got " + ctrs.length);
+        }
+        try {
+            Object inst = ctrs[0].newInstance();
+            return new ConstantCallSite(MethodHandles.constant(samBase, inst));
+        } catch (ReflectiveOperationException e) {
+            throw new LambdaConversionException("Exception instantiating lambda object", e);
+        }
+    } else {
+        try {
+            UNSAFE.ensureClassInitialized(innerClass);
+            return new ConstantCallSite(MethodHandles.Lookup.IMPL_LOOKUP.findStatic(innerClass, NAME_FACTORY, invokedType));
+        } catch (ReflectiveOperationException e) {
+            throw new LambdaConversionException("Exception finding constructor", e);
+        }
+    }
+}

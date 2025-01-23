@@ -1,0 +1,5 @@
+public LambdaForm cachedLambdaForm(int which) {
+    assert (assertIsBasicType());
+    SoftReference<LambdaForm> entry = lambdaForms[which];
+    return (entry != null) ? entry.get() : null;
+}

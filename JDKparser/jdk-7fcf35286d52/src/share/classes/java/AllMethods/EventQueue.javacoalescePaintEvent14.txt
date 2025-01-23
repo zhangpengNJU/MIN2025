@@ -1,0 +1,19 @@
+private boolean coalescePaintEvent(PaintEvent e) {
+    ComponentPeer sourcePeer = ((Component) e.getSource()).peer;
+    if (sourcePeer != null) {
+        sourcePeer.coalescePaintEvent(e);
+    }
+    EventQueueItem[] cache = ((Component) e.getSource()).eventCache;
+    if (cache == null) {
+        return false;
+    }
+    int index = eventToCacheIndex(e);
+    if (index != -1 && cache[index] != null) {
+        PaintEvent merged = mergePaintEvents(e, (PaintEvent) cache[index].event);
+        if (merged != null) {
+            cache[index].event = merged;
+            return true;
+        }
+    }
+    return false;
+}

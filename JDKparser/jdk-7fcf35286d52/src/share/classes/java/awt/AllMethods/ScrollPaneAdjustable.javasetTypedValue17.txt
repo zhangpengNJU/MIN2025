@@ -1,0 +1,23 @@
+/**
+ * Sets the value of this scrollbar to the specified value.
+ * <p>
+ * If the value supplied is less than the current minimum or
+ * greater than the current maximum, then one of those values is
+ * substituted, as appropriate. Also, creates and dispatches
+ * the AdjustementEvent with specified type and value.
+ *
+ * @param v the new value of the scrollbar
+ * @param type the type of the scrolling operation occurred
+ */
+private void setTypedValue(int v, int type) {
+    v = Math.max(v, minimum);
+    v = Math.min(v, maximum - visibleAmount);
+    if (v != value) {
+        value = v;
+        // Synchronously notify the listeners so that they are
+        // guaranteed to be up-to-date with the Adjustable before
+        // it is mutated again.
+        AdjustmentEvent e = new AdjustmentEvent(this, AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, type, value, isAdjusting);
+        adjustmentListener.adjustmentValueChanged(e);
+    }
+}

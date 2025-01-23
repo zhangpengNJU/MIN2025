@@ -1,0 +1,30 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this /
+ * divisor)}, and whose scale is {@code this.scale()}.  If
+ * rounding must be performed to generate a result with the given
+ * scale, the specified rounding mode is applied.
+ *
+ * <p>The new {@link #divide(BigDecimal, RoundingMode)} method
+ * should be used in preference to this legacy method.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @param  roundingMode rounding mode to apply.
+ * @return {@code this / divisor}
+ * @throws ArithmeticException if {@code divisor==0}, or
+ *         {@code roundingMode==ROUND_UNNECESSARY} and
+ *         {@code this.scale()} is insufficient to represent the result
+ *         of the division exactly.
+ * @throws IllegalArgumentException if {@code roundingMode} does not
+ *         represent a valid rounding mode.
+ * @see    #ROUND_UP
+ * @see    #ROUND_DOWN
+ * @see    #ROUND_CEILING
+ * @see    #ROUND_FLOOR
+ * @see    #ROUND_HALF_UP
+ * @see    #ROUND_HALF_DOWN
+ * @see    #ROUND_HALF_EVEN
+ * @see    #ROUND_UNNECESSARY
+ */
+public BigDecimal divide(BigDecimal divisor, int roundingMode) {
+    return this.divide(divisor, scale, roundingMode);
+}

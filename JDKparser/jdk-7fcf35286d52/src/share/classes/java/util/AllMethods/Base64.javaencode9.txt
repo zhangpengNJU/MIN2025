@@ -1,0 +1,26 @@
+/**
+ * Encodes all bytes from the specified byte array using the
+ * {@link Base64} encoding scheme, writing the resulting bytes to the
+ * given output byte array, starting at offset 0.
+ *
+ * <p> It is the responsibility of the invoker of this method to make
+ * sure the output byte array {@code dst} has enough space for encoding
+ * all bytes from the input byte array. No bytes will be written to the
+ * output byte array if the output byte array is not big enough.
+ *
+ * @param   src
+ *          the byte array to encode
+ * @param   dst
+ *          the output byte array
+ * @return  The number of bytes written to the output byte array
+ *
+ * @throws  IllegalArgumentException if {@code dst} does not have enough
+ *          space for encoding all input bytes.
+ */
+public int encode(byte[] src, byte[] dst) {
+    // dst array size
+    int len = outLength(src.length);
+    if (dst.length < len)
+        throw new IllegalArgumentException("Output byte array is too small for encoding all input bytes");
+    return encode0(src, 0, src.length, dst);
+}

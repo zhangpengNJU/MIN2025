@@ -1,0 +1,15 @@
+/**
+ * Returns a list containing the exceptions that are ignored by the
+ * revocation checker when the {@link Option#SOFT_FAIL SOFT_FAIL} option
+ * is set. The list is cleared each time {@link #init init} is called.
+ * The list is ordered in ascending order according to the certificate
+ * index returned by {@link CertPathValidatorException#getIndex getIndex}
+ * method of each entry.
+ * <p>
+ * An implementation of {@code PKIXRevocationChecker} is responsible for
+ * adding the ignored exceptions to the list.
+ *
+ * @return an unmodifiable list containing the ignored exceptions. The list
+ *         is empty if no exceptions have been ignored.
+ */
+public abstract List<CertPathValidatorException> getSoftFailExceptions();

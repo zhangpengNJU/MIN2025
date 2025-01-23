@@ -1,0 +1,9 @@
+/**
+ * Traverse the elements of a spliterator compatible with this stream shape,
+ * pushing those elements into a sink.   If the sink requests cancellation,
+ * no further elements will be pulled or pushed.
+ *
+ * @param spliterator the spliterator to pull elements from
+ * @param sink the sink to push elements to
+ */
+abstract void forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);

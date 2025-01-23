@@ -1,0 +1,10 @@
+public Object get(String name, Object val) throws IOException {
+    int off = getFieldOffset(name, Object.class);
+    if (off >= 0) {
+        int objHandle = objHandles[off];
+        handles.markDependency(passHandle, objHandle);
+        return (handles.lookupException(objHandle) == null) ? objVals[off] : null;
+    } else {
+        return val;
+    }
+}

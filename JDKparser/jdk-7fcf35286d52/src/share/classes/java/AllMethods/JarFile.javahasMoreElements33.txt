@@ -1,0 +1,20 @@
+/*
+             * Grab entries from ZIP directory but screen out
+             * metadata.
+             */
+public boolean hasMoreElements() {
+    if (name != null) {
+        return true;
+    }
+    while (entries.hasMoreElements()) {
+        String value;
+        ZipEntry e = entries.nextElement();
+        value = e.getName();
+        if (e.isDirectory() || JarVerifier.isSigningRelated(value)) {
+            continue;
+        }
+        name = value;
+        return true;
+    }
+    return false;
+}

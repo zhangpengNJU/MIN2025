@@ -1,0 +1,20 @@
+/**
+ * Gets an iterator providing access to the entire text and attributes
+ * contained in the text editing component except for uncommitted
+ * text. Uncommitted (composed) text should be ignored for index
+ * calculations and should not be made accessible through the iterator.
+ *
+ * <p>
+ * The input method may provide a list of attributes that it is
+ * interested in. In that case, information about other attributes that
+ * the implementor may have need not be made accessible through the
+ * iterator. If the list is null, all available attribute information
+ * should be made accessible.
+ *
+ * @param beginIndex the index of the first character
+ * @param endIndex the index of the character following the last character
+ * @param attributes a list of attributes that the input method is
+ * interested in
+ * @return an iterator providing access to the text and its attributes
+ */
+AttributedCharacterIterator getCommittedText(int beginIndex, int endIndex, Attribute[] attributes);

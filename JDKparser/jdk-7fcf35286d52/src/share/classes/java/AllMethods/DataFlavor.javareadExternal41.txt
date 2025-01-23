@@ -1,0 +1,27 @@
+/**
+ * Restores this <code>DataFlavor</code> from a Serialized state.
+ */
+public synchronized void readExternal(ObjectInput is) throws IOException, ClassNotFoundException {
+    String rcn = null;
+    mimeType = (MimeType) is.readObject();
+    if (mimeType != null) {
+        humanPresentableName = mimeType.getParameter("humanPresentableName");
+        mimeType.removeParameter("humanPresentableName");
+        rcn = mimeType.getParameter("class");
+        if (rcn == null) {
+            throw new IOException("no class parameter specified in: " + mimeType);
+        }
+    }
+    try {
+        representationClass = (Class) is.readObject();
+    } catch (OptionalDataException ode) {
+        if (!ode.eof || ode.length != 0) {
+            throw ode;
+        }
+        // Ensure backward compatibility.
+        // Old versions didn't write the representation class to the stream.
+        if (rcn != null) {
+            representationClass = DataFlavor.tryToLoadClass(rcn, getClass().getClassLoader());
+        }
+    }
+}

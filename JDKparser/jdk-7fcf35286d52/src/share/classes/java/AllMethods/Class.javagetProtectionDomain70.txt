@@ -1,0 +1,36 @@
+/**
+ * Returns the {@code ProtectionDomain} of this class.  If there is a
+ * security manager installed, this method first calls the security
+ * manager's {@code checkPermission} method with a
+ * {@code RuntimePermission("getProtectionDomain")} permission to
+ * ensure it's ok to get the
+ * {@code ProtectionDomain}.
+ *
+ * @return the ProtectionDomain of this class
+ *
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        {@code checkPermission} method doesn't allow
+ *        getting the ProtectionDomain.
+ *
+ * @see java.security.ProtectionDomain
+ * @see SecurityManager#checkPermission
+ * @see java.lang.RuntimePermission
+ * @since 1.2
+ */
+public java.security.ProtectionDomain getProtectionDomain() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(SecurityConstants.GET_PD_PERMISSION);
+    }
+    java.security.ProtectionDomain pd = getProtectionDomain0();
+    if (pd == null) {
+        if (allPermDomain == null) {
+            java.security.Permissions perms = new java.security.Permissions();
+            perms.add(SecurityConstants.ALL_PERMISSION);
+            allPermDomain = new java.security.ProtectionDomain(null, perms);
+        }
+        pd = allPermDomain;
+    }
+    return pd;
+}

@@ -1,0 +1,11 @@
+// Tell whether the given character is permitted by the given mask pair
+private static boolean match(char c, long lowMask, long highMask) {
+    if (// 0 doesn't have a slot in the mask. So, it never matches.
+    c == 0)
+        return false;
+    if (c < 64)
+        return ((1L << c) & lowMask) != 0;
+    if (c < 128)
+        return ((1L << (c - 64)) & highMask) != 0;
+    return false;
+}

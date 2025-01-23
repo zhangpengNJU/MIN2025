@@ -1,0 +1,4 @@
+protected boolean engineVerify(byte[] sigBytes) throws SignatureException {
+    chooseFirstProvider();
+    return sigSpi.engineVerify(sigBytes);
+}

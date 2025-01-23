@@ -1,0 +1,27 @@
+/**
+ * Prints this property list out to the specified output stream.
+ * This method is useful for debugging.
+ *
+ * @param   out   an output stream.
+ * @throws  ClassCastException if any key in this property list
+ *          is not a string.
+ * @since   JDK1.1
+ */
+/*
+     * Rather than use an anonymous inner class to share common code, this
+     * method is duplicated in order to ensure that a non-1.1 compiler can
+     * compile this file.
+     */
+public void list(PrintWriter out) {
+    out.println("-- listing properties --");
+    Hashtable<String, Object> h = new Hashtable<>();
+    enumerate(h);
+    for (Enumeration<String> e = h.keys(); e.hasMoreElements(); ) {
+        String key = e.nextElement();
+        String val = (String) h.get(key);
+        if (val.length() > 40) {
+            val = val.substring(0, 37) + "...";
+        }
+        out.println(key + "=" + val);
+    }
+}

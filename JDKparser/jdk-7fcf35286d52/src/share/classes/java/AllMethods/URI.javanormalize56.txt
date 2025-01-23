@@ -1,0 +1,31 @@
+// Normalize the given path string.  A normal path string has no empty
+// segments (i.e., occurrences of "//"), no segments equal to ".", and no
+// segments equal to ".." that are preceded by a segment not equal to "..".
+// In contrast to Unix-style pathname normalization, for URI paths we
+// always retain trailing slashes.
+// 
+private static String normalize(String ps) {
+    // Does this path need normalization?
+    // Number of segments
+    int ns = needsNormalization(ps);
+    if (ns < 0)
+        // Nope -- just return it
+        return ps;
+    // Path in char-array form
+    char[] path = ps.toCharArray();
+    // Split path into segments
+    // Segment-index array
+    int[] segs = new int[ns];
+    split(path, segs);
+    // Remove dots
+    removeDots(path, segs);
+    // Prevent scheme-name confusion
+    maybeAddLeadingDot(path, segs);
+    // Join the remaining segments and return the result
+    String s = new String(path, 0, join(path, segs));
+    if (s.equals(ps)) {
+        // string was already normalized
+        return ps;
+    }
+    return s;
+}

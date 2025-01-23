@@ -1,0 +1,31 @@
+/**
+ * Uncompresses bytes into specified buffer. Returns actual number
+ * of bytes uncompressed. A return value of 0 indicates that
+ * needsInput() or needsDictionary() should be called in order to
+ * determine if more input data or a preset dictionary is required.
+ * In the latter case, getAdler() can be used to get the Adler-32
+ * value of the dictionary required.
+ * @param b the buffer for the uncompressed data
+ * @param off the start offset of the data
+ * @param len the maximum number of uncompressed bytes
+ * @return the actual number of uncompressed bytes
+ * @exception DataFormatException if the compressed data format is invalid
+ * @see Inflater#needsInput
+ * @see Inflater#needsDictionary
+ */
+public int inflate(byte[] b, int off, int len) throws DataFormatException {
+    if (b == null) {
+        throw new NullPointerException();
+    }
+    if (off < 0 || len < 0 || off > b.length - len) {
+        throw new ArrayIndexOutOfBoundsException();
+    }
+    synchronized (zsRef) {
+        ensureOpen();
+        int thisLen = this.len;
+        int n = inflateBytes(zsRef.address(), b, off, len);
+        bytesWritten += n;
+        bytesRead += (thisLen - this.len);
+        return n;
+    }
+}

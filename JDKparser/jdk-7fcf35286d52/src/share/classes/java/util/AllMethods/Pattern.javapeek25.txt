@@ -1,0 +1,9 @@
+/**
+ * Peek the next character, and do not advance the cursor.
+ */
+private int peek() {
+    int ch = temp[cursor];
+    if (has(COMMENTS))
+        ch = peekPastWhitespace(ch);
+    return ch;
+}

@@ -1,0 +1,50 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case ANCESTOR_MOVED:
+            typeStr = "ANCESTOR_MOVED (" + changed + "," + changedParent + ")";
+            break;
+        case ANCESTOR_RESIZED:
+            typeStr = "ANCESTOR_RESIZED (" + changed + "," + changedParent + ")";
+            break;
+        case HIERARCHY_CHANGED:
+            {
+                typeStr = "HIERARCHY_CHANGED (";
+                boolean first = true;
+                if ((changeFlags & PARENT_CHANGED) != 0) {
+                    first = false;
+                    typeStr += "PARENT_CHANGED";
+                }
+                if ((changeFlags & DISPLAYABILITY_CHANGED) != 0) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        typeStr += ",";
+                    }
+                    typeStr += "DISPLAYABILITY_CHANGED";
+                }
+                if ((changeFlags & SHOWING_CHANGED) != 0) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        typeStr += ",";
+                    }
+                    typeStr += "SHOWING_CHANGED";
+                }
+                if (!first) {
+                    typeStr += ",";
+                }
+                typeStr += changed + "," + changedParent + ")";
+                break;
+            }
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr;
+}

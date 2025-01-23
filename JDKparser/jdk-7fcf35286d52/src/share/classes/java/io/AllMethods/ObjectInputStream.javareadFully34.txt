@@ -1,0 +1,16 @@
+/**
+ * Reads bytes, blocking until all bytes are read.
+ *
+ * @param   buf the buffer into which the data is read
+ * @param   off the start offset of the data
+ * @param   len the maximum number of bytes to read
+ * @throws  EOFException If end of file is reached.
+ * @throws  IOException If other I/O error has occurred.
+ */
+public void readFully(byte[] buf, int off, int len) throws IOException {
+    int endoff = off + len;
+    if (off < 0 || len < 0 || endoff > buf.length || endoff < 0) {
+        throw new IndexOutOfBoundsException();
+    }
+    bin.readFully(buf, off, len, false);
+}

@@ -1,0 +1,10 @@
+/**
+ * Creates the menu item's peer.  The peer allows us to modify the
+ * appearance of the menu item without changing its functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = Toolkit.getDefaultToolkit().createMenuItem(this);
+    }
+}

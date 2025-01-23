@@ -1,0 +1,15 @@
+/**
+ * Intrinsified during LambdaForm compilation
+ * (see {@link InvokerBytecodeGenerator#emitGuardWithCatch emitGuardWithCatch}).
+ */
+@LambdaForm.Hidden
+static Object guardWithCatch(MethodHandle target, Class<? extends Throwable> exType, MethodHandle catcher, Object... av) throws Throwable {
+    // Use asFixedArity() to avoid unnecessary boxing of last argument for VarargsCollector case.
+    try {
+        return target.asFixedArity().invokeWithArguments(av);
+    } catch (Throwable t) {
+        if (!exType.isInstance(t))
+            throw t;
+        return catcher.asFixedArity().invokeWithArguments(prepend(t, av));
+    }
+}

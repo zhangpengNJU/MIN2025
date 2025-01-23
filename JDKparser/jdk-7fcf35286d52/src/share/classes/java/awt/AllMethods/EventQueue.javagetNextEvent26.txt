@@ -1,0 +1,34 @@
+AWTEvent getNextEvent(int id) throws InterruptedException {
+    do {
+        /*
+             * SunToolkit.flushPendingEvents must be called outside
+             * of the synchronized block to avoid deadlock when
+             * event queues are nested with push()/pop().
+             */
+        SunToolkit.flushPendingEvents(appContext);
+        pushPopLock.lock();
+        try {
+            for (int i = 0; i < NUM_PRIORITIES; i++) {
+                for (EventQueueItem entry = queues[i].head, prev = null; entry != null; prev = entry, entry = entry.next) {
+                    if (entry.event.getID() == id) {
+                        if (prev == null) {
+                            queues[i].head = entry.next;
+                        } else {
+                            prev.next = entry.next;
+                        }
+                        if (queues[i].tail == entry) {
+                            queues[i].tail = prev;
+                        }
+                        uncacheEQItem(entry);
+                        return entry.event;
+                    }
+                }
+            }
+            waitForID = id;
+            pushPopCond.await();
+            waitForID = 0;
+        } finally {
+            pushPopLock.unlock();
+        }
+    } while (true);
+}

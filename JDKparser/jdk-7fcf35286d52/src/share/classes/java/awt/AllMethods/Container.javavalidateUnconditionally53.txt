@@ -1,0 +1,17 @@
+/**
+ * Unconditionally validate the component hierarchy.
+ */
+final void validateUnconditionally() {
+    boolean updateCur = false;
+    synchronized (getTreeLock()) {
+        descendUnconditionallyWhenValidating = true;
+        validate();
+        if (peer instanceof ContainerPeer) {
+            updateCur = isVisible();
+        }
+        descendUnconditionallyWhenValidating = false;
+    }
+    if (updateCur) {
+        updateCursorImmediately();
+    }
+}

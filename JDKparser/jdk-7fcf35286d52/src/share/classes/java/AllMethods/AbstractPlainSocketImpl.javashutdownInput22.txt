@@ -1,0 +1,12 @@
+/**
+ * Shutdown read-half of the socket connection;
+ */
+protected void shutdownInput() throws IOException {
+    if (fd != null) {
+        socketShutdown(SHUT_RD);
+        if (socketInputStream != null) {
+            socketInputStream.setEOF(true);
+        }
+        shut_rd = true;
+    }
+}

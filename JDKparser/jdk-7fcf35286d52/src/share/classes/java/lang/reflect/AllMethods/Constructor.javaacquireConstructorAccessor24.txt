@@ -1,0 +1,20 @@
+// NOTE that there is no synchronization used here. It is correct
+// (though not efficient) to generate more than one
+// ConstructorAccessor for a given Constructor. However, avoiding
+// synchronization will probably make the implementation more
+// scalable.
+private ConstructorAccessor acquireConstructorAccessor() {
+    // First check to see if one has been created yet, and take it
+    // if so.
+    ConstructorAccessor tmp = null;
+    if (root != null)
+        tmp = root.getConstructorAccessor();
+    if (tmp != null) {
+        constructorAccessor = tmp;
+    } else {
+        // Otherwise fabricate one and propagate it up to the root
+        tmp = reflectionFactory.newConstructorAccessor(this);
+        setConstructorAccessor(tmp);
+    }
+    return tmp;
+}

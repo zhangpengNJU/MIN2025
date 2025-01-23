@@ -1,0 +1,16 @@
+@SuppressWarnings("unchecked")
+public void forEachRemaining(Consumer<? super E> action) {
+    // hoist accesses and checks from loop
+    Object[] a;
+    // hoist accesses and checks from loop
+    int i, hi;
+    if (action == null)
+        throw new NullPointerException();
+    if ((a = array) == null)
+        fence = (a = queue.toArray()).length;
+    if ((hi = fence) <= a.length && (i = index) >= 0 && i < (index = hi)) {
+        do {
+            action.accept((E) a[i]);
+        } while (++i < hi);
+    }
+}

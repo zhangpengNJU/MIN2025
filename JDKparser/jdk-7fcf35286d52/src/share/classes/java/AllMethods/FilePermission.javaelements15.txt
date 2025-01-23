@@ -1,0 +1,12 @@
+/**
+ * Returns an enumeration of all the FilePermission objects in the
+ * container.
+ *
+ * @return an enumeration of all the FilePermission objects.
+ */
+public Enumeration<Permission> elements() {
+    // Convert Iterator into Enumeration
+    synchronized (this) {
+        return Collections.enumeration(perms);
+    }
+}

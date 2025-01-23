@@ -1,0 +1,18 @@
+/**
+ * Updates the file permissions.
+ *
+ * @param   perms
+ *          the new set of permissions
+ *
+ * @throws  ClassCastException
+ *          if the sets contains elements that are not of type {@code
+ *          PosixFilePermission}
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, a security manager is
+ *          installed, and it denies {@link RuntimePermission}<tt>("accessUserInformation")</tt>
+ *          or its {@link SecurityManager#checkWrite(String) checkWrite}
+ *          method denies write access to the file.
+ */
+void setPermissions(Set<PosixFilePermission> perms) throws IOException;

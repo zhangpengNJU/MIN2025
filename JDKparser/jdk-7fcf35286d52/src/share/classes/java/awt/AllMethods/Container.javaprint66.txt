@@ -1,0 +1,33 @@
+/**
+ * Prints the container. This forwards the print to any lightweight
+ * components that are children of this container. If this method is
+ * reimplemented, super.print(g) should be called so that lightweight
+ * components are properly rendered. If a child component is entirely
+ * clipped by the current clipping setting in g, print() will not be
+ * forwarded to that child.
+ *
+ * @param g the specified Graphics window
+ * @see   Component#update(Graphics)
+ */
+public void print(Graphics g) {
+    if (isShowing()) {
+        Thread t = Thread.currentThread();
+        try {
+            synchronized (getObjectLock()) {
+                if (printingThreads == null) {
+                    printingThreads = new HashSet<>();
+                }
+                printingThreads.add(t);
+                printing = true;
+            }
+            // By default, Component.print() calls paint()
+            super.print(g);
+        } finally {
+            synchronized (getObjectLock()) {
+                printingThreads.remove(t);
+                printing = !printingThreads.isEmpty();
+            }
+        }
+        GraphicsCallback.PrintCallback.getInstance().runComponents(getComponentsSync(), g, GraphicsCallback.LIGHTWEIGHTS);
+    }
+}

@@ -1,0 +1,25 @@
+/**
+ * Remove stale entries in the given range.
+ *  Should be executed under a Map lock.
+ */
+private void removeStaleEntries(Entry<?>[] cache, int begin, int count) {
+    if (PROBE_LIMIT <= 0)
+        return;
+    int mask = (cache.length - 1);
+    int removed = 0;
+    for (int i = begin; i < begin + count; i++) {
+        Entry<?> e = cache[i & mask];
+        if (e == null || e.isLive())
+            // skip null and live entries
+            continue;
+        Entry<?> replacement = null;
+        if (PROBE_LIMIT > 1) {
+            // avoid breaking up a non-null run
+            replacement = findReplacement(cache, i);
+        }
+        cache[i & mask] = replacement;
+        if (replacement == null)
+            removed += 1;
+    }
+    cacheLoad = Math.max(0, cacheLoad - removed);
+}

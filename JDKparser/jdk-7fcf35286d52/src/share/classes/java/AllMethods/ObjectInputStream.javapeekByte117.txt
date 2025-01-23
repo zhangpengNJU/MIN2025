@@ -1,0 +1,12 @@
+/**
+ * Peeks at (but does not consume) and returns the next byte value in
+ * the stream, or throws EOFException if end of stream/block data has
+ * been reached.
+ */
+byte peekByte() throws IOException {
+    int val = peek();
+    if (val < 0) {
+        throw new EOFException();
+    }
+    return (byte) val;
+}

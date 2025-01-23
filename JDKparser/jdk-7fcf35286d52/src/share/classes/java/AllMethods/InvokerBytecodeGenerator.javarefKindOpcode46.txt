@@ -1,0 +1,21 @@
+int refKindOpcode(byte refKind) {
+    switch(refKind) {
+        case REF_invokeVirtual:
+            return Opcodes.INVOKEVIRTUAL;
+        case REF_invokeStatic:
+            return Opcodes.INVOKESTATIC;
+        case REF_invokeSpecial:
+            return Opcodes.INVOKESPECIAL;
+        case REF_invokeInterface:
+            return Opcodes.INVOKEINTERFACE;
+        case REF_getField:
+            return Opcodes.GETFIELD;
+        case REF_putField:
+            return Opcodes.PUTFIELD;
+        case REF_getStatic:
+            return Opcodes.GETSTATIC;
+        case REF_putStatic:
+            return Opcodes.PUTSTATIC;
+    }
+    throw new InternalError("refKind=" + refKind);
+}

@@ -1,0 +1,23 @@
+/**
+ * Adds a permission to the SocketPermissions. The key for the hash is
+ * the name in the case of wildcards, or all the IP addresses.
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception IllegalArgumentException - if the permission is not a
+ *                                       SocketPermission
+ *
+ * @exception SecurityException - if this SocketPermissionCollection object
+ *                                has been marked readonly
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof SocketPermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+    // optimization to ensure perms most likely to be tested
+    // show up early (4301064)
+    synchronized (this) {
+        perms.add(0, (SocketPermission) permission);
+    }
+}

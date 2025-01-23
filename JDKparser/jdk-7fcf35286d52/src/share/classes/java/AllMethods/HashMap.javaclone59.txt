@@ -1,0 +1,22 @@
+/* ------------------------------------------------------------ */
+// Cloning and serialization
+/**
+ * Returns a shallow copy of this <tt>HashMap</tt> instance: the keys and
+ * values themselves are not cloned.
+ *
+ * @return a shallow copy of this map
+ */
+@SuppressWarnings("unchecked")
+@Override
+public Object clone() {
+    HashMap<K, V> result;
+    try {
+        result = (HashMap<K, V>) super.clone();
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+    result.reinitialize();
+    result.putMapEntries(this, false);
+    return result;
+}

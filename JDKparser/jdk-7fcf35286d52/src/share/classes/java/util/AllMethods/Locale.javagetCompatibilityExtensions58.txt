@@ -1,0 +1,12 @@
+private static LocaleExtensions getCompatibilityExtensions(String language, String script, String country, String variant) {
+    LocaleExtensions extensions = null;
+    // Special cases for backward compatibility support
+    if (LocaleUtils.caseIgnoreMatch(language, "ja") && script.length() == 0 && LocaleUtils.caseIgnoreMatch(country, "jp") && "JP".equals(variant)) {
+        // ja_JP_JP -> u-ca-japanese (calendar = japanese)
+        extensions = LocaleExtensions.CALENDAR_JAPANESE;
+    } else if (LocaleUtils.caseIgnoreMatch(language, "th") && script.length() == 0 && LocaleUtils.caseIgnoreMatch(country, "th") && "TH".equals(variant)) {
+        // th_TH_TH -> u-nu-thai (numbersystem = thai)
+        extensions = LocaleExtensions.NUMBER_THAI;
+    }
+    return extensions;
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns true if there are some marker associated with component <code>comp</code>
+ * in a markers' queue
+ * @since 1.5
+ */
+private boolean hasMarker(Component comp) {
+    for (Iterator<TypeAheadMarker> iter = typeAheadMarkers.iterator(); iter.hasNext(); ) {
+        if (iter.next().untilFocused == comp) {
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,23 @@
+/**
+ * Returns the next token from this string tokenizer.
+ *
+ * @return     the next token from this string tokenizer.
+ * @exception  NoSuchElementException  if there are no more tokens in this
+ *               tokenizer's string.
+ */
+public String nextToken() {
+    /*
+         * If next position already computed in hasMoreElements() and
+         * delimiters have changed between the computation and this invocation,
+         * then use the computed value.
+         */
+    currentPosition = (newPosition >= 0 && !delimsChanged) ? newPosition : skipDelimiters(currentPosition);
+    /* Reset these anyway */
+    delimsChanged = false;
+    newPosition = -1;
+    if (currentPosition >= maxPosition)
+        throw new NoSuchElementException();
+    int start = currentPosition;
+    currentPosition = scanToken(currentPosition);
+    return str.substring(start, currentPosition);
+}

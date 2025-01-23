@@ -1,0 +1,16 @@
+/**
+ * Returns a list of non-TreeNodes replacing those linked from
+ * this node.
+ */
+final Node<K, V> untreeify(HashMap<K, V> map) {
+    Node<K, V> hd = null, tl = null;
+    for (Node<K, V> q = this; q != null; q = q.next) {
+        Node<K, V> p = map.replacementNode(q, null);
+        if (tl == null)
+            hd = p;
+        else
+            tl.next = p;
+        tl = p;
+    }
+    return hd;
+}

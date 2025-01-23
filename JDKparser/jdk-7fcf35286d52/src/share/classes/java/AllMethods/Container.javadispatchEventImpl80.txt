@@ -1,0 +1,36 @@
+/*
+     * Dispatches an event to this component or one of its sub components.
+     * Create ANCESTOR_RESIZED and ANCESTOR_MOVED events in response to
+     * COMPONENT_RESIZED and COMPONENT_MOVED events. We have to do this
+     * here instead of in processComponentEvent because ComponentEvents
+     * may not be enabled for this Container.
+     * @param e the event
+     */
+void dispatchEventImpl(AWTEvent e) {
+    if ((dispatcher != null) && dispatcher.dispatchEvent(e)) {
+        // event was sent to a lightweight component.  The
+        // native-produced event sent to the native container
+        // must be properly disposed of by the peer, so it
+        // gets forwarded.  If the native host has been removed
+        // as a result of the sending the lightweight event,
+        // the peer reference will be null.
+        e.consume();
+        if (peer != null) {
+            peer.handleEvent(e);
+        }
+        return;
+    }
+    super.dispatchEventImpl(e);
+    synchronized (getTreeLock()) {
+        switch(e.getID()) {
+            case ComponentEvent.COMPONENT_RESIZED:
+                createChildHierarchyEvents(HierarchyEvent.ANCESTOR_RESIZED, 0, Toolkit.enabledOnToolkit(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK));
+                break;
+            case ComponentEvent.COMPONENT_MOVED:
+                createChildHierarchyEvents(HierarchyEvent.ANCESTOR_MOVED, 0, Toolkit.enabledOnToolkit(AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK));
+                break;
+            default:
+                break;
+        }
+    }
+}

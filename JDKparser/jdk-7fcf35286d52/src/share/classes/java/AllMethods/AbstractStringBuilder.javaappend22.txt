@@ -1,0 +1,23 @@
+/**
+ * Appends the string representation of the {@code char} array
+ * argument to this sequence.
+ * <p>
+ * The characters of the array argument are appended, in order, to
+ * the contents of this sequence. The length of this sequence
+ * increases by the length of the argument.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(char[])},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   str   the characters to be appended.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(char[] str) {
+    int len = str.length;
+    ensureCapacityInternal(count + len);
+    System.arraycopy(str, 0, value, count, len);
+    count += len;
+    return this;
+}

@@ -1,0 +1,20 @@
+/**
+ * This method takes a "snapshot" of the current calling context, which
+ * includes the current Thread's inherited AccessControlContext and any
+ * limited privilege scope, and places it in an AccessControlContext object.
+ * This context may then be checked at a later point, possibly in another thread.
+ *
+ * @see AccessControlContext
+ *
+ * @return the AccessControlContext based on the current context.
+ */
+public static AccessControlContext getContext() {
+    AccessControlContext acc = getStackAccessControlContext();
+    if (acc == null) {
+        // all we had was privileged system code. We don't want
+        // to return null though, so we construct a real ACC.
+        return new AccessControlContext(null, true);
+    } else {
+        return acc.optimize();
+    }
+}

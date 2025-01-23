@@ -1,0 +1,50 @@
+/*
+     * parse exponent
+     */
+private static long parseExp(char[] in, int offset, int len) {
+    long exp = 0;
+    offset++;
+    char c = in[offset];
+    len--;
+    boolean negexp = (c == '-');
+    // optional sign
+    if (negexp || c == '+') {
+        offset++;
+        c = in[offset];
+        len--;
+    }
+    if (// no exponent digits
+    len <= 0)
+        throw new NumberFormatException();
+    // skip leading zeros in the exponent
+    while (len > 10 && (c == '0' || (Character.digit(c, 10) == 0))) {
+        offset++;
+        c = in[offset];
+        len--;
+    }
+    if (// too many nonzero exponent digits
+    len > 10)
+        throw new NumberFormatException();
+    // c now holds first digit of exponent
+    for (; ; len--) {
+        int v;
+        if (c >= '0' && c <= '9') {
+            v = c - '0';
+        } else {
+            v = Character.digit(c, 10);
+            if (// not a digit
+            v < 0)
+                throw new NumberFormatException();
+        }
+        exp = exp * 10 + v;
+        if (len == 1)
+            // that was final character
+            break;
+        offset++;
+        c = in[offset];
+    }
+    if (// apply sign
+    negexp)
+        exp = -exp;
+    return exp;
+}

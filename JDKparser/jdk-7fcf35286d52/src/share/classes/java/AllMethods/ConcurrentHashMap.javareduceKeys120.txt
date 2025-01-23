@@ -1,0 +1,16 @@
+/**
+ * Returns the result of accumulating all keys using the given
+ * reducer to combine values, or null if none.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param reducer a commutative associative combining function
+ * @return the result of accumulating all keys using the given
+ * reducer to combine values, or null if none
+ * @since 1.8
+ */
+public K reduceKeys(long parallelismThreshold, BiFunction<? super K, ? super K, ? extends K> reducer) {
+    if (reducer == null)
+        throw new NullPointerException();
+    return new ReduceKeysTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, null, reducer).invoke();
+}

@@ -1,0 +1,15 @@
+/**
+ * Removes and cancels all known tasks, ignoring any exceptions.
+ */
+final void cancelAll() {
+    ForkJoinTask<?> t;
+    if ((t = currentJoin) != null) {
+        currentJoin = null;
+        ForkJoinTask.cancelIgnoringExceptions(t);
+    }
+    if ((t = currentSteal) != null) {
+        currentSteal = null;
+        ForkJoinTask.cancelIgnoringExceptions(t);
+    }
+    while ((t = poll()) != null) ForkJoinTask.cancelIgnoringExceptions(t);
+}

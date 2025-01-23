@@ -1,0 +1,21 @@
+// Avoid looking up the localizedLevelName twice if we already
+// have it.
+final String getCachedLocalizedLevelName() {
+    if (localizedLevelName != null) {
+        if (cachedLocale != null) {
+            if (cachedLocale.equals(Locale.getDefault())) {
+                // OK: our cached value was looked up with the same
+                // locale. We can use it.
+                return localizedLevelName;
+            }
+        }
+    }
+    if (resourceBundleName == null) {
+        // No resource bundle: just use the name.
+        return name;
+    }
+    // We need to compute the localized name.
+    // Either because it's the first time, or because our cached
+    // value is for a different locale. Just return null.
+    return null;
+}

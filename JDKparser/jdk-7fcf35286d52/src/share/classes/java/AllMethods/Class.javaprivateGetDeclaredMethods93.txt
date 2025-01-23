@@ -1,0 +1,28 @@
+// 
+// 
+// java.lang.reflect.Method handling
+// 
+// 
+// Returns an array of "root" methods. These Method objects must NOT
+// be propagated to the outside world, but must instead be copied
+// via ReflectionFactory.copyMethod.
+private Method[] privateGetDeclaredMethods(boolean publicOnly) {
+    checkInitted();
+    Method[] res;
+    ReflectionData<T> rd = reflectionData();
+    if (rd != null) {
+        res = publicOnly ? rd.declaredPublicMethods : rd.declaredMethods;
+        if (res != null)
+            return res;
+    }
+    // No cached value available; request value from VM
+    res = Reflection.filterMethods(this, getDeclaredMethods0(publicOnly));
+    if (rd != null) {
+        if (publicOnly) {
+            rd.declaredPublicMethods = res;
+        } else {
+            rd.declaredMethods = res;
+        }
+    }
+    return res;
+}

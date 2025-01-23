@@ -1,0 +1,23 @@
+/**
+ * Returns whether the specified Container is the focus cycle root of this
+ * Container's focus traversal cycle. Each focus traversal cycle has only
+ * a single focus cycle root and each Container which is not a focus cycle
+ * root belongs to only a single focus traversal cycle. Containers which
+ * are focus cycle roots belong to two cycles: one rooted at the Container
+ * itself, and one rooted at the Container's nearest focus-cycle-root
+ * ancestor. This method will return <code>true</code> for both such
+ * Containers in this case.
+ *
+ * @param container the Container to be tested
+ * @return <code>true</code> if the specified Container is a focus-cycle-
+ *         root of this Container; <code>false</code> otherwise
+ * @see #isFocusCycleRoot()
+ * @since 1.4
+ */
+public boolean isFocusCycleRoot(Container container) {
+    if (isFocusCycleRoot() && container == this) {
+        return true;
+    } else {
+        return super.isFocusCycleRoot(container);
+    }
+}

@@ -1,0 +1,12 @@
+@Override
+public void end() {
+    Arrays.sort(array, 0, offset, comparator);
+    downstream.begin(offset);
+    if (!cancellationRequestedCalled) {
+        for (int i = 0; i < offset; i++) downstream.accept(array[i]);
+    } else {
+        for (int i = 0; i < offset && !downstream.cancellationRequested(); i++) downstream.accept(array[i]);
+    }
+    downstream.end();
+    array = null;
+}

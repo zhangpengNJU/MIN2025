@@ -1,0 +1,14 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    int savedTo = matcher.to;
+    boolean conditionMatched = false;
+    // Relax transparent region boundaries for lookahead
+    if (matcher.transparentBounds)
+        matcher.to = matcher.getTextLength();
+    try {
+        conditionMatched = cond.match(matcher, i, seq);
+    } finally {
+        // Reinstate region boundaries
+        matcher.to = savedTo;
+    }
+    return conditionMatched && next.match(matcher, i, seq);
+}

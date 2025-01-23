@@ -1,0 +1,49 @@
+// Creates an iterator that walks over the available providers, ignoring
+// those whose lookup or instantiation causes a security exception to be
+// thrown.  Should be invoked with full privileges.
+// 
+private static Iterator<CharsetProvider> providers() {
+    return new Iterator<CharsetProvider>() {
+
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+
+        ServiceLoader<CharsetProvider> sl = ServiceLoader.load(CharsetProvider.class, cl);
+
+        Iterator<CharsetProvider> i = sl.iterator();
+
+        CharsetProvider next = null;
+
+        private boolean getNext() {
+            while (next == null) {
+                try {
+                    if (!i.hasNext())
+                        return false;
+                    next = i.next();
+                } catch (ServiceConfigurationError sce) {
+                    if (sce.getCause() instanceof SecurityException) {
+                        // Ignore security exceptions
+                        continue;
+                    }
+                    throw sce;
+                }
+            }
+            return true;
+        }
+
+        public boolean hasNext() {
+            return getNext();
+        }
+
+        public CharsetProvider next() {
+            if (!getNext())
+                throw new NoSuchElementException();
+            CharsetProvider n = next;
+            next = null;
+            return n;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    };
+}

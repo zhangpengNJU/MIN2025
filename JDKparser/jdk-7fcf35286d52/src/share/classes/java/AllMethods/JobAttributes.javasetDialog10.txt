@@ -1,0 +1,21 @@
+/**
+ * Specifies whether, for jobs using these attributes, the user should see
+ * a print dialog in which to modify the print settings, and which type of
+ * print dialog should be displayed. DialogType.COMMON denotes a cross-
+ * platform, pure Java print dialog. DialogType.NATIVE denotes the
+ * platform's native print dialog. If a platform does not support a native
+ * print dialog, the pure Java print dialog is displayed instead.
+ * DialogType.NONE specifies no print dialog (i.e., background printing).
+ * Not specifying this attribute is equivalent to specifying
+ * DialogType.NATIVE.
+ *
+ * @param   dialog DialogType.COMMON, DialogType.NATIVE, or
+ *          DialogType.NONE.
+ * @throws  IllegalArgumentException if dialog is null.
+ */
+public void setDialog(DialogType dialog) {
+    if (dialog == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "dialog");
+    }
+    this.dialog = dialog;
+}

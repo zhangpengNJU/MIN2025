@@ -1,0 +1,14 @@
+/**
+ * This method calls <code>dragExit</code> on the
+ * <code>DragSourceListener</code>s registered with this
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceEvent</code>.
+ *
+ * @param dse the <code>DragSourceEvent</code>
+ */
+void processDragExit(DragSourceEvent dse) {
+    DragSourceListener dsl = listener;
+    if (dsl != null) {
+        dsl.dragExit(dse);
+    }
+}

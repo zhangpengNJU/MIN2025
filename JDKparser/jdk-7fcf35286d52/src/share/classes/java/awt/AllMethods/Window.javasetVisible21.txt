@@ -1,0 +1,39 @@
+/**
+ * Shows or hides this {@code Window} depending on the value of parameter
+ * {@code b}.
+ * <p>
+ * If the method shows the window then the window is also made
+ * focused under the following conditions:
+ * <ul>
+ * <li> The {@code Window} meets the requirements outlined in the
+ *      {@link #isFocusableWindow} method.
+ * <li> The {@code Window}'s {@code autoRequestFocus} property is of the {@code true} value.
+ * <li> Native windowing system allows the {@code Window} to get focused.
+ * </ul>
+ * There is an exception for the second condition (the value of the
+ * {@code autoRequestFocus} property). The property is not taken into account if the
+ * window is a modal dialog, which blocks the currently focused window.
+ * <p>
+ * Developers must never assume that the window is the focused or active window
+ * until it receives a WINDOW_GAINED_FOCUS or WINDOW_ACTIVATED event.
+ * @param b  if {@code true}, makes the {@code Window} visible,
+ * otherwise hides the {@code Window}.
+ * If the {@code Window} and/or its owner
+ * are not yet displayable, both are made displayable.  The
+ * {@code Window} will be validated prior to being made visible.
+ * If the {@code Window} is already visible, this will bring the
+ * {@code Window} to the front.<p>
+ * If {@code false}, hides this {@code Window}, its subcomponents, and all
+ * of its owned children.
+ * The {@code Window} and its subcomponents can be made visible again
+ * with a call to {@code #setVisible(true)}.
+ * @see java.awt.Component#isDisplayable
+ * @see java.awt.Component#setVisible
+ * @see java.awt.Window#toFront
+ * @see java.awt.Window#dispose
+ * @see java.awt.Window#setAutoRequestFocus
+ * @see java.awt.Window#isFocusableWindow
+ */
+public void setVisible(boolean b) {
+    super.setVisible(b);
+}

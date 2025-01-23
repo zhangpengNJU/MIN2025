@@ -1,0 +1,9 @@
+/**
+ * Gets a copy of the this BeanContext's children.
+ * @return a copy of the current nested children
+ */
+protected final Object[] copyChildren() {
+    synchronized (children) {
+        return children.keySet().toArray();
+    }
+}

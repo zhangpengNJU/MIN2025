@@ -1,0 +1,32 @@
+/**
+ * Writes to the socket with appropriate locking of the
+ * FileDescriptor.
+ * @param b the data to be written
+ * @param off the start offset in the data
+ * @param len the number of bytes that are written
+ * @exception IOException If an I/O error has occurred.
+ */
+private void socketWrite(byte[] b, int off, int len) throws IOException {
+    if (len <= 0 || off < 0 || len > b.length - off) {
+        if (len == 0) {
+            return;
+        }
+        throw new ArrayIndexOutOfBoundsException("len == " + len + " off == " + off + " buffer length == " + b.length);
+    }
+    FileDescriptor fd = impl.acquireFD();
+    try {
+        socketWrite0(fd, b, off, len);
+    } catch (SocketException se) {
+        if (se instanceof sun.net.ConnectionResetException) {
+            impl.setConnectionResetPending();
+            se = new SocketException("Connection reset");
+        }
+        if (impl.isClosedOrPending()) {
+            throw new SocketException("Socket closed");
+        } else {
+            throw se;
+        }
+    } finally {
+        impl.releaseFD();
+    }
+}

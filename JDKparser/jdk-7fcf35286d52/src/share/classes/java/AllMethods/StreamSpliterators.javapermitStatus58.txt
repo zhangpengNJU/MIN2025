@@ -1,0 +1,9 @@
+/**
+ * Call to check if permits might be available before acquiring data
+ */
+protected final PermitStatus permitStatus() {
+    if (permits.get() > 0)
+        return PermitStatus.MAYBE_MORE;
+    else
+        return unlimited ? PermitStatus.UNLIMITED : PermitStatus.NO_MORE;
+}

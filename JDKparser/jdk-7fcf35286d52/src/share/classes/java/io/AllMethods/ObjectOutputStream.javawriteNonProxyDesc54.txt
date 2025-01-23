@@ -1,0 +1,23 @@
+/**
+ * Writes class descriptor representing a standard (i.e., not a dynamic
+ * proxy) class to stream.
+ */
+private void writeNonProxyDesc(ObjectStreamClass desc, boolean unshared) throws IOException {
+    bout.writeByte(TC_CLASSDESC);
+    handles.assign(unshared ? null : desc);
+    if (protocol == PROTOCOL_VERSION_1) {
+        // do not invoke class descriptor write hook with old protocol
+        desc.writeNonProxy(this);
+    } else {
+        writeClassDescriptor(desc);
+    }
+    Class<?> cl = desc.forClass();
+    bout.setBlockDataMode(true);
+    if (cl != null && isCustomSubclass()) {
+        ReflectUtil.checkPackageAccess(cl);
+    }
+    annotateClass(cl);
+    bout.setBlockDataMode(false);
+    bout.writeByte(TC_ENDBLOCKDATA);
+    writeClassDesc(desc.getSuperDesc(), false);
+}

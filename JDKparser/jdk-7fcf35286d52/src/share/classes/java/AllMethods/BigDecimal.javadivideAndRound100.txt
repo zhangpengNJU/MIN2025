@@ -1,0 +1,29 @@
+/**
+ * Internally used for division operation for division {@code long} by
+ * {@code long}.
+ * The returned {@code BigDecimal} object is the quotient whose scale is set
+ * to the passed in scale. If the remainder is not zero, it will be rounded
+ * based on the passed in roundingMode. Also, if the remainder is zero and
+ * the last parameter, i.e. preferredScale is NOT equal to scale, the
+ * trailing zeros of the result is stripped to match the preferredScale.
+ */
+private static BigDecimal divideAndRound(long ldividend, long ldivisor, int scale, int roundingMode, int preferredScale) {
+    // quotient sign
+    int qsign;
+    // store quotient in long
+    long q = ldividend / ldivisor;
+    if (roundingMode == ROUND_DOWN && scale == preferredScale)
+        return valueOf(q, scale);
+    // store remainder in long
+    long r = ldividend % ldivisor;
+    qsign = ((ldividend < 0) == (ldivisor < 0)) ? 1 : -1;
+    if (r != 0) {
+        boolean increment = needIncrement(ldivisor, roundingMode, qsign, q, r);
+        return valueOf((increment ? q + qsign : q), scale);
+    } else {
+        if (preferredScale != scale)
+            return createAndStripZerosToMatchScale(q, scale, preferredScale);
+        else
+            return valueOf(q, scale);
+    }
+}

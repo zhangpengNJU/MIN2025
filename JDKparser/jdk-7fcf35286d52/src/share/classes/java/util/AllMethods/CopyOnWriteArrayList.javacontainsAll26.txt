@@ -1,0 +1,19 @@
+/**
+ * Returns {@code true} if this list contains all of the elements of the
+ * specified collection.
+ *
+ * @param c collection to be checked for containment in this list
+ * @return {@code true} if this list contains all of the elements of the
+ *         specified collection
+ * @throws NullPointerException if the specified collection is null
+ * @see #contains(Object)
+ */
+public boolean containsAll(Collection<?> c) {
+    Object[] elements = getArray();
+    int len = elements.length;
+    for (Object e : c) {
+        if (indexOf(e, elements, 0, len) < 0)
+            return false;
+    }
+    return true;
+}

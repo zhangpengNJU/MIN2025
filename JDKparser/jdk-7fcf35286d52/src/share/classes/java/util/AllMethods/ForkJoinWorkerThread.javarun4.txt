@@ -1,0 +1,26 @@
+/**
+ * This method is required to be public, but should never be
+ * called explicitly. It performs the main run loop to execute
+ * {@link ForkJoinTask}s.
+ */
+public void run() {
+    if (workQueue.array == null) {
+        // only run once
+        Throwable exception = null;
+        try {
+            onStart();
+            pool.runWorker(workQueue);
+        } catch (Throwable ex) {
+            exception = ex;
+        } finally {
+            try {
+                onTermination(exception);
+            } catch (Throwable ex) {
+                if (exception == null)
+                    exception = ex;
+            } finally {
+                pool.deregisterWorker(this, exception);
+            }
+        }
+    }
+}

@@ -1,0 +1,7 @@
+Object checkReceiver(Object recv) {
+    if (!refc.isInstance(recv)) {
+        String msg = String.format("Class %s does not implement the requested interface %s", recv.getClass().getName(), refc.getName());
+        throw new IncompatibleClassChangeError(msg);
+    }
+    return recv;
+}

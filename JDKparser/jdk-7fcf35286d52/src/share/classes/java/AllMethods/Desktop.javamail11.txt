@@ -1,0 +1,40 @@
+/**
+ * Launches the mail composing window of the user default mail
+ * client, filling the message fields specified by a {@code
+ * mailto:} URI.
+ *
+ * <p> A <code>mailto:</code> URI can specify message fields
+ * including <i>"to"</i>, <i>"cc"</i>, <i>"subject"</i>,
+ * <i>"body"</i>, etc.  See <a
+ * href="http://www.ietf.org/rfc/rfc2368.txt">The mailto URL
+ * scheme (RFC 2368)</a> for the {@code mailto:} URI specification
+ * details.
+ *
+ * @param mailtoURI the specified {@code mailto:} URI
+ * @throws NullPointerException if the specified URI is {@code
+ * null}
+ * @throws IllegalArgumentException if the URI scheme is not
+ *         <code>"mailto"</code>
+ * @throws UnsupportedOperationException if the current platform
+ * does not support the {@link Desktop.Action#MAIL} action
+ * @throws IOException if the user default mail client is not
+ * found or fails to be launched
+ * @throws SecurityException if a security manager exists and it
+ * denies the
+ * <code>AWTPermission("showWindowWithoutWarningBanner")</code>
+ * permission, or the calling thread is not allowed to create a
+ * subprocess
+ * @see java.net.URI
+ * @see java.awt.AWTPermission
+ */
+public void mail(URI mailtoURI) throws IOException {
+    checkAWTPermission();
+    checkExec();
+    checkActionSupport(Action.MAIL);
+    if (mailtoURI == null)
+        throw new NullPointerException();
+    if (!"mailto".equalsIgnoreCase(mailtoURI.getScheme())) {
+        throw new IllegalArgumentException("URI scheme is not \"mailto\"");
+    }
+    peer.mail(mailtoURI);
+}

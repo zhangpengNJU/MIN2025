@@ -1,0 +1,9 @@
+@Override
+public final IntStream skip(long n) {
+    if (n < 0)
+        throw new IllegalArgumentException(Long.toString(n));
+    if (n == 0)
+        return this;
+    else
+        return SliceOps.makeInt(this, n, -1);
+}

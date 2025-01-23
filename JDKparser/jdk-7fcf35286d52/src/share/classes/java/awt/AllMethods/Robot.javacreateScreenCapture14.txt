@@ -1,0 +1,42 @@
+/**
+ * Creates an image containing pixels read from the screen.  This image does
+ * not include the mouse cursor.
+ * @param   screenRect      Rect to capture in screen coordinates
+ * @return  The captured image
+ * @throws  IllegalArgumentException if <code>screenRect</code> width and height are not greater than zero
+ * @throws  SecurityException if <code>readDisplayPixels</code> permission is not granted
+ * @see     SecurityManager#checkPermission
+ * @see     AWTPermission
+ */
+public synchronized BufferedImage createScreenCapture(Rectangle screenRect) {
+    checkScreenCaptureAllowed();
+    checkValidRect(screenRect);
+    BufferedImage image;
+    DataBufferInt buffer;
+    WritableRaster raster;
+    if (screenCapCM == null) {
+        /*
+             * Fix for 4285201
+             * Create a DirectColorModel equivalent to the default RGB ColorModel,
+             * except with no Alpha component.
+             */
+        screenCapCM = new DirectColorModel(24, /* red mask */
+        0x00FF0000, /* green mask */
+        0x0000FF00, /* blue mask */
+        0x000000FF);
+    }
+    // need to sync the toolkit prior to grabbing the pixels since in some
+    // cases rendering to the screen may be delayed
+    Toolkit.getDefaultToolkit().sync();
+    int[] pixels;
+    int[] bandmasks = new int[3];
+    pixels = peer.getRGBPixels(screenRect);
+    buffer = new DataBufferInt(pixels, pixels.length);
+    bandmasks[0] = screenCapCM.getRedMask();
+    bandmasks[1] = screenCapCM.getGreenMask();
+    bandmasks[2] = screenCapCM.getBlueMask();
+    raster = Raster.createPackedRaster(buffer, screenRect.width, screenRect.height, screenRect.width, bandmasks, null);
+    SunWritableRaster.makeTrackable(buffer);
+    image = new BufferedImage(screenCapCM, raster, false, null);
+    return image;
+}

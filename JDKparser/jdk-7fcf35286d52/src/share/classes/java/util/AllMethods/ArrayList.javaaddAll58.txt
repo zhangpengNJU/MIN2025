@@ -1,0 +1,11 @@
+public boolean addAll(int index, Collection<? extends E> c) {
+    rangeCheckForAdd(index);
+    int cSize = c.size();
+    if (cSize == 0)
+        return false;
+    checkForComodification();
+    parent.addAll(parentOffset + index, c);
+    this.modCount = parent.modCount;
+    this.size += cSize;
+    return true;
+}

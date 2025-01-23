@@ -1,0 +1,14 @@
+/**
+ * Obtains an ISO local date-time from another date-time object.
+ * <p>
+ * This is equivalent to {@link LocalDateTime#from(TemporalAccessor)}.
+ *
+ * @param temporal  the date-time object to convert, not null
+ * @return the ISO local date-time, not null
+ * @throws DateTimeException if unable to create the date-time
+ */
+// override with covariant return type
+@Override
+public LocalDateTime localDateTime(TemporalAccessor temporal) {
+    return LocalDateTime.from(temporal);
+}

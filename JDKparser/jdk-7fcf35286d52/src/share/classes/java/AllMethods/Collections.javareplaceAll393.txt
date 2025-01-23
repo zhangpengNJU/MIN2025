@@ -1,0 +1,13 @@
+/**
+ * {@inheritDoc}
+ *
+ * @throws ClassCastException if the class of an element returned by the
+ *         operator prevents it from being added to this collection. The
+ *         exception may be thrown after some elements of the list have
+ *         already been replaced.
+ */
+@Override
+public void replaceAll(UnaryOperator<E> operator) {
+    Objects.requireNonNull(operator);
+    list.replaceAll(e -> typeCheck(operator.apply(e)));
+}

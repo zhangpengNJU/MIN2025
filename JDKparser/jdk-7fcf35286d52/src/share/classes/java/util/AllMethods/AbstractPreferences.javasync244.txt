@@ -1,0 +1,10 @@
+private void sync2() throws BackingStoreException {
+    AbstractPreferences[] cachedKids;
+    synchronized (lock) {
+        if (removed)
+            throw new IllegalStateException("Node has been removed");
+        syncSpi();
+        cachedKids = cachedChildren();
+    }
+    for (int i = 0; i < cachedKids.length; i++) cachedKids[i].sync2();
+}

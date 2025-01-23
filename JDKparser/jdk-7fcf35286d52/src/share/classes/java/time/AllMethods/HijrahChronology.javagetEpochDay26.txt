@@ -1,0 +1,21 @@
+/**
+ * Return the epoch day computed from Hijrah year, month, and day.
+ *
+ * @param prolepticYear the year to represent, 0-origin
+ * @param monthOfYear the month-of-year to represent, 1-origin
+ * @param dayOfMonth the day-of-month to represent, 1-origin
+ * @return the epoch day
+ */
+long getEpochDay(int prolepticYear, int monthOfYear, int dayOfMonth) {
+    // ensure that the chronology is initialized
+    checkCalendarInit();
+    checkValidMonth(monthOfYear);
+    int epochMonth = yearToEpochMonth(prolepticYear) + (monthOfYear - 1);
+    if (epochMonth < 0 || epochMonth >= hijrahEpochMonthStartDays.length) {
+        throw new DateTimeException("Invalid Hijrah date, year: " + prolepticYear + ", month: " + monthOfYear);
+    }
+    if (dayOfMonth < 1 || dayOfMonth > getMonthLength(prolepticYear, monthOfYear)) {
+        throw new DateTimeException("Invalid Hijrah day of month: " + dayOfMonth);
+    }
+    return epochMonthToEpochDay(epochMonth) + (dayOfMonth - 1);
+}

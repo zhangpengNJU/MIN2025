@@ -1,0 +1,89 @@
+/**
+ * Determines whether or not the interior of the arc intersects
+ * the interior of the specified rectangle.
+ *
+ * @param x The X coordinate of the rectangle's upper-left corner.
+ * @param y The Y coordinate of the rectangle's upper-left corner.
+ * @param w The width of the rectangle.
+ * @param h The height of the rectangle.
+ *
+ * @return <CODE>true</CODE> if the arc intersects the rectangle,
+ * <CODE>false</CODE> if the arc doesn't intersect the rectangle.
+ * @since 1.2
+ */
+public boolean intersects(double x, double y, double w, double h) {
+    double aw = getWidth();
+    double ah = getHeight();
+    if (w <= 0 || h <= 0 || aw <= 0 || ah <= 0) {
+        return false;
+    }
+    double ext = getAngleExtent();
+    if (ext == 0) {
+        return false;
+    }
+    double ax = getX();
+    double ay = getY();
+    double axw = ax + aw;
+    double ayh = ay + ah;
+    double xw = x + w;
+    double yh = y + h;
+    // check bbox
+    if (x >= axw || y >= ayh || xw <= ax || yh <= ay) {
+        return false;
+    }
+    // extract necessary data
+    double axc = getCenterX();
+    double ayc = getCenterY();
+    Point2D sp = getStartPoint();
+    Point2D ep = getEndPoint();
+    double sx = sp.getX();
+    double sy = sp.getY();
+    double ex = ep.getX();
+    double ey = ep.getY();
+    /*
+         * Try to catch rectangles that intersect arc in areas
+         * outside of rectagle with left top corner coordinates
+         * (min(center x, start point x, end point x),
+         *  min(center y, start point y, end point y))
+         * and rigth bottom corner coordinates
+         * (max(center x, start point x, end point x),
+         *  max(center y, start point y, end point y)).
+         * So we'll check axis segments outside of rectangle above.
+         */
+    if (ayc >= y && ayc <= yh) {
+        // 0 and 180
+        if ((sx < xw && ex < xw && axc < xw && axw > x && containsAngle(0)) || (sx > x && ex > x && axc > x && ax < xw && containsAngle(180))) {
+            return true;
+        }
+    }
+    if (axc >= x && axc <= xw) {
+        // 90 and 270
+        if ((sy > y && ey > y && ayc > y && ay < yh && containsAngle(90)) || (sy < yh && ey < yh && ayc < yh && ayh > y && containsAngle(270))) {
+            return true;
+        }
+    }
+    /*
+         * For PIE we should check intersection with pie slices;
+         * also we should do the same for arcs with extent is greater
+         * than 180, because we should cover case of rectangle, which
+         * situated between center of arc and chord, but does not
+         * intersect the chord.
+         */
+    Rectangle2D rect = new Rectangle2D.Double(x, y, w, h);
+    if (type == PIE || Math.abs(ext) > 180) {
+        // for PIE: try to find intersections with pie slices
+        if (rect.intersectsLine(axc, ayc, sx, sy) || rect.intersectsLine(axc, ayc, ex, ey)) {
+            return true;
+        }
+    } else {
+        // for CHORD and OPEN: try to find intersections with chord
+        if (rect.intersectsLine(sx, sy, ex, ey)) {
+            return true;
+        }
+    }
+    // finally check the rectangle corners inside the arc
+    if (contains(x, y) || contains(x + w, y) || contains(x, y + h) || contains(x + w, y + h)) {
+        return true;
+    }
+    return false;
+}

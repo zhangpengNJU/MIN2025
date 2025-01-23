@@ -1,0 +1,14 @@
+/**
+ * Returns the thread group into which to instantiate any new
+ * thread being created at the time this is being called.
+ * By default, it returns the thread group of the current
+ * thread. This should be overridden by a specific security
+ * manager to return the appropriate thread group.
+ *
+ * @return  ThreadGroup that new threads are instantiated into
+ * @since   JDK1.1
+ * @see     java.lang.ThreadGroup
+ */
+public ThreadGroup getThreadGroup() {
+    return Thread.currentThread().getThreadGroup();
+}

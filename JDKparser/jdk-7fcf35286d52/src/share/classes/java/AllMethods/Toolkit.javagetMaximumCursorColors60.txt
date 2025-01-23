@@ -1,0 +1,26 @@
+/**
+ * Returns the maximum number of colors the Toolkit supports in a custom cursor
+ * palette.<p>
+ * Note: if an image is used which has more colors in its palette than
+ * the supported maximum, the Toolkit implementation will attempt to flatten the
+ * palette to the maximum.  Since converting low-resolution images is difficult,
+ * no guarantees are made as to the quality of a cursor image which has more
+ * colors than the system supports.  It is therefore recommended that this method
+ * be called and an appropriate image used so no image conversion is made.
+ *
+ * @return    the maximum number of colors, or zero if custom cursors are not
+ * supported by this Toolkit implementation.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @since     1.2
+ */
+public int getMaximumCursorColors() throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    // Override to implement custom cursor support.
+    if (this != Toolkit.getDefaultToolkit()) {
+        return Toolkit.getDefaultToolkit().getMaximumCursorColors();
+    } else {
+        return 0;
+    }
+}

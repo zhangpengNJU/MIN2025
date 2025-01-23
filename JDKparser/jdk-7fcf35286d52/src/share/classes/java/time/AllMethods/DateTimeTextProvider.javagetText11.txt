@@ -1,0 +1,12 @@
+/**
+ * Gets the text for the specified field value, locale and style
+ * for the purpose of printing.
+ *
+ * @param value  the value to get text for, not null
+ * @param style  the style to get text for, not null
+ * @return the text for the field value, null if no text found
+ */
+String getText(long value, TextStyle style) {
+    Map<Long, String> map = valueTextMap.get(style);
+    return map != null ? map.get(value) : null;
+}

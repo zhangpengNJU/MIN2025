@@ -1,0 +1,24 @@
+private boolean authorizedIPv4(String cname, byte[] addr) {
+    String authHost = "";
+    InetAddress auth;
+    try {
+        authHost = "auth." + (addr[3] & 0xff) + "." + (addr[2] & 0xff) + "." + (addr[1] & 0xff) + "." + (addr[0] & 0xff) + ".in-addr.arpa";
+        // Following check seems unnecessary
+        // auth = InetAddress.getAllByName0(authHost, false)[0];
+        authHost = hostname + '.' + authHost;
+        auth = InetAddress.getAllByName0(authHost, false)[0];
+        if (auth.equals(InetAddress.getByAddress(addr))) {
+            return true;
+        }
+        Debug debug = getDebug();
+        if (debug != null && Debug.isOn("failure")) {
+            debug.println("socket access restriction: IP address of " + auth + " != " + InetAddress.getByAddress(addr));
+        }
+    } catch (UnknownHostException uhe) {
+        Debug debug = getDebug();
+        if (debug != null && Debug.isOn("failure")) {
+            debug.println("socket access restriction: forward lookup failed for " + authHost);
+        }
+    }
+    return false;
+}

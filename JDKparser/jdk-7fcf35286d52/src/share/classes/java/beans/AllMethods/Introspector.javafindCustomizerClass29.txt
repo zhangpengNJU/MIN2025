@@ -1,0 +1,14 @@
+private static Class<?> findCustomizerClass(Class<?> type) {
+    String name = type.getName() + "Customizer";
+    try {
+        type = ClassFinder.findClass(name, type.getClassLoader());
+        // Each customizer should inherit java.awt.Component and implement java.beans.Customizer
+        // according to the section 9.3 of JavaBeans&trade; specification
+        if (Component.class.isAssignableFrom(type) && Customizer.class.isAssignableFrom(type)) {
+            return type;
+        }
+    } catch (Exception exception) {
+    // ignore any exceptions
+    }
+    return null;
+}

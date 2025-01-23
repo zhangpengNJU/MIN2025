@@ -1,0 +1,20 @@
+/**
+ * Sets the designated parameter to the given <code>java.sql.Timestamp</code> value,
+ * using the given <code>Calendar</code> object.  The driver uses
+ * the <code>Calendar</code> object to construct an SQL <code>TIMESTAMP</code> value,
+ * which the driver then sends to the database.  With a
+ *  <code>Calendar</code> object, the driver can calculate the timestamp
+ * taking into account a custom timezone.  If no
+ * <code>Calendar</code> object is specified, the driver uses the default
+ * timezone, which is that of the virtual machine running the application.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2, ...
+ * @param x the parameter value
+ * @param cal the <code>Calendar</code> object the driver will use
+ *            to construct the timestamp
+ * @exception SQLException if parameterIndex does not correspond to a parameter
+ * marker in the SQL statement; if a database access error occurs or
+ * this method is called on a closed <code>PreparedStatement</code>
+ * @since 1.2
+ */
+void setTimestamp(int parameterIndex, java.sql.Timestamp x, Calendar cal) throws SQLException;

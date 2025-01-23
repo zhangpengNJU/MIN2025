@@ -1,0 +1,10 @@
+/**
+ * Validates that the temporal has the correct chronology.
+ */
+private void validateChrono(TemporalAccessor temporal) {
+    Objects.requireNonNull(temporal, "temporal");
+    Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
+    if (temporalChrono != null && chrono.equals(temporalChrono) == false) {
+        throw new DateTimeException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + temporalChrono.getId());
+    }
+}

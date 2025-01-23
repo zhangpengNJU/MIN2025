@@ -1,0 +1,29 @@
+/**
+ * Sets the cursor image to the specified cursor.  This cursor
+ * image is displayed when the <code>contains</code> method for
+ * this component returns true for the current cursor location, and
+ * this Component is visible, displayable, and enabled. Setting the
+ * cursor of a <code>Container</code> causes that cursor to be displayed
+ * within all of the container's subcomponents, except for those
+ * that have a non-<code>null</code> cursor.
+ * <p>
+ * The method may have no visual effect if the Java platform
+ * implementation and/or the native system do not support
+ * changing the mouse cursor shape.
+ * @param cursor One of the constants defined
+ *          by the <code>Cursor</code> class;
+ *          if this parameter is <code>null</code>
+ *          then this component will inherit
+ *          the cursor of its parent
+ * @see       #isEnabled
+ * @see       #isShowing
+ * @see       #getCursor
+ * @see       #contains
+ * @see       Toolkit#createCustomCursor
+ * @see       Cursor
+ * @since     JDK1.1
+ */
+public void setCursor(Cursor cursor) {
+    this.cursor = cursor;
+    updateCursorImmediately();
+}

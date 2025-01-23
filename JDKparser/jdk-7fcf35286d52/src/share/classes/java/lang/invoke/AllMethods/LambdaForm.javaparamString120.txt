@@ -1,0 +1,9 @@
+public String paramString() {
+    String s = toString();
+    Object c = constraint;
+    if (c == null)
+        return s;
+    if (c instanceof Class)
+        c = ((Class<?>) c).getSimpleName();
+    return s + "/" + c;
+}

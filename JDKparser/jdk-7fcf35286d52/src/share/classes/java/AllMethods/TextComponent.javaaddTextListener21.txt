@@ -1,0 +1,20 @@
+/**
+ * Adds the specified text event listener to receive text events
+ * from this text component.
+ * If <code>l</code> is <code>null</code>, no exception is
+ * thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param l the text event listener
+ * @see             #removeTextListener
+ * @see             #getTextListeners
+ * @see             java.awt.event.TextListener
+ */
+public synchronized void addTextListener(TextListener l) {
+    if (l == null) {
+        return;
+    }
+    textListener = AWTEventMulticaster.add(textListener, l);
+    newEventsOnly = true;
+}

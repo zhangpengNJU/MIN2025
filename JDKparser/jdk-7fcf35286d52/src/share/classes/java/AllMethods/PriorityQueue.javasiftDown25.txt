@@ -1,0 +1,14 @@
+/**
+ * Inserts item x at position k, maintaining heap invariant by
+ * demoting x down the tree repeatedly until it is less than or
+ * equal to its children or is a leaf.
+ *
+ * @param k the position to fill
+ * @param x the item to insert
+ */
+private void siftDown(int k, E x) {
+    if (comparator != null)
+        siftDownUsingComparator(k, x);
+    else
+        siftDownComparable(k, x);
+}

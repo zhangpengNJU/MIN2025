@@ -1,0 +1,15 @@
+/**
+ * Returns the localized resource of the given key and locale, or null
+ * if no localized resource is available.
+ *
+ * @param key  the key of the localized resource, not null
+ * @param locale  the locale, not null
+ * @return the localized resource, or null if not available
+ * @throws NullPointerException if key or locale is null
+ */
+@SuppressWarnings("unchecked")
+static <T> T getLocalizedResource(String key, Locale locale) {
+    LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
+    ResourceBundle rb = lr.getJavaTimeFormatData();
+    return rb.containsKey(key) ? (T) rb.getObject(key) : null;
+}

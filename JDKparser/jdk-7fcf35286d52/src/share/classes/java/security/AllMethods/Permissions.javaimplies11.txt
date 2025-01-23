@@ -1,0 +1,26 @@
+/**
+ * Check and see if this set of permissions implies the permissions
+ * expressed in "permission".
+ *
+ * @param permission the Permission object to compare
+ *
+ * @return true if "permission" is a proper subset of a permission in
+ * the set, false if not.
+ */
+public boolean implies(Permission permission) {
+    // attempt a fast lookup and implies. If that fails
+    // then enumerate through all the permissions.
+    synchronized (this) {
+        Permission p = permsMap.get(permission);
+        // If permission is found, then p.equals(permission)
+        if (p == null) {
+            for (Permission p_ : permsMap.values()) {
+                if (p_.implies(permission))
+                    return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+}

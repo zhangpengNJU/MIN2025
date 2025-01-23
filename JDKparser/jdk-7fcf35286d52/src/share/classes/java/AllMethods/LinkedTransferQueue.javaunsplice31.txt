@@ -1,0 +1,55 @@
+/* -------------- Removal methods -------------- */
+/**
+ * Unsplices (now or later) the given deleted/cancelled node with
+ * the given predecessor.
+ *
+ * @param pred a node that was at one time known to be the
+ * predecessor of s, or null or s itself if s is/was at head
+ * @param s the node to be unspliced
+ */
+final void unsplice(Node pred, Node s) {
+    // forget unneeded fields
+    s.forgetContents();
+    /*
+         * See above for rationale. Briefly: if pred still points to
+         * s, try to unlink s.  If s cannot be unlinked, because it is
+         * trailing node or pred might be unlinked, and neither pred
+         * nor s are head or offlist, add to sweepVotes, and if enough
+         * votes have accumulated, sweep.
+         */
+    if (pred != null && pred != s && pred.next == s) {
+        Node n = s.next;
+        if (n == null || (n != s && pred.casNext(s, n) && pred.isMatched())) {
+            for (; ; ) {
+                // check if at, or could be, head
+                Node h = head;
+                if (h == pred || h == s || h == null)
+                    // at head or list empty
+                    return;
+                if (!h.isMatched())
+                    break;
+                Node hn = h.next;
+                if (hn == null)
+                    // now empty
+                    return;
+                if (hn != h && casHead(h, hn))
+                    // advance head
+                    h.forgetNext();
+            }
+            if (pred.next != pred && s.next != s) {
+                // recheck if offlist
+                for (; ; ) {
+                    // sweep now if enough votes
+                    int v = sweepVotes;
+                    if (v < SWEEP_THRESHOLD) {
+                        if (casSweepVotes(v, v + 1))
+                            break;
+                    } else if (casSweepVotes(v, 0)) {
+                        sweep();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}

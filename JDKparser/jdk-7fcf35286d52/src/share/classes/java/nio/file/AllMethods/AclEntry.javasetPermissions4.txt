@@ -1,0 +1,23 @@
+/**
+ * Sets the permissions component of this builder. On return, the
+ * permissions component of this builder is a copy of the given set.
+ *
+ * @param   perms  the permissions component
+ * @return  this builder
+ *
+ * @throws  ClassCastException
+ *          if the set contains elements that are not of type {@code
+ *          AclEntryPermission}
+ */
+public Builder setPermissions(Set<AclEntryPermission> perms) {
+    if (perms.isEmpty()) {
+        // EnumSet.copyOf does not allow empty set
+        perms = Collections.emptySet();
+    } else {
+        // copy and check for erroneous elements
+        perms = EnumSet.copyOf(perms);
+        checkSet(perms, AclEntryPermission.class);
+    }
+    this.perms = perms;
+    return this;
+}

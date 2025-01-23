@@ -1,0 +1,14 @@
+/**
+ * update an array of bytes.
+ */
+public void update(int n, byte[] b, int off, int len, ManifestEntryVerifier mev) throws IOException {
+    if (n != -1) {
+        if (parsingBlockOrSF) {
+            baos.write(b, off, n);
+        } else {
+            mev.update(b, off, n);
+        }
+    } else {
+        processEntry(mev);
+    }
+}

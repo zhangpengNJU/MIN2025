@@ -1,0 +1,16 @@
+/**
+ * Compares the equality of two collation objects.
+ * @param obj the table-based collation object to be compared with this.
+ * @return true if the current table-based collation object is the same
+ * as the table-based collation object obj; false otherwise.
+ */
+public boolean equals(Object obj) {
+    if (obj == null)
+        return false;
+    // super does class check
+    if (!super.equals(obj))
+        return false;
+    RuleBasedCollator other = (RuleBasedCollator) obj;
+    // all other non-transient information is also contained in rules.
+    return (getRules().equals(other.getRules()));
+}

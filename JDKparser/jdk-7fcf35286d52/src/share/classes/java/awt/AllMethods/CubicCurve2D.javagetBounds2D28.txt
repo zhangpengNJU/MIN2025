@@ -1,0 +1,11 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public Rectangle2D getBounds2D() {
+    double left = Math.min(Math.min(x1, x2), Math.min(ctrlx1, ctrlx2));
+    double top = Math.min(Math.min(y1, y2), Math.min(ctrly1, ctrly2));
+    double right = Math.max(Math.max(x1, x2), Math.max(ctrlx1, ctrlx2));
+    double bottom = Math.max(Math.max(y1, y2), Math.max(ctrly1, ctrly2));
+    return new Rectangle2D.Double(left, top, right - left, bottom - top);
+}

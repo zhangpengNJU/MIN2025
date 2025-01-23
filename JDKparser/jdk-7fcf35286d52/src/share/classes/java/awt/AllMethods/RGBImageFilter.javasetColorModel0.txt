@@ -1,0 +1,27 @@
+/**
+ * If the ColorModel is an IndexColorModel and the subclass has
+ * set the canFilterIndexColorModel flag to true, we substitute
+ * a filtered version of the color model here and wherever
+ * that original ColorModel object appears in the setPixels methods.
+ * If the ColorModel is not an IndexColorModel or is null, this method
+ * overrides the default ColorModel used by the ImageProducer and
+ * specifies the default RGB ColorModel instead.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ImageConsumer
+ * @see ColorModel#getRGBdefault
+ */
+public void setColorModel(ColorModel model) {
+    if (canFilterIndexColorModel && (model instanceof IndexColorModel)) {
+        ColorModel newcm = filterIndexColorModel((IndexColorModel) model);
+        substituteColorModel(model, newcm);
+        consumer.setColorModel(newcm);
+    } else {
+        consumer.setColorModel(ColorModel.getRGBdefault());
+    }
+}

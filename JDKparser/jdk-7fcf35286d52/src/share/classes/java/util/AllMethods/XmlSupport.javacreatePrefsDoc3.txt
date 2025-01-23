@@ -1,0 +1,12 @@
+/**
+ * Create a new prefs XML document.
+ */
+private static Document createPrefsDoc(String qname) {
+    try {
+        DOMImplementation di = DocumentBuilderFactory.newInstance().newDocumentBuilder().getDOMImplementation();
+        DocumentType dt = di.createDocumentType(qname, null, PREFS_DTD_URI);
+        return di.createDocument(null, qname, dt);
+    } catch (ParserConfigurationException e) {
+        throw new AssertionError(e);
+    }
+}

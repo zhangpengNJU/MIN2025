@@ -1,0 +1,11 @@
+@Override
+@SuppressWarnings("unchecked")
+final <P_IN> Node<E_OUT> evaluate(Spliterator<P_IN> spliterator, boolean flatten, IntFunction<E_OUT[]> generator) {
+    if (isParallel()) {
+        // @@@ Optimize if op of this pipeline stage is a stateful op
+        return evaluateToNode(this, spliterator, flatten, generator);
+    } else {
+        Node.Builder<E_OUT> nb = makeNodeBuilder(exactOutputSizeIfKnown(spliterator), generator);
+        return wrapAndCopyInto(nb, spliterator).build();
+    }
+}

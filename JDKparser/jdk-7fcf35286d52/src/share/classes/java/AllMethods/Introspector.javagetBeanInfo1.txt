@@ -1,0 +1,24 @@
+/**
+ * Introspect on a Java bean and learn about all its properties, exposed
+ * methods, and events, subject to some control flags.
+ * <p>
+ * If the BeanInfo class for a Java Bean has been previously Introspected
+ * based on the same arguments then the BeanInfo class is retrieved
+ * from the BeanInfo cache.
+ *
+ * @param beanClass  The bean class to be analyzed.
+ * @param flags  Flags to control the introspection.
+ *     If flags == USE_ALL_BEANINFO then we use all of the BeanInfo
+ *          classes we can discover.
+ *     If flags == IGNORE_IMMEDIATE_BEANINFO then we ignore any
+ *           BeanInfo associated with the specified beanClass.
+ *     If flags == IGNORE_ALL_BEANINFO then we ignore all BeanInfo
+ *           associated with the specified beanClass or any of its
+ *           parent classes.
+ * @return  A BeanInfo object describing the target bean.
+ * @exception IntrospectionException if an exception occurs during
+ *              introspection.
+ */
+public static BeanInfo getBeanInfo(Class<?> beanClass, int flags) throws IntrospectionException {
+    return getBeanInfo(beanClass, null, flags);
+}

@@ -1,0 +1,17 @@
+/**
+ * Takes a task in FIFO order if b is base of queue and a task
+ * can be claimed without contention. Specialized versions
+ * appear in ForkJoinPool methods scan and helpStealer.
+ */
+final ForkJoinTask<?> pollAt(int b) {
+    ForkJoinTask<?> t;
+    ForkJoinTask<?>[] a;
+    if ((a = array) != null) {
+        int j = (((a.length - 1) & b) << ASHIFT) + ABASE;
+        if ((t = (ForkJoinTask<?>) U.getObjectVolatile(a, j)) != null && base == b && U.compareAndSwapObject(a, j, t, null)) {
+            base = b + 1;
+            return t;
+        }
+    }
+    return null;
+}

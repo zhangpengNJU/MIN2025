@@ -1,0 +1,15 @@
+/**
+ * Modifies or replaces the task used to execute a callable.
+ * This method can be used to override the concrete
+ * class used for managing internal tasks.
+ * The default implementation simply returns the given task.
+ *
+ * @param callable the submitted Callable
+ * @param task the task created to execute the callable
+ * @param <V> the type of the task's result
+ * @return a task that can execute the callable
+ * @since 1.6
+ */
+protected <V> RunnableScheduledFuture<V> decorateTask(Callable<V> callable, RunnableScheduledFuture<V> task) {
+    return task;
+}

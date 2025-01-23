@@ -1,0 +1,41 @@
+/**
+ * Decode the end rule and validate the parameters.  This method is exactly
+ * analogous to decodeStartRule().
+ * @see decodeStartRule
+ */
+private void decodeEndRule() {
+    useDaylight = (startDay != 0) && (endDay != 0);
+    if (endDay != 0) {
+        if (endMonth < Calendar.JANUARY || endMonth > Calendar.DECEMBER) {
+            throw new IllegalArgumentException("Illegal end month " + endMonth);
+        }
+        if (endTime < 0 || endTime > millisPerDay) {
+            throw new IllegalArgumentException("Illegal end time " + endTime);
+        }
+        if (endDayOfWeek == 0) {
+            endMode = DOM_MODE;
+        } else {
+            if (endDayOfWeek > 0) {
+                endMode = DOW_IN_MONTH_MODE;
+            } else {
+                endDayOfWeek = -endDayOfWeek;
+                if (endDay > 0) {
+                    endMode = DOW_GE_DOM_MODE;
+                } else {
+                    endDay = -endDay;
+                    endMode = DOW_LE_DOM_MODE;
+                }
+            }
+            if (endDayOfWeek > Calendar.SATURDAY) {
+                throw new IllegalArgumentException("Illegal end day of week " + endDayOfWeek);
+            }
+        }
+        if (endMode == DOW_IN_MONTH_MODE) {
+            if (endDay < -5 || endDay > 5) {
+                throw new IllegalArgumentException("Illegal end day of week in month " + endDay);
+            }
+        } else if (endDay < 1 || endDay > staticMonthLength[endMonth]) {
+            throw new IllegalArgumentException("Illegal end day " + endDay);
+        }
+    }
+}

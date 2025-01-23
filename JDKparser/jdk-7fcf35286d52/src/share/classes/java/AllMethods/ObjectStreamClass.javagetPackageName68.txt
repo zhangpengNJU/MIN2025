@@ -1,0 +1,12 @@
+/**
+ * Returns package name of given class.
+ */
+private static String getPackageName(Class<?> cl) {
+    String s = cl.getName();
+    int i = s.lastIndexOf('[');
+    if (i >= 0) {
+        s = s.substring(i + 2);
+    }
+    i = s.lastIndexOf('.');
+    return (i >= 0) ? s.substring(0, i) : "";
+}

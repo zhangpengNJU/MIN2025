@@ -1,0 +1,8 @@
+/**
+ * Return true if a nonzero BigDecimal has an absolute value less
+ * than one; i.e. only has fraction digits.
+ */
+private boolean fractionOnly() {
+    assert this.signum() != 0;
+    return (this.precision() - this.scale) <= 0;
+}

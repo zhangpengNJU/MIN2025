@@ -1,0 +1,8 @@
+/**
+ * Block inlining during JIT-compilation of a target method handle if it hasn't been invoked enough times.
+ * Corresponding LambdaForm has @DontInline when compiled into bytecode.
+ */
+static MethodHandle makeBlockInlningWrapper(MethodHandle target) {
+    LambdaForm lform = PRODUCE_BLOCK_INLINING_FORM.apply(target);
+    return new CountingWrapper(target, lform, PRODUCE_BLOCK_INLINING_FORM, PRODUCE_REINVOKER_FORM, DONT_INLINE_THRESHOLD);
+}

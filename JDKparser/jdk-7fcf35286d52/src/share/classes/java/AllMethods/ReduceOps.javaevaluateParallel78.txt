@@ -1,0 +1,4 @@
+@Override
+public <P_IN> R evaluateParallel(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
+    return new ReduceTask<>(this, helper, spliterator).invoke().get();
+}

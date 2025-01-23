@@ -1,0 +1,5 @@
+public NavigableMap<K, V> headMap(K toKey, boolean inclusive) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableMap<>(nm.headMap(toKey, inclusive), mutex);
+    }
+}

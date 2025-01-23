@@ -1,0 +1,12 @@
+/**
+ * Creates the <code>Scrollbar</code>'s peer.  The peer allows you to modify
+ * the appearance of the <code>Scrollbar</code> without changing any of its
+ * functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createScrollbar(this);
+        super.addNotify();
+    }
+}

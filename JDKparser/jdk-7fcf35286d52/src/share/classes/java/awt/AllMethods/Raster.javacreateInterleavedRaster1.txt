@@ -1,0 +1,35 @@
+/**
+ * Creates a Raster based on a PixelInterleavedSampleModel with the
+ * specified data type, width, height, and number of bands.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  If location is null, (0, 0) will be used.
+ * The dataType parameter should be one of the enumerated values
+ * defined in the DataBuffer class.
+ *
+ * <p> Note that interleaved <code>DataBuffer.TYPE_INT</code>
+ * Rasters are not supported.  To create a 1-band Raster of type
+ * <code>DataBuffer.TYPE_INT</code>, use
+ * Raster.createPackedRaster().
+ * <p> The only dataTypes supported currently are TYPE_BYTE
+ * and TYPE_USHORT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param bands     the number of bands
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height and number of bands.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ */
+public static WritableRaster createInterleavedRaster(int dataType, int w, int h, int bands, Point location) {
+    int[] bandOffsets = new int[bands];
+    for (int i = 0; i < bands; i++) {
+        bandOffsets[i] = i;
+    }
+    return createInterleavedRaster(dataType, w, h, w * bands, bands, bandOffsets, location);
+}

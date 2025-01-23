@@ -1,0 +1,9 @@
+@Override
+public int characteristics() {
+    if (beforeSplit) {
+        // Concatenation loses DISTINCT and SORTED characteristics
+        return aSpliterator.characteristics() & bSpliterator.characteristics() & ~(Spliterator.DISTINCT | Spliterator.SORTED | (unsized ? Spliterator.SIZED | Spliterator.SUBSIZED : 0));
+    } else {
+        return bSpliterator.characteristics();
+    }
+}

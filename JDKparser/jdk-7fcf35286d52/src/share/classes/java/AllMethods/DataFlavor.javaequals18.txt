@@ -1,0 +1,24 @@
+/**
+ * {@inheritDoc}
+ * <p>
+ * The equals comparison for the {@code DataFlavor} class is implemented
+ * as follows: Two <code>DataFlavor</code>s are considered equal if and
+ * only if their MIME primary type and subtype and representation class are
+ * equal. Additionally, if the primary type is "text", the subtype denotes
+ * a text flavor which supports the charset parameter, and the
+ * representation class is not <code>java.io.Reader</code>,
+ * <code>java.lang.String</code>, <code>java.nio.CharBuffer</code>, or
+ * <code>[C</code>, the <code>charset</code> parameter must also be equal.
+ * If a charset is not explicitly specified for one or both
+ * <code>DataFlavor</code>s, the platform default encoding is assumed. See
+ * <code>selectBestTextFlavor</code> for a list of text flavors which
+ * support the charset parameter.
+ *
+ * @param o the <code>Object</code> to compare with <code>this</code>
+ * @return <code>true</code> if <code>that</code> is equivalent to this
+ *         <code>DataFlavor</code>; <code>false</code> otherwise
+ * @see #selectBestTextFlavor
+ */
+public boolean equals(Object o) {
+    return ((o instanceof DataFlavor) && equals((DataFlavor) o));
+}

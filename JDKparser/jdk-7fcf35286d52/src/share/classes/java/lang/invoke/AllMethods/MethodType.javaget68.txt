@@ -1,0 +1,20 @@
+/**
+ * Get the existing interned element.
+ * This method returns null if no element is interned.
+ *
+ * @param elem element to look up
+ * @return the interned element
+ */
+public T get(T elem) {
+    if (elem == null)
+        throw new NullPointerException();
+    expungeStaleElements();
+    WeakEntry<T> value = map.get(new WeakEntry<>(elem));
+    if (value != null) {
+        T res = value.get();
+        if (res != null) {
+            return res;
+        }
+    }
+    return null;
+}

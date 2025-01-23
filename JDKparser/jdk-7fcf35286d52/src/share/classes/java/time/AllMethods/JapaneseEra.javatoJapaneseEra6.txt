@@ -1,0 +1,8 @@
+static JapaneseEra toJapaneseEra(sun.util.calendar.Era privateEra) {
+    for (int i = ERA_CONFIG.length - 1; i >= 0; i--) {
+        if (ERA_CONFIG[i].equals(privateEra)) {
+            return KNOWN_ERAS[i];
+        }
+    }
+    return null;
+}

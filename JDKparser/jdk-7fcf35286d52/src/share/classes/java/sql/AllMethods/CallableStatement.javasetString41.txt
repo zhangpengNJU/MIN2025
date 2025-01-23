@@ -1,0 +1,19 @@
+/**
+ * Sets the designated parameter to the given Java <code>String</code> value.
+ * The driver converts this
+ * to an SQL <code>VARCHAR</code> or <code>LONGVARCHAR</code> value
+ * (depending on the argument's
+ * size relative to the driver's limits on <code>VARCHAR</code> values)
+ * when it sends it to the database.
+ *
+ * @param parameterName the name of the parameter
+ * @param x the parameter value
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #getString
+ * @since 1.4
+ */
+void setString(String parameterName, String x) throws SQLException;

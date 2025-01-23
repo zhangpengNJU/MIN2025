@@ -1,0 +1,26 @@
+/**
+ * Sets the designated parameter to the given <code>Reader</code>
+ * object.
+ * When a very large UNICODE value is input to a <code>LONGVARCHAR</code>
+ * parameter, it may be more practical to send it via a
+ * <code>java.io.Reader</code> object. The data will be read from the stream
+ * as needed until end-of-file is reached.  The JDBC driver will
+ * do any necessary conversion from UNICODE to the database char format.
+ *
+ * <P><B>Note:</B> This stream object can either be a standard
+ * Java stream object or your own subclass that implements the
+ * standard interface.
+ * <P><B>Note:</B> Consult your JDBC driver documentation to determine if
+ * it might be more efficient to use a version of
+ * <code>setCharacterStream</code> which takes a length parameter.
+ *
+ * @param parameterName the name of the parameter
+ * @param reader the <code>java.io.Reader</code> object that contains the
+ *        Unicode data
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ * @since 1.6
+ */
+void setCharacterStream(String parameterName, java.io.Reader reader) throws SQLException;

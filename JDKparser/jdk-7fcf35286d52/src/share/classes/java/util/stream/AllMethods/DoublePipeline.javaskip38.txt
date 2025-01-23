@@ -1,0 +1,11 @@
+@Override
+public final DoubleStream skip(long n) {
+    if (n < 0)
+        throw new IllegalArgumentException(Long.toString(n));
+    if (n == 0)
+        return this;
+    else {
+        long limit = -1;
+        return SliceOps.makeDouble(this, n, limit);
+    }
+}

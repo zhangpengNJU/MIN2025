@@ -1,0 +1,15 @@
+/**
+ * We have just overwritten the name at pos1 with the name at pos2.
+ *  This means that there are two copies of the name, which we will have to fix later.
+ */
+private void noteDuplicate(int pos1, int pos2) {
+    Name n = names[pos1];
+    assert (n == names[pos2]);
+    // something was replaced at pos1
+    assert (originalNames[pos1] != null);
+    assert (originalNames[pos2] == null || originalNames[pos2] == n);
+    if (dups == null) {
+        dups = new ArrayList<>();
+    }
+    dups.add(n);
+}

@@ -1,0 +1,12 @@
+boolean study(TreeInfo info) {
+    if (type != INDEPENDENT) {
+        int minL = info.minLength;
+        atom.study(info);
+        info.minLength = minL;
+        info.deterministic = false;
+        return next.study(info);
+    } else {
+        atom.study(info);
+        return next.study(info);
+    }
+}

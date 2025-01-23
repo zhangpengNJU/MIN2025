@@ -1,0 +1,11 @@
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    // Note, the "size" property will be set here.
+    super.initialize(type, oldInstance, newInstance, out);
+    javax.swing.DefaultListModel<?> m = (javax.swing.DefaultListModel<?>) oldInstance;
+    javax.swing.DefaultListModel<?> n = (javax.swing.DefaultListModel<?>) newInstance;
+    for (int i = n.getSize(); i < m.getSize(); i++) {
+        invokeStatement(// Can also use "addElement".
+        oldInstance, // Can also use "addElement".
+        "add", new Object[] { m.getElementAt(i) }, out);
+    }
+}

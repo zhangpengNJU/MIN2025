@@ -1,0 +1,7 @@
+// Returns the distance (in bytes) of the buffer from the page aligned address
+// of the mapping. Computed each time to avoid storing in every direct buffer.
+private long mappingOffset() {
+    int ps = Bits.pageSize();
+    long offset = address % ps;
+    return (offset >= 0) ? offset : (ps + offset);
+}

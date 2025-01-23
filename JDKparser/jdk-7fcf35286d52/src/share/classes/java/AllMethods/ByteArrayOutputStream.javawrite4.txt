@@ -1,0 +1,16 @@
+/**
+ * Writes <code>len</code> bytes from the specified byte array
+ * starting at offset <code>off</code> to this byte array output stream.
+ *
+ * @param   b     the data.
+ * @param   off   the start offset in the data.
+ * @param   len   the number of bytes to write.
+ */
+public synchronized void write(byte[] b, int off, int len) {
+    if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) - b.length > 0)) {
+        throw new IndexOutOfBoundsException();
+    }
+    ensureCapacity(count + len);
+    System.arraycopy(b, off, buf, count, len);
+    count += len;
+}

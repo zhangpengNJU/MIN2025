@@ -1,0 +1,43 @@
+// Finds the specified pattern in the buffer up to horizon.
+// Returns a match for the specified input pattern.
+private String findPatternInBuffer(Pattern pattern, int horizon) {
+    matchValid = false;
+    matcher.usePattern(pattern);
+    int bufferLimit = buf.limit();
+    int horizonLimit = -1;
+    int searchLimit = bufferLimit;
+    if (horizon > 0) {
+        horizonLimit = position + horizon;
+        if (horizonLimit < bufferLimit)
+            searchLimit = horizonLimit;
+    }
+    matcher.region(position, searchLimit);
+    if (matcher.find()) {
+        if (matcher.hitEnd() && (!sourceClosed)) {
+            // The match may be longer if didn't hit horizon or real end
+            if (searchLimit != horizonLimit) {
+                // Hit an artificial end; try to extend the match
+                needInput = true;
+                return null;
+            }
+            // The match could go away depending on what is next
+            if ((searchLimit == horizonLimit) && matcher.requireEnd()) {
+                // Rare case: we hit the end of input and it happens
+                // that it is at the horizon and the end of input is
+                // required for the match.
+                needInput = true;
+                return null;
+            }
+        }
+        // Did not hit end, or hit real end, or hit horizon
+        position = matcher.end();
+        return matcher.group();
+    }
+    if (sourceClosed)
+        return null;
+    // If there is no specified horizon, or if we have not searched
+    // to the specified horizon yet, get more input
+    if ((horizon == 0) || (searchLimit != horizonLimit))
+        needInput = true;
+    return null;
+}

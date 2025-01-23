@@ -1,0 +1,10 @@
+@Override
+public Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+    Objects.requireNonNull(sink);
+    if (StreamOpFlag.SORTED.isKnown(flags))
+        return sink;
+    else if (StreamOpFlag.SIZED.isKnown(flags))
+        return new SizedIntSortingSink(sink);
+    else
+        return new IntSortingSink(sink);
+}

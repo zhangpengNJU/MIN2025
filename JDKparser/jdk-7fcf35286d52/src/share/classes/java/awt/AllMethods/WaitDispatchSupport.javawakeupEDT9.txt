@@ -1,0 +1,7 @@
+private void wakeupEDT() {
+    if (log.isLoggable(PlatformLogger.Level.FINEST)) {
+        log.finest("wakeupEDT(): EDT == " + dispatchThread);
+    }
+    EventQueue eq = dispatchThread.getEventQueue();
+    eq.postEvent(new PeerEvent(this, wakingRunnable, PeerEvent.PRIORITY_EVENT));
+}

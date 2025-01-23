@@ -1,0 +1,19 @@
+/**
+ * Sets this Calendar's current time from the given long value.
+ *
+ * @param millis the new time in UTC milliseconds from the epoch.
+ * @see #setTime(Date)
+ * @see #getTimeInMillis()
+ */
+public void setTimeInMillis(long millis) {
+    // If we don't need to recalculate the calendar field values,
+    // do nothing.
+    if (time == millis && isTimeSet && areFieldsSet && areAllFieldsSet && (zone instanceof ZoneInfo) && !((ZoneInfo) zone).isDirty()) {
+        return;
+    }
+    time = millis;
+    isTimeSet = true;
+    areFieldsSet = false;
+    computeFields();
+    areAllFieldsSet = areFieldsSet = true;
+}

@@ -1,0 +1,4 @@
+// Support for resetting map in clone
+private void setMap(ConcurrentNavigableMap<E, Object> map) {
+    UNSAFE.putObjectVolatile(this, mapOffset, map);
+}

@@ -1,0 +1,11 @@
+/**
+ * Obtains an instance from an {@code Instant}.
+ *
+ * @param instant  the instant to create the date-time from, not null
+ * @param zone  the time-zone to use, validated not null
+ * @return the zoned date-time, validated not null
+ */
+@SuppressWarnings("unchecked")
+private ChronoZonedDateTimeImpl<D> create(Instant instant, ZoneId zone) {
+    return (ChronoZonedDateTimeImpl<D>) ofInstant(getChronology(), instant, zone);
+}

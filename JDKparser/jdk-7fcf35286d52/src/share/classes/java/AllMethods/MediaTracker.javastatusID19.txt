@@ -1,0 +1,28 @@
+/**
+ * Calculates and returns the bitwise inclusive <b>OR</b> of the
+ * status of all media with the specified identifier that are
+ * tracked by this media tracker.
+ * <p>
+ * Possible flags defined by the
+ * <code>MediaTracker</code> class are <code>LOADING</code>,
+ * <code>ABORTED</code>, <code>ERRORED</code>, and
+ * <code>COMPLETE</code>. An image that hasn't started
+ * loading has zero as its status.
+ * <p>
+ * If the value of <code>load</code> is <code>true</code>, then
+ * this method starts loading any images that are not yet being loaded.
+ * @param        id   the identifier of the images to check
+ * @param        load   if <code>true</code>, start loading
+ *                            any images that are not yet being loaded
+ * @return       the bitwise inclusive <b>OR</b> of the status of
+ *                            all of the media with the specified
+ *                            identifier that are being tracked
+ * @see          java.awt.MediaTracker#statusAll(boolean)
+ * @see          java.awt.MediaTracker#LOADING
+ * @see          java.awt.MediaTracker#ABORTED
+ * @see          java.awt.MediaTracker#ERRORED
+ * @see          java.awt.MediaTracker#COMPLETE
+ */
+public int statusID(int id, boolean load) {
+    return statusID(id, load, true);
+}

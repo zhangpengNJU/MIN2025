@@ -1,0 +1,30 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y) {
+    if (isEmpty()) {
+        return false;
+    }
+    double rrx0 = getX();
+    double rry0 = getY();
+    double rrx1 = rrx0 + getWidth();
+    double rry1 = rry0 + getHeight();
+    // Check for trivial rejection - point is outside bounding rectangle
+    if (x < rrx0 || y < rry0 || x >= rrx1 || y >= rry1) {
+        return false;
+    }
+    double aw = Math.min(getWidth(), Math.abs(getArcWidth())) / 2.0;
+    double ah = Math.min(getHeight(), Math.abs(getArcHeight())) / 2.0;
+    // Check which corner point is in and do circular containment
+    // test - otherwise simple acceptance
+    if (x >= (rrx0 += aw) && x < (rrx0 = rrx1 - aw)) {
+        return true;
+    }
+    if (y >= (rry0 += ah) && y < (rry0 = rry1 - ah)) {
+        return true;
+    }
+    x = (x - rrx0) / aw;
+    y = (y - rry0) / ah;
+    return (x * x + y * y <= 1.0);
+}

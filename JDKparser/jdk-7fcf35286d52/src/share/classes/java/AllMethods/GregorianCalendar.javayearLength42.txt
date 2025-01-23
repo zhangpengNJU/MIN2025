@@ -1,0 +1,11 @@
+/**
+ * Returns the length (in days) of the year provided by
+ * internalGet(YEAR).
+ */
+private int yearLength() {
+    int year = internalGet(YEAR);
+    if (internalGetEra() == BCE) {
+        year = 1 - year;
+    }
+    return yearLength(year);
+}

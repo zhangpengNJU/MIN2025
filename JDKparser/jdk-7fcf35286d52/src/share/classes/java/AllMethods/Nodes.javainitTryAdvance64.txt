@@ -1,0 +1,22 @@
+@SuppressWarnings("unchecked")
+protected final boolean initTryAdvance() {
+    if (curNode == null)
+        return false;
+    if (tryAdvanceSpliterator == null) {
+        if (lastNodeSpliterator == null) {
+            // Initiate the node stack
+            tryAdvanceStack = initStack();
+            N leaf = findNextLeafNode(tryAdvanceStack);
+            if (leaf != null)
+                tryAdvanceSpliterator = (S) leaf.spliterator();
+            else {
+                // A non-empty leaf node was not found
+                // No elements to traverse
+                curNode = null;
+                return false;
+            }
+        } else
+            tryAdvanceSpliterator = lastNodeSpliterator;
+    }
+    return true;
+}

@@ -1,0 +1,59 @@
+// [<userinfo>@]<host>[:<port>]
+// 
+private int parseServer(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q;
+    // userinfo
+    q = scan(p, n, "/?#", "@");
+    if ((q >= p) && at(q, n, '@')) {
+        checkChars(p, q, L_USERINFO, H_USERINFO, "user info");
+        userInfo = substring(p, q);
+        // Skip '@'
+        p = q + 1;
+    }
+    // hostname, IPv4 address, or IPv6 address
+    if (at(p, n, '[')) {
+        // DEVIATION from RFC2396: Support IPv6 addresses, per RFC2732
+        p++;
+        q = scan(p, n, "/?#", "]");
+        if ((q > p) && at(q, n, ']')) {
+            // look for a "%" scope id
+            int r = scan(p, q, "", "%");
+            if (r > p) {
+                parseIPv6Reference(p, r);
+                if (r + 1 == q) {
+                    fail("scope id expected");
+                }
+                checkChars(r + 1, q, L_ALPHANUM, H_ALPHANUM, "scope id");
+            } else {
+                parseIPv6Reference(p, q);
+            }
+            host = substring(p - 1, q + 1);
+            p = q + 1;
+        } else {
+            failExpecting("closing bracket for IPv6 address", q);
+        }
+    } else {
+        q = parseIPv4Address(p, n);
+        if (q <= p)
+            q = parseHostname(p, n);
+        p = q;
+    }
+    // port
+    if (at(p, n, ':')) {
+        p++;
+        q = scan(p, n, "", "/");
+        if (q > p) {
+            checkChars(p, q, L_DIGIT, H_DIGIT, "port number");
+            try {
+                port = Integer.parseInt(substring(p, q));
+            } catch (NumberFormatException x) {
+                fail("Malformed port number", p);
+            }
+            p = q;
+        }
+    }
+    if (p < n)
+        failExpecting("port number", p);
+    return p;
+}

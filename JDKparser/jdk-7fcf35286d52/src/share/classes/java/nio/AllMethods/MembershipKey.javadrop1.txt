@@ -1,0 +1,21 @@
+/**
+ * Drop membership.
+ *
+ * <p> If the membership key represents a membership to receive all datagrams
+ * then the membership is dropped and the channel will no longer receive any
+ * datagrams sent to the group. If the membership key is source-specific
+ * then the channel will no longer receive datagrams sent to the group from
+ * that source address.
+ *
+ * <p> After membership is dropped it may still be possible to receive
+ * datagrams sent to the group. This can arise when datagrams are waiting to
+ * be received in the socket's receive buffer. After membership is dropped
+ * then the channel may {@link MulticastChannel#join join} the group again
+ * in which case a new membership key is returned.
+ *
+ * <p> Upon return, this membership object will be {@link #isValid() invalid}.
+ * If the multicast group membership is already invalid then invoking this
+ * method has no effect. Once a multicast group membership is invalid,
+ * it remains invalid forever.
+ */
+public abstract void drop();

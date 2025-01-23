@@ -1,0 +1,16 @@
+private void printInteger(Object arg, Locale l) throws IOException {
+    if (arg == null)
+        print("null");
+    else if (arg instanceof Byte)
+        print(((Byte) arg).byteValue(), l);
+    else if (arg instanceof Short)
+        print(((Short) arg).shortValue(), l);
+    else if (arg instanceof Integer)
+        print(((Integer) arg).intValue(), l);
+    else if (arg instanceof Long)
+        print(((Long) arg).longValue(), l);
+    else if (arg instanceof BigInteger)
+        print(((BigInteger) arg), l);
+    else
+        failConversion(c, arg);
+}

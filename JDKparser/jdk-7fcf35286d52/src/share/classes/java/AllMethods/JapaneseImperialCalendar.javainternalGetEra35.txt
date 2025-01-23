@@ -1,0 +1,7 @@
+/**
+ * Returns the ERA.  We need a special method for this because the
+ * default ERA is the current era, but a zero (unset) ERA means before Meiji.
+ */
+private int internalGetEra() {
+    return isSet(ERA) ? internalGet(ERA) : currentEra;
+}

@@ -1,0 +1,8 @@
+public void set(E e) {
+    if (lastRet == -1)
+        throw new IllegalStateException();
+    synchronized (Vector.this) {
+        checkForComodification();
+        Vector.this.set(lastRet, e);
+    }
+}

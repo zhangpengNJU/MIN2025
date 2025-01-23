@@ -1,0 +1,12 @@
+public T call() throws Exception {
+    try {
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
+
+            public T run() throws Exception {
+                return task.call();
+            }
+        }, acc);
+    } catch (PrivilegedActionException e) {
+        throw e.getException();
+    }
+}

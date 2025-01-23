@@ -1,0 +1,12 @@
+/**
+ * Obtains an instance of {@code LocalDateTime} from a date and time.
+ *
+ * @param date  the local date, not null
+ * @param time  the local time, not null
+ * @return the local date-time, not null
+ */
+public static LocalDateTime of(LocalDate date, LocalTime time) {
+    Objects.requireNonNull(date, "date");
+    Objects.requireNonNull(time, "time");
+    return new LocalDateTime(date, time);
+}

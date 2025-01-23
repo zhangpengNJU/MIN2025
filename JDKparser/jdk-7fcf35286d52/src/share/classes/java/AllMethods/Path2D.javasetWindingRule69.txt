@@ -1,0 +1,18 @@
+/**
+ * Sets the winding rule for this path to the specified value.
+ *
+ * @param rule an integer representing the specified
+ *             winding rule
+ * @exception IllegalArgumentException if
+ *          {@code rule} is not either
+ *          {@link #WIND_EVEN_ODD} or
+ *          {@link #WIND_NON_ZERO}
+ * @see #getWindingRule
+ * @since 1.6
+ */
+public final void setWindingRule(int rule) {
+    if (rule != WIND_EVEN_ODD && rule != WIND_NON_ZERO) {
+        throw new IllegalArgumentException("winding rule must be " + "WIND_EVEN_ODD or " + "WIND_NON_ZERO");
+    }
+    windingRule = rule;
+}

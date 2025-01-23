@@ -1,0 +1,14 @@
+/**
+ * used by readObject to deserialize a collection.
+ * @param ois the ObjectInputStream to use
+ * @param coll the Collection
+ * @throws IOException if deserialization failed
+ * @throws ClassNotFoundException if needed classes are not found
+ */
+protected final void deserialize(ObjectInputStream ois, Collection coll) throws IOException, ClassNotFoundException {
+    int count = 0;
+    count = ois.readInt();
+    while (count-- > 0) {
+        coll.add(ois.readObject());
+    }
+}

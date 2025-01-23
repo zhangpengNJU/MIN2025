@@ -1,0 +1,48 @@
+/*
+     * fileName may be an absolute or a relative file specification.
+     * Relative file names are looked for in several places: first, relative
+     * to any directories specified by the java.iccprofile.path property;
+     * second, relative to any directories specified by the java.class.path
+     * property; finally, in a directory used to store profiles always
+     * available, such as a profile for sRGB.  Built-in profiles use .pf as
+     * the file name extension for profiles, e.g. sRGB.pf.
+     */
+private static File getProfileFile(String fileName) {
+    String path, dir, fullPath;
+    File f = new File(fileName);
+    /* try absolute file name */
+    if (f.isAbsolute()) {
+        /* Rest of code has little sense for an absolute pathname,
+               so return here. */
+        return f.isFile() ? f : null;
+    }
+    if ((!f.isFile()) && ((path = System.getProperty("java.iccprofile.path")) != null)) {
+        /* try relative to java.iccprofile.path */
+        StringTokenizer st = new StringTokenizer(path, File.pathSeparator);
+        while (st.hasMoreTokens() && ((f == null) || (!f.isFile()))) {
+            dir = st.nextToken();
+            fullPath = dir + File.separatorChar + fileName;
+            f = new File(fullPath);
+            if (!isChildOf(f, dir)) {
+                f = null;
+            }
+        }
+    }
+    if (((f == null) || (!f.isFile())) && ((path = System.getProperty("java.class.path")) != null)) {
+        /* try relative to java.class.path */
+        StringTokenizer st = new StringTokenizer(path, File.pathSeparator);
+        while (st.hasMoreTokens() && ((f == null) || (!f.isFile()))) {
+            dir = st.nextToken();
+            fullPath = dir + File.separatorChar + fileName;
+            f = new File(fullPath);
+        }
+    }
+    if ((f == null) || (!f.isFile())) {
+        /* try the directory of built-in profiles */
+        f = getStandardProfileFile(fileName);
+    }
+    if (f != null && f.isFile()) {
+        return f;
+    }
+    return null;
+}

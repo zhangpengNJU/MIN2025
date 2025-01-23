@@ -1,0 +1,5 @@
+public boolean isConnectionResetPending() {
+    synchronized (resetLock) {
+        return (resetState == CONNECTION_RESET_PENDING);
+    }
+}

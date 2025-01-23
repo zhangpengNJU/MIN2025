@@ -1,0 +1,18 @@
+/**
+ * Gets the warning string that is displayed with this window.
+ * If this window is insecure, the warning string is displayed
+ * somewhere in the visible area of the window. A window is
+ * insecure if there is a security manager and the security
+ * manager denies
+ * {@code AWTPermission("showWindowWithoutWarningBanner")}.
+ * <p>
+ * If the window is secure, then {@code getWarningString}
+ * returns {@code null}. If the window is insecure, this
+ * method checks for the system property
+ * {@code awt.appletWarning}
+ * and returns the string value of that property.
+ * @return    the warning string for this window.
+ */
+public final String getWarningString() {
+    return warningString;
+}

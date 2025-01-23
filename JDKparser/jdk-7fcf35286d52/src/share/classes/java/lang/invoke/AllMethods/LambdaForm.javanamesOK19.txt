@@ -1,0 +1,11 @@
+private static boolean namesOK(int arity, Name[] names) {
+    for (int i = 0; i < names.length; i++) {
+        Name n = names[i];
+        assert (n != null) : "n is null";
+        if (i < arity)
+            assert (n.isParam()) : n + " is not param at " + i;
+        else
+            assert (!n.isParam()) : n + " is param at " + i;
+    }
+    return true;
+}

@@ -1,0 +1,21 @@
+@Override
+public void compute() {
+    ToArrayTask<T, T_NODE, K> task = this;
+    while (true) {
+        if (task.node.getChildCount() == 0) {
+            task.copyNodeToArray();
+            task.propagateCompletion();
+            return;
+        } else {
+            task.setPendingCount(task.node.getChildCount() - 1);
+            int size = 0;
+            int i = 0;
+            for (; i < task.node.getChildCount() - 1; i++) {
+                K leftTask = task.makeChild(i, task.offset + size);
+                size += leftTask.node.count();
+                leftTask.fork();
+            }
+            task = task.makeChild(i, task.offset + size);
+        }
+    }
+}

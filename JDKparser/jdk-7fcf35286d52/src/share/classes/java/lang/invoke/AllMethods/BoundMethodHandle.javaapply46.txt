@@ -1,0 +1,13 @@
+@Override
+public SpeciesData apply(String types) {
+    Class<? extends BoundMethodHandle> bmhcl = Factory.getConcreteBMHClass(types);
+    // SpeciesData instantiation may throw VirtualMachineError because of
+    // code cache overflow...
+    SpeciesData speciesData = new SpeciesData(types, bmhcl);
+    // CHM.computeIfAbsent ensures only one SpeciesData will be set
+    // successfully on the concrete BMH class if ever
+    Factory.setSpeciesDataToConcreteBMHClass(bmhcl, speciesData);
+    // the concrete BMH class is published via SpeciesData instance
+    // returned here only after it's SPECIES_DATA field is set
+    return speciesData;
+}

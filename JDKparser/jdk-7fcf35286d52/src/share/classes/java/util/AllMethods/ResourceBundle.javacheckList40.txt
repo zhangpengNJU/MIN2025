@@ -1,0 +1,14 @@
+/**
+ * Checks if the given <code>List</code> is not null, not empty,
+ * not having null in its elements.
+ */
+private static boolean checkList(List<?> a) {
+    boolean valid = (a != null && !a.isEmpty());
+    if (valid) {
+        int size = a.size();
+        for (int i = 0; valid && i < size; i++) {
+            valid = (a.get(i) != null);
+        }
+    }
+    return valid;
+}

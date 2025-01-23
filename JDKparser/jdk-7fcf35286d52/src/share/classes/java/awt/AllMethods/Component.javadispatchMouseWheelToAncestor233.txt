@@ -1,0 +1,60 @@
+/*
+     * Dispatch given MouseWheelEvent to the first ancestor for which
+     * MouseWheelEvents are enabled.
+     *
+     * Returns whether or not event was dispatched to an ancestor
+     */
+boolean dispatchMouseWheelToAncestor(MouseWheelEvent e) {
+    int newX, newY;
+    // Coordinates take into account at least
+    newX = e.getX() + getX();
+    // the cursor's position relative to this
+    newY = e.getY() + getY();
+    // Component (e.getX()), and this Component's
+    // position relative to its parent.
+    MouseWheelEvent newMWE;
+    if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        eventLog.finest("dispatchMouseWheelToAncestor");
+        eventLog.finest("orig event src is of " + e.getSource().getClass());
+    }
+    /* parent field for Window refers to the owning Window.
+         * MouseWheelEvents should NOT be propagated into owning Windows
+         */
+    synchronized (getTreeLock()) {
+        Container anc = getParent();
+        while (anc != null && !anc.eventEnabled(e)) {
+            // fix coordinates to be relative to new event source
+            newX += anc.getX();
+            newY += anc.getY();
+            if (!(anc instanceof Window)) {
+                anc = anc.getParent();
+            } else {
+                break;
+            }
+        }
+        if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            eventLog.finest("new event src is " + anc.getClass());
+        }
+        if (anc != null && anc.eventEnabled(e)) {
+            // Change event to be from new source, with new x,y
+            // For now, just create a new event - yucky
+            newMWE = new // new source
+            MouseWheelEvent(// new source
+            anc, e.getID(), e.getWhen(), e.getModifiers(), // x relative to new source
+            newX, // y relative to new source
+            newY, e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
+            ((AWTEvent) e).copyPrivateDataInto(newMWE);
+            // When dispatching a wheel event to
+            // ancestor, there is no need trying to find descendant
+            // lightweights to dispatch event to.
+            // If we dispatch the event to toplevel ancestor,
+            // this could encolse the loop: 6480024.
+            anc.dispatchEventToSelf(newMWE);
+            if (newMWE.isConsumed()) {
+                e.consume();
+            }
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,21 @@
+/*
+     * Returned cached ProtectionDomain for the specified CodeSource.
+     */
+private ProtectionDomain getProtectionDomain(CodeSource cs) {
+    if (cs == null)
+        return null;
+    ProtectionDomain pd = null;
+    synchronized (pdcache) {
+        pd = pdcache.get(cs);
+        if (pd == null) {
+            PermissionCollection perms = getPermissions(cs);
+            pd = new ProtectionDomain(cs, perms, this, null);
+            pdcache.put(cs, pd);
+            if (debug != null) {
+                debug.println(" getPermissions " + pd);
+                debug.println("");
+            }
+        }
+    }
+    return pd;
+}

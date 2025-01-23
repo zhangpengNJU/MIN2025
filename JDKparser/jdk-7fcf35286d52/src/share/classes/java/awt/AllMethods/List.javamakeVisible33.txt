@@ -1,0 +1,12 @@
+/**
+ * Makes the item at the specified index visible.
+ * @param       index    the position of the item
+ * @see         #getVisibleIndex
+ */
+public synchronized void makeVisible(int index) {
+    visibleIndex = index;
+    ListPeer peer = (ListPeer) this.peer;
+    if (peer != null) {
+        peer.makeVisible(index);
+    }
+}

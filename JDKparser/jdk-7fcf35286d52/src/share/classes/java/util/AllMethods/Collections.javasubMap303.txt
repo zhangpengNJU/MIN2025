@@ -1,0 +1,5 @@
+public SortedMap<K, V> subMap(K fromKey, K toKey) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableMap<>(nm.subMap(fromKey, true, toKey, false), mutex);
+    }
+}

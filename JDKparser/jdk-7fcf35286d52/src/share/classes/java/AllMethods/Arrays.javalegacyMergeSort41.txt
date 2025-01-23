@@ -1,0 +1,10 @@
+/**
+ * To be removed in a future release.
+ */
+private static <T> void legacyMergeSort(T[] a, Comparator<? super T> c) {
+    T[] aux = a.clone();
+    if (c == null)
+        mergeSort(aux, a, 0, a.length, 0);
+    else
+        mergeSort(aux, a, 0, a.length, 0, c);
+}

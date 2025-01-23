@@ -1,0 +1,14 @@
+/**
+ * Returns true if and only if this class was declared as an enum in the
+ * source code.
+ *
+ * @return true if and only if this class was declared as an enum in the
+ *     source code
+ * @since 1.5
+ */
+public boolean isEnum() {
+    // An enum must both directly extend java.lang.Enum and have
+    // the ENUM bit set; classes for specialized enum constants
+    // don't do the former.
+    return (this.getModifiers() & ENUM) != 0 && this.getSuperclass() == java.lang.Enum.class;
+}

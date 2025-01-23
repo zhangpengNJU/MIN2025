@@ -1,0 +1,26 @@
+/**
+ * Returns the index of the rightmost (lowest-order) one bit in this
+ * BigInteger (the number of zero bits to the right of the rightmost
+ * one bit).  Returns -1 if this BigInteger contains no one bits.
+ * (Computes {@code (this == 0? -1 : log2(this & -this))}.)
+ *
+ * @return index of the rightmost one bit in this BigInteger.
+ */
+public int getLowestSetBit() {
+    @SuppressWarnings("deprecation")
+    int lsb = lowestSetBit - 2;
+    if (lsb == -2) {
+        // lowestSetBit not initialized yet
+        lsb = 0;
+        if (signum == 0) {
+            lsb -= 1;
+        } else {
+            // Search for lowest order nonzero int
+            int i, b;
+            for (i = 0; (b = getInt(i)) == 0; i++) ;
+            lsb += (i << 5) + Integer.numberOfTrailingZeros(b);
+        }
+        lowestSetBit = lsb + 2;
+    }
+    return lsb;
+}

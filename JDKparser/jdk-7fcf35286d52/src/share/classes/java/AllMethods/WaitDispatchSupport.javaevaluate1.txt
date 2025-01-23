@@ -1,0 +1,15 @@
+@Override
+public boolean evaluate() {
+    if (log.isLoggable(PlatformLogger.Level.FINEST)) {
+        log.finest("evaluate(): blockingEDT=" + keepBlockingEDT.get() + ", blockingCT=" + keepBlockingCT.get());
+    }
+    boolean extEvaluate = (extCondition != null) ? extCondition.evaluate() : true;
+    if (!keepBlockingEDT.get() || !extEvaluate) {
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+        return false;
+    }
+    return true;
+}

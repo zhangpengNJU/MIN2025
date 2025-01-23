@@ -1,0 +1,13 @@
+/**
+ * Adapt a {@code Sink<Double> to a {@code DoubleConsumer}, ideally simply
+ * by casting.
+ */
+private static DoubleConsumer adapt(Sink<Double> sink) {
+    if (sink instanceof DoubleConsumer) {
+        return (DoubleConsumer) sink;
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(AbstractPipeline.class, "using DoubleStream.adapt(Sink<Double> s)");
+        return sink::accept;
+    }
+}

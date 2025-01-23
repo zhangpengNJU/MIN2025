@@ -1,0 +1,13 @@
+static MemberName linkMethodImpl(Class<?> callerClass, int refKind, Class<?> defc, String name, Object type, Object[] appendixResult) {
+    try {
+        if (defc == MethodHandle.class && refKind == REF_invokeVirtual) {
+            return Invokers.methodHandleInvokeLinkerMethod(name, fixMethodType(callerClass, type), appendixResult);
+        }
+    } catch (Throwable ex) {
+        if (ex instanceof LinkageError)
+            throw (LinkageError) ex;
+        else
+            throw new LinkageError(ex.getMessage(), ex);
+    }
+    throw new LinkageError("no such method " + defc.getName() + "." + name + type);
+}

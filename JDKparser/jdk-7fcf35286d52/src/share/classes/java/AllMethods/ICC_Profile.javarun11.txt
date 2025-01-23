@@ -1,0 +1,10 @@
+public FileInputStream run() {
+    File f = getStandardProfileFile(fileName);
+    if (f != null) {
+        try {
+            return new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+        }
+    }
+    return null;
+}

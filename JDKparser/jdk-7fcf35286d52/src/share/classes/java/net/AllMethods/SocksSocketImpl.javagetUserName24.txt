@@ -1,0 +1,13 @@
+private String getUserName() {
+    String userName = "";
+    if (applicationSetProxy) {
+        try {
+            userName = System.getProperty("user.name");
+        } catch (SecurityException se) {
+        /* swallow Exception */
+        }
+    } else {
+        userName = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("user.name"));
+    }
+    return userName;
+}

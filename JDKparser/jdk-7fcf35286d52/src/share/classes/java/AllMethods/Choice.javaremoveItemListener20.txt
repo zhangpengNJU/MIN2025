@@ -1,0 +1,20 @@
+/**
+ * Removes the specified item listener so that it no longer receives
+ * item events from this <code>Choice</code> menu.
+ * If l is <code>null</code>, no exception is thrown and no
+ * action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ * @param         l    the item listener
+ * @see           #addItemListener
+ * @see           #getItemListeners
+ * @see           java.awt.event.ItemEvent
+ * @see           java.awt.event.ItemListener
+ * @since         JDK1.1
+ */
+public synchronized void removeItemListener(ItemListener l) {
+    if (l == null) {
+        return;
+    }
+    itemListener = AWTEventMulticaster.remove(itemListener, l);
+}

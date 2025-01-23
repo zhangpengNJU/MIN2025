@@ -1,0 +1,7 @@
+static int toCalendarDayOfWeek(int isoDayOfWeek) {
+    if (!isValidDayOfWeek(isoDayOfWeek)) {
+        // adjust later for lenient mode
+        return isoDayOfWeek;
+    }
+    return isoDayOfWeek == 7 ? SUNDAY : isoDayOfWeek + 1;
+}

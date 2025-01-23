@@ -1,0 +1,43 @@
+/**
+ * Returns the class loader of the most recently executing method from
+ * a class defined using a non-system class loader. A non-system
+ * class loader is defined as being a class loader that is not equal to
+ * the system class loader (as returned
+ * by {@link ClassLoader#getSystemClassLoader}) or one of its ancestors.
+ * <p>
+ * This method will return
+ * <code>null</code> in the following three cases:
+ * <ol>
+ *   <li>All methods on the execution stack are from classes
+ *   defined using the system class loader or one of its ancestors.
+ *
+ *   <li>All methods on the execution stack up to the first
+ *   "privileged" caller
+ *   (see {@link java.security.AccessController#doPrivileged})
+ *   are from classes
+ *   defined using the system class loader or one of its ancestors.
+ *
+ *   <li> A call to <code>checkPermission</code> with
+ *   <code>java.security.AllPermission</code> does not
+ *   result in a SecurityException.
+ *
+ * </ol>
+ *
+ * @return  the class loader of the most recent occurrence on the stack
+ *          of a method from a class defined using a non-system class
+ *          loader.
+ *
+ * @deprecated This type of security checking is not recommended.
+ *  It is recommended that the <code>checkPermission</code>
+ *  call be used instead.
+ *
+ * @see  java.lang.ClassLoader#getSystemClassLoader() getSystemClassLoader
+ * @see  #checkPermission(java.security.Permission) checkPermission
+ */
+@Deprecated
+protected ClassLoader currentClassLoader() {
+    ClassLoader cl = currentClassLoader0();
+    if ((cl != null) && hasAllPermission())
+        cl = null;
+    return cl;
+}

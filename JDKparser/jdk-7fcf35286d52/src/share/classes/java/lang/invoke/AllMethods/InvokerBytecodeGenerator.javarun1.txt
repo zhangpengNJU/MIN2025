@@ -1,0 +1,15 @@
+public Void run() {
+    try {
+        String dumpName = className;
+        // dumpName = dumpName.replace('/', '-');
+        File dumpFile = new File(DUMP_CLASS_FILES_DIR, dumpName + ".class");
+        System.out.println("dump: " + dumpFile);
+        dumpFile.getParentFile().mkdirs();
+        FileOutputStream file = new FileOutputStream(dumpFile);
+        file.write(classFile);
+        file.close();
+        return null;
+    } catch (IOException ex) {
+        throw newInternalError(ex);
+    }
+}

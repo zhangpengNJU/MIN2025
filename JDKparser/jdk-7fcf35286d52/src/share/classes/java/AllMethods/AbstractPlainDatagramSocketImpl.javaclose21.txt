@@ -1,0 +1,10 @@
+/**
+ * Close the socket.
+ */
+protected void close() {
+    if (fd != null) {
+        datagramSocketClose();
+        ResourceManager.afterUdpClose();
+        fd = null;
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Returns the current group for the VM.
+ * @exception ActivationException if current group is null (not active)
+ */
+static synchronized ActivationGroup currentGroup() throws ActivationException {
+    if (currGroup == null) {
+        throw new ActivationException("group is not active");
+    }
+    return currGroup;
+}

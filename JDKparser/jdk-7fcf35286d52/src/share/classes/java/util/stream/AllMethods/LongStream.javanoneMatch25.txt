@@ -1,0 +1,22 @@
+/**
+ * Returns whether no elements of this stream match the provided predicate.
+ * May not evaluate the predicate on all elements if not necessary for
+ * determining the result.  If the stream is empty then {@code true} is
+ * returned and the predicate is not evaluated.
+ *
+ * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
+ * terminal operation</a>.
+ *
+ * @apiNote
+ * This method evaluates the <em>universal quantification</em> of the
+ * negated predicate over the elements of the stream (for all x ~P(x)).  If
+ * the stream is empty, the quantification is said to be vacuously satisfied
+ * and is always {@code true}, regardless of P(x).
+ *
+ * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+ *                  <a href="package-summary.html#Statelessness">stateless</a>
+ *                  predicate to apply to elements of this stream
+ * @return {@code true} if either no elements of the stream match the
+ * provided predicate or the stream is empty, otherwise {@code false}
+ */
+boolean noneMatch(LongPredicate predicate);

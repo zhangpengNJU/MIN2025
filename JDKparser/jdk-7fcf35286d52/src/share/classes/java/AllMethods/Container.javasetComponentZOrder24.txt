@@ -1,0 +1,73 @@
+/**
+ * Moves the specified component to the specified z-order index in
+ * the container. The z-order determines the order that components
+ * are painted; the component with the highest z-order paints first
+ * and the component with the lowest z-order paints last.
+ * Where components overlap, the component with the lower
+ * z-order paints over the component with the higher z-order.
+ * <p>
+ * If the component is a child of some other container, it is
+ * removed from that container before being added to this container.
+ * The important difference between this method and
+ * <code>java.awt.Container.add(Component, int)</code> is that this method
+ * doesn't call <code>removeNotify</code> on the component while
+ * removing it from its previous container unless necessary and when
+ * allowed by the underlying native windowing system. This way, if the
+ * component has the keyboard focus, it maintains the focus when
+ * moved to the new position.
+ * <p>
+ * This property is guaranteed to apply only to lightweight
+ * non-<code>Container</code> components.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy.
+ * <p>
+ * <b>Note</b>: Not all platforms support changing the z-order of
+ * heavyweight components from one container into another without
+ * the call to <code>removeNotify</code>. There is no way to detect
+ * whether a platform supports this, so developers shouldn't make
+ * any assumptions.
+ *
+ * @param     comp the component to be moved
+ * @param     index the position in the container's list to
+ *            insert the component, where <code>getComponentCount()</code>
+ *            appends to the end
+ * @exception NullPointerException if <code>comp</code> is
+ *            <code>null</code>
+ * @exception IllegalArgumentException if <code>comp</code> is one of the
+ *            container's parents
+ * @exception IllegalArgumentException if <code>index</code> is not in
+ *            the range <code>[0, getComponentCount()]</code> for moving
+ *            between containers, or not in the range
+ *            <code>[0, getComponentCount()-1]</code> for moving inside
+ *            a container
+ * @exception IllegalArgumentException if adding a container to itself
+ * @exception IllegalArgumentException if adding a <code>Window</code>
+ *            to a container
+ * @see #getComponentZOrder(java.awt.Component)
+ * @see #invalidate
+ * @since 1.5
+ */
+public void setComponentZOrder(Component comp, int index) {
+    synchronized (getTreeLock()) {
+        // Store parent because remove will clear it
+        Container curParent = comp.parent;
+        int oldZindex = getComponentZOrder(comp);
+        if (curParent == this && index == oldZindex) {
+            return;
+        }
+        checkAdding(comp, index);
+        boolean peerRecreated = (curParent != null) ? curParent.removeDelicately(comp, this, index) : false;
+        addDelicately(comp, curParent, index);
+        // If the oldZindex == -1, the component gets inserted,
+        // rather than it changes its z-order.
+        if (!peerRecreated && oldZindex != -1) {
+            // The new 'index' cannot be == -1.
+            // It gets checked at the checkAdding() method.
+            // Therefore both oldZIndex and index denote
+            // some existing positions at this point and
+            // this is actually a Z-order changing.
+            comp.mixOnZOrderChanging(oldZindex, index);
+        }
+    }
+}

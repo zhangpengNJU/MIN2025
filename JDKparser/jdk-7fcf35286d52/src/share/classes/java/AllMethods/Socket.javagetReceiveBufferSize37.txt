@@ -1,0 +1,22 @@
+/**
+ * Gets the value of the {@link SocketOptions#SO_RCVBUF SO_RCVBUF} option
+ * for this {@code Socket}, that is the buffer size used by the platform
+ * for input on this {@code Socket}.
+ *
+ * @return the value of the {@link SocketOptions#SO_RCVBUF SO_RCVBUF}
+ *         option for this {@code Socket}.
+ * @exception SocketException if there is an error
+ * in the underlying protocol, such as a TCP error.
+ * @see #setReceiveBufferSize(int)
+ * @since 1.2
+ */
+public synchronized int getReceiveBufferSize() throws SocketException {
+    if (isClosed())
+        throw new SocketException("Socket is closed");
+    int result = 0;
+    Object o = getImpl().getOption(SocketOptions.SO_RCVBUF);
+    if (o instanceof Integer) {
+        result = ((Integer) o).intValue();
+    }
+    return result;
+}

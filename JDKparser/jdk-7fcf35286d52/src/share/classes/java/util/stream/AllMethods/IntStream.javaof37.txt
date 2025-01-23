@@ -1,0 +1,9 @@
+/**
+ * Returns a sequential {@code IntStream} containing a single element.
+ *
+ * @param t the single element
+ * @return a singleton sequential stream
+ */
+public static IntStream of(int t) {
+    return StreamSupport.intStream(new Streams.IntStreamBuilderImpl(t), false);
+}

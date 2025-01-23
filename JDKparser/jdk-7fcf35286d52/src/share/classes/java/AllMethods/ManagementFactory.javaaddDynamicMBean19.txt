@@ -1,0 +1,17 @@
+/**
+ * Registers a DynamicMBean.
+ */
+private static void addDynamicMBean(final MBeanServer mbs, final DynamicMBean dmbean, final ObjectName on) {
+    try {
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+            @Override
+            public Void run() throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+                mbs.registerMBean(dmbean, on);
+                return null;
+            }
+        });
+    } catch (PrivilegedActionException e) {
+        throw new RuntimeException(e.getException());
+    }
+}

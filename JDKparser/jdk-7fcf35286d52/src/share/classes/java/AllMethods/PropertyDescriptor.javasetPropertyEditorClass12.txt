@@ -1,0 +1,11 @@
+/**
+ * Normally PropertyEditors will be found using the PropertyEditorManager.
+ * However if for some reason you want to associate a particular
+ * PropertyEditor with a given property, then you can do it with
+ * this method.
+ *
+ * @param propertyEditorClass  The Class for the desired PropertyEditor.
+ */
+public void setPropertyEditorClass(Class<?> propertyEditorClass) {
+    this.propertyEditorClassRef = getWeakReference(propertyEditorClass);
+}

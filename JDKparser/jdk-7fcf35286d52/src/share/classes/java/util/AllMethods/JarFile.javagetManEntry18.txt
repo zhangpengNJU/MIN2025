@@ -1,0 +1,20 @@
+private JarEntry getManEntry() {
+    if (manEntry == null) {
+        // First look up manifest entry using standard name
+        manEntry = getJarEntry(MANIFEST_NAME);
+        if (manEntry == null) {
+            // If not found, then iterate through all the "META-INF/"
+            // entries to find a match.
+            String[] names = getMetaInfEntryNames();
+            if (names != null) {
+                for (int i = 0; i < names.length; i++) {
+                    if (MANIFEST_NAME.equals(names[i].toUpperCase(Locale.ENGLISH))) {
+                        manEntry = getJarEntry(names[i]);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return manEntry;
+}

@@ -1,0 +1,37 @@
+/**
+ * Terminates an open connection.  Calling <code>abort</code> results in:
+ * <ul>
+ * <li>The connection marked as closed
+ * <li>Closes any physical connection to the database
+ * <li>Releases resources used by the connection
+ * <li>Insures that any thread that is currently accessing the connection
+ * will either progress to completion or throw an <code>SQLException</code>.
+ * </ul>
+ * <p>
+ * Calling <code>abort</code> marks the connection closed and releases any
+ * resources. Calling <code>abort</code> on a closed connection is a
+ * no-op.
+ * <p>
+ * It is possible that the aborting and releasing of the resources that are
+ * held by the connection can take an extended period of time.  When the
+ * <code>abort</code> method returns, the connection will have been marked as
+ * closed and the <code>Executor</code> that was passed as a parameter to abort
+ * may still be executing tasks to release resources.
+ * <p>
+ * This method checks to see that there is an <code>SQLPermission</code>
+ * object before allowing the method to proceed.  If a
+ * <code>SecurityManager</code> exists and its
+ * <code>checkPermission</code> method denies calling <code>abort</code>,
+ * this method throws a
+ * <code>java.lang.SecurityException</code>.
+ * @param executor  The <code>Executor</code>  implementation which will
+ * be used by <code>abort</code>.
+ * @throws java.sql.SQLException if a database access error occurs or
+ * the {@code executor} is {@code null},
+ * @throws java.lang.SecurityException if a security manager exists and its
+ *    <code>checkPermission</code> method denies calling <code>abort</code>
+ * @see SecurityManager#checkPermission
+ * @see Executor
+ * @since 1.7
+ */
+void abort(Executor executor) throws SQLException;

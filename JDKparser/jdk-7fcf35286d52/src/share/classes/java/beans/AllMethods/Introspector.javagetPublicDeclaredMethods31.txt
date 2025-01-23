@@ -1,0 +1,35 @@
+/*
+     * Internal method to return *public* methods within a class.
+     */
+private static Method[] getPublicDeclaredMethods(Class<?> clz) {
+    // Looking up Class.getDeclaredMethods is relatively expensive,
+    // so we cache the results.
+    if (!ReflectUtil.isPackageAccessible(clz)) {
+        return new Method[0];
+    }
+    synchronized (declaredMethodCache) {
+        Method[] result = declaredMethodCache.get(clz);
+        if (result == null) {
+            result = clz.getMethods();
+            for (int i = 0; i < result.length; i++) {
+                Method method = result[i];
+                if (!method.getDeclaringClass().equals(clz)) {
+                    // ignore methods declared elsewhere
+                    result[i] = null;
+                } else {
+                    try {
+                        method = MethodFinder.findAccessibleMethod(method);
+                        Class<?> type = method.getDeclaringClass();
+                        result[i] = type.equals(clz) || type.isInterface() ? method : // ignore methods from superclasses
+                        null;
+                    } catch (NoSuchMethodException exception) {
+                    // commented out because of 6976577
+                    // result[i] = null; // ignore inaccessible methods
+                    }
+                }
+            }
+            declaredMethodCache.put(clz, result);
+        }
+        return result;
+    }
+}

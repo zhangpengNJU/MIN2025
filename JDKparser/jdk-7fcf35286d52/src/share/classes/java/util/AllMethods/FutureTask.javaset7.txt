@@ -1,0 +1,17 @@
+/**
+ * Sets the result of this future to the given value unless
+ * this future has already been set or has been cancelled.
+ *
+ * <p>This method is invoked internally by the {@link #run} method
+ * upon successful completion of the computation.
+ *
+ * @param v the value
+ */
+protected void set(V v) {
+    if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
+        outcome = v;
+        // final state
+        UNSAFE.putOrderedInt(this, stateOffset, NORMAL);
+        finishCompletion();
+    }
+}

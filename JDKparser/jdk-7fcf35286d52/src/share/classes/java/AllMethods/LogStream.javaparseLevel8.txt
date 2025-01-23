@@ -1,0 +1,26 @@
+/**
+ * Convert a string name of a logging level to its internal
+ * integer representation.
+ * @param s name of logging level (e.g., 'SILENT', 'BRIEF', 'VERBOSE')
+ * @return corresponding integer log level
+ * @since JDK1.1
+ * @deprecated no replacement
+ */
+@Deprecated
+public static int parseLevel(String s) {
+    if ((s == null) || (s.length() < 1))
+        return -1;
+    try {
+        return Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+    }
+    if (s.length() < 1)
+        return -1;
+    if ("SILENT".startsWith(s.toUpperCase()))
+        return SILENT;
+    else if ("BRIEF".startsWith(s.toUpperCase()))
+        return BRIEF;
+    else if ("VERBOSE".startsWith(s.toUpperCase()))
+        return VERBOSE;
+    return -1;
+}

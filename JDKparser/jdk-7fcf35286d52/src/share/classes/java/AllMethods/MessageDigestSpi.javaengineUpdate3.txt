@@ -1,0 +1,35 @@
+/**
+ * Update the digest using the specified ByteBuffer. The digest is
+ * updated using the {@code input.remaining()} bytes starting
+ * at {@code input.position()}.
+ * Upon return, the buffer's position will be equal to its limit;
+ * its limit will not have changed.
+ *
+ * @param input the ByteBuffer
+ * @since 1.5
+ */
+protected void engineUpdate(ByteBuffer input) {
+    if (input.hasRemaining() == false) {
+        return;
+    }
+    if (input.hasArray()) {
+        byte[] b = input.array();
+        int ofs = input.arrayOffset();
+        int pos = input.position();
+        int lim = input.limit();
+        engineUpdate(b, ofs + pos, lim - pos);
+        input.position(lim);
+    } else {
+        int len = input.remaining();
+        int n = JCAUtil.getTempArraySize(len);
+        if ((tempArray == null) || (n > tempArray.length)) {
+            tempArray = new byte[n];
+        }
+        while (len > 0) {
+            int chunk = Math.min(len, tempArray.length);
+            input.get(tempArray, 0, chunk);
+            engineUpdate(tempArray, 0, chunk);
+            len -= chunk;
+        }
+    }
+}

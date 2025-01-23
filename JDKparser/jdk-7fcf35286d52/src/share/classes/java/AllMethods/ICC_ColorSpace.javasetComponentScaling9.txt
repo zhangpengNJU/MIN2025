@@ -1,0 +1,14 @@
+private void setComponentScaling() {
+    int nc = this.getNumComponents();
+    diffMinMax = new float[nc];
+    invDiffMinMax = new float[nc];
+    for (int i = 0; i < nc; i++) {
+        // in case getMinVal is overridden
+        minVal[i] = this.getMinValue(i);
+        // in case getMaxVal is overridden
+        maxVal[i] = this.getMaxValue(i);
+        diffMinMax[i] = maxVal[i] - minVal[i];
+        invDiffMinMax[i] = 65535.0f / diffMinMax[i];
+    }
+    needScaleInit = false;
+}

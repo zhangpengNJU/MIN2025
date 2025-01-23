@@ -1,0 +1,57 @@
+/**
+ * Initializes a SystemFlavorMap by reading flavormap.properties and
+ * AWT.DnD.flavorMapFileURL.
+ * For thread-safety must be called under lock on this.
+ */
+private void initSystemFlavorMap() {
+    if (isMapInitialized) {
+        return;
+    }
+    isMapInitialized = true;
+    BufferedReader flavormapDotProperties = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<BufferedReader>() {
+
+        public BufferedReader run() {
+            String fileName = System.getProperty("java.home") + File.separator + "lib" + File.separator + "flavormap.properties";
+            try {
+                return new BufferedReader(new InputStreamReader(new File(fileName).toURI().toURL().openStream(), "ISO-8859-1"));
+            } catch (MalformedURLException e) {
+                System.err.println("MalformedURLException:" + e + " while loading default flavormap.properties file:" + fileName);
+            } catch (IOException e) {
+                System.err.println("IOException:" + e + " while loading default flavormap.properties file:" + fileName);
+            }
+            return null;
+        }
+    });
+    String url = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<String>() {
+
+        public String run() {
+            return Toolkit.getProperty("AWT.DnD.flavorMapFileURL", null);
+        }
+    });
+    if (flavormapDotProperties != null) {
+        try {
+            parseAndStoreReader(flavormapDotProperties);
+        } catch (IOException e) {
+            System.err.println("IOException:" + e + " while parsing default flavormap.properties file");
+        }
+    }
+    BufferedReader flavormapURL = null;
+    if (url != null) {
+        try {
+            flavormapURL = new BufferedReader(new InputStreamReader(new URL(url).openStream(), "ISO-8859-1"));
+        } catch (MalformedURLException e) {
+            System.err.println("MalformedURLException:" + e + " while reading AWT.DnD.flavorMapFileURL:" + url);
+        } catch (IOException e) {
+            System.err.println("IOException:" + e + " while reading AWT.DnD.flavorMapFileURL:" + url);
+        } catch (SecurityException e) {
+        // ignored
+        }
+    }
+    if (flavormapURL != null) {
+        try {
+            parseAndStoreReader(flavormapURL);
+        } catch (IOException e) {
+            System.err.println("IOException:" + e + " while parsing AWT.DnD.flavorMapFileURL");
+        }
+    }
+}

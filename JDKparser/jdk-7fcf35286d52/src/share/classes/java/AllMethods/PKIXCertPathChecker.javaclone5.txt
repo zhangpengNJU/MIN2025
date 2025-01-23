@@ -1,0 +1,17 @@
+/**
+ * Returns a clone of this object. Calls the {@code Object.clone()}
+ * method.
+ * All subclasses which maintain state must support and
+ * override this method, if necessary.
+ *
+ * @return a copy of this {@code PKIXCertPathChecker}
+ */
+@Override
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        /* Cannot happen */
+        throw new InternalError(e.toString(), e);
+    }
+}

@@ -1,0 +1,31 @@
+public boolean equals(Object other) {
+    if (this == other) {
+        return true;
+    }
+    try {
+        final CacheKey otherEntry = (CacheKey) other;
+        // quick check to see if they are not equal
+        if (hashCodeCache != otherEntry.hashCodeCache) {
+            return false;
+        }
+        // are the names the same?
+        if (!name.equals(otherEntry.name)) {
+            return false;
+        }
+        // are the locales the same?
+        if (!locale.equals(otherEntry.locale)) {
+            return false;
+        }
+        // are refs (both non-null) or (both null)?
+        if (loaderRef == null) {
+            return otherEntry.loaderRef == null;
+        }
+        ClassLoader loader = loaderRef.get();
+        return (otherEntry.loaderRef != null) && // with a null reference we can no longer find
+        // out which class loader was referenced; so
+        // treat it as unequal
+        (loader != null) && (loader == otherEntry.loaderRef.get());
+    } catch (NullPointerException | ClassCastException e) {
+    }
+    return false;
+}

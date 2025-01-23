@@ -1,0 +1,11 @@
+/**
+ * @throws StringIndexOutOfBoundsException {@inheritDoc}
+ */
+@Override
+public StringBuffer insert(int offset, float f) {
+    // Note, synchronization achieved via invocation of StringBuffer insert(int, String)
+    // after conversion of f to String by super class method
+    // Ditto for toStringCache clearing
+    super.insert(offset, f);
+    return this;
+}

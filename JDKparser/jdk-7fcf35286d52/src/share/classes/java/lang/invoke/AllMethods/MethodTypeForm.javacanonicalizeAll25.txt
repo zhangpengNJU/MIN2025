@@ -1,0 +1,19 @@
+/**
+ * Canonicalize each param type in the given array.
+ *  Return null if all types are already canonicalized.
+ */
+static Class<?>[] canonicalizeAll(Class<?>[] ts, int how) {
+    Class<?>[] cs = null;
+    for (int imax = ts.length, i = 0; i < imax; i++) {
+        Class<?> c = canonicalize(ts[i], how);
+        if (c == void.class)
+            // a Void parameter was unwrapped to void; ignore
+            c = null;
+        if (c != null) {
+            if (cs == null)
+                cs = ts.clone();
+            cs[i] = c;
+        }
+    }
+    return cs;
+}

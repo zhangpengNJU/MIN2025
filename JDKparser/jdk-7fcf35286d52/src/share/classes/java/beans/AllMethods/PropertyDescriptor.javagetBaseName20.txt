@@ -1,0 +1,7 @@
+// Calculate once since capitalize() is expensive.
+String getBaseName() {
+    if (baseName == null) {
+        baseName = NameGenerator.capitalize(getName());
+    }
+    return baseName;
+}

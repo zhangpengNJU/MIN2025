@@ -1,0 +1,33 @@
+// -----------------------------------------------------------------------
+/**
+ * Compares this date-time to another date-time, including the chronology.
+ * <p>
+ * The comparison is based first on the instant, then on the local date-time,
+ * then on the zone ID, then on the chronology.
+ * It is "consistent with equals", as defined by {@link Comparable}.
+ * <p>
+ * If all the date-time objects being compared are in the same chronology, then the
+ * additional chronology stage is not required.
+ * <p>
+ * This default implementation performs the comparison defined above.
+ *
+ * @param other  the other date-time to compare to, not null
+ * @return the comparator value, negative if less, positive if greater
+ */
+@Override
+default int compareTo(ChronoZonedDateTime<?> other) {
+    int cmp = Long.compare(toEpochSecond(), other.toEpochSecond());
+    if (cmp == 0) {
+        cmp = toLocalTime().getNano() - other.toLocalTime().getNano();
+        if (cmp == 0) {
+            cmp = toLocalDateTime().compareTo(other.toLocalDateTime());
+            if (cmp == 0) {
+                cmp = getZone().getId().compareTo(other.getZone().getId());
+                if (cmp == 0) {
+                    cmp = getChronology().compareTo(other.getChronology());
+                }
+            }
+        }
+    }
+    return cmp;
+}

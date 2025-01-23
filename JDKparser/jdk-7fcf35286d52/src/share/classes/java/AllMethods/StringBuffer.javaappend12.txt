@@ -1,0 +1,6 @@
+@Override
+public synchronized StringBuffer append(Object obj) {
+    toStringCache = null;
+    super.append(String.valueOf(obj));
+    return this;
+}

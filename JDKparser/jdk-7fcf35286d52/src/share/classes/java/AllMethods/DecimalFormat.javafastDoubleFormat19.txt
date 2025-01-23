@@ -1,0 +1,76 @@
+/**
+ * This is the main entry point for the fast-path format algorithm.
+ *
+ * At this point we are sure to be in the expected conditions to run it.
+ * This algorithm builds the formatted result and puts it in the dedicated
+ * {@code fastPathData.fastPathContainer}.
+ *
+ * @param d the double value to be formatted.
+ * @param negative Flag precising if {@code d} is negative.
+ */
+private void fastDoubleFormat(double d, boolean negative) {
+    char[] container = fastPathData.fastPathContainer;
+    /*
+         * The principle of the algorithm is to :
+         * - Break the passed double into its integral and fractional parts
+         *    converted into integers.
+         * - Then decide if rounding up must be applied or not by following
+         *    the half-even rounding rule, first using approximated scaled
+         *    fractional part.
+         * - For the difficult cases (approximated scaled fractional part
+         *    being exactly 0.5d), we refine the rounding decision by calling
+         *    exactRoundUp utility method that both calculates the exact roundoff
+         *    on the approximation and takes correct rounding decision.
+         * - We round-up the fractional part if needed, possibly propagating the
+         *    rounding to integral part if we meet a "all-nine" case for the
+         *    scaled fractional part.
+         * - We then collect digits from the resulting integral and fractional
+         *   parts, also setting the required grouping chars on the fly.
+         * - Then we localize the collected digits if needed, and
+         * - Finally prepend/append prefix/suffix if any is needed.
+         */
+    // Exact integral part of d.
+    int integralPartAsInt = (int) d;
+    // Exact fractional part of d (since we subtract it's integral part).
+    double exactFractionalPart = d - (double) integralPartAsInt;
+    // Approximated scaled fractional part of d (due to multiplication).
+    double scaledFractional = exactFractionalPart * fastPathData.fractionalScaleFactor;
+    // Exact integral part of scaled fractional above.
+    int fractionalPartAsInt = (int) scaledFractional;
+    // Exact fractional part of scaled fractional above.
+    scaledFractional = scaledFractional - (double) fractionalPartAsInt;
+    // Only when scaledFractional is exactly 0.5d do we have to do exact
+    // calculations and take fine-grained rounding decision, since
+    // approximated results above may lead to incorrect decision.
+    // Otherwise comparing against 0.5d (strictly greater or less) is ok.
+    boolean roundItUp = false;
+    if (scaledFractional >= 0.5d) {
+        if (scaledFractional == 0.5d)
+            // Rounding need fine-grained decision.
+            roundItUp = exactRoundUp(exactFractionalPart, fractionalPartAsInt);
+        else
+            roundItUp = true;
+        if (roundItUp) {
+            // Rounds up both fractional part (and also integral if needed).
+            if (fractionalPartAsInt < fastPathData.fractionalMaxIntBound) {
+                fractionalPartAsInt++;
+            } else {
+                // Propagates rounding to integral part since "all nines" case.
+                fractionalPartAsInt = 0;
+                integralPartAsInt++;
+            }
+        }
+    }
+    // Collecting digits.
+    collectFractionalDigits(fractionalPartAsInt, container, fastPathData.fractionalFirstIndex);
+    collectIntegralDigits(integralPartAsInt, container, fastPathData.integralLastIndex);
+    // Localizing digits.
+    if (fastPathData.zeroDelta != 0)
+        localizeDigits(container);
+    // Adding prefix and suffix.
+    if (negative) {
+        if (fastPathData.negativeAffixesRequired)
+            addAffixes(container, fastPathData.charsNegativePrefix, fastPathData.charsNegativeSuffix);
+    } else if (fastPathData.positiveAffixesRequired)
+        addAffixes(container, fastPathData.charsPositivePrefix, fastPathData.charsPositiveSuffix);
+}

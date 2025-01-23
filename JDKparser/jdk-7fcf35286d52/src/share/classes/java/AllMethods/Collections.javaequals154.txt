@@ -1,0 +1,8 @@
+public boolean equals(Object o) {
+    if (this == o)
+        return true;
+    if (!(o instanceof Map.Entry))
+        return false;
+    Map.Entry<?, ?> t = (Map.Entry<?, ?>) o;
+    return eq(e.getKey(), t.getKey()) && eq(e.getValue(), t.getValue());
+}

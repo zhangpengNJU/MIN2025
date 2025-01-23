@@ -1,0 +1,18 @@
+/**
+ * Return a method handle that takes the indicated number of Object
+ *  arguments and returns an Object array of them, as if for varargs.
+ */
+static MethodHandle varargsArray(int nargs) {
+    MethodHandle mh = Lazy.ARRAYS[nargs];
+    if (mh != null)
+        return mh;
+    mh = findCollector("array", nargs, Object[].class);
+    if (mh != null)
+        mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
+    if (mh != null)
+        return Lazy.ARRAYS[nargs] = mh;
+    mh = buildVarargsArray(Lazy.MH_fillNewArray, Lazy.MH_arrayIdentity, nargs);
+    assert (assertCorrectArity(mh, nargs));
+    mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
+    return Lazy.ARRAYS[nargs] = mh;
+}

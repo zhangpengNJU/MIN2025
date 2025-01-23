@@ -1,0 +1,16 @@
+public int getRunStart(Set<? extends Attribute> attributes) {
+    if (currentRunStart == beginIndex || currentRunIndex == -1) {
+        return currentRunStart;
+    } else {
+        int runStart = currentRunStart;
+        int runIndex = currentRunIndex;
+        while (runStart > beginIndex && AttributedString.this.attributeValuesMatch(attributes, currentRunIndex, runIndex - 1)) {
+            runIndex--;
+            runStart = runStarts[runIndex];
+        }
+        if (runStart < beginIndex) {
+            runStart = beginIndex;
+        }
+        return runStart;
+    }
+}

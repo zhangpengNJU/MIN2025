@@ -1,0 +1,10 @@
+/**
+ * Check to make sure that buffer has not been nulled out due to
+ * close; if not return it;
+ */
+private byte[] getBufIfOpen() throws IOException {
+    byte[] buffer = buf;
+    if (buffer == null)
+        throw new IOException("Stream closed");
+    return buffer;
+}

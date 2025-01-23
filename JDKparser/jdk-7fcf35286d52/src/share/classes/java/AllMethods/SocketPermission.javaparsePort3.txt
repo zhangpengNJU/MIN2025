@@ -1,0 +1,27 @@
+private int[] parsePort(String port) throws Exception {
+    if (port == null || port.equals("") || port.equals("*")) {
+        return new int[] { PORT_MIN, PORT_MAX };
+    }
+    int dash = port.indexOf('-');
+    if (dash == -1) {
+        int p = Integer.parseInt(port);
+        return new int[] { p, p };
+    } else {
+        String low = port.substring(0, dash);
+        String high = port.substring(dash + 1);
+        int l, h;
+        if (low.equals("")) {
+            l = PORT_MIN;
+        } else {
+            l = Integer.parseInt(low);
+        }
+        if (high.equals("")) {
+            h = PORT_MAX;
+        } else {
+            h = Integer.parseInt(high);
+        }
+        if (l < 0 || h < 0 || h < l)
+            throw new IllegalArgumentException("invalid port range");
+        return new int[] { l, h };
+    }
+}

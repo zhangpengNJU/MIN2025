@@ -1,0 +1,17 @@
+private static int getWeekBasedYear(LocalDate date) {
+    int year = date.getYear();
+    int doy = date.getDayOfYear();
+    if (doy <= 3) {
+        int dow = date.getDayOfWeek().ordinal();
+        if (doy - dow < -2) {
+            year--;
+        }
+    } else if (doy >= 363) {
+        int dow = date.getDayOfWeek().ordinal();
+        doy = doy - 363 - (date.isLeapYear() ? 1 : 0);
+        if (doy - dow >= 0) {
+            year++;
+        }
+    }
+    return year;
+}

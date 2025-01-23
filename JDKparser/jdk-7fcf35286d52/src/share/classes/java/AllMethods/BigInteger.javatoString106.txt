@@ -1,0 +1,35 @@
+/**
+ * Returns the String representation of this BigInteger in the
+ * given radix.  If the radix is outside the range from {@link
+ * Character#MIN_RADIX} to {@link Character#MAX_RADIX} inclusive,
+ * it will default to 10 (as is the case for
+ * {@code Integer.toString}).  The digit-to-character mapping
+ * provided by {@code Character.forDigit} is used, and a minus
+ * sign is prepended if appropriate.  (This representation is
+ * compatible with the {@link #BigInteger(String, int) (String,
+ * int)} constructor.)
+ *
+ * @param  radix  radix of the String representation.
+ * @return String representation of this BigInteger in the given radix.
+ * @see    Integer#toString
+ * @see    Character#forDigit
+ * @see    #BigInteger(java.lang.String, int)
+ */
+public String toString(int radix) {
+    if (signum == 0)
+        return "0";
+    if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+        radix = 10;
+    // If it's small enough, use smallToString.
+    if (mag.length <= SCHOENHAGE_BASE_CONVERSION_THRESHOLD)
+        return smallToString(radix);
+    // Otherwise use recursive toString, which requires positive arguments.
+    // The results will be concatenated into this StringBuilder
+    StringBuilder sb = new StringBuilder();
+    if (signum < 0) {
+        toString(this.negate(), sb, radix, 0);
+        sb.insert(0, '-');
+    } else
+        toString(this, sb, radix, 0);
+    return sb.toString();
+}

@@ -1,0 +1,17 @@
+/**
+ * Translates a {@code long} value into a {@code BigDecimal}
+ * with a scale of zero.  This {@literal "static factory method"}
+ * is provided in preference to a ({@code long}) constructor
+ * because it allows for reuse of frequently used
+ * {@code BigDecimal} values.
+ *
+ * @param val value of the {@code BigDecimal}.
+ * @return a {@code BigDecimal} whose value is {@code val}.
+ */
+public static BigDecimal valueOf(long val) {
+    if (val >= 0 && val < zeroThroughTen.length)
+        return zeroThroughTen[(int) val];
+    else if (val != INFLATED)
+        return new BigDecimal(null, val, 0, 0);
+    return new BigDecimal(INFLATED_BIGINT, val, 0, 0);
+}

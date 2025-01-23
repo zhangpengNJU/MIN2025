@@ -1,0 +1,50 @@
+private int getOffset(BaseCalendar cal, BaseCalendar.Date cdate, int year, long time) {
+    synchronized (this) {
+        if (cacheStart != 0) {
+            if (time >= cacheStart && time < cacheEnd) {
+                return rawOffset + dstSavings;
+            }
+            if (year == cacheYear) {
+                return rawOffset;
+            }
+        }
+    }
+    long start = getStart(cal, cdate, year);
+    long end = getEnd(cal, cdate, year);
+    int offset = rawOffset;
+    if (start <= end) {
+        if (time >= start && time < end) {
+            offset += dstSavings;
+        }
+        synchronized (this) {
+            cacheYear = year;
+            cacheStart = start;
+            cacheEnd = end;
+        }
+    } else {
+        if (time < end) {
+            // TODO: support Gregorian cutover. The previous year
+            // may be in the other calendar system.
+            start = getStart(cal, cdate, year - 1);
+            if (time >= start) {
+                offset += dstSavings;
+            }
+        } else if (time >= start) {
+            // TODO: support Gregorian cutover. The next year
+            // may be in the other calendar system.
+            end = getEnd(cal, cdate, year + 1);
+            if (time < end) {
+                offset += dstSavings;
+            }
+        }
+        if (start <= end) {
+            synchronized (this) {
+                // The start and end transitions are in multiple years.
+                cacheYear = (long) startYear - 1;
+                cacheStart = start;
+                cacheEnd = end;
+            }
+        }
+    }
+    return offset;
+}

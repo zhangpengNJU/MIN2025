@@ -1,0 +1,44 @@
+/**
+ *  Registers the designated output parameter.
+ *  This version of
+ *  the method <code>registerOutParameter</code>
+ *  should be used for a user-defined or <code>REF</code> output parameter.  Examples
+ *  of user-defined types include: <code>STRUCT</code>, <code>DISTINCT</code>,
+ *  <code>JAVA_OBJECT</code>, and named array types.
+ * <p>
+ *  All OUT parameters must be registered
+ *  before a stored procedure is executed.
+ *  <p>  For a user-defined parameter, the fully-qualified SQL
+ *  type name of the parameter should also be given, while a <code>REF</code>
+ *  parameter requires that the fully-qualified type name of the
+ *  referenced type be given.  A JDBC driver that does not need the
+ *  type code and type name information may ignore it.   To be portable,
+ *  however, applications should always provide these values for
+ *  user-defined and <code>REF</code> parameters.
+ *
+ *  Although it is intended for user-defined and <code>REF</code> parameters,
+ *  this method may be used to register a parameter of any JDBC type.
+ *  If the parameter does not have a user-defined or <code>REF</code> type, the
+ *  <i>typeName</i> parameter is ignored.
+ *
+ *  <P><B>Note:</B> When reading the value of an out parameter, you
+ *  must use the getter method whose Java type corresponds to the
+ *  parameter's registered SQL type.
+ *
+ *  @param parameterIndex the first parameter is 1, the second is 2,...
+ *  @param sqlType a value from {@link java.sql.Types}
+ *  @param typeName the fully-qualified name of an SQL structured type
+ *  @exception SQLException if the parameterIndex is not valid;
+ *  if a database access error occurs or
+ *  this method is called on a closed <code>CallableStatement</code>
+ *  @exception SQLFeatureNotSupportedException if <code>sqlType</code> is
+ *  a <code>ARRAY</code>, <code>BLOB</code>, <code>CLOB</code>,
+ *  <code>DATALINK</code>, <code>JAVA_OBJECT</code>, <code>NCHAR</code>,
+ *  <code>NCLOB</code>, <code>NVARCHAR</code>, <code>LONGNVARCHAR</code>,
+ *   <code>REF</code>, <code>ROWID</code>, <code>SQLXML</code>
+ *  or  <code>STRUCT</code> data type and the JDBC driver does not support
+ *  this data type
+ *  @see Types
+ *  @since 1.2
+ */
+void registerOutParameter(int parameterIndex, int sqlType, String typeName) throws SQLException;

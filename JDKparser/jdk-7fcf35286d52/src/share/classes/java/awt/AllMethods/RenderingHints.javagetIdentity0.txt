@@ -1,0 +1,13 @@
+private String getIdentity() {
+    // Note that the identity string is dependent on 3 variables:
+    // - the name of the subclass of Key
+    // - the identityHashCode of the subclass of Key
+    // - the integer key of the Key
+    // It is theoretically possible for 2 distinct keys to collide
+    // along all 3 of those attributes in the context of multiple
+    // class loaders, but that occurrence will be extremely rare and
+    // we account for that possibility below in the recordIdentity
+    // method by slightly relaxing our uniqueness guarantees if we
+    // end up in that situation.
+    return getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(getClass())) + ":" + Integer.toHexString(privatekey);
+}

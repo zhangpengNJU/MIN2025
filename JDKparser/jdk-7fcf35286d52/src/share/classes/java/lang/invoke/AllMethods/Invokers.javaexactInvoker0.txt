@@ -1,0 +1,8 @@
+/*non-public*/
+MethodHandle exactInvoker() {
+    MethodHandle invoker = cachedInvoker(INV_EXACT);
+    if (invoker != null)
+        return invoker;
+    invoker = makeExactOrGeneralInvoker(true);
+    return setCachedInvoker(INV_EXACT, invoker);
+}

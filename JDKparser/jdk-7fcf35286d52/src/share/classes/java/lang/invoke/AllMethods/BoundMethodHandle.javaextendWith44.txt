@@ -1,0 +1,8 @@
+SpeciesData extendWith(BasicType type) {
+    int ord = type.ordinal();
+    SpeciesData d = extensions[ord];
+    if (d != null)
+        return d;
+    extensions[ord] = d = get(typeChars + type.basicTypeChar());
+    return d;
+}

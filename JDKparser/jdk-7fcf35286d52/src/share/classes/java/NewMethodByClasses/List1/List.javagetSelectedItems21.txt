@@ -1,0 +1,17 @@
+/**
+ * Gets the selected items on this scrolling list.
+ *
+ * @return        an array of the selected items on this scrolling list;
+ *                if no item is selected, a zero-length array is returned.
+ * @see           #select
+ * @see           #deselect
+ * @see           #isIndexSelected
+ */
+public synchronized String[] getSelectedItems() {
+    int[] sel = getSelectedIndexes();
+    String[] str = new String[sel.length];
+    for (int i = 0; i < sel.length; i++) {
+        str[i] = getItem(sel[i]);
+    }
+    return str;
+}

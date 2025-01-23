@@ -1,0 +1,36 @@
+/**
+ * Retrieves a result set holding the elements of the subarray that
+ * starts at index <code>index</code> and contains up to
+ * <code>count</code> successive elements.
+ * This method uses
+ * the specified <code>map</code> for type map customizations
+ * unless the base type of the array does not match a user-defined
+ * type in <code>map</code>, in which case it
+ * uses the standard mapping. This version of the method
+ * <code>getResultSet</code> uses either the given type map or the standard mapping;
+ * it never uses the type map associated with the connection.
+ * <P>
+ * The result set has one row for each element of the SQL array
+ * designated by this object, with the first row containing the
+ * element at index <code>index</code>.  The result set has
+ * up to <code>count</code> rows in ascending order based on the
+ * indices.  Each row has two columns:  The second column stores
+ * the element value; the first column stores the index into the
+ * array for that element.
+ *
+ * @param index the array index of the first element to retrieve;
+ *              the first element is at index 1
+ * @param count the number of successive SQL array elements to retrieve
+ * @param map the <code>Map</code> object that contains the mapping
+ * of SQL type names to classes in the Java(tm) programming language
+ * @return a <code>ResultSet</code> object containing up to
+ * <code>count</code> consecutive elements of the SQL array
+ * designated by this <code>Array</code> object, starting at
+ * index <code>index</code>.
+ * @exception SQLException if an error occurs while attempting to
+ * access the array
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+ResultSet getResultSet(long index, int count, java.util.Map<String, Class<?>> map) throws SQLException;

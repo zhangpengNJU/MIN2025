@@ -1,0 +1,14 @@
+private void connect() throws IOException {
+    // Check the arguments are valid.
+    if (port == 0) {
+        throw new IllegalArgumentException("Bad port: " + port);
+    }
+    if (host == null) {
+        throw new IllegalArgumentException("Null host name: " + host);
+    }
+    // Try to open a new socket.
+    sock = new Socket(host, port);
+    OutputStream out = sock.getOutputStream();
+    BufferedOutputStream bout = new BufferedOutputStream(out);
+    setOutputStream(bout);
+}

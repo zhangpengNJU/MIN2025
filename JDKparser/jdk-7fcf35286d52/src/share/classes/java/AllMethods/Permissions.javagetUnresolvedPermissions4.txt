@@ -1,0 +1,53 @@
+/**
+ * Resolves any unresolved permissions of type p.
+ *
+ * @param p the type of unresolved permission to resolve
+ *
+ * @return PermissionCollection containing the unresolved permissions,
+ *  or null if there were no unresolved permissions of type p.
+ */
+private PermissionCollection getUnresolvedPermissions(Permission p) {
+    // Called from within synchronized method so permsMap doesn't need lock
+    UnresolvedPermissionCollection uc = (UnresolvedPermissionCollection) permsMap.get(UnresolvedPermission.class);
+    // we have no unresolved permissions if uc is null
+    if (uc == null)
+        return null;
+    List<UnresolvedPermission> unresolvedPerms = uc.getUnresolvedPermissions(p);
+    // we have no unresolved permissions of this type if unresolvedPerms is null
+    if (unresolvedPerms == null)
+        return null;
+    java.security.cert.Certificate[] certs = null;
+    Object[] signers = p.getClass().getSigners();
+    int n = 0;
+    if (signers != null) {
+        for (int j = 0; j < signers.length; j++) {
+            if (signers[j] instanceof java.security.cert.Certificate) {
+                n++;
+            }
+        }
+        certs = new java.security.cert.Certificate[n];
+        n = 0;
+        for (int j = 0; j < signers.length; j++) {
+            if (signers[j] instanceof java.security.cert.Certificate) {
+                certs[n++] = (java.security.cert.Certificate) signers[j];
+            }
+        }
+    }
+    PermissionCollection pc = null;
+    synchronized (unresolvedPerms) {
+        int len = unresolvedPerms.size();
+        for (int i = 0; i < len; i++) {
+            UnresolvedPermission up = unresolvedPerms.get(i);
+            Permission perm = up.resolve(p, certs);
+            if (perm != null) {
+                if (pc == null) {
+                    pc = p.newPermissionCollection();
+                    if (pc == null)
+                        pc = new PermissionsHash();
+                }
+                pc.add(perm);
+            }
+        }
+    }
+    return pc;
+}

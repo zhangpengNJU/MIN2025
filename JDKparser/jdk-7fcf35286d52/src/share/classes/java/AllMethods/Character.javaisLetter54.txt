@@ -1,0 +1,32 @@
+/**
+ * Determines if the specified character (Unicode code point) is a letter.
+ * <p>
+ * A character is considered to be a letter if its general
+ * category type, provided by {@link Character#getType(int) getType(codePoint)},
+ * is any of the following:
+ * <ul>
+ * <li> {@code UPPERCASE_LETTER}
+ * <li> {@code LOWERCASE_LETTER}
+ * <li> {@code TITLECASE_LETTER}
+ * <li> {@code MODIFIER_LETTER}
+ * <li> {@code OTHER_LETTER}
+ * </ul>
+ *
+ * Not all letters have case. Many characters are
+ * letters but are neither uppercase nor lowercase nor titlecase.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is a letter;
+ *          {@code false} otherwise.
+ * @see     Character#isDigit(int)
+ * @see     Character#isJavaIdentifierStart(int)
+ * @see     Character#isLetterOrDigit(int)
+ * @see     Character#isLowerCase(int)
+ * @see     Character#isTitleCase(int)
+ * @see     Character#isUnicodeIdentifierStart(int)
+ * @see     Character#isUpperCase(int)
+ * @since   1.5
+ */
+public static boolean isLetter(int codePoint) {
+    return ((((1 << Character.UPPERCASE_LETTER) | (1 << Character.LOWERCASE_LETTER) | (1 << Character.TITLECASE_LETTER) | (1 << Character.MODIFIER_LETTER) | (1 << Character.OTHER_LETTER)) >> getType(codePoint)) & 1) != 0;
+}

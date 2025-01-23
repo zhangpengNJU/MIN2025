@@ -1,0 +1,7 @@
+public void writeObject(Object oldInstance, Encoder out) {
+    if (out.getAttribute(this) == null) {
+        out.setAttribute(this, Boolean.TRUE);
+        installFields(out, oldInstance.getClass());
+    }
+    super.writeObject(oldInstance, out);
+}

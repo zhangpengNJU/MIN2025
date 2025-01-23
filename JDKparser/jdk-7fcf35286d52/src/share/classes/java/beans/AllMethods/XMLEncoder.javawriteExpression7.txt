@@ -1,0 +1,26 @@
+/**
+ * Records the Expression so that the Encoder will
+ * produce the actual output when the stream is flushed.
+ * <P>
+ * This method should only be invoked within the context of
+ * initializing a persistence delegate or setting up an encoder to
+ * read from a resource bundle.
+ * <P>
+ * For more information about using resource bundles with the
+ * XMLEncoder, see
+ * http://java.sun.com/products/jfc/tsc/articles/persistence4/#i18n
+ *
+ * @param oldExp The expression that will be written
+ *               to the stream.
+ * @see java.beans.PersistenceDelegate#initialize
+ */
+public void writeExpression(Expression oldExp) {
+    boolean internal = this.internal;
+    this.internal = true;
+    Object oldValue = getValue(oldExp);
+    if (get(oldValue) == null || (oldValue instanceof String && !internal)) {
+        getValueData(oldValue).exp = oldExp;
+        super.writeExpression(oldExp);
+    }
+    this.internal = internal;
+}

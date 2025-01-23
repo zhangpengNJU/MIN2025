@@ -1,0 +1,8 @@
+void removeEventFilter(EventFilter filter) {
+    if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        eventLog.finest("removing the event filter: " + filter);
+    }
+    synchronized (eventFilters) {
+        eventFilters.remove(filter);
+    }
+}

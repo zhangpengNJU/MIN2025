@@ -1,0 +1,8 @@
+/**
+ * @return an iterator for all the currently available service selectors
+ * (if any) available for the specified service.
+ */
+public Iterator getCurrentServiceSelectors(Class serviceClass) {
+    BCSSServiceProvider bcsssp = (BCSSServiceProvider) services.get(serviceClass);
+    return bcsssp != null ? new BCSIterator(bcsssp.getServiceProvider().getCurrentServiceSelectors(getBeanContextServicesPeer(), serviceClass)) : null;
+}

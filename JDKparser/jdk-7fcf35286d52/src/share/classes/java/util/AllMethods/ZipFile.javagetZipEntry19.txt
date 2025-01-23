@@ -1,0 +1,35 @@
+private ZipEntry getZipEntry(String name, long jzentry) {
+    ZipEntry e = new ZipEntry();
+    // get the flag first
+    e.flag = getEntryFlag(jzentry);
+    if (name != null) {
+        e.name = name;
+    } else {
+        byte[] bname = getEntryBytes(jzentry, JZENTRY_NAME);
+        if (bname == null) {
+            // length 0 empty name
+            e.name = "";
+        } else if (!zc.isUTF8() && (e.flag & EFS) != 0) {
+            e.name = zc.toStringUTF8(bname, bname.length);
+        } else {
+            e.name = zc.toString(bname, bname.length);
+        }
+    }
+    e.xdostime = getEntryTime(jzentry);
+    e.crc = getEntryCrc(jzentry);
+    e.size = getEntrySize(jzentry);
+    e.csize = getEntryCSize(jzentry);
+    e.method = getEntryMethod(jzentry);
+    e.setExtra0(getEntryBytes(jzentry, JZENTRY_EXTRA), false);
+    byte[] bcomm = getEntryBytes(jzentry, JZENTRY_COMMENT);
+    if (bcomm == null) {
+        e.comment = null;
+    } else {
+        if (!zc.isUTF8() && (e.flag & EFS) != 0) {
+            e.comment = zc.toStringUTF8(bcomm, bcomm.length);
+        } else {
+            e.comment = zc.toString(bcomm, bcomm.length);
+        }
+    }
+    return e;
+}

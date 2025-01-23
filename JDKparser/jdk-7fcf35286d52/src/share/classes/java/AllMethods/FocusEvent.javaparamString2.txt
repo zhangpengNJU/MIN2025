@@ -1,0 +1,20 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case FOCUS_GAINED:
+            typeStr = "FOCUS_GAINED";
+            break;
+        case FOCUS_LOST:
+            typeStr = "FOCUS_LOST";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr + (temporary ? ",temporary" : ",permanent") + ",opposite=" + getOppositeComponent();
+}

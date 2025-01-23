@@ -1,0 +1,29 @@
+/**
+ * Sets this transform to a shearing transformation.
+ * The matrix representing this transform becomes:
+ * <pre>
+ *          [   1   shx   0   ]
+ *          [  shy   1    0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param shx the multiplier by which coordinates are shifted in the
+ * direction of the positive X axis as a factor of their Y coordinate
+ * @param shy the multiplier by which coordinates are shifted in the
+ * direction of the positive Y axis as a factor of their X coordinate
+ * @since 1.2
+ */
+public void setToShear(double shx, double shy) {
+    m00 = 1.0;
+    m01 = shx;
+    m10 = shy;
+    m11 = 1.0;
+    m02 = 0.0;
+    m12 = 0.0;
+    if (shx != 0.0 || shy != 0.0) {
+        state = (APPLY_SHEAR | APPLY_SCALE);
+        type = TYPE_UNKNOWN;
+    } else {
+        state = APPLY_IDENTITY;
+        type = TYPE_IDENTITY;
+    }
+}

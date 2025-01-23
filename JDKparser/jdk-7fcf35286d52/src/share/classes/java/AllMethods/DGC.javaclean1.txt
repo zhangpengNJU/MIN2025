@@ -1,0 +1,15 @@
+/**
+ * The clean call removes the 'vmid' from the reference list of
+ * each remote object indicated in 'id's.  The sequence number is
+ * used to detect late clean calls.  If the argument 'strong' is
+ * true, then the clean call is a result of a failed dirty call,
+ * thus the sequence number for the client 'vmid' needs to be
+ * remembered.
+ *
+ * @param ids IDs of objects to mark as unreferenced by calling client
+ * @param sequenceNum sequence number
+ * @param vmid client VMID
+ * @param strong make 'strong' clean call
+ * @throws RemoteException if clean call fails
+ */
+void clean(ObjID[] ids, long sequenceNum, VMID vmid, boolean strong) throws RemoteException;

@@ -1,0 +1,19 @@
+/**
+ * A convenience method to return a parameter as a byte.  An
+ * exception is thrown if the parameter is
+ * <code>null</code> or not a <code>Byte</code>.
+ *
+ * @param index the index of the parameter to be returned.
+ * @return the parameter at the specified index
+ *         as a <code>byte</code> value.
+ * @throws ClassCastException if the parameter at the
+ *         specified index is not a <code>Byte</code>
+ * @throws NullPointerException if the parameter at the specified
+ *         index is <code>null</code>
+ * @throws ArrayIndexOutOfBoundsException if <code>index</code>
+ *         is negative or not less than the current size of this
+ *         <code>ParameterBlock</code> object
+ */
+public byte getByteParameter(int index) {
+    return ((Byte) parameters.elementAt(index)).byteValue();
+}

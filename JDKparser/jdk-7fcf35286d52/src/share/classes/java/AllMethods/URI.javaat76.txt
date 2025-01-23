@@ -1,0 +1,17 @@
+// Tells whether start + s.length() < end and, if so,
+// whether the chars at the start position match s exactly
+// 
+private boolean at(int start, int end, String s) {
+    int p = start;
+    int sn = s.length();
+    if (sn > end - p)
+        return false;
+    int i = 0;
+    while (i < sn) {
+        if (charAt(p++) != s.charAt(i)) {
+            break;
+        }
+        i++;
+    }
+    return (i == sn);
+}

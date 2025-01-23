@@ -1,0 +1,9 @@
+private MethodHandle findVirtualForMH(String name, MethodType type) {
+    // these names require special lookups because of the implicit MethodType argument
+    if ("invoke".equals(name))
+        return invoker(type);
+    if ("invokeExact".equals(name))
+        return exactInvoker(type);
+    assert (!MemberName.isMethodHandleInvokeName(name));
+    return null;
+}

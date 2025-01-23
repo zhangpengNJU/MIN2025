@@ -1,0 +1,35 @@
+// Private utility method to initialize our one entry
+// resource bundle name cache and the callers ClassLoader
+// Note: for consistency reasons, we are careful to check
+// that a suitable ResourceBundle exists before setting the
+// resourceBundleName field.
+// Synchronized to prevent races in setting the fields.
+private synchronized void setupResourceInfo(String name, Class<?> callersClass) {
+    final LoggerBundle lb = loggerBundle;
+    if (lb.resourceBundleName != null) {
+        // this Logger already has a ResourceBundle
+        if (lb.resourceBundleName.equals(name)) {
+            // the names match so there is nothing more to do
+            return;
+        }
+        // cannot change ResourceBundles once they are set
+        throw new IllegalArgumentException(lb.resourceBundleName + " != " + name);
+    }
+    if (name == null) {
+        return;
+    }
+    setCallersClassLoaderRef(callersClass);
+    if (isSystemLogger && getCallersClassLoader() != null) {
+        checkPermission();
+    }
+    if (findResourceBundle(name, true) == null) {
+        // We've failed to find an expected ResourceBundle.
+        // unset the caller's ClassLoader since we were unable to find the
+        // the bundle using it
+        this.callersClassLoaderRef = null;
+        throw new MissingResourceException("Can't find " + name + " bundle", name, "");
+    }
+    // if lb.userBundle is not null we won't reach this line.
+    assert lb.userBundle == null;
+    loggerBundle = LoggerBundle.get(name, null);
+}

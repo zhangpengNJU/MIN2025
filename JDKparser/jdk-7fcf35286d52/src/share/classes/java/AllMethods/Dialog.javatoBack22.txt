@@ -1,0 +1,18 @@
+/**
+ * {@inheritDoc}
+ * <p>
+ * If this dialog is modal and blocks some windows, then all of them are
+ * also sent to the back to keep them below the blocking dialog.
+ *
+ * @see java.awt.Window#toBack
+ */
+public void toBack() {
+    super.toBack();
+    if (visible) {
+        synchronized (getTreeLock()) {
+            for (Window w : blockedWindows) {
+                w.toBack_NoClientCode();
+            }
+        }
+    }
+}

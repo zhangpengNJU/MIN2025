@@ -1,0 +1,6 @@
+void writeExternal(DataOutput out) throws IOException {
+    // ThaiBuddhistChronology is implicit in the THAIBUDDHIST_DATE_TYPE
+    out.writeInt(this.get(YEAR));
+    out.writeByte(this.get(MONTH_OF_YEAR));
+    out.writeByte(this.get(DAY_OF_MONTH));
+}

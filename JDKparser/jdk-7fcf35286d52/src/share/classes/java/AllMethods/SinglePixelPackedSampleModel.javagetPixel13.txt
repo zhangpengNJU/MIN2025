@@ -1,0 +1,27 @@
+/**
+ * Returns all samples in for the specified pixel in an int array.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param iArray    If non-null, returns the samples in this array
+ * @param data      The DataBuffer containing the image data.
+ * @return all samples for the specified pixel.
+ * @see #setPixel(int, int, int[], DataBuffer)
+ */
+public int[] getPixel(int x, int y, int[] iArray, DataBuffer data) {
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int[] pixels;
+    if (iArray == null) {
+        pixels = new int[numBands];
+    } else {
+        pixels = iArray;
+    }
+    int value = data.getElem(y * scanlineStride + x);
+    for (int i = 0; i < numBands; i++) {
+        pixels[i] = (value & bitMasks[i]) >>> bitOffsets[i];
+    }
+    return pixels;
+}

@@ -1,0 +1,8 @@
+@Override
+public boolean tryAdvance(DoubleConsumer consumer) {
+    Objects.requireNonNull(consumer);
+    boolean hasNext = doAdvance();
+    if (hasNext)
+        consumer.accept(buffer.get(nextToConsume));
+    return hasNext;
+}

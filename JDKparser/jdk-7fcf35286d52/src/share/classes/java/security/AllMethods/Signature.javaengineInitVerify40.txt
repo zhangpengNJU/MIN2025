@@ -1,0 +1,12 @@
+protected void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
+    if (sigSpi != null) {
+        sigSpi.engineInitVerify(publicKey);
+    } else {
+        try {
+            chooseProvider(I_PUB, publicKey, null, null);
+        } catch (InvalidAlgorithmParameterException iape) {
+            // should not happen, re-throw as IKE just in case
+            throw new InvalidKeyException(iape);
+        }
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Gets the currently selected text from the text editing component.
+ * This may be used for a variety of purposes.
+ * One of them is the "Reconvert" feature in some input methods.
+ * In this case, the input method will typically send an input method event
+ * to replace the selected text with composed text. Depending on the input
+ * method's capabilities, this may be the original composed text for the
+ * selected text, the latest composed text entered anywhere in the text, or
+ * a version of the text that's converted back from the selected text.
+ *
+ * <p>
+ * The input method may provide a list of attributes that it is
+ * interested in. In that case, information about other attributes that
+ * the implementor may have need not be made accessible through the
+ * iterator. If the list is null, all available attribute information
+ * should be made accessible.
+ *
+ * @param attributes a list of attributes that the input method is
+ * interested in
+ * @return the currently selected text
+ */
+AttributedCharacterIterator getSelectedText(Attribute[] attributes);

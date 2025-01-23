@@ -1,0 +1,7 @@
+// Override default methods in Map
+@Override
+public V getOrDefault(Object k, V defaultValue) {
+    synchronized (mutex) {
+        return m.getOrDefault(k, defaultValue);
+    }
+}

@@ -1,0 +1,9 @@
+@Override
+boolean viewAsTypeChecks(MethodType newType, boolean strict) {
+    super.viewAsTypeChecks(newType, true);
+    if (strict)
+        return true;
+    // extra assertion for non-strict checks:
+    assert (type().lastParameterType().getComponentType().isAssignableFrom(newType.lastParameterType().getComponentType())) : Arrays.asList(this, newType);
+    return true;
+}

@@ -1,0 +1,78 @@
+LambdaForm permuteArgumentsForm(int skip, int[] reorder) {
+    // skip only the leading MH argument, names[0]
+    assert (skip == 1);
+    int length = lambdaForm.names.length;
+    int outArgs = reorder.length;
+    int inTypes = 0;
+    boolean nullPerm = true;
+    for (int i = 0; i < reorder.length; i++) {
+        int inArg = reorder[i];
+        if (inArg != i)
+            nullPerm = false;
+        inTypes = Math.max(inTypes, inArg + 1);
+    }
+    assert (skip + reorder.length == lambdaForm.arity);
+    // do not bother to cache
+    if (nullPerm)
+        return lambdaForm;
+    Transform key = Transform.of(Transform.Kind.PERMUTE_ARGS, reorder);
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.arity == skip + inTypes) : form;
+        return form;
+    }
+    BasicType[] types = new BasicType[inTypes];
+    for (int i = 0; i < outArgs; i++) {
+        int inArg = reorder[i];
+        types[inArg] = lambdaForm.names[skip + i].type;
+    }
+    assert (skip + outArgs == lambdaForm.arity);
+    assert (permutedTypesMatch(reorder, types, lambdaForm.names, skip));
+    int pos = 0;
+    while (pos < outArgs && reorder[pos] == pos) {
+        pos += 1;
+    }
+    Name[] names2 = new Name[length - outArgs + inTypes];
+    System.arraycopy(lambdaForm.names, 0, names2, 0, skip + pos);
+    int bodyLength = length - lambdaForm.arity;
+    System.arraycopy(lambdaForm.names, skip + outArgs, names2, skip + inTypes, bodyLength);
+    int arity2 = names2.length - bodyLength;
+    int result2 = lambdaForm.result;
+    if (result2 >= skip) {
+        if (result2 < skip + outArgs) {
+            result2 = reorder[result2 - skip] + skip;
+        } else {
+            result2 = result2 - outArgs + inTypes;
+        }
+    }
+    for (int j = pos; j < outArgs; j++) {
+        Name n = lambdaForm.names[skip + j];
+        int i = reorder[j];
+        Name n2 = names2[skip + i];
+        if (n2 == null) {
+            names2[skip + i] = n2 = new Name(types[i]);
+        } else {
+            assert (n2.type == types[i]);
+        }
+        for (int k = arity2; k < names2.length; k++) {
+            names2[k] = names2[k].replaceName(n, n2);
+        }
+    }
+    for (int i = skip + pos; i < arity2; i++) {
+        if (names2[i] == null) {
+            names2[i] = argument(i, types[i - skip]);
+        }
+    }
+    for (int j = lambdaForm.arity; j < lambdaForm.names.length; j++) {
+        int i = j - lambdaForm.arity + arity2;
+        Name n = lambdaForm.names[j];
+        Name n2 = names2[i];
+        if (n != n2) {
+            for (int k = i + 1; k < names2.length; k++) {
+                names2[k] = names2[k].replaceName(n, n2);
+            }
+        }
+    }
+    form = new LambdaForm(lambdaForm.debugName, arity2, names2, result2);
+    return putInCache(key, form);
+}

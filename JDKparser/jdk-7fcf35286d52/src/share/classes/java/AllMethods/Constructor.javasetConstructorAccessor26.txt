@@ -1,0 +1,9 @@
+// Sets the ConstructorAccessor for this Constructor object and
+// (recursively) its root
+void setConstructorAccessor(ConstructorAccessor accessor) {
+    constructorAccessor = accessor;
+    // Propagate up
+    if (root != null) {
+        root.setConstructorAccessor(accessor);
+    }
+}

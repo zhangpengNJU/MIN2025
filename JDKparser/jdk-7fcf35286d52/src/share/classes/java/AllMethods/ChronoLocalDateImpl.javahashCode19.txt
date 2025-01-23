@@ -1,0 +1,5 @@
+@Override
+public int hashCode() {
+    long epDay = toEpochDay();
+    return getChronology().hashCode() ^ ((int) (epDay ^ (epDay >>> 32)));
+}

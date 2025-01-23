@@ -1,0 +1,10 @@
+// shifts a up to len right n bits assumes no leading zeros, 0<n<32
+static void primitiveRightShift(int[] a, int len, int n) {
+    int n2 = 32 - n;
+    for (int i = len - 1, c = a[i]; i > 0; i--) {
+        int b = c;
+        c = a[i - 1];
+        a[i] = (c << n2) | (b >>> n);
+    }
+    a[0] >>>= n;
+}

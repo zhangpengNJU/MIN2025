@@ -1,0 +1,29 @@
+/**
+ * Truncates the entity, to which this channel is connected, to the given
+ * size.
+ *
+ * <p> If the given size is less than the current size then the entity is
+ * truncated, discarding any bytes beyond the new end. If the given size is
+ * greater than or equal to the current size then the entity is not modified.
+ * In either case, if the current position is greater than the given size
+ * then it is set to that size.
+ *
+ * <p> An implementation of this interface may prohibit truncation when
+ * connected to an entity, typically a file, opened with the {@link
+ * java.nio.file.StandardOpenOption#APPEND APPEND} option.
+ *
+ * @param  size
+ *         The new size, a non-negative byte count
+ *
+ * @return  This channel
+ *
+ * @throws  NonWritableChannelException
+ *          If this channel was not opened for writing
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IllegalArgumentException
+ *          If the new size is negative
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+SeekableByteChannel truncate(long size) throws IOException;

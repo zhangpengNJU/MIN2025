@@ -1,0 +1,7 @@
+private void writeObject(java.io.ObjectOutputStream s) throws java.lang.ClassNotFoundException, java.io.IOException {
+    // sigh -- 1.3 expects transform is never null, so we need to always write one out
+    if (this.transform == null) {
+        this.transform = new AffineTransform();
+    }
+    s.defaultWriteObject();
+}

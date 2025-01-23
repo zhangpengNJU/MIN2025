@@ -1,0 +1,15 @@
+public boolean tryAdvance(Consumer<? super E> action) {
+    Node<E> p;
+    if (action == null)
+        throw new NullPointerException();
+    if (getEst() > 0 && (p = current) != null) {
+        --est;
+        E e = p.item;
+        current = p.next;
+        action.accept(e);
+        if (list.modCount != expectedModCount)
+            throw new ConcurrentModificationException();
+        return true;
+    }
+    return false;
+}

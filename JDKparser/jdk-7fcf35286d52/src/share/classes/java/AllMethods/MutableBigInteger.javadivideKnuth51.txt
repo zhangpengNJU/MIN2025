@@ -1,0 +1,57 @@
+/**
+ * Calculates the quotient of this div b and places the quotient in the
+ * provided MutableBigInteger objects and the remainder object is returned.
+ *
+ * Uses Algorithm D in Knuth section 4.3.1.
+ * Many optimizations to that algorithm have been adapted from the Colin
+ * Plumb C library.
+ * It special cases one word divisors for speed. The content of b is not
+ * changed.
+ */
+MutableBigInteger divideKnuth(MutableBigInteger b, MutableBigInteger quotient, boolean needRemainder) {
+    if (b.intLen == 0)
+        throw new ArithmeticException("BigInteger divide by zero");
+    // Dividend is zero
+    if (intLen == 0) {
+        quotient.intLen = quotient.offset = 0;
+        return needRemainder ? new MutableBigInteger() : null;
+    }
+    int cmp = compare(b);
+    // Dividend less than divisor
+    if (cmp < 0) {
+        quotient.intLen = quotient.offset = 0;
+        return needRemainder ? new MutableBigInteger(this) : null;
+    }
+    // Dividend equal to divisor
+    if (cmp == 0) {
+        quotient.value[0] = quotient.intLen = 1;
+        quotient.offset = 0;
+        return needRemainder ? new MutableBigInteger() : null;
+    }
+    quotient.clear();
+    // Special case one word divisor
+    if (b.intLen == 1) {
+        int r = divideOneWord(b.value[b.offset], quotient);
+        if (needRemainder) {
+            if (r == 0)
+                return new MutableBigInteger();
+            return new MutableBigInteger(r);
+        } else {
+            return null;
+        }
+    }
+    // Cancel common powers of two if we're above the KNUTH_POW2_* thresholds
+    if (intLen >= KNUTH_POW2_THRESH_LEN) {
+        int trailingZeroBits = Math.min(getLowestSetBit(), b.getLowestSetBit());
+        if (trailingZeroBits >= KNUTH_POW2_THRESH_ZEROS * 32) {
+            MutableBigInteger a = new MutableBigInteger(this);
+            b = new MutableBigInteger(b);
+            a.rightShift(trailingZeroBits);
+            b.rightShift(trailingZeroBits);
+            MutableBigInteger r = a.divideKnuth(b, quotient);
+            r.leftShift(trailingZeroBits);
+            return r;
+        }
+    }
+    return divideMagnitude(b, quotient, needRemainder);
+}

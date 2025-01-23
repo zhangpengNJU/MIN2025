@@ -1,0 +1,9 @@
+/**
+ * Store the name to its local, if necessary.
+ */
+private void emitStoreResult(Name name) {
+    if (name != null && name.type != V_TYPE) {
+        // non-void: actually assign
+        emitStoreInsn(name.type, name.index());
+    }
+}

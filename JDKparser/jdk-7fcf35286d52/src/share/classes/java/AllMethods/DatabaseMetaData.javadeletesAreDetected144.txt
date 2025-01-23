@@ -1,0 +1,16 @@
+/**
+ * Retrieves whether or not a visible row delete can be detected by
+ * calling the method <code>ResultSet.rowDeleted</code>.  If the method
+ * <code>deletesAreDetected</code> returns <code>false</code>, it means that
+ * deleted rows are removed from the result set.
+ *
+ * @param type the <code>ResultSet</code> type; one of
+ *        <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+ *        <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+ *        <code>ResultSet.TYPE_SCROLL_SENSITIVE</code>
+ * @return <code>true</code> if deletes are detected by the given result set type;
+ *         <code>false</code> otherwise
+ * @exception SQLException if a database access error occurs
+ * @since 1.2
+ */
+boolean deletesAreDetected(int type) throws SQLException;

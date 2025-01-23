@@ -1,0 +1,18 @@
+/**
+ * Initializes this parameter generator with a set of algorithm-specific
+ * parameter generation values.
+ * To generate the parameters, the {@code SecureRandom}
+ * implementation of the highest-priority installed provider is used as
+ * the source of randomness.
+ * (If none of the installed providers supply an implementation of
+ * {@code SecureRandom}, a system-provided source of randomness is
+ * used.)
+ *
+ * @param genParamSpec the set of algorithm-specific parameter generation values.
+ *
+ * @exception InvalidAlgorithmParameterException if the given parameter
+ * generation values are inappropriate for this parameter generator.
+ */
+public final void init(AlgorithmParameterSpec genParamSpec) throws InvalidAlgorithmParameterException {
+    paramGenSpi.engineInit(genParamSpec, new SecureRandom());
+}

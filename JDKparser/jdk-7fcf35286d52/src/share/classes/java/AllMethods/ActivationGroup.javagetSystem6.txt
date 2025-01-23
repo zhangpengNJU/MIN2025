@@ -1,0 +1,33 @@
+/**
+ * Returns the activation system for the VM. The activation system
+ * may be set by the <code>setSystem</code> method. If the
+ * activation system is not set via the <code>setSystem</code>
+ * method, then the <code>getSystem</code> method attempts to
+ * obtain a reference to the <code>ActivationSystem</code> by
+ * looking up the name "java.rmi.activation.ActivationSystem" in
+ * the Activator's registry. By default, the port number used to
+ * look up the activation system is defined by
+ * <code>ActivationSystem.SYSTEM_PORT</code>. This port can be
+ * overridden by setting the property
+ * <code>java.rmi.activation.port</code>.
+ *
+ * @return the activation system for the VM/group
+ * @exception ActivationException if activation system cannot be
+ *  obtained or is not bound
+ * (means that it is not running)
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @see #setSystem
+ * @since 1.2
+ */
+public static synchronized ActivationSystem getSystem() throws ActivationException {
+    if (currSystem == null) {
+        try {
+            int port = AccessController.doPrivileged(new GetIntegerAction("java.rmi.activation.port", ActivationSystem.SYSTEM_PORT));
+            currSystem = (ActivationSystem) Naming.lookup("//:" + port + "/java.rmi.activation.ActivationSystem");
+        } catch (Exception e) {
+            throw new ActivationException("unable to obtain ActivationSystem", e);
+        }
+    }
+    return currSystem;
+}

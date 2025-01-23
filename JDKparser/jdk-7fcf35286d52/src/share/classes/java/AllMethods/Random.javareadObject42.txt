@@ -1,0 +1,15 @@
+/**
+ * Reconstitute the {@code Random} instance from a stream (that is,
+ * deserialize it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    ObjectInputStream.GetField fields = s.readFields();
+    // The seed is read in as {@code long} for
+    // historical reasons, but it is converted to an AtomicLong.
+    long seedVal = fields.get("seed", -1L);
+    if (seedVal < 0)
+        throw new java.io.StreamCorruptedException("Random: invalid seed");
+    resetSeed(seedVal);
+    nextNextGaussian = fields.get("nextNextGaussian", 0.0);
+    haveNextNextGaussian = fields.get("haveNextNextGaussian", false);
+}

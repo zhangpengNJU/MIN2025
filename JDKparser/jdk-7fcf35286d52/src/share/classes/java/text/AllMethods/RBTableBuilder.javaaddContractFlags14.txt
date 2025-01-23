@@ -1,0 +1,10 @@
+private void addContractFlags(String chars) {
+    char c0;
+    int c;
+    int len = chars.length();
+    for (int i = 0; i < len; i++) {
+        c0 = chars.charAt(i);
+        c = Character.isHighSurrogate(c0) ? Character.toCodePoint(c0, chars.charAt(++i)) : c0;
+        contractFlags.put(c, 1);
+    }
+}

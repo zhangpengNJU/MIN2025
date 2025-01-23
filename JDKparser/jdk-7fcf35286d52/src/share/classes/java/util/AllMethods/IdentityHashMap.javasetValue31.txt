@@ -1,0 +1,10 @@
+@SuppressWarnings("unchecked")
+public V setValue(V value) {
+    checkIndexForEntryUse();
+    V oldValue = (V) traversalTable[index + 1];
+    traversalTable[index + 1] = value;
+    // if shadowing, force into main table
+    if (traversalTable != IdentityHashMap.this.table)
+        put((K) traversalTable[index], value);
+    return oldValue;
+}

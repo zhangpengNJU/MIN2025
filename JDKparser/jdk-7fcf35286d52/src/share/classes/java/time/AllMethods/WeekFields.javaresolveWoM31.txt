@@ -1,0 +1,29 @@
+private ChronoLocalDate resolveWoM(Map<TemporalField, Long> fieldValues, Chronology chrono, int year, long month, long wom, int localDow, ResolverStyle resolverStyle) {
+    ChronoLocalDate date;
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        date = chrono.date(year, 1, 1).plus(Math.subtractExact(month, 1), MONTHS);
+        long weeks = Math.subtractExact(wom, localizedWeekOfMonth(date));
+        // safe from overflow
+        int days = localDow - localizedDayOfWeek(date);
+        date = date.plus(Math.addExact(Math.multiplyExact(weeks, 7), days), DAYS);
+    } else {
+        // validate
+        int monthValid = MONTH_OF_YEAR.checkValidIntValue(month);
+        date = chrono.date(year, monthValid, 1);
+        // validate
+        int womInt = range.checkValidIntValue(wom, this);
+        // safe from overflow
+        int weeks = (int) (womInt - localizedWeekOfMonth(date));
+        // safe from overflow
+        int days = localDow - localizedDayOfWeek(date);
+        date = date.plus(weeks * 7 + days, DAYS);
+        if (resolverStyle == ResolverStyle.STRICT && date.getLong(MONTH_OF_YEAR) != month) {
+            throw new DateTimeException("Strict mode rejected resolved date as it is in a different month");
+        }
+    }
+    fieldValues.remove(this);
+    fieldValues.remove(YEAR);
+    fieldValues.remove(MONTH_OF_YEAR);
+    fieldValues.remove(DAY_OF_WEEK);
+    return date;
+}

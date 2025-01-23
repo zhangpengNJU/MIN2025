@@ -1,0 +1,11 @@
+public void remove() {
+    if (lastRet == -1)
+        throw new IllegalStateException();
+    synchronized (Vector.this) {
+        checkForComodification();
+        Vector.this.remove(lastRet);
+        expectedModCount = modCount;
+    }
+    cursor = lastRet;
+    lastRet = -1;
+}

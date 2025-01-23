@@ -1,0 +1,18 @@
+/**
+ * Squares a BigInteger using the Karatsuba squaring algorithm.  It should
+ * be used when both numbers are larger than a certain threshold (found
+ * experimentally).  It is a recursive divide-and-conquer algorithm that
+ * has better asymptotic performance than the algorithm used in
+ * squareToLen.
+ */
+private BigInteger squareKaratsuba() {
+    int half = (mag.length + 1) / 2;
+    BigInteger xl = getLower(half);
+    BigInteger xh = getUpper(half);
+    // xhs = xh^2
+    BigInteger xhs = xh.square();
+    // xls = xl^2
+    BigInteger xls = xl.square();
+    // xh^2 << 64  +  (((xl+xh)^2 - (xh^2 + xl^2)) << 32) + xl^2
+    return xhs.shiftLeft(half * 32).add(xl.add(xh).square().subtract(xhs.add(xls))).shiftLeft(half * 32).add(xls);
+}

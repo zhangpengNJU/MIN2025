@@ -1,0 +1,9 @@
+public E peekLast() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return (last == null) ? null : last.item;
+    } finally {
+        lock.unlock();
+    }
+}

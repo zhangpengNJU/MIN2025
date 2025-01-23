@@ -1,0 +1,22 @@
+/**
+ * Adds the specified adjustment listener to receive instances of
+ * <code>AdjustmentEvent</code> from this scroll bar.
+ * If l is <code>null</code>, no exception is thrown and no
+ * action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param        l the adjustment listener
+ * @see          #removeAdjustmentListener
+ * @see          #getAdjustmentListeners
+ * @see          java.awt.event.AdjustmentEvent
+ * @see          java.awt.event.AdjustmentListener
+ * @since        JDK1.1
+ */
+public synchronized void addAdjustmentListener(AdjustmentListener l) {
+    if (l == null) {
+        return;
+    }
+    adjustmentListener = AWTEventMulticaster.add(adjustmentListener, l);
+    newEventsOnly = true;
+}

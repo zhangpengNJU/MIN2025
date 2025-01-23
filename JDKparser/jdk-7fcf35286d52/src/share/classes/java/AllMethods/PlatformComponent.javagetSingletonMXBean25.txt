@@ -1,0 +1,8 @@
+<T extends PlatformManagedObject> T getSingletonMXBean(MBeanServerConnection mbs, Class<T> mxbeanInterface) throws java.io.IOException {
+    if (!singleton)
+        throw new IllegalArgumentException(mxbeanInterfaceName + " can have zero or more than one instances");
+    // ObjectName of a singleton MXBean contains only domain and type
+    assert keyProperties.size() == 1;
+    String on = domain + ":type=" + type;
+    return ManagementFactory.newPlatformMXBeanProxy(mbs, on, mxbeanInterface);
+}

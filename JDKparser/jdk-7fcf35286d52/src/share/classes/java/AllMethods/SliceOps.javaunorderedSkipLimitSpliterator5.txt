@@ -1,0 +1,9 @@
+Spliterator<T> unorderedSkipLimitSpliterator(Spliterator<T> s, long skip, long limit, long sizeIfKnown) {
+    if (skip <= sizeIfKnown) {
+        // Use just the limit if the number of elements
+        // to skip is <= the known pipeline size
+        limit = limit >= 0 ? Math.min(limit, sizeIfKnown - skip) : sizeIfKnown - skip;
+        skip = 0;
+    }
+    return new StreamSpliterators.UnorderedSliceSpliterator.OfRef<>(s, skip, limit);
+}

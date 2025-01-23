@@ -1,0 +1,22 @@
+/**
+ * Consumes this event, if this event can be consumed. Only low-level,
+ * system events can be consumed
+ */
+protected void consume() {
+    switch(id) {
+        case KeyEvent.KEY_PRESSED:
+        case KeyEvent.KEY_RELEASED:
+        case MouseEvent.MOUSE_PRESSED:
+        case MouseEvent.MOUSE_RELEASED:
+        case MouseEvent.MOUSE_MOVED:
+        case MouseEvent.MOUSE_DRAGGED:
+        case MouseEvent.MOUSE_ENTERED:
+        case MouseEvent.MOUSE_EXITED:
+        case MouseEvent.MOUSE_WHEEL:
+        case InputMethodEvent.INPUT_METHOD_TEXT_CHANGED:
+        case InputMethodEvent.CARET_POSITION_CHANGED:
+            consumed = true;
+            break;
+        default:
+    }
+}

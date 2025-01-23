@@ -1,0 +1,24 @@
+/**
+ * Sets the button's label to be the specified string.
+ *
+ * @param     label   the new label, or <code>null</code>
+ *                if the button has no label.
+ * @see       java.awt.Button#getLabel
+ */
+public void setLabel(String label) {
+    boolean testvalid = false;
+    synchronized (this) {
+        if (label != this.label && (this.label == null || !this.label.equals(label))) {
+            this.label = label;
+            ButtonPeer peer = (ButtonPeer) this.peer;
+            if (peer != null) {
+                peer.setLabel(label);
+            }
+            testvalid = true;
+        }
+    }
+    // This could change the preferred size of the Component.
+    if (testvalid) {
+        invalidateIfValid();
+    }
+}

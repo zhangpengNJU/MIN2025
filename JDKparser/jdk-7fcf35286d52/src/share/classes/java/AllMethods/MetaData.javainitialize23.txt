@@ -1,0 +1,7 @@
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    // assumes oldInstance and newInstance are Timestamps
+    int nanos = getNanos(oldInstance);
+    if (nanos != getNanos(newInstance)) {
+        out.writeStatement(new Statement(oldInstance, "setNanos", new Object[] { nanos }));
+    }
+}

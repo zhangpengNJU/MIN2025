@@ -1,0 +1,13 @@
+/**
+ * Determines if a component has been obscured, i.e. by an overlapping
+ * window or similar. This is used by JViewport for optimizing performance.
+ * This doesn't have to be implemented, when
+ * {@link #canDetermineObscurity()} returns {@code false}.
+ *
+ * @return {@code true} when the component has been obscured,
+ *         {@code false} otherwise
+ *
+ * @see #canDetermineObscurity()
+ * @see javax.swing.JViewport#needsRepaintAfterBlit
+ */
+boolean isObscured();

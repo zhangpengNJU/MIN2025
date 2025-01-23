@@ -1,0 +1,10 @@
+private Object findStore(TemporalField field, Locale locale) {
+    Entry<TemporalField, Locale> key = createEntry(field, locale);
+    Object store = CACHE.get(key);
+    if (store == null) {
+        store = createStore(field, locale);
+        CACHE.putIfAbsent(key, store);
+        store = CACHE.get(key);
+    }
+    return store;
+}

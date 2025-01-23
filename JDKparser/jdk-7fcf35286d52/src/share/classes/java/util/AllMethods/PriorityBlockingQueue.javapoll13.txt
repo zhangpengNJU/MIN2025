@@ -1,0 +1,12 @@
+public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    long nanos = unit.toNanos(timeout);
+    final ReentrantLock lock = this.lock;
+    lock.lockInterruptibly();
+    E result;
+    try {
+        while ((result = dequeue()) == null && nanos > 0) nanos = notEmpty.awaitNanos(nanos);
+    } finally {
+        lock.unlock();
+    }
+    return result;
+}

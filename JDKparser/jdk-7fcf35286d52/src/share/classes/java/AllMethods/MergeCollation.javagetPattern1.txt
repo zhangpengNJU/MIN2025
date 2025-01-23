@@ -1,0 +1,38 @@
+/**
+ * recovers current pattern.
+ * @param withWhiteSpace puts spacing around the entries, and \n
+ * before & and <
+ */
+public String getPattern(boolean withWhiteSpace) {
+    StringBuffer result = new StringBuffer();
+    PatternEntry tmp = null;
+    ArrayList<PatternEntry> extList = null;
+    int i;
+    for (i = 0; i < patterns.size(); ++i) {
+        PatternEntry entry = patterns.get(i);
+        if (entry.extension.length() != 0) {
+            if (extList == null)
+                extList = new ArrayList<>();
+            extList.add(entry);
+        } else {
+            if (extList != null) {
+                PatternEntry last = findLastWithNoExtension(i - 1);
+                for (int j = extList.size() - 1; j >= 0; j--) {
+                    tmp = extList.get(j);
+                    tmp.addToBuffer(result, false, withWhiteSpace, last);
+                }
+                extList = null;
+            }
+            entry.addToBuffer(result, false, withWhiteSpace, null);
+        }
+    }
+    if (extList != null) {
+        PatternEntry last = findLastWithNoExtension(i - 1);
+        for (int j = extList.size() - 1; j >= 0; j--) {
+            tmp = extList.get(j);
+            tmp.addToBuffer(result, false, withWhiteSpace, last);
+        }
+        extList = null;
+    }
+    return result.toString();
+}

@@ -1,0 +1,11 @@
+/**
+ * Attempts to reduce internal storage used for the bits in this bit set.
+ * Calling this method may, but is not required to, affect the value
+ * returned by a subsequent call to the {@link #size()} method.
+ */
+private void trimToSize() {
+    if (wordsInUse != words.length) {
+        words = Arrays.copyOf(words, wordsInUse);
+        checkInvariants();
+    }
+}

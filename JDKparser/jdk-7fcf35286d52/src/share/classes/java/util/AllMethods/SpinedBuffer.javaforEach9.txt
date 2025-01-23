@@ -1,0 +1,7 @@
+@Override
+public void forEach(Consumer<? super E> consumer) {
+    // completed chunks, if any
+    for (int j = 0; j < spineIndex; j++) for (E t : spine[j]) consumer.accept(t);
+    // current chunk
+    for (int i = 0; i < elementIndex; i++) consumer.accept(curChunk[i]);
+}

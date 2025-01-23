@@ -1,0 +1,13 @@
+public String toString() {
+    // Heuristic: 8 characters per field
+    StringBuilder buffer = new StringBuilder(parameters.size() * 16);
+    Enumeration<String> keys = parameters.keys();
+    while (keys.hasMoreElements()) {
+        buffer.append("; ");
+        String key = keys.nextElement();
+        buffer.append(key);
+        buffer.append('=');
+        buffer.append(quote(parameters.get(key)));
+    }
+    return buffer.toString();
+}

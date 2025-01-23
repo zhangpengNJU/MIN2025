@@ -1,0 +1,12 @@
+/**
+ * Returns the number of bits per sample for all bands.
+ *  @return an array containing the number of bits per sample
+ *          for all bands, where each element in the array
+ *          represents a band.
+ */
+public final int[] getSampleSize() {
+    int[] sampleSize = new int[numBands];
+    int sizeInBits = getSampleSize(0);
+    for (int i = 0; i < numBands; i++) sampleSize[i] = sizeInBits;
+    return sampleSize;
+}

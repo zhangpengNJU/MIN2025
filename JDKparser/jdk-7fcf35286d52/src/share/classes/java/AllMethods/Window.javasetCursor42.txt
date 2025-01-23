@@ -1,0 +1,20 @@
+/**
+ * Set the cursor image to a specified cursor.
+ * <p>
+ * The method may have no visual effect if the Java platform
+ * implementation and/or the native system do not support
+ * changing the mouse cursor shape.
+ * @param     cursor One of the constants defined
+ *            by the {@code Cursor} class. If this parameter is null
+ *            then the cursor for this window will be set to the type
+ *            Cursor.DEFAULT_CURSOR.
+ * @see       Component#getCursor
+ * @see       Cursor
+ * @since     JDK1.1
+ */
+public void setCursor(Cursor cursor) {
+    if (cursor == null) {
+        cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    }
+    super.setCursor(cursor);
+}

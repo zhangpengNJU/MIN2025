@@ -1,0 +1,3 @@
+static <T> boolean casAnnotationData(Class<?> clazz, AnnotationData oldData, AnnotationData newData) {
+    return unsafe.compareAndSwapObject(clazz, annotationDataOffset, oldData, newData);
+}

@@ -1,0 +1,34 @@
+/**
+ * Gets the value of a static or instance field of type
+ * {@code int} or of another primitive type convertible to
+ * type {@code int} via a widening conversion.
+ *
+ * @param obj the object to extract the {@code int} value
+ * from
+ * @return the value of the field converted to type {@code int}
+ *
+ * @exception IllegalAccessException    if this {@code Field} object
+ *              is enforcing Java language access control and the underlying
+ *              field is inaccessible.
+ * @exception IllegalArgumentException  if the specified object is not
+ *              an instance of the class or interface declaring the
+ *              underlying field (or a subclass or implementor
+ *              thereof), or if the field value cannot be
+ *              converted to the type {@code int} by a
+ *              widening conversion.
+ * @exception NullPointerException      if the specified object is null
+ *              and the field is an instance field.
+ * @exception ExceptionInInitializerError if the initialization provoked
+ *              by this method fails.
+ * @see       Field#get
+ */
+@CallerSensitive
+public int getInt(Object obj) throws IllegalArgumentException, IllegalAccessException {
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class<?> caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, obj, modifiers);
+        }
+    }
+    return getFieldAccessor(obj).getInt(obj);
+}

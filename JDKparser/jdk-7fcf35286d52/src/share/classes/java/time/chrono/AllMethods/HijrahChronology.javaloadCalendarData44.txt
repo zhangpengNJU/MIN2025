@@ -1,0 +1,84 @@
+/**
+ * Loads and processes the Hijrah calendar properties file for this calendarType.
+ * The starting Hijrah date and the corresponding ISO date are
+ * extracted and used to calculate the epochDate offset.
+ * The version number is identified and ignored.
+ * Everything else is the data for a year with containing the length of each
+ * of 12 months.
+ *
+ * @throws DateTimeException if initialization of the calendar data from the
+ *     resource fails
+ */
+private void loadCalendarData() {
+    try {
+        String resourceName = calendarProperties.getProperty(PROP_PREFIX + typeId);
+        Objects.requireNonNull(resourceName, "Resource missing for calendar: " + PROP_PREFIX + typeId);
+        Properties props = readConfigProperties(resourceName);
+        Map<Integer, int[]> years = new HashMap<>();
+        int minYear = Integer.MAX_VALUE;
+        int maxYear = Integer.MIN_VALUE;
+        String id = null;
+        String type = null;
+        String version = null;
+        int isoStart = 0;
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            String key = (String) entry.getKey();
+            switch(key) {
+                case KEY_ID:
+                    id = (String) entry.getValue();
+                    break;
+                case KEY_TYPE:
+                    type = (String) entry.getValue();
+                    break;
+                case KEY_VERSION:
+                    version = (String) entry.getValue();
+                    break;
+                case KEY_ISO_START:
+                    {
+                        int[] ymd = parseYMD((String) entry.getValue());
+                        isoStart = (int) LocalDate.of(ymd[0], ymd[1], ymd[2]).toEpochDay();
+                        break;
+                    }
+                default:
+                    try {
+                        // Everything else is either a year or invalid
+                        int year = Integer.valueOf(key);
+                        int[] months = parseMonths((String) entry.getValue());
+                        years.put(year, months);
+                        maxYear = Math.max(maxYear, year);
+                        minYear = Math.min(minYear, year);
+                    } catch (NumberFormatException nfe) {
+                        throw new IllegalArgumentException("bad key: " + key);
+                    }
+            }
+        }
+        if (!getId().equals(id)) {
+            throw new IllegalArgumentException("Configuration is for a different calendar: " + id);
+        }
+        if (!getCalendarType().equals(type)) {
+            throw new IllegalArgumentException("Configuration is for a different calendar type: " + type);
+        }
+        if (version == null || version.isEmpty()) {
+            throw new IllegalArgumentException("Configuration does not contain a version");
+        }
+        if (isoStart == 0) {
+            throw new IllegalArgumentException("Configuration does not contain a ISO start date");
+        }
+        // Now create and validate the array of epochDays indexed by epochMonth
+        hijrahStartEpochMonth = minYear * 12;
+        minEpochDay = isoStart;
+        hijrahEpochMonthStartDays = createEpochMonths(minEpochDay, minYear, maxYear, years);
+        maxEpochDay = hijrahEpochMonthStartDays[hijrahEpochMonthStartDays.length - 1];
+        // Compute the min and max year length in days.
+        for (int year = minYear; year < maxYear; year++) {
+            int length = getYearLength(year);
+            minYearLength = Math.min(minYearLength, length);
+            maxYearLength = Math.max(maxYearLength, length);
+        }
+    } catch (Exception ex) {
+        // Log error and throw a DateTimeException
+        PlatformLogger logger = PlatformLogger.getLogger("java.time.chrono");
+        logger.severe("Unable to initialize Hijrah calendar proxy: " + typeId, ex);
+        throw new DateTimeException("Unable to initialize HijrahCalendar: " + typeId, ex);
+    }
+}

@@ -1,0 +1,64 @@
+/**
+ * FAST LOOKUP METHOD
+ *
+ * This method calculates the gradient color values and places them in a
+ * single int array, gradient[].  It does this by allocating space for
+ * each interval based on its size relative to the smallest interval in
+ * the array.  The smallest interval is allocated 255 interpolated values
+ * (the maximum number of unique in-between colors in a 24 bit color
+ * system), and all other intervals are allocated
+ * size = (255 * the ratio of their size to the smallest interval).
+ *
+ * This scheme expedites a speedy retrieval because the colors are
+ * distributed along the array according to their user-specified
+ * distribution.  All that is needed is a relative index from 0 to 1.
+ *
+ * The only problem with this method is that the possibility exists for
+ * the array size to balloon in the case where there is a
+ * disproportionately small gradient interval.  In this case the other
+ * intervals will be allocated huge space, but much of that data is
+ * redundant.  We thus need to use the space conserving scheme below.
+ *
+ * @param Imin the size of the smallest interval
+ */
+private void calculateSingleArrayGradient(Color[] colors, float Imin) {
+    // set the flag so we know later it is a simple (fast) lookup
+    isSimpleLookup = true;
+    // 2 colors to interpolate
+    int rgb1, rgb2;
+    // the eventual size of the single array
+    int gradientsTot = 1;
+    // for every interval (transition between 2 colors)
+    for (int i = 0; i < gradients.length; i++) {
+        // create an array whose size is based on the ratio to the
+        // smallest interval
+        int nGradients = (int) ((normalizedIntervals[i] / Imin) * 255f);
+        gradientsTot += nGradients;
+        gradients[i] = new int[nGradients];
+        // the 2 colors (keyframes) to interpolate between
+        rgb1 = colors[i].getRGB();
+        rgb2 = colors[i + 1].getRGB();
+        // fill this array with the colors in between rgb1 and rgb2
+        interpolate(rgb1, rgb2, gradients[i]);
+        // if the colors are opaque, transparency should still
+        // be 0xff000000
+        transparencyTest &= rgb1;
+        transparencyTest &= rgb2;
+    }
+    // put all gradients in a single array
+    gradient = new int[gradientsTot];
+    int curOffset = 0;
+    for (int i = 0; i < gradients.length; i++) {
+        System.arraycopy(gradients[i], 0, gradient, curOffset, gradients[i].length);
+        curOffset += gradients[i].length;
+    }
+    gradient[gradient.length - 1] = colors[colors.length - 1].getRGB();
+    // if interpolation occurred in Linear RGB space, convert the
+    // gradients back to sRGB using the lookup table
+    if (colorSpace == ColorSpaceType.LINEAR_RGB) {
+        for (int i = 0; i < gradient.length; i++) {
+            gradient[i] = convertEntireColorLinearRGBtoSRGB(gradient[i]);
+        }
+    }
+    fastGradientArraySize = gradient.length - 1;
+}

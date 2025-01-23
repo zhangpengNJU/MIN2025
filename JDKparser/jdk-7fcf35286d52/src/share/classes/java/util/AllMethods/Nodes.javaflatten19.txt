@@ -1,0 +1,28 @@
+// Parallel flattening of nodes
+/**
+ * Flatten, in parallel, a {@link Node}.  A flattened node is one that has
+ * no children.  If the node is already flat, it is simply returned.
+ *
+ * @implSpec
+ * If a new node is to be created, the generator is used to create an array
+ * whose length is {@link Node#count()}.  Then the node tree is traversed
+ * and leaf node elements are placed in the array concurrently by leaf tasks
+ * at the correct offsets.
+ *
+ * @param <T> type of elements contained by the node
+ * @param node the node to flatten
+ * @param generator the array factory used to create array instances
+ * @return a flat {@code Node}
+ */
+public static <T> Node<T> flatten(Node<T> node, IntFunction<T[]> generator) {
+    if (node.getChildCount() > 0) {
+        long size = node.count();
+        if (size >= MAX_ARRAY_SIZE)
+            throw new IllegalArgumentException(BAD_SIZE);
+        T[] array = generator.apply((int) size);
+        new ToArrayTask.OfRef<>(node, array, 0).invoke();
+        return node(array);
+    } else {
+        return node;
+    }
+}

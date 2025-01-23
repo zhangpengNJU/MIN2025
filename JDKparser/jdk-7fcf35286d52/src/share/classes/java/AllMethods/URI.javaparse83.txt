@@ -1,0 +1,40 @@
+// -- Parsing --
+// [<scheme>:]<scheme-specific-part>[#<fragment>]
+// 
+void parse(boolean rsa) throws URISyntaxException {
+    requireServerAuthority = rsa;
+    // Start of scheme-specific part
+    int ssp;
+    int n = input.length();
+    int p = scan(0, n, "/?#", ":");
+    if ((p >= 0) && at(p, n, ':')) {
+        if (p == 0)
+            failExpecting("scheme name", 0);
+        checkChar(0, L_ALPHA, H_ALPHA, "scheme name");
+        checkChars(1, p, L_SCHEME, H_SCHEME, "scheme name");
+        scheme = substring(0, p);
+        // Skip ':'
+        p++;
+        ssp = p;
+        if (at(p, n, '/')) {
+            p = parseHierarchical(p, n);
+        } else {
+            int q = scan(p, n, "", "#");
+            if (q <= p)
+                failExpecting("scheme-specific part", p);
+            checkChars(p, q, L_URIC, H_URIC, "opaque part");
+            p = q;
+        }
+    } else {
+        ssp = 0;
+        p = parseHierarchical(0, n);
+    }
+    schemeSpecificPart = substring(ssp, p);
+    if (at(p, n, '#')) {
+        checkChars(p + 1, n, L_URIC, H_URIC, "fragment");
+        fragment = substring(p + 1, n);
+        p = n;
+    }
+    if (p < n)
+        fail("end of URI", p);
+}

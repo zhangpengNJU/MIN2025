@@ -1,0 +1,18 @@
+/**
+ * Converts the given array of options for moving a file to options suitable
+ * for copying the file when a move is implemented as copy + delete.
+ */
+private static CopyOption[] convertMoveToCopyOptions(CopyOption... options) throws AtomicMoveNotSupportedException {
+    int len = options.length;
+    CopyOption[] newOptions = new CopyOption[len + 2];
+    for (int i = 0; i < len; i++) {
+        CopyOption option = options[i];
+        if (option == StandardCopyOption.ATOMIC_MOVE) {
+            throw new AtomicMoveNotSupportedException(null, null, "Atomic move between providers is not supported");
+        }
+        newOptions[i] = option;
+    }
+    newOptions[len] = LinkOption.NOFOLLOW_LINKS;
+    newOptions[len + 1] = StandardCopyOption.COPY_ATTRIBUTES;
+    return newOptions;
+}

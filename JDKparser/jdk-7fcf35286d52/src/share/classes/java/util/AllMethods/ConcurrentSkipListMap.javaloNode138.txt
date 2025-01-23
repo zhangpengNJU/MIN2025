@@ -1,0 +1,12 @@
+/**
+ * Returns lowest node. This node might not be in range, so
+ * most usages need to check bounds.
+ */
+ConcurrentSkipListMap.Node<K, V> loNode(Comparator<? super K> cmp) {
+    if (lo == null)
+        return m.findFirst();
+    else if (loInclusive)
+        return m.findNear(lo, GT | EQ, cmp);
+    else
+        return m.findNear(lo, GT, cmp);
+}

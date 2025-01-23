@@ -1,0 +1,9 @@
+/**
+ * Returns a suitable hash code given the definition of {@code #equals}.
+ *
+ * @return the hash code
+ */
+@Override
+public int hashCode() {
+    return Arrays.hashCode(standardTransitions) ^ Arrays.hashCode(standardOffsets) ^ Arrays.hashCode(savingsInstantTransitions) ^ Arrays.hashCode(wallOffsets) ^ Arrays.hashCode(lastRules);
+}

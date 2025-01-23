@@ -1,0 +1,17 @@
+/**
+ * Returns true if the given thread is currently queued.
+ *
+ * <p>This implementation traverses the queue to determine
+ * presence of the given thread.
+ *
+ * @param thread the thread
+ * @return {@code true} if the given thread is on the queue
+ * @throws NullPointerException if the thread is null
+ */
+public final boolean isQueued(Thread thread) {
+    if (thread == null)
+        throw new NullPointerException();
+    for (Node p = tail; p != null; p = p.prev) if (p.thread == thread)
+        return true;
+    return false;
+}

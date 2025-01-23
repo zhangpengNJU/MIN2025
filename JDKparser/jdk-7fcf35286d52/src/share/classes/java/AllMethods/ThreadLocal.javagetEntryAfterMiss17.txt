@@ -1,0 +1,24 @@
+/**
+ * Version of getEntry method for use when key is not found in
+ * its direct hash slot.
+ *
+ * @param  key the thread local object
+ * @param  i the table index for key's hash code
+ * @param  e the entry at table[i]
+ * @return the entry associated with key, or null if no such
+ */
+private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
+    Entry[] tab = table;
+    int len = tab.length;
+    while (e != null) {
+        ThreadLocal<?> k = e.get();
+        if (k == key)
+            return e;
+        if (k == null)
+            expungeStaleEntry(i);
+        else
+            i = nextIndex(i, len);
+        e = tab[i];
+    }
+    return null;
+}

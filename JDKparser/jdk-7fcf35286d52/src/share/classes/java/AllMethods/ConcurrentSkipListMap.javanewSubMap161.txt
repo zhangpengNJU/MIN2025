@@ -1,0 +1,37 @@
+/**
+ * Utility to create submaps, where given bounds override
+ * unbounded(null) ones and/or are checked against bounded ones.
+ */
+SubMap<K, V> newSubMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+    Comparator<? super K> cmp = m.comparator;
+    if (isDescending) {
+        // flip senses
+        K tk = fromKey;
+        fromKey = toKey;
+        toKey = tk;
+        boolean ti = fromInclusive;
+        fromInclusive = toInclusive;
+        toInclusive = ti;
+    }
+    if (lo != null) {
+        if (fromKey == null) {
+            fromKey = lo;
+            fromInclusive = loInclusive;
+        } else {
+            int c = cpr(cmp, fromKey, lo);
+            if (c < 0 || (c == 0 && !loInclusive && fromInclusive))
+                throw new IllegalArgumentException("key out of range");
+        }
+    }
+    if (hi != null) {
+        if (toKey == null) {
+            toKey = hi;
+            toInclusive = hiInclusive;
+        } else {
+            int c = cpr(cmp, toKey, hi);
+            if (c > 0 || (c == 0 && !hiInclusive && toInclusive))
+                throw new IllegalArgumentException("key out of range");
+        }
+    }
+    return new SubMap<K, V>(m, fromKey, fromInclusive, toKey, toInclusive, isDescending);
+}

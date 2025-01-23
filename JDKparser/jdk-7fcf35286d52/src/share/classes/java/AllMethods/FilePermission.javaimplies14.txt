@@ -1,0 +1,30 @@
+/**
+ * Check and see if this set of permissions implies the permissions
+ * expressed in "permission".
+ *
+ * @param permission the Permission object to compare
+ *
+ * @return true if "permission" is a proper subset of a permission in
+ * the set, false if not.
+ */
+public boolean implies(Permission permission) {
+    if (!(permission instanceof FilePermission))
+        return false;
+    FilePermission fp = (FilePermission) permission;
+    int desired = fp.getMask();
+    int effective = 0;
+    int needed = desired;
+    synchronized (this) {
+        int len = perms.size();
+        for (int i = 0; i < len; i++) {
+            FilePermission x = (FilePermission) perms.get(i);
+            if (((needed & x.getMask()) != 0) && x.impliesIgnoreMask(fp)) {
+                effective |= x.getMask();
+                if ((effective & desired) == desired)
+                    return true;
+                needed = (desired ^ effective);
+            }
+        }
+    }
+    return false;
+}

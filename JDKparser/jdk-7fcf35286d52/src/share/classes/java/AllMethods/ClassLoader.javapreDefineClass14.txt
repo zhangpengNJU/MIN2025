@@ -1,0 +1,21 @@
+/* Determine protection domain, and check that:
+        - not define java.* class,
+        - signer of this class matches signers for the rest of the classes in
+          package.
+    */
+private ProtectionDomain preDefineClass(String name, ProtectionDomain pd) {
+    if (!checkName(name))
+        throw new NoClassDefFoundError("IllegalName: " + name);
+    // Note:  Checking logic in java.lang.invoke.MemberName.checkForTypeAlias
+    // relies on the fact that spoofing is impossible if a class has a name
+    // of the form "java.*"
+    if ((name != null) && name.startsWith("java.")) {
+        throw new SecurityException("Prohibited package name: " + name.substring(0, name.lastIndexOf('.')));
+    }
+    if (pd == null) {
+        pd = defaultDomain;
+    }
+    if (name != null)
+        checkCerts(name, pd.getCodeSource());
+    return pd;
+}

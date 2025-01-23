@@ -1,0 +1,14 @@
+/**
+ * Ensures that the BitSet can accommodate a given wordIndex,
+ * temporarily violating the invariants.  The caller must
+ * restore the invariants before returning to the user,
+ * possibly using recalculateWordsInUse().
+ * @param wordIndex the index to be accommodated.
+ */
+private void expandTo(int wordIndex) {
+    int wordsRequired = wordIndex + 1;
+    if (wordsInUse < wordsRequired) {
+        ensureCapacity(wordsRequired);
+        wordsInUse = wordsRequired;
+    }
+}

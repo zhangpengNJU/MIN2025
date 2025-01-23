@@ -1,0 +1,97 @@
+/* color convert a Raster - handles byte, ushort, int, short, float,
+       or double transferTypes */
+private final WritableRaster nonICCRasterFilter(Raster src, WritableRaster dst) {
+    if (CSList.length != 2) {
+        throw new IllegalArgumentException("Destination ColorSpace is undefined");
+    }
+    if (src.getNumBands() != CSList[0].getNumComponents()) {
+        throw new IllegalArgumentException("Numbers of source Raster bands and source color space " + "components do not match");
+    }
+    if (dst == null) {
+        dst = createCompatibleDestRaster(src);
+    } else {
+        if (src.getHeight() != dst.getHeight() || src.getWidth() != dst.getWidth()) {
+            throw new IllegalArgumentException("Width or height of Rasters do not match");
+        }
+        if (dst.getNumBands() != CSList[1].getNumComponents()) {
+            throw new IllegalArgumentException("Numbers of destination Raster bands and destination " + "color space components do not match");
+        }
+    }
+    if (srcMinVals == null) {
+        getMinMaxValsFromColorSpaces(CSList[0], CSList[1]);
+    }
+    SampleModel srcSM = src.getSampleModel();
+    SampleModel dstSM = dst.getSampleModel();
+    boolean srcIsFloat, dstIsFloat;
+    int srcTransferType = src.getTransferType();
+    int dstTransferType = dst.getTransferType();
+    if ((srcTransferType == DataBuffer.TYPE_FLOAT) || (srcTransferType == DataBuffer.TYPE_DOUBLE)) {
+        srcIsFloat = true;
+    } else {
+        srcIsFloat = false;
+    }
+    if ((dstTransferType == DataBuffer.TYPE_FLOAT) || (dstTransferType == DataBuffer.TYPE_DOUBLE)) {
+        dstIsFloat = true;
+    } else {
+        dstIsFloat = false;
+    }
+    int w = src.getWidth();
+    int h = src.getHeight();
+    int srcNumBands = src.getNumBands();
+    int dstNumBands = dst.getNumBands();
+    float[] srcScaleFactor = null;
+    float[] dstScaleFactor = null;
+    if (!srcIsFloat) {
+        srcScaleFactor = new float[srcNumBands];
+        for (int i = 0; i < srcNumBands; i++) {
+            if (srcTransferType == DataBuffer.TYPE_SHORT) {
+                srcScaleFactor[i] = (srcMaxVals[i] - srcMinVals[i]) / 32767.0f;
+            } else {
+                srcScaleFactor[i] = (srcMaxVals[i] - srcMinVals[i]) / ((float) ((1 << srcSM.getSampleSize(i)) - 1));
+            }
+        }
+    }
+    if (!dstIsFloat) {
+        dstScaleFactor = new float[dstNumBands];
+        for (int i = 0; i < dstNumBands; i++) {
+            if (dstTransferType == DataBuffer.TYPE_SHORT) {
+                dstScaleFactor[i] = 32767.0f / (dstMaxVals[i] - dstMinVals[i]);
+            } else {
+                dstScaleFactor[i] = ((float) ((1 << dstSM.getSampleSize(i)) - 1)) / (dstMaxVals[i] - dstMinVals[i]);
+            }
+        }
+    }
+    int ys = src.getMinY();
+    int yd = dst.getMinY();
+    int xs, xd;
+    float sample;
+    float[] color = new float[srcNumBands];
+    float[] tmpColor;
+    ColorSpace srcColorSpace = CSList[0];
+    ColorSpace dstColorSpace = CSList[1];
+    // process each pixel
+    for (int y = 0; y < h; y++, ys++, yd++) {
+        // get src scanline
+        xs = src.getMinX();
+        xd = dst.getMinX();
+        for (int x = 0; x < w; x++, xs++, xd++) {
+            for (int i = 0; i < srcNumBands; i++) {
+                sample = src.getSampleFloat(xs, ys, i);
+                if (!srcIsFloat) {
+                    sample = sample * srcScaleFactor[i] + srcMinVals[i];
+                }
+                color[i] = sample;
+            }
+            tmpColor = srcColorSpace.toCIEXYZ(color);
+            tmpColor = dstColorSpace.fromCIEXYZ(tmpColor);
+            for (int i = 0; i < dstNumBands; i++) {
+                sample = tmpColor[i];
+                if (!dstIsFloat) {
+                    sample = (sample - dstMinVals[i]) * dstScaleFactor[i];
+                }
+                dst.setSample(xd, yd, i, sample);
+            }
+        }
+    }
+    return dst;
+}

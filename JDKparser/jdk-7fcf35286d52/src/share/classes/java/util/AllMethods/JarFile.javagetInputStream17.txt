@@ -1,0 +1,30 @@
+/**
+ * Returns an input stream for reading the contents of the specified
+ * zip file entry.
+ * @param ze the zip file entry
+ * @return an input stream for reading the contents of the specified
+ *         zip file entry
+ * @throws ZipException if a zip file format error has occurred
+ * @throws IOException if an I/O error has occurred
+ * @throws SecurityException if any of the jar file entries
+ *         are incorrectly signed.
+ * @throws IllegalStateException
+ *         may be thrown if the jar file has been closed
+ */
+public synchronized InputStream getInputStream(ZipEntry ze) throws IOException {
+    maybeInstantiateVerifier();
+    if (jv == null) {
+        return super.getInputStream(ze);
+    }
+    if (!jvInitialized) {
+        initializeVerifier();
+        jvInitialized = true;
+        // could be set to null after a call to
+        // initializeVerifier if we have nothing to
+        // verify
+        if (jv == null)
+            return super.getInputStream(ze);
+    }
+    // wrap a verifier stream around the real stream
+    return new JarVerifier.VerifierStream(getManifestFromReference(), ze instanceof JarFileEntry ? (JarEntry) ze : getJarEntry(ze.getName()), super.getInputStream(ze), jv);
+}

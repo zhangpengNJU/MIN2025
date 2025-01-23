@@ -1,0 +1,27 @@
+/**
+ * {@inheritDoc}
+ */
+public final Raster getRaster(int x, int y, int w, int h) {
+    // If working raster is big enough, reuse it. Otherwise,
+    // build a large enough new one.
+    Raster raster = saved;
+    if (raster == null || raster.getWidth() < w || raster.getHeight() < h) {
+        raster = getCachedRaster(model, w, h);
+        saved = raster;
+    }
+    // Access raster internal int array. Because we use a DirectColorModel,
+    // we know the DataBuffer is of type DataBufferInt and the SampleModel
+    // is SinglePixelPackedSampleModel.
+    // Adjust for initial offset in DataBuffer and also for the scanline
+    // stride.
+    // These calls make the DataBuffer non-acceleratable, but the
+    // Raster is never Stable long enough to accelerate anyway...
+    DataBufferInt rasterDB = (DataBufferInt) raster.getDataBuffer();
+    int[] pixels = rasterDB.getData(0);
+    int off = rasterDB.getOffset();
+    int scanlineStride = ((SinglePixelPackedSampleModel) raster.getSampleModel()).getScanlineStride();
+    int adjust = scanlineStride - w;
+    // delegate to subclass
+    fillRaster(pixels, off, adjust, x, y, w, h);
+    return raster;
+}

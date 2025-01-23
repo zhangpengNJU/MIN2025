@@ -1,0 +1,10 @@
+private static DateFormatSymbols getProviderInstance(Locale locale) {
+    LocaleProviderAdapter adapter = LocaleProviderAdapter.getAdapter(DateFormatSymbolsProvider.class, locale);
+    DateFormatSymbolsProvider provider = adapter.getDateFormatSymbolsProvider();
+    DateFormatSymbols dfsyms = provider.getInstance(locale);
+    if (dfsyms == null) {
+        provider = LocaleProviderAdapter.forJRE().getDateFormatSymbolsProvider();
+        dfsyms = provider.getInstance(locale);
+    }
+    return dfsyms;
+}

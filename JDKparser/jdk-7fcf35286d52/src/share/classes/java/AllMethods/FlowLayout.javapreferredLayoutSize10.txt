@@ -1,0 +1,48 @@
+/**
+ * Returns the preferred dimensions for this layout given the
+ * <i>visible</i> components in the specified target container.
+ *
+ * @param target the container that needs to be laid out
+ * @return    the preferred dimensions to lay out the
+ *            subcomponents of the specified container
+ * @see Container
+ * @see #minimumLayoutSize
+ * @see       java.awt.Container#getPreferredSize
+ */
+public Dimension preferredLayoutSize(Container target) {
+    synchronized (target.getTreeLock()) {
+        Dimension dim = new Dimension(0, 0);
+        int nmembers = target.getComponentCount();
+        boolean firstVisibleComponent = true;
+        boolean useBaseline = getAlignOnBaseline();
+        int maxAscent = 0;
+        int maxDescent = 0;
+        for (int i = 0; i < nmembers; i++) {
+            Component m = target.getComponent(i);
+            if (m.isVisible()) {
+                Dimension d = m.getPreferredSize();
+                dim.height = Math.max(dim.height, d.height);
+                if (firstVisibleComponent) {
+                    firstVisibleComponent = false;
+                } else {
+                    dim.width += hgap;
+                }
+                dim.width += d.width;
+                if (useBaseline) {
+                    int baseline = m.getBaseline(d.width, d.height);
+                    if (baseline >= 0) {
+                        maxAscent = Math.max(maxAscent, baseline);
+                        maxDescent = Math.max(maxDescent, d.height - baseline);
+                    }
+                }
+            }
+        }
+        if (useBaseline) {
+            dim.height = Math.max(maxAscent + maxDescent, dim.height);
+        }
+        Insets insets = target.getInsets();
+        dim.width += insets.left + insets.right + hgap * 2;
+        dim.height += insets.top + insets.bottom + vgap * 2;
+        return dim;
+    }
+}

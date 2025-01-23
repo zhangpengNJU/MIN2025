@@ -1,0 +1,16 @@
+/**
+ * Indicates whether or not this <code>FontRenderContext</code> object
+ * measures text in a transformed render context.
+ * @return  <code>true</code> if this <code>FontRenderContext</code>
+ *          object has a non-identity AffineTransform attribute.
+ *          <code>false</code> otherwise.
+ * @see     java.awt.font.FontRenderContext#getTransform
+ * @since   1.6
+ */
+public boolean isTransformed() {
+    if (!defaulting) {
+        return tx != null;
+    } else {
+        return !getTransform().isIdentity();
+    }
+}

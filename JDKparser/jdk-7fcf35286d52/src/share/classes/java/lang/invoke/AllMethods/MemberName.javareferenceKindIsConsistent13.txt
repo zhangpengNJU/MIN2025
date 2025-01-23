@@ -1,0 +1,19 @@
+private boolean referenceKindIsConsistent() {
+    byte refKind = getReferenceKind();
+    if (refKind == REF_NONE)
+        return isType();
+    if (isField()) {
+        assert (staticIsConsistent());
+        assert (MethodHandleNatives.refKindIsField(refKind));
+    } else if (isConstructor()) {
+        assert (refKind == REF_newInvokeSpecial || refKind == REF_invokeSpecial);
+    } else if (isMethod()) {
+        assert (staticIsConsistent());
+        assert (MethodHandleNatives.refKindIsMethod(refKind));
+        if (clazz.isInterface())
+            assert (refKind == REF_invokeInterface || refKind == REF_invokeStatic || refKind == REF_invokeSpecial || refKind == REF_invokeVirtual && isObjectPublicMethod());
+    } else {
+        assert (false);
+    }
+    return true;
+}

@@ -1,0 +1,8 @@
+final boolean orRelay(CompletableFuture<?> a, CompletableFuture<?> b) {
+    Object r;
+    if (a == null || b == null || ((r = a.result) == null && (r = b.result) == null))
+        return false;
+    if (result == null)
+        completeRelay(r);
+    return true;
+}

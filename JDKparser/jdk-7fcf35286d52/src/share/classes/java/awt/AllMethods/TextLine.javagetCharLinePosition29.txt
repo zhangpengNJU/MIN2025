@@ -1,0 +1,4 @@
+public float getCharLinePosition(int logicalIndex, boolean leading) {
+    Function f = isCharLTR(logicalIndex) == leading ? fgXPositionF : fgPosAdvF;
+    return applyFunctionAtIndex(logicalIndex, f);
+}

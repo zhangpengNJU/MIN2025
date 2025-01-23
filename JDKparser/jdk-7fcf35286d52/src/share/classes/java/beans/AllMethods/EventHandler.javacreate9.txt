@@ -1,0 +1,55 @@
+/**
+ *     /**
+ *  Creates an implementation of <code>listenerInterface</code> in which
+ *  <em>all</em> of the methods pass the value of the event
+ *  expression, <code>eventPropertyName</code>, to the final method in the
+ *  statement, <code>action</code>, which is applied to the <code>target</code>.
+ *  This method is implemented by calling the
+ *  more general, implementation of the <code>create</code> method with
+ *  the <code>listenerMethodName</code> taking the value <code>null</code>.
+ *  Refer to
+ *  {@link java.beans.EventHandler#create(Class, Object, String, String)
+ *  the general version of create} for a complete description of
+ *  the <code>action</code> and <code>eventPropertyName</code> parameters.
+ *  <p>
+ *  To create an <code>ActionListener</code> that sets the
+ *  the text of a <code>JLabel</code> to the text value of
+ *  the <code>JTextField</code> source of the incoming event,
+ *  you can use the following code:
+ *
+ * <blockquote>
+ * <pre>
+ * EventHandler.create(ActionListener.class, label, "text", "source.text");
+ * </pre>
+ * </blockquote>
+ *
+ *  This is equivalent to the following code:
+ * <blockquote>
+ * <pre>
+ * //Equivalent code using an inner class instead of EventHandler.
+ * new ActionListener() {
+ *     public void actionPerformed(ActionEvent event) {
+ *         label.setText(((JTextField)(event.getSource())).getText());
+ *      }
+ * };
+ * </pre>
+ * </blockquote>
+ *
+ *  @param <T> the type to create
+ *  @param listenerInterface the listener interface to create a proxy for
+ *  @param target the object that will perform the action
+ *  @param action the name of a (possibly qualified) property or method on
+ *         the target
+ *  @param eventPropertyName the (possibly qualified) name of a readable property of the incoming event
+ *
+ *  @return an object that implements <code>listenerInterface</code>
+ *
+ *  @throws NullPointerException if <code>listenerInterface</code> is null
+ *  @throws NullPointerException if <code>target</code> is null
+ *  @throws NullPointerException if <code>action</code> is null
+ *
+ *  @see #create(Class, Object, String, String, String)
+ */
+public static <T> T create(Class<T> listenerInterface, Object target, String action, String eventPropertyName) {
+    return create(listenerInterface, target, action, eventPropertyName, null);
+}

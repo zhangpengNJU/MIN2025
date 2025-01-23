@@ -1,0 +1,7 @@
+@Override
+public ValueRange range(TemporalField field) {
+    if (effectiveDate != null && field.isDateBased()) {
+        return effectiveDate.range(field);
+    }
+    return temporal.range(field);
+}

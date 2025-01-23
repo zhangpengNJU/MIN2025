@@ -1,0 +1,17 @@
+/**
+ * Returns a {@code Collector} that produces the sum of a long-valued
+ * function applied to the input elements.  If no elements are present,
+ * the result is 0.
+ *
+ * @param <T> the type of the input elements
+ * @param mapper a function extracting the property to be summed
+ * @return a {@code Collector} that produces the sum of a derived property
+ */
+public static <T> Collector<T, ?, Long> summingLong(ToLongFunction<? super T> mapper) {
+    return new CollectorImpl<>(() -> new long[1], (a, t) -> {
+        a[0] += mapper.applyAsLong(t);
+    }, (a, b) -> {
+        a[0] += b[0];
+        return a;
+    }, a -> a[0], CH_NOID);
+}

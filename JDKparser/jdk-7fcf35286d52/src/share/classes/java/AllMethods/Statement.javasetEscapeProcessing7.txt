@@ -1,0 +1,23 @@
+/**
+ *  Sets escape processing on or off.
+ *  If escape scanning is on (the default), the driver will do
+ *  escape substitution before sending the SQL statement to the database.
+ * <p>
+ *  The {@code Connection} and {@code DataSource} property
+ *  {@code escapeProcessing} may be used to change the default escape processing
+ *  behavior.  A value of true (the default) enables escape Processing for
+ *  all {@code Statement} objects. A value of false disables escape processing
+ *  for all {@code Statement} objects.  The {@code setEscapeProcessing}
+ *  method may be used to specify the escape processing behavior for an
+ *  individual {@code Statement} object.
+ *  <p>
+ *  Note: Since prepared statements have usually been parsed prior
+ *  to making this call, disabling escape processing for
+ *  <code>PreparedStatements</code> objects will have no effect.
+ *
+ *  @param enable <code>true</code> to enable escape processing;
+ *        <code>false</code> to disable it
+ *  @exception SQLException if a database access error occurs or
+ *  this method is called on a closed <code>Statement</code>
+ */
+void setEscapeProcessing(boolean enable) throws SQLException;

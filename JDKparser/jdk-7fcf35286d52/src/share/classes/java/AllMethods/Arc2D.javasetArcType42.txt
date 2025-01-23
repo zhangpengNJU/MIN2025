@@ -1,0 +1,19 @@
+/**
+ * Sets the closure type of this arc to the specified value:
+ * <CODE>OPEN</CODE>, <CODE>CHORD</CODE>, or <CODE>PIE</CODE>.
+ *
+ * @param type The integer constant that represents the closure
+ * type of this arc: {@link #OPEN}, {@link #CHORD}, or
+ * {@link #PIE}.
+ *
+ * @throws IllegalArgumentException if <code>type</code> is not
+ * 0, 1, or 2.+
+ * @see #getArcType
+ * @since 1.2
+ */
+public void setArcType(int type) {
+    if (type < OPEN || type > PIE) {
+        throw new IllegalArgumentException("invalid type for Arc: " + type);
+    }
+    this.type = type;
+}

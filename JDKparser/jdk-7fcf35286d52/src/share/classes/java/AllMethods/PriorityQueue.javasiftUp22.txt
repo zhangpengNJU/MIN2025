@@ -1,0 +1,18 @@
+/**
+ * Inserts item x at position k, maintaining heap invariant by
+ * promoting x up the tree until it is greater than or equal to
+ * its parent, or is the root.
+ *
+ * To simplify and speed up coercions and comparisons. the
+ * Comparable and Comparator versions are separated into different
+ * methods that are otherwise identical. (Similarly for siftDown.)
+ *
+ * @param k the position to fill
+ * @param x the item to insert
+ */
+private void siftUp(int k, E x) {
+    if (comparator != null)
+        siftUpUsingComparator(k, x);
+    else
+        siftUpComparable(k, x);
+}

@@ -1,0 +1,12 @@
+// Lazily create and cache ReflectionData
+private ReflectionData<T> reflectionData() {
+    SoftReference<ReflectionData<T>> reflectionData = this.reflectionData;
+    int classRedefinedCount = this.classRedefinedCount;
+    ReflectionData<T> rd;
+    if (useCaches && reflectionData != null && (rd = reflectionData.get()) != null && rd.redefinedCount == classRedefinedCount) {
+        return rd;
+    }
+    // else no SoftReference or cleared SoftReference or stale ReflectionData
+    // -> create and replace new instance
+    return newReflectionData(reflectionData, classRedefinedCount);
+}

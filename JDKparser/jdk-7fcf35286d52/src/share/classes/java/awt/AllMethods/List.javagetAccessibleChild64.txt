@@ -1,0 +1,15 @@
+/**
+ * Return the nth Accessible child of the object.
+ *
+ * @param i zero-based index of child
+ * @return the nth Accessible child of the object
+ */
+public Accessible getAccessibleChild(int i) {
+    synchronized (List.this) {
+        if (i >= List.this.getItemCount()) {
+            return null;
+        } else {
+            return new AccessibleAWTListChild(List.this, i);
+        }
+    }
+}

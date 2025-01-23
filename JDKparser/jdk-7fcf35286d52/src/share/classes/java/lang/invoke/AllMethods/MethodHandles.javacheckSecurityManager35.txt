@@ -1,0 +1,28 @@
+/**
+ * Perform necessary <a href="MethodHandles.Lookup.html#secmgr">access checks</a>.
+ * Determines a trustable caller class to compare with refc, the symbolic reference class.
+ * If this lookup object has private access, then the caller class is the lookupClass.
+ */
+void checkSecurityManager(Class<?> refc, MemberName m) {
+    SecurityManager smgr = System.getSecurityManager();
+    if (smgr == null)
+        return;
+    if (allowedModes == TRUSTED)
+        return;
+    // Step 1:
+    boolean fullPowerLookup = hasPrivateAccess();
+    if (!fullPowerLookup || !VerifyAccess.classLoaderIsAncestor(lookupClass, refc)) {
+        ReflectUtil.checkPackageAccess(refc);
+    }
+    // Step 2:
+    if (m.isPublic())
+        return;
+    if (!fullPowerLookup) {
+        smgr.checkPermission(SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION);
+    }
+    // Step 3:
+    Class<?> defc = m.getDeclaringClass();
+    if (!fullPowerLookup && defc != refc) {
+        ReflectUtil.checkPackageAccess(defc);
+    }
+}

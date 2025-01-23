@@ -1,0 +1,13 @@
+/**
+ * Returns the method hash for the specified method.  Subsequent calls
+ * to "getMethodHash" passing the same method argument should be faster
+ * since this method caches internally the result of the method to
+ * method hash mapping.  The method hash is calculated using the
+ * "computeMethodHash" method.
+ *
+ * @param method the remote method
+ * @return the method hash for the specified method
+ */
+private static long getMethodHash(Method method) {
+    return methodToHash_Maps.get(method.getDeclaringClass()).get(method);
+}

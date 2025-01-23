@@ -1,0 +1,19 @@
+/**
+ * Returns the array of ICC_Profiles used to construct this ColorConvertOp.
+ * Returns null if the ColorConvertOp was not constructed from such an
+ * array.
+ * @return the array of <code>ICC_Profile</code> objects of this
+ *         <code>ColorConvertOp</code>, or <code>null</code> if this
+ *         <code>ColorConvertOp</code> was not constructed with an
+ *         array of <code>ICC_Profile</code> objects.
+ */
+public final ICC_Profile[] getICC_Profiles() {
+    if (gotProfiles) {
+        ICC_Profile[] profiles = new ICC_Profile[profileList.length];
+        for (int i1 = 0; i1 < profileList.length; i1++) {
+            profiles[i1] = profileList[i1];
+        }
+        return profiles;
+    }
+    return null;
+}

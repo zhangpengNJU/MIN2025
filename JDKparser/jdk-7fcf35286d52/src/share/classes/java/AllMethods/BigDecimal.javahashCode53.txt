@@ -1,0 +1,19 @@
+// Hash Function
+/**
+ * Returns the hash code for this {@code BigDecimal}.  Note that
+ * two {@code BigDecimal} objects that are numerically equal but
+ * differ in scale (like 2.0 and 2.00) will generally <i>not</i>
+ * have the same hash code.
+ *
+ * @return hash code for this {@code BigDecimal}.
+ * @see #equals(Object)
+ */
+@Override
+public int hashCode() {
+    if (intCompact != INFLATED) {
+        long val2 = (intCompact < 0) ? -intCompact : intCompact;
+        int temp = (int) (((int) (val2 >>> 32)) * 31 + (val2 & LONG_MASK));
+        return 31 * ((intCompact < 0) ? -temp : temp) + scale;
+    } else
+        return 31 * intVal.hashCode() + scale;
+}

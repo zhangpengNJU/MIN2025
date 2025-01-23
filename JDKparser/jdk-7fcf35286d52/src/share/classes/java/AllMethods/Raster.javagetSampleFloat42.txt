@@ -1,0 +1,18 @@
+/**
+ * Returns the sample in a specified band
+ * for the pixel located at (x,y) as a float.
+ * An ArrayIndexOutOfBoundsException may be thrown
+ * if the coordinates are not in bounds.  However, explicit bounds
+ * checking is not guaranteed.
+ * @param x        The X coordinate of the pixel location
+ * @param y        The Y coordinate of the pixel location
+ * @param b        The band to return
+ * @return the sample in the specified band for the pixel at the
+ *         specified coordinate.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the coordinates or
+ * the band index are not in bounds.
+ */
+public float getSampleFloat(int x, int y, int b) {
+    return sampleModel.getSampleFloat(x - sampleModelTranslateX, y - sampleModelTranslateY, b, dataBuffer);
+}

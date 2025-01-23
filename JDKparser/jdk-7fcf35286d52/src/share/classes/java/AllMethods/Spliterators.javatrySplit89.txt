@@ -1,0 +1,22 @@
+@Override
+public OfInt trySplit() {
+    PrimitiveIterator.OfInt i = it;
+    long s = est;
+    if (s > 1 && i.hasNext()) {
+        int n = batch + BATCH_UNIT;
+        if (n > s)
+            n = (int) s;
+        if (n > MAX_BATCH)
+            n = MAX_BATCH;
+        int[] a = new int[n];
+        int j = 0;
+        do {
+            a[j] = i.nextInt();
+        } while (++j < n && i.hasNext());
+        batch = j;
+        if (est != Long.MAX_VALUE)
+            est -= j;
+        return new IntArraySpliterator(a, 0, j, characteristics);
+    }
+    return null;
+}

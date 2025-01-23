@@ -1,0 +1,14 @@
+/**
+ *  Get the comparison order in the desired strength.  Ignore the other
+ *  differences.
+ *  @param order The order value
+ */
+final int strengthOrder(int order) {
+    int s = owner.getStrength();
+    if (s == Collator.PRIMARY) {
+        order &= RBCollationTables.PRIMARYDIFFERENCEONLY;
+    } else if (s == Collator.SECONDARY) {
+        order &= RBCollationTables.SECONDARYDIFFERENCEONLY;
+    }
+    return order;
+}

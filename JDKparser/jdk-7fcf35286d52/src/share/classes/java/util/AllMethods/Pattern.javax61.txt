@@ -1,0 +1,23 @@
+/**
+ *  Utility method for parsing hexadecimal escape sequences.
+ */
+private int x() {
+    int n = read();
+    if (ASCII.isHexDigit(n)) {
+        int m = read();
+        if (ASCII.isHexDigit(m)) {
+            return ASCII.toDigit(n) * 16 + ASCII.toDigit(m);
+        }
+    } else if (n == '{' && ASCII.isHexDigit(peek())) {
+        int ch = 0;
+        while (ASCII.isHexDigit(n = read())) {
+            ch = (ch << 4) + ASCII.toDigit(n);
+            if (ch > Character.MAX_CODE_POINT)
+                throw error("Hexadecimal codepoint is too big");
+        }
+        if (n != '}')
+            throw error("Unclosed hexadecimal escape sequence");
+        return ch;
+    }
+    throw error("Illegal hexadecimal escape sequence");
+}

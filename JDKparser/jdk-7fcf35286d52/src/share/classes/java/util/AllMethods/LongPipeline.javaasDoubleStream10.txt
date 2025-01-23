@@ -1,0 +1,17 @@
+// Stateless intermediate ops from LongStream
+@Override
+public final DoubleStream asDoubleStream() {
+    return new DoublePipeline.StatelessOp<Long>(this, StreamShape.LONG_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Long> opWrapSink(int flags, Sink<Double> sink) {
+            return new Sink.ChainedLong<Double>(sink) {
+
+                @Override
+                public void accept(long t) {
+                    downstream.accept((double) t);
+                }
+            };
+        }
+    };
+}

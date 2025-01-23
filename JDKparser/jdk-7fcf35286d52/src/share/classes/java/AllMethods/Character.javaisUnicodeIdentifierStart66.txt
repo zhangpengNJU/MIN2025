@@ -1,0 +1,23 @@
+/**
+ * Determines if the specified character (Unicode code point) is permissible as the
+ * first character in a Unicode identifier.
+ * <p>
+ * A character may start a Unicode identifier if and only if
+ * one of the following conditions is true:
+ * <ul>
+ * <li> {@link #isLetter(int) isLetter(codePoint)}
+ *      returns {@code true}
+ * <li> {@link #getType(int) getType(codePoint)}
+ *      returns {@code LETTER_NUMBER}.
+ * </ul>
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character may start a Unicode
+ *          identifier; {@code false} otherwise.
+ * @see     Character#isJavaIdentifierStart(int)
+ * @see     Character#isLetter(int)
+ * @see     Character#isUnicodeIdentifierPart(int)
+ * @since   1.5
+ */
+public static boolean isUnicodeIdentifierStart(int codePoint) {
+    return CharacterData.of(codePoint).isUnicodeIdentifierStart(codePoint);
+}

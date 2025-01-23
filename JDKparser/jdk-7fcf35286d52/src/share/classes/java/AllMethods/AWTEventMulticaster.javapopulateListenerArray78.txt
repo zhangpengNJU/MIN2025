@@ -1,0 +1,20 @@
+/*
+     * Recusive method which populates EventListener array a with EventListeners
+     * from l.  l is usually an AWTEventMulticaster.  Bug 4513402 revealed that
+     * if l differed in type from the element type of a, an ArrayStoreException
+     * would occur.  Now l is only inserted into a if it's of the appropriate
+     * type.  -bchristi
+     */
+private static int populateListenerArray(EventListener[] a, EventListener l, int index) {
+    if (l instanceof AWTEventMulticaster) {
+        AWTEventMulticaster mc = (AWTEventMulticaster) l;
+        int lhs = populateListenerArray(a, mc.a, index);
+        return populateListenerArray(a, mc.b, lhs);
+    } else if (a.getClass().getComponentType().isInstance(l)) {
+        a[index] = l;
+        return index + 1;
+    } else // Skip nulls, instances of wrong class
+    {
+        return index;
+    }
+}

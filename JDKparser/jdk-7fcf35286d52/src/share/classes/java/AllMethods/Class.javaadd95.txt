@@ -1,0 +1,8 @@
+void add(Method m) {
+    if (length == methods.length) {
+        methods = Arrays.copyOf(methods, 2 * methods.length);
+    }
+    methods[length++] = m;
+    if (m != null && m.isDefault())
+        defaults++;
+}

@@ -1,0 +1,12 @@
+/**
+ * Copies the array of red color components into the specified array.
+ * Only the initial entries of the array as specified by
+ * {@link #getMapSize() getMapSize} are written.
+ * @param r the specified array into which the elements of the
+ *      array of red color components are copied
+ */
+final public void getReds(byte[] r) {
+    for (int i = 0; i < map_size; i++) {
+        r[i] = (byte) (rgb[i] >> 16);
+    }
+}

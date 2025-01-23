@@ -1,0 +1,54 @@
+/**
+ * Creates a string representation of this <tt>Date</tt> object of
+ * the form:
+ * <blockquote><pre>
+ * d mon yyyy hh:mm:ss GMT</pre></blockquote>
+ * where:<ul>
+ * <li><i>d</i> is the day of the month (<tt>1</tt> through <tt>31</tt>),
+ *     as one or two decimal digits.
+ * <li><i>mon</i> is the month (<tt>Jan, Feb, Mar, Apr, May, Jun, Jul,
+ *     Aug, Sep, Oct, Nov, Dec</tt>).
+ * <li><i>yyyy</i> is the year, as four decimal digits.
+ * <li><i>hh</i> is the hour of the day (<tt>00</tt> through <tt>23</tt>),
+ *     as two decimal digits.
+ * <li><i>mm</i> is the minute within the hour (<tt>00</tt> through
+ *     <tt>59</tt>), as two decimal digits.
+ * <li><i>ss</i> is the second within the minute (<tt>00</tt> through
+ *     <tt>61</tt>), as two decimal digits.
+ * <li><i>GMT</i> is exactly the ASCII letters "<tt>GMT</tt>" to indicate
+ *     Greenwich Mean Time.
+ * </ul><p>
+ * The result does not depend on the local time zone.
+ *
+ * @return  a string representation of this date, using the Internet GMT
+ *          conventions.
+ * @see     java.text.DateFormat
+ * @see     java.util.Date#toString()
+ * @see     java.util.Date#toLocaleString()
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>DateFormat.format(Date date)</code>, using a
+ * GMT <code>TimeZone</code>.
+ */
+@Deprecated
+public String toGMTString() {
+    // d MMM yyyy HH:mm:ss 'GMT'
+    long t = getTime();
+    BaseCalendar cal = getCalendarSystem(t);
+    BaseCalendar.Date date = (BaseCalendar.Date) cal.getCalendarDate(getTime(), (TimeZone) null);
+    StringBuilder sb = new StringBuilder(32);
+    // d
+    CalendarUtils.sprintf0d(sb, date.getDayOfMonth(), 1).append(' ');
+    // MMM
+    convertToAbbr(sb, wtb[date.getMonth() - 1 + 2 + 7]).append(' ');
+    // yyyy
+    sb.append(date.getYear()).append(' ');
+    // HH
+    CalendarUtils.sprintf0d(sb, date.getHours(), 2).append(':');
+    // mm
+    CalendarUtils.sprintf0d(sb, date.getMinutes(), 2).append(':');
+    // ss
+    CalendarUtils.sprintf0d(sb, date.getSeconds(), 2);
+    // ' GMT'
+    sb.append(" GMT");
+    return sb.toString();
+}

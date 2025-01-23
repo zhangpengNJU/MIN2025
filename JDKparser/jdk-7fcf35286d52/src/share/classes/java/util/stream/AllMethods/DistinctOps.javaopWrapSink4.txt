@@ -1,0 +1,65 @@
+@Override
+Sink<T> opWrapSink(int flags, Sink<T> sink) {
+    Objects.requireNonNull(sink);
+    if (StreamOpFlag.DISTINCT.isKnown(flags)) {
+        return sink;
+    } else if (StreamOpFlag.SORTED.isKnown(flags)) {
+        return new Sink.ChainedReference<T, T>(sink) {
+
+            boolean seenNull;
+
+            T lastSeen;
+
+            @Override
+            public void begin(long size) {
+                seenNull = false;
+                lastSeen = null;
+                downstream.begin(-1);
+            }
+
+            @Override
+            public void end() {
+                seenNull = false;
+                lastSeen = null;
+                downstream.end();
+            }
+
+            @Override
+            public void accept(T t) {
+                if (t == null) {
+                    if (!seenNull) {
+                        seenNull = true;
+                        downstream.accept(lastSeen = null);
+                    }
+                } else if (lastSeen == null || !t.equals(lastSeen)) {
+                    downstream.accept(lastSeen = t);
+                }
+            }
+        };
+    } else {
+        return new Sink.ChainedReference<T, T>(sink) {
+
+            Set<T> seen;
+
+            @Override
+            public void begin(long size) {
+                seen = new HashSet<>();
+                downstream.begin(-1);
+            }
+
+            @Override
+            public void end() {
+                seen = null;
+                downstream.end();
+            }
+
+            @Override
+            public void accept(T t) {
+                if (!seen.contains(t)) {
+                    seen.add(t);
+                    downstream.accept(t);
+                }
+            }
+        };
+    }
+}

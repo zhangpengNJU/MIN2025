@@ -1,0 +1,25 @@
+/**
+ * Stores the parsed chronology.
+ * <p>
+ * This stores the chronology that has been parsed.
+ * No validation is performed other than ensuring it is not null.
+ * <p>
+ * The list of listeners is copied and cleared so that each
+ * listener is called only once.  A listener can add itself again
+ * if it needs to be notified of future changes.
+ *
+ * @param chrono  the parsed chronology, not null
+ */
+void setParsed(Chronology chrono) {
+    Objects.requireNonNull(chrono, "chrono");
+    currentParsed().chrono = chrono;
+    if (chronoListeners != null && !chronoListeners.isEmpty()) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Consumer<Chronology>[] tmp = new Consumer[1];
+        Consumer<Chronology>[] listeners = chronoListeners.toArray(tmp);
+        chronoListeners.clear();
+        for (Consumer<Chronology> l : listeners) {
+            l.accept(chrono);
+        }
+    }
+}

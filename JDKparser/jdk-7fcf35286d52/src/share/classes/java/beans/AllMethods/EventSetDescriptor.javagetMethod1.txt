@@ -1,0 +1,10 @@
+private static Method getMethod(Class<?> cls, String name, int args) throws IntrospectionException {
+    if (name == null) {
+        return null;
+    }
+    Method method = Introspector.findMethod(cls, name, args);
+    if ((method == null) || Modifier.isStatic(method.getModifiers())) {
+        throw new IntrospectionException("Method not found: " + name + " on class " + cls.getName());
+    }
+    return method;
+}

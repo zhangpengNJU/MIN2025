@@ -1,0 +1,12 @@
+// shifts a up to len left n bits assumes no leading zeros, 0<=n<32
+static void primitiveLeftShift(int[] a, int len, int n) {
+    if (len == 0 || n == 0)
+        return;
+    int n2 = 32 - n;
+    for (int i = 0, c = a[i], m = i + len - 1; i < m; i++) {
+        int b = c;
+        c = a[i + 1];
+        a[i] = (b << n) | (c >>> n2);
+    }
+    a[len - 1] <<= n;
+}

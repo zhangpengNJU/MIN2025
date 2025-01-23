@@ -1,0 +1,45 @@
+/**
+ * Closes the socket.
+ */
+protected void close() throws IOException {
+    synchronized (fdLock) {
+        if (fd != null) {
+            if (!stream) {
+                ResourceManager.afterUdpClose();
+            }
+            if (fdUseCount == 0) {
+                if (closePending) {
+                    return;
+                }
+                closePending = true;
+                /*
+                     * We close the FileDescriptor in two-steps - first the
+                     * "pre-close" which closes the socket but doesn't
+                     * release the underlying file descriptor. This operation
+                     * may be lengthy due to untransmitted data and a long
+                     * linger interval. Once the pre-close is done we do the
+                     * actual socket to release the fd.
+                     */
+                try {
+                    socketPreClose();
+                } finally {
+                    socketClose();
+                }
+                fd = null;
+                return;
+            } else {
+                /*
+                     * If a thread has acquired the fd and a close
+                     * isn't pending then use a deferred close.
+                     * Also decrement fdUseCount to signal the last
+                     * thread that releases the fd to close it.
+                     */
+                if (!closePending) {
+                    closePending = true;
+                    fdUseCount--;
+                    socketPreClose();
+                }
+            }
+        }
+    }
+}

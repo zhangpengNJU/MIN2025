@@ -1,0 +1,17 @@
+/**
+ * Sets a sample in the specified band for the pixel located at (x,y)
+ * in the DataBuffer using a double for input.
+ * An ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ * @param x        The X coordinate of the pixel location.
+ * @param y        The Y coordinate of the pixel location.
+ * @param b        The band to set.
+ * @param s        The input sample as a double.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the coordinates or
+ * the band index are not in bounds.
+ */
+public void setSample(int x, int y, int b, double s) {
+    sampleModel.setSample(x - sampleModelTranslateX, y - sampleModelTranslateY, b, s, dataBuffer);
+}

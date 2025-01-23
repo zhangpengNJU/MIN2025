@@ -1,0 +1,15 @@
+private synchronized void privilegedConnect(final String host, final int port, final int timeout) throws IOException {
+    try {
+        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {
+
+            public Void run() throws IOException {
+                superConnectServer(host, port, timeout);
+                cmdIn = getInputStream();
+                cmdOut = getOutputStream();
+                return null;
+            }
+        });
+    } catch (java.security.PrivilegedActionException pae) {
+        throw (IOException) pae.getException();
+    }
+}

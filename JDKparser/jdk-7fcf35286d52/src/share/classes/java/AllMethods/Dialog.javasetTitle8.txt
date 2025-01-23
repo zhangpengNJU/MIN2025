@@ -1,0 +1,17 @@
+/**
+ * Sets the title of the Dialog.
+ * @param title the title displayed in the dialog's border;
+ * a null value results in an empty title
+ * @see #getTitle
+ */
+public void setTitle(String title) {
+    String oldTitle = this.title;
+    synchronized (this) {
+        this.title = title;
+        DialogPeer peer = (DialogPeer) this.peer;
+        if (peer != null) {
+            peer.setTitle(title);
+        }
+    }
+    firePropertyChange("title", oldTitle, title);
+}

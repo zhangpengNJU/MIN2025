@@ -1,0 +1,42 @@
+/**
+ * Adds a PropertyChangeListener to the listener list for a specific
+ * property. The specified property may be user-defined, or one of the
+ * following:
+ * <ul>
+ *    <li>whether the KeyboardFocusManager is currently managing focus
+ *        for this application or applet's browser context
+ *        ("managingFocus")</li>
+ *    <li>the focus owner ("focusOwner")</li>
+ *    <li>the permanent focus owner ("permanentFocusOwner")</li>
+ *    <li>the focused Window ("focusedWindow")</li>
+ *    <li>the active Window ("activeWindow")</li>
+ *    <li>the default focus traversal policy
+ *        ("defaultFocusTraversalPolicy")</li>
+ *    <li>the Set of default FORWARD_TRAVERSAL_KEYS
+ *        ("forwardDefaultFocusTraversalKeys")</li>
+ *    <li>the Set of default BACKWARD_TRAVERSAL_KEYS
+ *        ("backwardDefaultFocusTraversalKeys")</li>
+ *    <li>the Set of default UP_CYCLE_TRAVERSAL_KEYS
+ *        ("upCycleDefaultFocusTraversalKeys")</li>
+ *    <li>the Set of default DOWN_CYCLE_TRAVERSAL_KEYS
+ *        ("downCycleDefaultFocusTraversalKeys")</li>
+ *    <li>the current focus cycle root ("currentFocusCycleRoot")</li>
+ * </ul>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param propertyName one of the property names listed above
+ * @param listener the PropertyChangeListener to be added
+ * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
+ * @see #removePropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ * @see #getPropertyChangeListeners(java.lang.String)
+ */
+public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+    if (listener != null) {
+        synchronized (this) {
+            if (changeSupport == null) {
+                changeSupport = new PropertyChangeSupport(this);
+            }
+            changeSupport.addPropertyChangeListener(propertyName, listener);
+        }
+    }
+}

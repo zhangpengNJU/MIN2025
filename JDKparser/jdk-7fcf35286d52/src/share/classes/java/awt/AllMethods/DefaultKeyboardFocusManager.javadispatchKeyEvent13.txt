@@ -1,0 +1,55 @@
+/**
+ * Called by <code>dispatchEvent</code> if no other
+ * KeyEventDispatcher in the dispatcher chain dispatched the KeyEvent, or
+ * if no other KeyEventDispatchers are registered. If the event has not
+ * been consumed, its target is enabled, and the focus owner is not null,
+ * this method dispatches the event to its target. This method will also
+ * subsequently dispatch the event to all registered
+ * KeyEventPostProcessors. After all this operations are finished,
+ * the event is passed to peers for processing.
+ * <p>
+ * In all cases, this method returns <code>true</code>, since
+ * DefaultKeyboardFocusManager is designed so that neither
+ * <code>dispatchEvent</code>, nor the AWT event dispatcher, should take
+ * further action on the event in any situation.
+ *
+ * @param e the KeyEvent to be dispatched
+ * @return <code>true</code>
+ * @see Component#dispatchEvent
+ */
+public boolean dispatchKeyEvent(KeyEvent e) {
+    Component focusOwner = (((AWTEvent) e).isPosted) ? getFocusOwner() : e.getComponent();
+    if (focusOwner != null && focusOwner.isShowing() && focusOwner.canBeFocusOwner()) {
+        if (!e.isConsumed()) {
+            Component comp = e.getComponent();
+            if (comp != null && comp.isEnabled()) {
+                redispatchEvent(comp, e);
+            }
+        }
+    }
+    boolean stopPostProcessing = false;
+    java.util.List<KeyEventPostProcessor> processors = getKeyEventPostProcessors();
+    if (processors != null) {
+        for (java.util.Iterator<KeyEventPostProcessor> iter = processors.iterator(); !stopPostProcessing && iter.hasNext(); ) {
+            stopPostProcessing = iter.next().postProcessKeyEvent(e);
+        }
+    }
+    if (!stopPostProcessing) {
+        postProcessKeyEvent(e);
+    }
+    // Allow the peer to process KeyEvent
+    Component source = e.getComponent();
+    ComponentPeer peer = source.getPeer();
+    if (peer == null || peer instanceof LightweightPeer) {
+        // if focus owner is lightweight then its native container
+        // processes event
+        Container target = source.getNativeContainer();
+        if (target != null) {
+            peer = target.getPeer();
+        }
+    }
+    if (peer != null) {
+        peer.handleEvent(e);
+    }
+    return true;
+}

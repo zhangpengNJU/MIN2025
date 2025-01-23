@@ -1,0 +1,27 @@
+/**
+ * Tries to add one worker, incrementing ctl counts before doing
+ * so, relying on createWorker to back out on failure.
+ *
+ * @param c incoming ctl value, with total count negative and no
+ * idle workers.  On CAS failure, c is refreshed and retried if
+ * this holds (otherwise, a new worker is not needed).
+ */
+private void tryAddWorker(long c) {
+    boolean add = false;
+    do {
+        long nc = ((AC_MASK & (c + AC_UNIT)) | (TC_MASK & (c + TC_UNIT)));
+        if (ctl == c) {
+            // check if terminating
+            int rs, stop;
+            if ((stop = (rs = lockRunState()) & STOP) == 0)
+                add = U.compareAndSwapLong(this, CTL, c, nc);
+            unlockRunState(rs, rs & ~RSLOCK);
+            if (stop != 0)
+                break;
+            if (add) {
+                createWorker();
+                break;
+            }
+        }
+    } while (((c = ctl) & ADD_WORKER) != 0L && (int) c == 0);
+}

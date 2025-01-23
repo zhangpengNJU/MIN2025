@@ -1,0 +1,22 @@
+/**
+ * Returns the color space type.  Returns one of the color space type
+ * constants defined by the ColorSpace class.  This is the
+ * "input" color space of the profile.  The type defines the
+ * number of components of the color space and the interpretation,
+ * e.g. TYPE_RGB identifies a color space with three components - red,
+ * green, and blue.  It does not define the particular color
+ * characteristics of the space, e.g. the chromaticities of the
+ * primaries.
+ * @return One of the color space type constants defined in the
+ * <CODE>ColorSpace</CODE> class.
+ */
+public int getColorSpaceType() {
+    if (deferralInfo != null) {
+        return deferralInfo.colorSpaceType;
+    /* Need to have this info for
+                                                   ICC_ColorSpace without
+                                                   causing a deferred profile
+                                                   to be loaded */
+    }
+    return getColorSpaceType(cmmProfile);
+}

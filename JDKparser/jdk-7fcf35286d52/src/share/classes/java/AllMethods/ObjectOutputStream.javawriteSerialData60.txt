@@ -1,0 +1,34 @@
+/**
+ * Writes instance data for each serializable class of given object, from
+ * superclass to subclass.
+ */
+private void writeSerialData(Object obj, ObjectStreamClass desc) throws IOException {
+    ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();
+    for (int i = 0; i < slots.length; i++) {
+        ObjectStreamClass slotDesc = slots[i].desc;
+        if (slotDesc.hasWriteObjectMethod()) {
+            PutFieldImpl oldPut = curPut;
+            curPut = null;
+            SerialCallbackContext oldContext = curContext;
+            if (extendedDebugInfo) {
+                debugInfoStack.push("custom writeObject data (class \"" + slotDesc.getName() + "\")");
+            }
+            try {
+                curContext = new SerialCallbackContext(obj, slotDesc);
+                bout.setBlockDataMode(true);
+                slotDesc.invokeWriteObject(obj, this);
+                bout.setBlockDataMode(false);
+                bout.writeByte(TC_ENDBLOCKDATA);
+            } finally {
+                curContext.setUsed();
+                curContext = oldContext;
+                if (extendedDebugInfo) {
+                    debugInfoStack.pop();
+                }
+            }
+            curPut = oldPut;
+        } else {
+            defaultWriteFields(obj, slotDesc);
+        }
+    }
+}

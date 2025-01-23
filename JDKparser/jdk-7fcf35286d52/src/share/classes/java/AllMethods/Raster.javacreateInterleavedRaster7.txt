@@ -1,0 +1,53 @@
+/**
+ * Creates a Raster based on a PixelInterleavedSampleModel with the
+ * specified DataBuffer, width, height, scanline stride, pixel
+ * stride, and band offsets.  The number of bands is inferred from
+ * bandOffsets.length.  The upper left corner of the Raster
+ * is given by the location argument.  If location is null, (0, 0)
+ * will be used.
+ * <p> Note that interleaved <code>DataBuffer.TYPE_INT</code>
+ * Rasters are not supported.  To create a 1-band Raster of type
+ * <code>DataBuffer.TYPE_INT</code>, use
+ * Raster.createPackedRaster().
+ * @param dataBuffer the <code>DataBuffer</code> that contains the
+ *        image data
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param scanlineStride the line stride of the image data
+ * @param pixelStride the pixel stride of the image data
+ * @param bandOffsets the offsets of all bands
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified
+ *         <code>DataBuffer</code>, width, height, scanline stride,
+ *         pixel stride and band offsets.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types, which are
+ *         <code>DataBuffer.TYPE_BYTE</code>,
+ *         <code>DataBuffer.TYPE_USHORT</code>
+ * @throws RasterFormatException if <code>dataBuffer</code> has more
+ *         than one bank.
+ * @throws NullPointerException if <code>dataBuffer</code> is null
+ */
+public static WritableRaster createInterleavedRaster(DataBuffer dataBuffer, int w, int h, int scanlineStride, int pixelStride, int[] bandOffsets, Point location) {
+    if (dataBuffer == null) {
+        throw new NullPointerException("DataBuffer cannot be null");
+    }
+    if (location == null) {
+        location = new Point(0, 0);
+    }
+    int dataType = dataBuffer.getDataType();
+    PixelInterleavedSampleModel csm = new PixelInterleavedSampleModel(dataType, w, h, pixelStride, scanlineStride, bandOffsets);
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            return new ByteInterleavedRaster(csm, dataBuffer, location);
+        case DataBuffer.TYPE_USHORT:
+            return new ShortInterleavedRaster(csm, dataBuffer, location);
+        default:
+            throw new IllegalArgumentException("Unsupported data type " + dataType);
+    }
+}

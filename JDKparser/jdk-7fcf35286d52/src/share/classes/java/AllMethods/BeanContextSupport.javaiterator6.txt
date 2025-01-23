@@ -1,0 +1,10 @@
+/**
+ * Gets all JavaBean or <tt>BeanContext</tt> instances
+ * currently nested in this <tt>BeanContext</tt>.
+ * @return an <tt>Iterator</tt> of the nested children
+ */
+public Iterator iterator() {
+    synchronized (children) {
+        return new BCSIterator(children.keySet().iterator());
+    }
+}

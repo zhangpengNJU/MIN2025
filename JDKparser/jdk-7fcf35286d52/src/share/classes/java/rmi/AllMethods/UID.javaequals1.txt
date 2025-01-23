@@ -1,0 +1,22 @@
+/**
+ * Compares the specified object with this <code>UID</code> for
+ * equality.
+ *
+ * This method returns <code>true</code> if and only if the
+ * specified object is a <code>UID</code> instance with the same
+ * <code>unique</code>, <code>time</code>, and <code>count</code>
+ * values as this one.
+ *
+ * @param   obj the object to compare this <code>UID</code> to
+ *
+ * @return  <code>true</code> if the given object is equivalent to
+ * this one, and <code>false</code> otherwise
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof UID) {
+        UID uid = (UID) obj;
+        return (unique == uid.unique && count == uid.count && time == uid.time);
+    } else {
+        return false;
+    }
+}

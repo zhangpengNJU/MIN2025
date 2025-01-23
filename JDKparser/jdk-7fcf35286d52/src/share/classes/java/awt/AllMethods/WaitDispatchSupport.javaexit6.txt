@@ -1,0 +1,14 @@
+/**
+ * {@inheritDoc}
+ */
+public boolean exit() {
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        log.fine("exit(): blockingEDT=" + keepBlockingEDT.get() + ", blockingCT=" + keepBlockingCT.get());
+    }
+    afterExit.set(true);
+    if (keepBlockingEDT.getAndSet(false)) {
+        wakeupEDT();
+        return true;
+    }
+    return false;
+}

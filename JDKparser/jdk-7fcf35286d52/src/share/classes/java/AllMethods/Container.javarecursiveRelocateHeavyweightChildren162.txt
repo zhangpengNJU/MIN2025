@@ -1,0 +1,17 @@
+private void recursiveRelocateHeavyweightChildren(Point origin) {
+    for (int index = 0; index < getComponentCount(); index++) {
+        Component comp = getComponent(index);
+        if (comp.isLightweight()) {
+            if (comp instanceof Container && ((Container) comp).hasHeavyweightDescendants()) {
+                final Point newOrigin = new Point(origin);
+                newOrigin.translate(comp.getX(), comp.getY());
+                ((Container) comp).recursiveRelocateHeavyweightChildren(newOrigin);
+            }
+        } else {
+            ComponentPeer peer = comp.getPeer();
+            if (peer != null) {
+                peer.setBounds(origin.x + comp.getX(), origin.y + comp.getY(), comp.getWidth(), comp.getHeight(), ComponentPeer.SET_LOCATION);
+            }
+        }
+    }
+}

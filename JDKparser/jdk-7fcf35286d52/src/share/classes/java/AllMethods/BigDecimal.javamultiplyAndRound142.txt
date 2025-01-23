@@ -1,0 +1,6 @@
+private static BigDecimal multiplyAndRound(long x, BigInteger y, int scale, MathContext mc) {
+    if (x == 0) {
+        return zeroValueOf(scale);
+    }
+    return doRound(y.multiply(x), scale, mc);
+}

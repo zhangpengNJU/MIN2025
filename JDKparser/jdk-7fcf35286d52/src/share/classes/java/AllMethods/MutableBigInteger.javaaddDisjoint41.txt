@@ -1,0 +1,31 @@
+/**
+ * Like {@link #addShifted(MutableBigInteger, int)} but {@code this.intLen} must
+ * not be greater than {@code n}. In other words, concatenates {@code this}
+ * and {@code addend}.
+ */
+void addDisjoint(MutableBigInteger addend, int n) {
+    if (addend.isZero())
+        return;
+    int x = intLen;
+    int y = addend.intLen + n;
+    int resultLen = (intLen > y ? intLen : y);
+    int[] result;
+    if (value.length < resultLen)
+        result = new int[resultLen];
+    else {
+        result = value;
+        Arrays.fill(value, offset + intLen, value.length, 0);
+    }
+    int rstart = result.length - 1;
+    // copy from this if needed
+    System.arraycopy(value, offset, result, rstart + 1 - x, x);
+    y -= x;
+    rstart -= x;
+    int len = Math.min(y, addend.value.length - addend.offset);
+    System.arraycopy(addend.value, addend.offset, result, rstart + 1 - y, len);
+    // zero the gap
+    for (int i = rstart + 1 - y + len; i < rstart + 1; i++) result[i] = 0;
+    value = result;
+    intLen = resultLen;
+    offset = result.length - resultLen;
+}

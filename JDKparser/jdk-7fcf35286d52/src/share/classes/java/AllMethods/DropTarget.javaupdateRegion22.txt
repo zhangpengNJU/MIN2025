@@ -1,0 +1,15 @@
+/**
+ * update the geometry of the autoscroll region
+ */
+private void updateRegion() {
+    Insets i = autoScroll.getAutoscrollInsets();
+    Dimension size = component.getSize();
+    if (size.width != outer.width || size.height != outer.height)
+        outer.reshape(0, 0, size.width, size.height);
+    if (inner.x != i.left || inner.y != i.top)
+        inner.setLocation(i.left, i.top);
+    int newWidth = size.width - (i.left + i.right);
+    int newHeight = size.height - (i.top + i.bottom);
+    if (newWidth != inner.width || newHeight != inner.height)
+        inner.setSize(newWidth, newHeight);
+}

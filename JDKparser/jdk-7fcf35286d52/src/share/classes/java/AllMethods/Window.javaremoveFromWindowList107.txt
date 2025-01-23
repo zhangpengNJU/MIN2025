@@ -1,0 +1,9 @@
+private static void removeFromWindowList(AppContext context, WeakReference<Window> weakThis) {
+    synchronized (Window.class) {
+        @SuppressWarnings("unchecked")
+        Vector<WeakReference<Window>> windowList = (Vector<WeakReference<Window>>) context.get(Window.class);
+        if (windowList != null) {
+            windowList.remove(weakThis);
+        }
+    }
+}

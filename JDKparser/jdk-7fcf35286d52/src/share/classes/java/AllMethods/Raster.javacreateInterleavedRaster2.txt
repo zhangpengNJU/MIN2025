@@ -1,0 +1,54 @@
+/**
+ * Creates a Raster based on a PixelInterleavedSampleModel with the
+ * specified data type, width, height, scanline stride, pixel
+ * stride, and band offsets.  The number of bands is inferred from
+ * bandOffsets.length.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  If location is null, (0, 0) will be used.
+ * The dataType parameter should be one of the enumerated values
+ * defined in the DataBuffer class.
+ *
+ * <p> Note that interleaved <code>DataBuffer.TYPE_INT</code>
+ * Rasters are not supported.  To create a 1-band Raster of type
+ * <code>DataBuffer.TYPE_INT</code>, use
+ * Raster.createPackedRaster().
+ * <p> The only dataTypes supported currently are TYPE_BYTE
+ * and TYPE_USHORT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param scanlineStride the line stride of the image data
+ * @param pixelStride the pixel stride of the image data
+ * @param bandOffsets the offsets of all bands
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height, scanline stride, pixel stride and band
+ *         offsets.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types, which are
+ *         <code>DataBuffer.TYPE_BYTE</code>, or
+ *         <code>DataBuffer.TYPE_USHORT</code>.
+ */
+public static WritableRaster createInterleavedRaster(int dataType, int w, int h, int scanlineStride, int pixelStride, int[] bandOffsets, Point location) {
+    DataBuffer d;
+    int size = // fisrt (h - 1) scans
+    scanlineStride * (h - 1) + // last scan
+    pixelStride * w;
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            d = new DataBufferByte(size);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            d = new DataBufferUShort(size);
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported data type " + dataType);
+    }
+    return createInterleavedRaster(d, w, h, scanlineStride, pixelStride, bandOffsets, location);
+}

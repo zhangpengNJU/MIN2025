@@ -1,0 +1,21 @@
+/**
+ * Returns pattern with formatted double.
+ * @param number number to be formatted and substituted.
+ * @param toAppendTo where text is appended.
+ * @param status ignore no useful status is returned.
+ */
+public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition status) {
+    // find the number
+    int i;
+    for (i = 0; i < choiceLimits.length; ++i) {
+        if (!(number >= choiceLimits[i])) {
+            // same as number < choiceLimits, except catchs NaN
+            break;
+        }
+    }
+    --i;
+    if (i < 0)
+        i = 0;
+    // return either a formatted number, or a string
+    return toAppendTo.append(choiceFormats[i]);
+}

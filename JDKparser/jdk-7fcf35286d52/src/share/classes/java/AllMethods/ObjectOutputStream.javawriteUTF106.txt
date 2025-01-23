@@ -1,0 +1,17 @@
+/**
+ * Writes the given string in UTF format.  This method is used in
+ * situations where the UTF encoding length of the string is already
+ * known; specifying it explicitly avoids a prescan of the string to
+ * determine its UTF length.
+ */
+void writeUTF(String s, long utflen) throws IOException {
+    if (utflen > 0xFFFFL) {
+        throw new UTFDataFormatException();
+    }
+    writeShort((int) utflen);
+    if (utflen == (long) s.length()) {
+        writeBytes(s);
+    } else {
+        writeUTFBody(s);
+    }
+}

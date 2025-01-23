@@ -1,0 +1,41 @@
+/**
+ * Returns the immediately enclosing class of the underlying
+ * class.  If the underlying class is a top level class this
+ * method returns {@code null}.
+ * @return the immediately enclosing class of the underlying class
+ * @exception  SecurityException
+ *             If a security manager, <i>s</i>, is present and the caller's
+ *             class loader is not the same as or an ancestor of the class
+ *             loader for the enclosing class and invocation of {@link
+ *             SecurityManager#checkPackageAccess s.checkPackageAccess()}
+ *             denies access to the package of the enclosing class
+ * @since 1.5
+ */
+@CallerSensitive
+public Class<?> getEnclosingClass() throws SecurityException {
+    // There are five kinds of classes (or interfaces):
+    // a) Top level classes
+    // b) Nested classes (static member classes)
+    // c) Inner classes (non-static member classes)
+    // d) Local classes (named classes declared within a method)
+    // e) Anonymous classes
+    // JVM Spec 4.8.6: A class must have an EnclosingMethod
+    // attribute if and only if it is a local class or an
+    // anonymous class.
+    EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
+    Class<?> enclosingCandidate;
+    if (enclosingInfo == null) {
+        // This is a top level or a nested class or an inner class (a, b, or c)
+        enclosingCandidate = getDeclaringClass();
+    } else {
+        Class<?> enclosingClass = enclosingInfo.getEnclosingClass();
+        // This is a local class or an anonymous class (d or e)
+        if (enclosingClass == this || enclosingClass == null)
+            throw new InternalError("Malformed enclosing method information");
+        else
+            enclosingCandidate = enclosingClass;
+    }
+    if (enclosingCandidate != null)
+        enclosingCandidate.checkPackageAccess(ClassLoader.getClassLoader(Reflection.getCallerClass()), true);
+    return enclosingCandidate;
+}

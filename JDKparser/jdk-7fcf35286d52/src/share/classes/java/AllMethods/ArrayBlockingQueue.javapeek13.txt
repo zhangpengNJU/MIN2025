@@ -1,0 +1,10 @@
+public E peek() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        // null when queue is empty
+        return itemAt(takeIndex);
+    } finally {
+        lock.unlock();
+    }
+}

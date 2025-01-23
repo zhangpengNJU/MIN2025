@@ -1,0 +1,18 @@
+/**
+ * Returns an image which gets pixel data from the specified file.
+ * The returned Image is a new object which will not be shared
+ * with any other caller of this method or its getImage variant.
+ * <p>
+ * This method first checks if there is a security manager installed.
+ * If so, the method calls the security manager's
+ * <code>checkRead</code> method with the specified file to ensure
+ * that the image creation is allowed.
+ * @param     filename   the name of a file containing pixel data
+ *                         in a recognized file format.
+ * @return    an image which gets its pixel data from
+ *                         the specified file.
+ * @throws SecurityException  if a security manager exists and its
+ *                            checkRead method doesn't allow the operation.
+ * @see #getImage(java.lang.String)
+ */
+public abstract Image createImage(String filename);

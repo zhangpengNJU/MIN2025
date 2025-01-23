@@ -1,0 +1,17 @@
+/**
+ * Returns this object if it's normalized (all fields and time are
+ * in sync). Otherwise, a cloned object is returned after calling
+ * complete() in lenient mode.
+ */
+private JapaneseImperialCalendar getNormalizedCalendar() {
+    JapaneseImperialCalendar jc;
+    if (isFullyNormalized()) {
+        jc = this;
+    } else {
+        // Create a clone and normalize the calendar fields
+        jc = (JapaneseImperialCalendar) this.clone();
+        jc.setLenient(true);
+        jc.complete();
+    }
+    return jc;
+}

@@ -1,0 +1,29 @@
+/*
+     * A utility function to compute the mask offset and scalefactor,
+     * store these and the mask in instance arrays, and verify that
+     * the mask fits in the specified pixel size.
+     */
+private void DecomposeMask(int mask, int idx, String componentName) {
+    int off = 0;
+    int count = nBits[idx];
+    // Store the mask
+    maskArray[idx] = mask;
+    // Now find the shift
+    if (mask != 0) {
+        while ((mask & 1) == 0) {
+            mask >>>= 1;
+            off++;
+        }
+    }
+    if (off + count > pixel_bits) {
+        throw new IllegalArgumentException(componentName + " mask " + Integer.toHexString(maskArray[idx]) + " overflows pixel (expecting " + pixel_bits + " bits");
+    }
+    maskOffsets[idx] = off;
+    if (count == 0) {
+        // High enough to scale any 0-ff value down to 0.0, but not
+        // high enough to get Infinity when scaling back to pixel bits
+        scaleFactors[idx] = 256.0f;
+    } else {
+        scaleFactors[idx] = 255.0f / ((1 << count) - 1);
+    }
+}

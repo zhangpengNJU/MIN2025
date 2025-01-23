@@ -1,0 +1,7 @@
+private static void initializeSystemTrayIfNeeded() {
+    synchronized (SystemTray.class) {
+        if (systemTray == null) {
+            systemTray = new SystemTray();
+        }
+    }
+}

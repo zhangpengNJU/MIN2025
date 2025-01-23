@@ -1,0 +1,7 @@
+public void engineUpdate(SecretKey key) throws InvalidKeyException {
+    if (digestSpi instanceof MessageDigestSpi2) {
+        ((MessageDigestSpi2) digestSpi).engineUpdate(key);
+    } else {
+        throw new UnsupportedOperationException("Digest does not support update of SecretKey object");
+    }
+}

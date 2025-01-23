@@ -1,0 +1,28 @@
+/**
+ * Returns the value radix^(2^exponent) from the cache.
+ * If this value doesn't already exist in the cache, it is added.
+ * <p/>
+ * This could be changed to a more complicated caching method using
+ * {@code Future}.
+ */
+private static BigInteger getRadixConversionCache(int radix, int exponent) {
+    // volatile read
+    BigInteger[] cacheLine = powerCache[radix];
+    if (exponent < cacheLine.length) {
+        return cacheLine[exponent];
+    }
+    int oldLength = cacheLine.length;
+    cacheLine = Arrays.copyOf(cacheLine, exponent + 1);
+    for (int i = oldLength; i <= exponent; i++) {
+        cacheLine[i] = cacheLine[i - 1].pow(2);
+    }
+    // volatile read again
+    BigInteger[][] pc = powerCache;
+    if (exponent >= pc[radix].length) {
+        pc = pc.clone();
+        pc[radix] = cacheLine;
+        // volatile write, publish
+        powerCache = pc;
+    }
+    return cacheLine[exponent];
+}

@@ -1,0 +1,28 @@
+/**
+ * Returns a parameter string identifying this item event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case ITEM_STATE_CHANGED:
+            typeStr = "ITEM_STATE_CHANGED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    String stateStr;
+    switch(stateChange) {
+        case SELECTED:
+            stateStr = "SELECTED";
+            break;
+        case DESELECTED:
+            stateStr = "DESELECTED";
+            break;
+        default:
+            stateStr = "unknown type";
+    }
+    return typeStr + ",item=" + item + ",stateChange=" + stateStr;
+}

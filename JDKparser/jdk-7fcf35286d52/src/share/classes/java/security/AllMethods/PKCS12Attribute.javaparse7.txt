@@ -1,0 +1,33 @@
+private void parse(byte[] encoded) throws IOException {
+    DerInputStream attributeValue = new DerInputStream(encoded);
+    DerValue[] attrSeq = attributeValue.getSequence(2);
+    if (attrSeq.length != 2) {
+        throw new IOException("Invalid length for PKCS12Attribute");
+    }
+    ObjectIdentifier type = attrSeq[0].getOID();
+    DerInputStream attrContent = new DerInputStream(attrSeq[1].toByteArray());
+    DerValue[] attrValueSet = attrContent.getSet(1);
+    String[] values = new String[attrValueSet.length];
+    String printableString;
+    for (int i = 0; i < attrValueSet.length; i++) {
+        if (attrValueSet[i].tag == DerValue.tag_OctetString) {
+            values[i] = Debug.toString(attrValueSet[i].getOctetString());
+        } else if ((printableString = attrValueSet[i].getAsString()) != null) {
+            values[i] = printableString;
+        } else if (attrValueSet[i].tag == DerValue.tag_ObjectId) {
+            values[i] = attrValueSet[i].getOID().toString();
+        } else if (attrValueSet[i].tag == DerValue.tag_GeneralizedTime) {
+            values[i] = attrValueSet[i].getGeneralizedTime().toString();
+        } else if (attrValueSet[i].tag == DerValue.tag_UtcTime) {
+            values[i] = attrValueSet[i].getUTCTime().toString();
+        } else if (attrValueSet[i].tag == DerValue.tag_Integer) {
+            values[i] = attrValueSet[i].getBigInteger().toString();
+        } else if (attrValueSet[i].tag == DerValue.tag_Boolean) {
+            values[i] = String.valueOf(attrValueSet[i].getBoolean());
+        } else {
+            values[i] = Debug.toString(attrValueSet[i].getDataBytes());
+        }
+    }
+    this.name = type.toString();
+    this.value = values.length == 1 ? values[0] : Arrays.toString(values);
+}

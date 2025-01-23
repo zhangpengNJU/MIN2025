@@ -1,0 +1,18 @@
+/**
+ * Compares this elliptic curve for equality with the
+ * specified object.
+ * @param obj the object to be compared.
+ * @return true if {@code obj} is an instance of
+ * EllipticCurve and the field, A, and B match, false otherwise.
+ */
+public boolean equals(Object obj) {
+    if (this == obj)
+        return true;
+    if (obj instanceof EllipticCurve) {
+        EllipticCurve curve = (EllipticCurve) obj;
+        if ((field.equals(curve.field)) && (a.equals(curve.a)) && (b.equals(curve.b))) {
+            return true;
+        }
+    }
+    return false;
+}

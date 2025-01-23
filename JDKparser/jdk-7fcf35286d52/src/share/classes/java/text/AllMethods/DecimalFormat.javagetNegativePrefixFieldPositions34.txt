@@ -1,0 +1,18 @@
+/**
+ * Returns the FieldPositions of the fields in the prefix used for
+ * negative numbers. This is not used if the user has explicitly set
+ * a negative prefix via <code>setNegativePrefix</code>. This is
+ * lazily created.
+ *
+ * @return FieldPositions in positive prefix
+ */
+private FieldPosition[] getNegativePrefixFieldPositions() {
+    if (negativePrefixFieldPositions == null) {
+        if (negPrefixPattern != null) {
+            negativePrefixFieldPositions = expandAffix(negPrefixPattern);
+        } else {
+            negativePrefixFieldPositions = EmptyFieldPositionArray;
+        }
+    }
+    return negativePrefixFieldPositions;
+}

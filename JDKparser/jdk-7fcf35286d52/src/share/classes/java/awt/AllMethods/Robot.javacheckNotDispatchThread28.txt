@@ -1,0 +1,5 @@
+private void checkNotDispatchThread() {
+    if (EventQueue.isDispatchThread()) {
+        throw new IllegalThreadStateException("Cannot call method from the event dispatcher thread");
+    }
+}

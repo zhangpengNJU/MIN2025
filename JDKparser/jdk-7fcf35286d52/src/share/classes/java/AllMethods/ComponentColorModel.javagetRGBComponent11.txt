@@ -1,0 +1,19 @@
+private int getRGBComponent(Object inData, int idx) {
+    if (needScaleInit) {
+        initScale();
+    }
+    if (is_sRGB_stdScale) {
+        return extractComponent(inData, idx, 8);
+    } else if (is_LinearRGB_stdScale) {
+        int lutidx = extractComponent(inData, idx, 16);
+        return tosRGB8LUT[lutidx] & 0xff;
+    } else if (is_ICCGray_stdScale) {
+        int lutidx = extractComponent(inData, 0, 16);
+        return tosRGB8LUT[lutidx] & 0xff;
+    }
+    // Not CS_sRGB, CS_LINEAR_RGB, or any TYPE_GRAY ICC_ColorSpace
+    float[] norm = getNormalizedComponents(inData, null, 0);
+    // Note that getNormalizedComponents returns non-premultiplied values
+    float[] rgb = colorSpace.toRGB(norm);
+    return (int) (rgb[idx] * 255.0f + 0.5f);
+}

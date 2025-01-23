@@ -1,0 +1,25 @@
+/**
+ * Generates an integer containing the user-specified number of
+ * pseudo-random bits (right justified, with leading zeros).  This
+ * method overrides a {@code java.util.Random} method, and serves
+ * to provide a source of random bits to all of the methods inherited
+ * from that class (for example, {@code nextInt},
+ * {@code nextLong}, and {@code nextFloat}).
+ *
+ * @param numBits number of pseudo-random bits to be generated, where
+ * {@code 0 <= numBits <= 32}.
+ *
+ * @return an {@code int} containing the user-specified number
+ * of pseudo-random bits (right justified, with leading zeros).
+ */
+@Override
+final protected int next(int numBits) {
+    int numBytes = (numBits + 7) / 8;
+    byte[] b = new byte[numBytes];
+    int next = 0;
+    nextBytes(b);
+    for (int i = 0; i < numBytes; i++) {
+        next = (next << 8) + (b[i] & 0xFF);
+    }
+    return next >>> (numBytes * 8 - numBits);
+}

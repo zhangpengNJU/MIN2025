@@ -1,0 +1,58 @@
+public Object getOption(int opt) throws SocketException {
+    if (isClosedOrPending()) {
+        throw new SocketException("Socket Closed");
+    }
+    if (opt == SO_TIMEOUT) {
+        return new Integer(timeout);
+    }
+    int ret = 0;
+    /*
+         * The native socketGetOption() knows about 3 options.
+         * The 32 bit value it returns will be interpreted according
+         * to what we're asking.  A return of -1 means it understands
+         * the option but its turned off.  It will raise a SocketException
+         * if "opt" isn't one it understands.
+         */
+    switch(opt) {
+        case TCP_NODELAY:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_OOBINLINE:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_LINGER:
+            ret = socketGetOption(opt, null);
+            return (ret == -1) ? Boolean.FALSE : (Object) (new Integer(ret));
+        case SO_REUSEADDR:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_BINDADDR:
+            InetAddressContainer in = new InetAddressContainer();
+            ret = socketGetOption(opt, in);
+            return in.addr;
+        case SO_SNDBUF:
+        case SO_RCVBUF:
+            ret = socketGetOption(opt, null);
+            return new Integer(ret);
+        case IP_TOS:
+            try {
+                ret = socketGetOption(opt, null);
+                if (ret == -1) {
+                    // ipv6 tos
+                    return trafficClass;
+                } else {
+                    return ret;
+                }
+            } catch (SocketException se) {
+                // TODO - should make better effort to read TOS or TCLASS
+                // ipv6 tos
+                return trafficClass;
+            }
+        case SO_KEEPALIVE:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        // should never get here
+        default:
+            return null;
+    }
+}

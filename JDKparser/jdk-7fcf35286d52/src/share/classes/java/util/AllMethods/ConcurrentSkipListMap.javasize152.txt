@@ -1,0 +1,9 @@
+public int size() {
+    Comparator<? super K> cmp = m.comparator;
+    long count = 0;
+    for (ConcurrentSkipListMap.Node<K, V> n = loNode(cmp); isBeforeEnd(n, cmp); n = n.next) {
+        if (n.getValidValue() != null)
+            ++count;
+    }
+    return count >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) count;
+}

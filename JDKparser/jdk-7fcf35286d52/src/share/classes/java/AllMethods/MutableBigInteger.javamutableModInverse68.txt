@@ -1,0 +1,35 @@
+/**
+ * Returns the modInverse of this mod p. This and p are not affected by
+ * the operation.
+ */
+MutableBigInteger mutableModInverse(MutableBigInteger p) {
+    // Modulus is odd, use Schroeppel's algorithm
+    if (p.isOdd())
+        return modInverse(p);
+    // Base and modulus are even, throw exception
+    if (isEven())
+        throw new ArithmeticException("BigInteger not invertible.");
+    // Get even part of modulus expressed as a power of 2
+    int powersOf2 = p.getLowestSetBit();
+    // Construct odd part of modulus
+    MutableBigInteger oddMod = new MutableBigInteger(p);
+    oddMod.rightShift(powersOf2);
+    if (oddMod.isOne())
+        return modInverseMP2(powersOf2);
+    // Calculate 1/a mod oddMod
+    MutableBigInteger oddPart = modInverse(oddMod);
+    // Calculate 1/a mod evenMod
+    MutableBigInteger evenPart = modInverseMP2(powersOf2);
+    // Combine the results using Chinese Remainder Theorem
+    MutableBigInteger y1 = modInverseBP2(oddMod, powersOf2);
+    MutableBigInteger y2 = oddMod.modInverseMP2(powersOf2);
+    MutableBigInteger temp1 = new MutableBigInteger();
+    MutableBigInteger temp2 = new MutableBigInteger();
+    MutableBigInteger result = new MutableBigInteger();
+    oddPart.leftShift(powersOf2);
+    oddPart.multiply(y1, result);
+    evenPart.multiply(oddMod, temp1);
+    temp1.multiply(y2, temp2);
+    result.add(temp2);
+    return result.divide(p, temp1);
+}

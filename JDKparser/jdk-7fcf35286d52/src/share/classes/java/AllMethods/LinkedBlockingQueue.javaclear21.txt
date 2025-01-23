@@ -1,0 +1,19 @@
+/**
+ * Atomically removes all of the elements from this queue.
+ * The queue will be empty after this call returns.
+ */
+public void clear() {
+    fullyLock();
+    try {
+        for (Node<E> p, h = head; (p = h.next) != null; h = p) {
+            h.next = h;
+            p.item = null;
+        }
+        head = last;
+        // assert head.item == null && head.next == null;
+        if (count.getAndSet(0) == capacity)
+            notFull.signal();
+    } finally {
+        fullyUnlock();
+    }
+}

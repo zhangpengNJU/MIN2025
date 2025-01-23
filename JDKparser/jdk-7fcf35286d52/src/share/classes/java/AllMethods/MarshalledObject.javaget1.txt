@@ -1,0 +1,27 @@
+/**
+ * Returns a new copy of the contained marshalledobject.  The internal
+ * representation is deserialized with the semantics used for
+ * unmarshaling parameters for RMI calls.
+ *
+ * @return a copy of the contained object
+ * @exception IOException if an <code>IOException</code> occurs while
+ * deserializing the object from its internal representation.
+ * @exception ClassNotFoundException if a
+ * <code>ClassNotFoundException</code> occurs while deserializing the
+ * object from its internal representation.
+ * could not be found
+ * @since 1.2
+ */
+public T get() throws IOException, ClassNotFoundException {
+    if (// must have been a null object
+    objBytes == null)
+        return null;
+    ByteArrayInputStream bin = new ByteArrayInputStream(objBytes);
+    // locBytes is null if no annotations
+    ByteArrayInputStream lin = (locBytes == null ? null : new ByteArrayInputStream(locBytes));
+    MarshalledObjectInputStream in = new MarshalledObjectInputStream(bin, lin, objectInputFilter);
+    @SuppressWarnings("unchecked")
+    T obj = (T) in.readObject();
+    in.close();
+    return obj;
+}

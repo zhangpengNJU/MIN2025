@@ -1,0 +1,20 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+    if (isSupportedBy(temporal) == false) {
+        throw new UnsupportedTemporalTypeException("Unsupported field: WeekBasedYear");
+    }
+    // strict check
+    int newWby = range().checkValidIntValue(newValue, WEEK_BASED_YEAR);
+    LocalDate date = LocalDate.from(temporal);
+    int dow = date.get(DAY_OF_WEEK);
+    int week = getWeek(date);
+    if (week == 53 && getWeekRange(newWby) == 52) {
+        week = 52;
+    }
+    // 4th is guaranteed to be in week one
+    LocalDate resolved = LocalDate.of(newWby, 1, 4);
+    int days = (dow - resolved.get(DAY_OF_WEEK)) + ((week - 1) * 7);
+    resolved = resolved.plusDays(days);
+    return (R) temporal.with(resolved);
+}

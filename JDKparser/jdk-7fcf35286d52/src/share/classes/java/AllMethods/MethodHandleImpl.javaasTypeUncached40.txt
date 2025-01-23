@@ -1,0 +1,25 @@
+@Override
+public MethodHandle asTypeUncached(MethodType newType) {
+    MethodType type = this.type();
+    int collectArg = type.parameterCount() - 1;
+    int newArity = newType.parameterCount();
+    if (newArity == collectArg + 1 && type.parameterType(collectArg).isAssignableFrom(newType.parameterType(collectArg))) {
+        // if arity and trailing parameter are compatible, do normal thing
+        return asTypeCache = asFixedArity().asType(newType);
+    }
+    // check cache
+    MethodHandle acc = asCollectorCache;
+    if (acc != null && acc.type().parameterCount() == newArity)
+        return asTypeCache = acc.asType(newType);
+    // build and cache a collector
+    int arrayLength = newArity - collectArg;
+    MethodHandle collector;
+    try {
+        collector = asFixedArity().asCollector(arrayType, arrayLength);
+        assert (collector.type().parameterCount() == newArity) : "newArity=" + newArity + " but collector=" + collector;
+    } catch (IllegalArgumentException ex) {
+        throw new WrongMethodTypeException("cannot build collector", ex);
+    }
+    asCollectorCache = collector;
+    return asTypeCache = collector.asType(newType);
+}

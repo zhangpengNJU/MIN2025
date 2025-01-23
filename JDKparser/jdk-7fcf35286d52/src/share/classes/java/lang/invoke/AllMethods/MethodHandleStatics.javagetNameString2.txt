@@ -1,0 +1,11 @@
+/*non-public*/
+static String getNameString(MethodHandle target, MethodType type) {
+    if (type == null)
+        type = target.type();
+    MemberName name = null;
+    if (target != null)
+        name = target.internalMemberName();
+    if (name == null)
+        return "invoke" + type;
+    return name.getName() + type;
+}

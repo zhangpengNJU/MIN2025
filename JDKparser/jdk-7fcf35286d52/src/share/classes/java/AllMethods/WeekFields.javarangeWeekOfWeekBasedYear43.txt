@@ -1,0 +1,33 @@
+/**
+ * Map the field range to a week range of a week year.
+ * @param temporal  the temporal
+ * @return the ValueRange with the range adjusted to weeks.
+ */
+private ValueRange rangeWeekOfWeekBasedYear(TemporalAccessor temporal) {
+    if (!temporal.isSupported(DAY_OF_YEAR)) {
+        return WEEK_OF_YEAR_RANGE;
+    }
+    int dow = localizedDayOfWeek(temporal);
+    int doy = temporal.get(DAY_OF_YEAR);
+    int offset = startOfWeekOffset(doy, dow);
+    int week = computeWeek(offset, doy);
+    if (week == 0) {
+        // Day is in end of week of previous year
+        // Recompute from the last day of the previous year
+        ChronoLocalDate date = Chronology.from(temporal).date(temporal);
+        // Back down into previous year
+        date = date.minus(doy + 7, DAYS);
+        return rangeWeekOfWeekBasedYear(date);
+    }
+    // Check if day of year is in partial week associated with next year
+    ValueRange dayRange = temporal.range(DAY_OF_YEAR);
+    int yearLen = (int) dayRange.getMaximum();
+    int newYearWeek = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+    if (week >= newYearWeek) {
+        // Overlaps with weeks of following year; recompute from a week in following year
+        ChronoLocalDate date = Chronology.from(temporal).date(temporal);
+        date = date.plus(yearLen - doy + 1 + 7, ChronoUnit.DAYS);
+        return rangeWeekOfWeekBasedYear(date);
+    }
+    return ValueRange.of(1, newYearWeek - 1);
+}

@@ -1,0 +1,56 @@
+/**
+ * Returns the <code>Currency</code> instance for the country of the
+ * given locale. The language and variant components of the locale
+ * are ignored. The result may vary over time, as countries change their
+ * currencies. For example, for the original member countries of the
+ * European Monetary Union, the method returns the old national currencies
+ * until December 31, 2001, and the Euro from January 1, 2002, local time
+ * of the respective countries.
+ * <p>
+ * The method returns <code>null</code> for territories that don't
+ * have a currency, such as Antarctica.
+ *
+ * @param locale the locale for whose country a <code>Currency</code>
+ * instance is needed
+ * @return the <code>Currency</code> instance for the country of the given
+ * locale, or {@code null}
+ * @exception NullPointerException if <code>locale</code> or its country
+ * code is {@code null}
+ * @exception IllegalArgumentException if the country of the given {@code locale}
+ * is not a supported ISO 3166 country code.
+ */
+public static Currency getInstance(Locale locale) {
+    String country = locale.getCountry();
+    if (country == null) {
+        throw new NullPointerException();
+    }
+    if (country.length() != 2) {
+        throw new IllegalArgumentException();
+    }
+    char char1 = country.charAt(0);
+    char char2 = country.charAt(1);
+    int tableEntry = getMainTableEntry(char1, char2);
+    if ((tableEntry & COUNTRY_TYPE_MASK) == SIMPLE_CASE_COUNTRY_MASK && tableEntry != INVALID_COUNTRY_ENTRY) {
+        char finalChar = (char) ((tableEntry & SIMPLE_CASE_COUNTRY_FINAL_CHAR_MASK) + 'A');
+        int defaultFractionDigits = (tableEntry & SIMPLE_CASE_COUNTRY_DEFAULT_DIGITS_MASK) >> SIMPLE_CASE_COUNTRY_DEFAULT_DIGITS_SHIFT;
+        int numericCode = (tableEntry & NUMERIC_CODE_MASK) >> NUMERIC_CODE_SHIFT;
+        StringBuilder sb = new StringBuilder(country);
+        sb.append(finalChar);
+        return getInstance(sb.toString(), defaultFractionDigits, numericCode);
+    } else {
+        // special cases
+        if (tableEntry == INVALID_COUNTRY_ENTRY) {
+            throw new IllegalArgumentException();
+        }
+        if (tableEntry == COUNTRY_WITHOUT_CURRENCY_ENTRY) {
+            return null;
+        } else {
+            int index = (tableEntry & SPECIAL_CASE_COUNTRY_INDEX_MASK) - SPECIAL_CASE_COUNTRY_INDEX_DELTA;
+            if (scCutOverTimes[index] == Long.MAX_VALUE || System.currentTimeMillis() < scCutOverTimes[index]) {
+                return getInstance(scOldCurrencies[index], scOldCurrenciesDFD[index], scOldCurrenciesNumericCode[index]);
+            } else {
+                return getInstance(scNewCurrencies[index], scNewCurrenciesDFD[index], scNewCurrenciesNumericCode[index]);
+            }
+        }
+    }
+}

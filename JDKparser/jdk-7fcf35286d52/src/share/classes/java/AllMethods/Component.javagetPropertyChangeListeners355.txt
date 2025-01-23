@@ -1,0 +1,22 @@
+/**
+ * Returns an array of all the property change listeners
+ * registered on this component.
+ *
+ * @return all of this component's <code>PropertyChangeListener</code>s
+ *         or an empty array if no property change
+ *         listeners are currently registered
+ *
+ * @see      #addPropertyChangeListener
+ * @see      #removePropertyChangeListener
+ * @see      #getPropertyChangeListeners(java.lang.String)
+ * @see      java.beans.PropertyChangeSupport#getPropertyChangeListeners
+ * @since    1.4
+ */
+public PropertyChangeListener[] getPropertyChangeListeners() {
+    synchronized (getObjectLock()) {
+        if (changeSupport == null) {
+            return new PropertyChangeListener[0];
+        }
+        return changeSupport.getPropertyChangeListeners();
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Retrieves the value of the designated <code>NCHAR</code>,
+ * <code>NVARCHAR</code>
+ * or <code>LONGNVARCHAR</code> parameter as
+ * a <code>String</code> in the Java programming language.
+ *  <p>
+ * For the fixed-length type JDBC <code>NCHAR</code>,
+ * the <code>String</code> object
+ * returned has exactly the same value the SQL
+ * <code>NCHAR</code> value had in the
+ * database, including any padding added by the database.
+ *
+ * @param parameterIndex index of the first parameter is 1, the second is 2, ...
+ * @return a <code>String</code> object that maps an
+ * <code>NCHAR</code>, <code>NVARCHAR</code> or <code>LONGNVARCHAR</code> value
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ * @see #setNString
+ */
+String getNString(int parameterIndex) throws SQLException;

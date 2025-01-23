@@ -1,0 +1,24 @@
+/**
+ * Returns an iteration object that defines the boundary of the
+ * flattened <code>Rectangle2D</code>.  Since rectangles are already
+ * flat, the <code>flatness</code> parameter is ignored.
+ * The iterator for this class is multi-threaded safe, which means
+ * that this <code>Rectangle2D</code> class guarantees that
+ * modifications to the geometry of this <code>Rectangle2D</code>
+ * object do not affect any iterations of that geometry that
+ * are already in process.
+ * @param at an optional <code>AffineTransform</code> to be applied to
+ * the coordinates as they are returned in the iteration, or
+ * <code>null</code> if untransformed coordinates are desired
+ * @param flatness the maximum distance that the line segments used to
+ * approximate the curved segments are allowed to deviate from any
+ * point on the original curve.  Since rectangles are already flat,
+ * the <code>flatness</code> parameter is ignored.
+ * @return    the <code>PathIterator</code> object that returns the
+ *          geometry of the outline of this
+ *          <code>Rectangle2D</code>, one segment at a time.
+ * @since 1.2
+ */
+public PathIterator getPathIterator(AffineTransform at, double flatness) {
+    return new RectIterator(this, at);
+}

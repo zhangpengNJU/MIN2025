@@ -1,0 +1,10 @@
+/**
+ * Return identical values for similar
+ * <code>CommandEnvironment</code>s.
+ * @return an integer
+ * @see java.util.Hashtable
+ */
+public int hashCode() {
+    // hash command and ignore possibly expensive options
+    return (command == null ? 0 : command.hashCode());
+}

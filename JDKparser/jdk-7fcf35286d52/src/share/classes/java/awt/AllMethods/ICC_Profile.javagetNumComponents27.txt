@@ -1,0 +1,84 @@
+/**
+ * Returns the number of color components in the "input" color
+ * space of this profile.  For example if the color space type
+ * of this profile is TYPE_RGB, then this method will return 3.
+ *
+ * @return The number of color components in the profile's input
+ * color space.
+ *
+ * @throws ProfileDataException if color space is in the profile
+ *         is invalid
+ */
+public int getNumComponents() {
+    byte[] theHeader;
+    int theColorSpaceSig, theNumComponents;
+    if (deferralInfo != null) {
+        return deferralInfo.numComponents;
+    /* Need to have this info for
+                                                  ICC_ColorSpace without
+                                                  causing a deferred profile
+                                                  to be loaded */
+    }
+    theHeader = getData(icSigHead);
+    theColorSpaceSig = intFromBigEndian(theHeader, icHdrColorSpace);
+    switch(theColorSpaceSig) {
+        case icSigGrayData:
+            theNumComponents = 1;
+            break;
+        case icSigSpace2CLR:
+            theNumComponents = 2;
+            break;
+        case icSigXYZData:
+        case icSigLabData:
+        case icSigLuvData:
+        case icSigYCbCrData:
+        case icSigYxyData:
+        case icSigRgbData:
+        case icSigHsvData:
+        case icSigHlsData:
+        case icSigCmyData:
+        case icSigSpace3CLR:
+            theNumComponents = 3;
+            break;
+        case icSigCmykData:
+        case icSigSpace4CLR:
+            theNumComponents = 4;
+            break;
+        case icSigSpace5CLR:
+            theNumComponents = 5;
+            break;
+        case icSigSpace6CLR:
+            theNumComponents = 6;
+            break;
+        case icSigSpace7CLR:
+            theNumComponents = 7;
+            break;
+        case icSigSpace8CLR:
+            theNumComponents = 8;
+            break;
+        case icSigSpace9CLR:
+            theNumComponents = 9;
+            break;
+        case icSigSpaceACLR:
+            theNumComponents = 10;
+            break;
+        case icSigSpaceBCLR:
+            theNumComponents = 11;
+            break;
+        case icSigSpaceCCLR:
+            theNumComponents = 12;
+            break;
+        case icSigSpaceDCLR:
+            theNumComponents = 13;
+            break;
+        case icSigSpaceECLR:
+            theNumComponents = 14;
+            break;
+        case icSigSpaceFCLR:
+            theNumComponents = 15;
+            break;
+        default:
+            throw new ProfileDataException("invalid ICC color space");
+    }
+    return theNumComponents;
+}

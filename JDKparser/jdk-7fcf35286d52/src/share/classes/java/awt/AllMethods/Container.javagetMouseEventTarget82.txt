@@ -1,0 +1,7 @@
+/**
+ * Fetchs the top-most (deepest) lightweight component that is interested
+ * in receiving mouse events.
+ */
+Component getMouseEventTarget(int x, int y, boolean includeSelf) {
+    return getMouseEventTarget(x, y, includeSelf, MouseEventTargetFilter.FILTER, !SEARCH_HEAVYWEIGHTS);
+}

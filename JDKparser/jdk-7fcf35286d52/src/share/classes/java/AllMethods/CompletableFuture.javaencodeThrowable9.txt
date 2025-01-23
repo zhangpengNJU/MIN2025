@@ -1,0 +1,14 @@
+/**
+ * Returns the encoding of the given (non-null) exception as a
+ * wrapped CompletionException unless it is one already.  May
+ * return the given Object r (which must have been the result of a
+ * source future) if it is equivalent, i.e. if this is a simple
+ * relay of an existing CompletionException.
+ */
+static Object encodeThrowable(Throwable x, Object r) {
+    if (!(x instanceof CompletionException))
+        x = new CompletionException(x);
+    else if (r instanceof AltResult && x == ((AltResult) r).ex)
+        return r;
+    return new AltResult(x);
+}

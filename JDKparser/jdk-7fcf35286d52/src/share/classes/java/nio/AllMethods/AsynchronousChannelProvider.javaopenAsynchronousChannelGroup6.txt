@@ -1,0 +1,18 @@
+/**
+ * Constructs a new asynchronous channel group with a fixed thread pool.
+ *
+ * @param   nThreads
+ *          The number of threads in the pool
+ * @param   threadFactory
+ *          The factory to use when creating new threads
+ *
+ * @return  A new asynchronous channel group
+ *
+ * @throws  IllegalArgumentException
+ *          If {@code nThreads <= 0}
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @see AsynchronousChannelGroup#withFixedThreadPool
+ */
+public abstract AsynchronousChannelGroup openAsynchronousChannelGroup(int nThreads, ThreadFactory threadFactory) throws IOException;

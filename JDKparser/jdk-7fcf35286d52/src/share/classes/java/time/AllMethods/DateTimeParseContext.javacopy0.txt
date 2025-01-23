@@ -1,0 +1,10 @@
+/**
+ * Creates a copy of this context.
+ * This retains the case sensitive and strict flags.
+ */
+DateTimeParseContext copy() {
+    DateTimeParseContext newContext = new DateTimeParseContext(formatter);
+    newContext.caseSensitive = caseSensitive;
+    newContext.strict = strict;
+    return newContext;
+}

@@ -1,0 +1,30 @@
+static MethodHandle makeGuardWithCatch(MethodHandle target, Class<? extends Throwable> exType, MethodHandle catcher) {
+    MethodType type = target.type();
+    LambdaForm form = makeGuardWithCatchForm(type.basicType());
+    // Prepare auxiliary method handles used during LambdaForm interpreation.
+    // Box arguments and wrap them into Object[]: ValueConversions.array().
+    MethodType varargsType = type.changeReturnType(Object[].class);
+    MethodHandle collectArgs = varargsArray(type.parameterCount()).asType(varargsType);
+    // Result unboxing: ValueConversions.unbox() OR ValueConversions.identity() OR ValueConversions.ignore().
+    MethodHandle unboxResult;
+    Class<?> rtype = type.returnType();
+    if (rtype.isPrimitive()) {
+        if (rtype == void.class) {
+            unboxResult = ValueConversions.ignore();
+        } else {
+            Wrapper w = Wrapper.forPrimitiveType(type.returnType());
+            unboxResult = ValueConversions.unboxExact(w);
+        }
+    } else {
+        unboxResult = MethodHandles.identity(Object.class);
+    }
+    BoundMethodHandle.SpeciesData data = BoundMethodHandle.speciesData_LLLLL();
+    BoundMethodHandle mh;
+    try {
+        mh = (BoundMethodHandle) data.constructor().invokeBasic(type, form, (Object) target, (Object) exType, (Object) catcher, (Object) collectArgs, (Object) unboxResult);
+    } catch (Throwable ex) {
+        throw uncaughtException(ex);
+    }
+    assert (mh.type() == type);
+    return mh;
+}

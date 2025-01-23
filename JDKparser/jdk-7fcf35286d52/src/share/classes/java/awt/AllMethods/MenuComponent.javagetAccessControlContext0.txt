@@ -1,0 +1,9 @@
+/*
+     * Returns the acc this menu component was constructed with.
+     */
+final AccessControlContext getAccessControlContext() {
+    if (acc == null) {
+        throw new SecurityException("MenuComponent is missing AccessControlContext");
+    }
+    return acc;
+}

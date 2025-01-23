@@ -1,0 +1,36 @@
+/**
+ * Notifies this input method of changes in the client window
+ * location or state. This method is called while this input
+ * method is the current input method of its input context and
+ * notifications for it are enabled (see {@link
+ * InputMethodContext#enableClientWindowNotification
+ * InputMethodContext.enableClientWindowNotification}). Calls
+ * to this method are temporarily suspended if the input context's
+ * {@link java.awt.im.InputContext#removeNotify removeNotify}
+ * method is called, and resume when the input method is activated
+ * for a new client component. It is called in the following
+ * situations:
+ * <ul>
+ * <li>
+ * when the window containing the current client component changes
+ * in location, size, visibility, iconification state, or when the
+ * window is closed.</li>
+ * <li>
+ * from <code> enableClientWindowNotification(inputMethod,
+ * true)</code> if the current client component exists,</li>
+ * <li>
+ * when activating the input method for the first time after it
+ * called
+ * <code>enableClientWindowNotification(inputMethod,
+ * true)</code> if during the call no current client component was
+ * available,</li>
+ * <li>
+ * when activating the input method for a new client component
+ * after the input context's removeNotify method has been
+ * called.</li>
+ * </ul>
+ * @param bounds client window's {@link
+ * java.awt.Component#getBounds bounds} on the screen; or null if
+ * the client window is iconified or invisible
+ */
+public void notifyClientWindowChange(Rectangle bounds);

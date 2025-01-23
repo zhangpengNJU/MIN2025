@@ -1,0 +1,5 @@
+static MethodHandle makeIntrinsic(MethodHandle target, Intrinsic intrinsicName) {
+    if (intrinsicName == target.intrinsicName())
+        return target;
+    return new IntrinsicMethodHandle(target, intrinsicName);
+}

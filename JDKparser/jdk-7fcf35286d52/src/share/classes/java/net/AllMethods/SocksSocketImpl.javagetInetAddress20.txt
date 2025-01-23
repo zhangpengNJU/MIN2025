@@ -1,0 +1,13 @@
+/**
+ * Returns the value of this socket's {@code address} field.
+ *
+ * @return  the value of this socket's {@code address} field.
+ * @see     java.net.SocketImpl#address
+ */
+@Override
+protected InetAddress getInetAddress() {
+    if (external_address != null)
+        return external_address.getAddress();
+    else
+        return super.getInetAddress();
+}

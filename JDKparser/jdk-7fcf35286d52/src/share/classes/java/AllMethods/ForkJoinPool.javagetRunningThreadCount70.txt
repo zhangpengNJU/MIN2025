@@ -1,0 +1,20 @@
+/**
+ * Returns an estimate of the number of worker threads that are
+ * not blocked waiting to join tasks or for other managed
+ * synchronization. This method may overestimate the
+ * number of running threads.
+ *
+ * @return the number of worker threads
+ */
+public int getRunningThreadCount() {
+    int rc = 0;
+    WorkQueue[] ws;
+    WorkQueue w;
+    if ((ws = workQueues) != null) {
+        for (int i = 1; i < ws.length; i += 2) {
+            if ((w = ws[i]) != null && w.isApparentlyUnblocked())
+                ++rc;
+        }
+    }
+    return rc;
+}

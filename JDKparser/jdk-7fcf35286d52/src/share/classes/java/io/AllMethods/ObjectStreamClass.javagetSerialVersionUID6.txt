@@ -1,0 +1,20 @@
+/**
+ * Return the serialVersionUID for this class.  The serialVersionUID
+ * defines a set of classes all with the same name that have evolved from a
+ * common root class and agree to be serialized and deserialized using a
+ * common format.  NonSerializable classes have a serialVersionUID of 0L.
+ *
+ * @return  the SUID of the class described by this descriptor
+ */
+public long getSerialVersionUID() {
+    // REMIND: synchronize instead of relying on volatile?
+    if (suid == null) {
+        suid = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+
+            public Long run() {
+                return computeDefaultSUID(cl);
+            }
+        });
+    }
+    return suid.longValue();
+}

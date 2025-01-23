@@ -1,0 +1,12 @@
+/**
+ * Returns the serialization filter for this stream.
+ * The serialization filter is the most recent filter set in
+ * {@link #setInternalObjectInputFilter setInternalObjectInputFilter} or
+ * the initial process-wide filter from
+ * {@link ObjectInputFilter.Config#getSerialFilter() ObjectInputFilter.Config.getSerialFilter}.
+ *
+ * @return the serialization filter for the stream; may be null
+ */
+private final ObjectInputFilter getInternalObjectInputFilter() {
+    return serialFilter;
+}

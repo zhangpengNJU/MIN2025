@@ -1,0 +1,17 @@
+/**
+ * Get the most recent event time in the {@code EventQueue} which the {@code source}
+ * belongs to.
+ *
+ * @param source the source of the event
+ * @exception  IllegalArgumentException  if source is null.
+ * @return most recent event time in the {@code EventQueue}
+ */
+private static long getMostRecentEventTimeForSource(Object source) {
+    if (source == null) {
+        // throw the IllegalArgumentException to conform to EventObject spec
+        throw new IllegalArgumentException("null source");
+    }
+    AppContext appContext = SunToolkit.targetToAppContext(source);
+    EventQueue eventQueue = SunToolkit.getSystemEventQueueImplPP(appContext);
+    return AWTAccessor.getEventQueueAccessor().getMostRecentEventTime(eventQueue);
+}

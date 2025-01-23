@@ -1,0 +1,14 @@
+/**
+ * Returns the text that is presented by this text component.
+ * By default, this is an empty string.
+ *
+ * @return the value of this <code>TextComponent</code>
+ * @see     java.awt.TextComponent#setText
+ */
+public synchronized String getText() {
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        text = peer.getText();
+    }
+    return text;
+}

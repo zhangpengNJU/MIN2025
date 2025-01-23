@@ -1,0 +1,67 @@
+/**
+ * Computes the union of this <code>Rectangle</code> with the
+ * specified <code>Rectangle</code>. Returns a new
+ * <code>Rectangle</code> that
+ * represents the union of the two rectangles.
+ * <p>
+ * If either {@code Rectangle} has any dimension less than zero
+ * the rules for <a href=#NonExistant>non-existant</a> rectangles
+ * apply.
+ * If only one has a dimension less than zero, then the result
+ * will be a copy of the other {@code Rectangle}.
+ * If both have dimension less than zero, then the result will
+ * have at least one dimension less than zero.
+ * <p>
+ * If the resulting {@code Rectangle} would have a dimension
+ * too large to be expressed as an {@code int}, the result
+ * will have a dimension of {@code Integer.MAX_VALUE} along
+ * that dimension.
+ * @param r the specified <code>Rectangle</code>
+ * @return    the smallest <code>Rectangle</code> containing both
+ *            the specified <code>Rectangle</code> and this
+ *            <code>Rectangle</code>.
+ */
+public Rectangle union(Rectangle r) {
+    long tx2 = this.width;
+    long ty2 = this.height;
+    if ((tx2 | ty2) < 0) {
+        // This rectangle has negative dimensions...
+        // If r has non-negative dimensions then it is the answer.
+        // If r is non-existant (has a negative dimension), then both
+        // are non-existant and we can return any non-existant rectangle
+        // as an answer.  Thus, returning r meets that criterion.
+        // Either way, r is our answer.
+        return new Rectangle(r);
+    }
+    long rx2 = r.width;
+    long ry2 = r.height;
+    if ((rx2 | ry2) < 0) {
+        return new Rectangle(this);
+    }
+    int tx1 = this.x;
+    int ty1 = this.y;
+    tx2 += tx1;
+    ty2 += ty1;
+    int rx1 = r.x;
+    int ry1 = r.y;
+    rx2 += rx1;
+    ry2 += ry1;
+    if (tx1 > rx1)
+        tx1 = rx1;
+    if (ty1 > ry1)
+        ty1 = ry1;
+    if (tx2 < rx2)
+        tx2 = rx2;
+    if (ty2 < ry2)
+        ty2 = ry2;
+    tx2 -= tx1;
+    ty2 -= ty1;
+    // tx2,ty2 will never underflow since both original rectangles
+    // were already proven to be non-empty
+    // they might overflow, though...
+    if (tx2 > Integer.MAX_VALUE)
+        tx2 = Integer.MAX_VALUE;
+    if (ty2 > Integer.MAX_VALUE)
+        ty2 = Integer.MAX_VALUE;
+    return new Rectangle(tx1, ty1, (int) tx2, (int) ty2);
+}

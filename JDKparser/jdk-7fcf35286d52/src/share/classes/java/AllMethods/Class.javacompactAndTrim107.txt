@@ -1,0 +1,16 @@
+void compactAndTrim() {
+    int newPos = 0;
+    // Get rid of null slots
+    for (int pos = 0; pos < length; pos++) {
+        Method m = methods[pos];
+        if (m != null) {
+            if (pos != newPos) {
+                methods[newPos] = m;
+            }
+            newPos++;
+        }
+    }
+    if (newPos != methods.length) {
+        methods = Arrays.copyOf(methods, newPos);
+    }
+}

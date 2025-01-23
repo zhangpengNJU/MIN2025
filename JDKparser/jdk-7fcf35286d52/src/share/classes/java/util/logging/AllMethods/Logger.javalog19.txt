@@ -1,0 +1,32 @@
+/**
+ * Log a LogRecord.
+ * <p>
+ * All the other logging methods in this class call through
+ * this method to actually perform any logging.  Subclasses can
+ * override this single method to capture all log activity.
+ *
+ * @param record the LogRecord to be published
+ */
+public void log(LogRecord record) {
+    if (!isLoggable(record.getLevel())) {
+        return;
+    }
+    Filter theFilter = filter;
+    if (theFilter != null && !theFilter.isLoggable(record)) {
+        return;
+    }
+    // Post the LogRecord to all our Handlers, and then to
+    // our parents' handlers, all the way up the tree.
+    Logger logger = this;
+    while (logger != null) {
+        final Handler[] loggerHandlers = isSystemLogger ? logger.accessCheckedHandlers() : logger.getHandlers();
+        for (Handler handler : loggerHandlers) {
+            handler.publish(record);
+        }
+        final boolean useParentHdls = isSystemLogger ? logger.useParentHandlers : logger.getUseParentHandlers();
+        if (!useParentHdls) {
+            break;
+        }
+        logger = isSystemLogger ? logger.parent : logger.getParent();
+    }
+}

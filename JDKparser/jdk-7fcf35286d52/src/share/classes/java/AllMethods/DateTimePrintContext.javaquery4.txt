@@ -1,0 +1,14 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R> R query(TemporalQuery<R> query) {
+    if (query == TemporalQueries.chronology()) {
+        return (R) effectiveChrono;
+    }
+    if (query == TemporalQueries.zoneId()) {
+        return (R) effectiveZone;
+    }
+    if (query == TemporalQueries.precision()) {
+        return temporal.query(query);
+    }
+    return query.queryFrom(this);
+}

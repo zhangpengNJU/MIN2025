@@ -1,0 +1,32 @@
+/**
+ * Read the ObjectInputStream, and if it isn't null,
+ * add a listener to receive text events fired by the
+ * TextComponent.  Unrecognized keys or values will be
+ * ignored.
+ *
+ * @exception HeadlessException if
+ * <code>GraphicsEnvironment.isHeadless()</code> returns
+ * <code>true</code>
+ * @see #removeTextListener
+ * @see #addTextListener
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    s.defaultReadObject();
+    // Make sure the state we just read in for text,
+    // selectionStart and selectionEnd has legal values
+    this.text = (text != null) ? text : "";
+    select(selectionStart, selectionEnd);
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (textListenerK == key) {
+            addTextListener((TextListener) (s.readObject()));
+        } else {
+            // skip value for unrecognized key
+            s.readObject();
+        }
+    }
+    enableInputMethodsIfNecessary();
+}

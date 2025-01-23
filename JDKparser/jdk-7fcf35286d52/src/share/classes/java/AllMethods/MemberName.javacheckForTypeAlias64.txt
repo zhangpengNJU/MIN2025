@@ -1,0 +1,23 @@
+void checkForTypeAlias(Class<?> refc) {
+    if (isInvocable()) {
+        MethodType type;
+        if (this.type instanceof MethodType)
+            type = (MethodType) this.type;
+        else
+            this.type = type = getMethodType();
+        if (type.erase() == type)
+            return;
+        if (VerifyAccess.isTypeVisible(type, refc))
+            return;
+        throw new LinkageError("bad method type alias: " + type + " not visible from " + refc);
+    } else {
+        Class<?> type;
+        if (this.type instanceof Class<?>)
+            type = (Class<?>) this.type;
+        else
+            this.type = type = getFieldType();
+        if (VerifyAccess.isTypeVisible(type, refc))
+            return;
+        throw new LinkageError("bad field type alias: " + type + " not visible from " + refc);
+    }
+}

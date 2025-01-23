@@ -1,0 +1,18 @@
+/**
+ * Returns the "simple binary name" of the underlying class, i.e.,
+ * the binary name without the leading enclosing class name.
+ * Returns {@code null} if the underlying class is a top level
+ * class.
+ */
+private String getSimpleBinaryName() {
+    Class<?> enclosingClass = getEnclosingClass();
+    if (// top level class
+    enclosingClass == null)
+        return null;
+    // Otherwise, strip the enclosing class' name
+    try {
+        return getName().substring(enclosingClass.getName().length());
+    } catch (IndexOutOfBoundsException ex) {
+        throw new InternalError("Malformed class name", ex);
+    }
+}

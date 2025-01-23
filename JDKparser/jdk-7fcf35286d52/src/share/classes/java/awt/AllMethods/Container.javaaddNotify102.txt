@@ -1,0 +1,29 @@
+/**
+ * Makes this Container displayable by connecting it to
+ * a native screen resource.  Making a container displayable will
+ * cause all of its children to be made displayable.
+ * This method is called internally by the toolkit and should
+ * not be called directly by programs.
+ * @see Component#isDisplayable
+ * @see #removeNotify
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        // addNotify() on the children may cause proxy event enabling
+        // on this instance, so we first call super.addNotify() and
+        // possibly create an lightweight event dispatcher before calling
+        // addNotify() on the children which may be lightweight.
+        super.addNotify();
+        if (!(peer instanceof LightweightPeer)) {
+            dispatcher = new LightweightDispatcher(this);
+        }
+        // We shouldn't use iterator because of the Swing menu
+        // implementation specifics:
+        // the menu is being assigned as a child to JLayeredPane
+        // instead of particular component so always affect
+        // collection of component if menu is becoming shown or hidden.
+        for (int i = 0; i < component.size(); i++) {
+            component.get(i).addNotify();
+        }
+    }
+}

@@ -1,0 +1,35 @@
+/**
+ * Returns a list of media with the specified ID that
+ * have encountered an error.
+ * @param       id   the identifier of the images to check
+ * @return      an array of media objects tracked by this media
+ *                       tracker with the specified identifier
+ *                       that have encountered an error, or
+ *                       <code>null</code> if there are none with errors
+ * @see         java.awt.MediaTracker#isErrorID
+ * @see         java.awt.MediaTracker#isErrorAny
+ * @see         java.awt.MediaTracker#getErrorsAny
+ */
+public synchronized Object[] getErrorsID(int id) {
+    MediaEntry cur = head;
+    int numerrors = 0;
+    while (cur != null) {
+        if (cur.getID() == id && (cur.getStatus(false, true) & ERRORED) != 0) {
+            numerrors++;
+        }
+        cur = cur.next;
+    }
+    if (numerrors == 0) {
+        return null;
+    }
+    Object[] errors = new Object[numerrors];
+    cur = head;
+    numerrors = 0;
+    while (cur != null) {
+        if (cur.getID() == id && (cur.getStatus(false, false) & ERRORED) != 0) {
+            errors[numerrors++] = cur.getMedia();
+        }
+        cur = cur.next;
+    }
+    return errors;
+}

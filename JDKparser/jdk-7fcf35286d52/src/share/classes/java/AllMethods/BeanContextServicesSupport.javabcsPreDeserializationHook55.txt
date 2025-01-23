@@ -1,0 +1,19 @@
+/**
+ * called from BeanContextSupport readObject before it deserializes the
+ * children ...
+ *
+ * This class will deserialize any Serializable BeanContextServiceProviders
+ * serialized earlier thus making them available to the children when they
+ * deserialized.
+ *
+ * subclasses may envelope this method to insert their own serialization
+ * processing that has to occur prior to serialization of the children
+ */
+protected synchronized void bcsPreDeserializationHook(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    serializable = ois.readInt();
+    int count = serializable;
+    while (count > 0) {
+        services.put(ois.readObject(), ois.readObject());
+        count--;
+    }
+}

@@ -1,0 +1,15 @@
+/*
+     * Checks RuntimePermission("getClassLoader") permission
+     * if caller's class loader is not null and caller's class loader
+     * is not the same as or an ancestor of the given cl argument.
+     */
+static void checkClassLoaderPermission(ClassLoader cl, Class<?> caller) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        // caller can be null if the VM is requesting it
+        ClassLoader ccl = getClassLoader(caller);
+        if (needsClassLoaderPermissionCheck(ccl, cl)) {
+            sm.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
+        }
+    }
+}

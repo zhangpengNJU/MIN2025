@@ -1,0 +1,9 @@
+/**
+ * Return the primary component of a collation element.
+ * @param order the collation element
+ * @return the element's primary component
+ */
+public final static int primaryOrder(int order) {
+    order &= RBCollationTables.PRIMARYORDERMASK;
+    return (order >>> RBCollationTables.PRIMARYORDERSHIFT);
+}

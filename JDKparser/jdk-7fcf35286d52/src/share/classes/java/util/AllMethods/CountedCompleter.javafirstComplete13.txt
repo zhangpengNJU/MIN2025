@@ -1,0 +1,16 @@
+/**
+ * If this task's pending count is zero, returns this task;
+ * otherwise decrements its pending count and returns {@code
+ * null}. This method is designed to be used with {@link
+ * #nextComplete} in completion traversal loops.
+ *
+ * @return this task, if pending count was zero, else {@code null}
+ */
+public final CountedCompleter<?> firstComplete() {
+    for (int c; ; ) {
+        if ((c = pending) == 0)
+            return this;
+        else if (U.compareAndSwapInt(this, PENDING, c, c - 1))
+            return null;
+    }
+}

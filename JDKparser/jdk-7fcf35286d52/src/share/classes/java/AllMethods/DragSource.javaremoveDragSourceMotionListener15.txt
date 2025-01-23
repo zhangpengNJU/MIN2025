@@ -1,0 +1,22 @@
+/**
+ * Removes the specified <code>DragSourceMotionListener</code> from this
+ * <code>DragSource</code>.
+ * If a <code>null</code> listener is specified, no action is taken and no
+ * exception is thrown.
+ * If the listener specified by the argument was not previously added to
+ * this <code>DragSource</code>, no action is taken and no exception
+ * is thrown.
+ *
+ * @param dsml the <code>DragSourceMotionListener</code> to remove
+ *
+ * @see      #addDragSourceMotionListener
+ * @see      #getDragSourceMotionListeners
+ * @since 1.4
+ */
+public void removeDragSourceMotionListener(DragSourceMotionListener dsml) {
+    if (dsml != null) {
+        synchronized (this) {
+            motionListener = DnDEventMulticaster.remove(motionListener, dsml);
+        }
+    }
+}

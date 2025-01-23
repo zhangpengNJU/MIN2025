@@ -1,0 +1,12 @@
+private CompletableFuture<Void> orRunStage(Executor e, CompletionStage<?> o, Runnable f) {
+    CompletableFuture<?> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.orRun(this, b, f, null)) {
+        OrRun<T, ?> c = new OrRun<>(e, d, this, b, f);
+        orpush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

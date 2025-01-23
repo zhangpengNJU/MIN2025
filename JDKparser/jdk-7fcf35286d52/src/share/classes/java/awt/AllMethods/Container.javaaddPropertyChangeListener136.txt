@@ -1,0 +1,39 @@
+/**
+ * Adds a PropertyChangeListener to the listener list for a specific
+ * property. The specified property may be user-defined, or one of the
+ * following defaults:
+ * <ul>
+ *    <li>this Container's font ("font")</li>
+ *    <li>this Container's background color ("background")</li>
+ *    <li>this Container's foreground color ("foreground")</li>
+ *    <li>this Container's focusability ("focusable")</li>
+ *    <li>this Container's focus traversal keys enabled state
+ *        ("focusTraversalKeysEnabled")</li>
+ *    <li>this Container's Set of FORWARD_TRAVERSAL_KEYS
+ *        ("forwardFocusTraversalKeys")</li>
+ *    <li>this Container's Set of BACKWARD_TRAVERSAL_KEYS
+ *        ("backwardFocusTraversalKeys")</li>
+ *    <li>this Container's Set of UP_CYCLE_TRAVERSAL_KEYS
+ *        ("upCycleFocusTraversalKeys")</li>
+ *    <li>this Container's Set of DOWN_CYCLE_TRAVERSAL_KEYS
+ *        ("downCycleFocusTraversalKeys")</li>
+ *    <li>this Container's focus traversal policy ("focusTraversalPolicy")
+ *        </li>
+ *    <li>this Container's focus-cycle-root state ("focusCycleRoot")</li>
+ *    <li>this Container's focus-traversal-policy-provider state("focusTraversalPolicyProvider")</li>
+ *    <li>this Container's focus-traversal-policy-provider state("focusTraversalPolicyProvider")</li>
+ * </ul>
+ * Note that if this Container is inheriting a bound property, then no
+ * event will be fired in response to a change in the inherited property.
+ * <p>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param propertyName one of the property names listed above
+ * @param listener the PropertyChangeListener to be added
+ *
+ * @see #addPropertyChangeListener(java.beans.PropertyChangeListener)
+ * @see Component#removePropertyChangeListener
+ */
+public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+    super.addPropertyChangeListener(propertyName, listener);
+}

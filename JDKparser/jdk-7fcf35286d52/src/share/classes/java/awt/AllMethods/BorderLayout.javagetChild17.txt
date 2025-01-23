@@ -1,0 +1,31 @@
+/**
+ * Get the component that corresponds to the given constraint location
+ *
+ * @param   key     The desired absolute position,
+ *                  either NORTH, SOUTH, EAST, or WEST.
+ * @param   ltr     Is the component line direction left-to-right?
+ */
+private Component getChild(String key, boolean ltr) {
+    Component result = null;
+    if (key == NORTH) {
+        result = (firstLine != null) ? firstLine : north;
+    } else if (key == SOUTH) {
+        result = (lastLine != null) ? lastLine : south;
+    } else if (key == WEST) {
+        result = ltr ? firstItem : lastItem;
+        if (result == null) {
+            result = west;
+        }
+    } else if (key == EAST) {
+        result = ltr ? lastItem : firstItem;
+        if (result == null) {
+            result = east;
+        }
+    } else if (key == CENTER) {
+        result = center;
+    }
+    if (result != null && !result.visible) {
+        result = null;
+    }
+    return result;
+}

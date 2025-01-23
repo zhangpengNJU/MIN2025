@@ -1,0 +1,12 @@
+/**
+ * Called by the AWT to notify the KeyboardFocusManager that it should
+ * cancel delayed dispatching of KeyEvents. All KeyEvents which were
+ * enqueued because of one or more calls to <code>enqueueKeyEvents</code>
+ * with the same Component should be discarded.
+ *
+ * @param comp the Component specified in one or more calls to
+ *        <code>enqueueKeyEvents</code>
+ * @see #enqueueKeyEvents
+ * @see #dequeueKeyEvents
+ */
+protected abstract void discardKeyEvents(Component comp);

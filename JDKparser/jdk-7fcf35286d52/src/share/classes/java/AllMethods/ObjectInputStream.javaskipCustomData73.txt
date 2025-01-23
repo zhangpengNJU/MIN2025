@@ -1,0 +1,26 @@
+/**
+ * Skips over all block data and objects until TC_ENDBLOCKDATA is
+ * encountered.
+ */
+private void skipCustomData() throws IOException {
+    int oldHandle = passHandle;
+    for (; ; ) {
+        if (bin.getBlockDataMode()) {
+            bin.skipBlockData();
+            bin.setBlockDataMode(false);
+        }
+        switch(bin.peekByte()) {
+            case TC_BLOCKDATA:
+            case TC_BLOCKDATALONG:
+                bin.setBlockDataMode(true);
+                break;
+            case TC_ENDBLOCKDATA:
+                bin.readByte();
+                passHandle = oldHandle;
+                return;
+            default:
+                readObject0(Object.class, false);
+                break;
+        }
+    }
+}

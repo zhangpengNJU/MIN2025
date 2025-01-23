@@ -1,0 +1,28 @@
+/**
+ * Returns a {@code Collector} which performs a reduction of its
+ * input elements under a specified {@code BinaryOperator} using the
+ * provided identity.
+ *
+ * @apiNote
+ * The {@code reducing()} collectors are most useful when used in a
+ * multi-level reduction, downstream of {@code groupingBy} or
+ * {@code partitioningBy}.  To perform a simple reduction on a stream,
+ * use {@link Stream#reduce(Object, BinaryOperator)}} instead.
+ *
+ * @param <T> element type for the input and output of the reduction
+ * @param identity the identity value for the reduction (also, the value
+ *                 that is returned when there are no input elements)
+ * @param op a {@code BinaryOperator<T>} used to reduce the input elements
+ * @return a {@code Collector} which implements the reduction operation
+ *
+ * @see #reducing(BinaryOperator)
+ * @see #reducing(Object, Function, BinaryOperator)
+ */
+public static <T> Collector<T, ?, T> reducing(T identity, BinaryOperator<T> op) {
+    return new CollectorImpl<>(boxSupplier(identity), (a, t) -> {
+        a[0] = op.apply(a[0], t);
+    }, (a, b) -> {
+        a[0] = op.apply(a[0], b[0]);
+        return a;
+    }, a -> a[0], CH_NOID);
+}

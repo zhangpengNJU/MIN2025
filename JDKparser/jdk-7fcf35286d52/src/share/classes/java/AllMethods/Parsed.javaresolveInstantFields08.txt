@@ -1,0 +1,6 @@
+private void resolveInstantFields0(ZoneId selectedZone) {
+    Instant instant = Instant.ofEpochSecond(fieldValues.remove(INSTANT_SECONDS));
+    ChronoZonedDateTime<?> zdt = chrono.zonedDateTime(instant, selectedZone);
+    updateCheckConflict(zdt.toLocalDate());
+    updateCheckConflict(INSTANT_SECONDS, SECOND_OF_DAY, (long) zdt.toLocalTime().toSecondOfDay());
+}

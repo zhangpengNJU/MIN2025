@@ -1,0 +1,57 @@
+/**
+ * Adds the property descriptor to the indexedproperty descriptor only if the
+ * types are the same.
+ *
+ * The most specific property descriptor will take precedence.
+ */
+private PropertyDescriptor mergePropertyDescriptor(IndexedPropertyDescriptor ipd, PropertyDescriptor pd) {
+    PropertyDescriptor result = null;
+    Class<?> propType = pd.getPropertyType();
+    Class<?> ipropType = ipd.getIndexedPropertyType();
+    if (propType.isArray() && propType.getComponentType() == ipropType) {
+        if (pd.getClass0().isAssignableFrom(ipd.getClass0())) {
+            result = new IndexedPropertyDescriptor(pd, ipd);
+        } else {
+            result = new IndexedPropertyDescriptor(ipd, pd);
+        }
+    } else if ((ipd.getReadMethod() == null) && (ipd.getWriteMethod() == null)) {
+        if (pd.getClass0().isAssignableFrom(ipd.getClass0())) {
+            result = new PropertyDescriptor(pd, ipd);
+        } else {
+            result = new PropertyDescriptor(ipd, pd);
+        }
+    } else {
+        // Cannot merge the pd because of type mismatch
+        // Return the most specific pd
+        if (pd.getClass0().isAssignableFrom(ipd.getClass0())) {
+            result = ipd;
+        } else {
+            result = pd;
+            // Try to add methods which may have been lost in the type change
+            // See 4168833
+            Method write = result.getWriteMethod();
+            Method read = result.getReadMethod();
+            if (read == null && write != null) {
+                read = findMethod(result.getClass0(), GET_PREFIX + NameGenerator.capitalize(result.getName()), 0);
+                if (read != null) {
+                    try {
+                        result.setReadMethod(read);
+                    } catch (IntrospectionException ex) {
+                    // no consequences for failure.
+                    }
+                }
+            }
+            if (write == null && read != null) {
+                write = findMethod(result.getClass0(), SET_PREFIX + NameGenerator.capitalize(result.getName()), 1, new Class<?>[] { FeatureDescriptor.getReturnType(result.getClass0(), read) });
+                if (write != null) {
+                    try {
+                        result.setWriteMethod(write);
+                    } catch (IntrospectionException ex) {
+                    // no consequences for failure.
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}

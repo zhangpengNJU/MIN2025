@@ -1,0 +1,78 @@
+/**
+ * Constructs an ICC_Profile corresponding to one of the specific color
+ * spaces defined by the ColorSpace class (for example CS_sRGB).
+ * Throws an IllegalArgumentException if cspace is not one of the
+ * defined color spaces.
+ *
+ * @param cspace the type of color space to create a profile for.
+ * The specified type is one of the color
+ * space constants defined in the  <CODE>ColorSpace</CODE> class.
+ *
+ * @return an <code>ICC_Profile</code> object corresponding to
+ *          the specified <code>ColorSpace</code> type.
+ * @exception IllegalArgumentException If <CODE>cspace</CODE> is not
+ * one of the predefined color space types.
+ */
+public static ICC_Profile getInstance(int cspace) {
+    ICC_Profile thisProfile = null;
+    String fileName;
+    switch(cspace) {
+        case ColorSpace.CS_sRGB:
+            synchronized (ICC_Profile.class) {
+                if (sRGBprofile == null) {
+                    /*
+                     * Deferral is only used for standard profiles.
+                     * Enabling the appropriate access privileges is handled
+                     * at a lower level.
+                     */
+                    ProfileDeferralInfo pInfo = new ProfileDeferralInfo("sRGB.pf", ColorSpace.TYPE_RGB, 3, CLASS_DISPLAY);
+                    sRGBprofile = getDeferredInstance(pInfo);
+                }
+                thisProfile = sRGBprofile;
+            }
+            break;
+        case ColorSpace.CS_CIEXYZ:
+            synchronized (ICC_Profile.class) {
+                if (XYZprofile == null) {
+                    ProfileDeferralInfo pInfo = new ProfileDeferralInfo("CIEXYZ.pf", ColorSpace.TYPE_XYZ, 3, CLASS_DISPLAY);
+                    XYZprofile = getDeferredInstance(pInfo);
+                }
+                thisProfile = XYZprofile;
+            }
+            break;
+        case ColorSpace.CS_PYCC:
+            synchronized (ICC_Profile.class) {
+                if (PYCCprofile == null) {
+                    if (standardProfileExists("PYCC.pf")) {
+                        ProfileDeferralInfo pInfo = new ProfileDeferralInfo("PYCC.pf", ColorSpace.TYPE_3CLR, 3, CLASS_DISPLAY);
+                        PYCCprofile = getDeferredInstance(pInfo);
+                    } else {
+                        throw new IllegalArgumentException("Can't load standard profile: PYCC.pf");
+                    }
+                }
+                thisProfile = PYCCprofile;
+            }
+            break;
+        case ColorSpace.CS_GRAY:
+            synchronized (ICC_Profile.class) {
+                if (GRAYprofile == null) {
+                    ProfileDeferralInfo pInfo = new ProfileDeferralInfo("GRAY.pf", ColorSpace.TYPE_GRAY, 1, CLASS_DISPLAY);
+                    GRAYprofile = getDeferredInstance(pInfo);
+                }
+                thisProfile = GRAYprofile;
+            }
+            break;
+        case ColorSpace.CS_LINEAR_RGB:
+            synchronized (ICC_Profile.class) {
+                if (LINEAR_RGBprofile == null) {
+                    ProfileDeferralInfo pInfo = new ProfileDeferralInfo("LINEAR_RGB.pf", ColorSpace.TYPE_RGB, 3, CLASS_DISPLAY);
+                    LINEAR_RGBprofile = getDeferredInstance(pInfo);
+                }
+                thisProfile = LINEAR_RGBprofile;
+            }
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown color space");
+    }
+    return thisProfile;
+}

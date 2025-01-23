@@ -1,0 +1,10 @@
+private static LambdaForm preparedFieldLambdaForm(byte formOp, boolean isVolatile, Class<?> ftype) {
+    int afIndex = afIndex(formOp, isVolatile, ftypeKind(ftype));
+    LambdaForm lform = ACCESSOR_FORMS[afIndex];
+    if (lform != null)
+        return lform;
+    lform = makePreparedFieldLambdaForm(formOp, isVolatile, ftypeKind(ftype));
+    // don't bother with a CAS
+    ACCESSOR_FORMS[afIndex] = lform;
+    return lform;
+}

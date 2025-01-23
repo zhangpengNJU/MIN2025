@@ -1,0 +1,23 @@
+@Override
+public final LongStream filter(LongPredicate predicate) {
+    Objects.requireNonNull(predicate);
+    return new StatelessOp<Long>(this, StreamShape.LONG_VALUE, StreamOpFlag.NOT_SIZED) {
+
+        @Override
+        Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedLong<Long>(sink) {
+
+                @Override
+                public void begin(long size) {
+                    downstream.begin(-1);
+                }
+
+                @Override
+                public void accept(long t) {
+                    if (predicate.test(t))
+                        downstream.accept(t);
+                }
+            };
+        }
+    };
+}

@@ -1,0 +1,71 @@
+/**
+ * Writes given array object to stream.
+ */
+private void writeArray(Object array, ObjectStreamClass desc, boolean unshared) throws IOException {
+    bout.writeByte(TC_ARRAY);
+    writeClassDesc(desc, false);
+    handles.assign(unshared ? null : array);
+    Class<?> ccl = desc.forClass().getComponentType();
+    if (ccl.isPrimitive()) {
+        if (ccl == Integer.TYPE) {
+            int[] ia = (int[]) array;
+            bout.writeInt(ia.length);
+            bout.writeInts(ia, 0, ia.length);
+        } else if (ccl == Byte.TYPE) {
+            byte[] ba = (byte[]) array;
+            bout.writeInt(ba.length);
+            bout.write(ba, 0, ba.length, true);
+        } else if (ccl == Long.TYPE) {
+            long[] ja = (long[]) array;
+            bout.writeInt(ja.length);
+            bout.writeLongs(ja, 0, ja.length);
+        } else if (ccl == Float.TYPE) {
+            float[] fa = (float[]) array;
+            bout.writeInt(fa.length);
+            bout.writeFloats(fa, 0, fa.length);
+        } else if (ccl == Double.TYPE) {
+            double[] da = (double[]) array;
+            bout.writeInt(da.length);
+            bout.writeDoubles(da, 0, da.length);
+        } else if (ccl == Short.TYPE) {
+            short[] sa = (short[]) array;
+            bout.writeInt(sa.length);
+            bout.writeShorts(sa, 0, sa.length);
+        } else if (ccl == Character.TYPE) {
+            char[] ca = (char[]) array;
+            bout.writeInt(ca.length);
+            bout.writeChars(ca, 0, ca.length);
+        } else if (ccl == Boolean.TYPE) {
+            boolean[] za = (boolean[]) array;
+            bout.writeInt(za.length);
+            bout.writeBooleans(za, 0, za.length);
+        } else {
+            throw new InternalError();
+        }
+    } else {
+        Object[] objs = (Object[]) array;
+        int len = objs.length;
+        bout.writeInt(len);
+        if (extendedDebugInfo) {
+            debugInfoStack.push("array (class \"" + array.getClass().getName() + "\", size: " + len + ")");
+        }
+        try {
+            for (int i = 0; i < len; i++) {
+                if (extendedDebugInfo) {
+                    debugInfoStack.push("element of array (index: " + i + ")");
+                }
+                try {
+                    writeObject0(objs[i], false);
+                } finally {
+                    if (extendedDebugInfo) {
+                        debugInfoStack.pop();
+                    }
+                }
+            }
+        } finally {
+            if (extendedDebugInfo) {
+                debugInfoStack.pop();
+            }
+        }
+    }
+}

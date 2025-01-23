@@ -1,0 +1,17 @@
+/**
+ * Returns SimpleImmutableEntry for results of findNear.
+ * @param key the key
+ * @param rel the relation -- OR'ed combination of EQ, LT, GT
+ * @return Entry fitting relation, or null if no such
+ */
+final AbstractMap.SimpleImmutableEntry<K, V> getNear(K key, int rel) {
+    Comparator<? super K> cmp = comparator;
+    for (; ; ) {
+        Node<K, V> n = findNear(key, rel, cmp);
+        if (n == null)
+            return null;
+        AbstractMap.SimpleImmutableEntry<K, V> e = n.createSnapshot();
+        if (e != null)
+            return e;
+    }
+}

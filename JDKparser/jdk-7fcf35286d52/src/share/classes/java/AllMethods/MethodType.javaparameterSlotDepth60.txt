@@ -1,0 +1,31 @@
+/**
+ * Reports the number of JVM stack slots which carry all parameters including and after
+ * the given position, which must be in the range of 0 to
+ * {@code parameterCount} inclusive.  Successive parameters are
+ * more shallowly stacked, and parameters are indexed in the bytecodes
+ * according to their trailing edge.  Thus, to obtain the depth
+ * in the outgoing call stack of parameter {@code N}, obtain
+ * the {@code parameterSlotDepth} of its trailing edge
+ * at position {@code N+1}.
+ * <p>
+ * Parameters of type {@code long} and {@code double} occupy
+ * two stack slots (for historical reasons) and all others occupy one.
+ * Therefore, the number returned is the number of arguments
+ * <em>including</em> and <em>after</em> the given parameter,
+ * <em>plus</em> the number of long or double arguments
+ * at or after after the argument for the given parameter.
+ * <p>
+ * This method is included for the benefit of applications that must
+ * generate bytecodes that process method handles and invokedynamic.
+ * @param num an index (zero-based, inclusive) within the parameter types
+ * @return the index of the (shallowest) JVM stack slot transmitting the
+ *         given parameter
+ * @throws IllegalArgumentException if {@code num} is negative or greater than {@code parameterCount()}
+ */
+/*non-public*/
+int parameterSlotDepth(int num) {
+    if (num < 0 || num > ptypes.length)
+        // force a range check
+        parameterType(num);
+    return form.parameterToArgSlot(num - 1);
+}

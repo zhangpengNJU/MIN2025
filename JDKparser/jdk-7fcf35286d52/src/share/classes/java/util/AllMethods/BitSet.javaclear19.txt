@@ -1,0 +1,17 @@
+/**
+ * Sets the bit specified by the index to {@code false}.
+ *
+ * @param  bitIndex the index of the bit to be cleared
+ * @throws IndexOutOfBoundsException if the specified index is negative
+ * @since  JDK1.0
+ */
+public void clear(int bitIndex) {
+    if (bitIndex < 0)
+        throw new IndexOutOfBoundsException("bitIndex < 0: " + bitIndex);
+    int wordIndex = wordIndex(bitIndex);
+    if (wordIndex >= wordsInUse)
+        return;
+    words[wordIndex] &= ~(1L << bitIndex);
+    recalculateWordsInUse();
+    checkInvariants();
+}

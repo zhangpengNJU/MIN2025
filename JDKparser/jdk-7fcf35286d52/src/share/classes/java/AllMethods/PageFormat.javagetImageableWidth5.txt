@@ -1,0 +1,15 @@
+/**
+ * Returns the width, in 1/72nds of an inch, of the imageable
+ * area of the page. This method takes into account the orientation
+ * of the page.
+ * @return the width of the page.
+ */
+public double getImageableWidth() {
+    double width;
+    if (getOrientation() == PORTRAIT) {
+        width = mPaper.getImageableWidth();
+    } else {
+        width = mPaper.getImageableHeight();
+    }
+    return width;
+}

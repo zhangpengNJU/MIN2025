@@ -1,0 +1,61 @@
+/**
+ * Adds a <code>Rectangle</code> to this <code>Rectangle</code>.
+ * The resulting <code>Rectangle</code> is the union of the two
+ * rectangles.
+ * <p>
+ * If either {@code Rectangle} has any dimension less than 0, the
+ * result will have the dimensions of the other {@code Rectangle}.
+ * If both {@code Rectangle}s have at least one dimension less
+ * than 0, the result will have at least one dimension less than 0.
+ * <p>
+ * If either {@code Rectangle} has one or both dimensions equal
+ * to 0, the result along those axes with 0 dimensions will be
+ * equivalent to the results obtained by adding the corresponding
+ * origin coordinate to the result rectangle along that axis,
+ * similar to the operation of the {@link #add(Point)} method,
+ * but contribute no further dimension beyond that.
+ * <p>
+ * If the resulting {@code Rectangle} would have a dimension
+ * too large to be expressed as an {@code int}, the result
+ * will have a dimension of {@code Integer.MAX_VALUE} along
+ * that dimension.
+ * @param  r the specified <code>Rectangle</code>
+ */
+public void add(Rectangle r) {
+    long tx2 = this.width;
+    long ty2 = this.height;
+    if ((tx2 | ty2) < 0) {
+        reshape(r.x, r.y, r.width, r.height);
+    }
+    long rx2 = r.width;
+    long ry2 = r.height;
+    if ((rx2 | ry2) < 0) {
+        return;
+    }
+    int tx1 = this.x;
+    int ty1 = this.y;
+    tx2 += tx1;
+    ty2 += ty1;
+    int rx1 = r.x;
+    int ry1 = r.y;
+    rx2 += rx1;
+    ry2 += ry1;
+    if (tx1 > rx1)
+        tx1 = rx1;
+    if (ty1 > ry1)
+        ty1 = ry1;
+    if (tx2 < rx2)
+        tx2 = rx2;
+    if (ty2 < ry2)
+        ty2 = ry2;
+    tx2 -= tx1;
+    ty2 -= ty1;
+    // tx2,ty2 will never underflow since both original
+    // rectangles were non-empty
+    // they might overflow, though...
+    if (tx2 > Integer.MAX_VALUE)
+        tx2 = Integer.MAX_VALUE;
+    if (ty2 > Integer.MAX_VALUE)
+        ty2 = Integer.MAX_VALUE;
+    reshape(tx1, ty1, (int) tx2, (int) ty2);
+}

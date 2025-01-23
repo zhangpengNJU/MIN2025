@@ -1,0 +1,9 @@
+/**
+ * Returns true if represented class is serializable (but not
+ * externalizable) and defines a conformant readObjectNoData method.
+ * Otherwise, returns false.
+ */
+boolean hasReadObjectNoDataMethod() {
+    requireInitialized();
+    return (readObjectNoDataMethod != null);
+}

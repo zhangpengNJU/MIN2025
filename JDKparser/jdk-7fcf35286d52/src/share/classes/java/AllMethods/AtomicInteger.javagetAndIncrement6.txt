@@ -1,0 +1,8 @@
+/**
+ * Atomically increments by one the current value.
+ *
+ * @return the previous value
+ */
+public final int getAndIncrement() {
+    return unsafe.getAndAddInt(this, valueOffset, 1);
+}

@@ -1,0 +1,20 @@
+/**
+ * Compares two activation ids for content equality.
+ * Returns true if both of the following conditions are true:
+ * 1) the unique identifiers equivalent (by content), and
+ * 2) the activator specified in each identifier
+ *    refers to the same remote object.
+ *
+ * @param   obj     the Object to compare with
+ * @return  true if these Objects are equal; false otherwise.
+ * @see             java.util.Hashtable
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof ActivationID) {
+        ActivationID id = (ActivationID) obj;
+        return (uid.equals(id.uid) && activator.equals(id.activator));
+    } else {
+        return false;
+    }
+}

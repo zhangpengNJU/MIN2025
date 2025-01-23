@@ -1,0 +1,70 @@
+/**
+ * Reads (or attempts to skip, if obj is null or is tagged with a
+ * ClassNotFoundException) instance data for each serializable class of
+ * object in stream, from superclass to subclass.  Expects that passHandle
+ * is set to obj's handle before this method is called.
+ */
+private void readSerialData(Object obj, ObjectStreamClass desc) throws IOException {
+    ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();
+    for (int i = 0; i < slots.length; i++) {
+        ObjectStreamClass slotDesc = slots[i].desc;
+        if (slots[i].hasData) {
+            if (obj == null || handles.lookupException(passHandle) != null) {
+                // skip field values
+                defaultReadFields(null, slotDesc);
+            } else if (slotDesc.hasReadObjectMethod()) {
+                ThreadDeath t = null;
+                boolean reset = false;
+                SerialCallbackContext oldContext = curContext;
+                if (oldContext != null)
+                    oldContext.check();
+                try {
+                    curContext = new SerialCallbackContext(obj, slotDesc);
+                    bin.setBlockDataMode(true);
+                    slotDesc.invokeReadObject(obj, this);
+                } catch (ClassNotFoundException ex) {
+                    /*
+                         * In most cases, the handle table has already
+                         * propagated a CNFException to passHandle at this
+                         * point; this mark call is included to address cases
+                         * where the custom readObject method has cons'ed and
+                         * thrown a new CNFException of its own.
+                         */
+                    handles.markException(passHandle, ex);
+                } finally {
+                    do {
+                        try {
+                            curContext.setUsed();
+                            if (oldContext != null)
+                                oldContext.check();
+                            curContext = oldContext;
+                            reset = true;
+                        } catch (ThreadDeath x) {
+                            // defer until reset is true
+                            t = x;
+                        }
+                    } while (!reset);
+                    if (t != null)
+                        throw t;
+                }
+                /*
+                     * defaultDataEnd may have been set indirectly by custom
+                     * readObject() method when calling defaultReadObject() or
+                     * readFields(); clear it to restore normal read behavior.
+                     */
+                defaultDataEnd = false;
+            } else {
+                defaultReadFields(obj, slotDesc);
+            }
+            if (slotDesc.hasWriteObjectData()) {
+                skipCustomData();
+            } else {
+                bin.setBlockDataMode(false);
+            }
+        } else {
+            if (obj != null && slotDesc.hasReadObjectNoDataMethod() && handles.lookupException(passHandle) == null) {
+                slotDesc.invokeReadObjectNoData(obj);
+            }
+        }
+    }
+}

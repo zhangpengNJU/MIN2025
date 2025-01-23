@@ -1,0 +1,8 @@
+/**
+ * Check type adaptability for return types --
+ * special handling of void type) and parameterized fromType
+ * @return True if 'fromType' can be converted to 'toType'
+ */
+private boolean isAdaptableToAsReturn(Class<?> fromType, Class<?> toType) {
+    return toType.equals(void.class) || !fromType.equals(void.class) && isAdaptableTo(fromType, toType, false);
+}

@@ -1,0 +1,20 @@
+/**
+ * Solves the quadratic whose coefficients are in the <code>eqn</code>
+ * array and places the non-complex roots back into the same array,
+ * returning the number of roots.  The quadratic solved is represented
+ * by the equation:
+ * <pre>
+ *     eqn = {C, B, A};
+ *     ax^2 + bx + c = 0
+ * </pre>
+ * A return value of <code>-1</code> is used to distinguish a constant
+ * equation, which might be always 0 or never 0, from an equation that
+ * has no zeroes.
+ * @param eqn the array that contains the quadratic coefficients
+ * @return the number of roots, or <code>-1</code> if the equation is
+ *          a constant
+ * @since 1.2
+ */
+public static int solveQuadratic(double[] eqn) {
+    return solveQuadratic(eqn, eqn);
+}

@@ -1,0 +1,29 @@
+/**
+ * Implements the "Before_Dot" condition
+ *
+ * Specification: C is followed by <code>U+0307 COMBINING DOT ABOVE</code>.
+ * Any sequence of characters with a combining class that is
+ * neither 0 nor 230 may intervene between the current character
+ * and the combining dot above.
+ *
+ * Regular Expression:
+ *   After C: ([{cc!=230}&{cc!=0}])*[\u0307]
+ */
+private static boolean isBeforeDot(String src, int index) {
+    int ch;
+    int cc;
+    int len = src.length();
+    // Look for a following COMBINING DOT ABOVE
+    for (int i = index + Character.charCount(src.codePointAt(index)); i < len; i += Character.charCount(ch)) {
+        ch = src.codePointAt(i);
+        if (ch == '\u0307') {
+            return true;
+        } else {
+            cc = Normalizer.getCombiningClass(ch);
+            if ((cc == 0) || (cc == COMBINING_CLASS_ABOVE)) {
+                return false;
+            }
+        }
+    }
+    return false;
+}

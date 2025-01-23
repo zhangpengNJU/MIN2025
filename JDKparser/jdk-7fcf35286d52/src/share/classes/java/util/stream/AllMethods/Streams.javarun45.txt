@@ -1,0 +1,17 @@
+@Override
+public void run() {
+    try {
+        a.close();
+    } catch (Throwable e1) {
+        try {
+            b.close();
+        } catch (Throwable e2) {
+            try {
+                e1.addSuppressed(e2);
+            } catch (Throwable ignore) {
+            }
+        }
+        throw e1;
+    }
+    b.close();
+}

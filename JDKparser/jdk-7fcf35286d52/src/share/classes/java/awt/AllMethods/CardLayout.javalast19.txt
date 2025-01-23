@@ -1,0 +1,23 @@
+/**
+ * Flips to the last card of the container.
+ * @param     parent   the parent container in which to do the layout
+ * @see       java.awt.CardLayout#first
+ */
+public void last(Container parent) {
+    synchronized (parent.getTreeLock()) {
+        checkLayout(parent);
+        int ncomponents = parent.getComponentCount();
+        for (int i = 0; i < ncomponents; i++) {
+            Component comp = parent.getComponent(i);
+            if (comp.isVisible()) {
+                comp.setVisible(false);
+                break;
+            }
+        }
+        if (ncomponents > 0) {
+            currentCard = ncomponents - 1;
+            parent.getComponent(currentCard).setVisible(true);
+            parent.validate();
+        }
+    }
+}

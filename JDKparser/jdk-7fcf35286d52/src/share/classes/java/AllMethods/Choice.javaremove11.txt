@@ -1,0 +1,20 @@
+/**
+ * Removes an item from the choice menu
+ * at the specified position.  If the item
+ * being removed is the currently selected item,
+ * then the first item in the choice becomes the
+ * selected item.  Otherwise, the currently selected
+ * item remains selected (and the selected index is
+ * updated accordingly).
+ * @param      position the position of the item
+ * @throws IndexOutOfBoundsException if the specified
+ *          position is out of bounds
+ * @since      JDK1.1
+ */
+public void remove(int position) {
+    synchronized (this) {
+        removeNoInvalidate(position);
+    }
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

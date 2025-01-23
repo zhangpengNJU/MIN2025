@@ -1,0 +1,7 @@
+static ChronoZonedDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    ChronoLocalDateTime<?> dateTime = (ChronoLocalDateTime<?>) in.readObject();
+    ZoneOffset offset = (ZoneOffset) in.readObject();
+    ZoneId zone = (ZoneId) in.readObject();
+    return dateTime.atZone(offset).withZoneSameLocal(zone);
+// TODO: ZDT uses ofLenient()
+}

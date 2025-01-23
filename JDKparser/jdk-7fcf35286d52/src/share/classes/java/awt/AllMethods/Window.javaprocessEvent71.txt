@@ -1,0 +1,35 @@
+/**
+ * Processes events on this window. If the event is an
+ * {@code WindowEvent}, it invokes the
+ * {@code processWindowEvent} method, else it invokes its
+ * superclass's {@code processEvent}.
+ * <p>Note that if the event parameter is {@code null}
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the event
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof WindowEvent) {
+        switch(e.getID()) {
+            case WindowEvent.WINDOW_OPENED:
+            case WindowEvent.WINDOW_CLOSING:
+            case WindowEvent.WINDOW_CLOSED:
+            case WindowEvent.WINDOW_ICONIFIED:
+            case WindowEvent.WINDOW_DEICONIFIED:
+            case WindowEvent.WINDOW_ACTIVATED:
+            case WindowEvent.WINDOW_DEACTIVATED:
+                processWindowEvent((WindowEvent) e);
+                break;
+            case WindowEvent.WINDOW_GAINED_FOCUS:
+            case WindowEvent.WINDOW_LOST_FOCUS:
+                processWindowFocusEvent((WindowEvent) e);
+                break;
+            case WindowEvent.WINDOW_STATE_CHANGED:
+                processWindowStateEvent((WindowEvent) e);
+                break;
+        }
+        return;
+    }
+    super.processEvent(e);
+}

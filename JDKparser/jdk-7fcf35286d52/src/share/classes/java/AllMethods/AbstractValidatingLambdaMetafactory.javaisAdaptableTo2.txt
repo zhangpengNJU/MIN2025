@@ -1,0 +1,39 @@
+/**
+ * Check type adaptability for parameter types.
+ * @param fromType Type to convert from
+ * @param toType Type to convert to
+ * @param strict If true, do strict checks, else allow that fromType may be parameterized
+ * @return True if 'fromType' can be passed to an argument of 'toType'
+ */
+private boolean isAdaptableTo(Class<?> fromType, Class<?> toType, boolean strict) {
+    if (fromType.equals(toType)) {
+        return true;
+    }
+    if (fromType.isPrimitive()) {
+        Wrapper wfrom = forPrimitiveType(fromType);
+        if (toType.isPrimitive()) {
+            // both are primitive: widening
+            Wrapper wto = forPrimitiveType(toType);
+            return wto.isConvertibleFrom(wfrom);
+        } else {
+            // from primitive to reference: boxing
+            return toType.isAssignableFrom(wfrom.wrapperType());
+        }
+    } else {
+        if (toType.isPrimitive()) {
+            // from reference to primitive: unboxing
+            Wrapper wfrom;
+            if (isWrapperType(fromType) && (wfrom = forWrapperType(fromType)).primitiveType().isPrimitive()) {
+                // fromType is a primitive wrapper; unbox+widen
+                Wrapper wto = forPrimitiveType(toType);
+                return wto.isConvertibleFrom(wfrom);
+            } else {
+                // must be convertible to primitive
+                return !strict;
+            }
+        } else {
+            // both are reference types: fromType should be a superclass of toType.
+            return !strict || toType.isAssignableFrom(fromType);
+        }
+    }
+}

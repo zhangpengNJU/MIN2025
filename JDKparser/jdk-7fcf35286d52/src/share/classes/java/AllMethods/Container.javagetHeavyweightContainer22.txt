@@ -1,0 +1,13 @@
+/**
+ * Returns closest heavyweight component to this container. If this container is heavyweight
+ * returns this.
+ * @since 1.5
+ */
+Container getHeavyweightContainer() {
+    checkTreeLock();
+    if (peer != null && !(peer instanceof LightweightPeer)) {
+        return this;
+    } else {
+        return getNativeContainer();
+    }
+}

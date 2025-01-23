@@ -1,0 +1,18 @@
+/**
+ * Reads a property list (key and element pairs) from the input stream.
+ *
+ * @param inStream   the input stream.
+ * @exception  IOException  if an error occurred when reading from the
+ *               input stream.
+ * @see java.util.Properties#load
+ */
+@Override
+public synchronized void load(InputStream inStream) throws IOException {
+    check("putProviderProperty." + name);
+    if (debug != null) {
+        debug.println("Load " + name + " provider properties");
+    }
+    Properties tempProperties = new Properties();
+    tempProperties.load(inStream);
+    implPutAll(tempProperties);
+}

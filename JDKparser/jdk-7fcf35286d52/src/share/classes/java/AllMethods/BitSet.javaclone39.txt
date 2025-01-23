@@ -1,0 +1,21 @@
+/**
+ * Cloning this {@code BitSet} produces a new {@code BitSet}
+ * that is equal to it.
+ * The clone of the bit set is another bit set that has exactly the
+ * same bits set to {@code true} as this bit set.
+ *
+ * @return a clone of this bit set
+ * @see    #size()
+ */
+public Object clone() {
+    if (!sizeIsSticky)
+        trimToSize();
+    try {
+        BitSet result = (BitSet) super.clone();
+        result.words = words.clone();
+        result.checkInvariants();
+        return result;
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Determines if the specified character (Unicode code point) is a
+ * Unicode space character.  A character is considered to be a
+ * space character if and only if it is specified to be a space
+ * character by the Unicode Standard. This method returns true if
+ * the character's general category type is any of the following:
+ *
+ * <ul>
+ * <li> {@link #SPACE_SEPARATOR}
+ * <li> {@link #LINE_SEPARATOR}
+ * <li> {@link #PARAGRAPH_SEPARATOR}
+ * </ul>
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is a space character;
+ *          {@code false} otherwise.
+ * @see     Character#isWhitespace(int)
+ * @since   1.5
+ */
+public static boolean isSpaceChar(int codePoint) {
+    return ((((1 << Character.SPACE_SEPARATOR) | (1 << Character.LINE_SEPARATOR) | (1 << Character.PARAGRAPH_SEPARATOR)) >> getType(codePoint)) & 1) != 0;
+}

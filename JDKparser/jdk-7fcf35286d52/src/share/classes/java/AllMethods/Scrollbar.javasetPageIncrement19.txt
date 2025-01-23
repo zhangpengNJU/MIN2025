@@ -1,0 +1,16 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setBlockIncrement()</code>.
+ */
+@Deprecated
+public synchronized void setPageIncrement(int v) {
+    int tmp = (v < 1) ? 1 : v;
+    if (pageIncrement == tmp) {
+        return;
+    }
+    pageIncrement = tmp;
+    ScrollbarPeer peer = (ScrollbarPeer) this.peer;
+    if (peer != null) {
+        peer.setPageIncrement(pageIncrement);
+    }
+}

@@ -1,0 +1,32 @@
+/**
+ * Tests if the specified coordinates are inside the closed
+ * boundary of the specified {@link PathIterator}.
+ * <p>
+ * This method provides a basic facility for implementors of
+ * the {@link Shape} interface to implement support for the
+ * {@link Shape#contains(double, double)} method.
+ *
+ * @param pi the specified {@code PathIterator}
+ * @param x the specified X coordinate
+ * @param y the specified Y coordinate
+ * @return {@code true} if the specified coordinates are inside the
+ *         specified {@code PathIterator}; {@code false} otherwise
+ * @since 1.6
+ */
+public static boolean contains(PathIterator pi, double x, double y) {
+    if (x * 0.0 + y * 0.0 == 0.0) {
+        /* N * 0.0 is 0.0 only if N is finite.
+             * Here we know that both x and y are finite.
+             */
+        int mask = (pi.getWindingRule() == WIND_NON_ZERO ? -1 : 1);
+        int cross = Curve.pointCrossingsForPath(pi, x, y);
+        return ((cross & mask) != 0);
+    } else {
+        /* Either x or y was infinite or NaN.
+             * A NaN always produces a negative response to any test
+             * and Infinity values cannot be "inside" any path so
+             * they should return false as well.
+             */
+        return false;
+    }
+}

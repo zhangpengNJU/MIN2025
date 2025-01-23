@@ -1,0 +1,18 @@
+/**
+ * Determines where the specified {@link Point2D} lies with
+ * respect to this <code>Rectangle2D</code>.
+ * This method computes a binary OR of the appropriate mask values
+ * indicating, for each side of this <code>Rectangle2D</code>,
+ * whether or not the specified <code>Point2D</code> is on the same
+ * side of the edge as the rest of this <code>Rectangle2D</code>.
+ * @param p the specified <code>Point2D</code>
+ * @return the logical OR of all appropriate out codes.
+ * @see #OUT_LEFT
+ * @see #OUT_TOP
+ * @see #OUT_RIGHT
+ * @see #OUT_BOTTOM
+ * @since 1.2
+ */
+public int outcode(Point2D p) {
+    return outcode(p.getX(), p.getY());
+}

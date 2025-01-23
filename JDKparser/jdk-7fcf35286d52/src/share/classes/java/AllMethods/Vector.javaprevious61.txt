@@ -1,0 +1,10 @@
+public E previous() {
+    synchronized (Vector.this) {
+        checkForComodification();
+        int i = cursor - 1;
+        if (i < 0)
+            throw new NoSuchElementException();
+        cursor = i;
+        return elementData(lastRet = i);
+    }
+}

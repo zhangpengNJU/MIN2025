@@ -1,0 +1,7 @@
+private static synchronized Debug getDebug() {
+    if (!debugInit) {
+        debug = Debug.getInstance("access");
+        debugInit = true;
+    }
+    return debug;
+}

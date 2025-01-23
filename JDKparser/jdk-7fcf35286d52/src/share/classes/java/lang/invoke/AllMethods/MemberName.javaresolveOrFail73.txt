@@ -1,0 +1,16 @@
+/**
+ * Produce a resolved version of the given member.
+ *  Super types are searched (for inherited members) if {@code searchSupers} is true.
+ *  Access checking is performed on behalf of the given {@code lookupClass}.
+ *  If lookup fails or access is not permitted, a {@linkplain ReflectiveOperationException} is thrown.
+ *  Otherwise a fresh copy of the given member is returned, with modifier bits filled in.
+ */
+public <NoSuchMemberException extends ReflectiveOperationException> MemberName resolveOrFail(byte refKind, MemberName m, Class<?> lookupClass, Class<NoSuchMemberException> nsmClass) throws IllegalAccessException, NoSuchMemberException {
+    MemberName result = resolve(refKind, m, lookupClass);
+    if (result.isResolved())
+        return result;
+    ReflectiveOperationException ex = result.makeAccessException();
+    if (ex instanceof IllegalAccessException)
+        throw (IllegalAccessException) ex;
+    throw nsmClass.cast(ex);
+}

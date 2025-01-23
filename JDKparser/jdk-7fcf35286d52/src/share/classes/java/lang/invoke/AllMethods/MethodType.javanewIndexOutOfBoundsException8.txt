@@ -1,0 +1,5 @@
+private static IndexOutOfBoundsException newIndexOutOfBoundsException(Object num) {
+    if (num instanceof Integer)
+        num = "bad index: " + num;
+    return new IndexOutOfBoundsException(num.toString());
+}

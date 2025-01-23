@@ -1,0 +1,38 @@
+/**
+ * Returns a new {@code BitSet} composed of bits from this {@code BitSet}
+ * from {@code fromIndex} (inclusive) to {@code toIndex} (exclusive).
+ *
+ * @param  fromIndex index of the first bit to include
+ * @param  toIndex index after the last bit to include
+ * @return a new {@code BitSet} from a range of this {@code BitSet}
+ * @throws IndexOutOfBoundsException if {@code fromIndex} is negative,
+ *         or {@code toIndex} is negative, or {@code fromIndex} is
+ *         larger than {@code toIndex}
+ * @since  1.4
+ */
+public BitSet get(int fromIndex, int toIndex) {
+    checkRange(fromIndex, toIndex);
+    checkInvariants();
+    int len = length();
+    // If no set bits in range return empty bitset
+    if (len <= fromIndex || fromIndex == toIndex)
+        return new BitSet(0);
+    // An optimization
+    if (toIndex > len)
+        toIndex = len;
+    BitSet result = new BitSet(toIndex - fromIndex);
+    int targetWords = wordIndex(toIndex - fromIndex - 1) + 1;
+    int sourceIndex = wordIndex(fromIndex);
+    boolean wordAligned = ((fromIndex & BIT_INDEX_MASK) == 0);
+    // Process all words but the last word
+    for (int i = 0; i < targetWords - 1; i++, sourceIndex++) result.words[i] = wordAligned ? words[sourceIndex] : (words[sourceIndex] >>> fromIndex) | (words[sourceIndex + 1] << -fromIndex);
+    // Process the last word
+    long lastWordMask = WORD_MASK >>> -toIndex;
+    result.words[targetWords - 1] = ((toIndex - 1) & BIT_INDEX_MASK) < (fromIndex & BIT_INDEX_MASK) ? /* straddles source words */
+    ((words[sourceIndex] >>> fromIndex) | (words[sourceIndex + 1] & lastWordMask) << -fromIndex) : ((words[sourceIndex] & lastWordMask) >>> fromIndex);
+    // Set wordsInUse correctly
+    result.wordsInUse = targetWords;
+    result.recalculateWordsInUse();
+    result.checkInvariants();
+    return result;
+}

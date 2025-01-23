@@ -1,0 +1,27 @@
+/**
+ * Returns whether the layout of Containers is validated dynamically
+ * during resizing, or statically, after resizing is complete.
+ * Note: this method returns the value that was set programmatically;
+ * it does not reflect support at the level of the operating system
+ * or window manager for dynamic layout on resizing, or the current
+ * operating system or window manager settings.  The OS/WM support can
+ * be queried using getDesktopProperty("awt.dynamicLayoutSupported").
+ *
+ * @return    true if validation of Containers is done dynamically,
+ *            false if validation is done after resizing is finished.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ *            returns true
+ * @see       #setDynamicLayout(boolean dynamic)
+ * @see       #isDynamicLayoutActive()
+ * @see       #getDesktopProperty(String propertyName)
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @since     1.4
+ */
+protected boolean isDynamicLayoutSet() throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    if (this != Toolkit.getDefaultToolkit()) {
+        return Toolkit.getDefaultToolkit().isDynamicLayoutSet();
+    } else {
+        return false;
+    }
+}

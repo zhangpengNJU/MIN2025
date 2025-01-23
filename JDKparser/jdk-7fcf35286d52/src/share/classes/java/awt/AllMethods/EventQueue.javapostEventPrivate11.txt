@@ -1,0 +1,30 @@
+/**
+ * Posts a 1.1-style event to the <code>EventQueue</code>.
+ * If there is an existing event on the queue with the same ID
+ * and event source, the source <code>Component</code>'s
+ * <code>coalesceEvents</code> method will be called.
+ *
+ * @param theEvent an instance of <code>java.awt.AWTEvent</code>,
+ *          or a subclass of it
+ */
+private final void postEventPrivate(AWTEvent theEvent) {
+    theEvent.isPosted = true;
+    pushPopLock.lock();
+    try {
+        if (nextQueue != null) {
+            // Forward the event to the top of EventQueue stack
+            nextQueue.postEventPrivate(theEvent);
+            return;
+        }
+        if (dispatchThread == null) {
+            if (theEvent.getSource() == AWTAutoShutdown.getInstance()) {
+                return;
+            } else {
+                initDispatchThread();
+            }
+        }
+        postEvent(theEvent, getPriority(theEvent));
+    } finally {
+        pushPopLock.unlock();
+    }
+}

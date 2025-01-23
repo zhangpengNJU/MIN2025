@@ -1,0 +1,38 @@
+void mixOnZOrderChanging(int oldZorder, int newZorder) {
+    synchronized (getTreeLock()) {
+        boolean becameHigher = newZorder < oldZorder;
+        Container parent = getContainer();
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; oldZorder=" + oldZorder + "; newZorder=" + newZorder + "; parent=" + parent);
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        if (isLightweight()) {
+            if (becameHigher) {
+                if (parent != null && isShowing()) {
+                    parent.recursiveSubtractAndApplyShape(getOpaqueShape(), getSiblingIndexBelow(), oldZorder);
+                }
+            } else {
+                if (parent != null) {
+                    parent.recursiveApplyCurrentShape(oldZorder, newZorder);
+                }
+            }
+        } else {
+            if (becameHigher) {
+                applyCurrentShape();
+            } else {
+                if (parent != null) {
+                    Region shape = getAppliedShape();
+                    for (int index = oldZorder; index < newZorder; index++) {
+                        Component c = parent.getComponent(index);
+                        if (c.isLightweight() && c.isShowing()) {
+                            shape = shape.getDifference(c.getOpaqueShape());
+                        }
+                    }
+                    applyCompoundShape(shape);
+                }
+            }
+        }
+    }
+}

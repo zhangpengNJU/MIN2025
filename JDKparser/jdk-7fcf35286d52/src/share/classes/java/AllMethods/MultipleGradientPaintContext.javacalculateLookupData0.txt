@@ -1,0 +1,63 @@
+/**
+ * This function is the meat of this class.  It calculates an array of
+ * gradient colors based on an array of fractions and color values at
+ * those fractions.
+ */
+private void calculateLookupData(Color[] colors) {
+    Color[] normalizedColors;
+    if (colorSpace == ColorSpaceType.LINEAR_RGB) {
+        // create a new colors array
+        normalizedColors = new Color[colors.length];
+        // convert the colors using the lookup table
+        for (int i = 0; i < colors.length; i++) {
+            int argb = colors[i].getRGB();
+            int a = argb >>> 24;
+            int r = SRGBtoLinearRGB[(argb >> 16) & 0xff];
+            int g = SRGBtoLinearRGB[(argb >> 8) & 0xff];
+            int b = SRGBtoLinearRGB[(argb) & 0xff];
+            normalizedColors[i] = new Color(r, g, b, a);
+        }
+    } else {
+        // we can just use this array by reference since we do not
+        // modify its values in the case of SRGB
+        normalizedColors = colors;
+    }
+    // this will store the intervals (distances) between gradient stops
+    normalizedIntervals = new float[fractions.length - 1];
+    // convert from fractions into intervals
+    for (int i = 0; i < normalizedIntervals.length; i++) {
+        // interval distance is equal to the difference in positions
+        normalizedIntervals[i] = this.fractions[i + 1] - this.fractions[i];
+    }
+    // initialize to be fully opaque for ANDing with colors
+    transparencyTest = 0xff000000;
+    // array of interpolation arrays
+    gradients = new int[normalizedIntervals.length][];
+    // find smallest interval
+    float Imin = 1;
+    for (int i = 0; i < normalizedIntervals.length; i++) {
+        Imin = (Imin > normalizedIntervals[i]) ? normalizedIntervals[i] : Imin;
+    }
+    // Estimate the size of the entire gradients array.
+    // This is to prevent a tiny interval from causing the size of array
+    // to explode.  If the estimated size is too large, break to using
+    // separate arrays for each interval, and using an indexing scheme at
+    // look-up time.
+    int estimatedSize = 0;
+    for (int i = 0; i < normalizedIntervals.length; i++) {
+        estimatedSize += (normalizedIntervals[i] / Imin) * GRADIENT_SIZE;
+    }
+    if (estimatedSize > MAX_GRADIENT_ARRAY_SIZE) {
+        // slow method
+        calculateMultipleArrayGradient(normalizedColors);
+    } else {
+        // fast method
+        calculateSingleArrayGradient(normalizedColors, Imin);
+    }
+    // use the most "economical" model
+    if ((transparencyTest >>> 24) == 0xff) {
+        model = xrgbmodel;
+    } else {
+        model = ColorModel.getRGBdefault();
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * default behavior is overridden in order to write the
+ * scope_ifname field as a String, rather than a NetworkInterface
+ * which is not serializable
+ */
+private synchronized void writeObject(ObjectOutputStream s) throws IOException {
+    String ifname = null;
+    if (holder6.scope_ifname != null) {
+        ifname = holder6.scope_ifname.getName();
+        holder6.scope_ifname_set = true;
+    }
+    ObjectOutputStream.PutField pfields = s.putFields();
+    pfields.put("ipaddress", holder6.ipaddress);
+    pfields.put("scope_id", holder6.scope_id);
+    pfields.put("scope_id_set", holder6.scope_id_set);
+    pfields.put("scope_ifname_set", holder6.scope_ifname_set);
+    pfields.put("ifname", ifname);
+    s.writeFields();
+}

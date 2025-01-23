@@ -1,0 +1,22 @@
+/**
+ * Creates a DataBuffer that corresponds to this
+ * SinglePixelPackedSampleModel.  The DataBuffer's data type and size
+ * will be consistent with this SinglePixelPackedSampleModel.  The
+ * DataBuffer will have a single bank.
+ */
+public DataBuffer createDataBuffer() {
+    DataBuffer dataBuffer = null;
+    int size = (int) getBufferSize();
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            dataBuffer = new DataBufferByte(size);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            dataBuffer = new DataBufferUShort(size);
+            break;
+        case DataBuffer.TYPE_INT:
+            dataBuffer = new DataBufferInt(size);
+            break;
+    }
+    return dataBuffer;
+}

@@ -1,0 +1,7 @@
+void writeExternal(ObjectOutput out) throws IOException {
+    // HijrahChronology is implicit in the Hijrah_DATE_TYPE
+    out.writeObject(getChronology());
+    out.writeInt(get(YEAR));
+    out.writeByte(get(MONTH_OF_YEAR));
+    out.writeByte(get(DAY_OF_MONTH));
+}

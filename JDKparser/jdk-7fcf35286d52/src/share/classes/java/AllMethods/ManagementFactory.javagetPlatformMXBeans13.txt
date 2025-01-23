@@ -1,0 +1,33 @@
+/**
+ * Returns the list of platform MXBeans implementing
+ * the given {@code mxbeanInterface} in the Java
+ * virtual machine.
+ * The returned list may contain zero, one, or more instances.
+ * The number of instances in the returned list is defined
+ * in the specification of the given management interface.
+ * The order is undefined and there is no guarantee that
+ * the list returned is in the same order as previous invocations.
+ *
+ * @param mxbeanInterface a management interface for a platform
+ *                        MXBean
+ * @param <T> an {@code mxbeanInterface} type parameter
+ *
+ * @return the list of platform MXBeans that implement
+ * {@code mxbeanInterface}.
+ *
+ * @throws IllegalArgumentException if {@code mxbeanInterface}
+ * is not a platform management interface.
+ *
+ * @since 1.7
+ */
+public static <T extends PlatformManagedObject> List<T> getPlatformMXBeans(Class<T> mxbeanInterface) {
+    PlatformComponent pc = PlatformComponent.getPlatformComponent(mxbeanInterface);
+    if (pc == null) {
+        T mbean = ExtendedPlatformComponent.getMXBean(mxbeanInterface);
+        if (mbean != null) {
+            return Collections.singletonList(mbean);
+        }
+        throw new IllegalArgumentException(mxbeanInterface.getName() + " is not a platform management interface");
+    }
+    return Collections.unmodifiableList(pc.getMXBeans(mxbeanInterface));
+}

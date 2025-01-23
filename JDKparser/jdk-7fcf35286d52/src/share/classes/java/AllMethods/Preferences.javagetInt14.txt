@@ -1,0 +1,31 @@
+/**
+ * Returns the int value represented by the string associated with the
+ * specified key in this preference node.  The string is converted to
+ * an integer as by {@link Integer#parseInt(String)}.  Returns the
+ * specified default if there is no value associated with the key,
+ * the backing store is inaccessible, or if
+ * <tt>Integer.parseInt(String)</tt> would throw a {@link
+ * NumberFormatException} if the associated value were passed.  This
+ * method is intended for use in conjunction with {@link #putInt}.
+ *
+ * <p>If the implementation supports <i>stored defaults</i> and such a
+ * default exists, is accessible, and could be converted to an int
+ * with <tt>Integer.parseInt</tt>, this int is returned in preference to
+ * the specified default.
+ *
+ * @param key key whose associated value is to be returned as an int.
+ * @param def the value to be returned in the event that this
+ *        preference node has no value associated with <tt>key</tt>
+ *        or the associated value cannot be interpreted as an int,
+ *        or the backing store is inaccessible.
+ * @return the int value represented by the string associated with
+ *         <tt>key</tt> in this preference node, or <tt>def</tt> if the
+ *         associated value does not exist or cannot be interpreted as
+ *         an int.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.
+ * @see #putInt(String,int)
+ * @see #get(String,String)
+ */
+public abstract int getInt(String key, int def);

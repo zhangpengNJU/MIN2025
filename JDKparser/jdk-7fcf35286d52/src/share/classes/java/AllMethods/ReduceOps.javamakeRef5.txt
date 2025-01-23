@@ -1,0 +1,50 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a functional reduce on
+ * reference values producing an optional reference result.
+ *
+ * @param <T> The type of the input elements, and the type of the result
+ * @param operator The reducing function
+ * @return A {@code TerminalOp} implementing the reduction
+ */
+public static <T> TerminalOp<T, Optional<T>> makeRef(BinaryOperator<T> operator) {
+    Objects.requireNonNull(operator);
+    class ReducingSink implements AccumulatingSink<T, Optional<T>, ReducingSink> {
+
+        private boolean empty;
+
+        private T state;
+
+        public void begin(long size) {
+            empty = true;
+            state = null;
+        }
+
+        @Override
+        public void accept(T t) {
+            if (empty) {
+                empty = false;
+                state = t;
+            } else {
+                state = operator.apply(state, t);
+            }
+        }
+
+        @Override
+        public Optional<T> get() {
+            return empty ? Optional.empty() : Optional.of(state);
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            if (!other.empty)
+                accept(other.state);
+        }
+    }
+    return new ReduceOp<T, Optional<T>, ReducingSink>(StreamShape.REFERENCE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

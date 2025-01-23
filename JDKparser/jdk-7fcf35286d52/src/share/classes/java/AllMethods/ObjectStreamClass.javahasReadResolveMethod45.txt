@@ -1,0 +1,8 @@
+/**
+ * Returns true if represented class is serializable or externalizable and
+ * defines a conformant readResolve method.  Otherwise, returns false.
+ */
+boolean hasReadResolveMethod() {
+    requireInitialized();
+    return (readResolveMethod != null);
+}

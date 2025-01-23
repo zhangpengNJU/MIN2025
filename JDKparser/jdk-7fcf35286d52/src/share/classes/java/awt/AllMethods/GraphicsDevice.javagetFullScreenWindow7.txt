@@ -1,0 +1,20 @@
+/**
+ * Returns the <code>Window</code> object representing the
+ * full-screen window if the device is in full-screen mode.
+ *
+ * @return the full-screen window, or <code>null</code> if the device is
+ * not in full-screen mode.
+ * @see #setFullScreenWindow(Window)
+ * @since 1.4
+ */
+public Window getFullScreenWindow() {
+    Window returnWindow = null;
+    synchronized (fsAppContextLock) {
+        // Only return a handle to the current fs window if we are in the
+        // same AppContext that set the fs window
+        if (fullScreenAppContext == AppContext.getAppContext()) {
+            returnWindow = fullScreenWindow;
+        }
+    }
+    return returnWindow;
+}

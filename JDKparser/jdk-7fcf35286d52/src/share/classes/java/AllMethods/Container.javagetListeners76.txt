@@ -1,0 +1,43 @@
+/**
+ * Returns an array of all the objects currently registered
+ * as <code><em>Foo</em>Listener</code>s
+ * upon this <code>Container</code>.
+ * <code><em>Foo</em>Listener</code>s are registered using the
+ * <code>add<em>Foo</em>Listener</code> method.
+ *
+ * <p>
+ * You can specify the <code>listenerType</code> argument
+ * with a class literal, such as
+ * <code><em>Foo</em>Listener.class</code>.
+ * For example, you can query a
+ * <code>Container</code> <code>c</code>
+ * for its container listeners with the following code:
+ *
+ * <pre>ContainerListener[] cls = (ContainerListener[])(c.getListeners(ContainerListener.class));</pre>
+ *
+ * If no such listeners exist, this method returns an empty array.
+ *
+ * @param listenerType the type of listeners requested; this parameter
+ *          should specify an interface that descends from
+ *          <code>java.util.EventListener</code>
+ * @return an array of all objects registered as
+ *          <code><em>Foo</em>Listener</code>s on this container,
+ *          or an empty array if no such listeners have been added
+ * @exception ClassCastException if <code>listenerType</code>
+ *          doesn't specify a class or interface that implements
+ *          <code>java.util.EventListener</code>
+ * @exception NullPointerException if {@code listenerType} is {@code null}
+ *
+ * @see #getContainerListeners
+ *
+ * @since 1.3
+ */
+public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
+    EventListener l = null;
+    if (listenerType == ContainerListener.class) {
+        l = containerListener;
+    } else {
+        return super.getListeners(listenerType);
+    }
+    return AWTEventMulticaster.getListeners(l, listenerType);
+}

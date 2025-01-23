@@ -1,0 +1,22 @@
+/**
+ * Processes events on this scroll bar. If the event is an
+ * instance of <code>AdjustmentEvent</code>, it invokes the
+ * <code>processAdjustmentEvent</code> method.
+ * Otherwise, it invokes its superclass's
+ * <code>processEvent</code> method.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param        e the event
+ * @see          java.awt.event.AdjustmentEvent
+ * @see          java.awt.Scrollbar#processAdjustmentEvent
+ * @since        JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof AdjustmentEvent) {
+        processAdjustmentEvent((AdjustmentEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

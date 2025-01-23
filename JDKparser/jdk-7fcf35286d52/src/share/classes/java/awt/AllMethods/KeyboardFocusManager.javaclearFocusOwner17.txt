@@ -1,0 +1,21 @@
+/**
+ * Clears the focus owner at both the Java and native levels if the
+ * focus owner exists and resides in the same context as the calling thread,
+ * otherwise the method returns silently.
+ * <p>
+ * The focus owner component will receive a permanent FOCUS_LOST event.
+ * After this operation completes, the native windowing system will discard
+ * all user-generated KeyEvents until the user selects a new Component to
+ * receive focus, or a Component is given focus explicitly via a call to
+ * {@code requestFocus()}. This operation does not change the focused or
+ * active Windows.
+ *
+ * @see Component#requestFocus()
+ * @see java.awt.event.FocusEvent#FOCUS_LOST
+ * @since 1.8
+ */
+public void clearFocusOwner() {
+    if (getFocusOwner() != null) {
+        clearGlobalFocusOwner();
+    }
+}

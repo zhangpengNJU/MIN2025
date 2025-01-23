@@ -1,0 +1,32 @@
+/**
+ * Sets all samples for a rectangle of pixels from a double array
+ * containing one sample per array element.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the upper left pixel location.
+ * @param y         The Y coordinate of the upper left pixel location.
+ * @param w         The width of the pixel rectangle.
+ * @param h         The height of the pixel rectangle.
+ * @param dArray    The input samples in a double array.
+ * @param data      The DataBuffer containing the image data.
+ * @see #getPixels(int, int, int, int, double[], DataBuffer)
+ *
+ * @throws NullPointerException if dArray or data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if dArray is too small to hold the input.
+ */
+public void setPixels(int x, int y, int w, int h, double[] dArray, DataBuffer data) {
+    int Offset = 0;
+    int x1 = x + w;
+    int y1 = y + h;
+    if (x < 0 || x >= width || w > width || x1 < 0 || x1 > width || y < 0 || y >= height || h > height || y1 < 0 || y1 > height) {
+        throw new ArrayIndexOutOfBoundsException("Invalid coordinates.");
+    }
+    for (int i = y; i < y1; i++) {
+        for (int j = x; j < x1; j++) {
+            for (int k = 0; k < numBands; k++) {
+                setSample(j, i, k, dArray[Offset++], data);
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+/**
+ * This is called by lightweight components that want the containing
+ * windowed parent to enable some kind of events on their behalf.
+ * This is needed for events that are normally only dispatched to
+ * windows to be accepted so that they can be forwarded downward to
+ * the lightweight component that has enabled them.
+ */
+void proxyEnableEvents(long events) {
+    if (peer instanceof LightweightPeer) {
+        // this container is lightweight.... continue sending it
+        // upward.
+        if (parent != null) {
+            parent.proxyEnableEvents(events);
+        }
+    } else {
+        // This is a native container, so it needs to host
+        // one of it's children.  If this function is called before
+        // a peer has been created we don't yet have a dispatcher
+        // because it has not yet been determined if this instance
+        // is lightweight.
+        if (dispatcher != null) {
+            dispatcher.enableEvents(events);
+        }
+    }
+}

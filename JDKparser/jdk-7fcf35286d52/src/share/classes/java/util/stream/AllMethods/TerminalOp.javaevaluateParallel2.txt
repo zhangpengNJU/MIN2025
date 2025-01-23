@@ -1,0 +1,17 @@
+/**
+ * Performs a parallel evaluation of the operation using the specified
+ * {@code PipelineHelper}, which describes the upstream intermediate
+ * operations.
+ *
+ * @implSpec The default performs a sequential evaluation of the operation
+ * using the specified {@code PipelineHelper}.
+ *
+ * @param helper the pipeline helper
+ * @param spliterator the source spliterator
+ * @return the result of the evaluation
+ */
+default <P_IN> R evaluateParallel(PipelineHelper<E_IN> helper, Spliterator<P_IN> spliterator) {
+    if (Tripwire.ENABLED)
+        Tripwire.trip(getClass(), "{0} triggering TerminalOp.evaluateParallel serial default");
+    return evaluateSequential(helper, spliterator);
+}

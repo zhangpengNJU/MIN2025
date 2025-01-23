@@ -1,0 +1,18 @@
+/**
+ * Notifies the group that the thread {@code t} has failed
+ * an attempt to start.
+ *
+ * <p> The state of this thread group is rolled back as if the
+ * attempt to start the thread has never occurred. The thread is again
+ * considered an unstarted member of the thread group, and a subsequent
+ * attempt to start the thread is permitted.
+ *
+ * @param  t
+ *         the Thread whose start method was invoked
+ */
+void threadStartFailed(Thread t) {
+    synchronized (this) {
+        remove(t);
+        nUnstartedThreads++;
+    }
+}

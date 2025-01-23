@@ -1,0 +1,29 @@
+private static BigDecimal divide(long dividend, int dividendScale, long divisor, int divisorScale, int scale, int roundingMode) {
+    if (checkScale(dividend, (long) scale + divisorScale) > dividendScale) {
+        int newScale = scale + divisorScale;
+        int raise = newScale - dividendScale;
+        if (raise < LONG_TEN_POWERS_TABLE.length) {
+            long xs = dividend;
+            if ((xs = longMultiplyPowerTen(xs, raise)) != INFLATED) {
+                return divideAndRound(xs, divisor, scale, roundingMode, scale);
+            }
+            BigDecimal q = multiplyDivideAndRound(LONG_TEN_POWERS_TABLE[raise], dividend, divisor, scale, roundingMode, scale);
+            if (q != null) {
+                return q;
+            }
+        }
+        BigInteger scaledDividend = bigMultiplyPowerTen(dividend, raise);
+        return divideAndRound(scaledDividend, divisor, scale, roundingMode, scale);
+    } else {
+        int newScale = checkScale(divisor, (long) dividendScale - scale);
+        int raise = newScale - divisorScale;
+        if (raise < LONG_TEN_POWERS_TABLE.length) {
+            long ys = divisor;
+            if ((ys = longMultiplyPowerTen(ys, raise)) != INFLATED) {
+                return divideAndRound(dividend, ys, scale, roundingMode, scale);
+            }
+        }
+        BigInteger scaledDivisor = bigMultiplyPowerTen(divisor, raise);
+        return divideAndRound(BigInteger.valueOf(dividend), scaledDivisor, scale, roundingMode, scale);
+    }
+}

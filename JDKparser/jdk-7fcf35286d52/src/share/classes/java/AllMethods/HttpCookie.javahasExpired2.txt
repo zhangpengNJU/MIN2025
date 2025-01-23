@@ -1,0 +1,21 @@
+// ---------------- Public operations --------------
+/**
+ * Reports whether this HTTP cookie has expired or not.
+ *
+ * @return  {@code true} to indicate this HTTP cookie has expired;
+ *          otherwise, {@code false}
+ */
+public boolean hasExpired() {
+    if (maxAge == 0)
+        return true;
+    // if not specify max-age, this cookie should be
+    // discarded when user agent is to be closed, but
+    // it is not expired.
+    if (maxAge == MAX_AGE_UNSPECIFIED)
+        return false;
+    long deltaSecond = (System.currentTimeMillis() - whenCreated) / 1000;
+    if (deltaSecond > maxAge)
+        return true;
+    else
+        return false;
+}

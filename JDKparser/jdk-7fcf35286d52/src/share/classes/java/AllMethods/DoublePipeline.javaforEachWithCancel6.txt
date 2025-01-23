@@ -1,0 +1,7 @@
+@Override
+final void forEachWithCancel(Spliterator<Double> spliterator, Sink<Double> sink) {
+    Spliterator.OfDouble spl = adapt(spliterator);
+    DoubleConsumer adaptedSink = adapt(sink);
+    do {
+    } while (!sink.cancellationRequested() && spl.tryAdvance(adaptedSink));
+}

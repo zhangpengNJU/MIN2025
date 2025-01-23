@@ -1,0 +1,11 @@
+/**
+ * Saves the {@code ThreadLocalRandom} to a stream (that is, serializes it).
+ * @param s the stream
+ * @throws java.io.IOException if an I/O error occurs
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    java.io.ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("rnd", UNSAFE.getLong(Thread.currentThread(), SEED));
+    fields.put("initialized", true);
+    s.writeFields();
+}

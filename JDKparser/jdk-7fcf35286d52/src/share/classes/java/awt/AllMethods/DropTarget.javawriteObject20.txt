@@ -1,0 +1,15 @@
+/**
+ * Serializes this <code>DropTarget</code>. Performs default serialization,
+ * and then writes out this object's <code>DropTargetListener</code> if and
+ * only if it can be serialized. If not, <code>null</code> is written
+ * instead.
+ *
+ * @serialData The default serializable fields, in alphabetical order,
+ *             followed by either a <code>DropTargetListener</code>
+ *             instance, or <code>null</code>.
+ * @since 1.4
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    s.writeObject(SerializationTester.test(dtListener) ? dtListener : null);
+}

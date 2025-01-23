@@ -1,0 +1,18 @@
+/**
+ * Returns the current display mode of this
+ * <code>GraphicsDevice</code>.
+ * The returned display mode is allowed to have a refresh rate
+ * {@link DisplayMode#REFRESH_RATE_UNKNOWN} if it is indeterminate.
+ * Likewise, the returned display mode is allowed to have a bit depth
+ * {@link DisplayMode#BIT_DEPTH_MULTI} if it is indeterminate or if multiple
+ * bit depths are supported.
+ * @return the current display mode of this graphics device.
+ * @see #setDisplayMode(DisplayMode)
+ * @since 1.4
+ */
+public DisplayMode getDisplayMode() {
+    GraphicsConfiguration gc = getDefaultConfiguration();
+    Rectangle r = gc.getBounds();
+    ColorModel cm = gc.getColorModel();
+    return new DisplayMode(r.width, r.height, cm.getPixelSize(), 0);
+}

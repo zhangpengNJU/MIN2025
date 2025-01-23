@@ -1,0 +1,106 @@
+/*
+     * Returns a "complete token" that matches the specified pattern
+     *
+     * A token is complete if surrounded by delims; a partial token
+     * is prefixed by delims but not postfixed by them
+     *
+     * The position is advanced to the end of that complete token
+     *
+     * Pattern == null means accept any token at all
+     *
+     * Triple return:
+     * 1. valid string means it was found
+     * 2. null with needInput=false means we won't ever find it
+     * 3. null with needInput=true means try again after readInput
+     */
+private String getCompleteTokenInBuffer(Pattern pattern) {
+    matchValid = false;
+    // Skip delims first
+    matcher.usePattern(delimPattern);
+    if (!skipped) {
+        // Enforcing only one skip of leading delims
+        matcher.region(position, buf.limit());
+        if (matcher.lookingAt()) {
+            // If more input could extend the delimiters then we must wait
+            // for more input
+            if (matcher.hitEnd() && !sourceClosed) {
+                needInput = true;
+                return null;
+            }
+            // The delims were whole and the matcher should skip them
+            skipped = true;
+            position = matcher.end();
+        }
+    }
+    // If we are sitting at the end, no more tokens in buffer
+    if (position == buf.limit()) {
+        if (sourceClosed)
+            return null;
+        needInput = true;
+        return null;
+    }
+    // Must look for next delims. Simply attempting to match the
+    // pattern at this point may find a match but it might not be
+    // the first longest match because of missing input, or it might
+    // match a partial token instead of the whole thing.
+    // Then look for next delims
+    matcher.region(position, buf.limit());
+    boolean foundNextDelim = matcher.find();
+    if (foundNextDelim && (matcher.end() == position)) {
+        // Zero length delimiter match; we should find the next one
+        // using the automatic advance past a zero length match;
+        // Otherwise we have just found the same one we just skipped
+        foundNextDelim = matcher.find();
+    }
+    if (foundNextDelim) {
+        // In the rare case that more input could cause the match
+        // to be lost and there is more input coming we must wait
+        // for more input. Note that hitting the end is okay as long
+        // as the match cannot go away. It is the beginning of the
+        // next delims we want to be sure about, we don't care if
+        // they potentially extend further.
+        if (matcher.requireEnd() && !sourceClosed) {
+            needInput = true;
+            return null;
+        }
+        int tokenEnd = matcher.start();
+        // There is a complete token.
+        if (pattern == null) {
+            // Must continue with match to provide valid MatchResult
+            pattern = FIND_ANY_PATTERN;
+        }
+        // Attempt to match against the desired pattern
+        matcher.usePattern(pattern);
+        matcher.region(position, tokenEnd);
+        if (matcher.matches()) {
+            String s = matcher.group();
+            position = matcher.end();
+            return s;
+        } else {
+            // Complete token but it does not match
+            return null;
+        }
+    }
+    // If we can't find the next delims but no more input is coming,
+    // then we can treat the remainder as a whole token
+    if (sourceClosed) {
+        if (pattern == null) {
+            // Must continue with match to provide valid MatchResult
+            pattern = FIND_ANY_PATTERN;
+        }
+        // Last token; Match the pattern here or throw
+        matcher.usePattern(pattern);
+        matcher.region(position, buf.limit());
+        if (matcher.matches()) {
+            String s = matcher.group();
+            position = matcher.end();
+            return s;
+        }
+        // Last piece does not match
+        return null;
+    }
+    // There is a partial token in the buffer; must read more
+    // to complete it
+    needInput = true;
+    return null;
+}

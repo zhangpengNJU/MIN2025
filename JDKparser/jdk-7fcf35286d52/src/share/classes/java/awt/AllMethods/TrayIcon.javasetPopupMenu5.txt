@@ -1,0 +1,43 @@
+/**
+ * Sets the popup menu for this <code>TrayIcon</code>.  If
+ * <code>popup</code> is <code>null</code>, no popup menu will be
+ * associated with this <code>TrayIcon</code>.
+ *
+ * <p>Note that this <code>popup</code> must not be added to any
+ * parent before or after it is set on the tray icon.  If you add
+ * it to some parent, the <code>popup</code> may be removed from
+ * that parent.
+ *
+ * <p>The {@code popup} can be set on one {@code TrayIcon} only.
+ * Setting the same popup on multiple {@code TrayIcon}s will cause
+ * an {@code IllegalArgumentException}.
+ *
+ * <p><strong>Note:</strong> Some platforms may not support
+ * showing the user-specified popup menu component when the user
+ * right-clicks the tray icon.  In this situation, either no menu
+ * will be displayed or, on some systems, a native version of the
+ * menu may be displayed.
+ *
+ * @throws IllegalArgumentException if the {@code popup} is already
+ * set for another {@code TrayIcon}
+ * @param popup a <code>PopupMenu</code> or <code>null</code> to
+ * remove any popup menu
+ * @see #getPopupMenu
+ */
+public void setPopupMenu(PopupMenu popup) {
+    if (popup == this.popup) {
+        return;
+    }
+    synchronized (TrayIcon.class) {
+        if (popup != null) {
+            if (popup.isTrayIconPopup) {
+                throw new IllegalArgumentException("the PopupMenu is already set for another TrayIcon");
+            }
+            popup.isTrayIconPopup = true;
+        }
+        if (this.popup != null) {
+            this.popup.isTrayIconPopup = false;
+        }
+        this.popup = popup;
+    }
+}

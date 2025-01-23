@@ -1,0 +1,16 @@
+/**
+ * Returns this KeyboardFocusManager's KeyEventDispatcher chain as a List.
+ * The List will not include this KeyboardFocusManager unless it was
+ * explicitly re-registered via a call to
+ * <code>addKeyEventDispatcher</code>. If no other KeyEventDispatchers are
+ * registered, implementations are free to return null or a List of length
+ * 0. Client code should not assume one behavior over another, nor should
+ * it assume that the behavior, once established, will not change.
+ *
+ * @return a possibly null or empty List of KeyEventDispatchers
+ * @see #addKeyEventDispatcher
+ * @see #removeKeyEventDispatcher
+ */
+protected synchronized java.util.List<KeyEventDispatcher> getKeyEventDispatchers() {
+    return (keyEventDispatchers != null) ? (java.util.List) keyEventDispatchers.clone() : null;
+}

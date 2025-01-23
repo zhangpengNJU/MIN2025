@@ -1,0 +1,25 @@
+/**
+ * Sets the designated parameter to a <code>InputStream</code> object.  The inputstream must contain  the number
+ * of characters specified by length otherwise a <code>SQLException</code> will be
+ * generated when the <code>PreparedStatement</code> is executed.
+ * This method differs from the <code>setBinaryStream (int, InputStream, int)</code>
+ * method because it informs the driver that the parameter value should be
+ * sent to the server as a <code>BLOB</code>.  When the <code>setBinaryStream</code> method is used,
+ * the driver may have to do extra work to determine whether the parameter
+ * data should be sent to the server as a <code>LONGVARBINARY</code> or a <code>BLOB</code>
+ * @param parameterIndex index of the first parameter is 1,
+ * the second is 2, ...
+ * @param inputStream An object that contains the data to set the parameter
+ * value to.
+ * @param length the number of bytes in the parameter data.
+ * @throws SQLException if parameterIndex does not correspond to a parameter
+ * marker in the SQL statement; if a database access error occurs;
+ * this method is called on a closed <code>PreparedStatement</code>;
+ *  if the length specified
+ * is less than zero or if the number of bytes in the inputstream does not match
+ * the specified length.
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ *
+ * @since 1.6
+ */
+void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException;

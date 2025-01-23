@@ -1,0 +1,29 @@
+// Gets a node in our tree of logger nodes.
+// If necessary, create it.
+LogNode getNode(String name) {
+    if (name == null || name.equals("")) {
+        return root;
+    }
+    LogNode node = root;
+    while (name.length() > 0) {
+        int ix = name.indexOf(".");
+        String head;
+        if (ix > 0) {
+            head = name.substring(0, ix);
+            name = name.substring(ix + 1);
+        } else {
+            head = name;
+            name = "";
+        }
+        if (node.children == null) {
+            node.children = new HashMap<>();
+        }
+        LogNode child = node.children.get(head);
+        if (child == null) {
+            child = new LogNode(node, this);
+            node.children.put(head, child);
+        }
+        node = child;
+    }
+    return node;
+}

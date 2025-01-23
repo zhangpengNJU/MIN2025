@@ -1,0 +1,41 @@
+/**
+ * Gets the set of available currencies.  The returned set of currencies
+ * contains all of the available currencies, which may include currencies
+ * that represent obsolete ISO 4217 codes.  The set can be modified
+ * without affecting the available currencies in the runtime.
+ *
+ * @return the set of available currencies.  If there is no currency
+ *    available in the runtime, the returned set is empty.
+ * @since 1.7
+ */
+public static Set<Currency> getAvailableCurrencies() {
+    synchronized (Currency.class) {
+        if (available == null) {
+            available = new HashSet<>(256);
+            // Add simple currencies first
+            for (char c1 = 'A'; c1 <= 'Z'; c1++) {
+                for (char c2 = 'A'; c2 <= 'Z'; c2++) {
+                    int tableEntry = getMainTableEntry(c1, c2);
+                    if ((tableEntry & COUNTRY_TYPE_MASK) == SIMPLE_CASE_COUNTRY_MASK && tableEntry != INVALID_COUNTRY_ENTRY) {
+                        char finalChar = (char) ((tableEntry & SIMPLE_CASE_COUNTRY_FINAL_CHAR_MASK) + 'A');
+                        int defaultFractionDigits = (tableEntry & SIMPLE_CASE_COUNTRY_DEFAULT_DIGITS_MASK) >> SIMPLE_CASE_COUNTRY_DEFAULT_DIGITS_SHIFT;
+                        int numericCode = (tableEntry & NUMERIC_CODE_MASK) >> NUMERIC_CODE_SHIFT;
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(c1);
+                        sb.append(c2);
+                        sb.append(finalChar);
+                        available.add(getInstance(sb.toString(), defaultFractionDigits, numericCode));
+                    }
+                }
+            }
+            // Now add other currencies
+            StringTokenizer st = new StringTokenizer(otherCurrencies, "-");
+            while (st.hasMoreElements()) {
+                available.add(getInstance((String) st.nextElement()));
+            }
+        }
+    }
+    @SuppressWarnings("unchecked")
+    Set<Currency> result = (Set<Currency>) available.clone();
+    return result;
+}

@@ -1,0 +1,7 @@
+public Void run() throws Exception {
+    cmdsock = new Socket(new PlainSocketImpl());
+    cmdsock.connect(new InetSocketAddress(server, serverPort));
+    cmdIn = cmdsock.getInputStream();
+    cmdOut = cmdsock.getOutputStream();
+    return null;
+}

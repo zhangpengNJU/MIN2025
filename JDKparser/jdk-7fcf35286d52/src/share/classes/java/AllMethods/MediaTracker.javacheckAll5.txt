@@ -1,0 +1,11 @@
+private synchronized boolean checkAll(boolean load, boolean verify) {
+    MediaEntry cur = head;
+    boolean done = true;
+    while (cur != null) {
+        if ((cur.getStatus(load, verify) & DONE) == 0) {
+            done = false;
+        }
+        cur = cur.next;
+    }
+    return done;
+}

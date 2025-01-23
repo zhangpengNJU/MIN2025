@@ -1,0 +1,19 @@
+/**
+ * Causes <code>runnable</code> to have its <code>run</code>
+ * method called in the {@link #isDispatchThread dispatch thread} of
+ * {@link Toolkit#getSystemEventQueue the system EventQueue}.
+ * This will happen after all pending events are processed.
+ *
+ * @param runnable  the <code>Runnable</code> whose <code>run</code>
+ *                  method should be executed
+ *                  asynchronously in the
+ *                  {@link #isDispatchThread event dispatch thread}
+ *                  of {@link Toolkit#getSystemEventQueue the system EventQueue}
+ * @see             #invokeAndWait
+ * @see             Toolkit#getSystemEventQueue
+ * @see             #isDispatchThread
+ * @since           1.2
+ */
+public static void invokeLater(Runnable runnable) {
+    Toolkit.getEventQueue().postEvent(new InvocationEvent(Toolkit.getDefaultToolkit(), runnable));
+}

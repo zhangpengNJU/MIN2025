@@ -1,0 +1,36 @@
+/**
+ * Checks that the given string is a legal charset name. </p>
+ *
+ * @param  s
+ *         A purported charset name
+ *
+ * @throws  IllegalCharsetNameException
+ *          If the given name is not a legal charset name
+ */
+private static void checkName(String s) {
+    int n = s.length();
+    if (!atBugLevel("1.4")) {
+        if (n == 0)
+            throw new IllegalCharsetNameException(s);
+    }
+    for (int i = 0; i < n; i++) {
+        char c = s.charAt(i);
+        if (c >= 'A' && c <= 'Z')
+            continue;
+        if (c >= 'a' && c <= 'z')
+            continue;
+        if (c >= '0' && c <= '9')
+            continue;
+        if (c == '-' && i != 0)
+            continue;
+        if (c == '+' && i != 0)
+            continue;
+        if (c == ':' && i != 0)
+            continue;
+        if (c == '_' && i != 0)
+            continue;
+        if (c == '.' && i != 0)
+            continue;
+        throw new IllegalCharsetNameException(s);
+    }
+}

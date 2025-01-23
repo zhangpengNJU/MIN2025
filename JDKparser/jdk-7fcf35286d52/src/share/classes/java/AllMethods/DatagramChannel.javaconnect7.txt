@@ -1,0 +1,51 @@
+/**
+ * Connects this channel's socket.
+ *
+ * <p> The channel's socket is configured so that it only receives
+ * datagrams from, and sends datagrams to, the given remote <i>peer</i>
+ * address.  Once connected, datagrams may not be received from or sent to
+ * any other address.  A datagram socket remains connected until it is
+ * explicitly disconnected or until it is closed.
+ *
+ * <p> This method performs exactly the same security checks as the {@link
+ * java.net.DatagramSocket#connect connect} method of the {@link
+ * java.net.DatagramSocket} class.  That is, if a security manager has been
+ * installed then this method verifies that its {@link
+ * java.lang.SecurityManager#checkAccept checkAccept} and {@link
+ * java.lang.SecurityManager#checkConnect checkConnect} methods permit
+ * datagrams to be received from and sent to, respectively, the given
+ * remote address.
+ *
+ * <p> This method may be invoked at any time.  It will not have any effect
+ * on read or write operations that are already in progress at the moment
+ * that it is invoked. If this channel's socket is not bound then this method
+ * will first cause the socket to be bound to an address that is assigned
+ * automatically, as if invoking the {@link #bind bind} method with a
+ * parameter of {@code null}. </p>
+ *
+ * @param  remote
+ *         The remote address to which this channel is to be connected
+ *
+ * @return  This datagram channel
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the connect operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the connect operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  SecurityException
+ *          If a security manager has been installed
+ *          and it does not permit access to the given remote address
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract DatagramChannel connect(SocketAddress remote) throws IOException;

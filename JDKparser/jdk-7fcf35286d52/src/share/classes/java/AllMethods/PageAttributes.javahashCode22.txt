@@ -1,0 +1,8 @@
+/**
+ * Returns a hash code value for this PageAttributes.
+ *
+ * @return  the hash code.
+ */
+public int hashCode() {
+    return (color.hashCode() << 31 ^ media.hashCode() << 24 ^ orientationRequested.hashCode() << 23 ^ origin.hashCode() << 22 ^ printQuality.hashCode() << 20 ^ printerResolution[2] >> 2 << 19 ^ printerResolution[1] << 10 ^ printerResolution[0]);
+}

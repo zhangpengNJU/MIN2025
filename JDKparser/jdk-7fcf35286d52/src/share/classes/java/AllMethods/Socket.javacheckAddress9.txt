@@ -1,0 +1,8 @@
+private void checkAddress(InetAddress addr, String op) {
+    if (addr == null) {
+        return;
+    }
+    if (!(addr instanceof Inet4Address || addr instanceof Inet6Address)) {
+        throw new IllegalArgumentException(op + ": invalid address type");
+    }
+}

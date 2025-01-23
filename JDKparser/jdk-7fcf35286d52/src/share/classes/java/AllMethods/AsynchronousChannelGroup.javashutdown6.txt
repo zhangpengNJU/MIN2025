@@ -1,0 +1,11 @@
+/**
+ * Initiates an orderly shutdown of the group.
+ *
+ * <p> This method marks the group as shutdown. Further attempts to construct
+ * channel that binds to this group will throw {@link ShutdownChannelGroupException}.
+ * The group terminates when all asynchronous channels in the group are
+ * closed, all actively executing completion handlers have run to completion,
+ * and all resources have been released. This method has no effect if the
+ * group is already shutdown.
+ */
+public abstract void shutdown();

@@ -1,0 +1,30 @@
+static boolean isStaticallyInvocable(MemberName member) {
+    if (member == null)
+        return false;
+    if (member.isConstructor())
+        return false;
+    Class<?> cls = member.getDeclaringClass();
+    if (cls.isArray() || cls.isPrimitive())
+        // FIXME
+        return false;
+    if (cls.isAnonymousClass() || cls.isLocalClass())
+        // inner class of some sort
+        return false;
+    if (cls.getClassLoader() != MethodHandle.class.getClassLoader())
+        // not on BCP
+        return false;
+    if (// FIXME: switch to supported API once it is added
+    ReflectUtil.isVMAnonymousClass(cls))
+        return false;
+    MethodType mtype = member.getMethodOrFieldType();
+    if (!isStaticallyNameable(mtype.returnType()))
+        return false;
+    for (Class<?> ptype : mtype.parameterArray()) if (!isStaticallyNameable(ptype))
+        return false;
+    if (!member.isPrivate() && VerifyAccess.isSamePackage(MethodHandle.class, cls))
+        // in java.lang.invoke package
+        return true;
+    if (member.isPublic() && isStaticallyNameable(cls))
+        return true;
+    return false;
+}

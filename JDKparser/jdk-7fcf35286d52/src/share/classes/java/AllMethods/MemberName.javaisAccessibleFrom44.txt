@@ -1,0 +1,6 @@
+/**
+ * Utility method to query whether this member is accessible from a given lookup class.
+ */
+public boolean isAccessibleFrom(Class<?> lookupClass) {
+    return VerifyAccess.isMemberAccessible(this.getDeclaringClass(), this.getDeclaringClass(), flags, lookupClass, ALL_ACCESS | MethodHandles.Lookup.PACKAGE);
+}

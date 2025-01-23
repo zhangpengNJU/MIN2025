@@ -1,0 +1,9 @@
+private void close(Closeable in) {
+    if (in != null) {
+        try {
+            in.close();
+        } catch (IOException e) {
+            getExceptionListener().exceptionThrown(e);
+        }
+    }
+}

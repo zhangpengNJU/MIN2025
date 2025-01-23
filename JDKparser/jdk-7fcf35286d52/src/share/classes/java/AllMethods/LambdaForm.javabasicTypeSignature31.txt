@@ -1,0 +1,8 @@
+/**
+ * Return ABC_Z, where the ABC are parameter type characters, and Z is the return type character.
+ */
+final String basicTypeSignature() {
+    StringBuilder buf = new StringBuilder(arity() + 3);
+    for (int i = 0, a = arity(); i < a; i++) buf.append(parameterType(i).basicTypeChar());
+    return buf.append('_').append(returnType().basicTypeChar()).toString();
+}

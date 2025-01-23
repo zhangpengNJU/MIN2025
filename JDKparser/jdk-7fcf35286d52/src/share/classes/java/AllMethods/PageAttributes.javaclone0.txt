@@ -1,0 +1,14 @@
+/**
+ * Creates and returns a copy of this PageAttributes.
+ *
+ * @return  the newly created copy. It is safe to cast this Object into
+ *          a PageAttributes.
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        // Since we implement Cloneable, this should never happen
+        throw new InternalError(e);
+    }
+}

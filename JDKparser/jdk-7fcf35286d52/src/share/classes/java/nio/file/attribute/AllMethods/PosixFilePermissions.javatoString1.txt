@@ -1,0 +1,20 @@
+/**
+ * Returns the {@code String} representation of a set of permissions. It
+ * is guaranteed that the returned {@code String} can be parsed by the
+ * {@link #fromString} method.
+ *
+ * <p> If the set contains {@code null} or elements that are not of type
+ * {@code PosixFilePermission} then these elements are ignored.
+ *
+ * @param   perms
+ *          the set of permissions
+ *
+ * @return  the string representation of the permission set
+ */
+public static String toString(Set<PosixFilePermission> perms) {
+    StringBuilder sb = new StringBuilder(9);
+    writeBits(sb, perms.contains(OWNER_READ), perms.contains(OWNER_WRITE), perms.contains(OWNER_EXECUTE));
+    writeBits(sb, perms.contains(GROUP_READ), perms.contains(GROUP_WRITE), perms.contains(GROUP_EXECUTE));
+    writeBits(sb, perms.contains(OTHERS_READ), perms.contains(OTHERS_WRITE), perms.contains(OTHERS_EXECUTE));
+    return sb.toString();
+}

@@ -1,0 +1,7 @@
+public void add(int index, E element) {
+    rangeCheckForAdd(index);
+    checkForComodification();
+    l.add(index + offset, element);
+    this.modCount = l.modCount;
+    size++;
+}

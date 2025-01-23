@@ -1,0 +1,31 @@
+/**
+ * Returns a sequential ordered {@code LongStream} from {@code startInclusive}
+ * (inclusive) to {@code endExclusive} (exclusive) by an incremental step of
+ * {@code 1}.
+ *
+ * @apiNote
+ * <p>An equivalent sequence of increasing values can be produced
+ * sequentially using a {@code for} loop as follows:
+ * <pre>{@code
+ *     for (long i = startInclusive; i < endExclusive ; i++) { ... }
+ * }</pre>
+ *
+ * @param startInclusive the (inclusive) initial value
+ * @param endExclusive the exclusive upper bound
+ * @return a sequential {@code LongStream} for the range of {@code long}
+ *         elements
+ */
+public static LongStream range(long startInclusive, final long endExclusive) {
+    if (startInclusive >= endExclusive) {
+        return empty();
+    } else if (endExclusive - startInclusive < 0) {
+        // Size of range > Long.MAX_VALUE
+        // Split the range in two and concatenate
+        // Note: if the range is [Long.MIN_VALUE, Long.MAX_VALUE) then
+        // the lower range, [Long.MIN_VALUE, 0) will be further split in two
+        long m = startInclusive + Long.divideUnsigned(endExclusive - startInclusive, 2) + 1;
+        return concat(range(startInclusive, m), range(m, endExclusive));
+    } else {
+        return StreamSupport.longStream(new Streams.RangeLongSpliterator(startInclusive, endExclusive, false), false);
+    }
+}

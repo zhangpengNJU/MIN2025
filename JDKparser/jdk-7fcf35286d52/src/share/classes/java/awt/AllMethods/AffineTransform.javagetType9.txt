@@ -1,0 +1,30 @@
+/**
+ * Retrieves the flag bits describing the conversion properties of
+ * this transform.
+ * The return value is either one of the constants TYPE_IDENTITY
+ * or TYPE_GENERAL_TRANSFORM, or a combination of the
+ * appropriate flag bits.
+ * A valid combination of flag bits is an exclusive OR operation
+ * that can combine
+ * the TYPE_TRANSLATION flag bit
+ * in addition to either of the
+ * TYPE_UNIFORM_SCALE or TYPE_GENERAL_SCALE flag bits
+ * as well as either of the
+ * TYPE_QUADRANT_ROTATION or TYPE_GENERAL_ROTATION flag bits.
+ * @return the OR combination of any of the indicated flags that
+ * apply to this transform
+ * @see #TYPE_IDENTITY
+ * @see #TYPE_TRANSLATION
+ * @see #TYPE_UNIFORM_SCALE
+ * @see #TYPE_GENERAL_SCALE
+ * @see #TYPE_QUADRANT_ROTATION
+ * @see #TYPE_GENERAL_ROTATION
+ * @see #TYPE_GENERAL_TRANSFORM
+ * @since 1.2
+ */
+public int getType() {
+    if (type == TYPE_UNKNOWN) {
+        calculateType();
+    }
+    return type;
+}

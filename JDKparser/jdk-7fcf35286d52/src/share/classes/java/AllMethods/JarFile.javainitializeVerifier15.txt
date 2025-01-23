@@ -1,0 +1,55 @@
+/*
+     * Initializes the verifier object by reading all the manifest
+     * entries and passing them to the verifier.
+     */
+private void initializeVerifier() {
+    ManifestEntryVerifier mev = null;
+    // Verify "META-INF/" entries...
+    try {
+        String[] names = getMetaInfEntryNames();
+        if (names != null) {
+            for (int i = 0; i < names.length; i++) {
+                String uname = names[i].toUpperCase(Locale.ENGLISH);
+                if (MANIFEST_NAME.equals(uname) || SignatureFileVerifier.isBlockOrSF(uname)) {
+                    JarEntry e = getJarEntry(names[i]);
+                    if (e == null) {
+                        throw new JarException("corrupted jar file");
+                    }
+                    if (mev == null) {
+                        mev = new ManifestEntryVerifier(getManifestFromReference(), jv.manifestName);
+                    }
+                    byte[] b = getBytes(e);
+                    if (b != null && b.length > 0) {
+                        jv.beginEntry(e, mev);
+                        jv.update(b.length, b, 0, b.length, mev);
+                        jv.update(-1, null, 0, 0, mev);
+                    }
+                }
+            }
+        }
+    } catch (IOException ex) {
+        // if we had an error parsing any blocks, just
+        // treat the jar file as being unsigned
+        jv = null;
+        verify = false;
+        if (JarVerifier.debug != null) {
+            JarVerifier.debug.println("jarfile parsing error!");
+            ex.printStackTrace();
+        }
+    }
+    // if after initializing the verifier we have nothing
+    // signed, we null it out.
+    if (jv != null) {
+        jv.doneWithMeta();
+        if (JarVerifier.debug != null) {
+            JarVerifier.debug.println("done with meta!");
+        }
+        if (jv.nothingToVerify()) {
+            if (JarVerifier.debug != null) {
+                JarVerifier.debug.println("nothing to verify!");
+            }
+            jv = null;
+            verify = false;
+        }
+    }
+}

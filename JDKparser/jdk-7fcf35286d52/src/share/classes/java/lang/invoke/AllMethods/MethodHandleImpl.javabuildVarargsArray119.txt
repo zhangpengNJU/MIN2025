@@ -1,0 +1,23 @@
+private static MethodHandle buildVarargsArray(MethodHandle newArray, MethodHandle finisher, int nargs) {
+    // Build up the result mh as a sequence of fills like this:
+    // finisher(fill(fill(newArrayWA(23,x1..x10),10,x11..x20),20,x21..x23))
+    // The various fill(_,10*I,___*[J]) are reusable.
+    // absorb some arguments immediately
+    int leftLen = Math.min(nargs, LEFT_ARGS);
+    int rightLen = nargs - leftLen;
+    MethodHandle leftCollector = newArray.bindTo(nargs);
+    leftCollector = leftCollector.asCollector(Object[].class, leftLen);
+    MethodHandle mh = finisher;
+    if (rightLen > 0) {
+        MethodHandle rightFiller = fillToRight(LEFT_ARGS + rightLen);
+        if (mh == Lazy.MH_arrayIdentity)
+            mh = rightFiller;
+        else
+            mh = MethodHandles.collectArguments(mh, 0, rightFiller);
+    }
+    if (mh == Lazy.MH_arrayIdentity)
+        mh = leftCollector;
+    else
+        mh = MethodHandles.collectArguments(mh, 0, leftCollector);
+    return mh;
+}

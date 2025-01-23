@@ -1,0 +1,8 @@
+@Override
+public void forEachRemaining(Consumer<? super T> action) {
+    s.forEachRemaining(t -> {
+        if (seen.putIfAbsent(mapNull(t), Boolean.TRUE) == null) {
+            action.accept(t);
+        }
+    });
+}

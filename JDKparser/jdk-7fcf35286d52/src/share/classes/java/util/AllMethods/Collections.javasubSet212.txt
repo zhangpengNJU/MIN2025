@@ -1,0 +1,5 @@
+public SortedSet<E> subSet(E fromElement, E toElement) {
+    synchronized (mutex) {
+        return new SynchronizedSortedSet<>(ss.subSet(fromElement, toElement), mutex);
+    }
+}

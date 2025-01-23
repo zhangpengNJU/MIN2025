@@ -1,0 +1,3 @@
+static Object[] getImpl(String algorithm, String type, Provider provider, Object params) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    return GetInstance.getInstance(type, getSpiClass(type), algorithm, params, provider).toArray();
+}

@@ -1,0 +1,8 @@
+@Override
+@SuppressWarnings("unchecked")
+public S onClose(Runnable closeHandler) {
+    Objects.requireNonNull(closeHandler);
+    Runnable existingHandler = sourceStage.sourceCloseAction;
+    sourceStage.sourceCloseAction = (existingHandler == null) ? closeHandler : Streams.composeWithExceptions(existingHandler, closeHandler);
+    return (S) this;
+}

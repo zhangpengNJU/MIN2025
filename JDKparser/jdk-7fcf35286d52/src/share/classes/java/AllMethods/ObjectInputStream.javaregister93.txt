@@ -1,0 +1,20 @@
+/**
+ * Registers callback.  Throws InvalidObjectException if callback
+ * object is null.
+ */
+void register(ObjectInputValidation obj, int priority) throws InvalidObjectException {
+    if (obj == null) {
+        throw new InvalidObjectException("null callback");
+    }
+    Callback prev = null, cur = list;
+    while (cur != null && priority < cur.priority) {
+        prev = cur;
+        cur = cur.next;
+    }
+    AccessControlContext acc = AccessController.getContext();
+    if (prev != null) {
+        prev.next = new Callback(obj, priority, cur, acc);
+    } else {
+        list = new Callback(obj, priority, list, acc);
+    }
+}

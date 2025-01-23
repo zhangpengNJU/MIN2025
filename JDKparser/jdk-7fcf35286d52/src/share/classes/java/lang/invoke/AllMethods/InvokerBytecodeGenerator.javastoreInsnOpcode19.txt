@@ -1,0 +1,16 @@
+private int storeInsnOpcode(BasicType type) throws InternalError {
+    switch(type) {
+        case I_TYPE:
+            return Opcodes.ISTORE;
+        case J_TYPE:
+            return Opcodes.LSTORE;
+        case F_TYPE:
+            return Opcodes.FSTORE;
+        case D_TYPE:
+            return Opcodes.DSTORE;
+        case L_TYPE:
+            return Opcodes.ASTORE;
+        default:
+            throw new InternalError("unknown type: " + type);
+    }
+}

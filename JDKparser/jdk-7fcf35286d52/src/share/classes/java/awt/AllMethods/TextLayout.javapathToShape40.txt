@@ -1,0 +1,14 @@
+private static GeneralPath pathToShape(double[] path, boolean close, LayoutPathImpl lp) {
+    GeneralPath result = new GeneralPath(GeneralPath.WIND_EVEN_ODD, path.length);
+    result.moveTo((float) path[0], (float) path[1]);
+    for (int i = 2; i < path.length; i += 2) {
+        result.lineTo((float) path[i], (float) path[i + 1]);
+    }
+    if (close) {
+        result.closePath();
+    }
+    if (lp != null) {
+        result = (GeneralPath) lp.mapShape(result);
+    }
+    return result;
+}

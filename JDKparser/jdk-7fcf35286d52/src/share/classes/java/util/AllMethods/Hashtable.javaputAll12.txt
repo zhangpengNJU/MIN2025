@@ -1,0 +1,12 @@
+/**
+ * Copies all of the mappings from the specified map to this hashtable.
+ * These mappings will replace any mappings that this hashtable had for any
+ * of the keys currently in the specified map.
+ *
+ * @param t mappings to be stored in this map
+ * @throws NullPointerException if the specified map is null
+ * @since 1.2
+ */
+public synchronized void putAll(Map<? extends K, ? extends V> t) {
+    for (Map.Entry<? extends K, ? extends V> e : t.entrySet()) put(e.getKey(), e.getValue());
+}

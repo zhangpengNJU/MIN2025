@@ -1,0 +1,27 @@
+/**
+ * Inserts the specified element at the specified position in this list
+ * (optional operation).  Shifts the element currently at that position
+ * (if any) and any subsequent elements to the right (adds one to their
+ * indices).
+ *
+ * <p>This implementation first gets a list iterator pointing to the
+ * indexed element (with <tt>listIterator(index)</tt>).  Then, it
+ * inserts the specified element with <tt>ListIterator.add</tt>.
+ *
+ * <p>Note that this implementation will throw an
+ * <tt>UnsupportedOperationException</tt> if the list iterator does not
+ * implement the <tt>add</tt> operation.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ * @throws IllegalArgumentException      {@inheritDoc}
+ * @throws IndexOutOfBoundsException     {@inheritDoc}
+ */
+public void add(int index, E element) {
+    try {
+        listIterator(index).add(element);
+    } catch (NoSuchElementException exc) {
+        throw new IndexOutOfBoundsException("Index: " + index);
+    }
+}

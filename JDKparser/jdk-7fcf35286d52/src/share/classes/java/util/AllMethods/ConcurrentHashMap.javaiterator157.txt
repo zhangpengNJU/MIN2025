@@ -1,0 +1,9 @@
+/**
+ * @return an iterator over the keys of the backing map
+ */
+public Iterator<K> iterator() {
+    Node<K, V>[] t;
+    ConcurrentHashMap<K, V> m = map;
+    int f = (t = m.table) == null ? 0 : t.length;
+    return new KeyIterator<K, V>(t, f, 0, f, m);
+}

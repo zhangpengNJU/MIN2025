@@ -1,0 +1,12 @@
+public void setSecurityWarningPosition(Window window, Point2D point, float alignmentX, float alignmentY) {
+    window.securityWarningPointX = point.getX();
+    window.securityWarningPointY = point.getY();
+    window.securityWarningAlignmentX = alignmentX;
+    window.securityWarningAlignmentY = alignmentY;
+    synchronized (window.getTreeLock()) {
+        WindowPeer peer = (WindowPeer) window.getPeer();
+        if (peer != null) {
+            peer.repositionSecurityWarning();
+        }
+    }
+}

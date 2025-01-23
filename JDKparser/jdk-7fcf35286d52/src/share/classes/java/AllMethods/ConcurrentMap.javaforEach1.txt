@@ -1,0 +1,34 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec The default implementation is equivalent to, for this
+ * {@code map}:
+ * <pre> {@code
+ * for ((Map.Entry<K, V> entry : map.entrySet())
+ *     action.accept(entry.getKey(), entry.getValue());
+ * }</pre>
+ *
+ * @implNote The default implementation assumes that
+ * {@code IllegalStateException} thrown by {@code getKey()} or
+ * {@code getValue()} indicates that the entry has been removed and cannot
+ * be processed. Operation continues for subsequent entries.
+ *
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+default void forEach(BiConsumer<? super K, ? super V> action) {
+    Objects.requireNonNull(action);
+    for (Map.Entry<K, V> entry : entrySet()) {
+        K k;
+        V v;
+        try {
+            k = entry.getKey();
+            v = entry.getValue();
+        } catch (IllegalStateException ise) {
+            // this usually means the entry is no longer in the map.
+            continue;
+        }
+        action.accept(k, v);
+    }
+}

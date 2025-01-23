@@ -1,0 +1,21 @@
+/**
+ * Ensure that the MutableBigInteger is in normal form, specifically
+ * making sure that there are no leading zeros, and that if the
+ * magnitude is zero, then intLen is zero.
+ */
+final void normalize() {
+    if (intLen == 0) {
+        offset = 0;
+        return;
+    }
+    int index = offset;
+    if (value[index] != 0)
+        return;
+    int indexBound = index + intLen;
+    do {
+        index++;
+    } while (index < indexBound && value[index] == 0);
+    int numZeros = index - offset;
+    intLen -= numZeros;
+    offset = (intLen == 0 ? 0 : offset + numZeros);
+}

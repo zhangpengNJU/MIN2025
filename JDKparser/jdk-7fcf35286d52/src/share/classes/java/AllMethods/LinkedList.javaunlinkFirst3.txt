@@ -1,0 +1,19 @@
+/**
+ * Unlinks non-null first node f.
+ */
+private E unlinkFirst(Node<E> f) {
+    // assert f == first && f != null;
+    final E element = f.item;
+    final Node<E> next = f.next;
+    f.item = null;
+    // help GC
+    f.next = null;
+    first = next;
+    if (next == null)
+        last = null;
+    else
+        next.prev = null;
+    size--;
+    modCount++;
+    return element;
+}

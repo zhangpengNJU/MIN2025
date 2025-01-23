@@ -1,0 +1,18 @@
+/**
+ * Returns a {@code CertPath} constructed from the type and data.
+ *
+ * @return the resolved {@code CertPath} object
+ *
+ * @throws ObjectStreamException if a {@code CertPath} could not
+ * be constructed
+ */
+protected Object readResolve() throws ObjectStreamException {
+    try {
+        CertificateFactory cf = CertificateFactory.getInstance(type);
+        return cf.generateCertPath(new ByteArrayInputStream(data));
+    } catch (CertificateException ce) {
+        NotSerializableException nse = new NotSerializableException("java.security.cert.CertPath: " + type);
+        nse.initCause(ce);
+        throw nse;
+    }
+}

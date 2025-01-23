@@ -1,0 +1,16 @@
+/**
+ * Writes block data header.  Data blocks shorter than 256 bytes are
+ * prefixed with a 2-byte header; all others start with a 5-byte
+ * header.
+ */
+private void writeBlockHeader(int len) throws IOException {
+    if (len <= 0xFF) {
+        hbuf[0] = TC_BLOCKDATA;
+        hbuf[1] = (byte) len;
+        out.write(hbuf, 0, 2);
+    } else {
+        hbuf[0] = TC_BLOCKDATALONG;
+        Bits.putInt(hbuf, 1, len);
+        out.write(hbuf, 0, 5);
+    }
+}

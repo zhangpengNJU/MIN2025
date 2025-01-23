@@ -1,0 +1,11 @@
+/**
+ * Returns a new {@code ForkJoinTask} that performs the {@code run}
+ * method of the given {@code Runnable} as its action, and returns
+ * a null result upon {@link #join}.
+ *
+ * @param runnable the runnable action
+ * @return the task
+ */
+public static ForkJoinTask<?> adapt(Runnable runnable) {
+    return new AdaptedRunnableAction(runnable);
+}

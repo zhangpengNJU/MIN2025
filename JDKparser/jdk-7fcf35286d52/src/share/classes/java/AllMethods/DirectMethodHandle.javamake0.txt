@@ -1,0 +1,40 @@
+// Factory methods:
+static DirectMethodHandle make(byte refKind, Class<?> receiver, MemberName member) {
+    MethodType mtype = member.getMethodOrFieldType();
+    if (!member.isStatic()) {
+        if (!member.getDeclaringClass().isAssignableFrom(receiver) || member.isConstructor())
+            throw new InternalError(member.toString());
+        mtype = mtype.insertParameterTypes(0, receiver);
+    }
+    if (!member.isField()) {
+        switch(refKind) {
+            case REF_invokeSpecial:
+                {
+                    member = member.asSpecial();
+                    LambdaForm lform = preparedLambdaForm(member);
+                    return new Special(mtype, lform, member);
+                }
+            case REF_invokeInterface:
+                {
+                    LambdaForm lform = preparedLambdaForm(member);
+                    return new Interface(mtype, lform, member, receiver);
+                }
+            default:
+                {
+                    LambdaForm lform = preparedLambdaForm(member);
+                    return new DirectMethodHandle(mtype, lform, member);
+                }
+        }
+    } else {
+        LambdaForm lform = preparedFieldLambdaForm(member);
+        if (member.isStatic()) {
+            long offset = MethodHandleNatives.staticFieldOffset(member);
+            Object base = MethodHandleNatives.staticFieldBase(member);
+            return new StaticAccessor(mtype, lform, member, base, offset);
+        } else {
+            long offset = MethodHandleNatives.objectFieldOffset(member);
+            assert (offset == (int) offset);
+            return new Accessor(mtype, lform, member, (int) offset);
+        }
+    }
+}

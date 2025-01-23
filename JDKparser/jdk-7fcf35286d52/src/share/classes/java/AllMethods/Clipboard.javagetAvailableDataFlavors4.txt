@@ -1,0 +1,20 @@
+/**
+ * Returns an array of <code>DataFlavor</code>s in which the current
+ * contents of this clipboard can be provided. If there are no
+ * <code>DataFlavor</code>s available, this method returns a zero-length
+ * array.
+ *
+ * @return an array of <code>DataFlavor</code>s in which the current
+ *         contents of this clipboard can be provided
+ *
+ * @throws IllegalStateException if this clipboard is currently unavailable
+ *
+ * @since 1.5
+ */
+public DataFlavor[] getAvailableDataFlavors() {
+    Transferable cntnts = getContents(null);
+    if (cntnts == null) {
+        return new DataFlavor[0];
+    }
+    return cntnts.getTransferDataFlavors();
+}

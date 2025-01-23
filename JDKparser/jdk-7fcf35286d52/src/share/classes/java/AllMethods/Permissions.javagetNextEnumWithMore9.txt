@@ -1,0 +1,9 @@
+private Enumeration<Permission> getNextEnumWithMore() {
+    while (perms.hasNext()) {
+        PermissionCollection pc = perms.next();
+        Enumeration<Permission> next = pc.elements();
+        if (next.hasMoreElements())
+            return next;
+    }
+    return null;
+}

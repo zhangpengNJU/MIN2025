@@ -1,0 +1,9 @@
+/**
+ * Atomically sets to the given value and returns the old value.
+ *
+ * @param newValue the new value
+ * @return the previous value
+ */
+public final int getAndSet(int newValue) {
+    return unsafe.getAndSetInt(this, valueOffset, newValue);
+}

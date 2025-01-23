@@ -1,0 +1,21 @@
+// --------------------------JDBC 4.2 -----------------------------
+/**
+ *   Retrieves the current result as an update count; if the result
+ *  is a <code>ResultSet</code> object or there are no more results, -1
+ *   is returned. This method should be called only once per result.
+ *  <p>
+ *  This method should be used when the returned row count may exceed
+ *  {@link Integer#MAX_VALUE}.
+ * <p>
+ *  The default implementation will throw {@code UnsupportedOperationException}
+ *
+ *  @return the current result as an update count; -1 if the current result
+ *  is a <code>ResultSet</code> object or there are no more results
+ *  @exception SQLException if a database access error occurs or
+ *  this method is called on a closed <code>Statement</code>
+ *  @see #execute
+ *  @since 1.8
+ */
+default long getLargeUpdateCount() throws SQLException {
+    throw new UnsupportedOperationException("getLargeUpdateCount not implemented");
+}

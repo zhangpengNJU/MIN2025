@@ -1,0 +1,25 @@
+/**
+ * Returns a BigInteger whose value is {@code (this}<sup>-1</sup> {@code mod m)}.
+ *
+ * @param  m the modulus.
+ * @return {@code this}<sup>-1</sup> {@code mod m}.
+ * @throws ArithmeticException {@code  m} &le; 0, or this BigInteger
+ *         has no multiplicative inverse mod m (that is, this BigInteger
+ *         is not <i>relatively prime</i> to m).
+ */
+public BigInteger modInverse(BigInteger m) {
+    if (m.signum != 1)
+        throw new ArithmeticException("BigInteger: modulus not positive");
+    if (m.equals(ONE))
+        return ZERO;
+    // Calculate (this mod m)
+    BigInteger modVal = this;
+    if (signum < 0 || (this.compareMagnitude(m) >= 0))
+        modVal = this.mod(m);
+    if (modVal.equals(ONE))
+        return ONE;
+    MutableBigInteger a = new MutableBigInteger(modVal);
+    MutableBigInteger b = new MutableBigInteger(m);
+    MutableBigInteger result = a.mutableModInverse(b);
+    return result.toBigInteger(1);
+}

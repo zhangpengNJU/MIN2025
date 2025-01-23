@@ -1,0 +1,21 @@
+/**
+ * Checks if the component is contained in the component hierarchy of
+ * this container.
+ * @param c the component
+ * @return     <code>true</code> if it is an ancestor;
+ *             <code>false</code> otherwise.
+ * @since      JDK1.1
+ */
+public boolean isAncestorOf(Component c) {
+    Container p;
+    if (c == null || ((p = c.getParent()) == null)) {
+        return false;
+    }
+    while (p != null) {
+        if (p == this) {
+            return true;
+        }
+        p = p.getParent();
+    }
+    return false;
+}

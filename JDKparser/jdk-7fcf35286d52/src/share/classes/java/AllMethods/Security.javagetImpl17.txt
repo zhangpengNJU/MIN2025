@@ -1,0 +1,10 @@
+/*
+     * Returns an array of objects: the first object in the array is
+     * an instance of an implementation of the requested algorithm
+     * and type, and the second object in the array identifies the provider
+     * of that implementation.
+     * The {@code provider} argument cannot be null.
+     */
+static Object[] getImpl(String algorithm, String type, Provider provider) throws NoSuchAlgorithmException {
+    return GetInstance.getInstance(type, getSpiClass(type), algorithm, provider).toArray();
+}

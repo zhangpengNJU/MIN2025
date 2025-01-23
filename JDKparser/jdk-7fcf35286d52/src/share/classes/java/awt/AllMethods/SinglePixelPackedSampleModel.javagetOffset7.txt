@@ -1,0 +1,16 @@
+/**
+ * Returns the offset (in data array elements) of pixel (x,y).
+ *  The data element containing pixel <code>x,y</code>
+ *  can be retrieved from a DataBuffer <code>data</code> with a
+ *  SinglePixelPackedSampleModel <code>sppsm</code> as:
+ * <pre>
+ *        data.getElem(sppsm.getOffset(x, y));
+ * </pre>
+ * @param x the X coordinate of the specified pixel
+ * @param y the Y coordinate of the specified pixel
+ * @return the offset of the specified pixel.
+ */
+public int getOffset(int x, int y) {
+    int offset = y * scanlineStride + x;
+    return offset;
+}

@@ -1,0 +1,16 @@
+// Private method to load the global handlers.
+// We do the real work lazily, when the global handlers
+// are first used.
+private synchronized void initializeGlobalHandlers() {
+    if (initializedGlobalHandlers) {
+        return;
+    }
+    initializedGlobalHandlers = true;
+    if (deathImminent) {
+        // Aaargh...
+        // The VM is shutting down and our exit hook has been called.
+        // Avoid allocating global handlers.
+        return;
+    }
+    loadLoggerHandlers(rootLogger, null, "handlers");
+}

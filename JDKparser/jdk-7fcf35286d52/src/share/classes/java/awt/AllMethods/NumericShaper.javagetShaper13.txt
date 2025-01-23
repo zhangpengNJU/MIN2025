@@ -1,0 +1,14 @@
+/**
+ * Returns a shaper for the provided Unicode
+ * range. All Latin-1 (EUROPEAN) digits are converted to the
+ * corresponding decimal digits of the specified Unicode range.
+ *
+ * @param singleRange the Unicode range given by a {@link
+ *                    NumericShaper.Range} constant.
+ * @return a non-contextual {@code NumericShaper}.
+ * @throws NullPointerException if {@code singleRange} is {@code null}
+ * @since 1.7
+ */
+public static NumericShaper getShaper(Range singleRange) {
+    return new NumericShaper(singleRange, EnumSet.of(singleRange));
+}

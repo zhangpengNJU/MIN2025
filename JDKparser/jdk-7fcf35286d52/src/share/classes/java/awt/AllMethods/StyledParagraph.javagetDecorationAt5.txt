@@ -1,0 +1,15 @@
+/**
+ * Return the Decoration in effect at the given index.
+ * @param index a valid index in the paragraph
+ * @return the Decoration at index.
+ */
+public Decoration getDecorationAt(int index) {
+    if (index < 0 || index >= length) {
+        throw new IllegalArgumentException("index out of range");
+    }
+    if (decorations == null) {
+        return decoration;
+    }
+    int run = findRunContaining(index, decorationStarts);
+    return decorations.elementAt(run);
+}

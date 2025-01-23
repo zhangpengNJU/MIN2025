@@ -1,0 +1,10 @@
+/**
+ * Exports the specified object using the specified server ref.
+ */
+private static Remote exportObject(Remote obj, ActivatableServerRef sref) throws RemoteException {
+    // if obj extends Activatable, set its ref.
+    if (obj instanceof Activatable) {
+        ((Activatable) obj).ref = sref;
+    }
+    return sref.exportObject(obj, null, false);
+}

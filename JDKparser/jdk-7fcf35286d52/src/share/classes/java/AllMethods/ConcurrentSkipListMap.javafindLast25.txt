@@ -1,0 +1,48 @@
+/* ---------------- Finding and removing last element -------------- */
+/**
+ * Specialized version of find to get last valid node.
+ * @return last node or null if empty
+ */
+final Node<K, V> findLast() {
+    /*
+         * findPredecessor can't be used to traverse index level
+         * because this doesn't use comparisons.  So traversals of
+         * both levels are folded together.
+         */
+    Index<K, V> q = head;
+    for (; ; ) {
+        Index<K, V> d, r;
+        if ((r = q.right) != null) {
+            if (r.indexesDeletedNode()) {
+                q.unlink(r);
+                // restart
+                q = head;
+            } else
+                q = r;
+        } else if ((d = q.down) != null) {
+            q = d;
+        } else {
+            for (Node<K, V> b = q.node, n = b.next; ; ) {
+                if (n == null)
+                    return b.isBaseHeader() ? null : b;
+                // inconsistent read
+                Node<K, V> f = n.next;
+                if (n != b.next)
+                    break;
+                Object v = n.value;
+                if (v == null) {
+                    // n is deleted
+                    n.helpDelete(b, f);
+                    break;
+                }
+                if (// b is deleted
+                b.value == null || v == n)
+                    break;
+                b = n;
+                n = f;
+            }
+            // restart
+            q = head;
+        }
+    }
+}

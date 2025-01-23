@@ -1,0 +1,37 @@
+// Scan a hex sequence; return -1 if one could not be scanned
+// 
+private int scanHexSeq(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q;
+    q = scan(p, n, L_HEX, H_HEX);
+    if (q <= p)
+        return -1;
+    if (// Beginning of IPv4 address
+    at(q, n, '.'))
+        return -1;
+    if (q > p + 4)
+        fail("IPv6 hexadecimal digit sequence too long", p);
+    ipv6byteCount += 2;
+    p = q;
+    while (p < n) {
+        if (!at(p, n, ':'))
+            break;
+        if (at(p + 1, n, ':'))
+            // "::"
+            break;
+        p++;
+        q = scan(p, n, L_HEX, H_HEX);
+        if (q <= p)
+            failExpecting("digits for an IPv6 address", p);
+        if (at(q, n, '.')) {
+            // Beginning of IPv4 address
+            p--;
+            break;
+        }
+        if (q > p + 4)
+            fail("IPv6 hexadecimal digit sequence too long", p);
+        ipv6byteCount += 2;
+        p = q;
+    }
+    return p;
+}

@@ -1,0 +1,11 @@
+// status monitoring methods
+/**
+ * Returns combined state-held and overflow read count for given
+ * state s.
+ */
+private int getReadLockCount(long s) {
+    long readers;
+    if ((readers = s & RBITS) >= RFULL)
+        readers = RFULL + readerOverflow;
+    return (int) readers;
+}

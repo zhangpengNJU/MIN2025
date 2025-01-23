@@ -1,0 +1,14 @@
+// =========================================================================
+// Start of convenience methods WITH className, methodName and bundle name.
+// =========================================================================
+// Private support method for logging for "logrb" methods.
+// We fill in the logger name, resource bundle name, and
+// resource bundle and then call "void log(LogRecord)".
+private void doLog(LogRecord lr, String rbname) {
+    lr.setLoggerName(name);
+    if (rbname != null) {
+        lr.setResourceBundleName(rbname);
+        lr.setResourceBundle(findResourceBundle(rbname, false));
+    }
+    log(lr);
+}

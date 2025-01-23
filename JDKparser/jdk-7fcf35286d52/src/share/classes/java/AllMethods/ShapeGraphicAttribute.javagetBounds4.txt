@@ -1,0 +1,18 @@
+/**
+ * Returns a {@link Rectangle2D} that encloses all of the
+ * bits drawn by this <code>ShapeGraphicAttribute</code> relative to
+ * the rendering position.  A graphic can be rendered beyond its
+ * origin, ascent, descent, or advance;  but if it does, this method's
+ * implementation should indicate where the graphic is rendered.
+ * @return a <code>Rectangle2D</code> that encloses all of the bits
+ * rendered by this <code>ShapeGraphicAttribute</code>.
+ */
+public Rectangle2D getBounds() {
+    Rectangle2D.Float bounds = new Rectangle2D.Float();
+    bounds.setRect(fShapeBounds);
+    if (fStroke == STROKE) {
+        ++bounds.width;
+        ++bounds.height;
+    }
+    return bounds;
+}

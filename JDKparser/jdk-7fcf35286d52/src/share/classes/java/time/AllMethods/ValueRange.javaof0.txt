@@ -1,0 +1,17 @@
+/**
+ * Obtains a fixed value range.
+ * <p>
+ * This factory obtains a range where the minimum and maximum values are fixed.
+ * For example, the ISO month-of-year always runs from 1 to 12.
+ *
+ * @param min  the minimum value
+ * @param max  the maximum value
+ * @return the ValueRange for min, max, not null
+ * @throws IllegalArgumentException if the minimum is greater than the maximum
+ */
+public static ValueRange of(long min, long max) {
+    if (min > max) {
+        throw new IllegalArgumentException("Minimum value must be less than maximum value");
+    }
+    return new ValueRange(min, min, max, max);
+}

@@ -1,0 +1,13 @@
+static int toLowerCaseEx(String src, int index, Locale locale) {
+    char[] result = lookUpTable(src, index, locale, true);
+    if (result != null) {
+        if (result.length == 1) {
+            return result[0];
+        } else {
+            return Character.ERROR;
+        }
+    } else {
+        // default to Character class' one
+        return Character.toLowerCase(src.codePointAt(index));
+    }
+}

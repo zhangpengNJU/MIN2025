@@ -1,0 +1,6 @@
+/**
+ * compareAndSet head node
+ */
+private boolean casHead(HeadIndex<K, V> cmp, HeadIndex<K, V> val) {
+    return UNSAFE.compareAndSwapObject(this, headOffset, cmp, val);
+}

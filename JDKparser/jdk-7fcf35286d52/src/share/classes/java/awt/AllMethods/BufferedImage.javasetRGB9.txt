@@ -1,0 +1,22 @@
+/**
+ * Sets a pixel in this <code>BufferedImage</code> to the specified
+ * RGB value. The pixel is assumed to be in the default RGB color
+ * model, TYPE_INT_ARGB, and default sRGB color space.  For images
+ * with an <code>IndexColorModel</code>, the index with the nearest
+ * color is chosen.
+ *
+ * <p>
+ *
+ * An <code>ArrayOutOfBoundsException</code> may be thrown
+ * if the coordinates are not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ *
+ * @param x the X coordinate of the pixel to set
+ * @param y the Y coordinate of the pixel to set
+ * @param rgb the RGB value
+ * @see #getRGB(int, int)
+ * @see #getRGB(int, int, int, int, int[], int, int)
+ */
+public synchronized void setRGB(int x, int y, int rgb) {
+    raster.setDataElements(x, y, colorModel.getDataElements(rgb, null));
+}

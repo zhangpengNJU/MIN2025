@@ -1,0 +1,21 @@
+/**
+ * Sets the selection start for this text component to
+ * the specified position. The new start point is constrained
+ * to be at or before the current selection end. It also
+ * cannot be set to less than zero, the beginning of the
+ * component's text.
+ * If the caller supplies a value for <code>selectionStart</code>
+ * that is out of bounds, the method enforces these constraints
+ * silently, and without failure.
+ * @param       selectionStart   the start position of the
+ *                        selected text
+ * @see         java.awt.TextComponent#getSelectionStart
+ * @see         java.awt.TextComponent#setSelectionEnd
+ * @since       JDK1.1
+ */
+public synchronized void setSelectionStart(int selectionStart) {
+    /* Route through select method to enforce consistent policy
+         * between selectionStart and selectionEnd.
+         */
+    select(selectionStart, getSelectionEnd());
+}

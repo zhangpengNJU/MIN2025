@@ -1,0 +1,23 @@
+/**
+ * Clones all the data members from the source DateFormatSymbols to
+ * the target DateFormatSymbols.
+ *
+ * @param src the source DateFormatSymbols.
+ * @param dst the target DateFormatSymbols.
+ */
+private void copyMembers(DateFormatSymbols src, DateFormatSymbols dst) {
+    dst.locale = src.locale;
+    dst.eras = Arrays.copyOf(src.eras, src.eras.length);
+    dst.months = Arrays.copyOf(src.months, src.months.length);
+    dst.shortMonths = Arrays.copyOf(src.shortMonths, src.shortMonths.length);
+    dst.weekdays = Arrays.copyOf(src.weekdays, src.weekdays.length);
+    dst.shortWeekdays = Arrays.copyOf(src.shortWeekdays, src.shortWeekdays.length);
+    dst.ampms = Arrays.copyOf(src.ampms, src.ampms.length);
+    if (src.zoneStrings != null) {
+        dst.zoneStrings = src.getZoneStringsImpl(true);
+    } else {
+        dst.zoneStrings = null;
+    }
+    dst.localPatternChars = src.localPatternChars;
+    dst.cachedHashCode = 0;
+}

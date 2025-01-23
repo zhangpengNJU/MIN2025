@@ -1,0 +1,7 @@
+/**
+ * Returns an exportable index (used by ForkJoinWorkerThread).
+ */
+final int getPoolIndex() {
+    // ignore odd/even tag bit
+    return (config & 0xffff) >>> 1;
+}

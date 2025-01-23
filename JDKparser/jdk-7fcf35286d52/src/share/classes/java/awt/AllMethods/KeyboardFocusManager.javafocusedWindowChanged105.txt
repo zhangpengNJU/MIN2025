@@ -1,0 +1,14 @@
+private static boolean focusedWindowChanged(Component to, Component from) {
+    Window wto = SunToolkit.getContainingWindow(to);
+    Window wfrom = SunToolkit.getContainingWindow(from);
+    if (wto == null && wfrom == null) {
+        return true;
+    }
+    if (wto == null) {
+        return true;
+    }
+    if (wfrom == null) {
+        return true;
+    }
+    return (wto != wfrom);
+}

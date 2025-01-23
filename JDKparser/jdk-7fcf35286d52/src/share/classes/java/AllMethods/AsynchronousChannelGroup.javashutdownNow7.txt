@@ -1,0 +1,17 @@
+/**
+ * Shuts down the group and closes all open channels in the group.
+ *
+ * <p> In addition to the actions performed by the {@link #shutdown() shutdown}
+ * method, this method invokes the {@link AsynchronousChannel#close close}
+ * method on all open channels in the group. This method does not attempt to
+ * stop or interrupt threads that are executing completion handlers. The
+ * group terminates when all actively executing completion handlers have run
+ * to completion and all resources have been released. This method may be
+ * invoked at any time. If some other thread has already invoked it, then
+ * another invocation will block until the first invocation is complete,
+ * after which it will return without effect.
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+public abstract void shutdownNow() throws IOException;

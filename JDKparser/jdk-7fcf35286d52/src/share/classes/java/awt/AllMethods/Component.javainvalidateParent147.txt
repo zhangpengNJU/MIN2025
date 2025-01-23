@@ -1,0 +1,10 @@
+/**
+ * Invalidates the parent of this component if any.
+ *
+ * This method MUST BE invoked under the TreeLock.
+ */
+void invalidateParent() {
+    if (parent != null) {
+        parent.invalidateIfValid();
+    }
+}

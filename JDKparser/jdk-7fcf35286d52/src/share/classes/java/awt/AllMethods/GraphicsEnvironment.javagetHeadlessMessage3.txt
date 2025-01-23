@@ -1,0 +1,12 @@
+/**
+ * @return warning message if headless state is assumed by default;
+ * null otherwise
+ * @since 1.5
+ */
+static String getHeadlessMessage() {
+    if (headless == null) {
+        // initialize the values
+        getHeadlessProperty();
+    }
+    return defaultHeadless != Boolean.TRUE ? null : "\nNo X11 DISPLAY variable was set, " + "but this program performed an operation which requires it.";
+}

@@ -1,0 +1,17 @@
+/**
+ * Sets the subjectPublicKey criterion. The
+ * {@code X509Certificate} must contain the specified subject public
+ * key. If {@code null}, no subjectPublicKey check will be done.
+ *
+ * @param key the subject public key to check for (or {@code null})
+ * @see #getSubjectPublicKey
+ */
+public void setSubjectPublicKey(PublicKey key) {
+    if (key == null) {
+        subjectPublicKey = null;
+        subjectPublicKeyBytes = null;
+    } else {
+        subjectPublicKey = key;
+        subjectPublicKeyBytes = key.getEncoded();
+    }
+}

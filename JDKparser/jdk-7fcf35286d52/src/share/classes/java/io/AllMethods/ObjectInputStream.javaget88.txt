@@ -1,0 +1,4 @@
+public long get(String name, long val) throws IOException {
+    int off = getFieldOffset(name, Long.TYPE);
+    return (off >= 0) ? Bits.getLong(primVals, off) : val;
+}

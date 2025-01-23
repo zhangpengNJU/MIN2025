@@ -1,0 +1,5 @@
+private static void checkPtype(Class<?> ptype) {
+    Objects.requireNonNull(ptype);
+    if (ptype == void.class)
+        throw newIllegalArgumentException("parameter type cannot be void");
+}

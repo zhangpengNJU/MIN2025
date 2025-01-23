@@ -1,0 +1,47 @@
+/**
+ * Finish a transaction.
+ */
+LambdaForm endEdit() {
+    assert (verifyFirstChange());
+    // Assuming names have been changed pairwise from originalNames[i] to names[i],
+    // update arguments to ensure referential integrity.
+    for (int i = Math.max(firstChange, arity); i < length; i++) {
+        Name name = names[i];
+        // space for removed duplicate
+        if (name == null)
+            continue;
+        Name newName = name.replaceNames(originalNames, names, firstChange, i);
+        if (newName != name) {
+            names[i] = newName;
+            if (resultName == name) {
+                resultName = newName;
+            }
+        }
+    }
+    assert (inTrans());
+    flags &= ~F_TRANS;
+    clearDuplicatesAndNulls();
+    originalNames = null;
+    // If any parameters have been changed, then reorder them as needed.
+    // This is a "sheep-and-goats" stable sort, pushing all non-parameters
+    // to the right of all parameters.
+    if (firstChange < arity) {
+        Name[] exprs = new Name[arity - firstChange];
+        int argp = firstChange, exprp = 0;
+        for (int i = firstChange; i < arity; i++) {
+            Name name = names[i];
+            if (name.isParam()) {
+                names[argp++] = name;
+            } else {
+                exprs[exprp++] = name;
+            }
+        }
+        assert (exprp == (arity - argp));
+        // copy the exprs just after the last remaining param
+        System.arraycopy(exprs, 0, names, argp, exprp);
+        // adjust arity
+        arity -= exprp;
+    }
+    assert (verifyArity());
+    return lambdaForm();
+}

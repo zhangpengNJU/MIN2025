@@ -1,0 +1,8 @@
+private boolean authorized(String cname, byte[] addr) {
+    if (addr.length == 4)
+        return authorizedIPv4(cname, addr);
+    else if (addr.length == 16)
+        return authorizedIPv6(cname, addr);
+    else
+        return false;
+}

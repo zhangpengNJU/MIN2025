@@ -1,0 +1,18 @@
+/**
+ * Adds the specified window listener to receive window events from
+ * this window.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window listener
+ * @see #removeWindowListener
+ * @see #getWindowListeners
+ */
+public synchronized void addWindowListener(WindowListener l) {
+    if (l == null) {
+        return;
+    }
+    newEventsOnly = true;
+    windowListener = AWTEventMulticaster.add(windowListener, l);
+}

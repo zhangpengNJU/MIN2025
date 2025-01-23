@@ -1,0 +1,69 @@
+/**
+ * Filters the information provided in the <code>imageComplete</code>
+ * method of the <code>ImageConsumer</code> interface.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered.  Developers using
+ * this class to retrieve pixels from an image should avoid calling
+ * this method directly since that operation could result in problems
+ * with retrieving the requested pixels.
+ * @param status the status of image loading
+ * @throws ImagingOpException if there was a problem calling the filter
+ * method of the <code>BufferedImageOp</code> associated with this
+ * instance.
+ * @see ImageConsumer#imageComplete
+ */
+public void imageComplete(int status) {
+    WritableRaster wr;
+    switch(status) {
+        case IMAGEERROR:
+        case IMAGEABORTED:
+            // reinitialize the params
+            model = null;
+            width = -1;
+            height = -1;
+            intPixels = null;
+            bytePixels = null;
+            break;
+        case SINGLEFRAMEDONE:
+        case STATICIMAGEDONE:
+            if (width <= 0 || height <= 0)
+                break;
+            if (model instanceof DirectColorModel) {
+                if (intPixels == null)
+                    break;
+                wr = createDCMraster();
+            } else if (model instanceof IndexColorModel) {
+                int[] bandOffsets = { 0 };
+                if (bytePixels == null)
+                    break;
+                DataBufferByte db = new DataBufferByte(bytePixels, width * height);
+                wr = Raster.createInterleavedRaster(db, width, height, width, 1, bandOffsets, null);
+            } else {
+                convertToRGB();
+                if (intPixels == null)
+                    break;
+                wr = createDCMraster();
+            }
+            BufferedImage bi = new BufferedImage(model, wr, model.isAlphaPremultiplied(), null);
+            bi = bufferedImageOp.filter(bi, null);
+            WritableRaster r = bi.getRaster();
+            ColorModel cm = bi.getColorModel();
+            int w = r.getWidth();
+            int h = r.getHeight();
+            consumer.setDimensions(w, h);
+            consumer.setColorModel(cm);
+            if (cm instanceof DirectColorModel) {
+                DataBufferInt db = (DataBufferInt) r.getDataBuffer();
+                consumer.setPixels(0, 0, w, h, cm, db.getData(), 0, w);
+            } else if (cm instanceof IndexColorModel) {
+                DataBufferByte db = (DataBufferByte) r.getDataBuffer();
+                consumer.setPixels(0, 0, w, h, cm, db.getData(), 0, w);
+            } else {
+                throw new InternalError("Unknown color model " + cm);
+            }
+            break;
+    }
+    consumer.imageComplete(status);
+}

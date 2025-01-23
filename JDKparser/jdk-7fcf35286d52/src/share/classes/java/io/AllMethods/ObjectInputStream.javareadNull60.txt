@@ -1,0 +1,10 @@
+/**
+ * Reads in null code, sets passHandle to NULL_HANDLE and returns null.
+ */
+private Object readNull() throws IOException {
+    if (bin.readByte() != TC_NULL) {
+        throw new InternalError();
+    }
+    passHandle = NULL_HANDLE;
+    return null;
+}

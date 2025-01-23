@@ -1,0 +1,67 @@
+final void ensureLogManagerInitialized() {
+    final LogManager owner = this;
+    if (initializationDone || owner != manager) {
+        // we don't want to do this twice, and we don't want to do
+        // this on private manager instances.
+        return;
+    }
+    // Maybe another thread has called ensureLogManagerInitialized()
+    // before us and is still executing it. If so we will block until
+    // the log manager has finished initialized, then acquire the monitor,
+    // notice that initializationDone is now true and return.
+    // Otherwise - we have come here first! We will acquire the monitor,
+    // see that initializationDone is still false, and perform the
+    // initialization.
+    // 
+    synchronized (this) {
+        // If initializedCalled is true it means that we're already in
+        // the process of initializing the LogManager in this thread.
+        // There has been a recursive call to ensureLogManagerInitialized().
+        final boolean isRecursiveInitialization = (initializedCalled == true);
+        assert initializedCalled || !initializationDone : "Initialization can't be done if initialized has not been called!";
+        if (isRecursiveInitialization || initializationDone) {
+            // If isRecursiveInitialization is true it means that we're
+            // already in the process of initializing the LogManager in
+            // this thread. There has been a recursive call to
+            // ensureLogManagerInitialized(). We should not proceed as
+            // it would lead to infinite recursion.
+            // 
+            // If initializationDone is true then it means the manager
+            // has finished initializing; just return: we're done.
+            return;
+        }
+        // Calling addLogger below will in turn call requiresDefaultLogger()
+        // which will call ensureLogManagerInitialized().
+        // We use initializedCalled to break the recursion.
+        initializedCalled = true;
+        try {
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    assert rootLogger == null;
+                    assert initializedCalled && !initializationDone;
+                    // Read configuration.
+                    owner.readPrimordialConfiguration();
+                    // Create and retain Logger for the root of the namespace.
+                    owner.rootLogger = owner.new RootLogger();
+                    owner.addLogger(owner.rootLogger);
+                    if (!owner.rootLogger.isLevelInitialized()) {
+                        owner.rootLogger.setLevel(defaultLevel);
+                    }
+                    // Adding the global Logger.
+                    // Do not call Logger.getGlobal() here as this might trigger
+                    // subtle inter-dependency issues.
+                    @SuppressWarnings("deprecation")
+                    final Logger global = Logger.global;
+                    // Make sure the global logger will be registered in the
+                    // global manager
+                    owner.addLogger(global);
+                    return null;
+                }
+            });
+        } finally {
+            initializationDone = true;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Get all cookies in cookie store, except those have expired
+ */
+public List<HttpCookie> getCookies() {
+    List<HttpCookie> rt;
+    lock.lock();
+    try {
+        Iterator<HttpCookie> it = cookieJar.iterator();
+        while (it.hasNext()) {
+            if (it.next().hasExpired()) {
+                it.remove();
+            }
+        }
+    } finally {
+        rt = Collections.unmodifiableList(cookieJar);
+        lock.unlock();
+    }
+    return rt;
+}

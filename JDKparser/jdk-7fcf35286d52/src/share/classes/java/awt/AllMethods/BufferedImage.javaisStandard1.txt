@@ -1,0 +1,14 @@
+private static boolean isStandard(ColorModel cm, WritableRaster wr) {
+    final Class<? extends ColorModel> cmClass = cm.getClass();
+    final Class<? extends WritableRaster> wrClass = wr.getClass();
+    final Class<? extends SampleModel> smClass = wr.getSampleModel().getClass();
+    final PrivilegedAction<Boolean> checkClassLoadersAction = new PrivilegedAction<Boolean>() {
+
+        @Override
+        public Boolean run() {
+            final ClassLoader std = System.class.getClassLoader();
+            return (cmClass.getClassLoader() == std) && (smClass.getClassLoader() == std) && (wrClass.getClassLoader() == std);
+        }
+    };
+    return AccessController.doPrivileged(checkClassLoadersAction);
+}

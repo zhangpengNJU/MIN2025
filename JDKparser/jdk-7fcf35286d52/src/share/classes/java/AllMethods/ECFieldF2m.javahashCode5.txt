@@ -1,0 +1,12 @@
+/**
+ * Returns a hash code value for this characteristic 2
+ * finite field.
+ * @return a hash code value.
+ */
+public int hashCode() {
+    int value = m << 5;
+    value += (rp == null ? 0 : rp.hashCode());
+    // no need to involve ks here since ks and rp
+    // should be equivalent.
+    return value;
+}

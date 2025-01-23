@@ -1,0 +1,90 @@
+@SuppressWarnings("fallthrough")
+private /**
+ * Parse and add a new Single or Slice.
+ */
+Node atom() {
+    int first = 0;
+    int prev = -1;
+    boolean hasSupplementary = false;
+    int ch = peek();
+    for (; ; ) {
+        switch(ch) {
+            case '*':
+            case '+':
+            case '?':
+            case '{':
+                if (first > 1) {
+                    // Unwind one character
+                    cursor = prev;
+                    first--;
+                }
+                break;
+            case '$':
+            case '.':
+            case '^':
+            case '(':
+            case '[':
+            case '|':
+            case ')':
+                break;
+            case '\\':
+                ch = nextEscaped();
+                if (ch == 'p' || ch == 'P') {
+                    // Property
+                    if (first > 0) {
+                        // Slice is waiting; handle it first
+                        unread();
+                        break;
+                    } else {
+                        // No slice; just return the family node
+                        boolean comp = (ch == 'P');
+                        boolean oneLetter = true;
+                        // Consume { if present
+                        ch = next();
+                        if (ch != '{')
+                            unread();
+                        else
+                            oneLetter = false;
+                        return family(oneLetter, comp);
+                    }
+                }
+                unread();
+                prev = cursor;
+                ch = escape(false, first == 0, false);
+                if (ch >= 0) {
+                    append(ch, first);
+                    first++;
+                    if (isSupplementary(ch)) {
+                        hasSupplementary = true;
+                    }
+                    ch = peek();
+                    continue;
+                } else if (first == 0) {
+                    return root;
+                }
+                // Unwind meta escape sequence
+                cursor = prev;
+                break;
+            case 0:
+                if (cursor >= patternLength) {
+                    break;
+                }
+            // Fall through
+            default:
+                prev = cursor;
+                append(ch, first);
+                first++;
+                if (isSupplementary(ch)) {
+                    hasSupplementary = true;
+                }
+                ch = next();
+                continue;
+        }
+        break;
+    }
+    if (first == 1) {
+        return newSingle(buffer[0]);
+    } else {
+        return newSlice(buffer, first, hasSupplementary);
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * Return the number of times n is used as an argument or return value.
+ */
+int useCount(Name n) {
+    int ni = n.index, nmax = names.length;
+    int end = lastUseIndex(n);
+    if (end < 0)
+        return 0;
+    int count = 0;
+    if (end == nmax) {
+        count++;
+        end--;
+    }
+    int beg = n.index() + 1;
+    if (beg < arity)
+        beg = arity;
+    for (int i = beg; i <= end; i++) {
+        count += names[i].useCount(n);
+    }
+    return count;
+}

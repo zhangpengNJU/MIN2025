@@ -1,0 +1,11 @@
+/**
+ * Returns the canonical name of this BasicPermission.
+ * All internal invocations of getName should invoke this method, so
+ * that the pre-JDK 1.6 "exitVM" and current "exitVM.*" permission are
+ * equivalent in equals/hashCode methods.
+ *
+ * @return the canonical name of this BasicPermission.
+ */
+final String getCanonicalName() {
+    return exitVM ? "exitVM.*" : getName();
+}

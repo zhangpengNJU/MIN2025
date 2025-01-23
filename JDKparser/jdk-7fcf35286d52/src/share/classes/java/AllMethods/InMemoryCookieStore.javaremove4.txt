@@ -1,0 +1,17 @@
+/**
+ * Remove a cookie from store
+ */
+public boolean remove(URI uri, HttpCookie ck) {
+    // argument can't be null
+    if (ck == null) {
+        throw new NullPointerException("cookie is null");
+    }
+    boolean modified = false;
+    lock.lock();
+    try {
+        modified = cookieJar.remove(ck);
+    } finally {
+        lock.unlock();
+    }
+    return modified;
+}

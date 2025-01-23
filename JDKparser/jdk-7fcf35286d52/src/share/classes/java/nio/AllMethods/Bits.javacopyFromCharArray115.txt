@@ -1,0 +1,15 @@
+/**
+ * Copy and unconditionally byte swap 16 bit elements from a heap array to off-heap memory
+ *
+ * @param src
+ *        the source array, must be a 16-bit primitive array type
+ * @param srcPos
+ *        byte offset within source array of the first element to read
+ * @param dstAddr
+ *        destination address
+ * @param length
+ *        number of bytes to copy
+ */
+static void copyFromCharArray(Object src, long srcPos, long dstAddr, long length) {
+    copySwapMemory(src, unsafe.arrayBaseOffset(src.getClass()) + srcPos, null, dstAddr, length, 2);
+}

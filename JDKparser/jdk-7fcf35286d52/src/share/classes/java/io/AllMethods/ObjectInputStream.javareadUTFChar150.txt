@@ -1,0 +1,55 @@
+/**
+ * Reads in single UTF-encoded character one byte at a time, appends
+ * the character to sbuf, and returns the number of bytes consumed.
+ * This method is used when reading in UTF strings written in block
+ * data mode to handle UTF-encoded characters which (potentially)
+ * straddle block-data boundaries.
+ */
+private int readUTFChar(StringBuilder sbuf, long utflen) throws IOException {
+    int b1, b2, b3;
+    b1 = readByte() & 0xFF;
+    switch(b1 >> 4) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case // 1 byte format: 0xxxxxxx
+        7:
+            sbuf.append((char) b1);
+            return 1;
+        case 12:
+        case // 2 byte format: 110xxxxx 10xxxxxx
+        13:
+            if (utflen < 2) {
+                throw new UTFDataFormatException();
+            }
+            b2 = readByte();
+            if ((b2 & 0xC0) != 0x80) {
+                throw new UTFDataFormatException();
+            }
+            sbuf.append((char) (((b1 & 0x1F) << 6) | ((b2 & 0x3F) << 0)));
+            return 2;
+        case // 3 byte format: 1110xxxx 10xxxxxx 10xxxxxx
+        14:
+            if (utflen < 3) {
+                if (utflen == 2) {
+                    // consume remaining byte
+                    readByte();
+                }
+                throw new UTFDataFormatException();
+            }
+            b2 = readByte();
+            b3 = readByte();
+            if ((b2 & 0xC0) != 0x80 || (b3 & 0xC0) != 0x80) {
+                throw new UTFDataFormatException();
+            }
+            sbuf.append((char) (((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | ((b3 & 0x3F) << 0)));
+            return 3;
+        default:
+            // 10xx xxxx, 1111 xxxx
+            throw new UTFDataFormatException();
+    }
+}

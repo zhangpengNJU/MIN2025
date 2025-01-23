@@ -1,0 +1,20 @@
+/**
+ * Creates the chronology era object from the numeric value.
+ * <p>
+ * The era is, conceptually, the largest division of the time-line.
+ * Most calendar systems have a single epoch dividing the time-line into two eras.
+ * However, some have multiple eras, such as one for the reign of each leader.
+ * The exact meaning is determined by the chronology according to the following constraints.
+ * <p>
+ * The era in use at 1970-01-01 must have the value 1.
+ * Later eras must have sequentially higher values.
+ * Earlier eras must have sequentially lower values.
+ * Each chronology must refer to an enum or similar singleton to provide the era values.
+ * <p>
+ * This method returns the singleton era of the correct type for the specified era value.
+ *
+ * @param eraValue  the era value
+ * @return the calendar system era, not null
+ * @throws DateTimeException if unable to create the era
+ */
+Era eraOf(int eraValue);

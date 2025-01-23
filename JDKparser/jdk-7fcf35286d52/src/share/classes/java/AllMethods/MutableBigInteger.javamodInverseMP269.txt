@@ -1,0 +1,27 @@
+/*
+     * Calculate the multiplicative inverse of this mod 2^k.
+     */
+MutableBigInteger modInverseMP2(int k) {
+    if (isEven())
+        throw new ArithmeticException("Non-invertible. (GCD != 1)");
+    if (k > 64)
+        return euclidModInverse(k);
+    int t = inverseMod32(value[offset + intLen - 1]);
+    if (k < 33) {
+        t = (k == 32 ? t : t & ((1 << k) - 1));
+        return new MutableBigInteger(t);
+    }
+    long pLong = (value[offset + intLen - 1] & LONG_MASK);
+    if (intLen > 1)
+        pLong |= ((long) value[offset + intLen - 2] << 32);
+    long tLong = t & LONG_MASK;
+    // 1 more Newton iter step
+    tLong = tLong * (2 - pLong * tLong);
+    tLong = (k == 64 ? tLong : tLong & ((1L << k) - 1));
+    MutableBigInteger result = new MutableBigInteger(new int[2]);
+    result.value[0] = (int) (tLong >>> 32);
+    result.value[1] = (int) tLong;
+    result.intLen = 2;
+    result.normalize();
+    return result;
+}

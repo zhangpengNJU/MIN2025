@@ -1,0 +1,224 @@
+@SuppressWarnings("deprecation")
+void dispatchEventImpl(AWTEvent e) {
+    int id = e.getID();
+    // Check that this component belongs to this app-context
+    AppContext compContext = appContext;
+    if (compContext != null && !compContext.equals(AppContext.getAppContext())) {
+        if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+            eventLog.fine("Event " + e + " is being dispatched on the wrong AppContext");
+        }
+    }
+    if (eventLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        eventLog.finest("{0}", e);
+    }
+    /*
+         * 0. Set timestamp and modifiers of current event.
+         */
+    if (!(e instanceof KeyEvent)) {
+        // Timestamp of a key event is set later in DKFM.preDispatchKeyEvent(KeyEvent).
+        EventQueue.setCurrentEventAndMostRecentTime(e);
+    }
+    /*
+         * 1. Pre-dispatchers. Do any necessary retargeting/reordering here
+         *    before we notify AWTEventListeners.
+         */
+    if (e instanceof SunDropTargetEvent) {
+        ((SunDropTargetEvent) e).dispatch();
+        return;
+    }
+    if (!e.focusManagerIsDispatching) {
+        // Invoke the private focus retargeting method which provides
+        // lightweight Component support
+        if (e.isPosted) {
+            e = KeyboardFocusManager.retargetFocusEvent(e);
+            e.isPosted = true;
+        }
+        // Now, with the event properly targeted to a lightweight
+        // descendant if necessary, invoke the public focus retargeting
+        // and dispatching function
+        if (KeyboardFocusManager.getCurrentKeyboardFocusManager().dispatchEvent(e)) {
+            return;
+        }
+    }
+    if ((e instanceof FocusEvent) && focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        focusLog.finest("" + e);
+    }
+    // MouseWheel may need to be retargeted here so that
+    // AWTEventListener sees the event go to the correct
+    // Component.  If the MouseWheelEvent needs to go to an ancestor,
+    // the event is dispatched to the ancestor, and dispatching here
+    // stops.
+    if (id == MouseEvent.MOUSE_WHEEL && (!eventTypeEnabled(id)) && (peer != null && !peer.handlesWheelScrolling()) && (dispatchMouseWheelToAncestor((MouseWheelEvent) e))) {
+        return;
+    }
+    /*
+         * 2. Allow the Toolkit to pass this to AWTEventListeners.
+         */
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    toolkit.notifyAWTEventListeners(e);
+    /*
+         * 3. If no one has consumed a key event, allow the
+         *    KeyboardFocusManager to process it.
+         */
+    if (!e.isConsumed()) {
+        if (e instanceof java.awt.event.KeyEvent) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().processKeyEvent(this, (KeyEvent) e);
+            if (e.isConsumed()) {
+                return;
+            }
+        }
+    }
+    /*
+         * 4. Allow input methods to process the event
+         */
+    if (areInputMethodsEnabled()) {
+        // We need to pass on InputMethodEvents since some host
+        // input method adapters send them through the Java
+        // event queue instead of directly to the component,
+        // and the input context also handles the Java composition window
+        if (((e instanceof InputMethodEvent) && !(this instanceof CompositionArea)) || // Otherwise, we only pass on input and focus events, because
+        // a) input methods shouldn't know about semantic or component-level events
+        // b) passing on the events takes time
+        // c) isConsumed() is always true for semantic events.
+        (e instanceof InputEvent) || (e instanceof FocusEvent)) {
+            InputContext inputContext = getInputContext();
+            if (inputContext != null) {
+                inputContext.dispatchEvent(e);
+                if (e.isConsumed()) {
+                    if ((e instanceof FocusEvent) && focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+                        focusLog.finest("3579: Skipping " + e);
+                    }
+                    return;
+                }
+            }
+        }
+    } else {
+        // When non-clients get focus, we need to explicitly disable the native
+        // input method. The native input method is actually not disabled when
+        // the active/passive/peered clients loose focus.
+        if (id == FocusEvent.FOCUS_GAINED) {
+            InputContext inputContext = getInputContext();
+            if (inputContext != null && inputContext instanceof sun.awt.im.InputContext) {
+                ((sun.awt.im.InputContext) inputContext).disableNativeIM();
+            }
+        }
+    }
+    /*
+         * 5. Pre-process any special events before delivery
+         */
+    switch(id) {
+        // Handling of the PAINT and UPDATE events is now done in the
+        // peer's handleEvent() method so the background can be cleared
+        // selectively for non-native components on Windows only.
+        // - Fred.Ecks@Eng.sun.com, 5-8-98
+        case KeyEvent.KEY_PRESSED:
+        case KeyEvent.KEY_RELEASED:
+            Container p = (Container) ((this instanceof Container) ? this : parent);
+            if (p != null) {
+                p.preProcessKeyEvent((KeyEvent) e);
+                if (e.isConsumed()) {
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+                        focusLog.finest("Pre-process consumed event");
+                    }
+                    return;
+                }
+            }
+            break;
+        case WindowEvent.WINDOW_CLOSING:
+            if (toolkit instanceof WindowClosingListener) {
+                windowClosingException = ((WindowClosingListener) toolkit).windowClosingNotify((WindowEvent) e);
+                if (checkWindowClosingException()) {
+                    return;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    /*
+         * 6. Deliver event for normal processing
+         */
+    if (newEventsOnly) {
+        // Filtering needs to really be moved to happen at a lower
+        // level in order to get maximum performance gain;  it is
+        // here temporarily to ensure the API spec is honored.
+        // 
+        if (eventEnabled(e)) {
+            processEvent(e);
+        }
+    } else if (id == MouseEvent.MOUSE_WHEEL) {
+        // newEventsOnly will be false for a listenerless ScrollPane, but
+        // MouseWheelEvents still need to be dispatched to it so scrolling
+        // can be done.
+        autoProcessMouseWheel((MouseWheelEvent) e);
+    } else if (!(e instanceof MouseEvent && !postsOldMouseEvents())) {
+        // 
+        // backward compatibility
+        // 
+        Event olde = e.convertToOld();
+        if (olde != null) {
+            int key = olde.key;
+            int modifiers = olde.modifiers;
+            postEvent(olde);
+            if (olde.isConsumed()) {
+                e.consume();
+            }
+            // if target changed key or modifier values, copy them
+            // back to original event
+            // 
+            switch(olde.id) {
+                case Event.KEY_PRESS:
+                case Event.KEY_RELEASE:
+                case Event.KEY_ACTION:
+                case Event.KEY_ACTION_RELEASE:
+                    if (olde.key != key) {
+                        ((KeyEvent) e).setKeyChar(olde.getKeyEventChar());
+                    }
+                    if (olde.modifiers != modifiers) {
+                        ((KeyEvent) e).setModifiers(olde.modifiers);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    /*
+         * 8. Special handling for 4061116 : Hook for browser to close modal
+         *    dialogs.
+         */
+    if (id == WindowEvent.WINDOW_CLOSING && !e.isConsumed()) {
+        if (toolkit instanceof WindowClosingListener) {
+            windowClosingException = ((WindowClosingListener) toolkit).windowClosingDelivered((WindowEvent) e);
+            if (checkWindowClosingException()) {
+                return;
+            }
+        }
+    }
+    /*
+         * 9. Allow the peer to process the event.
+         * Except KeyEvents, they will be processed by peer after
+         * all KeyEventPostProcessors
+         * (see DefaultKeyboardFocusManager.dispatchKeyEvent())
+         */
+    if (!(e instanceof KeyEvent)) {
+        ComponentPeer tpeer = peer;
+        if (e instanceof FocusEvent && (tpeer == null || tpeer instanceof LightweightPeer)) {
+            // if focus owner is lightweight then its native container
+            // processes event
+            Component source = (Component) e.getSource();
+            if (source != null) {
+                Container target = source.getNativeContainer();
+                if (target != null) {
+                    tpeer = target.getPeer();
+                }
+            }
+        }
+        if (tpeer != null) {
+            tpeer.handleEvent(e);
+        }
+    }
+    if (SunToolkit.isTouchKeyboardAutoShowEnabled() && (toolkit instanceof SunToolkit) && ((e instanceof MouseEvent) || (e instanceof FocusEvent))) {
+        ((SunToolkit) toolkit).showOrHideTouchKeyboard(this, e);
+    }
+}

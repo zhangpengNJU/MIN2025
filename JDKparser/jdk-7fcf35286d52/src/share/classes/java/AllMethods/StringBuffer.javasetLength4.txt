@@ -1,0 +1,9 @@
+/**
+ * @throws IndexOutOfBoundsException {@inheritDoc}
+ * @see        #length()
+ */
+@Override
+public synchronized void setLength(int newLength) {
+    toStringCache = null;
+    super.setLength(newLength);
+}

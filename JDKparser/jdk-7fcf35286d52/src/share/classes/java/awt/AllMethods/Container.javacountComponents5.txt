@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by getComponentCount().
+ */
+@Deprecated
+public int countComponents() {
+    // This method is not synchronized under AWT tree lock.
+    // Instead, the calling code is responsible for the
+    // synchronization. See 6784816 for details.
+    return component.size();
+}

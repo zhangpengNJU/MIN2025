@@ -1,0 +1,9 @@
+@Override
+@SuppressWarnings("unchecked")
+final <P_IN> Spliterator<E_OUT> wrapSpliterator(Spliterator<P_IN> sourceSpliterator) {
+    if (depth == 0) {
+        return (Spliterator<E_OUT>) sourceSpliterator;
+    } else {
+        return wrap(this, () -> sourceSpliterator, isParallel());
+    }
+}

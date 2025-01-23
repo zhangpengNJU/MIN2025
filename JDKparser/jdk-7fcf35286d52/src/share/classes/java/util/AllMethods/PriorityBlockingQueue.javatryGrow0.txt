@@ -1,0 +1,39 @@
+/**
+ * Tries to grow array to accommodate at least one more element
+ * (but normally expand by about 50%), giving up (allowing retry)
+ * on contention (which we expect to be rare). Call only while
+ * holding lock.
+ *
+ * @param array the heap array
+ * @param oldCap the length of the array
+ */
+private void tryGrow(Object[] array, int oldCap) {
+    // must release and then re-acquire main lock
+    lock.unlock();
+    Object[] newArray = null;
+    if (allocationSpinLock == 0 && UNSAFE.compareAndSwapInt(this, allocationSpinLockOffset, 0, 1)) {
+        try {
+            int newCap = oldCap + ((oldCap < 64) ? // grow faster if small
+            (oldCap + 2) : (oldCap >> 1));
+            if (newCap - MAX_ARRAY_SIZE > 0) {
+                // possible overflow
+                int minCap = oldCap + 1;
+                if (minCap < 0 || minCap > MAX_ARRAY_SIZE)
+                    throw new OutOfMemoryError();
+                newCap = MAX_ARRAY_SIZE;
+            }
+            if (newCap > oldCap && queue == array)
+                newArray = new Object[newCap];
+        } finally {
+            allocationSpinLock = 0;
+        }
+    }
+    if (// back off if another thread is allocating
+    newArray == null)
+        Thread.yield();
+    lock.lock();
+    if (newArray != null && queue == array) {
+        queue = newArray;
+        System.arraycopy(array, 0, newArray, 0, oldCap);
+    }
+}

@@ -1,0 +1,6 @@
+synchronized void postWindowEvent(int id) {
+    if (windowListener != null || (eventMask & AWTEvent.WINDOW_EVENT_MASK) != 0 || Toolkit.enabledOnToolkit(AWTEvent.WINDOW_EVENT_MASK)) {
+        WindowEvent e = new WindowEvent(this, id);
+        Toolkit.getEventQueue().postEvent(e);
+    }
+}

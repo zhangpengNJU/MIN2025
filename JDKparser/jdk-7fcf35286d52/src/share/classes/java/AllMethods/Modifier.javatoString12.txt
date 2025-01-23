@@ -1,0 +1,64 @@
+/**
+ * Return a string describing the access modifier flags in
+ * the specified modifier. For example:
+ * <blockquote><pre>
+ *    public final synchronized strictfp
+ * </pre></blockquote>
+ * The modifier names are returned in an order consistent with the
+ * suggested modifier orderings given in sections 8.1.1, 8.3.1, 8.4.3, 8.8.3, and 9.1.1 of
+ * <cite>The Java&trade; Language Specification</cite>.
+ * The full modifier ordering used by this method is:
+ * <blockquote> {@code
+ * public protected private abstract static final transient
+ * volatile synchronized native strictfp
+ * interface } </blockquote>
+ * The {@code interface} modifier discussed in this class is
+ * not a true modifier in the Java language and it appears after
+ * all other modifiers listed by this method.  This method may
+ * return a string of modifiers that are not valid modifiers of a
+ * Java entity; in other words, no checking is done on the
+ * possible validity of the combination of modifiers represented
+ * by the input.
+ *
+ * Note that to perform such checking for a known kind of entity,
+ * such as a constructor or method, first AND the argument of
+ * {@code toString} with the appropriate mask from a method like
+ * {@link #constructorModifiers} or {@link #methodModifiers}.
+ *
+ * @param   mod a set of modifiers
+ * @return  a string representation of the set of modifiers
+ * represented by {@code mod}
+ */
+public static String toString(int mod) {
+    StringBuilder sb = new StringBuilder();
+    int len;
+    if ((mod & PUBLIC) != 0)
+        sb.append("public ");
+    if ((mod & PROTECTED) != 0)
+        sb.append("protected ");
+    if ((mod & PRIVATE) != 0)
+        sb.append("private ");
+    /* Canonical order */
+    if ((mod & ABSTRACT) != 0)
+        sb.append("abstract ");
+    if ((mod & STATIC) != 0)
+        sb.append("static ");
+    if ((mod & FINAL) != 0)
+        sb.append("final ");
+    if ((mod & TRANSIENT) != 0)
+        sb.append("transient ");
+    if ((mod & VOLATILE) != 0)
+        sb.append("volatile ");
+    if ((mod & SYNCHRONIZED) != 0)
+        sb.append("synchronized ");
+    if ((mod & NATIVE) != 0)
+        sb.append("native ");
+    if ((mod & STRICT) != 0)
+        sb.append("strictfp ");
+    if ((mod & INTERFACE) != 0)
+        sb.append("interface ");
+    if ((len = sb.length()) > 0)
+        /* trim trailing space */
+        return sb.toString().substring(0, len - 1);
+    return "";
+}

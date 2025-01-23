@@ -1,0 +1,25 @@
+/**
+ * Transfers all entries from src to dest tables
+ */
+private void transfer(Entry<K, V>[] src, Entry<K, V>[] dest) {
+    for (int j = 0; j < src.length; ++j) {
+        Entry<K, V> e = src[j];
+        src[j] = null;
+        while (e != null) {
+            Entry<K, V> next = e.next;
+            Object key = e.get();
+            if (key == null) {
+                // Help GC
+                e.next = null;
+                // "   "
+                e.value = null;
+                size--;
+            } else {
+                int i = indexFor(e.hash, dest.length);
+                e.next = dest[i];
+                dest[i] = e;
+            }
+            e = next;
+        }
+    }
+}

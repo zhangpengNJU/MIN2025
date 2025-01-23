@@ -1,0 +1,15 @@
+/**
+ * Invalidates or flushes any internally-cached data that depends
+ * on the vertex coordinates of this <code>Polygon</code>.
+ * This method should be called after any direct manipulation
+ * of the coordinates in the <code>xpoints</code> or
+ * <code>ypoints</code> arrays to avoid inconsistent results
+ * from methods such as <code>getBounds</code> or <code>contains</code>
+ * that might cache data from earlier computations relating to
+ * the vertex coordinates.
+ * @see         java.awt.Polygon#getBounds
+ * @since 1.4
+ */
+public void invalidate() {
+    bounds = null;
+}

@@ -1,0 +1,21 @@
+/**
+ * Resets this <code>Polygon</code> object to an empty polygon.
+ * The coordinate arrays and the data in them are left untouched
+ * but the number of points is reset to zero to mark the old
+ * vertex data as invalid and to start accumulating new vertex
+ * data at the beginning.
+ * All internally-cached data relating to the old vertices
+ * are discarded.
+ * Note that since the coordinate arrays from before the reset
+ * are reused, creating a new empty <code>Polygon</code> might
+ * be more memory efficient than resetting the current one if
+ * the number of vertices in the new polygon data is significantly
+ * smaller than the number of vertices in the data from before the
+ * reset.
+ * @see         java.awt.Polygon#invalidate
+ * @since 1.4
+ */
+public void reset() {
+    npoints = 0;
+    bounds = null;
+}

@@ -1,0 +1,37 @@
+/**
+ * Retreives a slice of the SQL <code>ARRAY</code> value
+ * designated by this <code>Array</code> object, beginning with the specified
+ * <code>index</code> and containing up to <code>count</code>
+ * successive elements of the SQL array.
+ * <P>
+ * This method uses
+ * the specified <code>map</code> for type map customizations
+ * unless the base type of the array does not match a user-defined
+ * type in <code>map</code>, in which case it
+ * uses the standard mapping. This version of the method
+ * <code>getArray</code> uses either the given type map or the standard mapping;
+ * it never uses the type map associated with the connection.
+ * <p>
+ * <strong>Note:</strong> When <code>getArray</code> is used to materialize
+ * a base type that maps to a primitive data type, then it is
+ * implementation-defined whether the array returned is an array of
+ * that primitive data type or an array of <code>Object</code>.
+ *
+ * @param index the array index of the first element to retrieve;
+ *              the first element is at index 1
+ * @param count the number of successive SQL array elements to
+ * retrieve
+ * @param map a <code>java.util.Map</code> object
+ * that contains SQL type names and the classes in
+ * the Java programming language to which they are mapped
+ * @return an array containing up to <code>count</code>
+ * consecutive elements of the SQL <code>ARRAY</code> value designated by this
+ * <code>Array</code> object, beginning with element
+ * <code>index</code>
+ * @exception SQLException if an error occurs while attempting to
+ * access the array
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+Object getArray(long index, int count, java.util.Map<String, Class<?>> map) throws SQLException;

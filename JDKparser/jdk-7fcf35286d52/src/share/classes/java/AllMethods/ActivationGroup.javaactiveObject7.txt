@@ -1,0 +1,16 @@
+/**
+ * This protected method is necessary for subclasses to
+ * make the <code>activeObject</code> callback to the group's
+ * monitor. The call is simply forwarded to the group's
+ * <code>ActivationMonitor</code>.
+ *
+ * @param id the object's identifier
+ * @param mobj a marshalled object containing the remote object's stub
+ * @exception UnknownObjectException if object is not registered
+ * @exception RemoteException if call informing monitor fails
+ * @exception ActivationException if an activation error occurs
+ * @since 1.2
+ */
+protected void activeObject(ActivationID id, MarshalledObject<? extends Remote> mobj) throws ActivationException, UnknownObjectException, RemoteException {
+    getMonitor().activeObject(id, mobj);
+}

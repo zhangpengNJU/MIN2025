@@ -1,0 +1,14 @@
+/**
+ * Returns array of ClassDataSlot instances representing the data layout
+ * (including superclass data) for serialized objects described by this
+ * class descriptor.  ClassDataSlots are ordered by inheritance with those
+ * containing "higher" superclasses appearing first.  The final
+ * ClassDataSlot contains a reference to this descriptor.
+ */
+ClassDataSlot[] getClassDataLayout() throws InvalidClassException {
+    // REMIND: synchronize instead of relying on volatile?
+    if (dataLayout == null) {
+        dataLayout = getClassDataLayout0();
+    }
+    return dataLayout;
+}

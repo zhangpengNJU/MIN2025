@@ -1,0 +1,6 @@
+private static Pattern boolPattern() {
+    Pattern bp = boolPattern;
+    if (bp == null)
+        boolPattern = bp = Pattern.compile(BOOLEAN_PATTERN, Pattern.CASE_INSENSITIVE);
+    return bp;
+}

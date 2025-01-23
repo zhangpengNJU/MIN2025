@@ -1,0 +1,12 @@
+protected void engineSetParameter(AlgorithmParameterSpec params) throws InvalidAlgorithmParameterException {
+    if (sigSpi != null) {
+        sigSpi.engineSetParameter(params);
+    } else {
+        try {
+            chooseProvider(S_PARAM, null, params, null);
+        } catch (InvalidKeyException ike) {
+            // should never happen, rethrow just in case
+            throw new InvalidAlgorithmParameterException(ike);
+        }
+    }
+}

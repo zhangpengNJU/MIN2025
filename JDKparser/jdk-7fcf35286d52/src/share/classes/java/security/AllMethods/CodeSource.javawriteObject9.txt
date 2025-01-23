@@ -1,0 +1,41 @@
+/**
+ * Writes this object out to a stream (i.e., serializes it).
+ *
+ * @serialData An initial {@code URL} is followed by an
+ * {@code int} indicating the number of certificates to follow
+ * (a value of "zero" denotes that there are no certificates associated
+ * with this object).
+ * Each certificate is written out starting with a {@code String}
+ * denoting the certificate type, followed by an
+ * {@code int} specifying the length of the certificate encoding,
+ * followed by the certificate encoding itself which is written out as an
+ * array of bytes. Finally, if any code signers are present then the array
+ * of code signers is serialized and written out too.
+ */
+private void writeObject(java.io.ObjectOutputStream oos) throws IOException {
+    // location
+    oos.defaultWriteObject();
+    // Serialize the array of certs
+    if (certs == null || certs.length == 0) {
+        oos.writeInt(0);
+    } else {
+        // write out the total number of certs
+        oos.writeInt(certs.length);
+        // write out each cert, including its type
+        for (int i = 0; i < certs.length; i++) {
+            java.security.cert.Certificate cert = certs[i];
+            try {
+                oos.writeUTF(cert.getType());
+                byte[] encoded = cert.getEncoded();
+                oos.writeInt(encoded.length);
+                oos.write(encoded);
+            } catch (CertificateEncodingException cee) {
+                throw new IOException(cee.getMessage());
+            }
+        }
+    }
+    // Serialize the array of code signers (if any)
+    if (signers != null && signers.length > 0) {
+        oos.writeObject(signers);
+    }
+}

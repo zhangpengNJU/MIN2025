@@ -1,0 +1,12 @@
+/**
+ * Returns a new instance with fixed width flag set.
+ *
+ * @return a new updated printer-parser, not null
+ */
+@Override
+ReducedPrinterParser withFixedWidth() {
+    if (subsequentWidth == -1) {
+        return this;
+    }
+    return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate, -1);
+}

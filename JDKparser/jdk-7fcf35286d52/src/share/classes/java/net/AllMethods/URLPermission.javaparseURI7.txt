@@ -1,0 +1,27 @@
+private void parseURI(String url) {
+    int len = url.length();
+    int delim = url.indexOf(':');
+    if (delim == -1 || delim + 1 == len) {
+        throw new IllegalArgumentException("Invalid URL string: \"" + url + "\"");
+    }
+    scheme = url.substring(0, delim).toLowerCase();
+    this.ssp = url.substring(delim + 1);
+    if (!ssp.startsWith("//")) {
+        if (!ssp.equals("*")) {
+            throw new IllegalArgumentException("Invalid URL string: \"" + url + "\"");
+        }
+        this.authority = new Authority(scheme, "*");
+        return;
+    }
+    String authpath = ssp.substring(2);
+    delim = authpath.indexOf('/');
+    String auth;
+    if (delim == -1) {
+        this.path = "";
+        auth = authpath;
+    } else {
+        auth = authpath.substring(0, delim);
+        this.path = authpath.substring(delim);
+    }
+    this.authority = new Authority(scheme, auth.toLowerCase());
+}

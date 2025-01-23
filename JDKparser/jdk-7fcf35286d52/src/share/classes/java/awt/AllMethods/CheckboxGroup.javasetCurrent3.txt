@@ -1,0 +1,18 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setSelectedCheckbox(Checkbox)</code>.
+ */
+@Deprecated
+public synchronized void setCurrent(Checkbox box) {
+    if (box != null && box.group != this) {
+        return;
+    }
+    Checkbox oldChoice = this.selectedCheckbox;
+    this.selectedCheckbox = box;
+    if (oldChoice != null && oldChoice != box && oldChoice.group == this) {
+        oldChoice.setState(false);
+    }
+    if (box != null && oldChoice != box && !box.getState()) {
+        box.setStateInternal(true);
+    }
+}

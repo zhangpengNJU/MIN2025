@@ -1,0 +1,34 @@
+/**
+ * Enable the stream to allow objects read from the stream to be replaced.
+ * When enabled, the resolveObject method is called for every object being
+ * deserialized.
+ *
+ * <p>If <i>enable</i> is true, and there is a security manager installed,
+ * this method first calls the security manager's
+ * <code>checkPermission</code> method with the
+ * <code>SerializablePermission("enableSubstitution")</code> permission to
+ * ensure it's ok to enable the stream to allow objects read from the
+ * stream to be replaced.
+ *
+ * @param   enable true for enabling use of <code>resolveObject</code> for
+ *          every object being deserialized
+ * @return  the previous setting before this method was invoked
+ * @throws  SecurityException if a security manager exists and its
+ *          <code>checkPermission</code> method denies enabling the stream
+ *          to allow objects read from the stream to be replaced.
+ * @see SecurityManager#checkPermission
+ * @see java.io.SerializablePermission
+ */
+protected boolean enableResolveObject(boolean enable) throws SecurityException {
+    if (enable == enableResolve) {
+        return enable;
+    }
+    if (enable) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SUBSTITUTION_PERMISSION);
+        }
+    }
+    enableResolve = enable;
+    return !enableResolve;
+}

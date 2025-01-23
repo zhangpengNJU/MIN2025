@@ -1,0 +1,11 @@
+@Override
+Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+    return new Sink.ChainedInt<Integer>(sink) {
+
+        @Override
+        public void accept(int t) {
+            action.accept(t);
+            downstream.accept(t);
+        }
+    };
+}

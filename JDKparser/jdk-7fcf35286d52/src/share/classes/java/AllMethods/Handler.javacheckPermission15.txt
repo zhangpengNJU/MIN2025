@@ -1,0 +1,9 @@
+// Package-private support method for security checks.
+// If "sealed" is true, we check that the caller has
+// appropriate security privileges to update Handler
+// state and if not throw a SecurityException.
+void checkPermission() throws SecurityException {
+    if (sealed) {
+        manager.checkPermission();
+    }
+}

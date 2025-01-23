@@ -1,0 +1,21 @@
+/**
+ * Write the specified object to the output stream.
+ * The serialized form will denote a series of
+ * expressions, the combined effect of which will create
+ * an equivalent object when the input stream is read.
+ * By default, the object is assumed to be a <em>JavaBean</em>
+ * with a nullary constructor, whose state is defined by
+ * the matching pairs of "setter" and "getter" methods
+ * returned by the Introspector.
+ *
+ * @param o The object to be written to the stream.
+ *
+ * @see XMLDecoder#readObject
+ */
+protected void writeObject(Object o) {
+    if (o == this) {
+        return;
+    }
+    PersistenceDelegate info = getPersistenceDelegate(o == null ? null : o.getClass());
+    info.writeObject(o, this);
+}

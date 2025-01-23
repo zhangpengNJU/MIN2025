@@ -1,0 +1,18 @@
+/**
+ * Pushes back a single character by copying it to the front of the
+ * pushback buffer. After this method returns, the next character to be read
+ * will have the value <code>(char)c</code>.
+ *
+ * @param  c  The int value representing a character to be pushed back
+ *
+ * @exception  IOException  If the pushback buffer is full,
+ *                          or if some other I/O error occurs
+ */
+public void unread(int c) throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        if (pos == 0)
+            throw new IOException("Pushback buffer overflow");
+        buf[--pos] = (char) c;
+    }
+}

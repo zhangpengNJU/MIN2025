@@ -1,0 +1,9 @@
+/**
+ * @throws NoSuchElementException {@inheritDoc}
+ */
+public K firstKey() {
+    Node<K, V> n = findFirst();
+    if (n == null)
+        throw new NoSuchElementException();
+    return n.key;
+}

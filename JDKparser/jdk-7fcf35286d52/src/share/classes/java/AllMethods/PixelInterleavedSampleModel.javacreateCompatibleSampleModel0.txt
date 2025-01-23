@@ -1,0 +1,32 @@
+/**
+ * Creates a new PixelInterleavedSampleModel with the specified
+ * width and height.  The new PixelInterleavedSampleModel will have the
+ * same number of bands, storage data type, and pixel stride
+ * as this PixelInterleavedSampleModel.  The band offsets may be
+ * compressed such that the minimum of all of the band offsets is zero.
+ * @param w the width of the resulting <code>SampleModel</code>
+ * @param h the height of the resulting <code>SampleModel</code>
+ * @return a new <code>SampleModel</code> with the specified width
+ *         and height.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    int minBandoff = bandOffsets[0];
+    int numBands = bandOffsets.length;
+    for (int i = 1; i < numBands; i++) {
+        if (bandOffsets[i] < minBandoff) {
+            minBandoff = bandOffsets[i];
+        }
+    }
+    int[] bandOff;
+    if (minBandoff > 0) {
+        bandOff = new int[numBands];
+        for (int i = 0; i < numBands; i++) {
+            bandOff[i] = bandOffsets[i] - minBandoff;
+        }
+    } else {
+        bandOff = bandOffsets;
+    }
+    return new PixelInterleavedSampleModel(dataType, w, h, pixelStride, pixelStride * w, bandOff);
+}

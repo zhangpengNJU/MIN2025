@@ -1,0 +1,13 @@
+/**
+ * If in block data mode, skips to the end of the current group of data
+ * blocks (but does not unset block data mode).  If not in block data
+ * mode, throws an IllegalStateException.
+ */
+void skipBlockData() throws IOException {
+    if (!blkmode) {
+        throw new IllegalStateException("not in block data mode");
+    }
+    while (end >= 0) {
+        refill();
+    }
+}

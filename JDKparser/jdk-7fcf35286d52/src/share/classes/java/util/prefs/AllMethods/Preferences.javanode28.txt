@@ -1,0 +1,23 @@
+/**
+ * Returns the named preference node in the same tree as this node,
+ * creating it and any of its ancestors if they do not already exist.
+ * Accepts a relative or absolute path name.  Relative path names
+ * (which do not begin with the slash character <tt>('/')</tt>) are
+ * interpreted relative to this preference node.
+ *
+ * <p>If the returned node did not exist prior to this call, this node and
+ * any ancestors that were created by this call are not guaranteed
+ * to become permanent until the <tt>flush</tt> method is called on
+ * the returned node (or one of its ancestors or descendants).
+ *
+ * @param pathName the path name of the preference node to return.
+ * @return the specified preference node.
+ * @throws IllegalArgumentException if the path name is invalid (i.e.,
+ *         it contains multiple consecutive slash characters, or ends
+ *         with a slash character and is more than one character long).
+ * @throws NullPointerException if path name is <tt>null</tt>.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @see #flush()
+ */
+public abstract Preferences node(String pathName);

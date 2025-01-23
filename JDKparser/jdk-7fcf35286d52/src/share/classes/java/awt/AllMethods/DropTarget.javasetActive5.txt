@@ -1,0 +1,13 @@
+/**
+ * Sets the DropTarget active if <code>true</code>,
+ * inactive if <code>false</code>.
+ * <P>
+ * @param isActive sets the <code>DropTarget</code> (in)active.
+ */
+public synchronized void setActive(boolean isActive) {
+    if (isActive != active) {
+        active = isActive;
+    }
+    if (!active)
+        clearAutoscroll();
+}

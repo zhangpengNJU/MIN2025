@@ -1,0 +1,10 @@
+/**
+ * readObject is called to restore the state of the SignedObject from
+ * a stream.
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    java.io.ObjectInputStream.GetField fields = s.readFields();
+    content = ((byte[]) fields.get("content", null)).clone();
+    signature = ((byte[]) fields.get("signature", null)).clone();
+    thealgorithm = (String) fields.get("thealgorithm", null);
+}

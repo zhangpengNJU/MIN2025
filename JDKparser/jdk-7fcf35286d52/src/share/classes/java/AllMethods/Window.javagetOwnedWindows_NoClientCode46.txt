@@ -1,0 +1,25 @@
+final Window[] getOwnedWindows_NoClientCode() {
+    Window[] realCopy;
+    synchronized (ownedWindowList) {
+        // Recall that ownedWindowList is actually a Vector of
+        // WeakReferences and calling get() on one of these references
+        // may return null. Make two arrays-- one the size of the
+        // Vector (fullCopy with size fullSize), and one the size of
+        // all non-null get()s (realCopy with size realSize).
+        int fullSize = ownedWindowList.size();
+        int realSize = 0;
+        Window[] fullCopy = new Window[fullSize];
+        for (int i = 0; i < fullSize; i++) {
+            fullCopy[realSize] = ownedWindowList.elementAt(i).get();
+            if (fullCopy[realSize] != null) {
+                realSize++;
+            }
+        }
+        if (fullSize != realSize) {
+            realCopy = Arrays.copyOf(fullCopy, realSize);
+        } else {
+            realCopy = fullCopy;
+        }
+    }
+    return realCopy;
+}

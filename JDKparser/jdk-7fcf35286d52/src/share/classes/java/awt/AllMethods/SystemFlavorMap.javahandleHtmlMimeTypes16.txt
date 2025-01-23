@@ -1,0 +1,11 @@
+private static LinkedHashSet<String> handleHtmlMimeTypes(String baseType, String mimeType) {
+    LinkedHashSet<String> returnValues = new LinkedHashSet<>();
+    if (HTML_TEXT_BASE_TYPE.equals(baseType)) {
+        for (String documentType : htmlDocumntTypes) {
+            returnValues.add(mimeType + ";document=" + documentType);
+        }
+    } else {
+        returnValues.add(mimeType);
+    }
+    return returnValues;
+}

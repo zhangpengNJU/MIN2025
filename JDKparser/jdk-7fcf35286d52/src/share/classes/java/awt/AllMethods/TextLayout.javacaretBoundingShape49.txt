@@ -1,0 +1,10 @@
+// A utility to convert a pair of carets into a bounding path
+// {jbr} Shape is never outside of bounds.
+private GeneralPath caretBoundingShape(int caret0, int caret1, Rectangle2D bounds) {
+    if (caret0 > caret1) {
+        int temp = caret0;
+        caret0 = caret1;
+        caret1 = temp;
+    }
+    return boundingShape(getCaretPath(caret0, bounds, true), getCaretPath(caret1, bounds, true));
+}

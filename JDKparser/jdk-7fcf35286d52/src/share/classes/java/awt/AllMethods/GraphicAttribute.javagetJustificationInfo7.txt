@@ -1,0 +1,22 @@
+/**
+ * Returns the justification information for this
+ * <code>GraphicAttribute</code>.  Subclasses
+ * can override this method to provide different justification
+ * information.
+ * @return a {@link GlyphJustificationInfo} object that contains the
+ * justification information for this <code>GraphicAttribute</code>.
+ */
+public GlyphJustificationInfo getJustificationInfo() {
+    // should we cache this?
+    float advance = getAdvance();
+    return new GlyphJustificationInfo(// weight
+    advance, // growAbsorb
+    false, // growPriority
+    2, // growLeftLimit
+    advance / 3, // growRightLimit
+    advance / 3, // shrinkAbsorb
+    false, // shrinkPriority
+    1, // shrinkLeftLimit
+    0, // shrinkRightLimit
+    0);
+}

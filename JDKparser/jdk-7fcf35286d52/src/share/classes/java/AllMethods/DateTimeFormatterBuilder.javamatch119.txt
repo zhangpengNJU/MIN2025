@@ -1,0 +1,27 @@
+/**
+ * Match text with the prefix tree.
+ *
+ * @param text  the input text to parse, not null
+ * @param off  the offset position to start parsing at
+ * @param end  the end position to stop parsing
+ * @return the resulting string, or null if no match found.
+ */
+public String match(CharSequence text, int off, int end) {
+    if (!prefixOf(text, off, end)) {
+        return null;
+    }
+    if (child != null && (off += key.length()) != end) {
+        PrefixTree c = child;
+        do {
+            if (isEqual(c.c0, text.charAt(off))) {
+                String found = c.match(text, off, end);
+                if (found != null) {
+                    return found;
+                }
+                return value;
+            }
+            c = c.sibling;
+        } while (c != null);
+    }
+    return value;
+}

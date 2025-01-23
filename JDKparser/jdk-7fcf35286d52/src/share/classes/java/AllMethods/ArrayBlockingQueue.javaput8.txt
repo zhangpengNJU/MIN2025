@@ -1,0 +1,18 @@
+/**
+ * Inserts the specified element at the tail of this queue, waiting
+ * for space to become available if the queue is full.
+ *
+ * @throws InterruptedException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+public void put(E e) throws InterruptedException {
+    checkNotNull(e);
+    final ReentrantLock lock = this.lock;
+    lock.lockInterruptibly();
+    try {
+        while (count == items.length) notFull.await();
+        enqueue(e);
+    } finally {
+        lock.unlock();
+    }
+}

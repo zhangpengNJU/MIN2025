@@ -1,0 +1,4 @@
+final boolean casItem(Object cmp, Object val) {
+    // assert cmp == null || cmp.getClass() != Node.class;
+    return UNSAFE.compareAndSwapObject(this, itemOffset, cmp, val);
+}

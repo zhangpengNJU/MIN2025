@@ -1,0 +1,17 @@
+// Compare Normalize dividend & divisor so that both fall into [0.1, 0.999...]
+private static int compareMagnitudeNormalized(long xs, int xscale, long ys, int yscale) {
+    // assert xs!=0 && ys!=0
+    int sdiff = xscale - yscale;
+    if (sdiff != 0) {
+        if (sdiff < 0) {
+            xs = longMultiplyPowerTen(xs, -sdiff);
+        } else {
+            // sdiff > 0
+            ys = longMultiplyPowerTen(ys, sdiff);
+        }
+    }
+    if (xs != INFLATED)
+        return (ys != INFLATED) ? longCompareMagnitude(xs, ys) : -1;
+    else
+        return 1;
+}

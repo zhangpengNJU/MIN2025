@@ -1,0 +1,19 @@
+/**
+ * Gets the foreground color of this component.
+ * @return this component's foreground color; if this component does
+ * not have a foreground color, the foreground color of its parent
+ * is returned
+ * @see #setForeground
+ * @since JDK1.0
+ * @beaninfo
+ *       bound: true
+ */
+@Transient
+public Color getForeground() {
+    Color foreground = this.foreground;
+    if (foreground != null) {
+        return foreground;
+    }
+    Container parent = this.parent;
+    return (parent != null) ? parent.getForeground() : null;
+}

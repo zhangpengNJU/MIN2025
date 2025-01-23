@@ -1,0 +1,8 @@
+private void print(int value, Locale l) throws IOException {
+    long v = value;
+    if (value < 0 && (c == Conversion.OCTAL_INTEGER || c == Conversion.HEXADECIMAL_INTEGER)) {
+        v += (1L << 32);
+        assert v >= 0 : v;
+    }
+    print(v, l);
+}

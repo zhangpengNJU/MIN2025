@@ -1,0 +1,37 @@
+/**
+ * Produce a string form of this member name.
+ *  For types, it is simply the type's own string (as reported by {@code toString}).
+ *  For fields, it is {@code "DeclaringClass.name/type"}.
+ *  For methods and constructors, it is {@code "DeclaringClass.name(ptype...)rtype"}.
+ *  If the declaring class is null, the prefix {@code "DeclaringClass."} is omitted.
+ *  If the member is unresolved, a prefix {@code "*."} is prepended.
+ */
+@SuppressWarnings("LocalVariableHidesMemberVariable")
+@Override
+public String toString() {
+    if (isType())
+        // class java.lang.String
+        return type.toString();
+    // else it is a field, method, or constructor
+    StringBuilder buf = new StringBuilder();
+    if (getDeclaringClass() != null) {
+        buf.append(getName(clazz));
+        buf.append('.');
+    }
+    String name = getName();
+    buf.append(name == null ? "*" : name);
+    Object type = getType();
+    if (!isInvocable()) {
+        buf.append('/');
+        buf.append(type == null ? "*" : getName(type));
+    } else {
+        buf.append(type == null ? "(*)*" : getName(type));
+    }
+    byte refKind = getReferenceKind();
+    if (refKind != REF_NONE) {
+        buf.append('/');
+        buf.append(MethodHandleNatives.refKindName(refKind));
+    }
+    // buf.append("#").append(System.identityHashCode(this));
+    return buf.toString();
+}

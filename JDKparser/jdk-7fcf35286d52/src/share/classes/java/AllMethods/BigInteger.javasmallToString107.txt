@@ -1,0 +1,39 @@
+/**
+ * This method is used to perform toString when arguments are small.
+ */
+private String smallToString(int radix) {
+    if (signum == 0) {
+        return "0";
+    }
+    // Compute upper bound on number of digit groups and allocate space
+    int maxNumDigitGroups = (4 * mag.length + 6) / 7;
+    String[] digitGroup = new String[maxNumDigitGroups];
+    // Translate number to string, a digit group at a time
+    BigInteger tmp = this.abs();
+    int numGroups = 0;
+    while (tmp.signum != 0) {
+        BigInteger d = longRadix[radix];
+        MutableBigInteger q = new MutableBigInteger(), a = new MutableBigInteger(tmp.mag), b = new MutableBigInteger(d.mag);
+        MutableBigInteger r = a.divide(b, q);
+        BigInteger q2 = q.toBigInteger(tmp.signum * d.signum);
+        BigInteger r2 = r.toBigInteger(tmp.signum * d.signum);
+        digitGroup[numGroups++] = Long.toString(r2.longValue(), radix);
+        tmp = q2;
+    }
+    // Put sign (if any) and first digit group into result buffer
+    StringBuilder buf = new StringBuilder(numGroups * digitsPerLong[radix] + 1);
+    if (signum < 0) {
+        buf.append('-');
+    }
+    buf.append(digitGroup[numGroups - 1]);
+    // Append remaining digit groups padded with leading zeros
+    for (int i = numGroups - 2; i >= 0; i--) {
+        // Prepend (any) leading zeros for this digit group
+        int numLeadingZeros = digitsPerLong[radix] - digitGroup[i].length();
+        if (numLeadingZeros != 0) {
+            buf.append(zeros[numLeadingZeros]);
+        }
+        buf.append(digitGroup[i]);
+    }
+    return buf.toString();
+}

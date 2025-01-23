@@ -1,0 +1,69 @@
+/* ---------------- Deletion -------------- */
+/**
+ * Main deletion method. Locates node, nulls value, appends a
+ * deletion marker, unlinks predecessor, removes associated index
+ * nodes, and possibly reduces head index level.
+ *
+ * Index nodes are cleared out simply by calling findPredecessor.
+ * which unlinks indexes to deleted nodes found along path to key,
+ * which will include the indexes to this node.  This is done
+ * unconditionally. We can't check beforehand whether there are
+ * index nodes because it might be the case that some or all
+ * indexes hadn't been inserted yet for this node during initial
+ * search for it, and we'd like to ensure lack of garbage
+ * retention, so must call to be sure.
+ *
+ * @param key the key
+ * @param value if non-null, the value that must be
+ * associated with key
+ * @return the node, or null if not found
+ */
+final V doRemove(Object key, Object value) {
+    if (key == null)
+        throw new NullPointerException();
+    Comparator<? super K> cmp = comparator;
+    outer: for (; ; ) {
+        for (Node<K, V> b = findPredecessor(key, cmp), n = b.next; ; ) {
+            Object v;
+            int c;
+            if (n == null)
+                break outer;
+            Node<K, V> f = n.next;
+            if (// inconsistent read
+            n != b.next)
+                break;
+            if ((v = n.value) == null) {
+                // n is deleted
+                n.helpDelete(b, f);
+                break;
+            }
+            if (// b is deleted
+            b.value == null || v == n)
+                break;
+            if ((c = cpr(cmp, key, n.key)) < 0)
+                break outer;
+            if (c > 0) {
+                b = n;
+                n = f;
+                continue;
+            }
+            if (value != null && !value.equals(v))
+                break outer;
+            if (!n.casValue(v, null))
+                break;
+            if (!n.appendMarker(f) || !b.casNext(n, f))
+                // retry via findNode
+                findNode(key);
+            else {
+                // clean index
+                findPredecessor(key, cmp);
+                if (head.right == null)
+                    tryReduceLevel();
+            }
+            @SuppressWarnings("unchecked")
+            V vv = (V) v;
+            return vv;
+        }
+    }
+    return null;
+}

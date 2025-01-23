@@ -1,0 +1,7 @@
+/**
+ * Creates a temporary directory in the given directory, or in in the
+ * temporary directory if dir is {@code null}.
+ */
+static Path createTempDirectory(Path dir, String prefix, FileAttribute<?>[] attrs) throws IOException {
+    return create(dir, prefix, null, true, attrs);
+}

@@ -1,0 +1,11 @@
+/**
+ * Creates a new {@link Set} backed by a ConcurrentHashMap
+ * from the given type to {@code Boolean.TRUE}.
+ *
+ * @param <K> the element type of the returned set
+ * @return the new set
+ * @since 1.8
+ */
+public static <K> KeySetView<K, Boolean> newKeySet() {
+    return new KeySetView<K, Boolean>(new ConcurrentHashMap<K, Boolean>(), Boolean.TRUE);
+}

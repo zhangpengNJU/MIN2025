@@ -1,0 +1,14 @@
+/**
+ * Return number of extra slots (count of long/double args).
+ */
+private static int checkPtypes(Class<?>[] ptypes) {
+    int slots = 0;
+    for (Class<?> ptype : ptypes) {
+        checkPtype(ptype);
+        if (ptype == double.class || ptype == long.class) {
+            slots++;
+        }
+    }
+    checkSlotCount(ptypes.length + slots);
+    return slots;
+}

@@ -1,0 +1,12 @@
+/**
+ * Return the backing map associated with this type.
+ */
+private static ClassValueMap getMap(Class<?> type) {
+    // racing type.classValueMap : null (blank) => unique ClassValueMap
+    // if a null is observed, a map is created (lazily, synchronously, uniquely)
+    // all further access to that map is synchronized
+    ClassValueMap map = type.classValueMap;
+    if (map != null)
+        return map;
+    return initializeMap(type);
+}

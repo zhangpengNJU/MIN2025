@@ -1,0 +1,15 @@
+/**
+ * Copy and unconditionally byte swap 32 bit elements from off-heap memory to a heap array
+ *
+ * @param srcAddr
+ *        source address
+ * @param dst
+ *        destination array, must be a 32-bit primitive array type
+ * @param dstPos
+ *        byte offset within the destination array of the first element to write
+ * @param length
+ *        number of bytes to copy
+ */
+static void copyToIntArray(long srcAddr, Object dst, long dstPos, long length) {
+    copySwapMemory(null, srcAddr, dst, unsafe.arrayBaseOffset(dst.getClass()) + dstPos, length, 4);
+}

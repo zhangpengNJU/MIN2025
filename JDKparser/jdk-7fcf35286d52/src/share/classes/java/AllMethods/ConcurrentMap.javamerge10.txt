@@ -1,0 +1,54 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec
+ * The default implementation is equivalent to performing the following
+ * steps for this {@code map}, then returning the current value or
+ * {@code null} if absent:
+ *
+ * <pre> {@code
+ * V oldValue = map.get(key);
+ * V newValue = (oldValue == null) ? value :
+ *              remappingFunction.apply(oldValue, value);
+ * if (newValue == null)
+ *     map.remove(key);
+ * else
+ *     map.put(key, newValue);
+ * }</pre>
+ *
+ * <p>The default implementation may retry these steps when multiple
+ * threads attempt updates including potentially calling the remapping
+ * function multiple times.
+ *
+ * <p>This implementation assumes that the ConcurrentMap cannot contain null
+ * values and {@code get()} returning null unambiguously means the key is
+ * absent. Implementations which support null values <strong>must</strong>
+ * override this default implementation.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    Objects.requireNonNull(value);
+    V oldValue = get(key);
+    for (; ; ) {
+        if (oldValue != null) {
+            V newValue = remappingFunction.apply(oldValue, value);
+            if (newValue != null) {
+                if (replace(key, oldValue, newValue))
+                    return newValue;
+            } else if (remove(key, oldValue)) {
+                return null;
+            }
+            oldValue = get(key);
+        } else {
+            if ((oldValue = putIfAbsent(key, value)) == null) {
+                return value;
+            }
+        }
+    }
+}

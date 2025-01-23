@@ -1,0 +1,19 @@
+/**
+ * Checks if this <code>Font</code> has a glyph for the specified
+ * character.
+ *
+ * @param codePoint the character (Unicode code point) for which a glyph
+ *        is needed.
+ * @return <code>true</code> if this <code>Font</code> has a glyph for the
+ *          character; <code>false</code> otherwise.
+ * @throws IllegalArgumentException if the code point is not a valid Unicode
+ *          code point.
+ * @see Character#isValidCodePoint(int)
+ * @since 1.5
+ */
+public boolean canDisplay(int codePoint) {
+    if (!Character.isValidCodePoint(codePoint)) {
+        throw new IllegalArgumentException("invalid code point: " + Integer.toHexString(codePoint));
+    }
+    return getFont2D().canDisplay(codePoint);
+}

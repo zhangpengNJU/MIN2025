@@ -1,0 +1,27 @@
+/**
+ * Gets the value of the specified field as a {@code long}.
+ * <p>
+ * This queries the date-time for the value of the specified field.
+ * The returned value may be outside the valid range of values for the field.
+ * If the date-time cannot return the value, because the field is unsupported or for
+ * some other reason, an exception will be thrown.
+ *
+ * @implSpec
+ * Implementations must check and handle all fields defined in {@link ChronoField}.
+ * If the field is supported, then the value of the field must be returned.
+ * If unsupported, then an {@code UnsupportedTemporalTypeException} must be thrown.
+ * <p>
+ * If the field is not a {@code ChronoField}, then the result of this method
+ * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
+ * passing {@code this} as the argument.
+ * <p>
+ * Implementations must ensure that no observable state is altered when this
+ * read-only method is invoked.
+ *
+ * @param field  the field to get, not null
+ * @return the value for the field
+ * @throws DateTimeException if a value for the field cannot be obtained
+ * @throws UnsupportedTemporalTypeException if the field is not supported
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+long getLong(TemporalField field);

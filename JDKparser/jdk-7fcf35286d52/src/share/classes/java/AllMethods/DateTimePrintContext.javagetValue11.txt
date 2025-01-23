@@ -1,0 +1,19 @@
+/**
+ * Gets the value of the specified field.
+ * <p>
+ * This will return the value for the specified field.
+ *
+ * @param field  the field to find, not null
+ * @return the value, null if not found and optional is true
+ * @throws DateTimeException if the field is not available and the section is not optional
+ */
+Long getValue(TemporalField field) {
+    try {
+        return temporal.getLong(field);
+    } catch (DateTimeException ex) {
+        if (optional > 0) {
+            return null;
+        }
+        throw ex;
+    }
+}

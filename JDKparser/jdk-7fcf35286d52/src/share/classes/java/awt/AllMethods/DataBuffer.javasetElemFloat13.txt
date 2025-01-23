@@ -1,0 +1,15 @@
+/**
+ * Sets the requested data array element in the specified bank
+ * from the given float.  The implementation in this class is to cast
+ * val to an int and call {@link #setElem(int, int)}.  Subclasses can
+ * override this method if another implementation is needed.
+ * @param bank the specified bank
+ * @param i the specified index
+ * @param val the value to set the element in the specified bank at
+ * the specified index in the data array
+ * @see #getElemFloat(int)
+ * @see #getElemFloat(int, int)
+ */
+public void setElemFloat(int bank, int i, float val) {
+    setElem(bank, i, (int) val);
+}

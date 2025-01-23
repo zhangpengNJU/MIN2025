@@ -1,0 +1,31 @@
+@Override
+Sink<T> opWrapSink(int flags, Sink<T> sink) {
+    return new Sink.ChainedReference<T, T>(sink) {
+
+        long n = skip;
+
+        long m = limit >= 0 ? limit : Long.MAX_VALUE;
+
+        @Override
+        public void begin(long size) {
+            downstream.begin(calcSize(size, skip, m));
+        }
+
+        @Override
+        public void accept(T t) {
+            if (n == 0) {
+                if (m > 0) {
+                    m--;
+                    downstream.accept(t);
+                }
+            } else {
+                n--;
+            }
+        }
+
+        @Override
+        public boolean cancellationRequested() {
+            return m == 0 || downstream.cancellationRequested();
+        }
+    };
+}

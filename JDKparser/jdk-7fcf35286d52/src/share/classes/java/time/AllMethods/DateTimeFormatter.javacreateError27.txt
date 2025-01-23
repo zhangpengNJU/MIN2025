@@ -1,0 +1,9 @@
+private DateTimeParseException createError(CharSequence text, RuntimeException ex) {
+    String abbr;
+    if (text.length() > 64) {
+        abbr = text.subSequence(0, 64).toString() + "...";
+    } else {
+        abbr = text.toString();
+    }
+    return new DateTimeParseException("Text '" + abbr + "' could not be parsed: " + ex.getMessage(), text, 0, ex);
+}

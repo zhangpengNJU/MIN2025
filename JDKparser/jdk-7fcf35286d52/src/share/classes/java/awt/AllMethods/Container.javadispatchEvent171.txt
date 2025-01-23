@@ -1,0 +1,28 @@
+/**
+ * Dispatches an event to a sub-component if necessary, and
+ * returns whether or not the event was forwarded to a
+ * sub-component.
+ *
+ * @param e the event
+ */
+boolean dispatchEvent(AWTEvent e) {
+    boolean ret = false;
+    /*
+         * Fix for BugTraq Id 4389284.
+         * Dispatch SunDropTargetEvents regardless of eventMask value.
+         * Do not update cursor on dispatching SunDropTargetEvents.
+         */
+    if (e instanceof SunDropTargetEvent) {
+        SunDropTargetEvent sdde = (SunDropTargetEvent) e;
+        ret = processDropTargetEvent(sdde);
+    } else {
+        if (e instanceof MouseEvent && (eventMask & MOUSE_MASK) != 0) {
+            MouseEvent me = (MouseEvent) e;
+            ret = processMouseEvent(me);
+        }
+        if (e.getID() == MouseEvent.MOUSE_MOVED) {
+            nativeContainer.updateCursorImmediately();
+        }
+    }
+    return ret;
+}

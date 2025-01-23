@@ -1,0 +1,24 @@
+@Override
+public void forEachRemaining(Consumer<? super E> consumer) {
+    Objects.requireNonNull(consumer);
+    if (splSpineIndex < lastSpineIndex || (splSpineIndex == lastSpineIndex && splElementIndex < lastSpineElementFence)) {
+        int i = splElementIndex;
+        // completed chunks, if any
+        for (int sp = splSpineIndex; sp < lastSpineIndex; sp++) {
+            E[] chunk = spine[sp];
+            for (; i < chunk.length; i++) {
+                consumer.accept(chunk[i]);
+            }
+            i = 0;
+        }
+        // last (or current uncompleted) chunk
+        E[] chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
+        int hElementIndex = lastSpineElementFence;
+        for (; i < hElementIndex; i++) {
+            consumer.accept(chunk[i]);
+        }
+        // mark consumed
+        splSpineIndex = lastSpineIndex;
+        splElementIndex = lastSpineElementFence;
+    }
+}

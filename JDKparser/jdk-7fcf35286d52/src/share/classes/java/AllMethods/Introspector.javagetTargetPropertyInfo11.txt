@@ -1,0 +1,102 @@
+/**
+ * @return An array of PropertyDescriptors describing the editable
+ * properties supported by the target bean.
+ */
+private PropertyDescriptor[] getTargetPropertyInfo() {
+    // Check if the bean has its own BeanInfo that will provide
+    // explicit information.
+    PropertyDescriptor[] explicitProperties = null;
+    if (explicitBeanInfo != null) {
+        explicitProperties = getPropertyDescriptors(this.explicitBeanInfo);
+    }
+    if (explicitProperties == null && superBeanInfo != null) {
+        // We have no explicit BeanInfo properties.  Check with our parent.
+        addPropertyDescriptors(getPropertyDescriptors(this.superBeanInfo));
+    }
+    for (int i = 0; i < additionalBeanInfo.length; i++) {
+        addPropertyDescriptors(additionalBeanInfo[i].getPropertyDescriptors());
+    }
+    if (explicitProperties != null) {
+        // Add the explicit BeanInfo data to our results.
+        addPropertyDescriptors(explicitProperties);
+    } else {
+        // Apply some reflection to the current class.
+        // First get an array of all the public methods at this level
+        Method[] methodList = getPublicDeclaredMethods(beanClass);
+        // Now analyze each method.
+        for (int i = 0; i < methodList.length; i++) {
+            Method method = methodList[i];
+            if (method == null) {
+                continue;
+            }
+            // skip static methods.
+            int mods = method.getModifiers();
+            if (Modifier.isStatic(mods)) {
+                continue;
+            }
+            String name = method.getName();
+            Class<?>[] argTypes = method.getParameterTypes();
+            Class<?> resultType = method.getReturnType();
+            int argCount = argTypes.length;
+            PropertyDescriptor pd = null;
+            if (name.length() <= 3 && !name.startsWith(IS_PREFIX)) {
+                // Optimization. Don't bother with invalid propertyNames.
+                continue;
+            }
+            try {
+                if (argCount == 0) {
+                    if (name.startsWith(GET_PREFIX)) {
+                        // Simple getter
+                        pd = new PropertyDescriptor(this.beanClass, name.substring(3), method, null);
+                    } else if (resultType == boolean.class && name.startsWith(IS_PREFIX)) {
+                        // Boolean getter
+                        pd = new PropertyDescriptor(this.beanClass, name.substring(2), method, null);
+                    }
+                } else if (argCount == 1) {
+                    if (int.class.equals(argTypes[0]) && name.startsWith(GET_PREFIX)) {
+                        pd = new IndexedPropertyDescriptor(this.beanClass, name.substring(3), null, null, method, null);
+                    } else if (void.class.equals(resultType) && name.startsWith(SET_PREFIX)) {
+                        // Simple setter
+                        pd = new PropertyDescriptor(this.beanClass, name.substring(3), null, method);
+                        if (throwsException(method, PropertyVetoException.class)) {
+                            pd.setConstrained(true);
+                        }
+                    }
+                } else if (argCount == 2) {
+                    if (void.class.equals(resultType) && int.class.equals(argTypes[0]) && name.startsWith(SET_PREFIX)) {
+                        pd = new IndexedPropertyDescriptor(this.beanClass, name.substring(3), null, null, null, method);
+                        if (throwsException(method, PropertyVetoException.class)) {
+                            pd.setConstrained(true);
+                        }
+                    }
+                }
+            } catch (IntrospectionException ex) {
+                // This happens if a PropertyDescriptor or IndexedPropertyDescriptor
+                // constructor fins that the method violates details of the deisgn
+                // pattern, e.g. by having an empty name, or a getter returning
+                // void , or whatever.
+                pd = null;
+            }
+            if (pd != null) {
+                // If this class or one of its base classes is a PropertyChange
+                // source, then we assume that any properties we discover are "bound".
+                if (propertyChangeSource) {
+                    pd.setBound(true);
+                }
+                addPropertyDescriptor(pd);
+            }
+        }
+    }
+    processPropertyDescriptors();
+    // Allocate and populate the result array.
+    PropertyDescriptor[] result = properties.values().toArray(new PropertyDescriptor[properties.size()]);
+    // Set the default index.
+    if (defaultPropertyName != null) {
+        for (int i = 0; i < result.length; i++) {
+            if (defaultPropertyName.equals(result[i].getName())) {
+                defaultPropertyIndex = i;
+            }
+        }
+    }
+    return result;
+}

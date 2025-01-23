@@ -1,0 +1,17 @@
+static synchronized void add(Level l) {
+    // the mirroredLevel object is always added to the list
+    // before the custom Level instance
+    KnownLevel o = new KnownLevel(l);
+    List<KnownLevel> list = nameToLevels.get(l.name);
+    if (list == null) {
+        list = new ArrayList<>();
+        nameToLevels.put(l.name, list);
+    }
+    list.add(o);
+    list = intToLevels.get(l.value);
+    if (list == null) {
+        list = new ArrayList<>();
+        intToLevels.put(l.value, list);
+    }
+    list.add(o);
+}

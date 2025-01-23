@@ -1,0 +1,49 @@
+/**
+ * The float token must be stripped of prefixes, group separators,
+ * and suffixes, non ascii digits must be converted into ascii digits
+ * before parseFloat will accept it.
+ *
+ * If there are non-ascii digits in the token these digits must
+ * be processed before the token is passed to parseFloat.
+ */
+private String processFloatToken(String token) {
+    String result = token.replaceAll(groupSeparator, "");
+    if (!decimalSeparator.equals("\\."))
+        result = result.replaceAll(decimalSeparator, ".");
+    boolean isNegative = false;
+    int preLen = negativePrefix.length();
+    if ((preLen > 0) && result.startsWith(negativePrefix)) {
+        isNegative = true;
+        result = result.substring(preLen);
+    }
+    int sufLen = negativeSuffix.length();
+    if ((sufLen > 0) && result.endsWith(negativeSuffix)) {
+        isNegative = true;
+        result = result.substring(result.length() - sufLen, result.length());
+    }
+    if (result.equals(nanString))
+        result = "NaN";
+    if (result.equals(infinityString))
+        result = "Infinity";
+    if (isNegative)
+        result = "-" + result;
+    // Translate non-ASCII digits
+    Matcher m = NON_ASCII_DIGIT.matcher(result);
+    if (m.find()) {
+        StringBuilder inASCII = new StringBuilder();
+        for (int i = 0; i < result.length(); i++) {
+            char nextChar = result.charAt(i);
+            if (Character.isDigit(nextChar)) {
+                int d = Character.digit(nextChar, 10);
+                if (d != -1)
+                    inASCII.append(d);
+                else
+                    inASCII.append(nextChar);
+            } else {
+                inASCII.append(nextChar);
+            }
+        }
+        result = inASCII.toString();
+    }
+    return result;
+}

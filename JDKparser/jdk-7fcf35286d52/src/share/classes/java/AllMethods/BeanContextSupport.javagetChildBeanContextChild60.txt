@@ -1,0 +1,21 @@
+/**
+ * Gets the BeanContextChild (if any) of the specified child
+ * @param child the specified child
+ * @return  the BeanContextChild (if any) of the specified child
+ * @throws  IllegalArgumentException if child implements both BeanContextChild and BeanContextProxy
+ */
+protected static final BeanContextChild getChildBeanContextChild(Object child) {
+    try {
+        BeanContextChild bcc = (BeanContextChild) child;
+        if (child instanceof BeanContextChild && child instanceof BeanContextProxy)
+            throw new IllegalArgumentException("child cannot implement both BeanContextChild and BeanContextProxy");
+        else
+            return bcc;
+    } catch (ClassCastException cce) {
+        try {
+            return ((BeanContextProxy) child).getBeanContextProxy();
+        } catch (ClassCastException cce1) {
+            return null;
+        }
+    }
+}

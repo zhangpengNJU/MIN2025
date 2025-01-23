@@ -1,0 +1,7 @@
+private static BigDecimal stripZerosToMatchScale(BigInteger intVal, long intCompact, int scale, int preferredScale) {
+    if (intCompact != INFLATED) {
+        return createAndStripZerosToMatchScale(intCompact, scale, preferredScale);
+    } else {
+        return createAndStripZerosToMatchScale(intVal == null ? INFLATED_BIGINT : intVal, scale, preferredScale);
+    }
+}

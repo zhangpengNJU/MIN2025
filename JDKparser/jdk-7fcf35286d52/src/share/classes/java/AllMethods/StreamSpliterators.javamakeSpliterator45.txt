@@ -1,0 +1,4 @@
+@Override
+protected Spliterator<T> makeSpliterator(Spliterator<T> s, long sliceOrigin, long sliceFence, long origin, long fence) {
+    return new OfRef<>(s, sliceOrigin, sliceFence, origin, fence);
+}

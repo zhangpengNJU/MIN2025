@@ -1,0 +1,23 @@
+/**
+ * Receives a byte of data.  This method will block if no input is
+ * available.
+ * @param b the byte being received
+ * @exception IOException If the pipe is <a href="#BROKEN"> <code>broken</code></a>,
+ *          {@link #connect(java.io.PipedOutputStream) unconnected},
+ *          closed, or if an I/O error occurs.
+ * @since     JDK1.1
+ */
+protected synchronized void receive(int b) throws IOException {
+    checkStateForReceive();
+    writeSide = Thread.currentThread();
+    if (in == out)
+        awaitSpace();
+    if (in < 0) {
+        in = 0;
+        out = 0;
+    }
+    buffer[in++] = (byte) (b & 0xFF);
+    if (in >= buffer.length) {
+        in = 0;
+    }
+}

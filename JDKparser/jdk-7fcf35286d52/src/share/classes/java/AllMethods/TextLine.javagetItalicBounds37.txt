@@ -1,0 +1,15 @@
+public Rectangle2D getItalicBounds() {
+    float left = Float.MAX_VALUE, right = -Float.MAX_VALUE;
+    float top = Float.MAX_VALUE, bottom = -Float.MAX_VALUE;
+    for (int i = 0, n = 0; i < fComponents.length; i++, n += 2) {
+        TextLineComponent tlc = fComponents[getComponentLogicalIndex(i)];
+        Rectangle2D tlcBounds = tlc.getItalicBounds();
+        float x = locs[n];
+        float y = locs[n + 1];
+        left = Math.min(left, x + (float) tlcBounds.getX());
+        right = Math.max(right, x + (float) tlcBounds.getMaxX());
+        top = Math.min(top, y + (float) tlcBounds.getY());
+        bottom = Math.max(bottom, y + (float) tlcBounds.getMaxY());
+    }
+    return new Rectangle2D.Float(left, top, right - left, bottom - top);
+}

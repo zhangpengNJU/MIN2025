@@ -1,0 +1,33 @@
+/**
+ * Deserializes this <code>DropTarget</code>. This method first performs
+ * default deserialization for all non-<code>transient</code> fields. An
+ * attempt is then made to deserialize this object's
+ * <code>DropTargetListener</code> as well. This is first attempted by
+ * deserializing the field <code>dtListener</code>, because, in releases
+ * prior to 1.4, a non-<code>transient</code> field of this name stored the
+ * <code>DropTargetListener</code>. If this fails, the next object in the
+ * stream is used instead.
+ *
+ * @since 1.4
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    ObjectInputStream.GetField f = s.readFields();
+    try {
+        dropTargetContext = (DropTargetContext) f.get("dropTargetContext", null);
+    } catch (IllegalArgumentException e) {
+    // Pre-1.4 support. 'dropTargetContext' was previously transient
+    }
+    if (dropTargetContext == null) {
+        dropTargetContext = createDropTargetContext();
+    }
+    component = (Component) f.get("component", null);
+    actions = f.get("actions", DnDConstants.ACTION_COPY_OR_MOVE);
+    active = f.get("active", true);
+    // Pre-1.4 support. 'dtListener' was previously non-transient
+    try {
+        dtListener = (DropTargetListener) f.get("dtListener", null);
+    } catch (IllegalArgumentException e) {
+        // 1.4-compatible byte stream. 'dtListener' was written explicitly
+        dtListener = (DropTargetListener) s.readObject();
+    }
+}

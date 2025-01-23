@@ -1,0 +1,29 @@
+/**
+ * Writes externalizable data of given object by invoking its
+ * writeExternal() method.
+ */
+private void writeExternalData(Externalizable obj) throws IOException {
+    PutFieldImpl oldPut = curPut;
+    curPut = null;
+    if (extendedDebugInfo) {
+        debugInfoStack.push("writeExternal data");
+    }
+    SerialCallbackContext oldContext = curContext;
+    try {
+        curContext = null;
+        if (protocol == PROTOCOL_VERSION_1) {
+            obj.writeExternal(this);
+        } else {
+            bout.setBlockDataMode(true);
+            obj.writeExternal(this);
+            bout.setBlockDataMode(false);
+            bout.writeByte(TC_ENDBLOCKDATA);
+        }
+    } finally {
+        curContext = oldContext;
+        if (extendedDebugInfo) {
+            debugInfoStack.pop();
+        }
+    }
+    curPut = oldPut;
+}

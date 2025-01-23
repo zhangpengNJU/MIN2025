@@ -1,0 +1,5 @@
+private static char unpack(long packed, int word) {
+    // word==0 => return a, ==3 => return d
+    assert (word <= 3);
+    return (char) (packed >> ((3 - word) * 16));
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns the difference of the arguments,
+ * throwing an exception if the result overflows an {@code int}.
+ *
+ * @param x the first value
+ * @param y the second value to subtract from the first
+ * @return the result
+ * @throws ArithmeticException if the result overflows an int
+ * @since 1.8
+ */
+public static int subtractExact(int x, int y) {
+    int r = x - y;
+    // HD 2-12 Overflow iff the arguments have different signs and
+    // the sign of the result is different than the sign of x
+    if (((x ^ y) & (x ^ r)) < 0) {
+        throw new ArithmeticException("integer overflow");
+    }
+    return r;
+}

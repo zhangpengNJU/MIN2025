@@ -1,0 +1,30 @@
+// REMIND: remove when filtering is handled at lower level
+boolean eventEnabled(AWTEvent e) {
+    switch(e.id) {
+        case WindowEvent.WINDOW_OPENED:
+        case WindowEvent.WINDOW_CLOSING:
+        case WindowEvent.WINDOW_CLOSED:
+        case WindowEvent.WINDOW_ICONIFIED:
+        case WindowEvent.WINDOW_DEICONIFIED:
+        case WindowEvent.WINDOW_ACTIVATED:
+        case WindowEvent.WINDOW_DEACTIVATED:
+            if ((eventMask & AWTEvent.WINDOW_EVENT_MASK) != 0 || windowListener != null) {
+                return true;
+            }
+            return false;
+        case WindowEvent.WINDOW_GAINED_FOCUS:
+        case WindowEvent.WINDOW_LOST_FOCUS:
+            if ((eventMask & AWTEvent.WINDOW_FOCUS_EVENT_MASK) != 0 || windowFocusListener != null) {
+                return true;
+            }
+            return false;
+        case WindowEvent.WINDOW_STATE_CHANGED:
+            if ((eventMask & AWTEvent.WINDOW_STATE_EVENT_MASK) != 0 || windowStateListener != null) {
+                return true;
+            }
+            return false;
+        default:
+            break;
+    }
+    return super.eventEnabled(e);
+}

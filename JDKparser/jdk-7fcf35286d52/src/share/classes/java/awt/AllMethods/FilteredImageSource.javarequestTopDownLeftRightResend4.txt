@@ -1,0 +1,23 @@
+/**
+ * Requests that a given ImageConsumer have the image data delivered
+ * one more time in top-down, left-right order.  The request is
+ * handed to the ImageFilter for further processing, since the
+ * ability to preserve the pixel ordering depends on the filter.
+ *
+ * <p>
+ * This method is public as a side effect
+ * of this class implementing
+ * the <code>ImageProducer</code> interface.
+ * It should not be called from user code,
+ * and its behavior if called from user code is unspecified.
+ *
+ * @see ImageConsumer
+ */
+public synchronized void requestTopDownLeftRightResend(ImageConsumer ic) {
+    if (proxies != null) {
+        ImageFilter imgf = (ImageFilter) proxies.get(ic);
+        if (imgf != null) {
+            imgf.resendTopDownLeftRight(src);
+        }
+    }
+}

@@ -1,0 +1,14 @@
+/*
+     * Initialize cache and insert anyLocalAddress into the
+     * unknown array with no expiry.
+     */
+private static void cacheInitIfNeeded() {
+    assert Thread.holdsLock(addressCache);
+    if (addressCacheInit) {
+        return;
+    }
+    unknown_array = new InetAddress[1];
+    unknown_array[0] = impl.anyLocalAddress();
+    addressCache.put(impl.anyLocalAddress().getHostName(), unknown_array);
+    addressCacheInit = true;
+}

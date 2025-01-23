@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the ChronoLocalDateTime using a
+ * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(2);              // identifies a ChronoLocalDateTime
+ *  out.writeObject(toLocalDate());
+ *  out.witeObject(toLocalTime());
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.CHRONO_LOCAL_DATE_TIME_TYPE, this);
+}

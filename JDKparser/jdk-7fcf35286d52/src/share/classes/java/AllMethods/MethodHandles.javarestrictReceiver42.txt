@@ -1,0 +1,15 @@
+private MethodHandle restrictReceiver(MemberName method, DirectMethodHandle mh, Class<?> caller) throws IllegalAccessException {
+    assert (!method.isStatic());
+    // receiver type of mh is too wide; narrow to caller
+    if (!method.getDeclaringClass().isAssignableFrom(caller)) {
+        throw method.makeAccessException("caller class must be a subclass below the method", caller);
+    }
+    MethodType rawType = mh.type();
+    if (rawType.parameterType(0) == caller)
+        return mh;
+    MethodType narrowType = rawType.changeParameterType(0, caller);
+    // viewAsType will lose varargs-ness
+    assert (!mh.isVarargsCollector());
+    assert (mh.viewAsTypeChecks(narrowType, true));
+    return mh.copyWith(narrowType, mh.form);
+}

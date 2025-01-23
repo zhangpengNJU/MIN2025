@@ -1,0 +1,17 @@
+/**
+ * Returns the stub for the remote object <code>obj</code> passed
+ * as a parameter. This operation is only valid <i>after</i>
+ * the object has been exported.
+ * @param obj the remote object whose stub is needed
+ * @return the stub for the remote object, <code>obj</code>.
+ * @exception NoSuchObjectException if the stub for the
+ * remote object could not be found.
+ * @since 1.2
+ */
+public static Remote toStub(Remote obj) throws NoSuchObjectException {
+    if (obj instanceof RemoteStub || (obj != null && Proxy.isProxyClass(obj.getClass()) && Proxy.getInvocationHandler(obj) instanceof RemoteObjectInvocationHandler)) {
+        return obj;
+    } else {
+        return sun.rmi.transport.ObjectTable.getStub(obj);
+    }
+}

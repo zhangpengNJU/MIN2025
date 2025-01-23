@@ -1,0 +1,13 @@
+/**
+ * Returns a new BigInteger representing n lower ints of the number.
+ * This is used by Karatsuba multiplication and Karatsuba squaring.
+ */
+private BigInteger getLower(int n) {
+    int len = mag.length;
+    if (len <= n) {
+        return abs();
+    }
+    int[] lowerInts = new int[n];
+    System.arraycopy(mag, len - n, lowerInts, 0, n);
+    return new BigInteger(trustedStripLeadingZeroInts(lowerInts), 1);
+}

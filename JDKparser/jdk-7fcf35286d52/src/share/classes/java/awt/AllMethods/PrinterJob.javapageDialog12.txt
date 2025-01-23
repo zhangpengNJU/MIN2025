@@ -1,0 +1,34 @@
+/**
+ * A convenience method which displays a cross-platform page setup dialog.
+ * The choices available will reflect the print service currently
+ * set on this PrinterJob.
+ * <p>
+ * The attributes parameter on input will reflect the client's
+ * required initial selections in the user dialog. Attributes which are
+ * not specified display using the default for the service. On return it
+ * will reflect the user's choices. Selections may be updated by
+ * the implementation to be consistent with the supported values
+ * for the currently selected print service.
+ * <p>
+ * The return value will be a PageFormat equivalent to the
+ * selections in the PrintRequestAttributeSet.
+ * If the user cancels the dialog, the attributes will not reflect
+ * any changes made by the user, and the return value will be null.
+ * @param attributes on input is application supplied attributes,
+ * on output the contents are updated to reflect user choices.
+ * This parameter may not be null.
+ * @return a page format if the user does not cancel the dialog;
+ * <code>null</code> otherwise.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true.
+ * @exception NullPointerException if <code>attributes</code> parameter
+ * is null.
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @since     1.4
+ */
+public PageFormat pageDialog(PrintRequestAttributeSet attributes) throws HeadlessException {
+    if (attributes == null) {
+        throw new NullPointerException("attributes");
+    }
+    return pageDialog(defaultPage());
+}

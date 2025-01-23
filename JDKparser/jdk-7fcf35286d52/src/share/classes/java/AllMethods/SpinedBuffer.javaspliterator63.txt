@@ -1,0 +1,24 @@
+public Spliterator.OfLong spliterator() {
+    class Splitr extends BaseSpliterator<Spliterator.OfLong> implements Spliterator.OfLong {
+
+        Splitr(int firstSpineIndex, int lastSpineIndex, int firstSpineElementIndex, int lastSpineElementFence) {
+            super(firstSpineIndex, lastSpineIndex, firstSpineElementIndex, lastSpineElementFence);
+        }
+
+        @Override
+        Splitr newSpliterator(int firstSpineIndex, int lastSpineIndex, int firstSpineElementIndex, int lastSpineElementFence) {
+            return new Splitr(firstSpineIndex, lastSpineIndex, firstSpineElementIndex, lastSpineElementFence);
+        }
+
+        @Override
+        void arrayForOne(long[] array, int index, LongConsumer consumer) {
+            consumer.accept(array[index]);
+        }
+
+        @Override
+        Spliterator.OfLong arraySpliterator(long[] array, int offset, int len) {
+            return Arrays.spliterator(array, offset, offset + len);
+        }
+    }
+    return new Splitr(0, spineIndex, 0, elementIndex);
+}

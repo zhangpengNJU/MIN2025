@@ -1,0 +1,17 @@
+/**
+ * Scrolls to the specified position within the child component.
+ * A call to this method is only valid if the scroll pane contains
+ * a child and the specified position is within legal scrolling bounds
+ * of the child.  Specifying a position outside of the legal scrolling
+ * bounds of the child will scroll to the closest legal position.
+ * Legal bounds are defined to be the rectangle:
+ * x = 0, y = 0, width = (child width - view port width),
+ * height = (child height - view port height).
+ * This is a convenience method which interfaces with the Adjustable
+ * objects which represent the state of the scrollbars.
+ * @param p the Point representing the position to scroll to
+ * @throws NullPointerException if {@code p} is {@code null}
+ */
+public void setScrollPosition(Point p) {
+    setScrollPosition(p.x, p.y);
+}

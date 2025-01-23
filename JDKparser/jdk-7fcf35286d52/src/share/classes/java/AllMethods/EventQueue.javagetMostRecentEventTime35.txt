@@ -1,0 +1,31 @@
+/**
+ * Returns the timestamp of the most recent event that had a timestamp, and
+ * that was dispatched from the <code>EventQueue</code> associated with the
+ * calling thread. If an event with a timestamp is currently being
+ * dispatched, its timestamp will be returned. If no events have yet
+ * been dispatched, the EventQueue's initialization time will be
+ * returned instead.In the current version of
+ * the JDK, only <code>InputEvent</code>s,
+ * <code>ActionEvent</code>s, and <code>InvocationEvent</code>s have
+ * timestamps; however, future versions of the JDK may add timestamps to
+ * additional event types. Note that this method should only be invoked
+ * from an application's {@link #isDispatchThread event dispatching thread}.
+ * If this method is
+ * invoked from another thread, the current system time (as reported by
+ * <code>System.currentTimeMillis()</code>) will be returned instead.
+ *
+ * @return the timestamp of the last <code>InputEvent</code>,
+ *         <code>ActionEvent</code>, or <code>InvocationEvent</code> to be
+ *         dispatched, or <code>System.currentTimeMillis()</code> if this
+ *         method is invoked on a thread other than an event dispatching
+ *         thread
+ * @see java.awt.event.InputEvent#getWhen
+ * @see java.awt.event.ActionEvent#getWhen
+ * @see java.awt.event.InvocationEvent#getWhen
+ * @see #isDispatchThread
+ *
+ * @since 1.4
+ */
+public static long getMostRecentEventTime() {
+    return Toolkit.getEventQueue().getMostRecentEventTimeImpl();
+}

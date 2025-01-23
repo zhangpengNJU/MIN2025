@@ -1,0 +1,19 @@
+/**
+ * Returns the pixel bounds of this <code>TextLayout</code> when
+ * rendered in a graphics with the given
+ * <code>FontRenderContext</code> at the given location.  The
+ * graphics render context need not be the same as the
+ * <code>FontRenderContext</code> used to create this
+ * <code>TextLayout</code>, and can be null.  If it is null, the
+ * <code>FontRenderContext</code> of this <code>TextLayout</code>
+ * is used.
+ * @param frc the <code>FontRenderContext</code> of the <code>Graphics</code>.
+ * @param x the x-coordinate at which to render this <code>TextLayout</code>.
+ * @param y the y-coordinate at which to render this <code>TextLayout</code>.
+ * @return a <code>Rectangle</code> bounding the pixels that would be affected.
+ * @see GlyphVector#getPixelBounds
+ * @since 1.6
+ */
+public Rectangle getPixelBounds(FontRenderContext frc, float x, float y) {
+    return textLine.getPixelBounds(frc, x, y);
+}

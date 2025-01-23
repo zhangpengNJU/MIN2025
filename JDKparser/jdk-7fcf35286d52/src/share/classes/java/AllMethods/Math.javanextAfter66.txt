@@ -1,0 +1,97 @@
+/**
+ * Returns the floating-point number adjacent to the first
+ * argument in the direction of the second argument.  If both
+ * arguments compare as equal a value equivalent to the second argument
+ * is returned.
+ *
+ * <p>
+ * Special cases:
+ * <ul>
+ * <li> If either argument is a NaN, then NaN is returned.
+ *
+ * <li> If both arguments are signed zeros, a value equivalent
+ * to {@code direction} is returned.
+ *
+ * <li> If {@code start} is
+ * &plusmn;{@link Float#MIN_VALUE} and {@code direction}
+ * has a value such that the result should have a smaller
+ * magnitude, then a zero with the same sign as {@code start}
+ * is returned.
+ *
+ * <li> If {@code start} is infinite and
+ * {@code direction} has a value such that the result should
+ * have a smaller magnitude, {@link Float#MAX_VALUE} with the
+ * same sign as {@code start} is returned.
+ *
+ * <li> If {@code start} is equal to &plusmn;
+ * {@link Float#MAX_VALUE} and {@code direction} has a
+ * value such that the result should have a larger magnitude, an
+ * infinity with same sign as {@code start} is returned.
+ * </ul>
+ *
+ * @param start  starting floating-point value
+ * @param direction value indicating which of
+ * {@code start}'s neighbors or {@code start} should
+ * be returned
+ * @return The floating-point number adjacent to {@code start} in the
+ * direction of {@code direction}.
+ * @since 1.6
+ */
+public static float nextAfter(float start, double direction) {
+    /*
+         * The cases:
+         *
+         * nextAfter(+infinity, 0)  == MAX_VALUE
+         * nextAfter(+infinity, +infinity)  == +infinity
+         * nextAfter(-infinity, 0)  == -MAX_VALUE
+         * nextAfter(-infinity, -infinity)  == -infinity
+         *
+         * are naturally handled without any additional testing
+         */
+    // First check for NaN values
+    if (Float.isNaN(start) || Double.isNaN(direction)) {
+        // return a NaN derived from the input NaN(s)
+        return start + (float) direction;
+    } else if (start == direction) {
+        return (float) direction;
+    } else {
+        // start > direction or start < direction
+        // Add +0.0 to get rid of a -0.0 (+0.0 + -0.0 => +0.0)
+        // then bitwise convert start to integer.
+        int transducer = Float.floatToRawIntBits(start + 0.0f);
+        /*
+             * IEEE 754 floating-point numbers are lexicographically
+             * ordered if treated as signed- magnitude integers .
+             * Since Java's integers are two's complement,
+             * incrementing" the two's complement representation of a
+             * logically negative floating-point value *decrements*
+             * the signed-magnitude representation. Therefore, when
+             * the integer representation of a floating-point values
+             * is less than zero, the adjustment to the representation
+             * is in the opposite direction than would be expected at
+             * first.
+             */
+        if (direction > start) {
+            // Calculate next greater value
+            transducer = transducer + (transducer >= 0 ? 1 : -1);
+        } else {
+            // Calculate next lesser value
+            assert direction < start;
+            if (transducer > 0)
+                --transducer;
+            else if (transducer < 0)
+                ++transducer;
+            else
+                /*
+                     * transducer==0, the result is -MIN_VALUE
+                     *
+                     * The transition from zero (implicitly
+                     * positive) to the smallest negative
+                     * signed magnitude value must be done
+                     * explicitly.
+                     */
+                transducer = FloatConsts.SIGN_BIT_MASK | 1;
+        }
+        return Float.intBitsToFloat(transducer);
+    }
+}

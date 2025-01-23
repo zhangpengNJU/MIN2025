@@ -1,0 +1,9 @@
+public RunnableScheduledFuture<?> peek() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return queue[0];
+    } finally {
+        lock.unlock();
+    }
+}

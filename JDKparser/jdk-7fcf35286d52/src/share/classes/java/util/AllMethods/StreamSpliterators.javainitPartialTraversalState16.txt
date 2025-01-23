@@ -1,0 +1,7 @@
+@Override
+void initPartialTraversalState() {
+    SpinedBuffer.OfInt b = new SpinedBuffer.OfInt();
+    buffer = b;
+    bufferSink = ph.wrapSink((Sink.OfInt) b::accept);
+    pusher = () -> spliterator.tryAdvance(bufferSink);
+}

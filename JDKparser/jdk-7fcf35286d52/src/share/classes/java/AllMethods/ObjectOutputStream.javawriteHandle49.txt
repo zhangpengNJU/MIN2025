@@ -1,0 +1,7 @@
+/**
+ * Writes given object handle to stream.
+ */
+private void writeHandle(int handle) throws IOException {
+    bout.writeByte(TC_REFERENCE);
+    bout.writeInt(baseWireHandle + handle);
+}

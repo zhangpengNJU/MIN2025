@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../../serialized-form.html#java.time.chrono.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(5);        // identifies a JapaneseEra
+ *  out.writeInt(getValue());
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.JAPANESE_ERA_TYPE, this);
+}

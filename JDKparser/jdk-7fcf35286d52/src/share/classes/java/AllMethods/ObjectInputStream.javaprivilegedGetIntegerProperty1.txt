@@ -1,0 +1,7 @@
+private static int privilegedGetIntegerProperty(String theProp, int defaultValue) {
+    if (System.getSecurityManager() == null) {
+        return Integer.getInteger(theProp, defaultValue);
+    } else {
+        return AccessController.doPrivileged(new GetIntegerAction(theProp, defaultValue));
+    }
+}

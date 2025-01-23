@@ -1,0 +1,17 @@
+// Put the predefined NamedFunction invokers into the table.
+static void initializeInvokers() {
+    for (MemberName m : MemberName.getFactory().getMethods(NamedFunction.class, false, null, null, null)) {
+        if (!m.isStatic() || !m.isPackage())
+            continue;
+        MethodType type = m.getMethodType();
+        if (type.equals(INVOKER_METHOD_TYPE) && m.getName().startsWith("invoke_")) {
+            String sig = m.getName().substring("invoke_".length());
+            int arity = LambdaForm.signatureArity(sig);
+            MethodType srcType = MethodType.genericMethodType(arity);
+            if (LambdaForm.signatureReturn(sig) == V_TYPE)
+                srcType = srcType.changeReturnType(void.class);
+            MethodTypeForm typeForm = srcType.form();
+            typeForm.setCachedMethodHandle(MethodTypeForm.MH_NF_INV, DirectMethodHandle.make(m));
+        }
+    }
+}

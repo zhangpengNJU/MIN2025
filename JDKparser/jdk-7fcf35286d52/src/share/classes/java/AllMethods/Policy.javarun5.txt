@@ -1,0 +1,18 @@
+public Policy run() {
+    try {
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+        // we want the extension loader
+        ClassLoader extcl = null;
+        while (cl != null) {
+            extcl = cl;
+            cl = cl.getParent();
+        }
+        return (extcl != null ? (Policy) Class.forName(pc, true, extcl).newInstance() : null);
+    } catch (Exception e) {
+        if (debug != null) {
+            debug.println("policy provider " + pc + " not available");
+            e.printStackTrace();
+        }
+        return null;
+    }
+}

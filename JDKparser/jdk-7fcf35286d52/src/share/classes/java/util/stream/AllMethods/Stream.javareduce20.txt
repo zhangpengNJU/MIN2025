@@ -1,0 +1,39 @@
+/**
+ * Performs a <a href="package-summary.html#Reduction">reduction</a> on the
+ * elements of this stream, using an
+ * <a href="package-summary.html#Associativity">associative</a> accumulation
+ * function, and returns an {@code Optional} describing the reduced value,
+ * if any. This is equivalent to:
+ * <pre>{@code
+ *     boolean foundAny = false;
+ *     T result = null;
+ *     for (T element : this stream) {
+ *         if (!foundAny) {
+ *             foundAny = true;
+ *             result = element;
+ *         }
+ *         else
+ *             result = accumulator.apply(result, element);
+ *     }
+ *     return foundAny ? Optional.of(result) : Optional.empty();
+ * }</pre>
+ *
+ * but is not constrained to execute sequentially.
+ *
+ * <p>The {@code accumulator} function must be an
+ * <a href="package-summary.html#Associativity">associative</a> function.
+ *
+ * <p>This is a <a href="package-summary.html#StreamOps">terminal
+ * operation</a>.
+ *
+ * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
+ *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
+ *                    <a href="package-summary.html#Statelessness">stateless</a>
+ *                    function for combining two values
+ * @return an {@link Optional} describing the result of the reduction
+ * @throws NullPointerException if the result of the reduction is null
+ * @see #reduce(Object, BinaryOperator)
+ * @see #min(Comparator)
+ * @see #max(Comparator)
+ */
+Optional<T> reduce(BinaryOperator<T> accumulator);

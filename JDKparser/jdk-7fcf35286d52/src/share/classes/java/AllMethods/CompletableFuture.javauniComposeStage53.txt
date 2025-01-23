@@ -1,0 +1,35 @@
+private <V> CompletableFuture<V> uniComposeStage(Executor e, Function<? super T, ? extends CompletionStage<V>> f) {
+    if (f == null)
+        throw new NullPointerException();
+    Object r;
+    Throwable x;
+    if (e == null && (r = result) != null) {
+        // try to return function result directly
+        if (r instanceof AltResult) {
+            if ((x = ((AltResult) r).ex) != null) {
+                return new CompletableFuture<V>(encodeThrowable(x, r));
+            }
+            r = null;
+        }
+        try {
+            @SuppressWarnings("unchecked")
+            T t = (T) r;
+            CompletableFuture<V> g = f.apply(t).toCompletableFuture();
+            Object s = g.result;
+            if (s != null)
+                return new CompletableFuture<V>(encodeRelay(s));
+            CompletableFuture<V> d = new CompletableFuture<V>();
+            UniRelay<V> copy = new UniRelay<V>(d, g);
+            g.push(copy);
+            copy.tryFire(SYNC);
+            return d;
+        } catch (Throwable ex) {
+            return new CompletableFuture<V>(encodeThrowable(ex));
+        }
+    }
+    CompletableFuture<V> d = new CompletableFuture<V>();
+    UniCompose<T, V> c = new UniCompose<T, V>(e, d, this, f);
+    push(c);
+    c.tryFire(SYNC);
+    return d;
+}

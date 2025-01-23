@@ -1,0 +1,17 @@
+/**
+ * Returns a {@code BigInteger} equal to the {@code n}
+ * low ints of this number.
+ */
+private BigInteger getLower(int n) {
+    if (isZero()) {
+        return BigInteger.ZERO;
+    } else if (intLen < n) {
+        return toBigInteger(1);
+    } else {
+        // strip zeros
+        int len = n;
+        while (len > 0 && value[offset + intLen - len] == 0) len--;
+        int sign = len > 0 ? 1 : 0;
+        return new BigInteger(Arrays.copyOfRange(value, offset + intLen - len, offset + intLen), sign);
+    }
+}

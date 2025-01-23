@@ -1,0 +1,21 @@
+public int drainTo(Collection<? super Runnable> c) {
+    if (c == null)
+        throw new NullPointerException();
+    if (c == this)
+        throw new IllegalArgumentException();
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        RunnableScheduledFuture<?> first;
+        int n = 0;
+        while ((first = peekExpired()) != null) {
+            // In this order, in case add() throws.
+            c.add(first);
+            finishPoll(first);
+            ++n;
+        }
+        return n;
+    } finally {
+        lock.unlock();
+    }
+}

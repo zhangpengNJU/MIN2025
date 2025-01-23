@@ -1,0 +1,16 @@
+/**
+ * Sets the current position of this <code>LineBreakMeasurer</code>.
+ *
+ * @param newPosition the current position of this
+ *    <code>LineBreakMeasurer</code>; the position should be within the
+ *    text used to construct this <code>LineBreakMeasurer</code> (or in
+ *    the text most recently passed to <code>insertChar</code>
+ *    or <code>deleteChar</code>
+ * @see #getPosition
+ */
+public void setPosition(int newPosition) {
+    if (newPosition < start || newPosition > limit) {
+        throw new IllegalArgumentException("position is out of range");
+    }
+    pos = newPosition;
+}

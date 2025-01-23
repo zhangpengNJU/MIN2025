@@ -1,0 +1,13 @@
+/**
+ * Connects a datagram socket to a remote destination. This associates the remote
+ * address with the local socket so that datagrams may only be sent to this destination
+ * and received from this destination.
+ * @param address the remote InetAddress to connect to
+ * @param port the remote port number
+ */
+protected void connect(InetAddress address, int port) throws SocketException {
+    connect0(address, port);
+    connectedAddress = address;
+    connectedPort = port;
+    connected = true;
+}

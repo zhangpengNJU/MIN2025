@@ -1,0 +1,6 @@
+private void expungeStaleElements() {
+    Reference<? extends T> reference;
+    while ((reference = stale.poll()) != null) {
+        map.remove(reference);
+    }
+}

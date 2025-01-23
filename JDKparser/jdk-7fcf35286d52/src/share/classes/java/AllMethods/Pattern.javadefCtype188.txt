@@ -1,0 +1,8 @@
+private static void defCtype(String name, final int ctype) {
+    map.put(name, new CharPropertyFactory() {
+
+        CharProperty make() {
+            return new Ctype(ctype);
+        }
+    });
+}

@@ -1,0 +1,13 @@
+/**
+ * Save the {@code Random} instance to a stream.
+ */
+synchronized private void writeObject(ObjectOutputStream s) throws IOException {
+    // set the values of the Serializable fields
+    ObjectOutputStream.PutField fields = s.putFields();
+    // The seed is serialized as a long for historical reasons.
+    fields.put("seed", seed.get());
+    fields.put("nextNextGaussian", nextNextGaussian);
+    fields.put("haveNextNextGaussian", haveNextNextGaussian);
+    // save them
+    s.writeFields();
+}

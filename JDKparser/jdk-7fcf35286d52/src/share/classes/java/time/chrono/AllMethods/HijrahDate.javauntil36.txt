@@ -1,0 +1,22 @@
+@Override
+public ChronoPeriod until(ChronoLocalDate endDate) {
+    // TODO: untested
+    HijrahDate end = getChronology().date(endDate);
+    // safe
+    long totalMonths = (end.prolepticYear - this.prolepticYear) * 12 + (end.monthOfYear - this.monthOfYear);
+    int days = end.dayOfMonth - this.dayOfMonth;
+    if (totalMonths > 0 && days < 0) {
+        totalMonths--;
+        HijrahDate calcDate = this.plusMonths(totalMonths);
+        // safe
+        days = (int) (end.toEpochDay() - calcDate.toEpochDay());
+    } else if (totalMonths < 0 && days > 0) {
+        totalMonths++;
+        days -= end.lengthOfMonth();
+    }
+    // safe
+    long years = totalMonths / 12;
+    // safe
+    int months = (int) (totalMonths % 12);
+    return getChronology().period(Math.toIntExact(years), months, days);
+}

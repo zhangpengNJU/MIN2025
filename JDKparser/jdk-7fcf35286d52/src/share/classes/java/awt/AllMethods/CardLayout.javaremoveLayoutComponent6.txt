@@ -1,0 +1,25 @@
+/**
+ * Removes the specified component from the layout.
+ * If the card was visible on top, the next card underneath it is shown.
+ * @param   comp   the component to be removed.
+ * @see     java.awt.Container#remove(java.awt.Component)
+ * @see     java.awt.Container#removeAll()
+ */
+public void removeLayoutComponent(Component comp) {
+    synchronized (comp.getTreeLock()) {
+        for (int i = 0; i < vector.size(); i++) {
+            if (((Card) vector.get(i)).comp == comp) {
+                // if we remove current component we should show next one
+                if (comp.isVisible() && (comp.getParent() != null)) {
+                    next(comp.getParent());
+                }
+                vector.remove(i);
+                // correct currentCard if this is necessary
+                if (currentCard > i) {
+                    currentCard--;
+                }
+                break;
+            }
+        }
+    }
+}

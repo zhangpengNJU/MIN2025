@@ -1,0 +1,32 @@
+/**
+ * Writes specified span of byte values from given array.  If copy is
+ * true, copies the values to an intermediate buffer before writing
+ * them to underlying stream (to avoid exposing a reference to the
+ * original byte array).
+ */
+void write(byte[] b, int off, int len, boolean copy) throws IOException {
+    if (!(copy || blkmode)) {
+        // write directly
+        drain();
+        out.write(b, off, len);
+        return;
+    }
+    while (len > 0) {
+        if (pos >= MAX_BLOCK_SIZE) {
+            drain();
+        }
+        if (len >= MAX_BLOCK_SIZE && !copy && pos == 0) {
+            // avoid unnecessary copy
+            writeBlockHeader(MAX_BLOCK_SIZE);
+            out.write(b, off, MAX_BLOCK_SIZE);
+            off += MAX_BLOCK_SIZE;
+            len -= MAX_BLOCK_SIZE;
+        } else {
+            int wlen = Math.min(len, MAX_BLOCK_SIZE - pos);
+            System.arraycopy(b, off, buf, pos, wlen);
+            pos += wlen;
+            off += wlen;
+            len -= wlen;
+        }
+    }
+}

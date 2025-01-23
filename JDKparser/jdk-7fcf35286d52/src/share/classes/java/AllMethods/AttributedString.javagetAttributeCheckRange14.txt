@@ -1,0 +1,35 @@
+// gets an attribute value, but returns an annotation only if it's range does not extend outside the range beginIndex..endIndex
+private Object getAttributeCheckRange(Attribute attribute, int runIndex, int beginIndex, int endIndex) {
+    Object value = getAttribute(attribute, runIndex);
+    if (value instanceof Annotation) {
+        // need to check whether the annotation's range extends outside the iterator's range
+        if (beginIndex > 0) {
+            int currIndex = runIndex;
+            int runStart = runStarts[currIndex];
+            while (runStart >= beginIndex && valuesMatch(value, getAttribute(attribute, currIndex - 1))) {
+                currIndex--;
+                runStart = runStarts[currIndex];
+            }
+            if (runStart < beginIndex) {
+                // annotation's range starts before iterator's range
+                return null;
+            }
+        }
+        int textLength = length();
+        if (endIndex < textLength) {
+            int currIndex = runIndex;
+            int runLimit = (currIndex < runCount - 1) ? runStarts[currIndex + 1] : textLength;
+            while (runLimit <= endIndex && valuesMatch(value, getAttribute(attribute, currIndex + 1))) {
+                currIndex++;
+                runLimit = (currIndex < runCount - 1) ? runStarts[currIndex + 1] : textLength;
+            }
+            if (runLimit > endIndex) {
+                // annotation's range ends after iterator's range
+                return null;
+            }
+        }
+    // annotation's range is subrange of iterator's range,
+    // so we can return the value
+    }
+    return value;
+}

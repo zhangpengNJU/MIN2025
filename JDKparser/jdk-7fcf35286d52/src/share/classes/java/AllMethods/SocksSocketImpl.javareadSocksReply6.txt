@@ -1,0 +1,16 @@
+private int readSocksReply(InputStream in, byte[] data, long deadlineMillis) throws IOException {
+    int len = data.length;
+    int received = 0;
+    while (received < len) {
+        int count;
+        try {
+            count = ((SocketInputStream) in).read(data, received, len - received, remainingMillis(deadlineMillis));
+        } catch (SocketTimeoutException e) {
+            throw new SocketTimeoutException("Connect timed out");
+        }
+        if (count < 0)
+            throw new SocketException("Malformed reply from SOCKS server");
+        received += count;
+    }
+    return received;
+}

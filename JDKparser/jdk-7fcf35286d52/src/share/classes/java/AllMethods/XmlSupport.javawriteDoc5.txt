@@ -1,0 +1,23 @@
+/**
+ * Write XML document to the specified output stream.
+ */
+private static final void writeDoc(Document doc, OutputStream out) throws IOException {
+    try {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        try {
+            tf.setAttribute("indent-number", new Integer(2));
+        } catch (IllegalArgumentException iae) {
+        // Ignore the IAE. Should not fail the writeout even the
+        // transformer provider does not support "indent-number".
+        }
+        Transformer t = tf.newTransformer();
+        t.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        // Transformer resets the "indent" info if the "result" is a StreamResult with
+        // an OutputStream object embedded, creating a Writer object on top of that
+        // OutputStream object however works.
+        t.transform(new DOMSource(doc), new StreamResult(new BufferedWriter(new OutputStreamWriter(out, "UTF-8"))));
+    } catch (TransformerException e) {
+        throw new AssertionError(e);
+    }
+}

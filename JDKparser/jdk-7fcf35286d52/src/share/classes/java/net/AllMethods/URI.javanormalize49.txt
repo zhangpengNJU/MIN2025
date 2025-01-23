@@ -1,0 +1,20 @@
+// If the given URI's path is normal then return the URI;
+// o.w., return a new URI containing the normalized path.
+// 
+private static URI normalize(URI u) {
+    if (u.isOpaque() || (u.path == null) || (u.path.length() == 0))
+        return u;
+    String np = normalize(u.path);
+    if (np == u.path)
+        return u;
+    URI v = new URI();
+    v.scheme = u.scheme;
+    v.fragment = u.fragment;
+    v.authority = u.authority;
+    v.userInfo = u.userInfo;
+    v.host = u.host;
+    v.port = u.port;
+    v.path = np;
+    v.query = u.query;
+    return v;
+}

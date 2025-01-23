@@ -1,0 +1,28 @@
+/**
+ * Cancels and clears the queue of all tasks that should not be run
+ * due to shutdown policy.  Invoked within super.shutdown.
+ */
+@Override
+void onShutdown() {
+    BlockingQueue<Runnable> q = super.getQueue();
+    boolean keepDelayed = getExecuteExistingDelayedTasksAfterShutdownPolicy();
+    boolean keepPeriodic = getContinueExistingPeriodicTasksAfterShutdownPolicy();
+    if (!keepDelayed && !keepPeriodic) {
+        for (Object e : q.toArray()) if (e instanceof RunnableScheduledFuture<?>)
+            ((RunnableScheduledFuture<?>) e).cancel(false);
+        q.clear();
+    } else {
+        // Traverse snapshot to avoid iterator exceptions
+        for (Object e : q.toArray()) {
+            if (e instanceof RunnableScheduledFuture) {
+                RunnableScheduledFuture<?> t = (RunnableScheduledFuture<?>) e;
+                if ((t.isPeriodic() ? !keepPeriodic : !keepDelayed) || t.isCancelled()) {
+                    // also remove if already cancelled
+                    if (q.remove(t))
+                        t.cancel(false);
+                }
+            }
+        }
+    }
+    tryTerminate();
+}

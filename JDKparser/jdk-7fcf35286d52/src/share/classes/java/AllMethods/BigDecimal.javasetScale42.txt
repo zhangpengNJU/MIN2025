@@ -1,0 +1,85 @@
+/**
+ * Returns a {@code BigDecimal} whose scale is the specified
+ * value, and whose unscaled value is determined by multiplying or
+ * dividing this {@code BigDecimal}'s unscaled value by the
+ * appropriate power of ten to maintain its overall value.  If the
+ * scale is reduced by the operation, the unscaled value must be
+ * divided (rather than multiplied), and the value may be changed;
+ * in this case, the specified rounding mode is applied to the
+ * division.
+ *
+ * <p>Note that since BigDecimal objects are immutable, calls of
+ * this method do <i>not</i> result in the original object being
+ * modified, contrary to the usual convention of having methods
+ * named <tt>set<i>X</i></tt> mutate field <i>{@code X}</i>.
+ * Instead, {@code setScale} returns an object with the proper
+ * scale; the returned object may or may not be newly allocated.
+ *
+ * <p>The new {@link #setScale(int, RoundingMode)} method should
+ * be used in preference to this legacy method.
+ *
+ * @param  newScale scale of the {@code BigDecimal} value to be returned.
+ * @param  roundingMode The rounding mode to apply.
+ * @return a {@code BigDecimal} whose scale is the specified value,
+ *         and whose unscaled value is determined by multiplying or
+ *         dividing this {@code BigDecimal}'s unscaled value by the
+ *         appropriate power of ten to maintain its overall value.
+ * @throws ArithmeticException if {@code roundingMode==ROUND_UNNECESSARY}
+ *         and the specified scaling operation would require
+ *         rounding.
+ * @throws IllegalArgumentException if {@code roundingMode} does not
+ *         represent a valid rounding mode.
+ * @see    #ROUND_UP
+ * @see    #ROUND_DOWN
+ * @see    #ROUND_CEILING
+ * @see    #ROUND_FLOOR
+ * @see    #ROUND_HALF_UP
+ * @see    #ROUND_HALF_DOWN
+ * @see    #ROUND_HALF_EVEN
+ * @see    #ROUND_UNNECESSARY
+ */
+public BigDecimal setScale(int newScale, int roundingMode) {
+    if (roundingMode < ROUND_UP || roundingMode > ROUND_UNNECESSARY)
+        throw new IllegalArgumentException("Invalid rounding mode");
+    int oldScale = this.scale;
+    if (// easy case
+    newScale == oldScale)
+        return this;
+    if (// zero can have any scale
+    this.signum() == 0)
+        return zeroValueOf(newScale);
+    if (this.intCompact != INFLATED) {
+        long rs = this.intCompact;
+        if (newScale > oldScale) {
+            int raise = checkScale((long) newScale - oldScale);
+            if ((rs = longMultiplyPowerTen(rs, raise)) != INFLATED) {
+                return valueOf(rs, newScale);
+            }
+            BigInteger rb = bigMultiplyPowerTen(raise);
+            return new BigDecimal(rb, INFLATED, newScale, (precision > 0) ? precision + raise : 0);
+        } else {
+            // newScale < oldScale -- drop some digits
+            // Can't predict the precision due to the effect of rounding.
+            int drop = checkScale((long) oldScale - newScale);
+            if (drop < LONG_TEN_POWERS_TABLE.length) {
+                return divideAndRound(rs, LONG_TEN_POWERS_TABLE[drop], newScale, roundingMode, newScale);
+            } else {
+                return divideAndRound(this.inflated(), bigTenToThe(drop), newScale, roundingMode, newScale);
+            }
+        }
+    } else {
+        if (newScale > oldScale) {
+            int raise = checkScale((long) newScale - oldScale);
+            BigInteger rb = bigMultiplyPowerTen(this.intVal, raise);
+            return new BigDecimal(rb, INFLATED, newScale, (precision > 0) ? precision + raise : 0);
+        } else {
+            // newScale < oldScale -- drop some digits
+            // Can't predict the precision due to the effect of rounding.
+            int drop = checkScale((long) oldScale - newScale);
+            if (drop < LONG_TEN_POWERS_TABLE.length)
+                return divideAndRound(this.intVal, LONG_TEN_POWERS_TABLE[drop], newScale, roundingMode, newScale);
+            else
+                return divideAndRound(this.intVal, bigTenToThe(drop), newScale, roundingMode, newScale);
+        }
+    }
+}

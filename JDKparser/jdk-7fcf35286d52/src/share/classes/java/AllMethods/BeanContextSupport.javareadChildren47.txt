@@ -1,0 +1,33 @@
+/**
+ * When an instance of this class is used as a delegate for the
+ * implementation of the BeanContext protocols (and its subprotocols)
+ * there exists a 'chicken and egg' problem during deserialization
+ * @param ois the ObjectInputStream to use
+ * @throws IOException if deserialization failed
+ * @throws ClassNotFoundException if needed classes are not found
+ */
+public final void readChildren(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    int count = serializable;
+    while (count-- > 0) {
+        Object child = ois.readObject();
+        BCSChild bscc = (BCSChild) ois.readObject();
+        synchronized (child) {
+            BeanContextChild bcc = null;
+            try {
+                bcc = (BeanContextChild) child;
+            } catch (ClassCastException cce) {
+            // do nothing;
+            }
+            if (bcc != null) {
+                try {
+                    bcc.setBeanContext(getBeanContextPeer());
+                    bcc.addPropertyChangeListener("beanContext", childPCL);
+                    bcc.addVetoableChangeListener("beanContext", childVCL);
+                } catch (PropertyVetoException pve) {
+                    continue;
+                }
+            }
+            childDeserializedHook(child, bscc);
+        }
+    }
+}

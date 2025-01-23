@@ -1,0 +1,55 @@
+/**
+ * Returns a string resulting from replacing all occurrences of
+ * {@code oldChar} in this string with {@code newChar}.
+ * <p>
+ * If the character {@code oldChar} does not occur in the
+ * character sequence represented by this {@code String} object,
+ * then a reference to this {@code String} object is returned.
+ * Otherwise, a {@code String} object is returned that
+ * represents a character sequence identical to the character sequence
+ * represented by this {@code String} object, except that every
+ * occurrence of {@code oldChar} is replaced by an occurrence
+ * of {@code newChar}.
+ * <p>
+ * Examples:
+ * <blockquote><pre>
+ * "mesquite in your cellar".replace('e', 'o')
+ *         returns "mosquito in your collar"
+ * "the war of baronets".replace('r', 'y')
+ *         returns "the way of bayonets"
+ * "sparring with a purple porpoise".replace('p', 't')
+ *         returns "starring with a turtle tortoise"
+ * "JonL".replace('q', 'x') returns "JonL" (no change)
+ * </pre></blockquote>
+ *
+ * @param   oldChar   the old character.
+ * @param   newChar   the new character.
+ * @return  a string derived from this string by replacing every
+ *          occurrence of {@code oldChar} with {@code newChar}.
+ */
+public String replace(char oldChar, char newChar) {
+    if (oldChar != newChar) {
+        int len = value.length;
+        int i = -1;
+        char[] val = value;
+        /* avoid getfield opcode */
+        while (++i < len) {
+            if (val[i] == oldChar) {
+                break;
+            }
+        }
+        if (i < len) {
+            char[] buf = new char[len];
+            for (int j = 0; j < i; j++) {
+                buf[j] = val[j];
+            }
+            while (i < len) {
+                char c = val[i];
+                buf[i] = (c == oldChar) ? newChar : c;
+                i++;
+            }
+            return new String(buf, true);
+        }
+    }
+    return this;
+}

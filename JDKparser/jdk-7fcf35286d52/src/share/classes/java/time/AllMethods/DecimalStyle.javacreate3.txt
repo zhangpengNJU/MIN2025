@@ -1,0 +1,11 @@
+private static DecimalStyle create(Locale locale) {
+    DecimalFormatSymbols oldSymbols = DecimalFormatSymbols.getInstance(locale);
+    char zeroDigit = oldSymbols.getZeroDigit();
+    char positiveSign = '+';
+    char negativeSign = oldSymbols.getMinusSign();
+    char decimalSeparator = oldSymbols.getDecimalSeparator();
+    if (zeroDigit == '0' && negativeSign == '-' && decimalSeparator == '.') {
+        return STANDARD;
+    }
+    return new DecimalStyle(zeroDigit, positiveSign, negativeSign, decimalSeparator);
+}

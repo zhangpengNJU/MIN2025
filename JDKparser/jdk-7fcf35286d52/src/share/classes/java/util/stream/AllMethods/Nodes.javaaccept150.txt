@@ -1,0 +1,7 @@
+@Override
+public void accept(long value) {
+    if (index >= fence) {
+        throw new IndexOutOfBoundsException(Integer.toString(index));
+    }
+    array[index++] = value;
+}

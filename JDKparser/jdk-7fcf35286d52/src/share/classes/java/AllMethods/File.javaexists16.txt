@@ -1,0 +1,22 @@
+/**
+ * Tests whether the file or directory denoted by this abstract pathname
+ * exists.
+ *
+ * @return  <code>true</code> if and only if the file or directory denoted
+ *          by this abstract pathname exists; <code>false</code> otherwise
+ *
+ * @throws  SecurityException
+ *          If a security manager exists and its <code>{@link
+ *          java.lang.SecurityManager#checkRead(java.lang.String)}</code>
+ *          method denies read access to the file or directory
+ */
+public boolean exists() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkRead(path);
+    }
+    if (isInvalid()) {
+        return false;
+    }
+    return ((fs.getBooleanAttributes(this) & FileSystem.BA_EXISTS) != 0);
+}

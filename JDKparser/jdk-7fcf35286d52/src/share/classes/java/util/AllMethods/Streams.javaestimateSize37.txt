@@ -1,0 +1,11 @@
+@Override
+public long estimateSize() {
+    if (beforeSplit) {
+        // If one or both estimates are Long.MAX_VALUE then the sum
+        // will either be Long.MAX_VALUE or overflow to a negative value
+        long size = aSpliterator.estimateSize() + bSpliterator.estimateSize();
+        return (size >= 0) ? size : Long.MAX_VALUE;
+    } else {
+        return bSpliterator.estimateSize();
+    }
+}

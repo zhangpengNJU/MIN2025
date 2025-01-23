@@ -1,0 +1,4 @@
+@Override
+final <P_IN> Spliterator<P_OUT> wrap(PipelineHelper<P_OUT> ph, Supplier<Spliterator<P_IN>> supplier, boolean isParallel) {
+    return new StreamSpliterators.WrappingSpliterator<>(ph, supplier, isParallel);
+}

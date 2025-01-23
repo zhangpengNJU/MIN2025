@@ -1,0 +1,14 @@
+public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    if (function == null)
+        throw new NullPointerException();
+    V v;
+    for (Node<K, V> n = findFirst(); n != null; n = n.next) {
+        while ((v = n.getValidValue()) != null) {
+            V r = function.apply(n.key, v);
+            if (r == null)
+                throw new NullPointerException();
+            if (n.casValue(v, r))
+                break;
+        }
+    }
+}

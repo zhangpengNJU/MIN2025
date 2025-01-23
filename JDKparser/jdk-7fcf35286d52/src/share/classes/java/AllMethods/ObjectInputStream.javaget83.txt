@@ -1,0 +1,4 @@
+public byte get(String name, byte val) throws IOException {
+    int off = getFieldOffset(name, Byte.TYPE);
+    return (off >= 0) ? primVals[off] : val;
+}

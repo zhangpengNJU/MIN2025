@@ -1,0 +1,12 @@
+private <U extends T> CompletableFuture<Void> orAcceptStage(Executor e, CompletionStage<U> o, Consumer<? super T> f) {
+    CompletableFuture<U> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.orAccept(this, b, f, null)) {
+        OrAccept<T, U> c = new OrAccept<T, U>(e, d, this, b, f);
+        orpush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

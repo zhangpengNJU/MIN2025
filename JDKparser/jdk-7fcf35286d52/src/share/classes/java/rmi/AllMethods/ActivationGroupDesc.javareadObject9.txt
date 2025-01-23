@@ -1,0 +1,17 @@
+/**
+ * <code>readObject</code> for custom serialization.
+ *
+ * <p>This method reads this object's serialized form for this
+ * class as follows:
+ *
+ * <p>This method first invokes <code>defaultReadObject</code> on
+ * the specified object input stream, and if <code>options</code>
+ * is <code>null</code>, then <code>options</code> is set to a
+ * zero-length array of <code>String</code>.
+ */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    if (options == null) {
+        options = new String[0];
+    }
+}

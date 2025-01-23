@@ -1,0 +1,37 @@
+/**
+ * Executes the computation without setting its result, and then
+ * resets this future to initial state, failing to do so if the
+ * computation encounters an exception or is cancelled.  This is
+ * designed for use with tasks that intrinsically execute more
+ * than once.
+ *
+ * @return {@code true} if successfully run and reset
+ */
+protected boolean runAndReset() {
+    if (state != NEW || !UNSAFE.compareAndSwapObject(this, runnerOffset, null, Thread.currentThread()))
+        return false;
+    boolean ran = false;
+    int s = state;
+    try {
+        Callable<V> c = callable;
+        if (c != null && s == NEW) {
+            try {
+                // don't set result
+                c.call();
+                ran = true;
+            } catch (Throwable ex) {
+                setException(ex);
+            }
+        }
+    } finally {
+        // runner must be non-null until state is settled to
+        // prevent concurrent calls to run()
+        runner = null;
+        // state must be re-read after nulling runner to prevent
+        // leaked interrupts
+        s = state;
+        if (s >= INTERRUPTING)
+            handlePossibleCancellationInterrupt(s);
+    }
+    return ran && s == NEW;
+}

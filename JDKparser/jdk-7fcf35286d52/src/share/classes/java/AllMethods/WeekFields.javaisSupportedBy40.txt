@@ -1,0 +1,21 @@
+// -----------------------------------------------------------------------
+@Override
+public boolean isSupportedBy(TemporalAccessor temporal) {
+    if (temporal.isSupported(DAY_OF_WEEK)) {
+        if (rangeUnit == WEEKS) {
+            // day-of-week
+            return true;
+        } else if (rangeUnit == MONTHS) {
+            // week-of-month
+            return temporal.isSupported(DAY_OF_MONTH);
+        } else if (rangeUnit == YEARS) {
+            // week-of-year
+            return temporal.isSupported(DAY_OF_YEAR);
+        } else if (rangeUnit == WEEK_BASED_YEARS) {
+            return temporal.isSupported(DAY_OF_YEAR);
+        } else if (rangeUnit == FOREVER) {
+            return temporal.isSupported(YEAR);
+        }
+    }
+    return false;
+}

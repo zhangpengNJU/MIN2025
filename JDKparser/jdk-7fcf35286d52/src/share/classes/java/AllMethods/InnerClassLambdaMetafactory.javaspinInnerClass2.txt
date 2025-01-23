@@ -1,0 +1,74 @@
+/**
+ * Generate a class file which implements the functional
+ * interface, define and return the class.
+ *
+ * @implNote The class that is generated does not include signature
+ * information for exceptions that may be present on the SAM method.
+ * This is to reduce classfile size, and is harmless as checked exceptions
+ * are erased anyway, no one will ever compile against this classfile,
+ * and we make no guarantees about the reflective properties of lambda
+ * objects.
+ *
+ * @return a Class which implements the functional interface
+ * @throws LambdaConversionException If properly formed functional interface
+ * is not found
+ */
+private Class<?> spinInnerClass() throws LambdaConversionException {
+    String[] interfaces;
+    String samIntf = samBase.getName().replace('.', '/');
+    boolean accidentallySerializable = !isSerializable && Serializable.class.isAssignableFrom(samBase);
+    if (markerInterfaces.length == 0) {
+        interfaces = new String[] { samIntf };
+    } else {
+        // Assure no duplicate interfaces (ClassFormatError)
+        Set<String> itfs = new LinkedHashSet<>(markerInterfaces.length + 1);
+        itfs.add(samIntf);
+        for (Class<?> markerInterface : markerInterfaces) {
+            itfs.add(markerInterface.getName().replace('.', '/'));
+            accidentallySerializable |= !isSerializable && Serializable.class.isAssignableFrom(markerInterface);
+        }
+        interfaces = itfs.toArray(new String[itfs.size()]);
+    }
+    cw.visit(CLASSFILE_VERSION, ACC_SUPER + ACC_FINAL + ACC_SYNTHETIC, lambdaClassName, null, JAVA_LANG_OBJECT, interfaces);
+    // Generate final fields to be filled in by constructor
+    for (int i = 0; i < argDescs.length; i++) {
+        FieldVisitor fv = cw.visitField(ACC_PRIVATE + ACC_FINAL, argNames[i], argDescs[i], null, null);
+        fv.visitEnd();
+    }
+    generateConstructor();
+    if (invokedType.parameterCount() != 0) {
+        generateFactory();
+    }
+    // Forward the SAM method
+    MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, samMethodName, samMethodType.toMethodDescriptorString(), null, null);
+    mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Hidden;", true);
+    new ForwardingMethodGenerator(mv).generate(samMethodType);
+    // Forward the bridges
+    if (additionalBridges != null) {
+        for (MethodType mt : additionalBridges) {
+            mv = cw.visitMethod(ACC_PUBLIC | ACC_BRIDGE, samMethodName, mt.toMethodDescriptorString(), null, null);
+            mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Hidden;", true);
+            new ForwardingMethodGenerator(mv).generate(mt);
+        }
+    }
+    if (isSerializable)
+        generateSerializationFriendlyMethods();
+    else if (accidentallySerializable)
+        generateSerializationHostileMethods();
+    cw.visitEnd();
+    // Define the generated class in this VM.
+    final byte[] classBytes = cw.toByteArray();
+    // If requested, dump out to a file for debugging purposes
+    if (dumper != null) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+            @Override
+            public Void run() {
+                dumper.dumpClass(lambdaClassName, classBytes);
+                return null;
+            }
+        }, null, new FilePermission("<<ALL FILES>>", "read, write"), // createDirectories may need it
+        new PropertyPermission("user.dir", "read"));
+    }
+    return UNSAFE.defineAnonymousClass(targetClass, classBytes, null);
+}

@@ -1,0 +1,10 @@
+// get the "standard" (mixed-case) engine name for arbitary case engine name
+// if there is no known engine by that name, return s
+private static String getEngineName(String s) {
+    // try original case first, usually correct
+    EngineDescription e = knownEngines.get(s);
+    if (e == null) {
+        e = knownEngines.get(s.toLowerCase(ENGLISH));
+    }
+    return (e == null) ? s : e.name;
+}

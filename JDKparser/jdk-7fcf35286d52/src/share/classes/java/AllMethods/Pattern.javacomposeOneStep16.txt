@@ -1,0 +1,18 @@
+/**
+ * Attempts to compose input by combining the first character
+ * with the first combining mark following it. Returns a String
+ * that is the composition of the leading character with its first
+ * combining mark followed by the remaining combining marks. Returns
+ * null if the first two characters cannot be further composed.
+ */
+private String composeOneStep(String input) {
+    int len = countChars(input, 0, 2);
+    String firstTwoCharacters = input.substring(0, len);
+    String result = Normalizer.normalize(firstTwoCharacters, Normalizer.Form.NFC);
+    if (result.equals(firstTwoCharacters))
+        return null;
+    else {
+        String remainder = input.substring(len);
+        return result + remainder;
+    }
+}

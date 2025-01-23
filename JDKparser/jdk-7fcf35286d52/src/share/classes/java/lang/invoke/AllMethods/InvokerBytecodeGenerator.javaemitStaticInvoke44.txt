@@ -1,0 +1,39 @@
+/**
+ * Emit an invoke for the given name, using the MemberName directly.
+ */
+void emitStaticInvoke(MemberName member, Name name) {
+    assert (member.equals(name.function.member()));
+    Class<?> defc = member.getDeclaringClass();
+    String cname = getInternalName(defc);
+    String mname = member.getName();
+    String mtype;
+    byte refKind = member.getReferenceKind();
+    if (refKind == REF_invokeSpecial) {
+        // in order to pass the verifier, we need to convert this to invokevirtual in all cases
+        assert (member.canBeStaticallyBound()) : member;
+        refKind = REF_invokeVirtual;
+    }
+    if (member.getDeclaringClass().isInterface() && refKind == REF_invokeVirtual) {
+        // Methods from Object declared in an interface can be resolved by JVM to invokevirtual kind.
+        // Need to convert it back to invokeinterface to pass verification and make the invocation works as expected.
+        refKind = REF_invokeInterface;
+    }
+    // push arguments
+    emitPushArguments(name);
+    // invocation
+    if (member.isMethod()) {
+        mtype = member.getMethodType().toMethodDescriptorString();
+        mv.visitMethodInsn(refKindOpcode(refKind), cname, mname, mtype, member.getDeclaringClass().isInterface());
+    } else {
+        mtype = MethodType.toFieldDescriptorString(member.getFieldType());
+        mv.visitFieldInsn(refKindOpcode(refKind), cname, mname, mtype);
+    }
+    // Issue a type assertion for the result, so we can avoid casts later.
+    if (name.type == L_TYPE) {
+        Class<?> rtype = member.getInvocationType().returnType();
+        assert (!rtype.isPrimitive());
+        if (rtype != Object.class && !rtype.isInterface()) {
+            assertStaticType(rtype, name);
+        }
+    }
+}

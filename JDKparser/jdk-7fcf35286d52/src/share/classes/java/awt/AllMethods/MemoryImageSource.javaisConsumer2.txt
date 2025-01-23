@@ -1,0 +1,11 @@
+/**
+ * Determines if an ImageConsumer is on the list of consumers currently
+ * interested in data for this image.
+ * @param ic the specified <code>ImageConsumer</code>
+ * @return <code>true</code> if the <code>ImageConsumer</code>
+ * is on the list; <code>false</code> otherwise.
+ * @see ImageConsumer
+ */
+public synchronized boolean isConsumer(ImageConsumer ic) {
+    return theConsumers.contains(ic);
+}

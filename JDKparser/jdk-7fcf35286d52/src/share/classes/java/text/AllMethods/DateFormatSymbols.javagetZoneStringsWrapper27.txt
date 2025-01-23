@@ -1,0 +1,12 @@
+/**
+ * Wrapper method to the getZoneStrings(), which is called from inside
+ * the java.text package and not to mutate the returned arrays, so that
+ * it does not need to create a defensive copy.
+ */
+final String[][] getZoneStringsWrapper() {
+    if (isSubclassObject()) {
+        return getZoneStrings();
+    } else {
+        return getZoneStringsImpl(false);
+    }
+}

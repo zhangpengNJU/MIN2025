@@ -1,0 +1,27 @@
+/**
+ * Gets the Content Handler appropriate for this connection.
+ */
+synchronized ContentHandler getContentHandler() throws UnknownServiceException {
+    String contentType = stripOffParameters(getContentType());
+    ContentHandler handler = null;
+    if (contentType == null)
+        throw new UnknownServiceException("no content-type");
+    try {
+        handler = handlers.get(contentType);
+        if (handler != null)
+            return handler;
+    } catch (Exception e) {
+    }
+    if (factory != null)
+        handler = factory.createContentHandler(contentType);
+    if (handler == null) {
+        try {
+            handler = lookupContentHandlerClassFor(contentType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            handler = UnknownContentHandler.INSTANCE;
+        }
+        handlers.put(contentType, handler);
+    }
+    return handler;
+}

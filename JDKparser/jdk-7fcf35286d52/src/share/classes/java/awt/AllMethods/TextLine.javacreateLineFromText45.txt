@@ -1,0 +1,18 @@
+/**
+ * Create a TextLine from the Font and character data over the
+ * range.  The range is relative to both the StyledParagraph and the
+ * character array.
+ */
+public static TextLine createLineFromText(char[] chars, StyledParagraph styledParagraph, TextLabelFactory factory, boolean isDirectionLTR, float[] baselineOffsets) {
+    factory.setLineContext(0, chars.length);
+    Bidi lineBidi = factory.getLineBidi();
+    int[] charsLtoV = null;
+    byte[] levels = null;
+    if (lineBidi != null) {
+        levels = BidiUtils.getLevels(lineBidi);
+        int[] charsVtoL = BidiUtils.createVisualToLogicalMap(levels);
+        charsLtoV = BidiUtils.createInverseMap(charsVtoL);
+    }
+    TextLineComponent[] components = getComponents(styledParagraph, chars, 0, chars.length, charsLtoV, levels, factory);
+    return new TextLine(factory.getFontRenderContext(), components, baselineOffsets, chars, 0, chars.length, charsLtoV, levels, isDirectionLTR);
+}

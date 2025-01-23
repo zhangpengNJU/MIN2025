@@ -1,0 +1,14 @@
+/**
+ * Reads a String and only a string.
+ *
+ * @return  the String read
+ * @throws  EOFException If end of file is reached.
+ * @throws  IOException If other I/O error has occurred.
+ */
+private String readString() throws IOException {
+    try {
+        return (String) readObject(String.class);
+    } catch (ClassNotFoundException cnf) {
+        throw new IllegalStateException(cnf);
+    }
+}

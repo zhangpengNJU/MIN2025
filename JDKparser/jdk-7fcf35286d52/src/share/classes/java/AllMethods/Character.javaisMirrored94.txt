@@ -1,0 +1,18 @@
+/**
+ * Determines whether the specified character (Unicode code point)
+ * is mirrored according to the Unicode specification.  Mirrored
+ * characters should have their glyphs horizontally mirrored when
+ * displayed in text that is right-to-left.  For example,
+ * {@code '\u005Cu0028'} LEFT PARENTHESIS is semantically
+ * defined to be an <i>opening parenthesis</i>.  This will appear
+ * as a "(" in text that is left-to-right but as a ")" in text
+ * that is right-to-left.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is mirrored, {@code false}
+ *          if the character is not mirrored or is not defined.
+ * @since   1.5
+ */
+public static boolean isMirrored(int codePoint) {
+    return CharacterData.of(codePoint).isMirrored(codePoint);
+}

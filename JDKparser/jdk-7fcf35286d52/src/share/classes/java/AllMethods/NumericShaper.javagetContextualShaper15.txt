@@ -1,0 +1,21 @@
+/**
+ * Returns a contextual shaper for the provided Unicode
+ * range(s). The Latin-1 (EUROPEAN) digits are converted to the
+ * decimal digits corresponding to the range of the preceding
+ * text, if the range is one of the provided ranges.
+ *
+ * <p>The shaper assumes EUROPEAN as the starting context, that
+ * is, if EUROPEAN digits are encountered before any strong
+ * directional text in the string, the context is presumed to be
+ * EUROPEAN, and so the digits will not shape.
+ *
+ * @param ranges the specified Unicode ranges
+ * @return a contextual shaper for the specified ranges
+ * @throws NullPointerException if {@code ranges} is {@code null}.
+ * @since 1.7
+ */
+public static NumericShaper getContextualShaper(Set<Range> ranges) {
+    NumericShaper shaper = new NumericShaper(Range.EUROPEAN, ranges);
+    shaper.mask = CONTEXTUAL_MASK;
+    return shaper;
+}

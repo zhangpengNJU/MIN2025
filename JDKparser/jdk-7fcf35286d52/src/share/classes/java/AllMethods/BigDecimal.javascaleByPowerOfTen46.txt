@@ -1,0 +1,16 @@
+/**
+ * Returns a BigDecimal whose numerical value is equal to
+ * ({@code this} * 10<sup>n</sup>).  The scale of
+ * the result is {@code (this.scale() - n)}.
+ *
+ * @param n the exponent power of ten to scale by
+ * @return a BigDecimal whose numerical value is equal to
+ * ({@code this} * 10<sup>n</sup>)
+ * @throws ArithmeticException if the scale would be
+ *         outside the range of a 32-bit integer.
+ *
+ * @since 1.5
+ */
+public BigDecimal scaleByPowerOfTen(int n) {
+    return new BigDecimal(intVal, intCompact, checkScale((long) scale - n), precision);
+}

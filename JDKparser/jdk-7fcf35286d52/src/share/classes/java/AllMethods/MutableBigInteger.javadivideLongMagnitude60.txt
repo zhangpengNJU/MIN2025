@@ -1,0 +1,97 @@
+/**
+ * Divide this MutableBigInteger by the divisor represented by positive long
+ * value. The quotient will be placed into the provided quotient object &
+ * the remainder object is returned.
+ */
+private MutableBigInteger divideLongMagnitude(long ldivisor, MutableBigInteger quotient) {
+    // Remainder starts as dividend with space for a leading zero
+    MutableBigInteger rem = new MutableBigInteger(new int[intLen + 1]);
+    System.arraycopy(value, offset, rem.value, 1, intLen);
+    rem.intLen = intLen;
+    rem.offset = 1;
+    int nlen = rem.intLen;
+    int limit = nlen - 2 + 1;
+    if (quotient.value.length < limit) {
+        quotient.value = new int[limit];
+        quotient.offset = 0;
+    }
+    quotient.intLen = limit;
+    int[] q = quotient.value;
+    // D1 normalize the divisor
+    int shift = Long.numberOfLeadingZeros(ldivisor);
+    if (shift > 0) {
+        ldivisor <<= shift;
+        rem.leftShift(shift);
+    }
+    // Must insert leading 0 in rem if its length did not change
+    if (rem.intLen == nlen) {
+        rem.offset = 0;
+        rem.value[0] = 0;
+        rem.intLen++;
+    }
+    int dh = (int) (ldivisor >>> 32);
+    long dhLong = dh & LONG_MASK;
+    int dl = (int) (ldivisor & LONG_MASK);
+    // D2 Initialize j
+    for (int j = 0; j < limit; j++) {
+        // D3 Calculate qhat
+        // estimate qhat
+        int qhat = 0;
+        int qrem = 0;
+        boolean skipCorrection = false;
+        int nh = rem.value[j + rem.offset];
+        int nh2 = nh + 0x80000000;
+        int nm = rem.value[j + 1 + rem.offset];
+        if (nh == dh) {
+            qhat = ~0;
+            qrem = nh + nm;
+            skipCorrection = qrem + 0x80000000 < nh2;
+        } else {
+            long nChunk = (((long) nh) << 32) | (nm & LONG_MASK);
+            if (nChunk >= 0) {
+                qhat = (int) (nChunk / dhLong);
+                qrem = (int) (nChunk - (qhat * dhLong));
+            } else {
+                long tmp = divWord(nChunk, dh);
+                qhat = (int) (tmp & LONG_MASK);
+                qrem = (int) (tmp >>> 32);
+            }
+        }
+        if (qhat == 0)
+            continue;
+        if (!skipCorrection) {
+            // Correct qhat
+            long nl = rem.value[j + 2 + rem.offset] & LONG_MASK;
+            long rs = ((qrem & LONG_MASK) << 32) | nl;
+            long estProduct = (dl & LONG_MASK) * (qhat & LONG_MASK);
+            if (unsignedLongCompare(estProduct, rs)) {
+                qhat--;
+                qrem = (int) ((qrem & LONG_MASK) + dhLong);
+                if ((qrem & LONG_MASK) >= dhLong) {
+                    estProduct -= (dl & LONG_MASK);
+                    rs = ((qrem & LONG_MASK) << 32) | nl;
+                    if (unsignedLongCompare(estProduct, rs))
+                        qhat--;
+                }
+            }
+        }
+        // D4 Multiply and subtract
+        rem.value[j + rem.offset] = 0;
+        int borrow = mulsubLong(rem.value, dh, dl, qhat, j + rem.offset);
+        // D5 Test remainder
+        if (borrow + 0x80000000 > nh2) {
+            // D6 Add back
+            divaddLong(dh, dl, rem.value, j + 1 + rem.offset);
+            qhat--;
+        }
+        // Store the quotient digit
+        q[j] = qhat;
+    }
+    // D7 loop on j
+    // D8 Unnormalize
+    if (shift > 0)
+        rem.rightShift(shift);
+    quotient.normalize();
+    rem.normalize();
+    return rem;
+}

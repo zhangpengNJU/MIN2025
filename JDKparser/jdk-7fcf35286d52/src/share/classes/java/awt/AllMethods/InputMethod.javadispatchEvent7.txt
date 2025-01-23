@@ -1,0 +1,20 @@
+/**
+ * Dispatches the event to the input method. If input method support is
+ * enabled for the focussed component, incoming events of certain types
+ * are dispatched to the current input method for this component before
+ * they are dispatched to the component's methods or event listeners.
+ * The input method decides whether it needs to handle the event. If it
+ * does, it also calls the event's <code>consume</code> method; this
+ * causes the event to not get dispatched to the component's event
+ * processing methods or event listeners.
+ * <p>
+ * Events are dispatched if they are instances of InputEvent or its
+ * subclasses.
+ * This includes instances of the AWT classes KeyEvent and MouseEvent.
+ * <p>
+ * This method is called by {@link java.awt.im.InputContext#dispatchEvent InputContext.dispatchEvent}.
+ *
+ * @param event the event being dispatched to the input method
+ * @exception NullPointerException if <code>event</code> is null
+ */
+public void dispatchEvent(AWTEvent event);

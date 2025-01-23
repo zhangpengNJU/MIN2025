@@ -1,0 +1,37 @@
+/**
+ * Reads the next ZIP file entry and positions the stream at the
+ * beginning of the entry data. If verification has been enabled,
+ * any invalid signature detected while positioning the stream for
+ * the next entry will result in an exception.
+ * @exception ZipException if a ZIP file error has occurred
+ * @exception IOException if an I/O error has occurred
+ * @exception SecurityException if any of the jar file entries
+ *         are incorrectly signed.
+ */
+public ZipEntry getNextEntry() throws IOException {
+    JarEntry e;
+    if (first == null) {
+        e = (JarEntry) super.getNextEntry();
+        if (tryManifest) {
+            e = checkManifest(e);
+            tryManifest = false;
+        }
+    } else {
+        e = first;
+        if (first.getName().equalsIgnoreCase(JarIndex.INDEX_NAME))
+            tryManifest = true;
+        first = null;
+    }
+    if (jv != null && e != null) {
+        // At this point, we might have parsed all the meta-inf
+        // entries and have nothing to verify. If we have
+        // nothing to verify, get rid of the JarVerifier object.
+        if (jv.nothingToVerify() == true) {
+            jv = null;
+            mev = null;
+        } else {
+            jv.beginEntry(e, mev);
+        }
+    }
+    return e;
+}

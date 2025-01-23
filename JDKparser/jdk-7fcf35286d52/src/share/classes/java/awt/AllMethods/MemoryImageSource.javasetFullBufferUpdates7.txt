@@ -1,0 +1,28 @@
+/**
+ * Specifies whether this animated memory image should always be
+ * updated by sending the complete buffer of pixels whenever
+ * there is a change.
+ * This flag is ignored if the animation flag is not turned on
+ * through the setAnimated() method.
+ * <p>This method should be called immediately after the
+ * MemoryImageSource is constructed and before an image is
+ * created with it to ensure that all ImageConsumers will
+ * receive the correct pixel delivery hints.
+ * @param fullbuffers <code>true</code> if the complete pixel
+ *             buffer should always
+ * be sent
+ * @see #setAnimated
+ */
+public synchronized void setFullBufferUpdates(boolean fullbuffers) {
+    if (this.fullbuffers == fullbuffers) {
+        return;
+    }
+    this.fullbuffers = fullbuffers;
+    if (animating) {
+        Enumeration enum_ = theConsumers.elements();
+        while (enum_.hasMoreElements()) {
+            ImageConsumer ic = (ImageConsumer) enum_.nextElement();
+            ic.setHints(fullbuffers ? (ImageConsumer.TOPDOWNLEFTRIGHT | ImageConsumer.COMPLETESCANLINES) : ImageConsumer.RANDOMPIXELORDER);
+        }
+    }
+}

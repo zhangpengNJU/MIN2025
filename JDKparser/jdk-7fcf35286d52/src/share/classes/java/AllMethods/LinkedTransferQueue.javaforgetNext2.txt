@@ -1,0 +1,7 @@
+/**
+ * Links node to itself to avoid garbage retention.  Called
+ * only after CASing head field, so uses relaxed write.
+ */
+final void forgetNext() {
+    UNSAFE.putObject(this, nextOffset, this);
+}

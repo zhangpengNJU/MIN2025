@@ -1,0 +1,25 @@
+public static String encodeForFilename(String className) {
+    final int len = className.length();
+    StringBuilder sb = new StringBuilder(len);
+    for (int i = 0; i < len; i++) {
+        char c = className.charAt(i);
+        // control characters
+        if (c <= 31) {
+            sb.append('%');
+            sb.append(HEX[c >> 4 & 0x0F]);
+            sb.append(HEX[c & 0x0F]);
+        } else {
+            int j = 0;
+            for (; j < BAD_CHARS.length; j++) {
+                if (c == BAD_CHARS[j]) {
+                    sb.append(REPLACEMENT[j]);
+                    break;
+                }
+            }
+            if (j >= BAD_CHARS.length) {
+                sb.append(c);
+            }
+        }
+    }
+    return sb.toString();
+}

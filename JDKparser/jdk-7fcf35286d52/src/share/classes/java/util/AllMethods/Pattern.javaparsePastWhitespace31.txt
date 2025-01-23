@@ -1,0 +1,11 @@
+/**
+ * If in xmode parse past whitespace and comments.
+ */
+private int parsePastWhitespace(int ch) {
+    while (ASCII.isSpace(ch) || ch == '#') {
+        while (ASCII.isSpace(ch)) ch = temp[cursor++];
+        if (ch == '#')
+            ch = parsePastLine();
+    }
+    return ch;
+}

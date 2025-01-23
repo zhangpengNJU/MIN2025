@@ -1,0 +1,17 @@
+/**
+ * Returns a <code>Shape</code> enclosing the logical selection in the
+ * specified range, extended to the natural bounds of this
+ * <code>TextLayout</code>.  This method is a convenience overload of
+ * <code>getLogicalHighlightShape</code> that uses the natural bounds of
+ * this <code>TextLayout</code>.
+ * @param firstEndpoint an endpoint in the range of characters to select
+ * @param secondEndpoint the other endpoint of the range of characters
+ * to select. Can be less than <code>firstEndpoint</code>.  The range
+ * includes the character at min(firstEndpoint, secondEndpoint), but
+ * excludes max(firstEndpoint, secondEndpoint).
+ * @return a <code>Shape</code> enclosing the selection.  This is in
+ *     standard coordinates.
+ */
+public Shape getLogicalHighlightShape(int firstEndpoint, int secondEndpoint) {
+    return getLogicalHighlightShape(firstEndpoint, secondEndpoint, getNaturalBounds());
+}

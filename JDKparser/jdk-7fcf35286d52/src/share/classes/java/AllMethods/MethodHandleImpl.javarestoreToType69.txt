@@ -1,0 +1,9 @@
+// Undo the adapter effect of prepareForInvoker:
+private static MethodHandle restoreToType(MethodHandle vamh, MethodHandle original, Class<?> hostClass) {
+    MethodType type = original.type();
+    MethodHandle mh = vamh.asCollector(Object[].class, type.parameterCount());
+    MemberName member = original.internalMemberName();
+    mh = mh.asType(type);
+    mh = new WrappedMember(mh, type, member, original.isInvokeSpecial(), hostClass);
+    return mh;
+}

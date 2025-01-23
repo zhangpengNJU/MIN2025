@@ -1,0 +1,19 @@
+/**
+ * Positions below the baseline.
+ */
+private void alignBelowBaseline(GridBagConstraints cons, Rectangle r, int cellY, int cellHeight) {
+    if (layoutInfo.hasBaseline(cons.tempY)) {
+        if (layoutInfo.hasConstantDescent(cons.tempY)) {
+            // Prefer descent
+            r.y = cellY + cellHeight - layoutInfo.maxDescent[cons.tempY];
+        } else {
+            // Prefer ascent
+            r.y = cellY + layoutInfo.maxAscent[cons.tempY];
+        }
+        if (cons.isVerticallyResizable()) {
+            r.height = cellY + cellHeight - r.y - cons.insets.bottom;
+        }
+    } else {
+        centerVertically(cons, r, cellHeight);
+    }
+}

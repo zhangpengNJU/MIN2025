@@ -1,0 +1,11 @@
+private Map<String, Integer> getDisplayNamesMap(int field, Locale locale) {
+    Map<String, Integer> map = calendar.getDisplayNames(field, Calendar.SHORT_FORMAT, locale);
+    // Get all SHORT and LONG styles (avoid NARROW styles).
+    for (int style : REST_OF_STYLES) {
+        Map<String, Integer> m = calendar.getDisplayNames(field, style, locale);
+        if (m != null) {
+            map.putAll(m);
+        }
+    }
+    return map;
+}

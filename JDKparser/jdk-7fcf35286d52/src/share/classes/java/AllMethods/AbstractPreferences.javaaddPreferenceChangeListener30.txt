@@ -1,0 +1,14 @@
+public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
+    if (pcl == null)
+        throw new NullPointerException("Change listener is null.");
+    synchronized (lock) {
+        if (removed)
+            throw new IllegalStateException("Node has been removed.");
+        // Copy-on-write
+        PreferenceChangeListener[] old = prefListeners;
+        prefListeners = new PreferenceChangeListener[old.length + 1];
+        System.arraycopy(old, 0, prefListeners, 0, old.length);
+        prefListeners[old.length] = pcl;
+    }
+    startEventDispatchThreadIfNecessary();
+}

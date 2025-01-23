@@ -1,0 +1,106 @@
+/**
+ * Fill the raster, cycling the gradient colors when a point falls outside
+ * of the perimeter of the 100% stop circle.
+ *
+ * This calculation first computes the intersection point of the line
+ * from the focus through the current point in the raster, and the
+ * perimeter of the gradient circle.
+ *
+ * Then it determines the percentage distance of the current point along
+ * that line (focus is 0%, perimeter is 100%).
+ *
+ * Equation of a circle centered at (a,b) with radius r:
+ *     (x-a)^2 + (y-b)^2 = r^2
+ * Equation of a line with slope m and y-intercept b:
+ *     y = mx + b
+ * Replacing y in the circle equation and solving using the quadratic
+ * formula produces the following set of equations.  Constant factors have
+ * been extracted out of the inner loop.
+ */
+private void cyclicCircularGradientFillRaster(int[] pixels, int off, int adjust, int x, int y, int w, int h) {
+    // constant part of the C factor of the quadratic equation
+    final double constC = -radiusSq + (centerX * centerX) + (centerY * centerY);
+    // coefficients of the quadratic equation (Ax^2 + Bx + C = 0)
+    double A, B, C;
+    // slope and y-intercept of the focus-perimeter line
+    double slope, yintcpt;
+    // intersection with circle X,Y coordinate
+    double solutionX, solutionY;
+    // constant parts of X, Y coordinates
+    final float constX = (a00 * x) + (a01 * y) + a02;
+    final float constY = (a10 * x) + (a11 * y) + a12;
+    // constants in inner loop quadratic formula
+    final float precalc2 = 2 * centerY;
+    final float precalc3 = -2 * centerX;
+    // value between 0 and 1 specifying position in the gradient
+    float g;
+    // determinant of quadratic formula (should always be > 0)
+    float det;
+    // sq distance from the current point to focus
+    float currentToFocusSq;
+    // sq distance from the intersect point to focus
+    float intersectToFocusSq;
+    // temp variables for change in X,Y squared
+    float deltaXSq, deltaYSq;
+    // used to index pixels array
+    int indexer = off;
+    // incremental index change for pixels array
+    int pixInc = w + adjust;
+    // for every row
+    for (int j = 0; j < h; j++) {
+        // user space point; these are constant from column to column
+        float X = (a01 * j) + constX;
+        float Y = (a11 * j) + constY;
+        // for every column (inner loop begins here)
+        for (int i = 0; i < w; i++) {
+            if (X == focusX) {
+                // special case to avoid divide by zero
+                solutionX = focusX;
+                solutionY = centerY;
+                solutionY += (Y > focusY) ? trivial : -trivial;
+            } else {
+                // slope and y-intercept of the focus-perimeter line
+                slope = (Y - focusY) / (X - focusX);
+                yintcpt = Y - (slope * X);
+                // use the quadratic formula to calculate the
+                // intersection point
+                A = (slope * slope) + 1;
+                B = precalc3 + (-2 * slope * (centerY - yintcpt));
+                C = constC + (yintcpt * (yintcpt - precalc2));
+                det = (float) Math.sqrt((B * B) - (4 * A * C));
+                solutionX = -B;
+                // choose the positive or negative root depending
+                // on where the X coord lies with respect to the focus
+                solutionX += (X < focusX) ? -det : det;
+                // divisor
+                solutionX = solutionX / (2 * A);
+                solutionY = (slope * solutionX) + yintcpt;
+            }
+            // Calculate the square of the distance from the current point
+            // to the focus and the square of the distance from the
+            // intersection point to the focus. Want the squares so we can
+            // do 1 square root after division instead of 2 before.
+            deltaXSq = X - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+            deltaYSq = Y - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+            currentToFocusSq = deltaXSq + deltaYSq;
+            deltaXSq = (float) solutionX - focusX;
+            deltaXSq = deltaXSq * deltaXSq;
+            deltaYSq = (float) solutionY - focusY;
+            deltaYSq = deltaYSq * deltaYSq;
+            intersectToFocusSq = deltaXSq + deltaYSq;
+            // get the percentage (0-1) of the current point along the
+            // focus-circumference line
+            g = (float) Math.sqrt(currentToFocusSq / intersectToFocusSq);
+            // store the color at this point
+            pixels[indexer + i] = indexIntoGradientsArrays(g);
+            // incremental change in X, Y
+            X += a00;
+            Y += a10;
+        }
+        // end inner loop
+        indexer += pixInc;
+    }
+// end outer loop
+}

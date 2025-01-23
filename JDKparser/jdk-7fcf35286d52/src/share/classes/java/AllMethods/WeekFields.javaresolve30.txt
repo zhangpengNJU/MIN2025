@@ -1,0 +1,45 @@
+@Override
+public ChronoLocalDate resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+    final long value = fieldValues.get(this);
+    // broad limit makes overflow checking lighter
+    final int newValue = Math.toIntExact(value);
+    // first convert localized day-of-week to ISO day-of-week
+    // doing this first handles case where both ISO and localized were parsed and might mismatch
+    // day-of-week is always strict as two different day-of-week values makes lenient complex
+    if (rangeUnit == WEEKS) {
+        // day-of-week
+        // no leniency as too complex
+        final int checkedValue = range.checkValidIntValue(value, this);
+        final int startDow = weekDef.getFirstDayOfWeek().getValue();
+        long isoDow = Math.floorMod((startDow - 1) + (checkedValue - 1), 7) + 1;
+        fieldValues.remove(this);
+        fieldValues.put(DAY_OF_WEEK, isoDow);
+        return null;
+    }
+    // can only build date if ISO day-of-week is present
+    if (fieldValues.containsKey(DAY_OF_WEEK) == false) {
+        return null;
+    }
+    int isoDow = DAY_OF_WEEK.checkValidIntValue(fieldValues.get(DAY_OF_WEEK));
+    int dow = localizedDayOfWeek(isoDow);
+    // build date
+    Chronology chrono = Chronology.from(partialTemporal);
+    if (fieldValues.containsKey(YEAR)) {
+        // validate
+        int year = YEAR.checkValidIntValue(fieldValues.get(YEAR));
+        if (rangeUnit == MONTHS && fieldValues.containsKey(MONTH_OF_YEAR)) {
+            // week-of-month
+            // not validated yet
+            long month = fieldValues.get(MONTH_OF_YEAR);
+            return resolveWoM(fieldValues, chrono, year, month, newValue, dow, resolverStyle);
+        }
+        if (rangeUnit == YEARS) {
+            // week-of-year
+            return resolveWoY(fieldValues, chrono, year, newValue, dow, resolverStyle);
+        }
+    } else if ((rangeUnit == WEEK_BASED_YEARS || rangeUnit == FOREVER) && fieldValues.containsKey(weekDef.weekBasedYear) && fieldValues.containsKey(weekDef.weekOfWeekBasedYear)) {
+        // week-of-week-based-year and year-of-week-based-year
+        return resolveWBY(fieldValues, chrono, dow, resolverStyle);
+    }
+    return null;
+}

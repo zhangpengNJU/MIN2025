@@ -1,0 +1,18 @@
+/**
+ * Determines whether an ImageConsumer is on the list of consumers
+ * currently interested in data for this image.
+ *
+ * <p>
+ * This method is public as a side effect
+ * of this class implementing
+ * the <code>ImageProducer</code> interface.
+ * It should not be called from user code,
+ * and its behavior if called from user code is unspecified.
+ *
+ * @param ic the specified <code>ImageConsumer</code>
+ * @return true if the ImageConsumer is on the list; false otherwise
+ * @see ImageConsumer
+ */
+public synchronized boolean isConsumer(ImageConsumer ic) {
+    return (proxies != null && proxies.containsKey(ic));
+}

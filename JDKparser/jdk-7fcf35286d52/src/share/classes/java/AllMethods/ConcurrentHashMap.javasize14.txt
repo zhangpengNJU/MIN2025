@@ -1,0 +1,8 @@
+// Original (since JDK1.2) Map methods
+/**
+ * {@inheritDoc}
+ */
+public int size() {
+    long n = sumCount();
+    return ((n < 0L) ? 0 : (n > (long) Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) n);
+}

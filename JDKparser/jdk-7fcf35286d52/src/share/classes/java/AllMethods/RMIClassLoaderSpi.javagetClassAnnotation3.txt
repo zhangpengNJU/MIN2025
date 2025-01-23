@@ -1,0 +1,16 @@
+/**
+ * Provides the implementation for
+ * {@link RMIClassLoader#getClassAnnotation(Class)}.
+ *
+ * Returns the annotation string (representing a location for
+ * the class definition) that RMI will use to annotate the class
+ * descriptor when marshalling objects of the given class.
+ *
+ * @param   cl the class to obtain the annotation for
+ *
+ * @return  a string to be used to annotate the given class when
+ * it gets marshalled, or <code>null</code>
+ *
+ * @throws  NullPointerException if <code>cl</code> is <code>null</code>
+ */
+public abstract String getClassAnnotation(Class<?> cl);

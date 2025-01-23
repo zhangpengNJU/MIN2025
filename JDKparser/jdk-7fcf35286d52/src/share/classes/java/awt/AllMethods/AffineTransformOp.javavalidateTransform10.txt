@@ -1,0 +1,8 @@
+// We need to be able to invert the transform if we want to
+// transform the image.  If the determinant of the matrix is 0,
+// then we can't invert the transform.
+void validateTransform(AffineTransform xform) {
+    if (Math.abs(xform.getDeterminant()) <= Double.MIN_VALUE) {
+        throw new ImagingOpException("Unable to invert transform " + xform);
+    }
+}

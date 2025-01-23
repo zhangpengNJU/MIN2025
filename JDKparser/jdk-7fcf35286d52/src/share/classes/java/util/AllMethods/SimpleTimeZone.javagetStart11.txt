@@ -1,0 +1,7 @@
+private long getStart(BaseCalendar cal, BaseCalendar.Date cdate, int year) {
+    int time = startTime;
+    if (startTimeMode != UTC_TIME) {
+        time -= rawOffset;
+    }
+    return getTransition(cal, cdate, startMode, year, startMonth, startDay, startDayOfWeek, time);
+}

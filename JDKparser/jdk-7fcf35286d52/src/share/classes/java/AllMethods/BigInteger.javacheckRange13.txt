@@ -1,0 +1,11 @@
+/**
+ * Throws an {@code ArithmeticException} if the {@code BigInteger} would be
+ * out of the supported range.
+ *
+ * @throws ArithmeticException if {@code this} exceeds the supported range.
+ */
+private void checkRange() {
+    if (mag.length > MAX_MAG_LENGTH || mag.length == MAX_MAG_LENGTH && mag[0] < 0) {
+        reportOverflow();
+    }
+}

@@ -1,0 +1,19 @@
+@Override
+<P_IN> Spliterator<T> opEvaluateParallelLazy(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
+    long size = helper.exactOutputSizeIfKnown(spliterator);
+    if (size > 0 && spliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+        return new StreamSpliterators.SliceSpliterator.OfRef<>(helper.wrapSpliterator(spliterator), skip, calcSliceFence(skip, limit));
+    } else if (!StreamOpFlag.ORDERED.isKnown(helper.getStreamAndOpFlags())) {
+        return unorderedSkipLimitSpliterator(helper.wrapSpliterator(spliterator), skip, limit, size);
+    } else {
+        // @@@ OOMEs will occur for LongStream.longs().filter(i -> true).limit(n)
+        // regardless of the value of n
+        // Need to adjust the target size of splitting for the
+        // SliceTask from say (size / k) to say min(size / k, 1 << 14)
+        // This will limit the size of the buffers created at the leaf nodes
+        // cancellation will be more aggressive cancelling later tasks
+        // if the target slice size has been reached from a given task,
+        // cancellation should also clear local results if any
+        return new SliceTask<>(this, helper, spliterator, castingArray(), skip, limit).invoke().spliterator();
+    }
+}

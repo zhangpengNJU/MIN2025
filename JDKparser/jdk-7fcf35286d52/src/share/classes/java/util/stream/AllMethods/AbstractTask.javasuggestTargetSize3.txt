@@ -1,0 +1,9 @@
+/**
+ * Returns a suggested target leaf size based on the initial size estimate.
+ *
+ * @return suggested target leaf size
+ */
+public static long suggestTargetSize(long sizeEstimate) {
+    long est = sizeEstimate / getLeafTarget();
+    return est > 0L ? est : 1L;
+}

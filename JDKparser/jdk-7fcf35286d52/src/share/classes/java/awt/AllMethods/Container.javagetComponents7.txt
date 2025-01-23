@@ -1,0 +1,14 @@
+/**
+ * Gets all the components in this container.
+ * <p>
+ * Note: This method should be called under AWT tree lock.
+ *
+ * @return    an array of all the components in this container.
+ * @see Component#getTreeLock()
+ */
+public Component[] getComponents() {
+    // This method is not synchronized under AWT tree lock.
+    // Instead, the calling code is responsible for the
+    // synchronization. See 6784816 for details.
+    return getComponents_NoClientCode();
+}

@@ -1,0 +1,13 @@
+@Override
+<P_IN> Spliterator<T> opEvaluateParallelLazy(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
+    if (StreamOpFlag.DISTINCT.isKnown(helper.getStreamAndOpFlags())) {
+        // No-op
+        return helper.wrapSpliterator(spliterator);
+    } else if (StreamOpFlag.ORDERED.isKnown(helper.getStreamAndOpFlags())) {
+        // Not lazy, barrier required to preserve order
+        return reduce(helper, spliterator).spliterator();
+    } else {
+        // Lazy
+        return new StreamSpliterators.DistinctSpliterator<>(helper.wrapSpliterator(spliterator));
+    }
+}

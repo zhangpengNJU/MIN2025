@@ -1,0 +1,20 @@
+// ******  Array allocation and resizing utilities ******
+private static int calculateSize(int numElements) {
+    int initialCapacity = MIN_INITIAL_CAPACITY;
+    // Find the best power of two to hold elements.
+    // Tests "<=" because arrays aren't kept full.
+    if (numElements >= initialCapacity) {
+        initialCapacity = numElements;
+        initialCapacity |= (initialCapacity >>> 1);
+        initialCapacity |= (initialCapacity >>> 2);
+        initialCapacity |= (initialCapacity >>> 4);
+        initialCapacity |= (initialCapacity >>> 8);
+        initialCapacity |= (initialCapacity >>> 16);
+        initialCapacity++;
+        if (// Too many elements, must back off
+        initialCapacity < 0)
+            // Good luck allocating 2 ^ 30 elements
+            initialCapacity >>>= 1;
+    }
+    return initialCapacity;
+}

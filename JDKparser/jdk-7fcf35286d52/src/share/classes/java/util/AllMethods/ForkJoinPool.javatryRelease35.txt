@@ -1,0 +1,25 @@
+/**
+ * Signals and releases worker v if it is top of idle worker
+ * stack.  This performs a one-shot version of signalWork only if
+ * there is (apparently) at least one idle worker.
+ *
+ * @param c incoming ctl value
+ * @param v if non-null, a worker
+ * @param inc the increment to active count (zero when compensating)
+ * @return true if successful
+ */
+private boolean tryRelease(long c, WorkQueue v, long inc) {
+    int sp = (int) c, vs = (sp + SS_SEQ) & ~INACTIVE;
+    Thread p;
+    if (v != null && v.scanState == sp) {
+        // v is at top of stack
+        long nc = (UC_MASK & (c + inc)) | (SP_MASK & v.stackPred);
+        if (U.compareAndSwapLong(this, CTL, c, nc)) {
+            v.scanState = vs;
+            if ((p = v.parker) != null)
+                U.unpark(p);
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,0 +1,8 @@
+// instead of cast to E, we should perhaps use elementType.cast()
+// to avoid injection of forged stream, but it will slow the implementation
+@SuppressWarnings("unchecked")
+private Object readResolve() {
+    EnumSet<E> result = EnumSet.noneOf(elementType);
+    for (Enum<?> e : elements) result.add((E) e);
+    return result;
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns the integer type of the affine transform for this
+ * <code>FontRenderContext</code> as specified by
+ * {@link java.awt.geom.AffineTransform#getType()}
+ * @return the type of the transform.
+ * @see AffineTransform
+ * @since 1.6
+ */
+public int getTransformType() {
+    if (!defaulting) {
+        if (tx == null) {
+            return AffineTransform.TYPE_IDENTITY;
+        } else {
+            return tx.getType();
+        }
+    } else {
+        return getTransform().getType();
+    }
+}

@@ -1,0 +1,16 @@
+/**
+ * Finishes writing uncompressed data to the output stream without closing
+ * the underlying stream.  Use this method when applying multiple filters in
+ * succession to the same output stream.
+ *
+ * @throws IOException if an I/O error occurs or this stream is already
+ * closed
+ */
+public void finish() throws IOException {
+    ensureOpen();
+    // Finish decompressing and writing pending output data
+    flush();
+    if (usesDefaultInflater) {
+        inf.end();
+    }
+}

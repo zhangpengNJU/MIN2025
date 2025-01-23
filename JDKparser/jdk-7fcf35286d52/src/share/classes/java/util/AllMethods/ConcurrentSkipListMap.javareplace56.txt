@@ -1,0 +1,24 @@
+/**
+ * {@inheritDoc}
+ *
+ * @return the previous value associated with the specified key,
+ *         or {@code null} if there was no mapping for the key
+ * @throws ClassCastException if the specified key cannot be compared
+ *         with the keys currently in the map
+ * @throws NullPointerException if the specified key or value is null
+ */
+public V replace(K key, V value) {
+    if (key == null || value == null)
+        throw new NullPointerException();
+    for (; ; ) {
+        Node<K, V> n;
+        Object v;
+        if ((n = findNode(key)) == null)
+            return null;
+        if ((v = n.value) != null && n.casValue(v, value)) {
+            @SuppressWarnings("unchecked")
+            V vv = (V) v;
+            return vv;
+        }
+    }
+}

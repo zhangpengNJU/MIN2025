@@ -1,0 +1,30 @@
+/**
+ * Returns the index of the high bit in value (assuming le, actually
+ * power of 2 >= value). value must be positive.
+ */
+private static int getHighBit(int value) {
+    if (value <= 0) {
+        return -32;
+    }
+    int bit = 0;
+    if (value >= 1 << 16) {
+        value >>= 16;
+        bit += 16;
+    }
+    if (value >= 1 << 8) {
+        value >>= 8;
+        bit += 8;
+    }
+    if (value >= 1 << 4) {
+        value >>= 4;
+        bit += 4;
+    }
+    if (value >= 1 << 2) {
+        value >>= 2;
+        bit += 2;
+    }
+    if (value >= 1 << 1) {
+        bit += 1;
+    }
+    return bit;
+}

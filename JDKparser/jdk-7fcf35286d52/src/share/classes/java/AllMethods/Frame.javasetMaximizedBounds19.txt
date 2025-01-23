@@ -1,0 +1,32 @@
+/**
+ * Sets the maximized bounds for this frame.
+ * <p>
+ * When a frame is in maximized state the system supplies some
+ * defaults bounds.  This method allows some or all of those
+ * system supplied values to be overridden.
+ * <p>
+ * If <code>bounds</code> is <code>null</code>, accept bounds
+ * supplied by the system.  If non-<code>null</code> you can
+ * override some of the system supplied values while accepting
+ * others by setting those fields you want to accept from system
+ * to <code>Integer.MAX_VALUE</code>.
+ * <p>
+ * Note, the given maximized bounds are used as a hint for the native
+ * system, because the underlying platform may not support setting the
+ * location and/or size of the maximized windows.  If that is the case, the
+ * provided values do not affect the appearance of the frame in the
+ * maximized state.
+ *
+ * @param bounds  bounds for the maximized state
+ * @see #getMaximizedBounds()
+ * @since 1.4
+ */
+public void setMaximizedBounds(Rectangle bounds) {
+    synchronized (getObjectLock()) {
+        this.maximizedBounds = bounds;
+    }
+    FramePeer peer = (FramePeer) this.peer;
+    if (peer != null) {
+        peer.setMaximizedBounds(bounds);
+    }
+}

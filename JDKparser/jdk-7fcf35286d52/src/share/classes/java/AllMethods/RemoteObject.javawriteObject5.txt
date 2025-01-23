@@ -1,0 +1,219 @@
+/**
+ * <code>writeObject</code> for custom serialization.
+ *
+ * <p>This method writes this object's serialized form for this class
+ * as follows:
+ *
+ * <p>The {@link RemoteRef#getRefClass(java.io.ObjectOutput) getRefClass}
+ * method is invoked on this object's <code>ref</code> field
+ * to obtain its external ref type name.
+ * If the value returned by <code>getRefClass</code> was
+ * a non-<code>null</code> string of length greater than zero,
+ * the <code>writeUTF</code> method is invoked on <code>out</code>
+ * with the value returned by <code>getRefClass</code>, and then
+ * the <code>writeExternal</code> method is invoked on
+ * this object's <code>ref</code> field passing <code>out</code>
+ * as the argument; otherwise,
+ * the <code>writeUTF</code> method is invoked on <code>out</code>
+ * with a zero-length string (<code>""</code>), and then
+ * the <code>writeObject</code> method is invoked on <code>out</code>
+ * passing this object's <code>ref</code> field as the argument.
+ *
+ * @serialData
+ *
+ * The serialized data for this class comprises a string (written with
+ * <code>ObjectOutput.writeUTF</code>) that is either the external
+ * ref type name of the contained <code>RemoteRef</code> instance
+ * (the <code>ref</code> field) or a zero-length string, followed by
+ * either the external form of the <code>ref</code> field as written by
+ * its <code>writeExternal</code> method if the string was of non-zero
+ * length, or the serialized form of the <code>ref</code> field as
+ * written by passing it to the serialization stream's
+ * <code>writeObject</code> if the string was of zero length.
+ *
+ * <p>If this object is an instance of
+ * {@link RemoteStub} or {@link RemoteObjectInvocationHandler}
+ * that was returned from any of
+ * the <code>UnicastRemoteObject.exportObject</code> methods
+ * and custom socket factories are not used,
+ * the external ref type name is <code>"UnicastRef"</code>.
+ *
+ * If this object is an instance of
+ * <code>RemoteStub</code> or <code>RemoteObjectInvocationHandler</code>
+ * that was returned from any of
+ * the <code>UnicastRemoteObject.exportObject</code> methods
+ * and custom socket factories are used,
+ * the external ref type name is <code>"UnicastRef2"</code>.
+ *
+ * If this object is an instance of
+ * <code>RemoteStub</code> or <code>RemoteObjectInvocationHandler</code>
+ * that was returned from any of
+ * the <code>java.rmi.activation.Activatable.exportObject</code> methods,
+ * the external ref type name is <code>"ActivatableRef"</code>.
+ *
+ * If this object is an instance of
+ * <code>RemoteStub</code> or <code>RemoteObjectInvocationHandler</code>
+ * that was returned from
+ * the <code>RemoteObject.toStub</code> method (and the argument passed
+ * to <code>toStub</code> was not itself a <code>RemoteStub</code>),
+ * the external ref type name is a function of how the remote object
+ * passed to <code>toStub</code> was exported, as described above.
+ *
+ * If this object is an instance of
+ * <code>RemoteStub</code> or <code>RemoteObjectInvocationHandler</code>
+ * that was originally created via deserialization,
+ * the external ref type name is the same as that which was read
+ * when this object was deserialized.
+ *
+ * <p>If this object is an instance of
+ * <code>java.rmi.server.UnicastRemoteObject</code> that does not
+ * use custom socket factories,
+ * the external ref type name is <code>"UnicastServerRef"</code>.
+ *
+ * If this object is an instance of
+ * <code>UnicastRemoteObject</code> that does
+ * use custom socket factories,
+ * the external ref type name is <code>"UnicastServerRef2"</code>.
+ *
+ * <p>Following is the data that must be written by the
+ * <code>writeExternal</code> method and read by the
+ * <code>readExternal</code> method of <code>RemoteRef</code>
+ * implementation classes that correspond to the each of the
+ * defined external ref type names:
+ *
+ * <p>For <code>"UnicastRef"</code>:
+ *
+ * <ul>
+ *
+ * <li>the hostname of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeUTF(String)}
+ *
+ * <li>the port of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeInt(int)}
+ *
+ * <li>the data written as a result of calling
+ * {link java.rmi.server.ObjID#write(java.io.ObjectOutput)}
+ * on the <code>ObjID</code> instance contained in the reference
+ *
+ * <li>the boolean value <code>false</code>,
+ * written by {@link java.io.ObjectOutput#writeBoolean(boolean)}
+ *
+ * </ul>
+ *
+ * <p>For <code>"UnicastRef2"</code> with a
+ * <code>null</code> client socket factory:
+ *
+ * <ul>
+ *
+ * <li>the byte value <code>0x00</code>
+ * (indicating <code>null</code> client socket factory),
+ * written by {@link java.io.ObjectOutput#writeByte(int)}
+ *
+ * <li>the hostname of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeUTF(String)}
+ *
+ * <li>the port of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeInt(int)}
+ *
+ * <li>the data written as a result of calling
+ * {link java.rmi.server.ObjID#write(java.io.ObjectOutput)}
+ * on the <code>ObjID</code> instance contained in the reference
+ *
+ * <li>the boolean value <code>false</code>,
+ * written by {@link java.io.ObjectOutput#writeBoolean(boolean)}
+ *
+ * </ul>
+ *
+ * <p>For <code>"UnicastRef2"</code> with a
+ * non-<code>null</code> client socket factory:
+ *
+ * <ul>
+ *
+ * <li>the byte value <code>0x01</code>
+ * (indicating non-<code>null</code> client socket factory),
+ * written by {@link java.io.ObjectOutput#writeByte(int)}
+ *
+ * <li>the hostname of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeUTF(String)}
+ *
+ * <li>the port of the referenced remote object,
+ * written by {@link java.io.ObjectOutput#writeInt(int)}
+ *
+ * <li>a client socket factory (object of type
+ * <code>java.rmi.server.RMIClientSocketFactory</code>),
+ * written by passing it to an invocation of
+ * <code>writeObject</code> on the stream instance
+ *
+ * <li>the data written as a result of calling
+ * {link java.rmi.server.ObjID#write(java.io.ObjectOutput)}
+ * on the <code>ObjID</code> instance contained in the reference
+ *
+ * <li>the boolean value <code>false</code>,
+ * written by {@link java.io.ObjectOutput#writeBoolean(boolean)}
+ *
+ * </ul>
+ *
+ * <p>For <code>"ActivatableRef"</code> with a
+ * <code>null</code> nested remote reference:
+ *
+ * <ul>
+ *
+ * <li>an instance of
+ * <code>java.rmi.activation.ActivationID</code>,
+ * written by passing it to an invocation of
+ * <code>writeObject</code> on the stream instance
+ *
+ * <li>a zero-length string (<code>""</code>),
+ * written by {@link java.io.ObjectOutput#writeUTF(String)}
+ *
+ * </ul>
+ *
+ * <p>For <code>"ActivatableRef"</code> with a
+ * non-<code>null</code> nested remote reference:
+ *
+ * <ul>
+ *
+ * <li>an instance of
+ * <code>java.rmi.activation.ActivationID</code>,
+ * written by passing it to an invocation of
+ * <code>writeObject</code> on the stream instance
+ *
+ * <li>the external ref type name of the nested remote reference,
+ * which must be <code>"UnicastRef2"</code>,
+ * written by {@link java.io.ObjectOutput#writeUTF(String)}
+ *
+ * <li>the external form of the nested remote reference,
+ * written by invoking its <code>writeExternal</code> method
+ * with the stream instance
+ * (see the description of the external form for
+ * <code>"UnicastRef2"</code> above)
+ *
+ * </ul>
+ *
+ * <p>For <code>"UnicastServerRef"</code> and
+ * <code>"UnicastServerRef2"</code>, no data is written by the
+ * <code>writeExternal</code> method or read by the
+ * <code>readExternal</code> method.
+ */
+private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException, java.lang.ClassNotFoundException {
+    if (ref == null) {
+        throw new java.rmi.MarshalException("Invalid remote object");
+    } else {
+        String refClassName = ref.getRefClass(out);
+        if (refClassName == null || refClassName.length() == 0) {
+            /*
+                 * No reference class name specified, so serialize
+                 * remote reference.
+                 */
+            out.writeUTF("");
+            out.writeObject(ref);
+        } else {
+            /*
+                 * Built-in reference class specified, so delegate
+                 * to reference to write out its external form.
+                 */
+            out.writeUTF(refClassName);
+            ref.writeExternal(out);
+        }
+    }
+}

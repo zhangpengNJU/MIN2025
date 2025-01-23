@@ -1,0 +1,9 @@
+/**
+ * @since 1.8
+ */
+@Override
+synchronized StringBuffer append(AbstractStringBuilder asb) {
+    toStringCache = null;
+    super.append(asb);
+    return this;
+}

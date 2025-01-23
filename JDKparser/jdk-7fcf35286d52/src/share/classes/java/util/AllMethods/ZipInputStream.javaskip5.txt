@@ -1,0 +1,29 @@
+/**
+ * Skips specified number of bytes in the current ZIP entry.
+ * @param n the number of bytes to skip
+ * @return the actual number of bytes skipped
+ * @exception ZipException if a ZIP file error has occurred
+ * @exception IOException if an I/O error has occurred
+ * @exception IllegalArgumentException if {@code n < 0}
+ */
+public long skip(long n) throws IOException {
+    if (n < 0) {
+        throw new IllegalArgumentException("negative skip length");
+    }
+    ensureOpen();
+    int max = (int) Math.min(n, Integer.MAX_VALUE);
+    int total = 0;
+    while (total < max) {
+        int len = max - total;
+        if (len > tmpbuf.length) {
+            len = tmpbuf.length;
+        }
+        len = read(tmpbuf, 0, len);
+        if (len == -1) {
+            entryEOF = true;
+            break;
+        }
+        total += len;
+    }
+    return total;
+}

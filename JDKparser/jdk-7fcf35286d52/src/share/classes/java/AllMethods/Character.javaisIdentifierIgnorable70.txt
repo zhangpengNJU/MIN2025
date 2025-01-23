@@ -1,0 +1,29 @@
+/**
+ * Determines if the specified character (Unicode code point) should be regarded as
+ * an ignorable character in a Java identifier or a Unicode identifier.
+ * <p>
+ * The following Unicode characters are ignorable in a Java identifier
+ * or a Unicode identifier:
+ * <ul>
+ * <li>ISO control characters that are not whitespace
+ * <ul>
+ * <li>{@code '\u005Cu0000'} through {@code '\u005Cu0008'}
+ * <li>{@code '\u005Cu000E'} through {@code '\u005Cu001B'}
+ * <li>{@code '\u005Cu007F'} through {@code '\u005Cu009F'}
+ * </ul>
+ *
+ * <li>all characters that have the {@code FORMAT} general
+ * category value
+ * </ul>
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character is an ignorable control
+ *          character that may be part of a Java or Unicode identifier;
+ *          {@code false} otherwise.
+ * @see     Character#isJavaIdentifierPart(int)
+ * @see     Character#isUnicodeIdentifierPart(int)
+ * @since   1.5
+ */
+public static boolean isIdentifierIgnorable(int codePoint) {
+    return CharacterData.of(codePoint).isIdentifierIgnorable(codePoint);
+}

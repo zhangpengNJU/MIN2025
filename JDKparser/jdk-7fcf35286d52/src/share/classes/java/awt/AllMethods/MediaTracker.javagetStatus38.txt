@@ -1,0 +1,14 @@
+synchronized int getStatus(boolean doLoad, boolean doVerify) {
+    if (doVerify) {
+        int flags = tracker.target.checkImage(image, width, height, null);
+        int s = parseflags(flags);
+        if (s == 0) {
+            if ((status & (ERRORED | COMPLETE)) != 0) {
+                setStatus(ABORTED);
+            }
+        } else if (s != status) {
+            setStatus(s);
+        }
+    }
+    return super.getStatus(doLoad, doVerify);
+}

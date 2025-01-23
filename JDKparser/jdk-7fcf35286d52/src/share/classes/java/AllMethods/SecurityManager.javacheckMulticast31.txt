@@ -1,0 +1,29 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to use
+ * (join/leave/send/receive) IP multicast.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>java.net.SocketPermission(maddr.getHostAddress(),
+ * "accept,connect")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkMulticast</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      maddr  Internet group address to be used.
+ * @exception  SecurityException  if the calling thread is not allowed to
+ *  use (join/leave/send/receive) IP multicast.
+ * @exception  NullPointerException if the address argument is
+ *             <code>null</code>.
+ * @since      JDK1.1
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkMulticast(InetAddress maddr) {
+    String host = maddr.getHostAddress();
+    if (!host.startsWith("[") && host.indexOf(':') != -1) {
+        host = "[" + host + "]";
+    }
+    checkPermission(new SocketPermission(host, SecurityConstants.SOCKET_CONNECT_ACCEPT_ACTION));
+}

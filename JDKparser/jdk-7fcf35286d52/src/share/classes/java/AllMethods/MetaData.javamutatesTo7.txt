@@ -1,0 +1,4 @@
+protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+    return (newInstance != null && // Also ensures the subtype is correct.
+    oldInstance.getClass() == newInstance.getClass() && Array.getLength(oldInstance) == Array.getLength(newInstance));
+}

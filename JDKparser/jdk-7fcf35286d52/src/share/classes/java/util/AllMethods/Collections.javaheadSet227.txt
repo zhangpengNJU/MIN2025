@@ -1,0 +1,5 @@
+public NavigableSet<E> headSet(E toElement) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableSet<>(ns.headSet(toElement, false), mutex);
+    }
+}

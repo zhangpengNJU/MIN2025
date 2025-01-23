@@ -1,0 +1,13 @@
+@Override
+public PKIXRevocationChecker clone() {
+    PKIXRevocationChecker copy = (PKIXRevocationChecker) super.clone();
+    copy.ocspExtensions = new ArrayList<>(ocspExtensions);
+    copy.ocspResponses = new HashMap<>(ocspResponses);
+    // deep-copy the encoded responses, since they are mutable
+    for (Map.Entry<X509Certificate, byte[]> entry : copy.ocspResponses.entrySet()) {
+        byte[] encoded = entry.getValue();
+        entry.setValue(encoded.clone());
+    }
+    copy.options = new HashSet<>(options);
+    return copy;
+}

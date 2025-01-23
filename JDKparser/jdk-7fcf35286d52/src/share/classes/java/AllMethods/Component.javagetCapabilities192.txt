@@ -1,0 +1,10 @@
+/**
+ * @return the buffering capabilities of this strategy
+ */
+public BufferCapabilities getCapabilities() {
+    if (caps instanceof ProxyCapabilities) {
+        return ((ProxyCapabilities) caps).orig;
+    } else {
+        return caps;
+    }
+}

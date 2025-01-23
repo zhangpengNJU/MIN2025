@@ -1,0 +1,9 @@
+private int getFence() {
+    // force initialization
+    int t;
+    if ((t = fence) < 0) {
+        t = fence = deq.tail;
+        index = deq.head;
+    }
+    return t;
+}

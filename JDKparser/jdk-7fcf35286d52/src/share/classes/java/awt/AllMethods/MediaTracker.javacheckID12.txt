@@ -1,0 +1,23 @@
+/**
+ * Checks to see if all images tracked by this media tracker that
+ * are tagged with the specified identifier have finished loading.
+ * <p>
+ * This method does not start loading the images if they are not
+ * already loading.
+ * <p>
+ * If there is an error while loading or scaling an image, then that
+ * image is considered to have finished loading. Use the
+ * <code>isErrorAny</code> or <code>isErrorID</code> methods to
+ * check for errors.
+ * @param       id   the identifier of the images to check
+ * @return      <code>true</code> if all images have finished loading,
+ *                       have been aborted, or have encountered
+ *                       an error; <code>false</code> otherwise
+ * @see         java.awt.MediaTracker#checkID(int, boolean)
+ * @see         java.awt.MediaTracker#checkAll()
+ * @see         java.awt.MediaTracker#isErrorAny()
+ * @see         java.awt.MediaTracker#isErrorID(int)
+ */
+public boolean checkID(int id) {
+    return checkID(id, false, true);
+}

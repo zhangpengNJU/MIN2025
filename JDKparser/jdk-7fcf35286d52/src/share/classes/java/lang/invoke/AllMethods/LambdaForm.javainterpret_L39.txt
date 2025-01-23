@@ -1,0 +1,10 @@
+// The following are predefined exact invokers.  The system must build
+// a separate invoker for each distinct signature.
+static Object interpret_L(MethodHandle mh) throws Throwable {
+    Object[] av = { mh };
+    String sig = null;
+    assert (argumentTypesMatch(sig = "L_L", av));
+    Object res = mh.form.interpretWithArguments(av);
+    assert (returnTypesMatch(sig, av, res));
+    return res;
+}

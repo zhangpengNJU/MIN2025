@@ -1,0 +1,7 @@
+public Set<K> keySet() {
+    synchronized (mutex) {
+        if (keySet == null)
+            keySet = new SynchronizedSet<>(m.keySet(), mutex);
+        return keySet;
+    }
+}

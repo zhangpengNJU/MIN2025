@@ -1,0 +1,14 @@
+public synchronized Raster getRaster(int x, int y, int w, int h) {
+    WritableRaster t = savedTile;
+    if (t == null || w > t.getWidth() || h > t.getHeight()) {
+        t = getColorModel().createCompatibleWritableRaster(w, h);
+        IntegerComponentRaster icr = (IntegerComponentRaster) t;
+        Arrays.fill(icr.getDataStorage(), color);
+        // Note - markDirty is probably unnecessary since icr is brand new
+        icr.markDirty();
+        if (w <= 64 && h <= 64) {
+            savedTile = t;
+        }
+    }
+    return t;
+}

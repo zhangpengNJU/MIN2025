@@ -1,0 +1,17 @@
+@Override
+public final DoubleStream mapToDouble(IntToDoubleFunction mapper) {
+    Objects.requireNonNull(mapper);
+    return new DoublePipeline.StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Double> sink) {
+            return new Sink.ChainedInt<Double>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    downstream.accept(mapper.applyAsDouble(t));
+                }
+            };
+        }
+    };
+}

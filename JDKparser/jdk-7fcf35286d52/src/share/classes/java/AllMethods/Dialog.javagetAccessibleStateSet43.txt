@@ -1,0 +1,20 @@
+/**
+ * Get the state of this object.
+ *
+ * @return an instance of AccessibleStateSet containing the current
+ * state set of the object
+ * @see AccessibleState
+ */
+public AccessibleStateSet getAccessibleStateSet() {
+    AccessibleStateSet states = super.getAccessibleStateSet();
+    if (getFocusOwner() != null) {
+        states.add(AccessibleState.ACTIVE);
+    }
+    if (isModal()) {
+        states.add(AccessibleState.MODAL);
+    }
+    if (isResizable()) {
+        states.add(AccessibleState.RESIZABLE);
+    }
+    return states;
+}

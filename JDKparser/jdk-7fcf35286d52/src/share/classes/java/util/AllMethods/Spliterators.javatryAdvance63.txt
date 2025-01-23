@@ -1,0 +1,10 @@
+@Override
+public boolean tryAdvance(DoubleConsumer action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (index >= 0 && index < fence) {
+        action.accept(array[index++]);
+        return true;
+    }
+    return false;
+}

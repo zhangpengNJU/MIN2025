@@ -1,0 +1,53 @@
+/**
+ * @return An array of MethodDescriptors describing the private
+ * methods supported by the target bean.
+ */
+private MethodDescriptor[] getTargetMethodInfo() {
+    if (methods == null) {
+        methods = new HashMap<>(100);
+    }
+    // Check if the bean has its own BeanInfo that will provide
+    // explicit information.
+    MethodDescriptor[] explicitMethods = null;
+    if (explicitBeanInfo != null) {
+        explicitMethods = explicitBeanInfo.getMethodDescriptors();
+    }
+    if (explicitMethods == null && superBeanInfo != null) {
+        // We have no explicit BeanInfo methods.  Check with our parent.
+        MethodDescriptor[] supers = superBeanInfo.getMethodDescriptors();
+        for (int i = 0; i < supers.length; i++) {
+            addMethod(supers[i]);
+        }
+    }
+    for (int i = 0; i < additionalBeanInfo.length; i++) {
+        MethodDescriptor[] additional = additionalBeanInfo[i].getMethodDescriptors();
+        if (additional != null) {
+            for (int j = 0; j < additional.length; j++) {
+                addMethod(additional[j]);
+            }
+        }
+    }
+    if (explicitMethods != null) {
+        // Add the explicit explicitBeanInfo data to our results.
+        for (int i = 0; i < explicitMethods.length; i++) {
+            addMethod(explicitMethods[i]);
+        }
+    } else {
+        // Apply some reflection to the current class.
+        // First get an array of all the beans methods at this level
+        Method[] methodList = getPublicDeclaredMethods(beanClass);
+        // Now analyze each method.
+        for (int i = 0; i < methodList.length; i++) {
+            Method method = methodList[i];
+            if (method == null) {
+                continue;
+            }
+            MethodDescriptor md = new MethodDescriptor(method);
+            addMethod(md);
+        }
+    }
+    // Allocate and populate the result array.
+    MethodDescriptor[] result = new MethodDescriptor[methods.size()];
+    result = methods.values().toArray(result);
+    return result;
+}

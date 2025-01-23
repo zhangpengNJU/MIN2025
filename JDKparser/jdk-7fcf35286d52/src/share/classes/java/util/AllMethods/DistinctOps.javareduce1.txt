@@ -1,0 +1,6 @@
+<P_IN> Node<T> reduce(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
+    // If the stream is SORTED then it should also be ORDERED so the following will also
+    // preserve the sort order
+    TerminalOp<T, LinkedHashSet<T>> reduceOp = ReduceOps.<T, LinkedHashSet<T>>makeRef(LinkedHashSet::new, LinkedHashSet::add, LinkedHashSet::addAll);
+    return Nodes.node(reduceOp.evaluateParallel(helper, spliterator));
+}

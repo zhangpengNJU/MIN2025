@@ -1,0 +1,33 @@
+/**
+ * Flushes this output stream, forcing any pending buffered output bytes to be
+ * written.
+ *
+ * @throws IOException if an I/O error occurs or this stream is already
+ * closed
+ */
+public void flush() throws IOException {
+    ensureOpen();
+    // Finish decompressing and writing pending output data
+    if (!inf.finished()) {
+        try {
+            while (!inf.finished() && !inf.needsInput()) {
+                int n;
+                // Decompress pending output data
+                n = inf.inflate(buf, 0, buf.length);
+                if (n < 1) {
+                    break;
+                }
+                // Write the uncompressed output data block
+                out.write(buf, 0, n);
+            }
+            super.flush();
+        } catch (DataFormatException ex) {
+            // Improperly formatted compressed (ZIP) data
+            String msg = ex.getMessage();
+            if (msg == null) {
+                msg = "Invalid ZLIB data format";
+            }
+            throw new ZipException(msg);
+        }
+    }
+}

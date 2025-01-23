@@ -1,0 +1,31 @@
+/**
+ * Registers an object with a watch service.
+ *
+ * <p> An invocation of this method behaves in exactly the same way as the
+ * invocation
+ * <pre>
+ *     watchable.{@link #register(WatchService,WatchEvent.Kind[],WatchEvent.Modifier[]) register}(watcher, events, new WatchEvent.Modifier[0]);
+ * </pre>
+ *
+ * @param   watcher
+ *          the watch service to which this object is to be registered
+ * @param   events
+ *          the events for which this object should be registered
+ *
+ * @return  a key representing the registration of this object with the
+ *          given watch service
+ *
+ * @throws  UnsupportedOperationException
+ *          if unsupported events are specified
+ * @throws  IllegalArgumentException
+ *          if an invalid of combination of events are specified
+ * @throws  ClosedWatchServiceException
+ *          if the watch service is closed
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          if a security manager is installed and it denies an unspecified
+ *          permission required to monitor this object. Implementations of
+ *          this interface should specify the permission checks.
+ */
+WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException;

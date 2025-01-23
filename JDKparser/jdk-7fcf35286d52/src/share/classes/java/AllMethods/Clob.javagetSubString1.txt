@@ -1,0 +1,22 @@
+/**
+ * Retrieves a copy of the specified substring
+ * in the <code>CLOB</code> value
+ * designated by this <code>Clob</code> object.
+ * The substring begins at position
+ * <code>pos</code> and has up to <code>length</code> consecutive
+ * characters.
+ *
+ * @param pos the first character of the substring to be extracted.
+ *            The first character is at position 1.
+ * @param length the number of consecutive characters to be copied;
+ * the value for length must be 0 or greater
+ * @return a <code>String</code> that is the specified substring in
+ *         the <code>CLOB</code> value designated by this <code>Clob</code> object
+ * @exception SQLException if there is an error accessing the
+ *            <code>CLOB</code> value; if pos is less than 1 or length is
+ * less than 0
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+String getSubString(long pos, int length) throws SQLException;

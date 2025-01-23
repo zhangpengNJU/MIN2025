@@ -1,0 +1,42 @@
+/**
+ * Gets the singleton instance of the system Clipboard which interfaces
+ * with clipboard facilities provided by the native platform. This
+ * clipboard enables data transfer between Java programs and native
+ * applications which use native clipboard facilities.
+ * <p>
+ * In addition to any and all formats specified in the flavormap.properties
+ * file, or other file specified by the <code>AWT.DnD.flavorMapFileURL
+ * </code> Toolkit property, text returned by the system Clipboard's <code>
+ * getTransferData()</code> method is available in the following flavors:
+ * <ul>
+ * <li>DataFlavor.stringFlavor</li>
+ * <li>DataFlavor.plainTextFlavor (<b>deprecated</b>)</li>
+ * </ul>
+ * As with <code>java.awt.datatransfer.StringSelection</code>, if the
+ * requested flavor is <code>DataFlavor.plainTextFlavor</code>, or an
+ * equivalent flavor, a Reader is returned. <b>Note:</b> The behavior of
+ * the system Clipboard's <code>getTransferData()</code> method for <code>
+ * DataFlavor.plainTextFlavor</code>, and equivalent DataFlavors, is
+ * inconsistent with the definition of <code>DataFlavor.plainTextFlavor
+ * </code>. Because of this, support for <code>
+ * DataFlavor.plainTextFlavor</code>, and equivalent flavors, is
+ * <b>deprecated</b>.
+ * <p>
+ * Each actual implementation of this method should first check if there
+ * is a security manager installed. If there is, the method should call
+ * the security manager's {@link SecurityManager#checkPermission
+ * checkPermission} method to check {@code AWTPermission("accessClipboard")}.
+ *
+ * @return    the system Clipboard
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @see       java.awt.datatransfer.Clipboard
+ * @see       java.awt.datatransfer.StringSelection
+ * @see       java.awt.datatransfer.DataFlavor#stringFlavor
+ * @see       java.awt.datatransfer.DataFlavor#plainTextFlavor
+ * @see       java.io.Reader
+ * @see       java.awt.AWTPermission
+ * @since     JDK1.1
+ */
+public abstract Clipboard getSystemClipboard() throws HeadlessException;

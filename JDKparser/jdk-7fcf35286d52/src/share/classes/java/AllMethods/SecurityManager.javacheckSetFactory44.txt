@@ -1,0 +1,27 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to set the socket factory used by
+ * <code>ServerSocket</code> or <code>Socket</code>, or the stream
+ * handler factory used by <code>URL</code>.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>RuntimePermission("setFactory")</code> permission.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkSetFactory</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ * <p>
+ *
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to specify a socket factory or a stream
+ *             handler factory.
+ *
+ * @see        java.net.ServerSocket#setSocketFactory(java.net.SocketImplFactory) setSocketFactory
+ * @see        java.net.Socket#setSocketImplFactory(java.net.SocketImplFactory) setSocketImplFactory
+ * @see        java.net.URL#setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory) setURLStreamHandlerFactory
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkSetFactory() {
+    checkPermission(new RuntimePermission("setFactory"));
+}

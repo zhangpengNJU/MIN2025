@@ -1,0 +1,33 @@
+/**
+ * Increases the capacity of and internally reorganizes this
+ * hashtable, in order to accommodate and access its entries more
+ * efficiently.  This method is called automatically when the
+ * number of keys in the hashtable exceeds this hashtable's capacity
+ * and load factor.
+ */
+@SuppressWarnings("unchecked")
+protected void rehash() {
+    int oldCapacity = table.length;
+    Entry<?, ?>[] oldMap = table;
+    // overflow-conscious code
+    int newCapacity = (oldCapacity << 1) + 1;
+    if (newCapacity - MAX_ARRAY_SIZE > 0) {
+        if (oldCapacity == MAX_ARRAY_SIZE)
+            // Keep running with MAX_ARRAY_SIZE buckets
+            return;
+        newCapacity = MAX_ARRAY_SIZE;
+    }
+    Entry<?, ?>[] newMap = new Entry<?, ?>[newCapacity];
+    modCount++;
+    threshold = (int) Math.min(newCapacity * loadFactor, MAX_ARRAY_SIZE + 1);
+    table = newMap;
+    for (int i = oldCapacity; i-- > 0; ) {
+        for (Entry<K, V> old = (Entry<K, V>) oldMap[i]; old != null; ) {
+            Entry<K, V> e = old;
+            old = old.next;
+            int index = (e.hash & 0x7FFFFFFF) % newCapacity;
+            e.next = (Entry<K, V>) newMap[index];
+            newMap[index] = e;
+        }
+    }
+}

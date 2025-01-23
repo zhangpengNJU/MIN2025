@@ -1,0 +1,24 @@
+/**
+ * Returns the current sum.  The returned value is <em>NOT</em> an
+ * atomic snapshot; invocation in the absence of concurrent
+ * updates returns an accurate result, but concurrent updates that
+ * occur while the sum is being calculated might not be
+ * incorporated.  Also, because floating-point arithmetic is not
+ * strictly associative, the returned result need not be identical
+ * to the value that would be obtained in a sequential series of
+ * updates to a single variable.
+ *
+ * @return the sum
+ */
+public double sum() {
+    Cell[] as = cells;
+    Cell a;
+    double sum = Double.longBitsToDouble(base);
+    if (as != null) {
+        for (int i = 0; i < as.length; ++i) {
+            if ((a = as[i]) != null)
+                sum += Double.longBitsToDouble(a.value);
+        }
+    }
+    return sum;
+}

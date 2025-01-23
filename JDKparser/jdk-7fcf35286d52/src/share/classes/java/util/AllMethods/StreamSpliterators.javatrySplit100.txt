@@ -1,0 +1,6 @@
+@Override
+public Spliterator.OfDouble trySplit() {
+    if (estimate == 0)
+        return null;
+    return new InfiniteSupplyingSpliterator.OfDouble(estimate = estimate >>> 1, s);
+}

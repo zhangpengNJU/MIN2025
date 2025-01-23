@@ -1,0 +1,68 @@
+/**
+ * Sets the shape of the window.
+ * <p>
+ * Setting a shape cuts off some parts of the window. Only the parts that
+ * belong to the given {@link Shape} remain visible and clickable. If
+ * the shape argument is {@code null}, this method restores the default
+ * shape, making the window rectangular on most platforms.
+ * <p>
+ * The following conditions must be met to set a non-null shape:
+ * <ul>
+ * <li>The {@link GraphicsDevice.WindowTranslucency#PERPIXEL_TRANSPARENT
+ * PERPIXEL_TRANSPARENT} translucency must be supported by the
+ * underlying system
+ * <li>The window must be undecorated (see {@link Frame#setUndecorated}
+ * and {@link Dialog#setUndecorated})
+ * <li>The window must not be in full-screen mode (see {@link
+ * GraphicsDevice#setFullScreenWindow(Window)})
+ * </ul>
+ * <p>
+ * If the requested shape is not {@code null}, and any of the above
+ * conditions are not met, the shape of this window will not change,
+ * and either the {@code UnsupportedOperationException} or {@code
+ * IllegalComponentStateException} will be thrown.
+ * <p>
+ * The translucency levels of individual pixels may also be effected by the
+ * alpha component of their color (see {@link Window#setBackground(Color)}) and the
+ * opacity value (see {@link #setOpacity(float)}). See {@link
+ * GraphicsDevice.WindowTranslucency} for more details.
+ *
+ * @param shape the shape to set to the window
+ *
+ * @throws IllegalComponentStateException if the shape is not {@code
+ *     null} and the window is decorated
+ * @throws IllegalComponentStateException if the shape is not {@code
+ *     null} and the window is in full-screen mode
+ * @throws UnsupportedOperationException if the shape is not {@code
+ *     null} and {@link GraphicsDevice.WindowTranslucency#PERPIXEL_TRANSPARENT
+ *     PERPIXEL_TRANSPARENT} translucency is not supported
+ *
+ * @see Window#getShape()
+ * @see Window#setBackground(Color)
+ * @see Window#setOpacity(float)
+ * @see Frame#isUndecorated
+ * @see Dialog#isUndecorated
+ * @see GraphicsDevice.WindowTranslucency
+ * @see GraphicsDevice#isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency)
+ *
+ * @since 1.7
+ */
+public void setShape(Shape shape) {
+    synchronized (getTreeLock()) {
+        if (shape != null) {
+            GraphicsConfiguration gc = getGraphicsConfiguration();
+            GraphicsDevice gd = gc.getDevice();
+            if (gc.getDevice().getFullScreenWindow() == this) {
+                throw new IllegalComponentStateException("Setting shape for full-screen window is not supported.");
+            }
+            if (!gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.PERPIXEL_TRANSPARENT)) {
+                throw new UnsupportedOperationException("PERPIXEL_TRANSPARENT translucency is not supported.");
+            }
+        }
+        this.shape = (shape == null) ? null : new Path2D.Float(shape);
+        WindowPeer peer = (WindowPeer) getPeer();
+        if (peer != null) {
+            peer.applyShape(shape == null ? null : Region.getInstance(shape, null));
+        }
+    }
+}

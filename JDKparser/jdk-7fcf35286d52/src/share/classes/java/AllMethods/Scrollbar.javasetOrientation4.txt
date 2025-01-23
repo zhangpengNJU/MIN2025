@@ -1,0 +1,36 @@
+/**
+ * Sets the orientation for this scroll bar.
+ *
+ * @param orientation  the orientation of this scroll bar, either
+ *               <code>Scrollbar.HORIZONTAL</code> or
+ *               <code>Scrollbar.VERTICAL</code>
+ * @see       java.awt.Scrollbar#getOrientation
+ * @exception   IllegalArgumentException  if the value supplied
+ *                   for <code>orientation</code> is not a
+ *                   legal value
+ * @since     JDK1.1
+ */
+public void setOrientation(int orientation) {
+    synchronized (getTreeLock()) {
+        if (orientation == this.orientation) {
+            return;
+        }
+        switch(orientation) {
+            case HORIZONTAL:
+            case VERTICAL:
+                this.orientation = orientation;
+                break;
+            default:
+                throw new IllegalArgumentException("illegal scrollbar orientation");
+        }
+        /* Create a new peer with the specified orientation. */
+        if (peer != null) {
+            removeNotify();
+            addNotify();
+            invalidate();
+        }
+    }
+    if (accessibleContext != null) {
+        accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, ((orientation == VERTICAL) ? AccessibleState.HORIZONTAL : AccessibleState.VERTICAL), ((orientation == VERTICAL) ? AccessibleState.VERTICAL : AccessibleState.HORIZONTAL));
+    }
+}

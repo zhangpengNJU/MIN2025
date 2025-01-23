@@ -1,0 +1,8 @@
+public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    if (function == null)
+        throw new NullPointerException();
+    int mc = modCount;
+    for (LinkedHashMap.Entry<K, V> e = head; e != null; e = e.after) e.value = function.apply(e.key, e.value);
+    if (modCount != mc)
+        throw new ConcurrentModificationException();
+}

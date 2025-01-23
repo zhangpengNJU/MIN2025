@@ -1,0 +1,25 @@
+/**
+ * Copies all of the mappings from the specified {@code Map}
+ * to this {@code RenderingHints}.  These mappings replace
+ * any mappings that this {@code RenderingHints} had for any
+ * of the keys currently in the specified {@code Map}.
+ * @param m the specified {@code Map}
+ * @exception ClassCastException class of a key or value
+ *          in the specified {@code Map} prevents it from being
+ *          stored in this {@code RenderingHints}.
+ * @exception IllegalArgumentException some aspect
+ *          of a key or value in the specified {@code Map}
+ *           prevents it from being stored in
+ *            this {@code RenderingHints}.
+ */
+public void putAll(Map<?, ?> m) {
+    // ## javac bug?
+    // if (m instanceof RenderingHints) {
+    if (RenderingHints.class.isInstance(m)) {
+        // hintmap.putAll(((RenderingHints) m).hintmap);
+        for (Map.Entry<?, ?> entry : m.entrySet()) hintmap.put(entry.getKey(), entry.getValue());
+    } else {
+        // Funnel each key/value pair through our protected put method
+        for (Map.Entry<?, ?> entry : m.entrySet()) put(entry.getKey(), entry.getValue());
+    }
+}

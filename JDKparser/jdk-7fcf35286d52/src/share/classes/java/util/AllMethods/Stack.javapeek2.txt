@@ -1,0 +1,14 @@
+/**
+ * Looks at the object at the top of this stack without removing it
+ * from the stack.
+ *
+ * @return  the object at the top of this stack (the last item
+ *          of the <tt>Vector</tt> object).
+ * @throws  EmptyStackException  if this stack is empty.
+ */
+public synchronized E peek() {
+    int len = size();
+    if (len == 0)
+        throw new EmptyStackException();
+    return elementAt(len - 1);
+}

@@ -1,0 +1,24 @@
+// Arithmetic Operations
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this +
+ * augend)}, and whose scale is {@code max(this.scale(),
+ * augend.scale())}.
+ *
+ * @param  augend value to be added to this {@code BigDecimal}.
+ * @return {@code this + augend}
+ */
+public BigDecimal add(BigDecimal augend) {
+    if (this.intCompact != INFLATED) {
+        if ((augend.intCompact != INFLATED)) {
+            return add(this.intCompact, this.scale, augend.intCompact, augend.scale);
+        } else {
+            return add(this.intCompact, this.scale, augend.intVal, augend.scale);
+        }
+    } else {
+        if ((augend.intCompact != INFLATED)) {
+            return add(augend.intCompact, augend.scale, this.intVal, this.scale);
+        } else {
+            return add(this.intVal, this.scale, augend.intVal, augend.scale);
+        }
+    }
+}

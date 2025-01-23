@@ -1,0 +1,11 @@
+private static Control getDefaultControl(String baseName) {
+    if (providers != null) {
+        for (ResourceBundleControlProvider provider : providers) {
+            Control control = provider.getControl(baseName);
+            if (control != null) {
+                return control;
+            }
+        }
+    }
+    return Control.INSTANCE;
+}

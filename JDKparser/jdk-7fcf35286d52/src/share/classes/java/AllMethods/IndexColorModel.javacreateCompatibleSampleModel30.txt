@@ -1,0 +1,21 @@
+/**
+ * Creates a <code>SampleModel</code> with the specified
+ * width and height that has a data layout compatible with
+ * this <code>ColorModel</code>.
+ * @param w the width to apply to the new <code>SampleModel</code>
+ * @param h the height to apply to the new <code>SampleModel</code>
+ * @return a <code>SampleModel</code> object with the specified
+ * width and height.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> is not greater than 0
+ * @see SampleModel
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    int[] off = new int[1];
+    off[0] = 0;
+    if (pixel_bits == 1 || pixel_bits == 2 || pixel_bits == 4) {
+        return new MultiPixelPackedSampleModel(transferType, w, h, pixel_bits);
+    } else {
+        return new ComponentSampleModel(transferType, w, h, 1, w, off);
+    }
+}

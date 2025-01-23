@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ * @throws DateTimeException {@inheritDoc}
+ * @throws UnsupportedTemporalTypeException {@inheritDoc}
+ * @throws ArithmeticException {@inheritDoc}
+ */
+@Override
+default ChronoLocalDate minus(long amountToSubtract, TemporalUnit unit) {
+    return ChronoLocalDateImpl.ensureValid(getChronology(), Temporal.super.minus(amountToSubtract, unit));
+}

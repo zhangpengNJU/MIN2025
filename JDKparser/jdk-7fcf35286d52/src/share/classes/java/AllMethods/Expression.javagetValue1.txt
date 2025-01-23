@@ -1,0 +1,35 @@
+/**
+ * If the value property of this instance is not already set,
+ * this method dynamically finds the method with the specified
+ * methodName on this target with these arguments and calls it.
+ * The result of the method invocation is first copied
+ * into the value property of this expression and then returned
+ * as the result of <code>getValue</code>. If the value property
+ * was already set, either by a call to <code>setValue</code>
+ * or a previous call to <code>getValue</code> then the value
+ * property is returned without either looking up or calling the method.
+ * <p>
+ * The value property of an <code>Expression</code> is set to
+ * a unique private (non-<code>null</code>) value by default and
+ * this value is used as an internal indication that the method
+ * has not yet been called. A return value of <code>null</code>
+ * replaces this default value in the same way that any other value
+ * would, ensuring that expressions are never evaluated more than once.
+ * <p>
+ * See the <code>execute</code> method for details on how
+ * methods are chosen using the dynamic types of the target
+ * and arguments.
+ *
+ * @see Statement#execute
+ * @see #setValue
+ *
+ * @return The result of applying this method to these arguments.
+ * @throws Exception if the method with the specified methodName
+ * throws an exception
+ */
+public Object getValue() throws Exception {
+    if (value == unbound) {
+        setValue(invoke());
+    }
+    return value;
+}

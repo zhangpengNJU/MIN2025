@@ -1,0 +1,14 @@
+/**
+ * Returns a vertical bar separated list of package prefixes for potential
+ * content handlers.  Tries to get the java.content.handler.pkgs property
+ * to use as a set of package prefixes to search.  Whether or not
+ * that property has been defined, the sun.net.www.content is always
+ * the last one on the returned package list.
+ */
+private String getContentHandlerPkgPrefixes() {
+    String packagePrefixList = AccessController.doPrivileged(new sun.security.action.GetPropertyAction(contentPathProp, ""));
+    if (packagePrefixList != "") {
+        packagePrefixList += "|";
+    }
+    return packagePrefixList + contentClassPrefix;
+}

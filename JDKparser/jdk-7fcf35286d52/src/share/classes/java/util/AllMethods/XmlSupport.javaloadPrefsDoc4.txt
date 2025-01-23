@@ -1,0 +1,19 @@
+/**
+ * Load an XML document from specified input stream, which must
+ * have the requisite DTD URI.
+ */
+private static Document loadPrefsDoc(InputStream in) throws SAXException, IOException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setIgnoringElementContentWhitespace(true);
+    dbf.setValidating(true);
+    dbf.setCoalescing(true);
+    dbf.setIgnoringComments(true);
+    try {
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        db.setEntityResolver(new Resolver());
+        db.setErrorHandler(new EH());
+        return db.parse(new InputSource(in));
+    } catch (ParserConfigurationException e) {
+        throw new AssertionError(e);
+    }
+}

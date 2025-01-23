@@ -1,0 +1,43 @@
+/**
+ * Returns the preference node from the calling user's preference tree
+ * that is associated (by convention) with the specified class's package.
+ * The convention is as follows: the absolute path name of the node is the
+ * fully qualified package name, preceded by a slash (<tt>'/'</tt>), and
+ * with each period (<tt>'.'</tt>) replaced by a slash.  For example the
+ * absolute path name of the node associated with the class
+ * <tt>com.acme.widget.Foo</tt> is <tt>/com/acme/widget</tt>.
+ *
+ * <p>This convention does not apply to the unnamed package, whose
+ * associated preference node is <tt>&lt;unnamed&gt;</tt>.  This node
+ * is not intended for long term use, but for convenience in the early
+ * development of programs that do not yet belong to a package, and
+ * for "throwaway" programs.  <i>Valuable data should not be stored
+ * at this node as it is shared by all programs that use it.</i>
+ *
+ * <p>A class <tt>Foo</tt> wishing to access preferences pertaining to its
+ * package can obtain a preference node as follows: <pre>
+ *    static Preferences prefs = Preferences.userNodeForPackage(Foo.class);
+ * </pre>
+ * This idiom obviates the need for using a string to describe the
+ * preferences node and decreases the likelihood of a run-time failure.
+ * (If the class name is misspelled, it will typically result in a
+ * compile-time error.)
+ *
+ * <p>Invoking this method will result in the creation of the returned
+ * node and its ancestors if they do not already exist.  If the returned
+ * node did not exist prior to this call, this node and any ancestors that
+ * were created by this call are not guaranteed to become permanent until
+ * the <tt>flush</tt> method is called on the returned node (or one of its
+ * ancestors or descendants).
+ *
+ * @param c the class for whose package a user preference node is desired.
+ * @return the user preference node associated with the package of which
+ *         <tt>c</tt> is a member.
+ * @throws NullPointerException if <tt>c</tt> is <tt>null</tt>.
+ * @throws SecurityException if a security manager is present and
+ *         it denies <tt>RuntimePermission("preferences")</tt>.
+ * @see    RuntimePermission
+ */
+public static Preferences userNodeForPackage(Class<?> c) {
+    return userRoot().node(nodeName(c));
+}

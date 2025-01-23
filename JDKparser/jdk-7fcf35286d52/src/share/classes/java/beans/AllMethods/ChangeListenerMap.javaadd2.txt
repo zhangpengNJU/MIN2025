@@ -1,0 +1,20 @@
+/**
+ * Adds a listener to the list of listeners for the specified property.
+ * This listener is called as many times as it was added.
+ *
+ * @param name      the name of the property to listen on
+ * @param listener  the listener to process events
+ */
+public final synchronized void add(String name, L listener) {
+    if (this.map == null) {
+        this.map = new HashMap<>();
+    }
+    L[] array = this.map.get(name);
+    int size = (array != null) ? array.length : 0;
+    L[] clone = newArray(size + 1);
+    clone[size] = listener;
+    if (array != null) {
+        System.arraycopy(array, 0, clone, 0, size);
+    }
+    this.map.put(name, clone);
+}

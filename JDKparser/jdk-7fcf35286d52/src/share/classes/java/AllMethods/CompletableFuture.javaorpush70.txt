@@ -1,0 +1,20 @@
+/* ------------- Projected (Ored) BiCompletions -------------- */
+/**
+ * Pushes completion to this and b unless either done.
+ */
+final void orpush(CompletableFuture<?> b, BiCompletion<?, ?, ?> c) {
+    if (c != null) {
+        while ((b == null || b.result == null) && result == null) {
+            if (tryPushStack(c)) {
+                if (b != null && b != this && b.result == null) {
+                    Completion q = new CoCompletion(c);
+                    while (result == null && b.result == null && !b.tryPushStack(q)) // clear on failure
+                    lazySetNext(q, null);
+                }
+                break;
+            }
+            // clear on failure
+            lazySetNext(c, null);
+        }
+    }
+}

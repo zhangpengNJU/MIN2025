@@ -1,0 +1,35 @@
+/**
+ * Converts this zone to a {@code TemporalAccessor}.
+ * <p>
+ * A {@code ZoneId} can be fully represented as a {@code TemporalAccessor}.
+ * However, the interface is not implemented by this class as most of the
+ * methods on the interface have no meaning to {@code ZoneId}.
+ * <p>
+ * The returned temporal has no supported fields, with the query method
+ * supporting the return of the zone using {@link TemporalQueries#zoneId()}.
+ *
+ * @return a temporal equivalent to this zone, not null
+ */
+private TemporalAccessor toTemporal() {
+    return new TemporalAccessor() {
+
+        @Override
+        public boolean isSupported(TemporalField field) {
+            return false;
+        }
+
+        @Override
+        public long getLong(TemporalField field) {
+            throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <R> R query(TemporalQuery<R> query) {
+            if (query == TemporalQueries.zoneId()) {
+                return (R) ZoneId.this;
+            }
+            return TemporalAccessor.super.query(query);
+        }
+    };
+}

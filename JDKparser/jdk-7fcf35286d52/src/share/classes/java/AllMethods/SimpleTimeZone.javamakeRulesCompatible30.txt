@@ -1,0 +1,93 @@
+/**
+ * Make rules compatible to 1.1 FCS code.  Since 1.1 FCS code only understands
+ * day-of-week-in-month rules, we must modify other modes of rules to their
+ * approximate equivalent in 1.1 FCS terms.  This method is used when streaming
+ * out objects of this class.  After it is called, the rules will be modified,
+ * with a possible loss of information.  startMode and endMode will NOT be
+ * altered, even though semantically they should be set to DOW_IN_MONTH_MODE,
+ * since the rule modification is only intended to be temporary.
+ */
+private void makeRulesCompatible() {
+    switch(startMode) {
+        case DOM_MODE:
+            startDay = 1 + (startDay / 7);
+            startDayOfWeek = Calendar.SUNDAY;
+            break;
+        case DOW_GE_DOM_MODE:
+            // A day-of-month of 1 is equivalent to DOW_IN_MONTH_MODE
+            // that is, Sun>=1 == firstSun.
+            if (startDay != 1) {
+                startDay = 1 + (startDay / 7);
+            }
+            break;
+        case DOW_LE_DOM_MODE:
+            if (startDay >= 30) {
+                startDay = -1;
+            } else {
+                startDay = 1 + (startDay / 7);
+            }
+            break;
+    }
+    switch(endMode) {
+        case DOM_MODE:
+            endDay = 1 + (endDay / 7);
+            endDayOfWeek = Calendar.SUNDAY;
+            break;
+        case DOW_GE_DOM_MODE:
+            // A day-of-month of 1 is equivalent to DOW_IN_MONTH_MODE
+            // that is, Sun>=1 == firstSun.
+            if (endDay != 1) {
+                endDay = 1 + (endDay / 7);
+            }
+            break;
+        case DOW_LE_DOM_MODE:
+            if (endDay >= 30) {
+                endDay = -1;
+            } else {
+                endDay = 1 + (endDay / 7);
+            }
+            break;
+    }
+    /*
+         * Adjust the start and end times to wall time.  This works perfectly
+         * well unless it pushes into the next or previous day.  If that
+         * happens, we attempt to adjust the day rule somewhat crudely.  The day
+         * rules have been forced into DOW_IN_MONTH mode already, so we change
+         * the day of week to move forward or back by a day.  It's possible to
+         * make a more refined adjustment of the original rules first, but in
+         * most cases this extra effort will go to waste once we adjust the day
+         * rules anyway.
+         */
+    switch(startTimeMode) {
+        case UTC_TIME:
+            startTime += rawOffset;
+            break;
+    }
+    while (startTime < 0) {
+        startTime += millisPerDay;
+        // Back 1 day
+        startDayOfWeek = 1 + ((startDayOfWeek + 5) % 7);
+    }
+    while (startTime >= millisPerDay) {
+        startTime -= millisPerDay;
+        // Forward 1 day
+        startDayOfWeek = 1 + (startDayOfWeek % 7);
+    }
+    switch(endTimeMode) {
+        case UTC_TIME:
+            endTime += rawOffset + dstSavings;
+            break;
+        case STANDARD_TIME:
+            endTime += dstSavings;
+    }
+    while (endTime < 0) {
+        endTime += millisPerDay;
+        // Back 1 day
+        endDayOfWeek = 1 + ((endDayOfWeek + 5) % 7);
+    }
+    while (endTime >= millisPerDay) {
+        endTime -= millisPerDay;
+        // Forward 1 day
+        endDayOfWeek = 1 + (endDayOfWeek % 7);
+    }
+}

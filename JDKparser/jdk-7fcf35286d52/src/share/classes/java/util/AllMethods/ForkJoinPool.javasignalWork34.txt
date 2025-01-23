@@ -1,0 +1,47 @@
+// Signalling
+/**
+ * Tries to create or activate a worker if too few are active.
+ *
+ * @param ws the worker array to use to find signallees
+ * @param q a WorkQueue --if non-null, don't retry if now empty
+ */
+final void signalWork(WorkQueue[] ws, WorkQueue q) {
+    long c;
+    int sp, i;
+    WorkQueue v;
+    Thread p;
+    while ((c = ctl) < 0L) {
+        // too few active
+        if ((sp = (int) c) == 0) {
+            // no idle workers
+            if (// too few workers
+            (c & ADD_WORKER) != 0L)
+                tryAddWorker(c);
+            break;
+        }
+        if (// unstarted/terminated
+        ws == null)
+            break;
+        if (// terminated
+        ws.length <= (i = sp & SMASK))
+            break;
+        if (// terminating
+        (v = ws[i]) == null)
+            break;
+        // next scanState
+        int vs = (sp + SS_SEQ) & ~INACTIVE;
+        // screen CAS
+        int d = sp - v.scanState;
+        long nc = (UC_MASK & (c + AC_UNIT)) | (SP_MASK & v.stackPred);
+        if (d == 0 && U.compareAndSwapLong(this, CTL, c, nc)) {
+            // activate v
+            v.scanState = vs;
+            if ((p = v.parker) != null)
+                U.unpark(p);
+            break;
+        }
+        if (// no more work
+        q != null && q.base == q.top)
+            break;
+    }
+}

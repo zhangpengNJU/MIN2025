@@ -1,0 +1,43 @@
+// -----------------------------------------------------------------------
+@Override
+public long until(Temporal endExclusive, TemporalUnit unit) {
+    Objects.requireNonNull(endExclusive, "endExclusive");
+    @SuppressWarnings("unchecked")
+    ChronoLocalDateTime<D> end = (ChronoLocalDateTime<D>) getChronology().localDateTime(endExclusive);
+    if (unit instanceof ChronoUnit) {
+        if (unit.isTimeBased()) {
+            long amount = end.getLong(EPOCH_DAY) - date.getLong(EPOCH_DAY);
+            switch((ChronoUnit) unit) {
+                case NANOS:
+                    amount = Math.multiplyExact(amount, NANOS_PER_DAY);
+                    break;
+                case MICROS:
+                    amount = Math.multiplyExact(amount, MICROS_PER_DAY);
+                    break;
+                case MILLIS:
+                    amount = Math.multiplyExact(amount, MILLIS_PER_DAY);
+                    break;
+                case SECONDS:
+                    amount = Math.multiplyExact(amount, SECONDS_PER_DAY);
+                    break;
+                case MINUTES:
+                    amount = Math.multiplyExact(amount, MINUTES_PER_DAY);
+                    break;
+                case HOURS:
+                    amount = Math.multiplyExact(amount, HOURS_PER_DAY);
+                    break;
+                case HALF_DAYS:
+                    amount = Math.multiplyExact(amount, 2);
+                    break;
+            }
+            return Math.addExact(amount, time.until(end.toLocalTime(), unit));
+        }
+        ChronoLocalDate endDate = end.toLocalDate();
+        if (end.toLocalTime().isBefore(time)) {
+            endDate = endDate.minus(1, ChronoUnit.DAYS);
+        }
+        return date.until(endDate, unit);
+    }
+    Objects.requireNonNull(unit, "unit");
+    return unit.between(this, end);
+}

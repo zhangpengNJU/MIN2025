@@ -1,0 +1,15 @@
+/**
+ * Returns an array of names recognized by
+ * {@link #getProperty(String) getProperty(String)}
+ * or <code>null</code>, if no property names are recognized.
+ * @return a <code>String</code> array containing all of the property
+ *          names that <code>getProperty(String)</code> recognizes;
+ *          or <code>null</code> if no property names are recognized.
+ */
+public String[] getPropertyNames() {
+    if (properties == null || properties.isEmpty()) {
+        return null;
+    }
+    final Set<String> keys = properties.keySet();
+    return keys.toArray(new String[keys.size()]);
+}

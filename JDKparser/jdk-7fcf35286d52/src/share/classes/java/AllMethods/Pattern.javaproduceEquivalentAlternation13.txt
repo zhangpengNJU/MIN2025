@@ -1,0 +1,25 @@
+/**
+ * Given a specific sequence composed of a regular character and
+ * combining marks that follow it, produce the alternation that will
+ * match all canonical equivalences of that sequence.
+ */
+private String produceEquivalentAlternation(String source) {
+    int len = countChars(source, 0, 1);
+    if (source.length() == len)
+        // source has one character.
+        return source;
+    String base = source.substring(0, len);
+    String combiningMarks = source.substring(len);
+    String[] perms = producePermutations(combiningMarks);
+    StringBuilder result = new StringBuilder(source);
+    // Add combined permutations
+    for (int x = 0; x < perms.length; x++) {
+        String next = base + perms[x];
+        if (x > 0)
+            result.append("|" + next);
+        next = composeOneStep(next);
+        if (next != null)
+            result.append("|" + produceEquivalentAlternation(next));
+    }
+    return result.toString();
+}

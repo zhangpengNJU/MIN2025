@@ -1,0 +1,37 @@
+/**
+ * Returns an array of all {@code Frame}s created by this application.
+ * If called from an applet, the array includes only the {@code Frame}s
+ * accessible by that applet.
+ * <p>
+ * <b>Warning:</b> this method may return system created frames, such
+ * as a shared, hidden frame which is used by Swing. Applications
+ * should not assume the existence of these frames, nor should an
+ * application assume anything about these frames such as component
+ * positions, <code>LayoutManager</code>s or serialization.
+ * <p>
+ * <b>Note</b>: To obtain a list of all ownerless windows, including
+ * ownerless {@code Dialog}s (introduced in release 1.6), use {@link
+ * Window#getOwnerlessWindows Window.getOwnerlessWindows}.
+ *
+ * @see Window#getWindows()
+ * @see Window#getOwnerlessWindows
+ *
+ * @since 1.2
+ */
+public static Frame[] getFrames() {
+    Window[] allWindows = Window.getWindows();
+    int frameCount = 0;
+    for (Window w : allWindows) {
+        if (w instanceof Frame) {
+            frameCount++;
+        }
+    }
+    Frame[] frames = new Frame[frameCount];
+    int c = 0;
+    for (Window w : allWindows) {
+        if (w instanceof Frame) {
+            frames[c++] = (Frame) w;
+        }
+    }
+    return frames;
+}

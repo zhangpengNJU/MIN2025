@@ -1,0 +1,8 @@
+// assume invoked only if "this" is not utf8
+byte[] getBytesUTF8(String s) {
+    if (isUTF8)
+        return getBytes(s);
+    if (utf8 == null)
+        utf8 = new ZipCoder(StandardCharsets.UTF_8);
+    return utf8.getBytes(s);
+}

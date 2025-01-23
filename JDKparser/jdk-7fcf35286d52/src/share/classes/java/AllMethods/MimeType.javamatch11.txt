@@ -1,0 +1,16 @@
+/**
+ * Returns <code>true</code> if the primary type and the
+ * subtype of this object are the same as the specified
+ * <code>type</code>; otherwise returns <code>false</code>.
+ *
+ * @param type the type to compare to <code>this</code>'s type
+ * @return <code>true</code> if the primary type and the
+ *    subtype of this object are the same as the
+ *    specified <code>type</code>; otherwise returns
+ *    <code>false</code>
+ */
+public boolean match(MimeType type) {
+    if (type == null)
+        return false;
+    return primaryType.equals(type.getPrimaryType()) && (subType.equals("*") || type.getSubType().equals("*") || (subType.equals(type.getSubType())));
+}

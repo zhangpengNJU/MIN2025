@@ -1,0 +1,6 @@
+boolean areInputMethodsEnabled() {
+    // in 1.2, we assume input method support is required for all
+    // components that handle key events, but components can turn off
+    // input methods by calling enableInputMethods(false).
+    return ((eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0) && ((eventMask & AWTEvent.KEY_EVENT_MASK) != 0 || keyListener != null);
+}

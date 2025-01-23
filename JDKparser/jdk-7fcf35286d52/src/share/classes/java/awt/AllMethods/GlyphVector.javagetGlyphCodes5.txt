@@ -1,0 +1,23 @@
+/**
+ * Returns an array of glyphcodes for the specified glyphs.
+ * The contents of this return value are meaningless to anything other
+ * than the <code>Font</code> used to create this
+ * <code>GlyphVector</code>.  This method is used
+ * for convenience and performance when processing glyphcodes.
+ * If no array is passed in, a new array is created.
+ * @param beginGlyphIndex the index into this
+ *   <code>GlyphVector</code> at which to start retrieving glyphcodes
+ * @param numEntries the number of glyphcodes to retrieve
+ * @param codeReturn the array that receives the glyphcodes and is
+ *   then returned
+ * @return an array of glyphcodes for the specified glyphs.
+ * @throws IllegalArgumentException if <code>numEntries</code> is
+ *   less than 0
+ * @throws IndexOutOfBoundsException if <code>beginGlyphIndex</code>
+ *   is less than 0
+ * @throws IndexOutOfBoundsException if the sum of
+ *   <code>beginGlyphIndex</code> and <code>numEntries</code> is
+ *   greater than the number of glyphs in this
+ *   <code>GlyphVector</code>
+ */
+public abstract int[] getGlyphCodes(int beginGlyphIndex, int numEntries, int[] codeReturn);

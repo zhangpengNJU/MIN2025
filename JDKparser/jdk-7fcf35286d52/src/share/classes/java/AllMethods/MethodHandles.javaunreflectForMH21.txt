@@ -1,0 +1,6 @@
+private MethodHandle unreflectForMH(Method m) {
+    // these names require special lookups because they throw UnsupportedOperationException
+    if (MemberName.isMethodHandleInvokeName(m.getName()))
+        return MethodHandleImpl.fakeMethodHandleInvoke(new MemberName(m));
+    return null;
+}

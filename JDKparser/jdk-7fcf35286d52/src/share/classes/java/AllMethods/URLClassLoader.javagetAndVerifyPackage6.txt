@@ -1,0 +1,24 @@
+/*
+     * Retrieve the package using the specified package name.
+     * If non-null, verify the package using the specified code
+     * source and manifest.
+     */
+private Package getAndVerifyPackage(String pkgname, Manifest man, URL url) {
+    Package pkg = getPackage(pkgname);
+    if (pkg != null) {
+        // Package found, so check package sealing.
+        if (pkg.isSealed()) {
+            // Verify that code source URL is the same.
+            if (!pkg.isSealed(url)) {
+                throw new SecurityException("sealing violation: package " + pkgname + " is sealed");
+            }
+        } else {
+            // Make sure we are not attempting to seal the package
+            // at this code source URL.
+            if ((man != null) && isSealed(pkgname, man)) {
+                throw new SecurityException("sealing violation: can't seal package " + pkgname + ": already loaded");
+            }
+        }
+    }
+    return pkg;
+}

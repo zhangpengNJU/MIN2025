@@ -1,0 +1,33 @@
+// Similar to AbstractTask but doesn't need to track child tasks
+public void compute() {
+    Spliterator<S> rightSplit = spliterator, leftSplit;
+    long sizeEstimate = rightSplit.estimateSize(), sizeThreshold;
+    if ((sizeThreshold = targetSize) == 0L)
+        targetSize = sizeThreshold = AbstractTask.suggestTargetSize(sizeEstimate);
+    boolean isShortCircuit = StreamOpFlag.SHORT_CIRCUIT.isKnown(helper.getStreamAndOpFlags());
+    boolean forkRight = false;
+    Sink<S> taskSink = sink;
+    ForEachTask<S, T> task = this;
+    while (!isShortCircuit || !taskSink.cancellationRequested()) {
+        if (sizeEstimate <= sizeThreshold || (leftSplit = rightSplit.trySplit()) == null) {
+            task.helper.copyInto(taskSink, rightSplit);
+            break;
+        }
+        ForEachTask<S, T> leftTask = new ForEachTask<>(task, leftSplit);
+        task.addToPendingCount(1);
+        ForEachTask<S, T> taskToFork;
+        if (forkRight) {
+            forkRight = false;
+            rightSplit = leftSplit;
+            taskToFork = task;
+            task = leftTask;
+        } else {
+            forkRight = true;
+            taskToFork = leftTask;
+        }
+        taskToFork.fork();
+        sizeEstimate = rightSplit.estimateSize();
+    }
+    task.spliterator = null;
+    task.propagateCompletion();
+}

@@ -1,0 +1,10 @@
+private boolean keyEquals(PublicKey aKey, PublicKey anotherKey) {
+    String aKeyFormat = aKey.getFormat();
+    String anotherKeyFormat = anotherKey.getFormat();
+    if ((aKeyFormat == null) ^ (anotherKeyFormat == null))
+        return false;
+    if (aKeyFormat != null && anotherKeyFormat != null)
+        if (!aKeyFormat.equalsIgnoreCase(anotherKeyFormat))
+            return false;
+    return java.util.Arrays.equals(aKey.getEncoded(), anotherKey.getEncoded());
+}

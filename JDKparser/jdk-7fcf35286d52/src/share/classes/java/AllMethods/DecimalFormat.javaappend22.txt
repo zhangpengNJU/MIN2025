@@ -1,0 +1,27 @@
+/**
+ * Appends the String <code>string</code> to <code>result</code>.
+ * <code>delegate</code> is notified of all  the
+ * <code>FieldPosition</code>s in <code>positions</code>.
+ * <p>
+ * If one of the <code>FieldPosition</code>s in <code>positions</code>
+ * identifies a <code>SIGN</code> attribute, it is mapped to
+ * <code>signAttribute</code>. This is used
+ * to map the <code>SIGN</code> attribute to the <code>EXPONENT</code>
+ * attribute as necessary.
+ * <p>
+ * This is used by <code>subformat</code> to add the prefix/suffix.
+ */
+private void append(StringBuffer result, String string, FieldDelegate delegate, FieldPosition[] positions, Format.Field signAttribute) {
+    int start = result.length();
+    if (string.length() > 0) {
+        result.append(string);
+        for (int counter = 0, max = positions.length; counter < max; counter++) {
+            FieldPosition fp = positions[counter];
+            Format.Field attribute = fp.getFieldAttribute();
+            if (attribute == Field.SIGN) {
+                attribute = signAttribute;
+            }
+            delegate.formatted(attribute, attribute, start + fp.getBeginIndex(), start + fp.getEndIndex(), result);
+        }
+    }
+}

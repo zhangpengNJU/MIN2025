@@ -1,0 +1,10 @@
+/**
+ * {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+public AnnotatedType getAnnotatedReceiverType() {
+    if (getDeclaringClass().getEnclosingClass() == null)
+        return super.getAnnotatedReceiverType();
+    return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(), sun.misc.SharedSecrets.getJavaLangAccess().getConstantPool(getDeclaringClass()), this, getDeclaringClass(), getDeclaringClass().getEnclosingClass(), TypeAnnotation.TypeAnnotationTarget.METHOD_RECEIVER);
+}

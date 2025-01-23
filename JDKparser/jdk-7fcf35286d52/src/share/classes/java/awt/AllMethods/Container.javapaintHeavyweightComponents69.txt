@@ -1,0 +1,8 @@
+/**
+ * Prints all the heavyweight subcomponents.
+ */
+void paintHeavyweightComponents(Graphics g) {
+    if (isShowing()) {
+        GraphicsCallback.PaintHeavyweightComponentsCallback.getInstance().runComponents(getComponentsSync(), g, GraphicsCallback.LIGHTWEIGHTS | GraphicsCallback.HEAVYWEIGHTS);
+    }
+}

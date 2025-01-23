@@ -1,0 +1,33 @@
+/**
+ * Constructs an ICC_Profile object corresponding to the data in
+ * a byte array.  Throws an IllegalArgumentException if the data
+ * does not correspond to a valid ICC Profile.
+ * @param data the specified ICC Profile data
+ * @return an <code>ICC_Profile</code> object corresponding to
+ *          the data in the specified <code>data</code> array.
+ */
+public static ICC_Profile getInstance(byte[] data) {
+    ICC_Profile thisProfile;
+    Profile p = null;
+    if (ProfileDeferralMgr.deferring) {
+        ProfileDeferralMgr.activateProfiles();
+    }
+    ProfileDataVerifier.verify(data);
+    try {
+        p = CMSManager.getModule().loadProfile(data);
+    } catch (CMMException c) {
+        throw new IllegalArgumentException("Invalid ICC Profile Data");
+    }
+    try {
+        if ((getColorSpaceType(p) == ColorSpace.TYPE_GRAY) && (getData(p, icSigMediaWhitePointTag) != null) && (getData(p, icSigGrayTRCTag) != null)) {
+            thisProfile = new ICC_ProfileGray(p);
+        } else if ((getColorSpaceType(p) == ColorSpace.TYPE_RGB) && (getData(p, icSigMediaWhitePointTag) != null) && (getData(p, icSigRedColorantTag) != null) && (getData(p, icSigGreenColorantTag) != null) && (getData(p, icSigBlueColorantTag) != null) && (getData(p, icSigRedTRCTag) != null) && (getData(p, icSigGreenTRCTag) != null) && (getData(p, icSigBlueTRCTag) != null)) {
+            thisProfile = new ICC_ProfileRGB(p);
+        } else {
+            thisProfile = new ICC_Profile(p);
+        }
+    } catch (CMMException c) {
+        thisProfile = new ICC_Profile(p);
+    }
+    return thisProfile;
+}

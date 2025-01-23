@@ -1,0 +1,23 @@
+// NOTE: This method may be called by privileged threads.
+// This functionality is implemented in a package-private method
+// to insure that it cannot be overridden by client subclasses.
+// DO NOT INVOKE CLIENT CODE ON THIS THREAD!
+final Font getFont_NoClientCode() {
+    Font font = this.font;
+    if (font != null) {
+        return font;
+    }
+    // The MenuContainer interface does not have getFont_NoClientCode()
+    // and it cannot, because it must be package-private. Because of
+    // this, we must manually cast classes that implement
+    // MenuContainer.
+    Object parent = this.parent;
+    if (parent != null) {
+        if (parent instanceof Component) {
+            font = ((Component) parent).getFont_NoClientCode();
+        } else if (parent instanceof MenuComponent) {
+            font = ((MenuComponent) parent).getFont_NoClientCode();
+        }
+    }
+    return font;
+}

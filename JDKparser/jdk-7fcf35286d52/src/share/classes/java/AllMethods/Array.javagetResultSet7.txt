@@ -1,0 +1,30 @@
+/**
+ * Retrieves a result set that contains the elements of the SQL
+ * <code>ARRAY</code> value designated by this <code>Array</code> object.
+ * This method uses
+ * the specified <code>map</code> for type map customizations
+ * unless the base type of the array does not match a user-defined
+ * type in <code>map</code>, in which case it
+ * uses the standard mapping. This version of the method
+ * <code>getResultSet</code> uses either the given type map or the standard mapping;
+ * it never uses the type map associated with the connection.
+ * <p>
+ * The result set contains one row for each array element, with
+ * two columns in each row.  The second column stores the element
+ * value; the first column stores the index into the array for
+ * that element (with the first array element being at index 1).
+ * The rows are in ascending order corresponding to
+ * the order of the indices.
+ *
+ * @param map contains the mapping of SQL user-defined types to
+ * classes in the Java programming language
+ * @return a <code>ResultSet</code> object containing one row for each
+ * of the elements in the array designated by this <code>Array</code>
+ * object, with the rows in ascending order based on the indices.
+ * @exception SQLException if an error occurs while attempting to
+ * access the array
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+ResultSet getResultSet(java.util.Map<String, Class<?>> map) throws SQLException;

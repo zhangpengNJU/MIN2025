@@ -1,0 +1,45 @@
+/**
+ * Sets this scanner's locale to the specified locale.
+ *
+ * <p>A scanner's locale affects many elements of its default
+ * primitive matching regular expressions; see
+ * <a href= "#localized-numbers">localized numbers</a> above.
+ *
+ * <p>Invoking the {@link #reset} method will set the scanner's locale to
+ * the <a href= "#initial-locale">initial locale</a>.
+ *
+ * @param locale A string specifying the locale to use
+ * @return this scanner
+ */
+public Scanner useLocale(Locale locale) {
+    if (locale.equals(this.locale))
+        return this;
+    this.locale = locale;
+    DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+    DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(locale);
+    // These must be literalized to avoid collision with regex
+    // metacharacters such as dot or parenthesis
+    groupSeparator = "\\x{" + Integer.toHexString(dfs.getGroupingSeparator()) + "}";
+    decimalSeparator = "\\x{" + Integer.toHexString(dfs.getDecimalSeparator()) + "}";
+    // Quoting the nonzero length locale-specific things
+    // to avoid potential conflict with metacharacters
+    nanString = Pattern.quote(dfs.getNaN());
+    infinityString = Pattern.quote(dfs.getInfinity());
+    positivePrefix = df.getPositivePrefix();
+    if (positivePrefix.length() > 0)
+        positivePrefix = Pattern.quote(positivePrefix);
+    negativePrefix = df.getNegativePrefix();
+    if (negativePrefix.length() > 0)
+        negativePrefix = Pattern.quote(negativePrefix);
+    positiveSuffix = df.getPositiveSuffix();
+    if (positiveSuffix.length() > 0)
+        positiveSuffix = Pattern.quote(positiveSuffix);
+    negativeSuffix = df.getNegativeSuffix();
+    if (negativeSuffix.length() > 0)
+        negativeSuffix = Pattern.quote(negativeSuffix);
+    // Force rebuilding and recompilation of locale dependent
+    // primitive patterns
+    integerPattern = null;
+    floatPattern = null;
+    return this;
+}

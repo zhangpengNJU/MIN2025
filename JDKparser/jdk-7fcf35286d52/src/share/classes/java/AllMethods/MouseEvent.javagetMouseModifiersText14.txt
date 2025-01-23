@@ -1,0 +1,79 @@
+/**
+ * Returns a <code>String</code> instance describing the modifier keys and
+ * mouse buttons that were down during the event, such as "Shift",
+ * or "Ctrl+Shift". These strings can be localized by changing
+ * the <code>awt.properties</code> file.
+ * <p>
+ * Note that the <code>InputEvent.ALT_MASK</code> and
+ * <code>InputEvent.BUTTON2_MASK</code> have equal values,
+ * so the "Alt" string is returned for both modifiers.  Likewise,
+ * the <code>InputEvent.META_MASK</code> and
+ * <code>InputEvent.BUTTON3_MASK</code> have equal values,
+ * so the "Meta" string is returned for both modifiers.
+ * <p>
+ * Note that passing negative parameter is incorrect,
+ * and will cause the returning an unspecified string.
+ * Zero parameter means that no modifiers were passed and will
+ * cause the returning an empty string.
+ * <p>
+ * @param modifiers A modifier mask describing the modifier keys and
+ *                  mouse buttons that were down during the event
+ * @return string   string text description of the combination of modifier
+ *                  keys and mouse buttons that were down during the event
+ * @see InputEvent#getModifiersExText(int)
+ * @since 1.4
+ */
+public static String getMouseModifiersText(int modifiers) {
+    StringBuilder buf = new StringBuilder();
+    if ((modifiers & InputEvent.ALT_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.alt", "Alt"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.META_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.meta", "Meta"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.CTRL_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.control", "Ctrl"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.SHIFT_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.shift", "Shift"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.ALT_GRAPH_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.altGraph", "Alt Graph"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.BUTTON1_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.button1", "Button1"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.BUTTON2_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.button2", "Button2"));
+        buf.append("+");
+    }
+    if ((modifiers & InputEvent.BUTTON3_MASK) != 0) {
+        buf.append(Toolkit.getProperty("AWT.button3", "Button3"));
+        buf.append("+");
+    }
+    int mask;
+    // TODO: add a toolkit field that holds a number of button on the mouse.
+    // As the method getMouseModifiersText() is static and obtain
+    // an integer as a parameter then we may not restrict this with the number
+    // of buttons installed on the mouse.
+    // It's a temporary solution. We need to somehow hold the number of buttons somewhere else.
+    for (int i = 1; i <= cachedNumberOfButtons; i++) {
+        mask = InputEvent.getMaskForButton(i);
+        if ((modifiers & mask) != 0 && // 1,2,3 buttons may already be there; so don't duplicate it.
+        buf.indexOf(Toolkit.getProperty("AWT.button" + i, "Button" + i)) == -1) {
+            buf.append(Toolkit.getProperty("AWT.button" + i, "Button" + i));
+            buf.append("+");
+        }
+    }
+    if (buf.length() > 0) {
+        // remove trailing '+'
+        buf.setLength(buf.length() - 1);
+    }
+    return buf.toString();
+}

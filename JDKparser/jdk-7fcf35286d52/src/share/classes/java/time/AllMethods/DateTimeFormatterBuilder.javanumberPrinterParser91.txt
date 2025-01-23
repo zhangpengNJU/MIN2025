@@ -1,0 +1,10 @@
+/**
+ * Create and cache a number printer parser.
+ * @return the number printer parser for this field, not null
+ */
+private NumberPrinterParser numberPrinterParser() {
+    if (numberPrinterParser == null) {
+        numberPrinterParser = new NumberPrinterParser(field, 1, 19, SignStyle.NORMAL);
+    }
+    return numberPrinterParser;
+}

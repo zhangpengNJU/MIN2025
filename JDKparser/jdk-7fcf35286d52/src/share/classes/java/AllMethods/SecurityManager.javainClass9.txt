@@ -1,0 +1,15 @@
+/**
+ * Tests if a method from a class with the specified
+ *         name is on the execution stack.
+ *
+ * @param  name   the fully qualified name of the class.
+ * @return <code>true</code> if a method from a class with the specified
+ *         name is on the execution stack; <code>false</code> otherwise.
+ * @deprecated This type of security checking is not recommended.
+ *  It is recommended that the <code>checkPermission</code>
+ *  call be used instead.
+ */
+@Deprecated
+protected boolean inClass(String name) {
+    return classDepth(name) >= 0;
+}

@@ -1,0 +1,11 @@
+/**
+ * Creates the peer for the list.  The peer allows us to modify the
+ * list's appearance without changing its functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createList(this);
+        super.addNotify();
+    }
+}

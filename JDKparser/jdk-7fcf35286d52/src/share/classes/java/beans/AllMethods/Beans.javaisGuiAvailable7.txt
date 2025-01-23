@@ -1,0 +1,15 @@
+/**
+ * Determines whether beans can assume a GUI is available.
+ *
+ * @return  True if we are running in an environment where beans
+ *     can assume that an interactive GUI is available, so they
+ *     can pop up dialog boxes, etc.  This will normally return
+ *     true in a windowing environment, and will normally return
+ *     false in a server environment or if an application is
+ *     running as part of a batch job.
+ *
+ * @see Visibility
+ */
+public static boolean isGuiAvailable() {
+    return ThreadGroupContext.getContext().isGuiAvailable();
+}

@@ -1,0 +1,13 @@
+/*
+     * Returns a list of the GC MXBeans of the given type.
+     */
+private static <T extends GarbageCollectorMXBean> List<T> getGcMXBeanList(Class<T> gcMXBeanIntf) {
+    List<GarbageCollectorMXBean> list = ManagementFactoryHelper.getGarbageCollectorMXBeans();
+    List<T> result = new ArrayList<>(list.size());
+    for (GarbageCollectorMXBean m : list) {
+        if (gcMXBeanIntf.isInstance(m)) {
+            result.add(gcMXBeanIntf.cast(m));
+        }
+    }
+    return result;
+}

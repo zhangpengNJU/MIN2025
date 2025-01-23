@@ -1,0 +1,14 @@
+/**
+ * WriteObject is called to save the state of the URL to an
+ * ObjectOutputStream. The handler is not saved since it is
+ * specific to this system.
+ *
+ * @serialData the default write object value. When read back in,
+ * the reader must ensure that calling getURLStreamHandler with
+ * the protocol variable returns a valid URLStreamHandler and
+ * throw an IOException if it does not.
+ */
+private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException {
+    // write the fields
+    s.defaultWriteObject();
+}

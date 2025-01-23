@@ -1,0 +1,18 @@
+/**
+ * Determines if this applet is active. An applet is marked active
+ * just before its <code>start</code> method is called. It becomes
+ * inactive just before its <code>stop</code> method is called.
+ *
+ * @return  <code>true</code> if the applet is active;
+ *          <code>false</code> otherwise.
+ * @see     java.applet.Applet#start()
+ * @see     java.applet.Applet#stop()
+ */
+public boolean isActive() {
+    if (stub != null) {
+        return stub.isActive();
+    } else {
+        // If stub field not filled in, applet never active
+        return false;
+    }
+}

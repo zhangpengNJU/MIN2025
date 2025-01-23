@@ -1,0 +1,6 @@
+void cancel(SelectionKey k) {
+    // package-private
+    synchronized (cancelledKeys) {
+        cancelledKeys.add(k);
+    }
+}

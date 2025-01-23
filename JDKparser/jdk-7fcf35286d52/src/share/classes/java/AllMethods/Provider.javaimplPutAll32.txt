@@ -1,0 +1,10 @@
+/**
+ * Copies all of the mappings from the specified Map to this provider.
+ * Internal method to be called AFTER the security check has been
+ * performed.
+ */
+private void implPutAll(Map<?, ?> t) {
+    for (Map.Entry<?, ?> e : t.entrySet()) {
+        implPut(e.getKey(), e.getValue());
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Get the {@code SocketImpl} attached to this socket, creating
+ * it if necessary.
+ *
+ * @return  the {@code SocketImpl} attached to that ServerSocket.
+ * @throws SocketException if creation fails
+ * @since 1.4
+ */
+SocketImpl getImpl() throws SocketException {
+    if (!created)
+        createImpl(true);
+    return impl;
+}

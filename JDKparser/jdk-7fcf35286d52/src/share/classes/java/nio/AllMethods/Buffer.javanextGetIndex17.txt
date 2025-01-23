@@ -1,0 +1,16 @@
+// -- Package-private methods for bounds checking, etc. --
+/**
+ * Checks the current position against the limit, throwing a {@link
+ * BufferUnderflowException} if it is not smaller than the limit, and then
+ * increments the position.
+ *
+ * @return  The current position value, before it is incremented
+ */
+final int nextGetIndex() {
+    // package-private
+    int p = position;
+    if (p >= limit)
+        throw new BufferUnderflowException();
+    position = p + 1;
+    return p;
+}

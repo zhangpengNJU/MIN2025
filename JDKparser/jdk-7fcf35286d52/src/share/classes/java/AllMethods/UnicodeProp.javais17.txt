@@ -1,0 +1,8 @@
+// \p{alpha}
+// \p{gc=Mark}
+// \p{digit}
+// \p{gc=Connector_Punctuation}
+// \p{Join_Control}    200C..200D
+public boolean is(int ch) {
+    return ALPHABETIC.is(ch) || ((((1 << Character.NON_SPACING_MARK) | (1 << Character.ENCLOSING_MARK) | (1 << Character.COMBINING_SPACING_MARK) | (1 << Character.DECIMAL_DIGIT_NUMBER) | (1 << Character.CONNECTOR_PUNCTUATION)) >> Character.getType(ch)) & 1) != 0 || JOIN_CONTROL.is(ch);
+}

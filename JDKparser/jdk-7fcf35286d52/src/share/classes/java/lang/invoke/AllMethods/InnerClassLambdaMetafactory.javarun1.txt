@@ -1,0 +1,10 @@
+@Override
+public Constructor<?>[] run() {
+    Constructor<?>[] ctrs = innerClass.getDeclaredConstructors();
+    if (ctrs.length == 1) {
+        // The lambda implementing inner class constructor is private, set
+        // it accessible (by us) before creating the constant sole instance
+        ctrs[0].setAccessible(true);
+    }
+    return ctrs;
+}

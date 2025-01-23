@@ -1,0 +1,11 @@
+private static MethodType wrapWithPrims(MethodType pt) {
+    assert (pt.hasPrimitives());
+    MethodType wt = (MethodType) pt.wrapAlt;
+    if (wt == null) {
+        // fill in lazily
+        wt = MethodTypeForm.canonicalize(pt, MethodTypeForm.WRAP, MethodTypeForm.WRAP);
+        assert (wt != null);
+        pt.wrapAlt = wt;
+    }
+    return wt;
+}

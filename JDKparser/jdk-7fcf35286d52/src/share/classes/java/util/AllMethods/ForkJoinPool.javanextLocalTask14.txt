@@ -1,0 +1,6 @@
+/**
+ * Takes next task, if one exists, in order specified by mode.
+ */
+final ForkJoinTask<?> nextLocalTask() {
+    return (config & FIFO_QUEUE) == 0 ? pop() : poll();
+}

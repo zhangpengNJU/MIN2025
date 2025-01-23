@@ -1,0 +1,12 @@
+/**
+ * xmode parse past comment to end of line.
+ */
+private int parsePastLine() {
+    int ch = temp[cursor++];
+    while (ch != 0 && !isLineSeparator(ch)) ch = temp[cursor++];
+    if (ch == 0 && cursor > patternLength) {
+        cursor = patternLength;
+        ch = temp[cursor++];
+    }
+    return ch;
+}

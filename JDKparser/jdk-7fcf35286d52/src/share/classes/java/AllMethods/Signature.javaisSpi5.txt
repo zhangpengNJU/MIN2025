@@ -1,0 +1,27 @@
+private static boolean isSpi(Service s) {
+    if (s.getType().equals("Cipher")) {
+        // must be a CipherSpi, which we can wrap with the CipherAdapter
+        return true;
+    }
+    String className = s.getClassName();
+    Boolean result = signatureInfo.get(className);
+    if (result == null) {
+        try {
+            Object instance = s.newInstance(null);
+            // Signature extends SignatureSpi
+            // so it is a "real" Spi if it is an
+            // instance of SignatureSpi but not Signature
+            boolean r = (instance instanceof SignatureSpi) && (instance instanceof Signature == false);
+            if ((debug != null) && (r == false)) {
+                debug.println("Not a SignatureSpi " + className);
+                debug.println("Delayed provider selection may not be " + "available for algorithm " + s.getAlgorithm());
+            }
+            result = Boolean.valueOf(r);
+            signatureInfo.put(className, result);
+        } catch (Exception e) {
+            // something is wrong, assume not an SPI
+            return false;
+        }
+    }
+    return result.booleanValue();
+}

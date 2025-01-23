@@ -1,0 +1,93 @@
+private static Font createFont0(int fontFormat, InputStream fontStream, CreatedFontTracker tracker) throws java.awt.FontFormatException, java.io.IOException {
+    if (fontFormat != Font.TRUETYPE_FONT && fontFormat != Font.TYPE1_FONT) {
+        throw new IllegalArgumentException("font format not recognized");
+    }
+    boolean copiedFontData = false;
+    try {
+        final File tFile = AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {
+
+            public File run() throws IOException {
+                return Files.createTempFile("+~JF", ".tmp").toFile();
+            }
+        });
+        if (tracker != null) {
+            tracker.add(tFile);
+        }
+        int totalSize = 0;
+        try {
+            final OutputStream outStream = AccessController.doPrivileged(new PrivilegedExceptionAction<OutputStream>() {
+
+                public OutputStream run() throws IOException {
+                    return new FileOutputStream(tFile);
+                }
+            });
+            if (tracker != null) {
+                tracker.set(tFile, outStream);
+            }
+            try {
+                byte[] buf = new byte[8192];
+                for (; ; ) {
+                    int bytesRead = fontStream.read(buf);
+                    if (bytesRead < 0) {
+                        break;
+                    }
+                    if (tracker != null) {
+                        if (totalSize + bytesRead > CreatedFontTracker.MAX_FILE_SIZE) {
+                            throw new IOException("File too big.");
+                        }
+                        if (totalSize + tracker.getNumBytes() > CreatedFontTracker.MAX_TOTAL_BYTES) {
+                            throw new IOException("Total files too big.");
+                        }
+                        totalSize += bytesRead;
+                        tracker.addBytes(bytesRead);
+                    }
+                    outStream.write(buf, 0, bytesRead);
+                }
+            /* don't close the input stream */
+            } finally {
+                outStream.close();
+            }
+            /* After all references to a Font2D are dropped, the file
+                 * will be removed. To support long-lived AppContexts,
+                 * we need to then decrement the byte count by the size
+                 * of the file.
+                 * If the data isn't a valid font, the implementation will
+                 * delete the tmp file and decrement the byte count
+                 * in the tracker object before returning from the
+                 * constructor, so we can set 'copiedFontData' to true here
+                 * without waiting for the results of that constructor.
+                 */
+            copiedFontData = true;
+            Font font = new Font(tFile, fontFormat, true, tracker);
+            return font;
+        } finally {
+            if (tracker != null) {
+                tracker.remove(tFile);
+            }
+            if (!copiedFontData) {
+                if (tracker != null) {
+                    tracker.subBytes(totalSize);
+                }
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+                    public Void run() {
+                        tFile.delete();
+                        return null;
+                    }
+                });
+            }
+        }
+    } catch (Throwable t) {
+        if (t instanceof FontFormatException) {
+            throw (FontFormatException) t;
+        }
+        if (t instanceof IOException) {
+            throw (IOException) t;
+        }
+        Throwable cause = t.getCause();
+        if (cause instanceof FontFormatException) {
+            throw (FontFormatException) cause;
+        }
+        throw new IOException("Problem reading font data.");
+    }
+}

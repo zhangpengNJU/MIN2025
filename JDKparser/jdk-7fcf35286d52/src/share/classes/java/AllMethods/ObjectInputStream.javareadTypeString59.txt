@@ -1,0 +1,23 @@
+/**
+ * Reads string without allowing it to be replaced in stream.  Called from
+ * within ObjectStreamClass.read().
+ */
+String readTypeString() throws IOException {
+    int oldHandle = passHandle;
+    try {
+        byte tc = bin.peekByte();
+        switch(tc) {
+            case TC_NULL:
+                return (String) readNull();
+            case TC_REFERENCE:
+                return (String) readHandle(false);
+            case TC_STRING:
+            case TC_LONGSTRING:
+                return readString(false);
+            default:
+                throw new StreamCorruptedException(String.format("invalid type code: %02X", tc));
+        }
+    } finally {
+        passHandle = oldHandle;
+    }
+}

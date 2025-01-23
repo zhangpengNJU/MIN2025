@@ -1,0 +1,16 @@
+/*
+     * calculate divideAndRound for ldividend*10^raise / divisor
+     * when abs(dividend)==abs(divisor);
+     */
+private static BigDecimal roundedTenPower(int qsign, int raise, int scale, int preferredScale) {
+    if (scale > preferredScale) {
+        int diff = scale - preferredScale;
+        if (diff < raise) {
+            return scaledTenPow(raise - diff, qsign, preferredScale);
+        } else {
+            return valueOf(qsign, scale - raise);
+        }
+    } else {
+        return scaledTenPow(raise, qsign, scale);
+    }
+}

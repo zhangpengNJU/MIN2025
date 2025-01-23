@@ -1,0 +1,34 @@
+/**
+ * Returns a {@code Collector} that produces the sum of a double-valued
+ * function applied to the input elements.  If no elements are present,
+ * the result is 0.
+ *
+ * <p>The sum returned can vary depending upon the order in which
+ * values are recorded, due to accumulated rounding error in
+ * addition of values of differing magnitudes. Values sorted by increasing
+ * absolute magnitude tend to yield more accurate results.  If any recorded
+ * value is a {@code NaN} or the sum is at any point a {@code NaN} then the
+ * sum will be {@code NaN}.
+ *
+ * @param <T> the type of the input elements
+ * @param mapper a function extracting the property to be summed
+ * @return a {@code Collector} that produces the sum of a derived property
+ */
+public static <T> Collector<T, ?, Double> summingDouble(ToDoubleFunction<? super T> mapper) {
+    /*
+         * In the arrays allocated for the collect operation, index 0
+         * holds the high-order bits of the running sum, index 1 holds
+         * the low-order bits of the sum computed via compensated
+         * summation, and index 2 holds the simple sum used to compute
+         * the proper result if the stream contains infinite values of
+         * the same sign.
+         */
+    return new CollectorImpl<>(() -> new double[3], (a, t) -> {
+        sumWithCompensation(a, mapper.applyAsDouble(t));
+        a[2] += mapper.applyAsDouble(t);
+    }, (a, b) -> {
+        sumWithCompensation(a, b[0]);
+        a[2] += b[2];
+        return sumWithCompensation(a, b[1]);
+    }, a -> computeFinalSum(a), CH_NOID);
+}

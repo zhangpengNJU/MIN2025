@@ -1,0 +1,35 @@
+/**
+ * Discards all KeyEvents which were enqueued because of one or more calls
+ * to <code>enqueueKeyEvents</code> with the specified Component, or one of
+ * its descendants.
+ *
+ * @param comp the Component specified in one or more calls to
+ *        <code>enqueueKeyEvents</code>, or a parent of such a Component
+ * @see #enqueueKeyEvents
+ * @see #dequeueKeyEvents
+ */
+protected synchronized void discardKeyEvents(Component comp) {
+    if (comp == null) {
+        return;
+    }
+    long start = -1;
+    for (Iterator<TypeAheadMarker> iter = typeAheadMarkers.iterator(); iter.hasNext(); ) {
+        TypeAheadMarker marker = iter.next();
+        Component toTest = marker.untilFocused;
+        boolean match = (toTest == comp);
+        while (!match && toTest != null && !(toTest instanceof Window)) {
+            toTest = toTest.getParent();
+            match = (toTest == comp);
+        }
+        if (match) {
+            if (start < 0) {
+                start = marker.after;
+            }
+            iter.remove();
+        } else if (start >= 0) {
+            purgeStampedEvents(start, marker.after);
+            start = -1;
+        }
+    }
+    purgeStampedEvents(start, -1);
+}

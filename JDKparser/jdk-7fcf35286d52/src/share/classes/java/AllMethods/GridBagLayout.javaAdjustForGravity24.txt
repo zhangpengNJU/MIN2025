@@ -1,0 +1,150 @@
+/**
+ * This method is obsolete and supplied for backwards
+ * compatibility only; new code should call {@link
+ * #adjustForGravity(java.awt.GridBagConstraints, java.awt.Rectangle)
+ * adjustForGravity} instead.
+ * This method is the same as <code>adjustForGravity</code>;
+ * refer to <code>adjustForGravity</code> for details
+ * on parameters.
+ */
+protected void AdjustForGravity(GridBagConstraints constraints, Rectangle r) {
+    int diffx, diffy;
+    int cellY = r.y;
+    int cellHeight = r.height;
+    if (!rightToLeft) {
+        r.x += constraints.insets.left;
+    } else {
+        r.x -= r.width - constraints.insets.right;
+    }
+    r.width -= (constraints.insets.left + constraints.insets.right);
+    r.y += constraints.insets.top;
+    r.height -= (constraints.insets.top + constraints.insets.bottom);
+    diffx = 0;
+    if ((constraints.fill != GridBagConstraints.HORIZONTAL && constraints.fill != GridBagConstraints.BOTH) && (r.width > (constraints.minWidth + constraints.ipadx))) {
+        diffx = r.width - (constraints.minWidth + constraints.ipadx);
+        r.width = constraints.minWidth + constraints.ipadx;
+    }
+    diffy = 0;
+    if ((constraints.fill != GridBagConstraints.VERTICAL && constraints.fill != GridBagConstraints.BOTH) && (r.height > (constraints.minHeight + constraints.ipady))) {
+        diffy = r.height - (constraints.minHeight + constraints.ipady);
+        r.height = constraints.minHeight + constraints.ipady;
+    }
+    switch(constraints.anchor) {
+        case GridBagConstraints.BASELINE:
+            r.x += diffx / 2;
+            alignOnBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.BASELINE_LEADING:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            alignOnBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.BASELINE_TRAILING:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            alignOnBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.ABOVE_BASELINE:
+            r.x += diffx / 2;
+            alignAboveBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.ABOVE_BASELINE_LEADING:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            alignAboveBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.ABOVE_BASELINE_TRAILING:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            alignAboveBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.BELOW_BASELINE:
+            r.x += diffx / 2;
+            alignBelowBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.BELOW_BASELINE_LEADING:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            alignBelowBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.BELOW_BASELINE_TRAILING:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            alignBelowBaseline(constraints, r, cellY, cellHeight);
+            break;
+        case GridBagConstraints.CENTER:
+            r.x += diffx / 2;
+            r.y += diffy / 2;
+            break;
+        case GridBagConstraints.PAGE_START:
+        case GridBagConstraints.NORTH:
+            r.x += diffx / 2;
+            break;
+        case GridBagConstraints.NORTHEAST:
+            r.x += diffx;
+            break;
+        case GridBagConstraints.EAST:
+            r.x += diffx;
+            r.y += diffy / 2;
+            break;
+        case GridBagConstraints.SOUTHEAST:
+            r.x += diffx;
+            r.y += diffy;
+            break;
+        case GridBagConstraints.PAGE_END:
+        case GridBagConstraints.SOUTH:
+            r.x += diffx / 2;
+            r.y += diffy;
+            break;
+        case GridBagConstraints.SOUTHWEST:
+            r.y += diffy;
+            break;
+        case GridBagConstraints.WEST:
+            r.y += diffy / 2;
+            break;
+        case GridBagConstraints.NORTHWEST:
+            break;
+        case GridBagConstraints.LINE_START:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            r.y += diffy / 2;
+            break;
+        case GridBagConstraints.LINE_END:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            r.y += diffy / 2;
+            break;
+        case GridBagConstraints.FIRST_LINE_START:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            break;
+        case GridBagConstraints.FIRST_LINE_END:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            break;
+        case GridBagConstraints.LAST_LINE_START:
+            if (rightToLeft) {
+                r.x += diffx;
+            }
+            r.y += diffy;
+            break;
+        case GridBagConstraints.LAST_LINE_END:
+            if (!rightToLeft) {
+                r.x += diffx;
+            }
+            r.y += diffy;
+            break;
+        default:
+            throw new IllegalArgumentException("illegal anchor value");
+    }
+}

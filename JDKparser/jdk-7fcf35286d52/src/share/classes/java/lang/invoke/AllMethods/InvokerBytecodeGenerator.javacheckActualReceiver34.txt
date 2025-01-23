@@ -1,0 +1,10 @@
+/**
+ * Generates code to check that actual receiver and LambdaForm matches
+ */
+private boolean checkActualReceiver() {
+    // Expects MethodHandle on the stack and actual receiver MethodHandle in slot #0
+    mv.visitInsn(Opcodes.DUP);
+    mv.visitVarInsn(Opcodes.ALOAD, localsMap[0]);
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC, MHI, "assertSame", LLV_SIG, false);
+    return true;
+}

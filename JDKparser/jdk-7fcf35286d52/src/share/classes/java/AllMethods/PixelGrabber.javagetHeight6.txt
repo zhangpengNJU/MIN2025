@@ -1,0 +1,12 @@
+/**
+ * Get the height of the pixel buffer (after adjusting for image height).
+ * If no width was specified for the rectangle of pixels to grab then
+ * then this information will only be available after the image has
+ * delivered the dimensions.
+ * @return the final height used for the pixel buffer or -1 if the height
+ * is not yet known
+ * @see #getStatus
+ */
+public synchronized int getHeight() {
+    return (dstH < 0) ? -1 : dstH;
+}

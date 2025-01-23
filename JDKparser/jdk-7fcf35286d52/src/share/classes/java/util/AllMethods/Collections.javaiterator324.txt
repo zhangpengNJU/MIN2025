@@ -1,0 +1,19 @@
+public Iterator<E> iterator() {
+    // JDK-6363904 - unwrapped iterator could be typecast to
+    // ListIterator with unsafe set()
+    final Iterator<E> it = c.iterator();
+    return new Iterator<E>() {
+
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        public E next() {
+            return it.next();
+        }
+
+        public void remove() {
+            it.remove();
+        }
+    };
+}

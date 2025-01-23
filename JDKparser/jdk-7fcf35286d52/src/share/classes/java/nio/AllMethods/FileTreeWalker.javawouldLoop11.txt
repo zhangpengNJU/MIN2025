@@ -1,0 +1,27 @@
+/**
+ * Returns true if walking into the given directory would result in a
+ * file system loop/cycle.
+ */
+private boolean wouldLoop(Path dir, Object key) {
+    // if this directory and ancestor has a file key then we compare
+    // them; otherwise we use less efficient isSameFile test.
+    for (DirectoryNode ancestor : stack) {
+        Object ancestorKey = ancestor.key();
+        if (key != null && ancestorKey != null) {
+            if (key.equals(ancestorKey)) {
+                // cycle detected
+                return true;
+            }
+        } else {
+            try {
+                if (Files.isSameFile(dir, ancestor.directory())) {
+                    // cycle detected
+                    return true;
+                }
+            } catch (IOException | SecurityException x) {
+            // ignore
+            }
+        }
+    }
+    return false;
+}

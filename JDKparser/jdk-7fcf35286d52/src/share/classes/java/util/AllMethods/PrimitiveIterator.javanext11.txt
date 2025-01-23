@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * The default implementation boxes the result of calling
+ * {@link #nextDouble()}, and returns that boxed result.
+ */
+@Override
+default Double next() {
+    if (Tripwire.ENABLED)
+        Tripwire.trip(getClass(), "{0} calling PrimitiveIterator.OfDouble.nextLong()");
+    return nextDouble();
+}

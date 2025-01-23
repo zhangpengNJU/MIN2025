@@ -1,0 +1,5 @@
+private static HeavyweightFocusRequest getFirstHWRequest() {
+    synchronized (heavyweightRequests) {
+        return (heavyweightRequests.size() > 0) ? heavyweightRequests.getFirst() : null;
+    }
+}

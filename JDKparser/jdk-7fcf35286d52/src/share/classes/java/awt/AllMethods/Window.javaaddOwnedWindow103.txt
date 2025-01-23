@@ -1,0 +1,14 @@
+/*
+    * Support for tracking all windows owned by this window
+    */
+void addOwnedWindow(WeakReference<Window> weakWindow) {
+    if (weakWindow != null) {
+        synchronized (ownedWindowList) {
+            // this if statement should really be an assert, but we don't
+            // have asserts...
+            if (!ownedWindowList.contains(weakWindow)) {
+                ownedWindowList.addElement(weakWindow);
+            }
+        }
+    }
+}

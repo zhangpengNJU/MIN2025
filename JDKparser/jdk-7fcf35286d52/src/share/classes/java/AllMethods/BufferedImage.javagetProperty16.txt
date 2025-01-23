@@ -1,0 +1,23 @@
+/**
+ * Returns a property of the image by name.  Individual property names
+ * are defined by the various image formats.  If a property is not
+ * defined for a particular image, this method returns the
+ * <code>UndefinedProperty</code> field.  If the properties
+ * for this image are not yet known, then this method returns
+ * <code>null</code> and the <code>ImageObserver</code> object is
+ * notified later.  The property name "comment" should be used to
+ * store an optional comment that can be presented to the user as a
+ * description of the image, its source, or its author.
+ * @param name the property name
+ * @param observer the <code>ImageObserver</code> that receives
+ *  notification regarding image information
+ * @return an {@link Object} that is the property referred to by the
+ *          specified <code>name</code> or <code>null</code> if the
+ *          properties of this image are not yet known.
+ * @throws NullPointerException if the property name is null.
+ * @see ImageObserver
+ * @see java.awt.Image#UndefinedProperty
+ */
+public Object getProperty(String name, ImageObserver observer) {
+    return getProperty(name);
+}

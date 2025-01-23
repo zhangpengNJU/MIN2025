@@ -1,0 +1,65 @@
+private static void setJavaLangAccess() {
+    // Allow privileged classes outside of java.lang
+    sun.misc.SharedSecrets.setJavaLangAccess(new sun.misc.JavaLangAccess() {
+
+        public sun.reflect.ConstantPool getConstantPool(Class<?> klass) {
+            return klass.getConstantPool();
+        }
+
+        public boolean casAnnotationType(Class<?> klass, AnnotationType oldType, AnnotationType newType) {
+            return klass.casAnnotationType(oldType, newType);
+        }
+
+        public AnnotationType getAnnotationType(Class<?> klass) {
+            return klass.getAnnotationType();
+        }
+
+        public Map<Class<? extends Annotation>, Annotation> getDeclaredAnnotationMap(Class<?> klass) {
+            return klass.getDeclaredAnnotationMap();
+        }
+
+        public byte[] getRawClassAnnotations(Class<?> klass) {
+            return klass.getRawAnnotations();
+        }
+
+        public byte[] getRawClassTypeAnnotations(Class<?> klass) {
+            return klass.getRawTypeAnnotations();
+        }
+
+        public byte[] getRawExecutableTypeAnnotations(Executable executable) {
+            return Class.getExecutableTypeAnnotationBytes(executable);
+        }
+
+        public <E extends Enum<E>> E[] getEnumConstantsShared(Class<E> klass) {
+            return klass.getEnumConstantsShared();
+        }
+
+        public void blockedOn(Thread t, Interruptible b) {
+            t.blockedOn(b);
+        }
+
+        public void registerShutdownHook(int slot, boolean registerShutdownInProgress, Runnable hook) {
+            Shutdown.add(slot, registerShutdownInProgress, hook);
+        }
+
+        public int getStackTraceDepth(Throwable t) {
+            return t.getStackTraceDepth();
+        }
+
+        public StackTraceElement getStackTraceElement(Throwable t, int i) {
+            return t.getStackTraceElement(i);
+        }
+
+        public String newStringUnsafe(char[] chars) {
+            return new String(chars, true);
+        }
+
+        public Thread newThreadWithAcc(Runnable target, AccessControlContext acc) {
+            return new Thread(target, acc);
+        }
+
+        public void invokeFinalize(Object o) throws Throwable {
+            o.finalize();
+        }
+    });
+}

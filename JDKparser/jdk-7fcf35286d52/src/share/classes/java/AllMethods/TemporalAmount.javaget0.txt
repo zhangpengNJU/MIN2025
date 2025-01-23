@@ -1,0 +1,17 @@
+/**
+ * Returns the value of the requested unit.
+ * The units returned from {@link #getUnits()} uniquely define the
+ * value of the {@code TemporalAmount}.  A value must be returned
+ * for each unit listed in {@code getUnits}.
+ *
+ * @implSpec
+ * Implementations may declare support for units not listed by {@link #getUnits()}.
+ * Typically, the implementation would define additional units
+ * as conversions for the convenience of developers.
+ *
+ * @param unit the {@code TemporalUnit} for which to return the value
+ * @return the long value of the unit
+ * @throws DateTimeException if a value for the unit cannot be obtained
+ * @throws UnsupportedTemporalTypeException if the {@code unit} is not supported
+ */
+long get(TemporalUnit unit);

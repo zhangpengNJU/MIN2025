@@ -1,0 +1,14 @@
+/**
+ * This method calls <code>dropActionChanged</code> on the
+ * <code>DragSourceListener</code>s registered with this
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceDragEvent</code>.
+ *
+ * @param dsde the <code>DragSourceDragEvent</code>
+ */
+void processDropActionChanged(DragSourceDragEvent dsde) {
+    DragSourceListener dsl = listener;
+    if (dsl != null) {
+        dsl.dropActionChanged(dsde);
+    }
+}

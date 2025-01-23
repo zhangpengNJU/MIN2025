@@ -1,0 +1,13 @@
+/**
+ * Returns a string representation of this object identifier.
+ *
+ * @return  a string representation of this object identifier
+ */
+/*
+     * The address space identifier is only included in the string
+     * representation if it does not denote the local address space
+     * (or if the randomIDs property was set).
+     */
+public String toString() {
+    return "[" + (space.equals(mySpace) ? "" : space + ", ") + objNum + "]";
+}

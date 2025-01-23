@@ -1,0 +1,43 @@
+/**
+ * Loads a dynamic proxy class (see {@link java.lang.reflect.Proxy})
+ * that implements a set of interfaces with the given names
+ * from a codebase URL path.
+ *
+ * <p>The interfaces will be resolved similar to classes loaded via
+ * the {@link #loadClass(String,String)} method using the given
+ * <code>codebase</code>.
+ *
+ * <p>This method delegates to the
+ * {@link RMIClassLoaderSpi#loadProxyClass(String,String[],ClassLoader)}
+ * method of the provider instance, passing <code>codebase</code>
+ * as the first argument, <code>interfaces</code> as the second argument,
+ * and <code>defaultLoader</code> as the third argument.
+ *
+ * @param   codebase the list of URLs (space-separated) to load
+ * classes from, or <code>null</code>
+ *
+ * @param   interfaces the names of the interfaces for the proxy class
+ * to implement
+ *
+ * @param   defaultLoader additional contextual class loader
+ * to use, or <code>null</code>
+ *
+ * @return  a dynamic proxy class that implements the named interfaces
+ *
+ * @throws  MalformedURLException if <code>codebase</code> is
+ * non-<code>null</code> and contains an invalid URL, or
+ * if <code>codebase</code> is <code>null</code> and a provider-specific
+ * URL used to load classes is invalid
+ *
+ * @throws  ClassNotFoundException if a definition for one of
+ * the named interfaces could not be found at the specified location,
+ * or if creation of the dynamic proxy class failed (such as if
+ * {@link java.lang.reflect.Proxy#getProxyClass(ClassLoader,Class[])}
+ * would throw an <code>IllegalArgumentException</code> for the given
+ * interface list)
+ *
+ * @since   1.4
+ */
+public static Class<?> loadProxyClass(String codebase, String[] interfaces, ClassLoader defaultLoader) throws ClassNotFoundException, MalformedURLException {
+    return provider.loadProxyClass(codebase, interfaces, defaultLoader);
+}

@@ -1,0 +1,23 @@
+/**
+ * Returns x's Class if it is of the form "class C implements
+ * Comparable<C>", else null.
+ */
+static Class<?> comparableClassFor(Object x) {
+    if (x instanceof Comparable) {
+        Class<?> c;
+        Type[] ts, as;
+        Type t;
+        ParameterizedType p;
+        if (// bypass checks
+        (c = x.getClass()) == String.class)
+            return c;
+        if ((ts = c.getGenericInterfaces()) != null) {
+            for (int i = 0; i < ts.length; ++i) {
+                if (((t = ts[i]) instanceof ParameterizedType) && ((p = (ParameterizedType) t).getRawType() == Comparable.class) && (as = p.getActualTypeArguments()) != null && as.length == 1 && // type arg is c
+                as[0] == c)
+                    return c;
+            }
+        }
+    }
+    return null;
+}

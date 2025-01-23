@@ -1,0 +1,7 @@
+public final Map.Entry<K, V> pollFirstEntry() {
+    TreeMap.Entry<K, V> e = subLowest();
+    Map.Entry<K, V> result = exportEntry(e);
+    if (e != null)
+        m.deleteEntry(e);
+    return result;
+}

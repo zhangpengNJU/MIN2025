@@ -1,0 +1,19 @@
+LambdaForm addArguments(int pos, BasicType... types) {
+    // names array has MH in slot 0; skip it.
+    int argpos = pos + 1;
+    assert (argpos <= arity);
+    int length = names.length;
+    int inTypes = types.length;
+    Name[] names2 = Arrays.copyOf(names, length + inTypes);
+    int arity2 = arity + inTypes;
+    int result2 = result;
+    if (result2 >= argpos)
+        result2 += inTypes;
+    // Note:  The LF constructor will rename names2[argpos...].
+    // Make space for new arguments (shift temporaries).
+    System.arraycopy(names, argpos, names2, argpos + inTypes, length - argpos);
+    for (int i = 0; i < inTypes; i++) {
+        names2[argpos + i] = new Name(types[i]);
+    }
+    return new LambdaForm(debugName, arity2, names2, result2);
+}

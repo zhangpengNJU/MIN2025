@@ -1,0 +1,13 @@
+// Compare Normalize dividend & divisor so that both fall into [0.1, 0.999...]
+private static int compareMagnitudeNormalized(long xs, int xscale, BigInteger ys, int yscale) {
+    // assert "ys can't be represented as long"
+    if (xs == 0)
+        return -1;
+    int sdiff = xscale - yscale;
+    if (sdiff < 0) {
+        if (longMultiplyPowerTen(xs, -sdiff) == INFLATED) {
+            return bigMultiplyPowerTen(xs, -sdiff).compareMagnitude(ys);
+        }
+    }
+    return -1;
+}

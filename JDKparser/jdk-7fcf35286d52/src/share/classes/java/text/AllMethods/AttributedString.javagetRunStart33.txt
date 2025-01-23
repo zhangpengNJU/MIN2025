@@ -1,0 +1,17 @@
+public int getRunStart(Attribute attribute) {
+    if (currentRunStart == beginIndex || currentRunIndex == -1) {
+        return currentRunStart;
+    } else {
+        Object value = getAttribute(attribute);
+        int runStart = currentRunStart;
+        int runIndex = currentRunIndex;
+        while (runStart > beginIndex && valuesMatch(value, AttributedString.this.getAttribute(attribute, runIndex - 1))) {
+            runIndex--;
+            runStart = runStarts[runIndex];
+        }
+        if (runStart < beginIndex) {
+            runStart = beginIndex;
+        }
+        return runStart;
+    }
+}

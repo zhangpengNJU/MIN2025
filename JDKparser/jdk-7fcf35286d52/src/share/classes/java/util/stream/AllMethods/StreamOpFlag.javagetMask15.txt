@@ -1,0 +1,3 @@
+private static int getMask(int flags) {
+    return (flags == 0) ? FLAG_MASK : ~(flags | ((FLAG_MASK_IS & flags) << 1) | ((FLAG_MASK_NOT & flags) >> 1));
+}

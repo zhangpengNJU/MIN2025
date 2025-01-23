@@ -1,0 +1,100 @@
+/**
+ * Cache a transform with its result, and return that result.
+ *  But if an equivalent transform has already been cached, return its result instead.
+ */
+private LambdaForm putInCache(Transform key, LambdaForm form) {
+    key = key.withResult(form);
+    for (int pass = 0; ; pass++) {
+        Object c = lambdaForm.transformCache;
+        if (c instanceof ConcurrentHashMap) {
+            @SuppressWarnings("unchecked")
+            ConcurrentHashMap<Transform, Transform> m = (ConcurrentHashMap<Transform, Transform>) c;
+            Transform k = m.putIfAbsent(key, key);
+            if (k == null)
+                return form;
+            LambdaForm result = k.get();
+            if (result != null) {
+                return result;
+            } else {
+                if (m.replace(key, k, key)) {
+                    return form;
+                } else {
+                    continue;
+                }
+            }
+        }
+        assert (pass == 0);
+        synchronized (lambdaForm) {
+            c = lambdaForm.transformCache;
+            if (c instanceof ConcurrentHashMap)
+                continue;
+            if (c == null) {
+                lambdaForm.transformCache = key;
+                return form;
+            }
+            Transform[] ta;
+            if (c instanceof Transform) {
+                Transform k = (Transform) c;
+                if (k.equals(key)) {
+                    LambdaForm result = k.get();
+                    if (result == null) {
+                        lambdaForm.transformCache = key;
+                        return form;
+                    } else {
+                        return result;
+                    }
+                } else if (k.get() == null) {
+                    // overwrite stale entry
+                    lambdaForm.transformCache = key;
+                    return form;
+                }
+                // expand one-element cache to small array
+                ta = new Transform[MIN_CACHE_ARRAY_SIZE];
+                ta[0] = k;
+                lambdaForm.transformCache = ta;
+            } else {
+                // it is already expanded
+                ta = (Transform[]) c;
+            }
+            int len = ta.length;
+            int stale = -1;
+            int i;
+            for (i = 0; i < len; i++) {
+                Transform k = ta[i];
+                if (k == null) {
+                    break;
+                }
+                if (k.equals(key)) {
+                    LambdaForm result = k.get();
+                    if (result == null) {
+                        ta[i] = key;
+                        return form;
+                    } else {
+                        return result;
+                    }
+                } else if (stale < 0 && k.get() == null) {
+                    // remember 1st stale entry index
+                    stale = i;
+                }
+            }
+            if (i < len || stale >= 0) {
+            // just fall through to cache update
+            } else if (len < MAX_CACHE_ARRAY_SIZE) {
+                len = Math.min(len * 2, MAX_CACHE_ARRAY_SIZE);
+                ta = Arrays.copyOf(ta, len);
+                lambdaForm.transformCache = ta;
+            } else {
+                ConcurrentHashMap<Transform, Transform> m = new ConcurrentHashMap<>(MAX_CACHE_ARRAY_SIZE * 2);
+                for (Transform k : ta) {
+                    m.put(k, k);
+                }
+                lambdaForm.transformCache = m;
+                // The second iteration will update for this query, concurrently.
+                continue;
+            }
+            int idx = (stale >= 0) ? stale : i;
+            ta[idx] = key;
+            return form;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns a bounding {@link Rectangle} that completely encloses
+ * this <code>Area</code>.
+ * <p>
+ * The Area class will attempt to return the tightest bounding
+ * box possible for the Shape.  The bounding box will not be
+ * padded to include the control points of curves in the outline
+ * of the Shape, but should tightly fit the actual geometry of
+ * the outline itself.  Since the returned object represents
+ * the bounding box with integers, the bounding box can only be
+ * as tight as the nearest integer coordinates that encompass
+ * the geometry of the Shape.
+ * @return    the bounding <code>Rectangle</code> for the
+ * <code>Area</code>.
+ * @since 1.2
+ */
+public Rectangle getBounds() {
+    return getCachedBounds().getBounds();
+}

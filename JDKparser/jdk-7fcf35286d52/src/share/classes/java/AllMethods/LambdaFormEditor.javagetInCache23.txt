@@ -1,0 +1,34 @@
+/**
+ * Find a previously cached transform equivalent to the given one, and return its result.
+ */
+private LambdaForm getInCache(Transform key) {
+    assert (key.get() == null);
+    // The transformCache is one of null, Transform, Transform[], or ConcurrentHashMap.
+    Object c = lambdaForm.transformCache;
+    Transform k = null;
+    if (c instanceof ConcurrentHashMap) {
+        @SuppressWarnings("unchecked")
+        ConcurrentHashMap<Transform, Transform> m = (ConcurrentHashMap<Transform, Transform>) c;
+        k = m.get(key);
+    } else if (c == null) {
+        return null;
+    } else if (c instanceof Transform) {
+        // one-element cache avoids overhead of an array
+        Transform t = (Transform) c;
+        if (t.equals(key))
+            k = t;
+    } else {
+        Transform[] ta = (Transform[]) c;
+        for (int i = 0; i < ta.length; i++) {
+            Transform t = ta[i];
+            if (t == null)
+                break;
+            if (t.equals(key)) {
+                k = t;
+                break;
+            }
+        }
+    }
+    assert (k == null || key.equals(k));
+    return (k != null) ? k.get() : null;
+}

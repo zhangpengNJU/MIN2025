@@ -1,0 +1,18 @@
+/**
+ * Transfers the element to a consumer, waiting if necessary to do so.
+ *
+ * <p>More precisely, transfers the specified element immediately
+ * if there exists a consumer already waiting to receive it (in
+ * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+ * else waits until the element is received by a consumer.
+ *
+ * @param e the element to transfer
+ * @throws InterruptedException if interrupted while waiting,
+ *         in which case the element is not left enqueued
+ * @throws ClassCastException if the class of the specified element
+ *         prevents it from being added to this queue
+ * @throws NullPointerException if the specified element is null
+ * @throws IllegalArgumentException if some property of the specified
+ *         element prevents it from being added to this queue
+ */
+void transfer(E e) throws InterruptedException;

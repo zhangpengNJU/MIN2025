@@ -1,0 +1,21 @@
+/**
+ * Sets the samples in the specified band for the specified rectangle
+ * of pixels from an int array containing one sample per array element.
+ * An ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ * @param x        The X coordinate of the upper left pixel location.
+ * @param y        The Y coordinate of the upper left pixel location.
+ * @param w        Width of the pixel rectangle.
+ * @param h        Height of the pixel rectangle.
+ * @param b        The band to set.
+ * @param iArray   The input int sample array.
+ *
+ * @throws NullPointerException if iArray is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates or
+ * the band index are not in bounds, or if iArray is too small to
+ * hold the input.
+ */
+public void setSamples(int x, int y, int w, int h, int b, int[] iArray) {
+    sampleModel.setSamples(x - sampleModelTranslateX, y - sampleModelTranslateY, w, h, b, iArray, dataBuffer);
+}

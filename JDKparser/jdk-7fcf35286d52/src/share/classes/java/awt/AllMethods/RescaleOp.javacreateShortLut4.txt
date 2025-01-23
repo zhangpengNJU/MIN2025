@@ -1,0 +1,39 @@
+/**
+ * Creates a ShortLookupTable to implement the rescale.
+ * The table may have either a SHORT or BYTE input.
+ * @param nElems    Number of elements the table is to have.
+ *                  This will generally be 256 for byte and
+ *                  65536 for short.
+ */
+private ShortLookupTable createShortLut(float[] scale, float[] off, int nBands, int nElems) {
+    short[][] lutData = new short[nBands][nElems];
+    int band = 0;
+    for (band = 0; band < scale.length; band++) {
+        float bandScale = scale[band];
+        float bandOff = off[band];
+        short[] bandLutData = lutData[band];
+        for (int i = 0; i < nElems; i++) {
+            int val = (int) (i * bandScale + bandOff);
+            if ((val & 0xffff0000) != 0) {
+                if (val < 0) {
+                    val = 0;
+                } else {
+                    val = 65535;
+                }
+            }
+            bandLutData[i] = (short) val;
+        }
+    }
+    int maxToCopy = (nBands == 4 && scale.length == 4) ? 4 : 3;
+    while (band < lutData.length && band < maxToCopy) {
+        System.arraycopy(lutData[band - 1], 0, lutData[band], 0, nElems);
+        band++;
+    }
+    if (nBands == 4 && band < nBands) {
+        short[] bandLutData = lutData[band];
+        for (int i = 0; i < nElems; i++) {
+            bandLutData[i] = (short) i;
+        }
+    }
+    return new ShortLookupTable(0, lutData);
+}

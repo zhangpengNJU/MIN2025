@@ -1,0 +1,18 @@
+/**
+ * Saves this queue to a stream (that is, serializes it).
+ * @param s the stream
+ * @throws java.io.IOException if an I/O error occurs
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    boolean fair = transferer instanceof TransferQueue;
+    if (fair) {
+        qlock = new ReentrantLock(true);
+        waitingProducers = new FifoWaitQueue();
+        waitingConsumers = new FifoWaitQueue();
+    } else {
+        qlock = new ReentrantLock();
+        waitingProducers = new LifoWaitQueue();
+        waitingConsumers = new LifoWaitQueue();
+    }
+    s.defaultWriteObject();
+}

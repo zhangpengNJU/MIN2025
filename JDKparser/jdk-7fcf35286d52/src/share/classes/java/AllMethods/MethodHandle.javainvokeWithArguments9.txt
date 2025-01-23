@@ -1,0 +1,21 @@
+/**
+ * Performs a variable arity invocation, passing the arguments in the given array
+ * to the method handle, as if via an inexact {@link #invoke invoke} from a call site
+ * which mentions only the type {@code Object}, and whose arity is the length
+ * of the argument array.
+ * <p>
+ * This method is also equivalent to the following code:
+ * <blockquote><pre>{@code
+ *   invokeWithArguments(arguments.toArray()
+ * }</pre></blockquote>
+ *
+ * @param arguments the arguments to pass to the target
+ * @return the result returned by the target
+ * @throws NullPointerException if {@code arguments} is a null reference
+ * @throws ClassCastException if an argument cannot be converted by reference casting
+ * @throws WrongMethodTypeException if the target's type cannot be adjusted to take the given number of {@code Object} arguments
+ * @throws Throwable anything thrown by the target method invocation
+ */
+public Object invokeWithArguments(java.util.List<?> arguments) throws Throwable {
+    return invokeWithArguments(arguments.toArray());
+}

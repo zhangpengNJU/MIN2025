@@ -1,0 +1,5 @@
+private static Object copyAsPrimitiveArray(Wrapper w, Object... boxes) {
+    Object a = w.makeArray(boxes.length);
+    w.copyArrayUnboxing(boxes, 0, a, 0, boxes.length);
+    return a;
+}

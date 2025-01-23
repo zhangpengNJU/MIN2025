@@ -1,0 +1,69 @@
+/**
+ * Adds an AWTEventListener to receive all AWTEvents dispatched
+ * system-wide that conform to the given <code>eventMask</code>.
+ * <p>
+ * First, if there is a security manager, its <code>checkPermission</code>
+ * method is called with an
+ * <code>AWTPermission("listenToAllAWTEvents")</code> permission.
+ * This may result in a SecurityException.
+ * <p>
+ * <code>eventMask</code> is a bitmask of event types to receive.
+ * It is constructed by bitwise OR-ing together the event masks
+ * defined in <code>AWTEvent</code>.
+ * <p>
+ * Note:  event listener use is not recommended for normal
+ * application use, but are intended solely to support special
+ * purpose facilities including support for accessibility,
+ * event record/playback, and diagnostic tracing.
+ *
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param    listener   the event listener.
+ * @param    eventMask  the bitmask of event types to receive
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        <code>checkPermission</code> method doesn't allow the operation.
+ * @see      #removeAWTEventListener
+ * @see      #getAWTEventListeners
+ * @see      SecurityManager#checkPermission
+ * @see      java.awt.AWTEvent
+ * @see      java.awt.AWTPermission
+ * @see      java.awt.event.AWTEventListener
+ * @see      java.awt.event.AWTEventListenerProxy
+ * @since    1.2
+ */
+public void addAWTEventListener(AWTEventListener listener, long eventMask) {
+    AWTEventListener localL = deProxyAWTEventListener(listener);
+    if (localL == null) {
+        return;
+    }
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.ALL_AWT_EVENTS_PERMISSION);
+    }
+    synchronized (this) {
+        SelectiveAWTEventListener selectiveListener = listener2SelectiveListener.get(localL);
+        if (selectiveListener == null) {
+            // Create a new selectiveListener.
+            selectiveListener = new SelectiveAWTEventListener(localL, eventMask);
+            listener2SelectiveListener.put(localL, selectiveListener);
+            eventListener = ToolkitEventMulticaster.add(eventListener, selectiveListener);
+        }
+        // OR the eventMask into the selectiveListener's event mask.
+        selectiveListener.orEventMasks(eventMask);
+        enabledOnToolkitMask |= eventMask;
+        long mask = eventMask;
+        for (int i = 0; i < LONG_BITS; i++) {
+            // If no bits are set, break out of loop.
+            if (mask == 0) {
+                break;
+            }
+            if ((mask & 1L) != 0) {
+                // Always test bit 0.
+                calls[i]++;
+            }
+            // Right shift, fill with zeros on left.
+            mask >>>= 1;
+        }
+    }
+}

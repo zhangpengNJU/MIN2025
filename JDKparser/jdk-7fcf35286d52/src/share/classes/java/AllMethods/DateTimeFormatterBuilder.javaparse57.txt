@@ -1,0 +1,32 @@
+@Override
+public int parse(DateTimeParseContext context, CharSequence text, int position) {
+    // cache context before changed by decorated parser
+    final boolean strict = context.isStrict();
+    // parse
+    if (position > text.length()) {
+        throw new IndexOutOfBoundsException();
+    }
+    if (position == text.length()) {
+        // no more characters in the string
+        return ~position;
+    }
+    int endPos = position + padWidth;
+    if (endPos > text.length()) {
+        if (strict) {
+            // not enough characters in the string to meet the parse width
+            return ~position;
+        }
+        endPos = text.length();
+    }
+    int pos = position;
+    while (pos < endPos && context.charEquals(text.charAt(pos), padChar)) {
+        pos++;
+    }
+    text = text.subSequence(0, endPos);
+    int resultPos = printerParser.parse(context, text, pos);
+    if (resultPos != endPos && strict) {
+        // parse of decorated field didn't parse to the end
+        return ~(position + pos);
+    }
+    return resultPos;
+}

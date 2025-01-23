@@ -1,0 +1,25 @@
+/**
+ * Returns the alpha component for the specified pixel, scaled
+ * from 0 to 255.   The pixel value is specified as an int.
+ *
+ * @param pixel The pixel from which you want to get the alpha component.
+ *
+ * @return The alpha component for the specified pixel, as an int.
+ *
+ * @throws IllegalArgumentException If there is more than
+ * one component in this <CODE>ColorModel</CODE>.
+ * @throws IllegalArgumentException If the component value for this
+ * <CODE>ColorModel</CODE> is signed
+ */
+public int getAlpha(int pixel) {
+    if (supportsAlpha == false) {
+        return 255;
+    }
+    if (numComponents > 1) {
+        throw new IllegalArgumentException("More than one component per pixel");
+    }
+    if (signed) {
+        throw new IllegalArgumentException("Component value is signed");
+    }
+    return (int) ((((float) pixel) / ((1 << nBits[0]) - 1)) * 255.0f + 0.5f);
+}

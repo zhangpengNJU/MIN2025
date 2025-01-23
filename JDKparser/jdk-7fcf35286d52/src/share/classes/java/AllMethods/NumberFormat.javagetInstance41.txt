@@ -1,0 +1,10 @@
+// =======================privates===============================
+private static NumberFormat getInstance(Locale desiredLocale, int choice) {
+    LocaleProviderAdapter adapter;
+    adapter = LocaleProviderAdapter.getAdapter(NumberFormatProvider.class, desiredLocale);
+    NumberFormat numberFormat = getInstance(adapter, desiredLocale, choice);
+    if (numberFormat == null) {
+        numberFormat = getInstance(LocaleProviderAdapter.forJRE(), desiredLocale, choice);
+    }
+    return numberFormat;
+}

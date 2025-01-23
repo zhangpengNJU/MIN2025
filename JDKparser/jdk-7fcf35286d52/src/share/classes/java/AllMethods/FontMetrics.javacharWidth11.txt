@@ -1,0 +1,27 @@
+/**
+ * Returns the advance width of the specified character in this
+ * <code>Font</code>.  The advance is the
+ * distance from the leftmost point to the rightmost point on the
+ * character's baseline.  Note that the advance of a
+ * <code>String</code> is not necessarily the sum of the advances
+ * of its characters.
+ *
+ * <p><b>Note:</b> This method cannot handle <a
+ * href="../lang/Character.html#supplementary"> supplementary
+ * characters</a>. To support all Unicode characters, including
+ * supplementary characters, use the {@link #charWidth(int)} method.
+ *
+ * @param ch the character to be measured
+ * @return     the advance width of the specified character
+ *                  in the <code>Font</code> described by this
+ *                  <code>FontMetrics</code> object.
+ * @see        #charsWidth(char[], int, int)
+ * @see        #stringWidth(String)
+ */
+public int charWidth(char ch) {
+    if (ch < 256) {
+        return getWidths()[ch];
+    }
+    char[] data = { ch };
+    return charsWidth(data, 0, 1);
+}

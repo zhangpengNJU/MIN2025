@@ -1,0 +1,5 @@
+private static int hash(int hash, String s) {
+    if (s == null)
+        return hash;
+    return s.indexOf('%') < 0 ? hash * 127 + s.hashCode() : normalizedHash(hash, s);
+}

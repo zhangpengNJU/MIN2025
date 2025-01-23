@@ -1,0 +1,27 @@
+/**
+ * Returns the locales supported by the corresponding input method.
+ * The locale may describe just the language, or may also include
+ * country and variant information if needed.
+ * The information is used to select input methods by locale
+ * ({@link java.awt.im.InputContext#selectInputMethod(Locale)}). It may also
+ * be used to sort input methods by locale in a user-visible
+ * list of input methods.
+ * <p>
+ * Only the input method's primary locales should be returned.
+ * For example, if a Japanese input method also has a pass-through
+ * mode for Roman characters, typically still only Japanese would
+ * be returned. Thus, the list of locales returned is typically
+ * a subset of the locales for which the corresponding input method's
+ * implementation of {@link java.awt.im.spi.InputMethod#setLocale} returns true.
+ * <p>
+ * If {@link #hasDynamicLocaleList} returns true, this method is
+ * called each time the information is needed. This
+ * gives input methods that depend on network resources the chance
+ * to add or remove locales as resources become available or
+ * unavailable.
+ *
+ * @return the locales supported by the input method
+ * @exception AWTException if it can be determined that the input method
+ * is inoperable, for example, because of incomplete installation.
+ */
+Locale[] getAvailableLocales() throws AWTException;

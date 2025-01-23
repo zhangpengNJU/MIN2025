@@ -1,0 +1,33 @@
+/**
+ * Adds a permission object to the PermissionCollection for the class the
+ * permission belongs to. For example, if <i>permission</i> is a
+ * FilePermission, it is added to the FilePermissionCollection stored
+ * in this Permissions object.
+ *
+ * This method creates
+ * a new PermissionCollection object (and adds the permission to it)
+ * if an appropriate collection does not yet exist. <p>
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception SecurityException if this Permissions object is
+ * marked as readonly.
+ *
+ * @see PermissionCollection#isReadOnly()
+ */
+public void add(Permission permission) {
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly Permissions object");
+    PermissionCollection pc;
+    synchronized (this) {
+        pc = getPermissionCollection(permission, true);
+        pc.add(permission);
+    }
+    // No sync; staleness -> optimizations delayed, which is OK
+    if (permission instanceof AllPermission) {
+        allPermission = pc;
+    }
+    if (permission instanceof UnresolvedPermission) {
+        hasUnresolved = true;
+    }
+}

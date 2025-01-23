@@ -1,0 +1,24 @@
+/**
+ * Returns a <code>WritableRaster</code> representing the alpha
+ * channel for <code>BufferedImage</code> objects
+ * with <code>ColorModel</code> objects that support a separate
+ * spatial alpha channel, such as <code>ComponentColorModel</code> and
+ * <code>DirectColorModel</code>.  Returns <code>null</code> if there
+ * is no alpha channel associated with the <code>ColorModel</code> in
+ * this image.  This method assumes that for all
+ * <code>ColorModel</code> objects other than
+ * <code>IndexColorModel</code>, if the <code>ColorModel</code>
+ * supports alpha, there is a separate alpha channel
+ * which is stored as the last band of image data.
+ * If the image uses an <code>IndexColorModel</code> that
+ * has alpha in the lookup table, this method returns
+ * <code>null</code> since there is no spatially discrete alpha
+ * channel.  This method creates a new
+ * <code>WritableRaster</code>, but shares the data array.
+ * @return a <code>WritableRaster</code> or <code>null</code> if this
+ *          <code>BufferedImage</code> has no alpha channel associated
+ *          with its <code>ColorModel</code>.
+ */
+public WritableRaster getAlphaRaster() {
+    return colorModel.getAlphaRaster(raster);
+}

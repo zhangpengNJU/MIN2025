@@ -1,0 +1,21 @@
+/**
+ * release a service
+ */
+public void releaseService(BeanContextChild child, Object requestor, Object service) {
+    if (child == null)
+        throw new NullPointerException("child");
+    if (requestor == null)
+        throw new NullPointerException("requestor");
+    if (service == null)
+        throw new NullPointerException("service");
+    BCSSChild bcsc;
+    synchronized (BeanContext.globalHierarchyLock) {
+        synchronized (children) {
+            bcsc = (BCSSChild) children.get(child);
+        }
+        if (bcsc != null)
+            bcsc.releaseService(requestor, service);
+        else
+            throw new IllegalArgumentException("child actual is not a child of this BeanContext");
+    }
+}

@@ -1,0 +1,23 @@
+/**
+ * Returns a pseudorandom {@code int} value between zero (inclusive)
+ * and the specified bound (exclusive).
+ *
+ * @param bound the upper bound (exclusive).  Must be positive.
+ * @return a pseudorandom {@code int} value between zero
+ *         (inclusive) and the bound (exclusive)
+ * @throws IllegalArgumentException if {@code bound} is not positive
+ */
+public int nextInt(int bound) {
+    if (bound <= 0)
+        throw new IllegalArgumentException(BadBound);
+    int r = mix32(nextSeed());
+    int m = bound - 1;
+    if (// power of two
+    (bound & m) == 0)
+        r &= m;
+    else {
+        // reject over-represented candidates
+        for (int u = r >>> 1; u + m - (r = u % bound) < 0; u = mix32(nextSeed()) >>> 1) ;
+    }
+    return r;
+}

@@ -1,0 +1,33 @@
+/**
+ * Returns a new file attribute view to access the file attributes of a file
+ * in this directory.
+ *
+ * <p> The resulting file attribute view can be used to read or update the
+ * attributes of file in this directory. The {@code type} parameter specifies
+ * the type of the attribute view and the method returns an instance of that
+ * type if supported. Invoking this method to obtain a {@link
+ * BasicFileAttributeView} always returns an instance of that class that is
+ * bound to the file in the directory.
+ *
+ * <p> The state of resulting file attribute view is intimately connected
+ * to this directory stream. Once the directory stream {@link #close closed},
+ * then all methods to read or update attributes will throw {@link
+ * ClosedDirectoryStreamException ClosedDirectoryStreamException}. The
+ * file is not required to exist at the time that the file attribute view
+ * is created but methods to read or update attributes of the file will
+ * fail when invoked and the file does not exist.
+ *
+ * @param   <V>
+ *          The {@code FileAttributeView} type
+ * @param   path
+ *          the path of the file
+ * @param   type
+ *          the {@code Class} object corresponding to the file attribute view
+ * @param   options
+ *          options indicating how symbolic links are handled
+ *
+ * @return  a new file attribute view of the specified type bound to a
+ *          this directory stream, or {@code null} if the attribute view
+ *          type is not available
+ */
+<V extends FileAttributeView> V getFileAttributeView(T path, Class<V> type, LinkOption... options);

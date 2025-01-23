@@ -1,0 +1,7 @@
+private PropertyDescriptor mergePropertyWithIndexedProperty(PropertyDescriptor pd, IndexedPropertyDescriptor ipd) {
+    Class<?> type = pd.getPropertyType();
+    if (type.isArray() && (type.getComponentType() == ipd.getIndexedPropertyType())) {
+        return pd.getClass0().isAssignableFrom(ipd.getClass0()) ? new IndexedPropertyDescriptor(pd, ipd) : new IndexedPropertyDescriptor(ipd, pd);
+    }
+    return pd;
+}

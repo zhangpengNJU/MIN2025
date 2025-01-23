@@ -1,0 +1,15 @@
+/**
+ * Compares this {@code Constructor} against the specified object.
+ * Returns true if the objects are the same.  Two {@code Constructor} objects are
+ * the same if they were declared by the same class and have the
+ * same formal parameter types.
+ */
+public boolean equals(Object obj) {
+    if (obj != null && obj instanceof Constructor) {
+        Constructor<?> other = (Constructor<?>) obj;
+        if (getDeclaringClass() == other.getDeclaringClass()) {
+            return equalParamTypes(parameterTypes, other.parameterTypes);
+        }
+    }
+    return false;
+}

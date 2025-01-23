@@ -1,0 +1,23 @@
+// -- resolution and relativization --
+/**
+ * Resolve the given path against this path.
+ *
+ * <p> If the {@code other} parameter is an {@link #isAbsolute() absolute}
+ * path then this method trivially returns {@code other}. If {@code other}
+ * is an <i>empty path</i> then this method trivially returns this path.
+ * Otherwise this method considers this path to be a directory and resolves
+ * the given path against this path. In the simplest case, the given path
+ * does not have a {@link #getRoot root} component, in which case this method
+ * <em>joins</em> the given path to this path and returns a resulting path
+ * that {@link #endsWith ends} with the given path. Where the given path has
+ * a root component then resolution is highly implementation dependent and
+ * therefore unspecified.
+ *
+ * @param   other
+ *          the path to resolve against this path
+ *
+ * @return  the resulting path
+ *
+ * @see #relativize
+ */
+Path resolve(Path other);

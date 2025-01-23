@@ -1,0 +1,9 @@
+private boolean isEventHandler(Method m) {
+    // We assume that a method is an event handler if it has a single
+    // argument, whose type inherit from java.util.Event.
+    Type[] argTypes = m.getGenericParameterTypes();
+    if (argTypes.length != 1) {
+        return false;
+    }
+    return isSubclass(TypeResolver.erase(TypeResolver.resolveInClass(beanClass, argTypes[0])), EventObject.class);
+}

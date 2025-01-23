@@ -1,0 +1,47 @@
+/**
+ * Sets the default locale for the specified Category for this instance
+ * of the Java Virtual Machine. This does not affect the host locale.
+ * <p>
+ * If there is a security manager, its checkPermission method is called
+ * with a PropertyPermission("user.language", "write") permission before
+ * the default locale is changed.
+ * <p>
+ * The Java Virtual Machine sets the default locale during startup based
+ * on the host environment. It is used by many locale-sensitive methods
+ * if no locale is explicitly specified.
+ * <p>
+ * Since changing the default locale may affect many different areas of
+ * functionality, this method should only be used if the caller is
+ * prepared to reinitialize locale-sensitive code running within the
+ * same Java Virtual Machine.
+ * <p>
+ *
+ * @param category - the specified category to set the default locale
+ * @param newLocale - the new default locale
+ * @throws SecurityException - if a security manager exists and its
+ *     checkPermission method doesn't allow the operation.
+ * @throws NullPointerException - if category and/or newLocale is null
+ * @see SecurityManager#checkPermission(java.security.Permission)
+ * @see PropertyPermission
+ * @see #getDefault(Locale.Category)
+ * @since 1.7
+ */
+public static synchronized void setDefault(Locale.Category category, Locale newLocale) {
+    if (category == null)
+        throw new NullPointerException("Category cannot be NULL");
+    if (newLocale == null)
+        throw new NullPointerException("Can't set default locale to NULL");
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null)
+        sm.checkPermission(new PropertyPermission("user.language", "write"));
+    switch(category) {
+        case DISPLAY:
+            defaultDisplayLocale = newLocale;
+            break;
+        case FORMAT:
+            defaultFormatLocale = newLocale;
+            break;
+        default:
+            assert false : "Unknown Category";
+    }
+}

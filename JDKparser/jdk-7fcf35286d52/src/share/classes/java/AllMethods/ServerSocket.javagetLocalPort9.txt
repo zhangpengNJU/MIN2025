@@ -1,0 +1,22 @@
+/**
+ * Returns the port number on which this socket is listening.
+ * <p>
+ * If the socket was bound prior to being {@link #close closed},
+ * then this method will continue to return the port number
+ * after the socket is closed.
+ *
+ * @return  the port number to which this socket is listening or
+ *          -1 if the socket is not bound yet.
+ */
+public int getLocalPort() {
+    if (!isBound())
+        return -1;
+    try {
+        return getImpl().getLocalPort();
+    } catch (SocketException e) {
+    // nothing
+    // If we're bound, the impl has been created
+    // so we shouldn't get here
+    }
+    return -1;
+}

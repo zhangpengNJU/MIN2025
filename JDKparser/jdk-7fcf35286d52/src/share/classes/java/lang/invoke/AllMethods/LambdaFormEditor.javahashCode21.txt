@@ -1,0 +1,8 @@
+@Override
+public int hashCode() {
+    if (packedBytes != 0) {
+        assert (fullBytes == null);
+        return Long.hashCode(packedBytes);
+    }
+    return Arrays.hashCode(fullBytes);
+}

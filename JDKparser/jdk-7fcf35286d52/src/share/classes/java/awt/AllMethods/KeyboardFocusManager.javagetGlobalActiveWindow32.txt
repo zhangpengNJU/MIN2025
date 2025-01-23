@@ -1,0 +1,22 @@
+/**
+ * Returns the active Window, even if the calling thread is in a different
+ * context than the active Window. Only a Frame or a Dialog can be the
+ * active Window. The native windowing system may denote the active Window
+ * or its children with special decorations, such as a highlighted title
+ * bar. The active Window is always either the focused Window, or the first
+ * Frame or Dialog that is an owner of the focused Window.
+ *
+ * @return the active Window
+ * @see #getActiveWindow
+ * @see #setGlobalActiveWindow
+ * @throws SecurityException if this KeyboardFocusManager is not the
+ *         current KeyboardFocusManager for the calling thread's context
+ *         and if the calling thread does not have "replaceKeyboardFocusManager"
+ *         permission
+ */
+protected Window getGlobalActiveWindow() throws SecurityException {
+    synchronized (KeyboardFocusManager.class) {
+        checkKFMSecurity();
+        return activeWindow;
+    }
+}

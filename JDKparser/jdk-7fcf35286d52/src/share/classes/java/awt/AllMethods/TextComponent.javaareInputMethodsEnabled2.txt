@@ -1,0 +1,10 @@
+boolean areInputMethodsEnabled() {
+    // moved from the constructor above to here and addNotify below,
+    // this call will initialize the toolkit if not already initialized.
+    if (checkForEnableIM) {
+        enableInputMethodsIfNecessary();
+    }
+    // TextComponent handles key events without touching the eventMask or
+    // having a key listener, so just check whether the flag is set
+    return (eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0;
+}

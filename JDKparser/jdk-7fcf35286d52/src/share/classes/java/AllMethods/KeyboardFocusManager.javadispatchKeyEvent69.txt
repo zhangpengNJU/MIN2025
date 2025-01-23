@@ -1,0 +1,16 @@
+/**
+ * Typically this method will be called by <code>dispatchEvent</code> if no
+ * other KeyEventDispatcher in the dispatcher chain dispatched the
+ * KeyEvent, or if no other KeyEventDispatchers are registered. If an
+ * implementation of this method returns <code>false</code>,
+ * <code>dispatchEvent</code> may try to dispatch the KeyEvent itself, or
+ * may simply return <code>false</code>. If <code>true</code> is returned,
+ * <code>dispatchEvent</code> should return <code>true</code> as well.
+ *
+ * @param e the KeyEvent which the current KeyboardFocusManager has
+ *        requested that this KeyEventDispatcher dispatch
+ * @return <code>true</code> if the KeyEvent was dispatched;
+ *         <code>false</code> otherwise
+ * @see #dispatchEvent
+ */
+public abstract boolean dispatchKeyEvent(KeyEvent e);

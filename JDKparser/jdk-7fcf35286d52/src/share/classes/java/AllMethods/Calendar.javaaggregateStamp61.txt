@@ -1,0 +1,12 @@
+/**
+ * Returns the pseudo-time-stamp for two fields, given their
+ * individual pseudo-time-stamps.  If either of the fields
+ * is unset, then the aggregate is unset.  Otherwise, the
+ * aggregate is the later of the two stamps.
+ */
+private static int aggregateStamp(int stamp_a, int stamp_b) {
+    if (stamp_a == UNSET || stamp_b == UNSET) {
+        return UNSET;
+    }
+    return (stamp_a > stamp_b) ? stamp_a : stamp_b;
+}

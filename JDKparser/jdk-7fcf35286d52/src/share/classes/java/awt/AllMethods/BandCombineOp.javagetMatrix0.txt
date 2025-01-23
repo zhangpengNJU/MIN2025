@@ -1,0 +1,12 @@
+/**
+ * Returns a copy of the linear combination matrix.
+ *
+ * @return The matrix associated with this band combine operation.
+ */
+public final float[][] getMatrix() {
+    float[][] ret = new float[nrows][];
+    for (int i = 0; i < nrows; i++) {
+        ret[i] = Arrays.copyOf(matrix[i], ncols);
+    }
+    return ret;
+}

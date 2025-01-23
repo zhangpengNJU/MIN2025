@@ -1,0 +1,25 @@
+private void skipDeletedPredecessors(Node<E> x) {
+    whileActive: do {
+        Node<E> prev = x.prev;
+        // assert prev != null;
+        // assert x != NEXT_TERMINATOR;
+        // assert x != PREV_TERMINATOR;
+        Node<E> p = prev;
+        findActive: for (; ; ) {
+            if (p.item != null)
+                break findActive;
+            Node<E> q = p.prev;
+            if (q == null) {
+                if (p.next == p)
+                    continue whileActive;
+                break findActive;
+            } else if (p == q)
+                continue whileActive;
+            else
+                p = q;
+        }
+        // found active CAS target
+        if (prev == p || x.casPrev(prev, p))
+            return;
+    } while (x.item != null || x.next == null);
+}

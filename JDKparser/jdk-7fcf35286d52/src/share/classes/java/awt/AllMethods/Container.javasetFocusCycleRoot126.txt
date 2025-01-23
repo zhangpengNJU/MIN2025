@@ -1,0 +1,33 @@
+/**
+ * Sets whether this Container is the root of a focus traversal cycle. Once
+ * focus enters a traversal cycle, typically it cannot leave it via focus
+ * traversal unless one of the up- or down-cycle keys is pressed. Normal
+ * traversal is limited to this Container, and all of this Container's
+ * descendants that are not descendants of inferior focus cycle roots. Note
+ * that a FocusTraversalPolicy may bend these restrictions, however. For
+ * example, ContainerOrderFocusTraversalPolicy supports implicit down-cycle
+ * traversal.
+ * <p>
+ * The alternative way to specify the traversal order of this Container's
+ * children is to make this Container a
+ * <a href="doc-files/FocusSpec.html#FocusTraversalPolicyProviders">focus traversal policy provider</a>.
+ *
+ * @param focusCycleRoot indicates whether this Container is the root of a
+ *        focus traversal cycle
+ * @see #isFocusCycleRoot()
+ * @see #setFocusTraversalPolicy
+ * @see #getFocusTraversalPolicy
+ * @see ContainerOrderFocusTraversalPolicy
+ * @see #setFocusTraversalPolicyProvider
+ * @since 1.4
+ * @beaninfo
+ *       bound: true
+ */
+public void setFocusCycleRoot(boolean focusCycleRoot) {
+    boolean oldFocusCycleRoot;
+    synchronized (this) {
+        oldFocusCycleRoot = this.focusCycleRoot;
+        this.focusCycleRoot = focusCycleRoot;
+    }
+    firePropertyChange("focusCycleRoot", oldFocusCycleRoot, focusCycleRoot);
+}

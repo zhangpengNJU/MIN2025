@@ -1,0 +1,41 @@
+/**
+ * Associates the specified value with the specified key in this identity
+ * hash map.  If the map previously contained a mapping for the key, the
+ * old value is replaced.
+ *
+ * @param key the key with which the specified value is to be associated
+ * @param value the value to be associated with the specified key
+ * @return the previous value associated with <tt>key</tt>, or
+ *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+ *         (A <tt>null</tt> return can also indicate that the map
+ *         previously associated <tt>null</tt> with <tt>key</tt>.)
+ * @see     Object#equals(Object)
+ * @see     #get(Object)
+ * @see     #containsKey(Object)
+ */
+public V put(K key, V value) {
+    final Object k = maskNull(key);
+    retryAfterResize: for (; ; ) {
+        final Object[] tab = table;
+        final int len = tab.length;
+        int i = hash(k, len);
+        for (Object item; (item = tab[i]) != null; i = nextKeyIndex(i, len)) {
+            if (item == k) {
+                @SuppressWarnings("unchecked")
+                V oldValue = (V) tab[i + 1];
+                tab[i + 1] = value;
+                return oldValue;
+            }
+        }
+        final int s = size + 1;
+        // Use optimized form of 3 * s.
+        // Next capacity is len, 2 * current capacity.
+        if (s + (s << 1) > len && resize(len))
+            continue retryAfterResize;
+        modCount++;
+        tab[i] = k;
+        tab[i + 1] = value;
+        size = s;
+        return null;
+    }
+}

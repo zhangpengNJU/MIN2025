@@ -1,0 +1,20 @@
+/**
+ * Get the state set of this object.  The AccessibleStateSet of an
+ * object is composed of a set of unique AccessibleState's.  A
+ * change in the AccessibleStateSet of an object will cause a
+ * PropertyChangeEvent to be fired for the
+ * ACCESSIBLE_STATE_PROPERTY property.
+ *
+ * @return an instance of AccessibleStateSet containing the
+ * current state set of the object
+ * @see AccessibleStateSet
+ * @see AccessibleState
+ * @see #addPropertyChangeListener
+ */
+public AccessibleStateSet getAccessibleStateSet() {
+    AccessibleStateSet states = super.getAccessibleStateSet();
+    if (parent.isIndexSelected(indexInParent)) {
+        states.add(AccessibleState.SELECTED);
+    }
+    return states;
+}

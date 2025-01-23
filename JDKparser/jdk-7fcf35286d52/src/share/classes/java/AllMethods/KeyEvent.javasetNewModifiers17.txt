@@ -1,0 +1,24 @@
+/**
+ * Sets new modifiers by the old ones. The key modifiers
+ * override overlaping mouse modifiers.
+ */
+private void setNewModifiers() {
+    if ((modifiers & SHIFT_MASK) != 0) {
+        modifiers |= SHIFT_DOWN_MASK;
+    }
+    if ((modifiers & ALT_MASK) != 0) {
+        modifiers |= ALT_DOWN_MASK;
+    }
+    if ((modifiers & CTRL_MASK) != 0) {
+        modifiers |= CTRL_DOWN_MASK;
+    }
+    if ((modifiers & META_MASK) != 0) {
+        modifiers |= META_DOWN_MASK;
+    }
+    if ((modifiers & ALT_GRAPH_MASK) != 0) {
+        modifiers |= ALT_GRAPH_DOWN_MASK;
+    }
+    if ((modifiers & BUTTON1_MASK) != 0) {
+        modifiers |= BUTTON1_DOWN_MASK;
+    }
+}

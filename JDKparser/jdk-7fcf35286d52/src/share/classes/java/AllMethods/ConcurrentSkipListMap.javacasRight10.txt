@@ -1,0 +1,6 @@
+/**
+ * compareAndSet right field
+ */
+final boolean casRight(Index<K, V> cmp, Index<K, V> val) {
+    return UNSAFE.compareAndSwapObject(this, rightOffset, cmp, val);
+}

@@ -1,0 +1,30 @@
+/**
+ * Sets the core number of threads.  This overrides any value set
+ * in the constructor.  If the new value is smaller than the
+ * current value, excess existing threads will be terminated when
+ * they next become idle.  If larger, new threads will, if needed,
+ * be started to execute any queued tasks.
+ *
+ * @param corePoolSize the new core size
+ * @throws IllegalArgumentException if {@code corePoolSize < 0}
+ * @see #getCorePoolSize
+ */
+public void setCorePoolSize(int corePoolSize) {
+    if (corePoolSize < 0)
+        throw new IllegalArgumentException();
+    int delta = corePoolSize - this.corePoolSize;
+    this.corePoolSize = corePoolSize;
+    if (workerCountOf(ctl.get()) > corePoolSize)
+        interruptIdleWorkers();
+    else if (delta > 0) {
+        // We don't really know how many new threads are "needed".
+        // As a heuristic, prestart enough new workers (up to new
+        // core size) to handle the current number of tasks in
+        // queue, but stop if queue becomes empty while doing so.
+        int k = Math.min(delta, workQueue.size());
+        while (k-- > 0 && addWorker(null, true)) {
+            if (workQueue.isEmpty())
+                break;
+        }
+    }
+}

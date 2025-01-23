@@ -1,0 +1,8 @@
+public EventDispatchThread run() {
+    EventDispatchThread t = new EventDispatchThread(threadGroup, name, EventQueue.this);
+    t.setContextClassLoader(classLoader);
+    t.setPriority(Thread.NORM_PRIORITY + 1);
+    t.setDaemon(false);
+    AWTAutoShutdown.getInstance().notifyThreadBusy(t);
+    return t;
+}

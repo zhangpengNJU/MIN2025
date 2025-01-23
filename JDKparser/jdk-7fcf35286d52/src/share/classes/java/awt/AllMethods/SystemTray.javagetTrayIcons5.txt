@@ -1,0 +1,26 @@
+/**
+ * Returns an array of all icons added to the tray by this
+ * application.  You can't access the icons added by another
+ * application.  Some browsers partition applets in different
+ * code bases into separate contexts, and establish walls between
+ * these contexts.  In such a scenario, only the tray icons added
+ * from this context will be returned.
+ *
+ * <p> The returned array is a copy of the actual array and may be
+ * modified in any way without affecting the system tray.  To
+ * remove a <code>TrayIcon</code> from the
+ * <code>SystemTray</code>, use the {@link
+ * #remove(TrayIcon)} method.
+ *
+ * @return an array of all tray icons added to this tray, or an
+ * empty array if none has been added
+ * @see #add(TrayIcon)
+ * @see TrayIcon
+ */
+public TrayIcon[] getTrayIcons() {
+    Vector<TrayIcon> icons = (Vector<TrayIcon>) AppContext.getAppContext().get(TrayIcon.class);
+    if (icons != null) {
+        return (TrayIcon[]) icons.toArray(new TrayIcon[icons.size()]);
+    }
+    return EMPTY_TRAY_ARRAY;
+}

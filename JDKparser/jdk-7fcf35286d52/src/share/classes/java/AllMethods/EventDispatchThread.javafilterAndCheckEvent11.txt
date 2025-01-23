@@ -1,0 +1,16 @@
+boolean filterAndCheckEvent(AWTEvent event) {
+    boolean eventOK = true;
+    synchronized (eventFilters) {
+        for (int i = eventFilters.size() - 1; i >= 0; i--) {
+            EventFilter f = eventFilters.get(i);
+            EventFilter.FilterAction accept = f.acceptEvent(event);
+            if (accept == EventFilter.FilterAction.REJECT) {
+                eventOK = false;
+                break;
+            } else if (accept == EventFilter.FilterAction.ACCEPT_IMMEDIATELY) {
+                break;
+            }
+        }
+    }
+    return eventOK && SunDragSourceContextPeer.checkEvent(event);
+}

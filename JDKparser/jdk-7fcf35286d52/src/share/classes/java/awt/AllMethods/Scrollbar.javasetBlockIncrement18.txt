@@ -1,0 +1,19 @@
+/**
+ * Sets the block increment for this scroll bar.
+ * <p>
+ * The block increment is the value that is added or subtracted
+ * when the user activates the block increment area of the
+ * scroll bar, generally through a mouse or keyboard gesture
+ * that the scroll bar receives as an adjustment event.
+ * The block increment must be greater than zero.
+ * Attepts to set the block increment to a value lower than 1
+ * will result in a value of 1 being set.
+ *
+ * @param        v  the amount by which to increment or decrement
+ *                         the scroll bar's value
+ * @see          java.awt.Scrollbar#getBlockIncrement
+ * @since        JDK1.1
+ */
+public void setBlockIncrement(int v) {
+    setPageIncrement(v);
+}

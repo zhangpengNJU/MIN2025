@@ -1,0 +1,19 @@
+/**
+ * If the buffer is empty, push elements into the sink chain until
+ * the source is empty or cancellation is requested.
+ * @return whether there are elements to consume from the buffer
+ */
+private boolean fillBuffer() {
+    while (buffer.count() == 0) {
+        if (bufferSink.cancellationRequested() || !pusher.getAsBoolean()) {
+            if (finished)
+                return false;
+            else {
+                // might trigger more elements
+                bufferSink.end();
+                finished = true;
+            }
+        }
+    }
+    return true;
+}

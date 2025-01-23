@@ -1,0 +1,11 @@
+@Override
+public boolean replace(K key, V oldValue, V newValue) {
+    Node<K, V> e;
+    V v;
+    if ((e = getNode(hash(key), key)) != null && ((v = e.value) == oldValue || (v != null && v.equals(oldValue)))) {
+        e.value = newValue;
+        afterNodeAccess(e);
+        return true;
+    }
+    return false;
+}

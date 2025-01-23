@@ -1,0 +1,16 @@
+/**
+ * Cancels all tasks which succeed this one in the encounter order.  This
+ * includes canceling all the current task's right sibling, as well as the
+ * later right siblings of all its parents.
+ */
+protected void cancelLaterNodes() {
+    // Go up the tree, cancel right siblings of this node and all parents
+    for (@SuppressWarnings("unchecked") K parent = getParent(), node = (K) this; parent != null; node = parent, parent = parent.getParent()) {
+        // If node is a left child of parent, then has a right sibling
+        if (parent.leftChild == node) {
+            K rightSibling = parent.rightChild;
+            if (!rightSibling.canceled)
+                rightSibling.cancel();
+        }
+    }
+}

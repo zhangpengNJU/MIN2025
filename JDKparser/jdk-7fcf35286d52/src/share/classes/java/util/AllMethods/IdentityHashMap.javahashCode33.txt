@@ -1,0 +1,5 @@
+public int hashCode() {
+    if (lastReturnedIndex < 0)
+        return super.hashCode();
+    return (System.identityHashCode(unmaskNull(traversalTable[index])) ^ System.identityHashCode(traversalTable[index + 1]));
+}

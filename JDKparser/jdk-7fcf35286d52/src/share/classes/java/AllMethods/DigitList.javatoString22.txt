@@ -1,0 +1,11 @@
+public String toString() {
+    if (isZero()) {
+        return "0";
+    }
+    StringBuffer buf = getStringBuffer();
+    buf.append("0.");
+    buf.append(digits, 0, count);
+    buf.append("x10^");
+    buf.append(decimalAt);
+    return buf.toString();
+}

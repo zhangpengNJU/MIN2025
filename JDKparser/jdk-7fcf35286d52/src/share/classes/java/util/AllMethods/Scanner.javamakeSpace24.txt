@@ -1,0 +1,25 @@
+// After this method is called there will either be an exception
+// or else there will be space in the buffer
+private boolean makeSpace() {
+    clearCaches();
+    int offset = savedScannerPosition == -1 ? position : savedScannerPosition;
+    buf.position(offset);
+    // Gain space by compacting buffer
+    if (offset > 0) {
+        buf.compact();
+        translateSavedIndexes(offset);
+        position -= offset;
+        buf.flip();
+        return true;
+    }
+    // Gain space by growing buffer
+    int newSize = buf.capacity() * 2;
+    CharBuffer newBuf = CharBuffer.allocate(newSize);
+    newBuf.put(buf);
+    newBuf.flip();
+    translateSavedIndexes(offset);
+    position -= offset;
+    buf = newBuf;
+    matcher.reset(buf);
+    return true;
+}

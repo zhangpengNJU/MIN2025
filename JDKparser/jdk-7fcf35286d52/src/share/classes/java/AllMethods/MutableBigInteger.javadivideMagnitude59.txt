@@ -1,0 +1,185 @@
+/**
+ * Divide this MutableBigInteger by the divisor.
+ * The quotient will be placed into the provided quotient object &
+ * the remainder object is returned.
+ */
+private MutableBigInteger divideMagnitude(MutableBigInteger div, MutableBigInteger quotient, boolean needRemainder) {
+    // assert div.intLen > 1
+    // D1 normalize the divisor
+    int shift = Integer.numberOfLeadingZeros(div.value[div.offset]);
+    // Copy divisor value to protect divisor
+    final int dlen = div.intLen;
+    int[] divisor;
+    // Remainder starts as dividend with space for a leading zero
+    MutableBigInteger rem;
+    if (shift > 0) {
+        divisor = new int[dlen];
+        copyAndShift(div.value, div.offset, dlen, divisor, 0, shift);
+        if (Integer.numberOfLeadingZeros(value[offset]) >= shift) {
+            int[] remarr = new int[intLen + 1];
+            rem = new MutableBigInteger(remarr);
+            rem.intLen = intLen;
+            rem.offset = 1;
+            copyAndShift(value, offset, intLen, remarr, 1, shift);
+        } else {
+            int[] remarr = new int[intLen + 2];
+            rem = new MutableBigInteger(remarr);
+            rem.intLen = intLen + 1;
+            rem.offset = 1;
+            int rFrom = offset;
+            int c = 0;
+            int n2 = 32 - shift;
+            for (int i = 1; i < intLen + 1; i++, rFrom++) {
+                int b = c;
+                c = value[rFrom];
+                remarr[i] = (b << shift) | (c >>> n2);
+            }
+            remarr[intLen + 1] = c << shift;
+        }
+    } else {
+        divisor = Arrays.copyOfRange(div.value, div.offset, div.offset + div.intLen);
+        rem = new MutableBigInteger(new int[intLen + 1]);
+        System.arraycopy(value, offset, rem.value, 1, intLen);
+        rem.intLen = intLen;
+        rem.offset = 1;
+    }
+    int nlen = rem.intLen;
+    // Set the quotient size
+    final int limit = nlen - dlen + 1;
+    if (quotient.value.length < limit) {
+        quotient.value = new int[limit];
+        quotient.offset = 0;
+    }
+    quotient.intLen = limit;
+    int[] q = quotient.value;
+    // Must insert leading 0 in rem if its length did not change
+    if (rem.intLen == nlen) {
+        rem.offset = 0;
+        rem.value[0] = 0;
+        rem.intLen++;
+    }
+    int dh = divisor[0];
+    long dhLong = dh & LONG_MASK;
+    int dl = divisor[1];
+    // D2 Initialize j
+    for (int j = 0; j < limit - 1; j++) {
+        // D3 Calculate qhat
+        // estimate qhat
+        int qhat = 0;
+        int qrem = 0;
+        boolean skipCorrection = false;
+        int nh = rem.value[j + rem.offset];
+        int nh2 = nh + 0x80000000;
+        int nm = rem.value[j + 1 + rem.offset];
+        if (nh == dh) {
+            qhat = ~0;
+            qrem = nh + nm;
+            skipCorrection = qrem + 0x80000000 < nh2;
+        } else {
+            long nChunk = (((long) nh) << 32) | (nm & LONG_MASK);
+            if (nChunk >= 0) {
+                qhat = (int) (nChunk / dhLong);
+                qrem = (int) (nChunk - (qhat * dhLong));
+            } else {
+                long tmp = divWord(nChunk, dh);
+                qhat = (int) (tmp & LONG_MASK);
+                qrem = (int) (tmp >>> 32);
+            }
+        }
+        if (qhat == 0)
+            continue;
+        if (!skipCorrection) {
+            // Correct qhat
+            long nl = rem.value[j + 2 + rem.offset] & LONG_MASK;
+            long rs = ((qrem & LONG_MASK) << 32) | nl;
+            long estProduct = (dl & LONG_MASK) * (qhat & LONG_MASK);
+            if (unsignedLongCompare(estProduct, rs)) {
+                qhat--;
+                qrem = (int) ((qrem & LONG_MASK) + dhLong);
+                if ((qrem & LONG_MASK) >= dhLong) {
+                    estProduct -= (dl & LONG_MASK);
+                    rs = ((qrem & LONG_MASK) << 32) | nl;
+                    if (unsignedLongCompare(estProduct, rs))
+                        qhat--;
+                }
+            }
+        }
+        // D4 Multiply and subtract
+        rem.value[j + rem.offset] = 0;
+        int borrow = mulsub(rem.value, divisor, qhat, dlen, j + rem.offset);
+        // D5 Test remainder
+        if (borrow + 0x80000000 > nh2) {
+            // D6 Add back
+            divadd(divisor, rem.value, j + 1 + rem.offset);
+            qhat--;
+        }
+        // Store the quotient digit
+        q[j] = qhat;
+    }
+    // D7 loop on j
+    // D3 Calculate qhat
+    // estimate qhat
+    int qhat = 0;
+    int qrem = 0;
+    boolean skipCorrection = false;
+    int nh = rem.value[limit - 1 + rem.offset];
+    int nh2 = nh + 0x80000000;
+    int nm = rem.value[limit + rem.offset];
+    if (nh == dh) {
+        qhat = ~0;
+        qrem = nh + nm;
+        skipCorrection = qrem + 0x80000000 < nh2;
+    } else {
+        long nChunk = (((long) nh) << 32) | (nm & LONG_MASK);
+        if (nChunk >= 0) {
+            qhat = (int) (nChunk / dhLong);
+            qrem = (int) (nChunk - (qhat * dhLong));
+        } else {
+            long tmp = divWord(nChunk, dh);
+            qhat = (int) (tmp & LONG_MASK);
+            qrem = (int) (tmp >>> 32);
+        }
+    }
+    if (qhat != 0) {
+        if (!skipCorrection) {
+            // Correct qhat
+            long nl = rem.value[limit + 1 + rem.offset] & LONG_MASK;
+            long rs = ((qrem & LONG_MASK) << 32) | nl;
+            long estProduct = (dl & LONG_MASK) * (qhat & LONG_MASK);
+            if (unsignedLongCompare(estProduct, rs)) {
+                qhat--;
+                qrem = (int) ((qrem & LONG_MASK) + dhLong);
+                if ((qrem & LONG_MASK) >= dhLong) {
+                    estProduct -= (dl & LONG_MASK);
+                    rs = ((qrem & LONG_MASK) << 32) | nl;
+                    if (unsignedLongCompare(estProduct, rs))
+                        qhat--;
+                }
+            }
+        }
+        // D4 Multiply and subtract
+        int borrow;
+        rem.value[limit - 1 + rem.offset] = 0;
+        if (needRemainder)
+            borrow = mulsub(rem.value, divisor, qhat, dlen, limit - 1 + rem.offset);
+        else
+            borrow = mulsubBorrow(rem.value, divisor, qhat, dlen, limit - 1 + rem.offset);
+        // D5 Test remainder
+        if (borrow + 0x80000000 > nh2) {
+            // D6 Add back
+            if (needRemainder)
+                divadd(divisor, rem.value, limit - 1 + 1 + rem.offset);
+            qhat--;
+        }
+        // Store the quotient digit
+        q[(limit - 1)] = qhat;
+    }
+    if (needRemainder) {
+        // D8 Unnormalize
+        if (shift > 0)
+            rem.rightShift(shift);
+        rem.normalize();
+    }
+    quotient.normalize();
+    return needRemainder ? rem : null;
+}

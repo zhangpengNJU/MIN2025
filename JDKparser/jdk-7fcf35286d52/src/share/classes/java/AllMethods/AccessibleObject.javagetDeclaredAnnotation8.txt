@@ -1,0 +1,11 @@
+/**
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
+    // Only annotations on classes are inherited, for all other
+    // objects getDeclaredAnnotation is the same as
+    // getAnnotation.
+    return getAnnotation(annotationClass);
+}

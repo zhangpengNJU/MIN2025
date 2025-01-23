@@ -1,0 +1,31 @@
+/**
+ * Creates and returns a {@link PaintContext} used to
+ * generate a solid color field pattern.
+ * See the {@link Paint#createContext specification} of the
+ * method in the {@link Paint} interface for information
+ * on null parameter handling.
+ *
+ * @param cm the preferred {@link ColorModel} which represents the most convenient
+ *           format for the caller to receive the pixel data, or {@code null}
+ *           if there is no preference.
+ * @param r the device space bounding box
+ *                     of the graphics primitive being rendered.
+ * @param r2d the user space bounding box
+ *                   of the graphics primitive being rendered.
+ * @param xform the {@link AffineTransform} from user
+ *              space into device space.
+ * @param hints the set of hints that the context object can use to
+ *              choose between rendering alternatives.
+ * @return the {@code PaintContext} for
+ *         generating color patterns.
+ * @see Paint
+ * @see PaintContext
+ * @see ColorModel
+ * @see Rectangle
+ * @see Rectangle2D
+ * @see AffineTransform
+ * @see RenderingHints
+ */
+public synchronized PaintContext createContext(ColorModel cm, Rectangle r, Rectangle2D r2d, AffineTransform xform, RenderingHints hints) {
+    return new ColorPaintContext(getRGB(), cm);
+}

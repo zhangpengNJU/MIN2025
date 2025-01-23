@@ -1,0 +1,37 @@
+/**
+ * Get the service describing this Provider's implementation of the
+ * specified type of this algorithm or alias. If no such
+ * implementation exists, this method returns null. If there are two
+ * matching services, one added to this provider using
+ * {@link #putService putService()} and one added via {@link #put put()},
+ * the service added via {@link #putService putService()} is returned.
+ *
+ * @param type the type of {@link Service service} requested
+ * (for example, {@code MessageDigest})
+ * @param algorithm the case insensitive algorithm name (or alternate
+ * alias) of the service requested (for example, {@code SHA-1})
+ *
+ * @return the service describing this Provider's matching service
+ * or null if no such service exists
+ *
+ * @throws NullPointerException if type or algorithm is null
+ *
+ * @since 1.5
+ */
+public synchronized Service getService(String type, String algorithm) {
+    checkInitialized();
+    // avoid allocating a new key object if possible
+    ServiceKey key = previousKey;
+    if (key.matches(type, algorithm) == false) {
+        key = new ServiceKey(type, algorithm, false);
+        previousKey = key;
+    }
+    if (serviceMap != null) {
+        Service service = serviceMap.get(key);
+        if (service != null) {
+            return service;
+        }
+    }
+    ensureLegacyParsed();
+    return (legacyMap != null) ? legacyMap.get(key) : null;
+}

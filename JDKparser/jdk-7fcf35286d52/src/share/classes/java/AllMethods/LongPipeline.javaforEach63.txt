@@ -1,0 +1,9 @@
+// Optimized sequential terminal operations for the head of the pipeline
+@Override
+public void forEach(LongConsumer action) {
+    if (!isParallel()) {
+        adapt(sourceStageSpliterator()).forEachRemaining(action);
+    } else {
+        super.forEach(action);
+    }
+}

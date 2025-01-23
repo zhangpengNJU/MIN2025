@@ -1,0 +1,34 @@
+/**
+ * Fetches and writes values of serializable fields of given object to
+ * stream.  The given class descriptor specifies which field values to
+ * write, and in which order they should be written.
+ */
+private void defaultWriteFields(Object obj, ObjectStreamClass desc) throws IOException {
+    Class<?> cl = desc.forClass();
+    if (cl != null && obj != null && !cl.isInstance(obj)) {
+        throw new ClassCastException();
+    }
+    desc.checkDefaultSerialize();
+    int primDataSize = desc.getPrimDataSize();
+    if (primVals == null || primVals.length < primDataSize) {
+        primVals = new byte[primDataSize];
+    }
+    desc.getPrimFieldValues(obj, primVals);
+    bout.write(primVals, 0, primDataSize, false);
+    ObjectStreamField[] fields = desc.getFields(false);
+    Object[] objVals = new Object[desc.getNumObjFields()];
+    int numPrimFields = fields.length - objVals.length;
+    desc.getObjFieldValues(obj, objVals);
+    for (int i = 0; i < objVals.length; i++) {
+        if (extendedDebugInfo) {
+            debugInfoStack.push("field (class \"" + desc.getName() + "\", name: \"" + fields[numPrimFields + i].getName() + "\", type: \"" + fields[numPrimFields + i].getType() + "\")");
+        }
+        try {
+            writeObject0(objVals[i], fields[numPrimFields + i].isUnshared());
+        } finally {
+            if (extendedDebugInfo) {
+                debugInfoStack.pop();
+            }
+        }
+    }
+}

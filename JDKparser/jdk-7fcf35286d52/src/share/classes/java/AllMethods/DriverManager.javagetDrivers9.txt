@@ -1,0 +1,25 @@
+/**
+ * Retrieves an Enumeration with all of the currently loaded JDBC drivers
+ * to which the current caller has access.
+ *
+ * <P><B>Note:</B> The classname of a driver can be found using
+ * <CODE>d.getClass().getName()</CODE>
+ *
+ * @return the list of JDBC Drivers loaded by the caller's class loader
+ */
+@CallerSensitive
+public static java.util.Enumeration<Driver> getDrivers() {
+    java.util.Vector<Driver> result = new java.util.Vector<>();
+    Class<?> callerClass = Reflection.getCallerClass();
+    // Walk through the loaded registeredDrivers.
+    for (DriverInfo aDriver : registeredDrivers) {
+        // If the caller does not have permission to load the driver then
+        // skip it.
+        if (isDriverAllowed(aDriver.driver, callerClass)) {
+            result.addElement(aDriver.driver);
+        } else {
+            println("    skipping: " + aDriver.getClass().getName());
+        }
+    }
+    return (result.elements());
+}

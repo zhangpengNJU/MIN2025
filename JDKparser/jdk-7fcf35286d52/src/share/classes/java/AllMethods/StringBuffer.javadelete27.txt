@@ -1,0 +1,10 @@
+/**
+ * @throws StringIndexOutOfBoundsException {@inheritDoc}
+ * @since      1.2
+ */
+@Override
+public synchronized StringBuffer delete(int start, int end) {
+    toStringCache = null;
+    super.delete(start, end);
+    return this;
+}

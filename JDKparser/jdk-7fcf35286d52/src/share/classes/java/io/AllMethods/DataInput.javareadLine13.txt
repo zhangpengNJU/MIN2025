@@ -1,0 +1,40 @@
+/**
+ * Reads the next line of text from the input stream.
+ * It reads successive bytes, converting
+ * each byte separately into a character,
+ * until it encounters a line terminator or
+ * end of
+ * file; the characters read are then
+ * returned as a {@code String}. Note
+ * that because this
+ * method processes bytes,
+ * it does not support input of the full Unicode
+ * character set.
+ * <p>
+ * If end of file is encountered
+ * before even one byte can be read, then {@code null}
+ * is returned. Otherwise, each byte that is
+ * read is converted to type {@code char}
+ * by zero-extension. If the character {@code '\n'}
+ * is encountered, it is discarded and reading
+ * ceases. If the character {@code '\r'}
+ * is encountered, it is discarded and, if
+ * the following byte converts &#32;to the
+ * character {@code '\n'}, then that is
+ * discarded also; reading then ceases. If
+ * end of file is encountered before either
+ * of the characters {@code '\n'} and
+ * {@code '\r'} is encountered, reading
+ * ceases. Once reading has ceased, a {@code String}
+ * is returned that contains all the characters
+ * read and not discarded, taken in order.
+ * Note that every character in this string
+ * will have a value less than {@code \u005Cu0100},
+ * that is, {@code (char)256}.
+ *
+ * @return the next line of text from the input stream,
+ *         or {@code null} if the end of file is
+ *         encountered before a byte can be read.
+ * @exception  IOException  if an I/O error occurs.
+ */
+String readLine() throws IOException;

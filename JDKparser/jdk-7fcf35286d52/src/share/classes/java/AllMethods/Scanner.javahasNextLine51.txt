@@ -1,0 +1,24 @@
+/**
+ * Returns true if there is another line in the input of this scanner.
+ * This method may block while waiting for input. The scanner does not
+ * advance past any input.
+ *
+ * @return true if and only if this scanner has another line of input
+ * @throws IllegalStateException if this scanner is closed
+ */
+public boolean hasNextLine() {
+    saveState();
+    String result = findWithinHorizon(linePattern(), 0);
+    if (result != null) {
+        MatchResult mr = this.match();
+        String lineSep = mr.group(1);
+        if (lineSep != null) {
+            result = result.substring(0, result.length() - lineSep.length());
+            cacheResult(result);
+        } else {
+            cacheResult();
+        }
+    }
+    revertState();
+    return (result != null);
+}

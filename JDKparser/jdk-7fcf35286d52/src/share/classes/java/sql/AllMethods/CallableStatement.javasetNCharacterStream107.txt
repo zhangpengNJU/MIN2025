@@ -1,0 +1,24 @@
+/**
+ * Sets the designated parameter to a <code>Reader</code> object. The
+ * <code>Reader</code> reads the data till end-of-file is reached. The
+ * driver does the necessary conversion from Java character format to
+ * the national character set in the database.
+ *
+ * <P><B>Note:</B> This stream object can either be a standard
+ * Java stream object or your own subclass that implements the
+ * standard interface.
+ * <P><B>Note:</B> Consult your JDBC driver documentation to determine if
+ * it might be more efficient to use a version of
+ * <code>setNCharacterStream</code> which takes a length parameter.
+ *
+ * @param parameterName the name of the parameter
+ * @param value the parameter value
+ * @throws SQLException if parameterName does not correspond to a named
+ * parameter; if the driver does not support national
+ *         character sets;  if the driver can detect that a data conversion
+ *  error could occur; if a database access error occurs; or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ * @since 1.6
+ */
+void setNCharacterStream(String parameterName, Reader value) throws SQLException;

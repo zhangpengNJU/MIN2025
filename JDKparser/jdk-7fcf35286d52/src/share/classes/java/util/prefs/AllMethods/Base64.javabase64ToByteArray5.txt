@@ -1,0 +1,42 @@
+private static byte[] base64ToByteArray(String s, boolean alternate) {
+    byte[] alphaToInt = (alternate ? altBase64ToInt : base64ToInt);
+    int sLen = s.length();
+    int numGroups = sLen / 4;
+    if (4 * numGroups != sLen)
+        throw new IllegalArgumentException("String length must be a multiple of four.");
+    int missingBytesInLastGroup = 0;
+    int numFullGroups = numGroups;
+    if (sLen != 0) {
+        if (s.charAt(sLen - 1) == '=') {
+            missingBytesInLastGroup++;
+            numFullGroups--;
+        }
+        if (s.charAt(sLen - 2) == '=')
+            missingBytesInLastGroup++;
+    }
+    byte[] result = new byte[3 * numGroups - missingBytesInLastGroup];
+    // Translate all full groups from base64 to byte array elements
+    int inCursor = 0, outCursor = 0;
+    for (int i = 0; i < numFullGroups; i++) {
+        int ch0 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        int ch1 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        int ch2 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        int ch3 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        result[outCursor++] = (byte) ((ch0 << 2) | (ch1 >> 4));
+        result[outCursor++] = (byte) ((ch1 << 4) | (ch2 >> 2));
+        result[outCursor++] = (byte) ((ch2 << 6) | ch3);
+    }
+    // Translate partial group, if present
+    if (missingBytesInLastGroup != 0) {
+        int ch0 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        int ch1 = base64toInt(s.charAt(inCursor++), alphaToInt);
+        result[outCursor++] = (byte) ((ch0 << 2) | (ch1 >> 4));
+        if (missingBytesInLastGroup == 1) {
+            int ch2 = base64toInt(s.charAt(inCursor++), alphaToInt);
+            result[outCursor++] = (byte) ((ch1 << 4) | (ch2 >> 2));
+        }
+    }
+    // assert inCursor == s.length()-missingBytesInLastGroup;
+    // assert outCursor == result.length;
+    return result;
+}

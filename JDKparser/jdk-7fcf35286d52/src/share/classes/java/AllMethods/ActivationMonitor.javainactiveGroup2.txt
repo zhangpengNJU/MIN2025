@@ -1,0 +1,13 @@
+/**
+ * Informs that the group is now inactive. The group will be
+ * recreated upon a subsequent request to activate an object
+ * within the group. A group becomes inactive when all objects
+ * in the group report that they are inactive.
+ *
+ * @param id the group's id
+ * @param incarnation the group's incarnation number
+ * @exception UnknownGroupException if group is unknown
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public void inactiveGroup(ActivationGroupID id, long incarnation) throws UnknownGroupException, RemoteException;

@@ -1,0 +1,207 @@
+/**
+ * Generate a concrete subclass of BMH for a given combination of bound types.
+ *
+ * A concrete BMH species adheres to the following schema:
+ *
+ * <pre>
+ * class Species_[[types]] extends BoundMethodHandle {
+ *     [[fields]]
+ *     final SpeciesData speciesData() { return SpeciesData.get("[[types]]"); }
+ * }
+ * </pre>
+ *
+ * The {@code [[types]]} signature is precisely the string that is passed to this
+ * method.
+ *
+ * The {@code [[fields]]} section consists of one field definition per character in
+ * the type signature, adhering to the naming schema described in the definition of
+ * {@link #makeFieldName}.
+ *
+ * For example, a concrete BMH species for two reference and one integral bound values
+ * would have the following shape:
+ *
+ * <pre>
+ * class BoundMethodHandle { ... private static
+ * final class Species_LLI extends BoundMethodHandle {
+ *     final Object argL0;
+ *     final Object argL1;
+ *     final int argI2;
+ *     private Species_LLI(MethodType mt, LambdaForm lf, Object argL0, Object argL1, int argI2) {
+ *         super(mt, lf);
+ *         this.argL0 = argL0;
+ *         this.argL1 = argL1;
+ *         this.argI2 = argI2;
+ *     }
+ *     final SpeciesData speciesData() { return SPECIES_DATA; }
+ *     final int fieldCount() { return 3; }
+ *     &#64;Stable static SpeciesData SPECIES_DATA; // injected afterwards
+ *     static BoundMethodHandle make(MethodType mt, LambdaForm lf, Object argL0, Object argL1, int argI2) {
+ *         return new Species_LLI(mt, lf, argL0, argL1, argI2);
+ *     }
+ *     final BoundMethodHandle copyWith(MethodType mt, LambdaForm lf) {
+ *         return new Species_LLI(mt, lf, argL0, argL1, argI2);
+ *     }
+ *     final BoundMethodHandle copyWithExtendL(MethodType mt, LambdaForm lf, Object narg) {
+ *         return SPECIES_DATA.extendWith(L_TYPE).constructor().invokeBasic(mt, lf, argL0, argL1, argI2, narg);
+ *     }
+ *     final BoundMethodHandle copyWithExtendI(MethodType mt, LambdaForm lf, int narg) {
+ *         return SPECIES_DATA.extendWith(I_TYPE).constructor().invokeBasic(mt, lf, argL0, argL1, argI2, narg);
+ *     }
+ *     final BoundMethodHandle copyWithExtendJ(MethodType mt, LambdaForm lf, long narg) {
+ *         return SPECIES_DATA.extendWith(J_TYPE).constructor().invokeBasic(mt, lf, argL0, argL1, argI2, narg);
+ *     }
+ *     final BoundMethodHandle copyWithExtendF(MethodType mt, LambdaForm lf, float narg) {
+ *         return SPECIES_DATA.extendWith(F_TYPE).constructor().invokeBasic(mt, lf, argL0, argL1, argI2, narg);
+ *     }
+ *     public final BoundMethodHandle copyWithExtendD(MethodType mt, LambdaForm lf, double narg) {
+ *         return SPECIES_DATA.extendWith(D_TYPE).constructor().invokeBasic(mt, lf, argL0, argL1, argI2, narg);
+ *     }
+ * }
+ * </pre>
+ *
+ * @param types the type signature, wherein reference types are erased to 'L'
+ * @return the generated concrete BMH class
+ */
+static Class<? extends BoundMethodHandle> generateConcreteBMHClass(String types) {
+    final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
+    String shortTypes = LambdaForm.shortenSignature(types);
+    final String className = SPECIES_PREFIX_PATH + shortTypes;
+    final String sourceFile = SPECIES_PREFIX_NAME + shortTypes;
+    // not ACC_PUBLIC
+    final int NOT_ACC_PUBLIC = 0;
+    cw.visit(V1_6, NOT_ACC_PUBLIC + ACC_FINAL + ACC_SUPER, className, null, BMH, null);
+    cw.visitSource(sourceFile, null);
+    // emit static types and SPECIES_DATA fields
+    FieldVisitor fw = cw.visitField(NOT_ACC_PUBLIC + ACC_STATIC, "SPECIES_DATA", SPECIES_DATA_SIG, null, null);
+    fw.visitAnnotation(STABLE_SIG, true);
+    fw.visitEnd();
+    // emit bound argument fields
+    for (int i = 0; i < types.length(); ++i) {
+        final char t = types.charAt(i);
+        final String fieldName = makeFieldName(types, i);
+        final String fieldDesc = t == 'L' ? JLO_SIG : String.valueOf(t);
+        cw.visitField(ACC_FINAL, fieldName, fieldDesc, null, null).visitEnd();
+    }
+    MethodVisitor mv;
+    // emit constructor
+    mv = cw.visitMethod(ACC_PRIVATE, "<init>", makeSignature(types, true), null, null);
+    mv.visitCode();
+    // this
+    mv.visitVarInsn(ALOAD, 0);
+    // type
+    mv.visitVarInsn(ALOAD, 1);
+    // form
+    mv.visitVarInsn(ALOAD, 2);
+    mv.visitMethodInsn(INVOKESPECIAL, BMH, "<init>", makeSignature("", true), false);
+    for (int i = 0, j = 0; i < types.length(); ++i, ++j) {
+        // i counts the arguments, j counts corresponding argument slots
+        char t = types.charAt(i);
+        mv.visitVarInsn(ALOAD, 0);
+        // parameters start at 3
+        mv.visitVarInsn(typeLoadOp(t), j + 3);
+        mv.visitFieldInsn(PUTFIELD, className, makeFieldName(types, i), typeSig(t));
+        if (t == 'J' || t == 'D') {
+            // adjust argument register access
+            ++j;
+        }
+    }
+    mv.visitInsn(RETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    // emit implementation of speciesData()
+    mv = cw.visitMethod(NOT_ACC_PUBLIC + ACC_FINAL, "speciesData", MYSPECIES_DATA_SIG, null, null);
+    mv.visitCode();
+    mv.visitFieldInsn(GETSTATIC, className, "SPECIES_DATA", SPECIES_DATA_SIG);
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    // emit implementation of fieldCount()
+    mv = cw.visitMethod(NOT_ACC_PUBLIC + ACC_FINAL, "fieldCount", INT_SIG, null, null);
+    mv.visitCode();
+    int fc = types.length();
+    if (fc <= (ICONST_5 - ICONST_0)) {
+        mv.visitInsn(ICONST_0 + fc);
+    } else {
+        mv.visitIntInsn(SIPUSH, fc);
+    }
+    mv.visitInsn(IRETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    // emit make()  ...factory method wrapping constructor
+    mv = cw.visitMethod(NOT_ACC_PUBLIC + ACC_STATIC, "make", makeSignature(types, false), null, null);
+    mv.visitCode();
+    // make instance
+    mv.visitTypeInsn(NEW, className);
+    mv.visitInsn(DUP);
+    // load mt, lf
+    // type
+    mv.visitVarInsn(ALOAD, 0);
+    // form
+    mv.visitVarInsn(ALOAD, 1);
+    // load factory method arguments
+    for (int i = 0, j = 0; i < types.length(); ++i, ++j) {
+        // i counts the arguments, j counts corresponding argument slots
+        char t = types.charAt(i);
+        // parameters start at 3
+        mv.visitVarInsn(typeLoadOp(t), j + 2);
+        if (t == 'J' || t == 'D') {
+            // adjust argument register access
+            ++j;
+        }
+    }
+    // finally, invoke the constructor and return
+    mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", makeSignature(types, true), false);
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    // emit copyWith()
+    mv = cw.visitMethod(NOT_ACC_PUBLIC + ACC_FINAL, "copyWith", makeSignature("", false), null, null);
+    mv.visitCode();
+    // make instance
+    mv.visitTypeInsn(NEW, className);
+    mv.visitInsn(DUP);
+    // load mt, lf
+    mv.visitVarInsn(ALOAD, 1);
+    mv.visitVarInsn(ALOAD, 2);
+    // put fields on the stack
+    emitPushFields(types, className, mv);
+    // finally, invoke the constructor and return
+    mv.visitMethodInsn(INVOKESPECIAL, className, "<init>", makeSignature(types, true), false);
+    mv.visitInsn(ARETURN);
+    mv.visitMaxs(0, 0);
+    mv.visitEnd();
+    // for each type, emit copyWithExtendT()
+    for (BasicType type : BasicType.ARG_TYPES) {
+        int ord = type.ordinal();
+        char btChar = type.basicTypeChar();
+        mv = cw.visitMethod(NOT_ACC_PUBLIC + ACC_FINAL, "copyWithExtend" + btChar, makeSignature(String.valueOf(btChar), false), null, E_THROWABLE);
+        mv.visitCode();
+        // return SPECIES_DATA.extendWith(t).constructor().invokeBasic(mt, lf, argL0, ..., narg)
+        // obtain constructor
+        mv.visitFieldInsn(GETSTATIC, className, "SPECIES_DATA", SPECIES_DATA_SIG);
+        int iconstInsn = ICONST_0 + ord;
+        assert (iconstInsn <= ICONST_5);
+        mv.visitInsn(iconstInsn);
+        mv.visitMethodInsn(INVOKEVIRTUAL, SPECIES_DATA, "extendWith", BMHSPECIES_DATA_EWI_SIG, false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, SPECIES_DATA, "constructor", "()" + MH_SIG, false);
+        // load mt, lf
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitVarInsn(ALOAD, 2);
+        // put fields on the stack
+        emitPushFields(types, className, mv);
+        // put narg on stack
+        mv.visitVarInsn(typeLoadOp(btChar), 3);
+        // finally, invoke the constructor and return
+        mv.visitMethodInsn(INVOKEVIRTUAL, MH, "invokeBasic", makeSignature(types + btChar, false), false);
+        mv.visitInsn(ARETURN);
+        mv.visitMaxs(0, 0);
+        mv.visitEnd();
+    }
+    cw.visitEnd();
+    // load class
+    final byte[] classFile = cw.toByteArray();
+    InvokerBytecodeGenerator.maybeDump(className, classFile);
+    Class<? extends BoundMethodHandle> bmhClass = // UNSAFE.defineAnonymousClass(BoundMethodHandle.class, classFile, null).asSubclass(BoundMethodHandle.class);
+    UNSAFE.defineClass(className, classFile, 0, classFile.length, BoundMethodHandle.class.getClassLoader(), null).asSubclass(BoundMethodHandle.class);
+    return bmhClass;
+}

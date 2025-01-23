@@ -1,0 +1,18 @@
+/**
+ * Replace any Name whose function is in oldFns with a copy
+ *  whose function is in the corresponding position in newFns.
+ *  Only do this if the arguments are exactly equal to the given.
+ */
+LambdaFormBuffer replaceFunctions(NamedFunction[] oldFns, NamedFunction[] newFns, Object... forArguments) {
+    assert (inTrans());
+    if (oldFns.length == 0)
+        return this;
+    for (int i = arity; i < length; i++) {
+        Name n = names[i];
+        int nfi = indexOf(n.function, oldFns);
+        if (nfi >= 0 && Arrays.equals(n.arguments, forArguments)) {
+            changeName(i, new Name(newFns[nfi], n.arguments));
+        }
+    }
+    return this;
+}

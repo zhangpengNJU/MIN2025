@@ -1,0 +1,43 @@
+/**
+ * Decides whether or not to split a task further or compute it
+ * directly. If computing directly, calls {@code doLeaf} and pass
+ * the result to {@code setRawResult}. Otherwise splits off
+ * subtasks, forking one and continuing as the other.
+ *
+ * <p> The method is structured to conserve resources across a
+ * range of uses.  The loop continues with one of the child tasks
+ * when split, to avoid deep recursion. To cope with spliterators
+ * that may be systematically biased toward left-heavy or
+ * right-heavy splits, we alternate which child is forked versus
+ * continued in the loop.
+ */
+@Override
+public void compute() {
+    // right, left spliterators
+    Spliterator<P_IN> rs = spliterator, ls;
+    long sizeEstimate = rs.estimateSize();
+    long sizeThreshold = getTargetSize(sizeEstimate);
+    boolean forkRight = false;
+    @SuppressWarnings("unchecked")
+    K task = (K) this;
+    while (sizeEstimate > sizeThreshold && (ls = rs.trySplit()) != null) {
+        K leftChild, rightChild, taskToFork;
+        task.leftChild = leftChild = task.makeChild(ls);
+        task.rightChild = rightChild = task.makeChild(rs);
+        task.setPendingCount(1);
+        if (forkRight) {
+            forkRight = false;
+            rs = ls;
+            task = leftChild;
+            taskToFork = rightChild;
+        } else {
+            forkRight = true;
+            task = rightChild;
+            taskToFork = leftChild;
+        }
+        taskToFork.fork();
+        sizeEstimate = rs.estimateSize();
+    }
+    task.setLocalResult(task.doLeaf());
+    task.tryComplete();
+}

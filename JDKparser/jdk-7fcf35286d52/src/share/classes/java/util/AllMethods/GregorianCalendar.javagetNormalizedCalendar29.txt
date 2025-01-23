@@ -1,0 +1,17 @@
+/**
+ * Returns this object if it's normalized (all fields and time are
+ * in sync). Otherwise, a cloned object is returned after calling
+ * complete() in lenient mode.
+ */
+private GregorianCalendar getNormalizedCalendar() {
+    GregorianCalendar gc;
+    if (isFullyNormalized()) {
+        gc = this;
+    } else {
+        // Create a clone and normalize the calendar fields
+        gc = (GregorianCalendar) this.clone();
+        gc.setLenient(true);
+        gc.complete();
+    }
+    return gc;
+}

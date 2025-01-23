@@ -1,0 +1,9 @@
+void init(byte[] addr, NetworkInterface nif) throws UnknownHostException {
+    setAddr(addr);
+    if (nif != null) {
+        this.scope_id = deriveNumericScope(ipaddress, nif);
+        this.scope_id_set = true;
+        this.scope_ifname = nif;
+        this.scope_ifname_set = true;
+    }
+}

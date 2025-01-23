@@ -1,0 +1,26 @@
+/**
+ * Divides {@code BigInteger} value by {@code long} value and
+ * do rounding based on the passed in roundingMode.
+ */
+private static BigInteger divideAndRound(BigInteger bdividend, long ldivisor, int roundingMode) {
+    // record remainder is zero or not
+    boolean isRemainderZero;
+    // quotient sign
+    int qsign;
+    // store quotient & remainder in long
+    long r = 0;
+    // store quotient
+    MutableBigInteger mq = null;
+    // Descend into mutables for faster remainder checks
+    MutableBigInteger mdividend = new MutableBigInteger(bdividend.mag);
+    mq = new MutableBigInteger();
+    r = mdividend.divide(ldivisor, mq);
+    isRemainderZero = (r == 0);
+    qsign = (ldivisor < 0) ? -bdividend.signum : bdividend.signum;
+    if (!isRemainderZero) {
+        if (needIncrement(ldivisor, roundingMode, qsign, mq, r)) {
+            mq.add(MutableBigInteger.ONE);
+        }
+    }
+    return mq.toBigInteger(qsign);
+}

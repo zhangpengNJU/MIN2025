@@ -1,0 +1,10 @@
+/**
+ * Checks whether or not this container has heavyweight children.
+ * Note: Should be called while holding tree lock
+ * @return true if there is at least one heavyweight children in a container, false otherwise
+ * @since 1.5
+ */
+final boolean hasHeavyweightDescendants() {
+    checkTreeLock();
+    return numOfHWComponents > 0;
+}

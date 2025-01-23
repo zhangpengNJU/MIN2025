@@ -1,0 +1,40 @@
+/**
+ * Joins a multicast group. Its behavior may be affected by
+ * {@code setInterface} or {@code setNetworkInterface}.
+ *
+ * <p>If there is a security manager, this method first
+ * calls its {@code checkMulticast} method
+ * with the {@code mcastaddr} argument
+ * as its argument.
+ *
+ * @param mcastaddr is the multicast address to join
+ *
+ * @exception IOException if there is an error joining
+ * or when the address is not a multicast address.
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkMulticast} method doesn't allow the join.
+ *
+ * @see SecurityManager#checkMulticast(InetAddress)
+ */
+public void joinGroup(InetAddress mcastaddr) throws IOException {
+    if (isClosed()) {
+        throw new SocketException("Socket is closed");
+    }
+    checkAddress(mcastaddr, "joinGroup");
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkMulticast(mcastaddr);
+    }
+    if (!mcastaddr.isMulticastAddress()) {
+        throw new SocketException("Not a multicast address");
+    }
+    /**
+     * required for some platforms where it's not possible to join
+     * a group without setting the interface first.
+     */
+    NetworkInterface defaultInterface = NetworkInterface.getDefault();
+    if (!interfaceSet && defaultInterface != null) {
+        setNetworkInterface(defaultInterface);
+    }
+    getImpl().join(mcastaddr);
+}

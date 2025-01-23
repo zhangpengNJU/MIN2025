@@ -1,0 +1,12 @@
+/**
+ * Retrieves the local result for this task.  If this task is the root,
+ * retrieves the shared result instead.
+ */
+@Override
+public R getLocalResult() {
+    if (isRoot()) {
+        R answer = sharedResult.get();
+        return (answer == null) ? getEmptyResult() : answer;
+    } else
+        return super.getLocalResult();
+}

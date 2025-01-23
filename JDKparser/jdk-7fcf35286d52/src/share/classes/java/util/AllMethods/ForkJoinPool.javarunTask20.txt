@@ -1,0 +1,20 @@
+/**
+ * Executes the given task and any remaining local tasks.
+ */
+final void runTask(ForkJoinTask<?> task) {
+    if (task != null) {
+        // mark as busy
+        scanState &= ~SCANNING;
+        (currentSteal = task).doExec();
+        // release for GC
+        U.putOrderedObject(this, QCURRENTSTEAL, null);
+        execLocalTasks();
+        ForkJoinWorkerThread thread = owner;
+        if (// collect on overflow
+        ++nsteals < 0)
+            transferStealCount(pool);
+        scanState |= SCANNING;
+        if (thread != null)
+            thread.afterTopLevelExec();
+    }
+}

@@ -1,0 +1,20 @@
+/**
+ * Concatenates the current <code>Graphics2D</code>
+ * <code>Transform</code> with a translated rotation
+ * transform.  Subsequent rendering is transformed by a transform
+ * which is constructed by translating to the specified location,
+ * rotating by the specified radians, and translating back by the same
+ * amount as the original translation.  This is equivalent to the
+ * following sequence of calls:
+ * <pre>
+ *          translate(x, y);
+ *          rotate(theta);
+ *          translate(-x, -y);
+ * </pre>
+ * Rotating with a positive angle theta rotates points on the positive
+ * x axis toward the positive y axis.
+ * @param theta the angle of rotation in radians
+ * @param x the x coordinate of the origin of the rotation
+ * @param y the y coordinate of the origin of the rotation
+ */
+public abstract void rotate(double theta, double x, double y);

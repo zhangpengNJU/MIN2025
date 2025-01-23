@@ -1,0 +1,18 @@
+/**
+ * Returns <code>true</code> if the primary type and the
+ * subtype of this object are the same as the content type
+ * described in <code>rawdata</code>; otherwise returns
+ * <code>false</code>.
+ *
+ * @param rawdata the raw data to be examined
+ * @return <code>true</code> if the primary type and the
+ *    subtype of this object are the same as the content type
+ *    described in <code>rawdata</code>; otherwise returns
+ *    <code>false</code>; if <code>rawdata</code> is
+ *    <code>null</code>, returns <code>false</code>
+ */
+public boolean match(String rawdata) throws MimeTypeParseException {
+    if (rawdata == null)
+        return false;
+    return match(new MimeType(rawdata));
+}

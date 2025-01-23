@@ -1,0 +1,61 @@
+/*
+     * Reads attributes from the specified input stream.
+     * XXX Need to handle UTF8 values.
+     */
+void read(Manifest.FastInputStream is, byte[] lbuf) throws IOException {
+    String name = null, value = null;
+    byte[] lastline = null;
+    int len;
+    while ((len = is.readLine(lbuf)) != -1) {
+        boolean lineContinued = false;
+        if (lbuf[--len] != '\n') {
+            throw new IOException("line too long");
+        }
+        if (len > 0 && lbuf[len - 1] == '\r') {
+            --len;
+        }
+        if (len == 0) {
+            break;
+        }
+        int i = 0;
+        if (lbuf[0] == ' ') {
+            // continuation of previous line
+            if (name == null) {
+                throw new IOException("misplaced continuation line");
+            }
+            lineContinued = true;
+            byte[] buf = new byte[lastline.length + len - 1];
+            System.arraycopy(lastline, 0, buf, 0, lastline.length);
+            System.arraycopy(lbuf, 1, buf, lastline.length, len - 1);
+            if (is.peek() == ' ') {
+                lastline = buf;
+                continue;
+            }
+            value = new String(buf, 0, buf.length, "UTF8");
+            lastline = null;
+        } else {
+            while (lbuf[i++] != ':') {
+                if (i >= len) {
+                    throw new IOException("invalid header field");
+                }
+            }
+            if (lbuf[i++] != ' ') {
+                throw new IOException("invalid header field");
+            }
+            name = new String(lbuf, 0, 0, i - 2);
+            if (is.peek() == ' ') {
+                lastline = new byte[len - i];
+                System.arraycopy(lbuf, i, lastline, 0, len - i);
+                continue;
+            }
+            value = new String(lbuf, i, len - i, "UTF8");
+        }
+        try {
+            if ((putValue(name, value) != null) && (!lineContinued)) {
+                PlatformLogger.getLogger("java.util.jar").warning("Duplicate name in Manifest: " + name + ".\n" + "Ensure that the manifest does not " + "have duplicate entries, and\n" + "that blank lines separate " + "individual sections in both your\n" + "manifest and in the META-INF/MANIFEST.MF " + "entry in the jar file.");
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IOException("invalid header field name: " + name);
+        }
+    }
+}

@@ -1,0 +1,36 @@
+/**
+ * add a service
+ * @param serviceClass the service class
+ * @param bcsp the service provider
+ * @param fireEvent whether or not an event should be fired
+ * @return true if the service was successfully added
+ */
+protected boolean addService(Class serviceClass, BeanContextServiceProvider bcsp, boolean fireEvent) {
+    if (serviceClass == null)
+        throw new NullPointerException("serviceClass");
+    if (bcsp == null)
+        throw new NullPointerException("bcsp");
+    synchronized (BeanContext.globalHierarchyLock) {
+        if (services.containsKey(serviceClass))
+            return false;
+        else {
+            services.put(serviceClass, createBCSSServiceProvider(serviceClass, bcsp));
+            if (bcsp instanceof Serializable)
+                serializable++;
+            if (!fireEvent)
+                return true;
+            BeanContextServiceAvailableEvent bcssae = new BeanContextServiceAvailableEvent(getBeanContextServicesPeer(), serviceClass);
+            fireServiceAdded(bcssae);
+            synchronized (children) {
+                Iterator i = children.keySet().iterator();
+                while (i.hasNext()) {
+                    Object c = i.next();
+                    if (c instanceof BeanContextServices) {
+                        ((BeanContextServicesListener) c).serviceAvailable(bcssae);
+                    }
+                }
+            }
+            return true;
+        }
+    }
+}

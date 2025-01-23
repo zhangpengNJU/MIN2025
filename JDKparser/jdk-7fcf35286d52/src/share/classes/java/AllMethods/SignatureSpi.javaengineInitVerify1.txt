@@ -1,0 +1,24 @@
+/**
+ * Initializes this signature object with the specified
+ * public key for verification operations.
+ *
+ * @param publicKey the public key of the identity whose signature is
+ * going to be verified.
+ * @param params the parameters for generating this signature
+ *
+ * @exception InvalidKeyException if the key is improperly
+ * encoded, does not work with the given parameters, and so on.
+ * @exception InvalidAlgorithmParameterException if the given parameters
+ * is invalid.
+ */
+void engineInitVerify(PublicKey publicKey, AlgorithmParameterSpec params) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    if (params != null) {
+        try {
+            engineSetParameter(params);
+        } catch (UnsupportedOperationException usoe) {
+            // error out if not overrridden
+            throw new InvalidAlgorithmParameterException(usoe);
+        }
+    }
+    engineInitVerify(publicKey);
+}

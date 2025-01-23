@@ -1,0 +1,15 @@
+void checkMethod(byte refKind, Class<?> refc, MemberName m) throws IllegalAccessException {
+    boolean wantStatic = (refKind == REF_invokeStatic);
+    String message;
+    if (m.isConstructor())
+        message = "expected a method, not a constructor";
+    else if (!m.isMethod())
+        message = "expected a method";
+    else if (wantStatic != m.isStatic())
+        message = wantStatic ? "expected a static method" : "expected a non-static method";
+    else {
+        checkAccess(refKind, refc, m);
+        return;
+    }
+    throw m.makeAccessException(message, this);
+}

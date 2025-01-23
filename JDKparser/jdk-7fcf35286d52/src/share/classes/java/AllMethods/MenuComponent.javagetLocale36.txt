@@ -1,0 +1,12 @@
+/**
+ * Returns the locale of this object.
+ *
+ * @return the locale of this object
+ */
+public java.util.Locale getLocale() {
+    MenuContainer parent = MenuComponent.this.getParent();
+    if (parent instanceof Component)
+        return ((Component) parent).getLocale();
+    else
+        return java.util.Locale.getDefault();
+}

@@ -1,0 +1,83 @@
+/**
+ * If this {@code Class} object represents a local or anonymous
+ * class within a method, returns a {@link
+ * java.lang.reflect.Method Method} object representing the
+ * immediately enclosing method of the underlying class. Returns
+ * {@code null} otherwise.
+ *
+ * In particular, this method returns {@code null} if the underlying
+ * class is a local or anonymous class immediately enclosed by a type
+ * declaration, instance initializer or static initializer.
+ *
+ * @return the immediately enclosing method of the underlying class, if
+ *     that class is a local or anonymous class; otherwise {@code null}.
+ *
+ * @throws SecurityException
+ *         If a security manager, <i>s</i>, is present and any of the
+ *         following conditions is met:
+ *
+ *         <ul>
+ *
+ *         <li> the caller's class loader is not the same as the
+ *         class loader of the enclosing class and invocation of
+ *         {@link SecurityManager#checkPermission
+ *         s.checkPermission} method with
+ *         {@code RuntimePermission("accessDeclaredMembers")}
+ *         denies access to the methods within the enclosing class
+ *
+ *         <li> the caller's class loader is not the same as or an
+ *         ancestor of the class loader for the enclosing class and
+ *         invocation of {@link SecurityManager#checkPackageAccess
+ *         s.checkPackageAccess()} denies access to the package
+ *         of the enclosing class
+ *
+ *         </ul>
+ * @since 1.5
+ */
+@CallerSensitive
+public Method getEnclosingMethod() throws SecurityException {
+    EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
+    if (enclosingInfo == null)
+        return null;
+    else {
+        if (!enclosingInfo.isMethod())
+            return null;
+        MethodRepository typeInfo = MethodRepository.make(enclosingInfo.getDescriptor(), getFactory());
+        Class<?> returnType = toClass(typeInfo.getReturnType());
+        Type[] parameterTypes = typeInfo.getParameterTypes();
+        Class<?>[] parameterClasses = new Class<?>[parameterTypes.length];
+        // Convert Types to Classes; returned types *should*
+        // be class objects since the methodDescriptor's used
+        // don't have generics information
+        for (int i = 0; i < parameterClasses.length; i++) parameterClasses[i] = toClass(parameterTypes[i]);
+        // Perform access check
+        Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
+        enclosingCandidate.checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+        /*
+             * Loop over all declared methods; match method name,
+             * number of and type of parameters, *and* return
+             * type.  Matching return type is also necessary
+             * because of covariant returns, etc.
+             */
+        for (Method m : enclosingCandidate.getDeclaredMethods()) {
+            if (m.getName().equals(enclosingInfo.getName())) {
+                Class<?>[] candidateParamClasses = m.getParameterTypes();
+                if (candidateParamClasses.length == parameterClasses.length) {
+                    boolean matches = true;
+                    for (int i = 0; i < candidateParamClasses.length; i++) {
+                        if (!candidateParamClasses[i].equals(parameterClasses[i])) {
+                            matches = false;
+                            break;
+                        }
+                    }
+                    if (matches) {
+                        // finally, check return type
+                        if (m.getReturnType().equals(returnType))
+                            return m;
+                    }
+                }
+            }
+        }
+        throw new InternalError("Enclosing method not found");
+    }
+}

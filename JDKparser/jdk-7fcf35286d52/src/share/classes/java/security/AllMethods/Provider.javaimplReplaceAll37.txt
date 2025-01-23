@@ -1,0 +1,9 @@
+private void implReplaceAll(BiFunction<? super Object, ? super Object, ? extends Object> function) {
+    legacyChanged = true;
+    if (legacyStrings == null) {
+        legacyStrings = new LinkedHashMap<String, String>();
+    } else {
+        legacyStrings.replaceAll((BiFunction<? super String, ? super String, ? extends String>) function);
+    }
+    super.replaceAll(function);
+}

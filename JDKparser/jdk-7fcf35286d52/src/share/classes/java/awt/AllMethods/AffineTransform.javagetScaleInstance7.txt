@@ -1,0 +1,21 @@
+/**
+ * Returns a transform representing a scaling transformation.
+ * The matrix representing the returned transform is:
+ * <pre>
+ *          [   sx   0    0   ]
+ *          [   0    sy   0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param sx the factor by which coordinates are scaled along the
+ * X axis direction
+ * @param sy the factor by which coordinates are scaled along the
+ * Y axis direction
+ * @return an <code>AffineTransform</code> object that scales
+ *  coordinates by the specified factors.
+ * @since 1.2
+ */
+public static AffineTransform getScaleInstance(double sx, double sy) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToScale(sx, sy);
+    return Tx;
+}

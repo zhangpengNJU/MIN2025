@@ -1,0 +1,52 @@
+@Override
+public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+    if (mappingFunction == null)
+        throw new NullPointerException();
+    int hash = hash(key);
+    Node<K, V>[] tab;
+    Node<K, V> first;
+    int n, i;
+    int binCount = 0;
+    TreeNode<K, V> t = null;
+    Node<K, V> old = null;
+    if (size > threshold || (tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    if ((first = tab[i = (n - 1) & hash]) != null) {
+        if (first instanceof TreeNode)
+            old = (t = (TreeNode<K, V>) first).getTreeNode(hash, key);
+        else {
+            Node<K, V> e = first;
+            K k;
+            do {
+                if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k)))) {
+                    old = e;
+                    break;
+                }
+                ++binCount;
+            } while ((e = e.next) != null);
+        }
+        V oldValue;
+        if (old != null && (oldValue = old.value) != null) {
+            afterNodeAccess(old);
+            return oldValue;
+        }
+    }
+    V v = mappingFunction.apply(key);
+    if (v == null) {
+        return null;
+    } else if (old != null) {
+        old.value = v;
+        afterNodeAccess(old);
+        return v;
+    } else if (t != null)
+        t.putTreeVal(this, tab, hash, key, v);
+    else {
+        tab[i] = newNode(hash, key, v, first);
+        if (binCount >= TREEIFY_THRESHOLD - 1)
+            treeifyBin(tab, hash);
+    }
+    ++modCount;
+    ++size;
+    afterNodeInsertion(true);
+    return v;
+}

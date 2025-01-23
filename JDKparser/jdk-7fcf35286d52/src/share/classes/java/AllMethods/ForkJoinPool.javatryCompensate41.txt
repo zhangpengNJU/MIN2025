@@ -1,0 +1,59 @@
+/**
+ * Tries to decrement active count (sometimes implicitly) and
+ * possibly release or create a compensating worker in preparation
+ * for blocking. Returns false (retryable by caller), on
+ * contention, detected staleness, instability, or termination.
+ *
+ * @param w caller
+ */
+private boolean tryCompensate(WorkQueue w) {
+    boolean canBlock;
+    WorkQueue[] ws;
+    long c;
+    int m, pc, sp;
+    if (// caller terminating
+    w == null || w.qlock < 0 || (ws = workQueues) == null || (m = ws.length - 1) <= 0 || // parallelism disabled
+    (pc = config & SMASK) == 0)
+        canBlock = false;
+    else if (// release idle worker
+    (sp = (int) (c = ctl)) != 0)
+        canBlock = tryRelease(c, ws[sp & m], 0L);
+    else {
+        int ac = (int) (c >> AC_SHIFT) + pc;
+        int tc = (short) (c >> TC_SHIFT) + pc;
+        // validate saturation
+        int nbusy = 0;
+        for (int i = 0; i <= m; ++i) {
+            // two passes of odd indices
+            WorkQueue v;
+            if ((v = ws[((i << 1) | 1) & m]) != null) {
+                if ((v.scanState & SCANNING) != 0)
+                    break;
+                ++nbusy;
+            }
+        }
+        if (nbusy != (tc << 1) || ctl != c)
+            // unstable or stale
+            canBlock = false;
+        else if (tc >= pc && ac > 1 && w.isEmpty()) {
+            long nc = ((AC_MASK & (c - AC_UNIT)) | // uncompensated
+            (~AC_MASK & c));
+            canBlock = U.compareAndSwapLong(this, CTL, c, nc);
+        } else if (tc >= MAX_CAP || (this == common && tc >= pc + commonMaxSpares))
+            throw new RejectedExecutionException("Thread limit exceeded replacing blocked worker");
+        else {
+            // similar to tryAddWorker
+            // CAS within lock
+            boolean add = false;
+            // CAS within lock
+            int rs;
+            long nc = ((AC_MASK & c) | (TC_MASK & (c + TC_UNIT)));
+            if (((rs = lockRunState()) & STOP) == 0)
+                add = U.compareAndSwapLong(this, CTL, c, nc);
+            unlockRunState(rs, rs & ~RSLOCK);
+            // throws on exception
+            canBlock = add && createWorker();
+        }
+    }
+    return canBlock;
+}

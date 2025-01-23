@@ -1,0 +1,27 @@
+/**
+ * Formats a BigDecimal to produce a string.
+ * @param number    The BigDecimal to format
+ * @param result    where the text is to be appended
+ * @param delegate notified of locations of sub fields
+ * @exception        ArithmeticException if rounding is needed with rounding
+ *                   mode being set to RoundingMode.UNNECESSARY
+ * @return The formatted number string
+ */
+private StringBuffer format(BigDecimal number, StringBuffer result, FieldDelegate delegate) {
+    if (multiplier != 1) {
+        number = number.multiply(getBigDecimalMultiplier());
+    }
+    boolean isNegative = number.signum() == -1;
+    if (isNegative) {
+        number = number.negate();
+    }
+    synchronized (digitList) {
+        int maxIntDigits = getMaximumIntegerDigits();
+        int minIntDigits = getMinimumIntegerDigits();
+        int maxFraDigits = getMaximumFractionDigits();
+        int minFraDigits = getMinimumFractionDigits();
+        int maximumDigits = maxIntDigits + maxFraDigits;
+        digitList.set(isNegative, number, useExponentialNotation ? ((maximumDigits < 0) ? Integer.MAX_VALUE : maximumDigits) : maxFraDigits, !useExponentialNotation);
+        return subformat(result, delegate, isNegative, false, maxIntDigits, minIntDigits, maxFraDigits, minFraDigits);
+    }
+}

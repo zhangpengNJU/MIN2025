@@ -1,0 +1,17 @@
+/**
+ * Returns an offset to align week start with a day of month or day of year.
+ *
+ * @param day  the day; 1 through infinity
+ * @param dow  the day of the week of that day; 1 through 7
+ * @return  an offset in days to align a day with the start of the first 'full' week
+ */
+private int startOfWeekOffset(int day, int dow) {
+    // offset of first day corresponding to the day of week in first 7 days (zero origin)
+    int weekStart = Math.floorMod(day - dow, 7);
+    int offset = -weekStart;
+    if (weekStart + 1 > weekDef.getMinimalDaysInFirstWeek()) {
+        // The previous week has the minimum days in the current month to be a 'week'
+        offset = 7 - weekStart;
+    }
+    return offset;
+}

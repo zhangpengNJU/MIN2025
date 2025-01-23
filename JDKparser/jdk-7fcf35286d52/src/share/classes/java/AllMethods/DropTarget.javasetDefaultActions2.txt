@@ -1,0 +1,9 @@
+/**
+ * Sets the default acceptable actions for this <code>DropTarget</code>
+ * <P>
+ * @param ops the default actions
+ * @see java.awt.dnd.DnDConstants
+ */
+public void setDefaultActions(int ops) {
+    getDropTargetContext().setTargetActions(ops & (DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_REFERENCE));
+}

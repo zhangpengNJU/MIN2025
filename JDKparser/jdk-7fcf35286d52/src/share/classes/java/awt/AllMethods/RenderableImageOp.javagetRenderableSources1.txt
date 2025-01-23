@@ -1,0 +1,17 @@
+private Vector getRenderableSources() {
+    Vector sources = null;
+    if (paramBlock.getNumSources() > 0) {
+        sources = new Vector();
+        int i = 0;
+        while (i < paramBlock.getNumSources()) {
+            Object o = paramBlock.getSource(i);
+            if (o instanceof RenderableImage) {
+                sources.add((RenderableImage) o);
+                i++;
+            } else {
+                break;
+            }
+        }
+    }
+    return sources;
+}

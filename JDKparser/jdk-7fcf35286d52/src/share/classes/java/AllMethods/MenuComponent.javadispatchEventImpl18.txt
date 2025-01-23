@@ -1,0 +1,18 @@
+void dispatchEventImpl(AWTEvent e) {
+    EventQueue.setCurrentEventAndMostRecentTime(e);
+    Toolkit.getDefaultToolkit().notifyAWTEventListeners(e);
+    if (newEventsOnly || (parent != null && parent instanceof MenuComponent && ((MenuComponent) parent).newEventsOnly)) {
+        if (eventEnabled(e)) {
+            processEvent(e);
+        } else if (e instanceof ActionEvent && parent != null) {
+            e.setSource(parent);
+            ((MenuComponent) parent).dispatchEvent(e);
+        }
+    } else {
+        // backward compatibility
+        Event olde = e.convertToOld();
+        if (olde != null) {
+            postEvent(olde);
+        }
+    }
+}

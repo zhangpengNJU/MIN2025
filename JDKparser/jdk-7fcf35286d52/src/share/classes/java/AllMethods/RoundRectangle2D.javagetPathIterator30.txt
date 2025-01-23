@@ -1,0 +1,19 @@
+/**
+ * Returns an iteration object that defines the boundary of this
+ * <code>RoundRectangle2D</code>.
+ * The iterator for this class is multi-threaded safe, which means
+ * that this <code>RoundRectangle2D</code> class guarantees that
+ * modifications to the geometry of this <code>RoundRectangle2D</code>
+ * object do not affect any iterations of that geometry that
+ * are already in process.
+ * @param at an optional <code>AffineTransform</code> to be applied to
+ * the coordinates as they are returned in the iteration, or
+ * <code>null</code> if untransformed coordinates are desired
+ * @return    the <code>PathIterator</code> object that returns the
+ *          geometry of the outline of this
+ *          <code>RoundRectangle2D</code>, one segment at a time.
+ * @since 1.2
+ */
+public PathIterator getPathIterator(AffineTransform at) {
+    return new RoundRectIterator(this, at);
+}

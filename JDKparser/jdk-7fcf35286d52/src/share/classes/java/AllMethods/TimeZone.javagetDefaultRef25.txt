@@ -1,0 +1,14 @@
+/**
+ * Returns the reference to the default TimeZone object. This
+ * method doesn't create a clone.
+ */
+static TimeZone getDefaultRef() {
+    TimeZone defaultZone = defaultTimeZone;
+    if (defaultZone == null) {
+        // Need to initialize the default time zone.
+        defaultZone = setDefaultZone();
+        assert defaultZone != null;
+    }
+    // Don't clone here.
+    return defaultZone;
+}

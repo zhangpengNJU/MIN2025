@@ -1,0 +1,21 @@
+/**
+ * Returns a {@link Spliterator.OfDouble} covering the specified range of
+ * the specified array.
+ *
+ * <p>The spliterator reports {@link Spliterator#SIZED},
+ * {@link Spliterator#SUBSIZED}, {@link Spliterator#ORDERED}, and
+ * {@link Spliterator#IMMUTABLE}.
+ *
+ * @param array the array, assumed to be unmodified during use
+ * @param startInclusive the first index to cover, inclusive
+ * @param endExclusive index immediately past the last index to cover
+ * @return a spliterator for the array elements
+ * @throws ArrayIndexOutOfBoundsException if {@code startInclusive} is
+ *         negative, {@code endExclusive} is less than
+ *         {@code startInclusive}, or {@code endExclusive} is greater than
+ *         the array size
+ * @since 1.8
+ */
+public static Spliterator.OfDouble spliterator(double[] array, int startInclusive, int endExclusive) {
+    return Spliterators.spliterator(array, startInclusive, endExclusive, Spliterator.ORDERED | Spliterator.IMMUTABLE);
+}

@@ -1,0 +1,17 @@
+/* This asserts system privileges, so is used only for the
+     * standard profiles.
+     */
+private static ICC_Profile getStandardProfile(final String name) {
+    return AccessController.doPrivileged(new PrivilegedAction<ICC_Profile>() {
+
+        public ICC_Profile run() {
+            ICC_Profile p = null;
+            try {
+                p = getInstance(name);
+            } catch (IOException ex) {
+                throw new IllegalArgumentException("Can't load standard profile: " + name);
+            }
+            return p;
+        }
+    });
+}

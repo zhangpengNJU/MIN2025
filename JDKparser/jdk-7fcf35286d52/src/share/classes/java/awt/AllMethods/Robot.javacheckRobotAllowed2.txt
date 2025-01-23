@@ -1,0 +1,7 @@
+/* determine if the security policy allows Robot's to be created */
+private void checkRobotAllowed() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.CREATE_ROBOT_PERMISSION);
+    }
+}

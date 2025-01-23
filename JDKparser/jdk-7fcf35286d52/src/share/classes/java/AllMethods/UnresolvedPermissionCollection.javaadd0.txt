@@ -1,0 +1,22 @@
+/**
+ * Adds a permission to this UnresolvedPermissionCollection.
+ * The key for the hash is the unresolved permission's type (class) name.
+ *
+ * @param permission the Permission object to add.
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof UnresolvedPermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    UnresolvedPermission up = (UnresolvedPermission) permission;
+    List<UnresolvedPermission> v;
+    synchronized (this) {
+        v = perms.get(up.getName());
+        if (v == null) {
+            v = new ArrayList<UnresolvedPermission>();
+            perms.put(up.getName(), v);
+        }
+    }
+    synchronized (v) {
+        v.add(up);
+    }
+}

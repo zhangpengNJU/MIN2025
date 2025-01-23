@@ -1,0 +1,27 @@
+/**
+ * Concatenates this transform with a transform that rotates
+ * coordinates by the specified number of quadrants.
+ * This is equivalent to calling:
+ * <pre>
+ *     rotate(numquadrants * Math.PI / 2.0);
+ * </pre>
+ * Rotating by a positive number of quadrants rotates points on
+ * the positive X axis toward the positive Y axis.
+ * @param numquadrants the number of 90 degree arcs to rotate by
+ * @since 1.6
+ */
+public void quadrantRotate(int numquadrants) {
+    switch(numquadrants & 3) {
+        case 0:
+            break;
+        case 1:
+            rotate90();
+            break;
+        case 2:
+            rotate180();
+            break;
+        case 3:
+            rotate270();
+            break;
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns a map from simple name to enum constant.  This package-private
+ * method is used internally by Enum to implement
+ * {@code public static <T extends Enum<T>> T valueOf(Class<T>, String)}
+ * efficiently.  Note that the map is returned by this method is
+ * created lazily on first use.  Typically it won't ever get created.
+ */
+Map<String, T> enumConstantDirectory() {
+    if (enumConstantDirectory == null) {
+        T[] universe = getEnumConstantsShared();
+        if (universe == null)
+            throw new IllegalArgumentException(getName() + " is not an enum type");
+        Map<String, T> m = new HashMap<>(2 * universe.length);
+        for (T constant : universe) m.put(((Enum<?>) constant).name(), constant);
+        enumConstantDirectory = m;
+    }
+    return enumConstantDirectory;
+}

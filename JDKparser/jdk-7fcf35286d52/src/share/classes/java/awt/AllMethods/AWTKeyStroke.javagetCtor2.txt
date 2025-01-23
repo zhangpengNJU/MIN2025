@@ -1,0 +1,22 @@
+/* returns noarg Constructor for class with accessible flag. No security
+       threat as accessible flag is set only for this Constructor object,
+       not for Class constructor.
+     */
+private static Constructor getCtor(final Class clazz) {
+    Constructor ctor = AccessController.doPrivileged(new PrivilegedAction<Constructor>() {
+
+        public Constructor run() {
+            try {
+                Constructor ctor = clazz.getDeclaredConstructor((Class[]) null);
+                if (ctor != null) {
+                    ctor.setAccessible(true);
+                }
+                return ctor;
+            } catch (SecurityException e) {
+            } catch (NoSuchMethodException e) {
+            }
+            return null;
+        }
+    });
+    return (Constructor) ctor;
+}

@@ -1,0 +1,35 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to access the system clipboard.
+ * <p>
+ * This method calls <code>checkPermission</code> with the
+ * <code>AWTPermission("accessClipboard")</code>
+ * permission.
+ * In the case of subset Profiles of Java SE that do not include the
+ * {@code java.awt} package, {@code checkPermission} is instead called
+ * to check the permission {@code java.security.AllPermission}.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkSystemClipboardAccess</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @since   JDK1.1
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to access the system clipboard.
+ * @deprecated The dependency on {@code AWTPermission} creates an
+ *             impediment to future modularization of the Java platform.
+ *             Users of this method should instead invoke
+ *             {@link #checkPermission} directly.
+ *             This method will be changed in a future release to check
+ *             the permission {@code java.security.AllPermission}.
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+@Deprecated
+public void checkSystemClipboardAccess() {
+    Permission perm = SecurityConstants.AWT.ACCESS_CLIPBOARD_PERMISSION;
+    if (perm == null) {
+        perm = SecurityConstants.ALL_PERMISSION;
+    }
+    checkPermission(perm);
+}

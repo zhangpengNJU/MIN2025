@@ -1,0 +1,22 @@
+private static BigDecimal add(final long xs, int scale1, BigInteger snd, int scale2) {
+    int rscale = scale1;
+    long sdiff = (long) rscale - scale2;
+    boolean sameSigns = (Long.signum(xs) == snd.signum);
+    BigInteger sum;
+    if (sdiff < 0) {
+        int raise = checkScale(xs, -sdiff);
+        rscale = scale2;
+        long scaledX = longMultiplyPowerTen(xs, raise);
+        if (scaledX == INFLATED) {
+            sum = snd.add(bigMultiplyPowerTen(xs, raise));
+        } else {
+            sum = snd.add(scaledX);
+        }
+    } else {
+        // if (sdiff > 0) {
+        int raise = checkScale(snd, sdiff);
+        snd = bigMultiplyPowerTen(snd, raise);
+        sum = snd.add(xs);
+    }
+    return (sameSigns) ? new BigDecimal(sum, INFLATED, rscale, 0) : valueOf(sum, rscale, 0);
+}

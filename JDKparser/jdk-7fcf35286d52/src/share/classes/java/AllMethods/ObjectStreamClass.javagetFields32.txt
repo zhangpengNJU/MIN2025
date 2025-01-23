@@ -1,0 +1,9 @@
+/**
+ * Returns arrays of ObjectStreamFields representing the serializable
+ * fields of the represented class.  If copy is true, a clone of this class
+ * descriptor's field array is returned, otherwise the array itself is
+ * returned.
+ */
+ObjectStreamField[] getFields(boolean copy) {
+    return copy ? fields.clone() : fields;
+}

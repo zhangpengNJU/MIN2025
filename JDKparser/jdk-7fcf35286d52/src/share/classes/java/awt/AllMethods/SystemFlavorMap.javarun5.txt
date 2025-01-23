@@ -1,0 +1,11 @@
+public BufferedReader run() {
+    String fileName = System.getProperty("java.home") + File.separator + "lib" + File.separator + "flavormap.properties";
+    try {
+        return new BufferedReader(new InputStreamReader(new File(fileName).toURI().toURL().openStream(), "ISO-8859-1"));
+    } catch (MalformedURLException e) {
+        System.err.println("MalformedURLException:" + e + " while loading default flavormap.properties file:" + fileName);
+    } catch (IOException e) {
+        System.err.println("IOException:" + e + " while loading default flavormap.properties file:" + fileName);
+    }
+    return null;
+}

@@ -1,0 +1,108 @@
+/**
+ * Parse a character class, and return the node that matches it.
+ *
+ * Consumes a ] on the way out if consume is true. Usually consume
+ * is true except for the case of [abc&&def] where def is a separate
+ * right hand node with "understood" brackets.
+ */
+private CharProperty clazz(boolean consume) {
+    CharProperty prev = null;
+    CharProperty node = null;
+    BitClass bits = new BitClass();
+    boolean include = true;
+    boolean firstInClass = true;
+    int ch = next();
+    for (; ; ) {
+        switch(ch) {
+            case '^':
+                // Negates if first char in a class, otherwise literal
+                if (firstInClass) {
+                    if (temp[cursor - 1] != '[')
+                        break;
+                    ch = next();
+                    include = !include;
+                    continue;
+                } else {
+                    // ^ not first in class, treat as literal
+                    break;
+                }
+            case '[':
+                firstInClass = false;
+                node = clazz(true);
+                if (prev == null)
+                    prev = node;
+                else
+                    prev = union(prev, node);
+                ch = peek();
+                continue;
+            case '&':
+                firstInClass = false;
+                ch = next();
+                if (ch == '&') {
+                    ch = next();
+                    CharProperty rightNode = null;
+                    while (ch != ']' && ch != '&') {
+                        if (ch == '[') {
+                            if (rightNode == null)
+                                rightNode = clazz(true);
+                            else
+                                rightNode = union(rightNode, clazz(true));
+                        } else {
+                            // abc&&def
+                            unread();
+                            rightNode = clazz(false);
+                        }
+                        ch = peek();
+                    }
+                    if (rightNode != null)
+                        node = rightNode;
+                    if (prev == null) {
+                        if (rightNode == null)
+                            throw error("Bad class syntax");
+                        else
+                            prev = rightNode;
+                    } else {
+                        prev = intersection(prev, node);
+                    }
+                } else {
+                    // treat as a literal &
+                    unread();
+                    break;
+                }
+                continue;
+            case 0:
+                firstInClass = false;
+                if (cursor >= patternLength)
+                    throw error("Unclosed character class");
+                break;
+            case ']':
+                firstInClass = false;
+                if (prev != null) {
+                    if (consume)
+                        next();
+                    return prev;
+                }
+                break;
+            default:
+                firstInClass = false;
+                break;
+        }
+        node = range(bits);
+        if (include) {
+            if (prev == null) {
+                prev = node;
+            } else {
+                if (prev != node)
+                    prev = union(prev, node);
+            }
+        } else {
+            if (prev == null) {
+                prev = node.complement();
+            } else {
+                if (prev != node)
+                    prev = setDifference(prev, node);
+            }
+        }
+        ch = peek();
+    }
+}

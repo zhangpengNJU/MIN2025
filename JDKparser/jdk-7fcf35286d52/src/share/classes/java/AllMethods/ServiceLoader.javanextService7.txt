@@ -1,0 +1,24 @@
+private S nextService() {
+    if (!hasNextService())
+        throw new NoSuchElementException();
+    String cn = nextName;
+    nextName = null;
+    Class<?> c = null;
+    try {
+        c = Class.forName(cn, false, loader);
+    } catch (ClassNotFoundException x) {
+        fail(service, "Provider " + cn + " not found");
+    }
+    if (!service.isAssignableFrom(c)) {
+        fail(service, "Provider " + cn + " not a subtype");
+    }
+    try {
+        S p = service.cast(c.newInstance());
+        providers.put(cn, p);
+        return p;
+    } catch (Throwable x) {
+        fail(service, "Provider " + cn + " could not be instantiated", x);
+    }
+    // This cannot happen
+    throw new Error();
+}

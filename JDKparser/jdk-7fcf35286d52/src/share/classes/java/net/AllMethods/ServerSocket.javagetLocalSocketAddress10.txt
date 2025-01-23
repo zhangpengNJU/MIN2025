@@ -1,0 +1,30 @@
+/**
+ * Returns the address of the endpoint this socket is bound to.
+ * <p>
+ * If the socket was bound prior to being {@link #close closed},
+ * then this method will continue to return the address of the endpoint
+ * after the socket is closed.
+ * <p>
+ * If there is a security manager set, its {@code checkConnect} method is
+ * called with the local address and {@code -1} as its arguments to see
+ * if the operation is allowed. If the operation is not allowed,
+ * a {@code SocketAddress} representing the
+ * {@link InetAddress#getLoopbackAddress loopback} address and the local
+ * port to which the socket is bound is returned.
+ *
+ * @return a {@code SocketAddress} representing the local endpoint of
+ *         this socket, or a {@code SocketAddress} representing the
+ *         loopback address if denied by the security manager,
+ *         or {@code null} if the socket is not bound yet.
+ *
+ * @see #getInetAddress()
+ * @see #getLocalPort()
+ * @see #bind(SocketAddress)
+ * @see SecurityManager#checkConnect
+ * @since 1.4
+ */
+public SocketAddress getLocalSocketAddress() {
+    if (!isBound())
+        return null;
+    return new InetSocketAddress(getInetAddress(), getLocalPort());
+}

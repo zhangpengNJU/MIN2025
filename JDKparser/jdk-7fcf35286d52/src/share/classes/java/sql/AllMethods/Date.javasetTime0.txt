@@ -1,0 +1,17 @@
+/**
+ * Sets an existing <code>Date</code> object
+ * using the given milliseconds time value.
+ * If the given milliseconds value contains time information,
+ * the driver will set the time components to the
+ * time in the default time zone (the time zone of the Java virtual
+ * machine running the application) that corresponds to zero GMT.
+ *
+ * @param date milliseconds since January 1, 1970, 00:00:00 GMT not
+ *        to exceed the milliseconds representation for the year 8099.
+ *        A negative number indicates the number of milliseconds
+ *        before January 1, 1970, 00:00:00 GMT.
+ */
+public void setTime(long date) {
+    // If the millisecond date value contains time info, mask it out.
+    super.setTime(date);
+}

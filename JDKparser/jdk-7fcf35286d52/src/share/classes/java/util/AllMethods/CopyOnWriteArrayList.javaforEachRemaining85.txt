@@ -1,0 +1,9 @@
+@Override
+public void forEachRemaining(Consumer<? super E> action) {
+    Objects.requireNonNull(action);
+    int s = size;
+    ListIterator<E> i = it;
+    while (nextIndex() < s) {
+        action.accept(i.next());
+    }
+}

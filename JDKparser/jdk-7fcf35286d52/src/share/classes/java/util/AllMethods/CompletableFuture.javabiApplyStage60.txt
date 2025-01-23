@@ -1,0 +1,12 @@
+private <U, V> CompletableFuture<V> biApplyStage(Executor e, CompletionStage<U> o, BiFunction<? super T, ? super U, ? extends V> f) {
+    CompletableFuture<U> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<V> d = new CompletableFuture<V>();
+    if (e != null || !d.biApply(this, b, f, null)) {
+        BiApply<T, U, V> c = new BiApply<T, U, V>(e, d, this, b, f);
+        bipush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

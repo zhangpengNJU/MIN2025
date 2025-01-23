@@ -1,0 +1,30 @@
+/**
+ * Checks whether or not the specified <code>Shape</code> intersects
+ * the specified {@link Rectangle}, which is in device
+ * space. If <code>onStroke</code> is false, this method checks
+ * whether or not the interior of the specified <code>Shape</code>
+ * intersects the specified <code>Rectangle</code>.  If
+ * <code>onStroke</code> is <code>true</code>, this method checks
+ * whether or not the <code>Stroke</code> of the specified
+ * <code>Shape</code> outline intersects the specified
+ * <code>Rectangle</code>.
+ * The rendering attributes taken into account include the
+ * <code>Clip</code>, <code>Transform</code>, and <code>Stroke</code>
+ * attributes.
+ * @param rect the area in device space to check for a hit
+ * @param s the <code>Shape</code> to check for a hit
+ * @param onStroke flag used to choose between testing the
+ * stroked or the filled shape.  If the flag is <code>true</code>, the
+ * <code>Stroke</code> outline is tested.  If the flag is
+ * <code>false</code>, the filled <code>Shape</code> is tested.
+ * @return <code>true</code> if there is a hit; <code>false</code>
+ * otherwise.
+ * @see #setStroke
+ * @see #fill
+ * @see #draw
+ * @see #transform
+ * @see #setTransform
+ * @see #clip
+ * @see #setClip
+ */
+public abstract boolean hit(Rectangle rect, Shape s, boolean onStroke);

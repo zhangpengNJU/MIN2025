@@ -1,0 +1,18 @@
+/**
+ * Find a target methodName with specific parameter list on a given class.
+ * <p>
+ * Used in the contructors of the EventSetDescriptor,
+ * PropertyDescriptor and the IndexedPropertyDescriptor.
+ * <p>
+ * @param cls The Class object on which to retrieve the method.
+ * @param methodName Name of the method.
+ * @param argCount Number of arguments for the desired method.
+ * @param args Array of argument types for the method.
+ * @return the method or null if not found
+ */
+static Method findMethod(Class<?> cls, String methodName, int argCount, Class[] args) {
+    if (methodName == null) {
+        return null;
+    }
+    return internalFindMethod(cls, methodName, argCount, args);
+}

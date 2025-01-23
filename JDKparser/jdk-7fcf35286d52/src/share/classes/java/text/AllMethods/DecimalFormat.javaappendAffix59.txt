@@ -1,0 +1,27 @@
+/**
+ * Append an affix to the given StringBuffer, using quotes if
+ * there are special characters.  Single quotes themselves must be
+ * escaped in either case.
+ */
+private void appendAffix(StringBuffer buffer, String affix, boolean localized) {
+    boolean needQuote;
+    if (localized) {
+        needQuote = affix.indexOf(symbols.getZeroDigit()) >= 0 || affix.indexOf(symbols.getGroupingSeparator()) >= 0 || affix.indexOf(symbols.getDecimalSeparator()) >= 0 || affix.indexOf(symbols.getPercent()) >= 0 || affix.indexOf(symbols.getPerMill()) >= 0 || affix.indexOf(symbols.getDigit()) >= 0 || affix.indexOf(symbols.getPatternSeparator()) >= 0 || affix.indexOf(symbols.getMinusSign()) >= 0 || affix.indexOf(CURRENCY_SIGN) >= 0;
+    } else {
+        needQuote = affix.indexOf(PATTERN_ZERO_DIGIT) >= 0 || affix.indexOf(PATTERN_GROUPING_SEPARATOR) >= 0 || affix.indexOf(PATTERN_DECIMAL_SEPARATOR) >= 0 || affix.indexOf(PATTERN_PERCENT) >= 0 || affix.indexOf(PATTERN_PER_MILLE) >= 0 || affix.indexOf(PATTERN_DIGIT) >= 0 || affix.indexOf(PATTERN_SEPARATOR) >= 0 || affix.indexOf(PATTERN_MINUS) >= 0 || affix.indexOf(CURRENCY_SIGN) >= 0;
+    }
+    if (needQuote)
+        buffer.append('\'');
+    if (affix.indexOf('\'') < 0)
+        buffer.append(affix);
+    else {
+        for (int j = 0; j < affix.length(); ++j) {
+            char c = affix.charAt(j);
+            buffer.append(c);
+            if (c == '\'')
+                buffer.append(c);
+        }
+    }
+    if (needQuote)
+        buffer.append('\'');
+}

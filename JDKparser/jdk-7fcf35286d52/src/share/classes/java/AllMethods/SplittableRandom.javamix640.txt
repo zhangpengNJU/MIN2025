@@ -1,0 +1,8 @@
+/**
+ * Computes Stafford variant 13 of 64bit mix function.
+ */
+private static long mix64(long z) {
+    z = (z ^ (z >>> 30)) * 0xbf58476d1ce4e5b9L;
+    z = (z ^ (z >>> 27)) * 0x94d049bb133111ebL;
+    return z ^ (z >>> 31);
+}

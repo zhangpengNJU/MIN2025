@@ -1,0 +1,13 @@
+/**
+ * Writes a {@code char} to the file as a two-byte value, high
+ * byte first. The write starts at the current position of the
+ * file pointer.
+ *
+ * @param      v   a {@code char} value to be written.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public final void writeChar(int v) throws IOException {
+    write((v >>> 8) & 0xFF);
+    write((v >>> 0) & 0xFF);
+// written += 2;
+}

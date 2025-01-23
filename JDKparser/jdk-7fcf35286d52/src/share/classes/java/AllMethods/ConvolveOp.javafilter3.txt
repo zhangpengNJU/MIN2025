@@ -1,0 +1,31 @@
+/**
+ * Performs a convolution on Rasters.  Each band of the source Raster
+ * will be convolved.
+ * The source and destination must have the same number of bands.
+ * If the destination Raster is null, a new Raster will be created.
+ * The IllegalArgumentException may be thrown if the source is
+ * the same as the destination.
+ * @param src the source <code>Raster</code> to filter
+ * @param dst the destination <code>WritableRaster</code> for the
+ *        filtered <code>src</code>
+ * @return the filtered <code>WritableRaster</code>
+ * @throws NullPointerException if <code>src</code> is <code>null</code>
+ * @throws ImagingOpException if <code>src</code> and <code>dst</code>
+ *         do not have the same number of bands
+ * @throws ImagingOpException if <code>src</code> cannot be filtered
+ * @throws IllegalArgumentException if <code>src</code> equals
+ *         <code>dst</code>
+ */
+public final WritableRaster filter(Raster src, WritableRaster dst) {
+    if (dst == null) {
+        dst = createCompatibleDestRaster(src);
+    } else if (src == dst) {
+        throw new IllegalArgumentException("src image cannot be the " + "same as the dst image");
+    } else if (src.getNumBands() != dst.getNumBands()) {
+        throw new ImagingOpException("Different number of bands in src " + " and dst Rasters");
+    }
+    if (ImagingLib.filter(this, src, dst) == null) {
+        throw new ImagingOpException("Unable to convolve src image");
+    }
+    return dst;
+}

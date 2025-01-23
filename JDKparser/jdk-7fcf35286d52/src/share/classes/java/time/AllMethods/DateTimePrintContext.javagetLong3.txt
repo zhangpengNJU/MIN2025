@@ -1,0 +1,7 @@
+@Override
+public long getLong(TemporalField field) {
+    if (effectiveDate != null && field.isDateBased()) {
+        return effectiveDate.getLong(field);
+    }
+    return temporal.getLong(field);
+}

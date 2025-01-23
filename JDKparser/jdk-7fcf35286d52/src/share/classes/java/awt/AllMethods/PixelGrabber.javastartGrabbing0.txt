@@ -1,0 +1,13 @@
+/**
+ * Request the PixelGrabber to start fetching the pixels.
+ */
+public synchronized void startGrabbing() {
+    if ((flags & DONEBITS) != 0) {
+        return;
+    }
+    if (!grabbing) {
+        grabbing = true;
+        flags &= ~(ImageObserver.ABORT);
+        producer.startProduction(this);
+    }
+}

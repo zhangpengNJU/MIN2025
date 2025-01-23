@@ -1,0 +1,12 @@
+/**
+ * Initializes or resets state. Needed by constructors, clone,
+ * clear, readObject. and ConcurrentSkipListSet.clone.
+ * (Note that comparator must be separately initialized.)
+ */
+private void initialize() {
+    keySet = null;
+    entrySet = null;
+    values = null;
+    descendingMap = null;
+    head = new HeadIndex<K, V>(new Node<K, V>(null, BASE_HEADER, null), null, null, 1);
+}

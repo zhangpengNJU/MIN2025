@@ -1,0 +1,9 @@
+/**
+ * Returns a hash code for this {@code UUID}.
+ *
+ * @return  A hash code value for this {@code UUID}
+ */
+public int hashCode() {
+    long hilo = mostSigBits ^ leastSigBits;
+    return ((int) (hilo >> 32)) ^ (int) hilo;
+}

@@ -1,0 +1,6 @@
+static void checkSlotCount(int count) {
+    assert ((MAX_JVM_ARITY & (MAX_JVM_ARITY + 1)) == 0);
+    // MAX_JVM_ARITY must be power of 2 minus 1 for following code trick to work:
+    if ((count & MAX_JVM_ARITY) != count)
+        throw newIllegalArgumentException("bad parameter count " + count);
+}

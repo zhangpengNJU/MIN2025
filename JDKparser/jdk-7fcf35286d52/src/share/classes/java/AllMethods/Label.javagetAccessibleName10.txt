@@ -1,0 +1,18 @@
+/**
+ * Get the accessible name of this object.
+ *
+ * @return the localized name of the object -- can be null if this
+ * object does not have a name
+ * @see AccessibleContext#setAccessibleName
+ */
+public String getAccessibleName() {
+    if (accessibleName != null) {
+        return accessibleName;
+    } else {
+        if (getText() == null) {
+            return super.getAccessibleName();
+        } else {
+            return getText();
+        }
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Check if i-th name is a call to MethodHandleImpl.selectAlternative.
+ */
+private boolean isSelectAlternative(int pos) {
+    // selectAlternative idiom:
+    // t_{n}:L=MethodHandleImpl.selectAlternative(...)
+    // t_{n+1}:?=MethodHandle.invokeBasic(t_{n}, ...)
+    if (pos + 1 >= lambdaForm.names.length)
+        return false;
+    Name name0 = lambdaForm.names[pos];
+    Name name1 = lambdaForm.names[pos + 1];
+    return nameRefersTo(name0, MethodHandleImpl.class, "selectAlternative") && isInvokeBasic(name1) && // t_{n+1}:?=MethodHandle.invokeBasic(t_{n}, ...)
+    name1.lastUseIndex(name0) == 0 && // t_{n} is local: used only in t_{n+1}
+    lambdaForm.lastUseIndex(name0) == pos + 1;
+}

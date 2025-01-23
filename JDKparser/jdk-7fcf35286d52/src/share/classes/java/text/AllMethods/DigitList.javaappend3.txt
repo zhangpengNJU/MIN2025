@@ -1,0 +1,11 @@
+/**
+ * Appends a digit to the list, extending the list when necessary.
+ */
+public void append(char digit) {
+    if (count == digits.length) {
+        char[] data = new char[count + 100];
+        System.arraycopy(digits, 0, data, 0, count);
+        digits = data;
+    }
+    digits[count++] = digit;
+}

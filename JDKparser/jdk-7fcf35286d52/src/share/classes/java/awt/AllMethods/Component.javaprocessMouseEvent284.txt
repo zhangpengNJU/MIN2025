@@ -1,0 +1,47 @@
+/**
+ * Processes mouse events occurring on this component by
+ * dispatching them to any registered
+ * <code>MouseListener</code> objects.
+ * <p>
+ * This method is not called unless mouse events are
+ * enabled for this component. Mouse events are enabled
+ * when one of the following occurs:
+ * <ul>
+ * <li>A <code>MouseListener</code> object is registered
+ * via <code>addMouseListener</code>.
+ * <li>Mouse events are enabled via <code>enableEvents</code>.
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param       e the mouse event
+ * @see         java.awt.event.MouseEvent
+ * @see         java.awt.event.MouseListener
+ * @see         #addMouseListener
+ * @see         #enableEvents
+ * @since       JDK1.1
+ */
+protected void processMouseEvent(MouseEvent e) {
+    MouseListener listener = mouseListener;
+    if (listener != null) {
+        int id = e.getID();
+        switch(id) {
+            case MouseEvent.MOUSE_PRESSED:
+                listener.mousePressed(e);
+                break;
+            case MouseEvent.MOUSE_RELEASED:
+                listener.mouseReleased(e);
+                break;
+            case MouseEvent.MOUSE_CLICKED:
+                listener.mouseClicked(e);
+                break;
+            case MouseEvent.MOUSE_EXITED:
+                listener.mouseExited(e);
+                break;
+            case MouseEvent.MOUSE_ENTERED:
+                listener.mouseEntered(e);
+                break;
+        }
+    }
+}

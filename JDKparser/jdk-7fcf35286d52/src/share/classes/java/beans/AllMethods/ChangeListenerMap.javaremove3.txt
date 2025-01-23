@@ -1,0 +1,32 @@
+/**
+ * Removes a listener from the list of listeners for the specified property.
+ * If the listener was added more than once to the same event source,
+ * this listener will be notified one less time after being removed.
+ *
+ * @param name      the name of the property to listen on
+ * @param listener  the listener to process events
+ */
+public final synchronized void remove(String name, L listener) {
+    if (this.map != null) {
+        L[] array = this.map.get(name);
+        if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                if (listener.equals(array[i])) {
+                    int size = array.length - 1;
+                    if (size > 0) {
+                        L[] clone = newArray(size);
+                        System.arraycopy(array, 0, clone, 0, i);
+                        System.arraycopy(array, i + 1, clone, i, size - i);
+                        this.map.put(name, clone);
+                    } else {
+                        this.map.remove(name);
+                        if (this.map.isEmpty()) {
+                            this.map = null;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}

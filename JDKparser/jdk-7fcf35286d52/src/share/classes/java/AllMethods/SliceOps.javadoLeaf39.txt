@@ -1,0 +1,18 @@
+@Override
+protected final Node<P_OUT> doLeaf() {
+    if (isRoot()) {
+        long sizeIfKnown = StreamOpFlag.SIZED.isPreserved(op.sourceOrOpFlags) ? op.exactOutputSizeIfKnown(spliterator) : -1;
+        final Node.Builder<P_OUT> nb = op.makeNodeBuilder(sizeIfKnown, generator);
+        Sink<P_OUT> opSink = op.opWrapSink(helper.getStreamAndOpFlags(), nb);
+        helper.copyIntoWithCancel(helper.wrapSink(opSink), spliterator);
+        // There is no need to truncate since the op performs the
+        // skipping and limiting of elements
+        return nb.build();
+    } else {
+        Node<P_OUT> node = helper.wrapAndCopyInto(helper.makeNodeBuilder(-1, generator), spliterator).build();
+        thisNodeSize = node.count();
+        completed = true;
+        spliterator = null;
+        return node;
+    }
+}

@@ -1,0 +1,17 @@
+@SuppressWarnings("unchecked")
+public void forEachRemaining(Consumer<? super E> action) {
+    Node p;
+    if (action == null)
+        throw new NullPointerException();
+    final LinkedTransferQueue<E> q = this.queue;
+    if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null)) {
+        exhausted = true;
+        do {
+            Object e = p.item;
+            if (e != null && e != p)
+                action.accept((E) e);
+            if (p == (p = p.next))
+                p = q.firstDataNode();
+        } while (p != null && p.isData);
+    }
+}

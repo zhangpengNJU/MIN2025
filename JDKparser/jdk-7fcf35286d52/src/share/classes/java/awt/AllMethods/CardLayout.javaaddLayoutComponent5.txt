@@ -1,0 +1,19 @@
+/**
+ * @deprecated   replaced by
+ *      <code>addLayoutComponent(Component, Object)</code>.
+ */
+@Deprecated
+public void addLayoutComponent(String name, Component comp) {
+    synchronized (comp.getTreeLock()) {
+        if (!vector.isEmpty()) {
+            comp.setVisible(false);
+        }
+        for (int i = 0; i < vector.size(); i++) {
+            if (((Card) vector.get(i)).name.equals(name)) {
+                ((Card) vector.get(i)).comp = comp;
+                return;
+            }
+        }
+        vector.add(new Card(name, comp));
+    }
+}

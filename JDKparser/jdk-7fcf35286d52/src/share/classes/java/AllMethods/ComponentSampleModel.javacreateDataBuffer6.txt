@@ -1,0 +1,34 @@
+/**
+ * Creates a <code>DataBuffer</code> that corresponds to this
+ * <code>ComponentSampleModel</code>.
+ * The <code>DataBuffer</code> object's data type, number of banks,
+ * and size are be consistent with this <code>ComponentSampleModel</code>.
+ * @return a <code>DataBuffer</code> whose data type, number of banks
+ *         and size are consistent with this
+ *         <code>ComponentSampleModel</code>.
+ */
+public DataBuffer createDataBuffer() {
+    DataBuffer dataBuffer = null;
+    int size = getBufferSize();
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            dataBuffer = new DataBufferByte(size, numBanks);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            dataBuffer = new DataBufferUShort(size, numBanks);
+            break;
+        case DataBuffer.TYPE_SHORT:
+            dataBuffer = new DataBufferShort(size, numBanks);
+            break;
+        case DataBuffer.TYPE_INT:
+            dataBuffer = new DataBufferInt(size, numBanks);
+            break;
+        case DataBuffer.TYPE_FLOAT:
+            dataBuffer = new DataBufferFloat(size, numBanks);
+            break;
+        case DataBuffer.TYPE_DOUBLE:
+            dataBuffer = new DataBufferDouble(size, numBanks);
+            break;
+    }
+    return dataBuffer;
+}

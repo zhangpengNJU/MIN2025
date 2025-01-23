@@ -1,0 +1,10 @@
+final CompletableFuture<T> tryFire(int mode) {
+    CompletableFuture<T> d;
+    CompletableFuture<T> a;
+    if ((d = dep) == null || !d.uniWhenComplete(a = src, fn, mode > 0 ? null : this))
+        return null;
+    dep = null;
+    src = null;
+    fn = null;
+    return d.postFire(a, mode);
+}

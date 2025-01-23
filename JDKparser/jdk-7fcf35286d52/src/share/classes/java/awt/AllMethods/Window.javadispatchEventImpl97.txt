@@ -1,0 +1,11 @@
+/**
+ * Dispatches an event to this window or one of its sub components.
+ * @param e the event
+ */
+void dispatchEventImpl(AWTEvent e) {
+    if (e.getID() == ComponentEvent.COMPONENT_RESIZED) {
+        invalidate();
+        validate();
+    }
+    super.dispatchEventImpl(e);
+}

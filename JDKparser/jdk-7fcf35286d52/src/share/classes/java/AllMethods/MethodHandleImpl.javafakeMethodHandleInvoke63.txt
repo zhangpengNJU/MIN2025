@@ -1,0 +1,27 @@
+static MethodHandle fakeMethodHandleInvoke(MemberName method) {
+    int idx;
+    assert (method.isMethodHandleInvoke());
+    switch(method.getName()) {
+        case "invoke":
+            idx = 0;
+            break;
+        case "invokeExact":
+            idx = 1;
+            break;
+        default:
+            throw new InternalError(method.getName());
+    }
+    MethodHandle mh = FAKE_METHOD_HANDLE_INVOKE[idx];
+    if (mh != null)
+        return mh;
+    MethodType type = MethodType.methodType(Object.class, UnsupportedOperationException.class, MethodHandle.class, Object[].class);
+    mh = throwException(type);
+    mh = mh.bindTo(new UnsupportedOperationException("cannot reflectively invoke MethodHandle"));
+    if (!method.getInvocationType().equals(mh.type()))
+        throw new InternalError(method.toString());
+    mh = mh.withInternalMemberName(method, false);
+    mh = mh.asVarargsCollector(Object[].class);
+    assert (method.isVarargs());
+    FAKE_METHOD_HANDLE_INVOKE[idx] = mh;
+    return mh;
+}

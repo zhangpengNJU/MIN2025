@@ -1,0 +1,25 @@
+public void forEachRemaining(Consumer<? super E> action) {
+    // hoist accesses and checks from loop
+    int i, hi, mc;
+    ArrayList<E> lst;
+    Object[] a;
+    if (action == null)
+        throw new NullPointerException();
+    if ((lst = list) != null && (a = lst.elementData) != null) {
+        if ((hi = fence) < 0) {
+            mc = lst.modCount;
+            hi = lst.size;
+        } else
+            mc = expectedModCount;
+        if ((i = index) >= 0 && (index = hi) <= a.length) {
+            for (; i < hi; ++i) {
+                @SuppressWarnings("unchecked")
+                E e = (E) a[i];
+                action.accept(e);
+            }
+            if (lst.modCount == mc)
+                return;
+        }
+    }
+    throw new ConcurrentModificationException();
+}

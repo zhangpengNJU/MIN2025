@@ -1,0 +1,36 @@
+/**
+ * Adds a certificate for this identity. If the identity has a public
+ * key, the public key in the certificate must be the same, and if
+ * the identity does not have a public key, the identity's
+ * public key is set to be that specified in the certificate.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "addIdentityCertificate"}
+ * as its argument to see if it's ok to add a certificate.
+ *
+ * @param certificate the certificate to be added.
+ *
+ * @exception KeyManagementException if the certificate is not valid,
+ * if the public key in the certificate being added conflicts with
+ * this identity's public key, or if another exception occurs.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * adding a certificate.
+ *
+ * @see SecurityManager#checkSecurityAccess
+ */
+public void addCertificate(Certificate certificate) throws KeyManagementException {
+    check("addIdentityCertificate");
+    if (certificates == null) {
+        certificates = new Vector<Certificate>();
+    }
+    if (publicKey != null) {
+        if (!keyEquals(publicKey, certificate.getPublicKey())) {
+            throw new KeyManagementException("public key different from cert public key");
+        }
+    } else {
+        publicKey = certificate.getPublicKey();
+    }
+    certificates.addElement(certificate);
+}

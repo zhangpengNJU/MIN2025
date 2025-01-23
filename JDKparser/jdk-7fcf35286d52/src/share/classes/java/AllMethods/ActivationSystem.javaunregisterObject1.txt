@@ -1,0 +1,13 @@
+/**
+ * Remove the activation id and associated descriptor previously
+ * registered with the <code>ActivationSystem</code>; the object
+ * can no longer be activated via the object's activation id.
+ *
+ * @param id the object's activation id (from previous registration)
+ * @exception ActivationException if unregister fails (e.g., database
+ * update failure, etc).
+ * @exception UnknownObjectException if object is unknown (not registered)
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public void unregisterObject(ActivationID id) throws ActivationException, UnknownObjectException, RemoteException;

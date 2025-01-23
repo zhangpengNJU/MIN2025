@@ -1,0 +1,56 @@
+/**
+ * Sets this transform to a rotation transformation that rotates
+ * coordinates by the specified number of quadrants.
+ * This operation is equivalent to calling:
+ * <pre>
+ *     setToRotation(numquadrants * Math.PI / 2.0);
+ * </pre>
+ * Rotating by a positive number of quadrants rotates points on
+ * the positive X axis toward the positive Y axis.
+ * @param numquadrants the number of 90 degree arcs to rotate by
+ * @since 1.6
+ */
+public void setToQuadrantRotation(int numquadrants) {
+    switch(numquadrants & 3) {
+        case 0:
+            m00 = 1.0;
+            m10 = 0.0;
+            m01 = 0.0;
+            m11 = 1.0;
+            m02 = 0.0;
+            m12 = 0.0;
+            state = APPLY_IDENTITY;
+            type = TYPE_IDENTITY;
+            break;
+        case 1:
+            m00 = 0.0;
+            m10 = 1.0;
+            m01 = -1.0;
+            m11 = 0.0;
+            m02 = 0.0;
+            m12 = 0.0;
+            state = APPLY_SHEAR;
+            type = TYPE_QUADRANT_ROTATION;
+            break;
+        case 2:
+            m00 = -1.0;
+            m10 = 0.0;
+            m01 = 0.0;
+            m11 = -1.0;
+            m02 = 0.0;
+            m12 = 0.0;
+            state = APPLY_SCALE;
+            type = TYPE_QUADRANT_ROTATION;
+            break;
+        case 3:
+            m00 = 0.0;
+            m10 = -1.0;
+            m01 = 1.0;
+            m11 = 0.0;
+            m02 = 0.0;
+            m12 = 0.0;
+            state = APPLY_SHEAR;
+            type = TYPE_QUADRANT_ROTATION;
+            break;
+    }
+}

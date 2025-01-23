@@ -1,0 +1,7 @@
+/**
+ * Returns a hashcode calculated from the hashcode of the
+ * actions String and the url string.
+ */
+public int hashCode() {
+    return getActions().hashCode() + scheme.hashCode() + authority.hashCode() + (path == null ? 0 : path.hashCode());
+}

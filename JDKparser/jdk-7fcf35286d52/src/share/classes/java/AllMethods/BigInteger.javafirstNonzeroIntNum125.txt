@@ -1,0 +1,20 @@
+/**
+ * Returns the index of the int that contains the first nonzero int in the
+ * little-endian binary representation of the magnitude (int 0 is the
+ * least significant). If the magnitude is zero, return value is undefined.
+ */
+private int firstNonzeroIntNum() {
+    int fn = firstNonzeroIntNum - 2;
+    if (fn == -2) {
+        // firstNonzeroIntNum not initialized yet
+        fn = 0;
+        // Search for the first nonzero int
+        int i;
+        int mlen = mag.length;
+        for (i = mlen - 1; i >= 0 && mag[i] == 0; i--) ;
+        fn = mlen - i - 1;
+        // offset by two to initialize
+        firstNonzeroIntNum = fn + 2;
+    }
+    return fn;
+}

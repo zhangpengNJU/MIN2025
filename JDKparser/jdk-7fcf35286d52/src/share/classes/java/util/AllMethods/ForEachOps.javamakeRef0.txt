@@ -1,0 +1,14 @@
+/**
+ * Constructs a {@code TerminalOp} that perform an action for every element
+ * of a stream.
+ *
+ * @param action the {@code Consumer} that receives all elements of a
+ *        stream
+ * @param ordered whether an ordered traversal is requested
+ * @param <T> the type of the stream elements
+ * @return the {@code TerminalOp} instance
+ */
+public static <T> TerminalOp<T, Void> makeRef(Consumer<? super T> action, boolean ordered) {
+    Objects.requireNonNull(action);
+    return new ForEachOp.OfRef<>(action, ordered);
+}

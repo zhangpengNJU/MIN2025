@@ -1,0 +1,16 @@
+/**
+ * Returns a new {@link Shape} object defined by the geometry of the
+ * specified <code>Shape</code> after it has been transformed by
+ * this transform.
+ * @param pSrc the specified <code>Shape</code> object to be
+ * transformed by this transform.
+ * @return a new <code>Shape</code> object that defines the geometry
+ * of the transformed <code>Shape</code>, or null if {@code pSrc} is null.
+ * @since 1.2
+ */
+public Shape createTransformedShape(Shape pSrc) {
+    if (pSrc == null) {
+        return null;
+    }
+    return new Path2D.Double(pSrc, this);
+}

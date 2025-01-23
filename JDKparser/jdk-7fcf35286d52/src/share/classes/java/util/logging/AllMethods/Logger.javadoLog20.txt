@@ -1,0 +1,14 @@
+// private support method for logging.
+// We fill in the logger name, resource bundle name, and
+// resource bundle and then call "void log(LogRecord)".
+private void doLog(LogRecord lr) {
+    lr.setLoggerName(name);
+    final LoggerBundle lb = getEffectiveLoggerBundle();
+    final ResourceBundle bundle = lb.userBundle;
+    final String ebname = lb.resourceBundleName;
+    if (ebname != null && bundle != null) {
+        lr.setResourceBundleName(ebname);
+        lr.setResourceBundle(bundle);
+    }
+    log(lr);
+}

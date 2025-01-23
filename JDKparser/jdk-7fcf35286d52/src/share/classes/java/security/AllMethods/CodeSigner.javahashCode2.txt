@@ -1,0 +1,17 @@
+/**
+ * Returns the hash code value for this code signer.
+ * The hash code is generated using the signer's certificate path and the
+ * timestamp, if present.
+ *
+ * @return a hash code value for this code signer.
+ */
+public int hashCode() {
+    if (myhash == -1) {
+        if (timestamp == null) {
+            myhash = signerCertPath.hashCode();
+        } else {
+            myhash = signerCertPath.hashCode() + timestamp.hashCode();
+        }
+    }
+    return myhash;
+}

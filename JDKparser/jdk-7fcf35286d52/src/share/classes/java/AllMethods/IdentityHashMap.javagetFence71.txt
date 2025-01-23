@@ -1,0 +1,10 @@
+final int getFence() {
+    // initialize fence and size on first use
+    int hi;
+    if ((hi = fence) < 0) {
+        est = map.size;
+        expectedModCount = map.modCount;
+        hi = fence = map.table.length;
+    }
+    return hi;
+}

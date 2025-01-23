@@ -1,0 +1,9 @@
+/**
+ * Return the secondary component of a collation element.
+ * @param order the collation element
+ * @return the element's secondary component
+ */
+public final static short secondaryOrder(int order) {
+    order = order & RBCollationTables.SECONDARYORDERMASK;
+    return ((short) (order >> RBCollationTables.SECONDARYORDERSHIFT));
+}

@@ -1,0 +1,36 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec
+ * The default implementation is equivalent to the following steps for this
+ * {@code map}, then returning the current value or {@code null} if now
+ * absent:
+ *
+ * <pre> {@code
+ * if (map.get(key) == null) {
+ *     V newValue = mappingFunction.apply(key);
+ *     if (newValue != null)
+ *         return map.putIfAbsent(key, newValue);
+ * }
+ * }</pre>
+ *
+ * The default implementation may retry these steps when multiple
+ * threads attempt updates including potentially calling the mapping
+ * function multiple times.
+ *
+ * <p>This implementation assumes that the ConcurrentMap cannot contain null
+ * values and {@code get()} returning null unambiguously means the key is
+ * absent. Implementations which support null values <strong>must</strong>
+ * override this default implementation.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.8
+ */
+@Override
+default V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+    Objects.requireNonNull(mappingFunction);
+    V v, newValue;
+    return ((v = get(key)) == null && (newValue = mappingFunction.apply(key)) != null && (v = putIfAbsent(key, newValue)) == null) ? newValue : v;
+}

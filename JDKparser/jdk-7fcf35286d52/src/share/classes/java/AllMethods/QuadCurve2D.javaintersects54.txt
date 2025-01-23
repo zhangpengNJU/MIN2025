@@ -1,0 +1,163 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean intersects(double x, double y, double w, double h) {
+    // Trivially reject non-existant rectangles
+    if (w <= 0 || h <= 0) {
+        return false;
+    }
+    // Trivially accept if either endpoint is inside the rectangle
+    // (not on its border since it may end there and not go inside)
+    // Record where they lie with respect to the rectangle.
+    // -1 => left, 0 => inside, 1 => right
+    double x1 = getX1();
+    double y1 = getY1();
+    int x1tag = getTag(x1, x, x + w);
+    int y1tag = getTag(y1, y, y + h);
+    if (x1tag == INSIDE && y1tag == INSIDE) {
+        return true;
+    }
+    double x2 = getX2();
+    double y2 = getY2();
+    int x2tag = getTag(x2, x, x + w);
+    int y2tag = getTag(y2, y, y + h);
+    if (x2tag == INSIDE && y2tag == INSIDE) {
+        return true;
+    }
+    double ctrlx = getCtrlX();
+    double ctrly = getCtrlY();
+    int ctrlxtag = getTag(ctrlx, x, x + w);
+    int ctrlytag = getTag(ctrly, y, y + h);
+    // Trivially reject if all points are entirely to one side of
+    // the rectangle.
+    if (x1tag < INSIDE && x2tag < INSIDE && ctrlxtag < INSIDE) {
+        // All points left
+        return false;
+    }
+    if (y1tag < INSIDE && y2tag < INSIDE && ctrlytag < INSIDE) {
+        // All points above
+        return false;
+    }
+    if (x1tag > INSIDE && x2tag > INSIDE && ctrlxtag > INSIDE) {
+        // All points right
+        return false;
+    }
+    if (y1tag > INSIDE && y2tag > INSIDE && ctrlytag > INSIDE) {
+        // All points below
+        return false;
+    }
+    // Test for endpoints on the edge where either the segment
+    // or the curve is headed "inwards" from them
+    // Note: These tests are a superset of the fast endpoint tests
+    // above and thus repeat those tests, but take more time
+    // and cover more cases
+    if (inwards(x1tag, x2tag, ctrlxtag) && inwards(y1tag, y2tag, ctrlytag)) {
+        // First endpoint on border with either edge moving inside
+        return true;
+    }
+    if (inwards(x2tag, x1tag, ctrlxtag) && inwards(y2tag, y1tag, ctrlytag)) {
+        // Second endpoint on border with either edge moving inside
+        return true;
+    }
+    // Trivially accept if endpoints span directly across the rectangle
+    boolean xoverlap = (x1tag * x2tag <= 0);
+    boolean yoverlap = (y1tag * y2tag <= 0);
+    if (x1tag == INSIDE && x2tag == INSIDE && yoverlap) {
+        return true;
+    }
+    if (y1tag == INSIDE && y2tag == INSIDE && xoverlap) {
+        return true;
+    }
+    // We now know that both endpoints are outside the rectangle
+    // but the 3 points are not all on one side of the rectangle.
+    // Therefore the curve cannot be contained inside the rectangle,
+    // but the rectangle might be contained inside the curve, or
+    // the curve might intersect the boundary of the rectangle.
+    double[] eqn = new double[3];
+    double[] res = new double[3];
+    if (!yoverlap) {
+        // Both Y coordinates for the closing segment are above or
+        // below the rectangle which means that we can only intersect
+        // if the curve crosses the top (or bottom) of the rectangle
+        // in more than one place and if those crossing locations
+        // span the horizontal range of the rectangle.
+        fillEqn(eqn, (y1tag < INSIDE ? y : y + h), y1, ctrly, y2);
+        return (solveQuadratic(eqn, res) == 2 && evalQuadratic(res, 2, true, true, null, x1, ctrlx, x2) == 2 && getTag(res[0], x, x + w) * getTag(res[1], x, x + w) <= 0);
+    }
+    // Y ranges overlap.  Now we examine the X ranges
+    if (!xoverlap) {
+        // Both X coordinates for the closing segment are left of
+        // or right of the rectangle which means that we can only
+        // intersect if the curve crosses the left (or right) edge
+        // of the rectangle in more than one place and if those
+        // crossing locations span the vertical range of the rectangle.
+        fillEqn(eqn, (x1tag < INSIDE ? x : x + w), x1, ctrlx, x2);
+        return (solveQuadratic(eqn, res) == 2 && evalQuadratic(res, 2, true, true, null, y1, ctrly, y2) == 2 && getTag(res[0], y, y + h) * getTag(res[1], y, y + h) <= 0);
+    }
+    // The X and Y ranges of the endpoints overlap the X and Y
+    // ranges of the rectangle, now find out how the endpoint
+    // line segment intersects the Y range of the rectangle
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    double k = y2 * x1 - x2 * y1;
+    int c1tag, c2tag;
+    if (y1tag == INSIDE) {
+        c1tag = x1tag;
+    } else {
+        c1tag = getTag((k + dx * (y1tag < INSIDE ? y : y + h)) / dy, x, x + w);
+    }
+    if (y2tag == INSIDE) {
+        c2tag = x2tag;
+    } else {
+        c2tag = getTag((k + dx * (y2tag < INSIDE ? y : y + h)) / dy, x, x + w);
+    }
+    // If the part of the line segment that intersects the Y range
+    // of the rectangle crosses it horizontally - trivially accept
+    if (c1tag * c2tag <= 0) {
+        return true;
+    }
+    // Now we know that both the X and Y ranges intersect and that
+    // the endpoint line segment does not directly cross the rectangle.
+    // 
+    // We can almost treat this case like one of the cases above
+    // where both endpoints are to one side, except that we will
+    // only get one intersection of the curve with the vertical
+    // side of the rectangle.  This is because the endpoint segment
+    // accounts for the other intersection.
+    // 
+    // (Remember there is overlap in both the X and Y ranges which
+    // means that the segment must cross at least one vertical edge
+    // of the rectangle - in particular, the "near vertical side" -
+    // leaving only one intersection for the curve.)
+    // 
+    // Now we calculate the y tags of the two intersections on the
+    // "near vertical side" of the rectangle.  We will have one with
+    // the endpoint segment, and one with the curve.  If those two
+    // vertical intersections overlap the Y range of the rectangle,
+    // we have an intersection.  Otherwise, we don't.
+    // c1tag = vertical intersection class of the endpoint segment
+    // 
+    // Choose the y tag of the endpoint that was not on the same
+    // side of the rectangle as the subsegment calculated above.
+    // Note that we can "steal" the existing Y tag of that endpoint
+    // since it will be provably the same as the vertical intersection.
+    c1tag = ((c1tag * x1tag <= 0) ? y1tag : y2tag);
+    // c2tag = vertical intersection class of the curve
+    // 
+    // We have to calculate this one the straightforward way.
+    // Note that the c2tag can still tell us which vertical edge
+    // to test against.
+    fillEqn(eqn, (c2tag < INSIDE ? x : x + w), x1, ctrlx, x2);
+    int num = solveQuadratic(eqn, res);
+    // Note: We should be able to assert(num == 2); since the
+    // X range "crosses" (not touches) the vertical boundary,
+    // but we pass num to evalQuadratic for completeness.
+    evalQuadratic(res, num, true, true, null, y1, ctrly, y2);
+    // Note: We can assert(num evals == 1); since one of the
+    // 2 crossings will be out of the [0,1] range.
+    c2tag = getTag(res[0], y, y + h);
+    // Finally, we have an intersection if the two crossings
+    // overlap the Y range of the rectangle.
+    return (c1tag * c2tag <= 0);
+}

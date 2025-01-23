@@ -1,0 +1,9 @@
+final int getSiblingIndexBelow() {
+    checkTreeLock();
+    Container parent = getContainer();
+    if (parent == null) {
+        return -1;
+    }
+    int nextBelow = parent.getComponentZOrder(this) + 1;
+    return nextBelow >= parent.getComponentCount() ? -1 : nextBelow;
+}

@@ -1,0 +1,33 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * specified security context is not allowed to read the file
+ * specified by the string argument. The context must be a security
+ * context returned by a previous call to
+ * <code>getSecurityContext</code>.
+ * <p> If <code>context</code> is an instance of
+ * <code>AccessControlContext</code> then the
+ * <code>AccessControlContext.checkPermission</code> method will
+ * be invoked with the <code>FilePermission(file,"read")</code> permission.
+ * <p> If <code>context</code> is not an instance of
+ * <code>AccessControlContext</code> then a
+ * <code>SecurityException</code> is thrown.
+ * <p>
+ * If you override this method, then you should make a call to
+ * <code>super.checkRead</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param      file      the system-dependent filename.
+ * @param      context   a system-dependent security context.
+ * @exception  SecurityException  if the specified security context
+ *             is not an instance of <code>AccessControlContext</code>
+ *             (e.g., is <code>null</code>), or does not have permission
+ *             to read the specified file.
+ * @exception  NullPointerException if the <code>file</code> argument is
+ *             <code>null</code>.
+ * @see        java.lang.SecurityManager#getSecurityContext()
+ * @see        java.security.AccessControlContext#checkPermission(java.security.Permission)
+ */
+public void checkRead(String file, Object context) {
+    checkPermission(new FilePermission(file, SecurityConstants.FILE_READ_ACTION), context);
+}

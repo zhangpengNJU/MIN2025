@@ -1,0 +1,26 @@
+public int currentSegment(double[] coords) {
+    int segtype;
+    int numpoints;
+    if (prevcurve != null) {
+        // Need to finish off junction between curves
+        if (thiscurve == null || thiscurve.getOrder() == 0) {
+            return SEG_CLOSE;
+        }
+        coords[0] = thiscurve.getX0();
+        coords[1] = thiscurve.getY0();
+        segtype = SEG_LINETO;
+        numpoints = 1;
+    } else if (thiscurve == null) {
+        throw new NoSuchElementException("area iterator out of bounds");
+    } else {
+        segtype = thiscurve.getSegment(coords);
+        numpoints = thiscurve.getOrder();
+        if (numpoints == 0) {
+            numpoints = 1;
+        }
+    }
+    if (transform != null) {
+        transform.transform(coords, 0, coords, 0, numpoints);
+    }
+    return segtype;
+}

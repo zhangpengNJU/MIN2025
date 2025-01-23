@@ -1,0 +1,11 @@
+/**
+ * How far out of place is e?
+ */
+private static int entryDislocation(Entry<?>[] cache, int pos, Entry<?> e) {
+    ClassValue<?> cv = e.classValueOrNull();
+    // entry is not live!
+    if (cv == null)
+        return 0;
+    int mask = (cache.length - 1);
+    return (pos - cv.hashCodeForCache) & mask;
+}

@@ -1,0 +1,21 @@
+/**
+ * Returns a caret index corresponding to <code>hit</code>.
+ * Carets are numbered from left to right (top to bottom) starting from
+ * zero. This always places carets next to the character hit, on the
+ * indicated side of the character.
+ * @param hit a hit on a character in this <code>TextLayout</code>
+ * @return a caret index corresponding to the specified hit.
+ */
+private int hitToCaret(TextHitInfo hit) {
+    int hitIndex = hit.getCharIndex();
+    if (hitIndex < 0) {
+        return textLine.isDirectionLTR() ? 0 : characterCount;
+    } else if (hitIndex >= characterCount) {
+        return textLine.isDirectionLTR() ? characterCount : 0;
+    }
+    int visIndex = textLine.logicalToVisual(hitIndex);
+    if (hit.isLeadingEdge() != textLine.isCharLTR(hitIndex)) {
+        ++visIndex;
+    }
+    return visIndex;
+}

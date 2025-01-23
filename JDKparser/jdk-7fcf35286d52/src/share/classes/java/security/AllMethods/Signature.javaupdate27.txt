@@ -1,0 +1,22 @@
+/**
+ * Updates the data to be signed or verified using the specified
+ * ByteBuffer. Processes the {@code data.remaining()} bytes
+ * starting at at {@code data.position()}.
+ * Upon return, the buffer's position will be equal to its limit;
+ * its limit will not have changed.
+ *
+ * @param data the ByteBuffer
+ *
+ * @exception SignatureException if this signature object is not
+ * initialized properly.
+ * @since 1.5
+ */
+public final void update(ByteBuffer data) throws SignatureException {
+    if ((state != SIGN) && (state != VERIFY)) {
+        throw new SignatureException("object not initialized for " + "signature or verification");
+    }
+    if (data == null) {
+        throw new NullPointerException();
+    }
+    engineUpdate(data);
+}

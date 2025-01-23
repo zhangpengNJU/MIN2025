@@ -1,0 +1,10 @@
+/**
+ * Adds a new task to the priority queue.
+ */
+void add(TimerTask task) {
+    // Grow backing store if necessary
+    if (size + 1 == queue.length)
+        queue = Arrays.copyOf(queue, 2 * queue.length);
+    queue[++size] = task;
+    fixUp(size);
+}

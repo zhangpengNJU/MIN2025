@@ -1,0 +1,38 @@
+/**
+ * Adds a PropertyChangeListener to the listener list. The listener is
+ * registered for all bound properties of this class, including the
+ * following:
+ * <ul>
+ *    <li>this Window's font ("font")</li>
+ *    <li>this Window's background color ("background")</li>
+ *    <li>this Window's foreground color ("foreground")</li>
+ *    <li>this Window's focusability ("focusable")</li>
+ *    <li>this Window's focus traversal keys enabled state
+ *        ("focusTraversalKeysEnabled")</li>
+ *    <li>this Window's Set of FORWARD_TRAVERSAL_KEYS
+ *        ("forwardFocusTraversalKeys")</li>
+ *    <li>this Window's Set of BACKWARD_TRAVERSAL_KEYS
+ *        ("backwardFocusTraversalKeys")</li>
+ *    <li>this Window's Set of UP_CYCLE_TRAVERSAL_KEYS
+ *        ("upCycleFocusTraversalKeys")</li>
+ *    <li>this Window's Set of DOWN_CYCLE_TRAVERSAL_KEYS
+ *        ("downCycleFocusTraversalKeys")</li>
+ *    <li>this Window's focus traversal policy ("focusTraversalPolicy")
+ *        </li>
+ *    <li>this Window's focusable Window state ("focusableWindowState")
+ *        </li>
+ *    <li>this Window's always-on-top state("alwaysOnTop")</li>
+ * </ul>
+ * Note that if this Window is inheriting a bound property, then no
+ * event will be fired in response to a change in the inherited property.
+ * <p>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param    listener  the PropertyChangeListener to be added
+ *
+ * @see Component#removePropertyChangeListener
+ * @see #addPropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    super.addPropertyChangeListener(listener);
+}

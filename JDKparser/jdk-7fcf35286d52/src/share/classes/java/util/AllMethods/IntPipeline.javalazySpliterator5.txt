@@ -1,0 +1,5 @@
+@Override
+@SuppressWarnings("unchecked")
+final Spliterator.OfInt lazySpliterator(Supplier<? extends Spliterator<Integer>> supplier) {
+    return new StreamSpliterators.DelegatingSpliterator.OfInt((Supplier<Spliterator.OfInt>) supplier);
+}

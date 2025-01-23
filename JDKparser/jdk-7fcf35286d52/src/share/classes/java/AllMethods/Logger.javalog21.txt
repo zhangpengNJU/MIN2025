@@ -1,0 +1,20 @@
+// ================================================================
+// Start of convenience methods WITHOUT className and methodName
+// ================================================================
+/**
+ * Log a message, with no arguments.
+ * <p>
+ * If the logger is currently enabled for the given message
+ * level then the given message is forwarded to all the
+ * registered output Handler objects.
+ * <p>
+ * @param   level   One of the message level identifiers, e.g., SEVERE
+ * @param   msg     The string message (or a key in the message catalog)
+ */
+public void log(Level level, String msg) {
+    if (!isLoggable(level)) {
+        return;
+    }
+    LogRecord lr = new LogRecord(level, msg);
+    doLog(lr);
+}

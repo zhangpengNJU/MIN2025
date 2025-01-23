@@ -1,0 +1,9 @@
+private static int dropArgumentChecks(MethodType oldType, int pos, List<Class<?>> valueTypes) {
+    int dropped = valueTypes.size();
+    MethodType.checkSlotCount(dropped);
+    int outargs = oldType.parameterCount();
+    int inargs = outargs + dropped;
+    if (pos < 0 || pos > outargs)
+        throw newIllegalArgumentException("no argument type to remove" + Arrays.asList(oldType, pos, valueTypes, inargs, outargs));
+    return dropped;
+}

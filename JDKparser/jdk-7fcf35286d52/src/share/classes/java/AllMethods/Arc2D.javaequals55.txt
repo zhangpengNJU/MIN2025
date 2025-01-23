@@ -1,0 +1,24 @@
+/**
+ * Determines whether or not the specified <code>Object</code> is
+ * equal to this <code>Arc2D</code>.  The specified
+ * <code>Object</code> is equal to this <code>Arc2D</code>
+ * if it is an instance of <code>Arc2D</code> and if its
+ * location, size, arc extents and type are the same as this
+ * <code>Arc2D</code>.
+ * @param obj  an <code>Object</code> to be compared with this
+ *             <code>Arc2D</code>.
+ * @return  <code>true</code> if <code>obj</code> is an instance
+ *          of <code>Arc2D</code> and has the same values;
+ *          <code>false</code> otherwise.
+ * @since 1.6
+ */
+public boolean equals(Object obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj instanceof Arc2D) {
+        Arc2D a2d = (Arc2D) obj;
+        return ((getX() == a2d.getX()) && (getY() == a2d.getY()) && (getWidth() == a2d.getWidth()) && (getHeight() == a2d.getHeight()) && (getAngleStart() == a2d.getAngleStart()) && (getAngleExtent() == a2d.getAngleExtent()) && (getArcType() == a2d.getArcType()));
+    }
+    return false;
+}

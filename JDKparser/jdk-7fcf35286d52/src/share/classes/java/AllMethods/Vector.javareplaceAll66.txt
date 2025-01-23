@@ -1,0 +1,14 @@
+@Override
+@SuppressWarnings("unchecked")
+public synchronized void replaceAll(UnaryOperator<E> operator) {
+    Objects.requireNonNull(operator);
+    final int expectedModCount = modCount;
+    final int size = elementCount;
+    for (int i = 0; modCount == expectedModCount && i < size; i++) {
+        elementData[i] = operator.apply((E) elementData[i]);
+    }
+    if (modCount != expectedModCount) {
+        throw new ConcurrentModificationException();
+    }
+    modCount++;
+}

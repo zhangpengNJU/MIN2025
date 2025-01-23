@@ -1,0 +1,13 @@
+boolean checkWindowClosingException() {
+    if (windowClosingException != null) {
+        if (this instanceof Dialog) {
+            ((Dialog) this).interruptBlocking();
+        } else {
+            windowClosingException.fillInStackTrace();
+            windowClosingException.printStackTrace();
+            windowClosingException = null;
+        }
+        return true;
+    }
+    return false;
+}

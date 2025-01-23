@@ -1,0 +1,58 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this /
+ * divisor)}, with rounding according to the context settings.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @param  mc the context to use.
+ * @return {@code this / divisor}, rounded as necessary.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY} or
+ *         {@code mc.precision == 0} and the quotient has a
+ *         non-terminating decimal expansion.
+ * @since  1.5
+ */
+public BigDecimal divide(BigDecimal divisor, MathContext mc) {
+    int mcp = mc.precision;
+    if (mcp == 0)
+        return divide(divisor);
+    BigDecimal dividend = this;
+    long preferredScale = (long) dividend.scale - divisor.scale;
+    // Now calculate the answer.  We use the existing
+    // divide-and-round method, but as this rounds to scale we have
+    // to normalize the values here to achieve the desired result.
+    // For x/y we first handle y=0 and x=0, and then normalize x and
+    // y to give x' and y' with the following constraints:
+    // (a) 0.1 <= x' < 1
+    // (b)  x' <= y' < 10*x'
+    // Dividing x'/y' with the required scale set to mc.precision then
+    // will give a result in the range 0.1 to 1 rounded to exactly
+    // the right number of digits (except in the case of a result of
+    // 1.000... which can arise when x=y, or when rounding overflows
+    // The 1.000... case will reduce properly to 1.
+    if (divisor.signum() == 0) {
+        // x/0
+        if (// 0/0
+        dividend.signum() == 0)
+            // NaN
+            throw new ArithmeticException("Division undefined");
+        throw new ArithmeticException("Division by zero");
+    }
+    if (// 0/y
+    dividend.signum() == 0)
+        return zeroValueOf(saturateLong(preferredScale));
+    int xscale = dividend.precision();
+    int yscale = divisor.precision();
+    if (dividend.intCompact != INFLATED) {
+        if (divisor.intCompact != INFLATED) {
+            return divide(dividend.intCompact, xscale, divisor.intCompact, yscale, preferredScale, mc);
+        } else {
+            return divide(dividend.intCompact, xscale, divisor.intVal, yscale, preferredScale, mc);
+        }
+    } else {
+        if (divisor.intCompact != INFLATED) {
+            return divide(dividend.intVal, xscale, divisor.intCompact, yscale, preferredScale, mc);
+        } else {
+            return divide(dividend.intVal, xscale, divisor.intVal, yscale, preferredScale, mc);
+        }
+    }
+}

@@ -1,0 +1,35 @@
+/**
+ * Creates a <code>WritableRaster</code> with the specified width and
+ * height that has a data layout (<code>SampleModel</code>) compatible
+ * with this <code>ColorModel</code>.
+ * @param w the width to apply to the new <code>WritableRaster</code>
+ * @param h the height to apply to the new <code>WritableRaster</code>
+ * @return a <code>WritableRaster</code> object with the specified
+ * width and height.
+ * @throws IllegalArgumentException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero
+ * @see WritableRaster
+ * @see SampleModel
+ */
+final public WritableRaster createCompatibleWritableRaster(int w, int h) {
+    if ((w <= 0) || (h <= 0)) {
+        throw new IllegalArgumentException("Width (" + w + ") and height (" + h + ") cannot be <= 0");
+    }
+    int[] bandmasks;
+    if (supportsAlpha) {
+        bandmasks = new int[4];
+        bandmasks[3] = alpha_mask;
+    } else {
+        bandmasks = new int[3];
+    }
+    bandmasks[0] = red_mask;
+    bandmasks[1] = green_mask;
+    bandmasks[2] = blue_mask;
+    if (pixel_bits > 16) {
+        return Raster.createPackedRaster(DataBuffer.TYPE_INT, w, h, bandmasks, null);
+    } else if (pixel_bits > 8) {
+        return Raster.createPackedRaster(DataBuffer.TYPE_USHORT, w, h, bandmasks, null);
+    } else {
+        return Raster.createPackedRaster(DataBuffer.TYPE_BYTE, w, h, bandmasks, null);
+    }
+}

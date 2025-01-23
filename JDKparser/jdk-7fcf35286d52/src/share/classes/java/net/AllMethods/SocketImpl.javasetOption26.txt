@@ -1,0 +1,19 @@
+<T> void setOption(SocketOption<T> name, T value) throws IOException {
+    if (name == StandardSocketOptions.SO_KEEPALIVE) {
+        setOption(SocketOptions.SO_KEEPALIVE, value);
+    } else if (name == StandardSocketOptions.SO_SNDBUF) {
+        setOption(SocketOptions.SO_SNDBUF, value);
+    } else if (name == StandardSocketOptions.SO_RCVBUF) {
+        setOption(SocketOptions.SO_RCVBUF, value);
+    } else if (name == StandardSocketOptions.SO_REUSEADDR) {
+        setOption(SocketOptions.SO_REUSEADDR, value);
+    } else if (name == StandardSocketOptions.SO_LINGER) {
+        setOption(SocketOptions.SO_LINGER, value);
+    } else if (name == StandardSocketOptions.IP_TOS) {
+        setOption(SocketOptions.IP_TOS, value);
+    } else if (name == StandardSocketOptions.TCP_NODELAY) {
+        setOption(SocketOptions.TCP_NODELAY, value);
+    } else {
+        throw new UnsupportedOperationException("unsupported option");
+    }
+}

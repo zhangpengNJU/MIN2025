@@ -1,0 +1,8 @@
+private void ensureOpen() {
+    if (closeRequested) {
+        throw new IllegalStateException("zip file closed");
+    }
+    if (jzfile == 0) {
+        throw new IllegalStateException("The object is not initialized.");
+    }
+}

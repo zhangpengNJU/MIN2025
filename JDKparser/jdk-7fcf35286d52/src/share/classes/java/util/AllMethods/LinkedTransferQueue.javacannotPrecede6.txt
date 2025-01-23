@@ -1,0 +1,10 @@
+/**
+ * Returns true if a node with the given mode cannot be
+ * appended to this node because this node is unmatched and
+ * has opposite data mode.
+ */
+final boolean cannotPrecede(boolean haveData) {
+    boolean d = isData;
+    Object x;
+    return d != haveData && (x = item) != this && (x != null) == d;
+}

@@ -1,0 +1,15 @@
+// Montgomery multiplication.  These are wrappers for
+// implMontgomeryXX routines which are expected to be replaced by
+// virtual machine intrinsics.  We don't use the intrinsics for
+// very large operands: MONTGOMERY_INTRINSIC_THRESHOLD should be
+// larger than any reasonable crypto key.
+private static int[] montgomeryMultiply(int[] a, int[] b, int[] n, int len, long inv, int[] product) {
+    implMontgomeryMultiplyChecks(a, b, n, len, product);
+    if (len > MONTGOMERY_INTRINSIC_THRESHOLD) {
+        // Very long argument: do not use an intrinsic
+        product = multiplyToLen(a, len, b, len, product);
+        return montReduce(product, n, len, (int) inv);
+    } else {
+        return implMontgomeryMultiply(a, b, n, len, inv, materialize(product, len));
+    }
+}

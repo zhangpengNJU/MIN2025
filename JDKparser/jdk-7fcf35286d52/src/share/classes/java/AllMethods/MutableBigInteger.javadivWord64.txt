@@ -1,0 +1,31 @@
+/**
+ * This method divides a long quantity by an int to estimate
+ * qhat for two multi precision numbers. It is used when
+ * the signed value of n is less than zero.
+ * Returns long value where high 32 bits contain remainder value and
+ * low 32 bits contain quotient value.
+ */
+static long divWord(long n, int d) {
+    long dLong = d & LONG_MASK;
+    long r;
+    long q;
+    if (dLong == 1) {
+        q = (int) n;
+        r = 0;
+        return (r << 32) | (q & LONG_MASK);
+    }
+    // Approximate the quotient and remainder
+    q = (n >>> 1) / (dLong >>> 1);
+    r = n - q * dLong;
+    // Correct the approximation
+    while (r < 0) {
+        r += dLong;
+        q--;
+    }
+    while (r >= dLong) {
+        r -= dLong;
+        q++;
+    }
+    // n - q*dlong == r && 0 <= r <dLong, hence we're done.
+    return (r << 32) | (q & LONG_MASK);
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns an array of all the <code>PropertyChangeListener</code>s
+ * associated with the named property.
+ *
+ * @return all of the <code>PropertyChangeListener</code>s associated with
+ *         the named property or an empty array if no such listeners have
+ *         been added.
+ *
+ * @see #addPropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ * @see #removePropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ * @since 1.4
+ */
+public synchronized PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+    if (changeSupport == null) {
+        changeSupport = new PropertyChangeSupport(this);
+    }
+    return changeSupport.getPropertyChangeListeners(propertyName);
+}

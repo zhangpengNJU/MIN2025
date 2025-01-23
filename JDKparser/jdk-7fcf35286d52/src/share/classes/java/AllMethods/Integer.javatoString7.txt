@@ -1,0 +1,36 @@
+// I use the "invariant division by multiplication" trick to
+// accelerate Integer.toString.  In particular we want to
+// avoid division by 10.
+// 
+// The "trick" has roughly the same performance characteristics
+// as the "classic" Integer.toString code on a non-JIT VM.
+// The trick avoids .rem and .div calls but has a longer code
+// path and is thus dominated by dispatch overhead.  In the
+// JIT case the dispatch overhead doesn't exist and the
+// "trick" is considerably faster than the classic code.
+// 
+// TODO-FIXME: convert (x * 52429) into the equiv shift-add
+// sequence.
+// 
+// RE:  Division by Invariant Integers using Multiplication
+// T Gralund, P Montgomery
+// ACM PLDI 1994
+// 
+/**
+ * Returns a {@code String} object representing the
+ * specified integer. The argument is converted to signed decimal
+ * representation and returned as a string, exactly as if the
+ * argument and radix 10 were given as arguments to the {@link
+ * #toString(int, int)} method.
+ *
+ * @param   i   an integer to be converted.
+ * @return  a string representation of the argument in base&nbsp;10.
+ */
+public static String toString(int i) {
+    if (i == Integer.MIN_VALUE)
+        return "-2147483648";
+    int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
+    char[] buf = new char[size];
+    getChars(i, size, buf);
+    return new String(buf, true);
+}

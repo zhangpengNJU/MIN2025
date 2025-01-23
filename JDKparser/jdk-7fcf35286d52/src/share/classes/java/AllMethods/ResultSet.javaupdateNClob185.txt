@@ -1,0 +1,30 @@
+/**
+ * Updates the designated column using the given <code>Reader</code>
+ *
+ * The data will be read from the stream
+ * as needed until end-of-stream is reached.  The JDBC driver will
+ * do any necessary conversion from UNICODE to the database char format.
+ *
+ * <p>
+ * The updater methods are used to update column values in the
+ * current row or the insert row.  The updater methods do not
+ * update the underlying database; instead the <code>updateRow</code> or
+ * <code>insertRow</code> methods are called to update the database.
+ *
+ * <P><B>Note:</B> Consult your JDBC driver documentation to determine if
+ * it might be more efficient to use a version of
+ * <code>updateNClob</code> which takes a length parameter.
+ *
+ * @param columnIndex the first column is 1, the second 2, ...
+ * @param reader An object that contains the data to set the parameter value to.
+ * @throws SQLException if the columnIndex is not valid;
+ * if the driver does not support national
+ *         character sets;  if the driver can detect that a data conversion
+ *  error could occur; this method is called on a closed result set,
+ * if a database access error occurs or
+ * the result set concurrency is <code>CONCUR_READ_ONLY</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+void updateNClob(int columnIndex, Reader reader) throws SQLException;

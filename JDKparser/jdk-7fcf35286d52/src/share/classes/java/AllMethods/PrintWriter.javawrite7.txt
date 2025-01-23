@@ -1,0 +1,20 @@
+/*
+     * Exception-catching, synchronized output operations,
+     * which also implement the write() methods of Writer
+     */
+/**
+ * Writes a single character.
+ * @param c int specifying a character to be written.
+ */
+public void write(int c) {
+    try {
+        synchronized (lock) {
+            ensureOpen();
+            out.write(c);
+        }
+    } catch (InterruptedIOException x) {
+        Thread.currentThread().interrupt();
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

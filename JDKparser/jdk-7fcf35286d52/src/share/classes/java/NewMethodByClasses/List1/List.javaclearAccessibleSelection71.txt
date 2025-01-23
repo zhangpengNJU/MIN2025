@@ -1,0 +1,14 @@
+/**
+ * Clears the selection in the object, so that nothing in the
+ * object is selected.
+ */
+public void clearAccessibleSelection() {
+    synchronized (List.this) {
+        int[] selectedIndexes = List.this.getSelectedIndexes();
+        if (selectedIndexes == null)
+            return;
+        for (int i = selectedIndexes.length - 1; i >= 0; i--) {
+            List.this.deselect(selectedIndexes[i]);
+        }
+    }
+}

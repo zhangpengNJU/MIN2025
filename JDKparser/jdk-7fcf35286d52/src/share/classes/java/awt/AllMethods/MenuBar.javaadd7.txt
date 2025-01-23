@@ -1,0 +1,29 @@
+/**
+ * Adds the specified menu to the menu bar.
+ * If the menu has been part of another menu bar,
+ * removes it from that menu bar.
+ *
+ * @param        m   the menu to be added
+ * @return       the menu added
+ * @see          java.awt.MenuBar#remove(int)
+ * @see          java.awt.MenuBar#remove(java.awt.MenuComponent)
+ */
+public Menu add(Menu m) {
+    synchronized (getTreeLock()) {
+        if (m.parent != null) {
+            m.parent.remove(m);
+        }
+        m.parent = this;
+        MenuBarPeer peer = (MenuBarPeer) this.peer;
+        if (peer != null) {
+            if (m.peer == null) {
+                m.addNotify();
+            }
+            menus.addElement(m);
+            peer.addMenu(m);
+        } else {
+            menus.addElement(m);
+        }
+        return m;
+    }
+}

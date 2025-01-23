@@ -1,0 +1,14 @@
+/**
+ * update a single byte.
+ */
+public void update(int b, ManifestEntryVerifier mev) throws IOException {
+    if (b != -1) {
+        if (parsingBlockOrSF) {
+            baos.write(b);
+        } else {
+            mev.update((byte) b);
+        }
+    } else {
+        processEntry(mev);
+    }
+}

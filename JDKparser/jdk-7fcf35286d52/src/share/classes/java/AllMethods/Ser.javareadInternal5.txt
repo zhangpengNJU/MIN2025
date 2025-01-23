@@ -1,0 +1,12 @@
+private static Object readInternal(byte type, DataInput in) throws IOException, ClassNotFoundException {
+    switch(type) {
+        case ZRULES:
+            return ZoneRules.readExternal(in);
+        case ZOT:
+            return ZoneOffsetTransition.readExternal(in);
+        case ZOTRULE:
+            return ZoneOffsetTransitionRule.readExternal(in);
+        default:
+            throw new StreamCorruptedException("Unknown serialized type");
+    }
+}

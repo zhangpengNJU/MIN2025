@@ -1,0 +1,17 @@
+/**
+ * Stores the parsed field.
+ * <p>
+ * This stores a field-value pair that has been parsed.
+ * The value stored may be out of range for the field - no checks are performed.
+ *
+ * @param field  the field to set in the field-value map, not null
+ * @param value  the value to set in the field-value map
+ * @param errorPos  the position of the field being parsed
+ * @param successPos  the position after the field being parsed
+ * @return the new position
+ */
+int setParsedField(TemporalField field, long value, int errorPos, int successPos) {
+    Objects.requireNonNull(field, "field");
+    Long old = currentParsed().fieldValues.put(field, value);
+    return (old != null && old.longValue() != value) ? ~errorPos : successPos;
+}

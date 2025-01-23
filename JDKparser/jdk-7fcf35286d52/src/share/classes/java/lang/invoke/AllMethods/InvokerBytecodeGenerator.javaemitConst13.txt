@@ -1,0 +1,43 @@
+/*
+     * Low-level emit helpers.
+     */
+private void emitConst(Object con) {
+    if (con == null) {
+        mv.visitInsn(Opcodes.ACONST_NULL);
+        return;
+    }
+    if (con instanceof Integer) {
+        emitIconstInsn((int) con);
+        return;
+    }
+    if (con instanceof Long) {
+        long x = (long) con;
+        if (x == (short) x) {
+            emitIconstInsn((int) x);
+            mv.visitInsn(Opcodes.I2L);
+            return;
+        }
+    }
+    if (con instanceof Float) {
+        float x = (float) con;
+        if (x == (short) x) {
+            emitIconstInsn((int) x);
+            mv.visitInsn(Opcodes.I2F);
+            return;
+        }
+    }
+    if (con instanceof Double) {
+        double x = (double) con;
+        if (x == (short) x) {
+            emitIconstInsn((int) x);
+            mv.visitInsn(Opcodes.I2D);
+            return;
+        }
+    }
+    if (con instanceof Boolean) {
+        emitIconstInsn((boolean) con ? 1 : 0);
+        return;
+    }
+    // fall through:
+    mv.visitLdcInsn(con);
+}

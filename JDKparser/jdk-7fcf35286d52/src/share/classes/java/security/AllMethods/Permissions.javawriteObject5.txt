@@ -1,0 +1,23 @@
+/**
+ * @serialData Default fields.
+ */
+/*
+     * Writes the contents of the permsMap field out as a Hashtable for
+     * serialization compatibility with earlier releases. allPermission
+     * unchanged.
+     */
+private void writeObject(ObjectOutputStream out) throws IOException {
+    // Don't call out.defaultWriteObject()
+    // Copy perms into a Hashtable
+    Hashtable<Class<?>, PermissionCollection> perms = // no sync; estimate
+    new Hashtable<>(permsMap.size() * 2);
+    synchronized (this) {
+        perms.putAll(permsMap);
+    }
+    // Write out serializable fields
+    ObjectOutputStream.PutField pfields = out.putFields();
+    // no sync; staleness OK
+    pfields.put("allPermission", allPermission);
+    pfields.put("perms", perms);
+    out.writeFields();
+}

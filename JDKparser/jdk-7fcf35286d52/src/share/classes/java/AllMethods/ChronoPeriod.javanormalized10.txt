@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a copy of this period with the amounts of each unit normalized.
+ * <p>
+ * The process of normalization is specific to each calendar system.
+ * For example, in the ISO calendar system, the years and months are
+ * normalized but the days are not, such that "15 months" would be
+ * normalized to "1 year and 3 months".
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @return a {@code ChronoPeriod} based on this period with the amounts of each
+ *  unit normalized, not null
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+ChronoPeriod normalized();

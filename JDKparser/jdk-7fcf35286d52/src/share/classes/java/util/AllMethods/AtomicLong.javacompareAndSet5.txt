@@ -1,0 +1,12 @@
+/**
+ * Atomically sets the value to the given updated value
+ * if the current value {@code ==} the expected value.
+ *
+ * @param expect the expected value
+ * @param update the new value
+ * @return {@code true} if successful. False return indicates that
+ * the actual value was not equal to the expected value.
+ */
+public final boolean compareAndSet(long expect, long update) {
+    return unsafe.compareAndSwapLong(this, valueOffset, expect, update);
+}

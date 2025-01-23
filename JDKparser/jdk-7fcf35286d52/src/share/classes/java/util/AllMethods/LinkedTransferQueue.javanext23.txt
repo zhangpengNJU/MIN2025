@@ -1,0 +1,8 @@
+public final E next() {
+    Node p = nextNode;
+    if (p == null)
+        throw new NoSuchElementException();
+    E e = nextItem;
+    advance(p);
+    return e;
+}

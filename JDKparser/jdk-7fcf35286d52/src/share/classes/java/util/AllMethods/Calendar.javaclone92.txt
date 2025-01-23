@@ -1,0 +1,24 @@
+/**
+ * Creates and returns a copy of this object.
+ *
+ * @return a copy of this object.
+ */
+@Override
+public Object clone() {
+    try {
+        Calendar other = (Calendar) super.clone();
+        other.fields = new int[FIELD_COUNT];
+        other.isSet = new boolean[FIELD_COUNT];
+        other.stamp = new int[FIELD_COUNT];
+        for (int i = 0; i < FIELD_COUNT; i++) {
+            other.fields[i] = fields[i];
+            other.stamp[i] = stamp[i];
+            other.isSet[i] = isSet[i];
+        }
+        other.zone = (TimeZone) zone.clone();
+        return other;
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

@@ -1,0 +1,13 @@
+private Class<?> getPackageInfo() {
+    if (packageInfo == null) {
+        try {
+            packageInfo = Class.forName(pkgName + ".package-info", false, loader);
+        } catch (ClassNotFoundException ex) {
+            // store a proxy for the package info that has no annotations
+            class PackageInfoProxy {
+            }
+            packageInfo = PackageInfoProxy.class;
+        }
+    }
+    return packageInfo;
+}

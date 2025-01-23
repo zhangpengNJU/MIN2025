@@ -1,0 +1,5 @@
+@Override
+final <P_IN, S extends Sink<E_OUT>> S wrapAndCopyInto(S sink, Spliterator<P_IN> spliterator) {
+    copyInto(wrapSink(Objects.requireNonNull(sink)), spliterator);
+    return sink;
+}

@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(1);  // identifies a Duration
+ *  out.writeLong(seconds);
+ *  out.writeInt(nanos);
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.DURATION_TYPE, this);
+}

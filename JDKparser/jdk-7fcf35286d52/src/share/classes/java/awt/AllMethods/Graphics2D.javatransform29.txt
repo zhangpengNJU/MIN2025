@@ -1,0 +1,18 @@
+/**
+ * Composes an <code>AffineTransform</code> object with the
+ * <code>Transform</code> in this <code>Graphics2D</code> according
+ * to the rule last-specified-first-applied.  If the current
+ * <code>Transform</code> is Cx, the result of composition
+ * with Tx is a new <code>Transform</code> Cx'.  Cx' becomes the
+ * current <code>Transform</code> for this <code>Graphics2D</code>.
+ * Transforming a point p by the updated <code>Transform</code> Cx' is
+ * equivalent to first transforming p by Tx and then transforming
+ * the result by the original <code>Transform</code> Cx.  In other
+ * words, Cx'(p) = Cx(Tx(p)).  A copy of the Tx is made, if necessary,
+ * so further modifications to Tx do not affect rendering.
+ * @param Tx the <code>AffineTransform</code> object to be composed with
+ * the current <code>Transform</code>
+ * @see #setTransform
+ * @see AffineTransform
+ */
+public abstract void transform(AffineTransform Tx);

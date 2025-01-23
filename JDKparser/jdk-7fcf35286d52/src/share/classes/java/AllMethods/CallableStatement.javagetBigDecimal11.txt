@@ -1,0 +1,20 @@
+/**
+ * Retrieves the value of the designated JDBC <code>NUMERIC</code> parameter as a
+ * <code>java.math.BigDecimal</code> object with <i>scale</i> digits to
+ * the right of the decimal point.
+ * @param parameterIndex the first parameter is 1, the second is 2,
+ *        and so on
+ * @param scale the number of digits to the right of the decimal point
+ * @return the parameter value.  If the value is SQL <code>NULL</code>, the result
+ *         is <code>null</code>.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @deprecated use <code>getBigDecimal(int parameterIndex)</code>
+ *             or <code>getBigDecimal(String parameterName)</code>
+ * @see #setBigDecimal
+ */
+@Deprecated
+BigDecimal getBigDecimal(int parameterIndex, int scale) throws SQLException;

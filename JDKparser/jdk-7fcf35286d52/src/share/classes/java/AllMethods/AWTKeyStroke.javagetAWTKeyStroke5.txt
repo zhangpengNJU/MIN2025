@@ -1,0 +1,11 @@
+/**
+ * Returns a shared instance of an <code>AWTKeyStroke</code>
+ * that represents a <code>KEY_TYPED</code> event for the
+ * specified character.
+ *
+ * @param keyChar the character value for a keyboard key
+ * @return an <code>AWTKeyStroke</code> object for that key
+ */
+public static AWTKeyStroke getAWTKeyStroke(char keyChar) {
+    return getCachedStroke(keyChar, KeyEvent.VK_UNDEFINED, 0, false);
+}

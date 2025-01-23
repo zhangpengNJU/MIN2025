@@ -1,0 +1,19 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a copy of this {@code LocalTime} with the specified number of hours added.
+ * <p>
+ * This adds the specified number of hours to this time, returning a new time.
+ * The calculation wraps around midnight.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param hoursToAdd  the hours to add, may be negative
+ * @return a {@code LocalTime} based on this time with the hours added, not null
+ */
+public LocalTime plusHours(long hoursToAdd) {
+    if (hoursToAdd == 0) {
+        return this;
+    }
+    int newHour = ((int) (hoursToAdd % HOURS_PER_DAY) + hour + HOURS_PER_DAY) % HOURS_PER_DAY;
+    return create(newHour, minute, second, nano);
+}

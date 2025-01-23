@@ -1,0 +1,14 @@
+private static DateFormat get(LocaleProviderAdapter adapter, int timeStyle, int dateStyle, Locale loc) {
+    DateFormatProvider provider = adapter.getDateFormatProvider();
+    DateFormat dateFormat;
+    if (timeStyle == -1) {
+        dateFormat = provider.getDateInstance(dateStyle, loc);
+    } else {
+        if (dateStyle == -1) {
+            dateFormat = provider.getTimeInstance(timeStyle, loc);
+        } else {
+            dateFormat = provider.getDateTimeInstance(dateStyle, timeStyle, loc);
+        }
+    }
+    return dateFormat;
+}

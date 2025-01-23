@@ -1,0 +1,7 @@
+synchronized private static MethodHandle setCachedMethodHandle(MethodHandle[] cache, int pos, MethodHandle value) {
+    // Simulate a CAS, to avoid racy duplication of results.
+    MethodHandle prev = cache[pos];
+    if (prev != null)
+        return prev;
+    return cache[pos] = value;
+}

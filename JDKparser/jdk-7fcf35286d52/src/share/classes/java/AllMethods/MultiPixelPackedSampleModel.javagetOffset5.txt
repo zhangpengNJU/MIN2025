@@ -1,0 +1,11 @@
+/**
+ * Returns the offset of pixel (x,&nbsp;y) in data array elements.
+ * @param x the X coordinate of the specified pixel
+ * @param y the Y coordinate of the specified pixel
+ * @return the offset of the specified pixel.
+ */
+public int getOffset(int x, int y) {
+    int offset = y * scanlineStride;
+    offset += (x * pixelBitStride + dataBitOffset) / dataElementSize;
+    return offset;
+}

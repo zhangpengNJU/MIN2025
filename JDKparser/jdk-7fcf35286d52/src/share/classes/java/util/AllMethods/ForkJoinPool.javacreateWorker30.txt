@@ -1,0 +1,23 @@
+// Creating, registering and deregistering workers
+/**
+ * Tries to construct and start one worker. Assumes that total
+ * count has already been incremented as a reservation.  Invokes
+ * deregisterWorker on any failure.
+ *
+ * @return true if successful
+ */
+private boolean createWorker() {
+    ForkJoinWorkerThreadFactory fac = factory;
+    Throwable ex = null;
+    ForkJoinWorkerThread wt = null;
+    try {
+        if (fac != null && (wt = fac.newThread(this)) != null) {
+            wt.start();
+            return true;
+        }
+    } catch (Throwable rex) {
+        ex = rex;
+    }
+    deregisterWorker(wt, ex);
+    return false;
+}

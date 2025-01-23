@@ -1,0 +1,43 @@
+/**
+ * Round the representation to the given number of digits.
+ * @param maximumDigits The maximum number of digits to be shown.
+ * @param alreadyRounded whether or not rounding up has already happened.
+ * @param valueExactAsDecimal whether or not collected digits provide
+ * an exact decimal representation of the value.
+ *
+ * Upon return, count will be less than or equal to maximumDigits.
+ */
+private final void round(int maximumDigits, boolean alreadyRounded, boolean valueExactAsDecimal) {
+    // Eliminate digits beyond maximum digits to be displayed.
+    // Round up if appropriate.
+    if (maximumDigits >= 0 && maximumDigits < count) {
+        if (shouldRoundUp(maximumDigits, alreadyRounded, valueExactAsDecimal)) {
+            // Rounding up involved incrementing digits from LSD to MSD.
+            // In most cases this is simple, but in a worst case situation
+            // (9999..99) we have to adjust the decimalAt value.
+            for (; ; ) {
+                --maximumDigits;
+                if (maximumDigits < 0) {
+                    // We have all 9's, so we increment to a single digit
+                    // of one and adjust the exponent.
+                    digits[0] = '1';
+                    ++decimalAt;
+                    // Adjust the count
+                    maximumDigits = 0;
+                    break;
+                }
+                ++digits[maximumDigits];
+                if (digits[maximumDigits] <= '9')
+                    break;
+            // digits[maximumDigits] = '0'; // Unnecessary since we'll truncate this
+            }
+            // Increment for use as count
+            ++maximumDigits;
+        }
+        count = maximumDigits;
+        // Eliminate trailing zeros.
+        while (count > 1 && digits[count - 1] == '0') {
+            --count;
+        }
+    }
+}

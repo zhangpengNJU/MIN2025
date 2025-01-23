@@ -1,0 +1,42 @@
+/**
+ * Closes the ZIP file.
+ * <p> Closing this ZIP file will close all of the input streams
+ * previously returned by invocations of the {@link #getInputStream
+ * getInputStream} method.
+ *
+ * @throws IOException if an I/O error has occurred
+ */
+public void close() throws IOException {
+    if (closeRequested)
+        return;
+    closeRequested = true;
+    synchronized (this) {
+        // Close streams, release their inflaters
+        synchronized (streams) {
+            if (false == streams.isEmpty()) {
+                Map<InputStream, Inflater> copy = new HashMap<>(streams);
+                streams.clear();
+                for (Map.Entry<InputStream, Inflater> e : copy.entrySet()) {
+                    e.getKey().close();
+                    Inflater inf = e.getValue();
+                    if (inf != null) {
+                        inf.end();
+                    }
+                }
+            }
+        }
+        // Release cached inflaters
+        Inflater inf;
+        synchronized (inflaterCache) {
+            while (null != (inf = inflaterCache.poll())) {
+                inf.end();
+            }
+        }
+        if (jzfile != 0) {
+            // Close the zip file
+            long zf = this.jzfile;
+            jzfile = 0;
+            close(zf);
+        }
+    }
+}

@@ -1,0 +1,33 @@
+// -----------------------------------------------------------------------
+/**
+ * Formats a date-time object to an {@code Appendable} using this formatter.
+ * <p>
+ * This outputs the formatted date-time to the specified destination.
+ * {@link Appendable} is a general purpose interface that is implemented by all
+ * key character output classes including {@code StringBuffer}, {@code StringBuilder},
+ * {@code PrintStream} and {@code Writer}.
+ * <p>
+ * Although {@code Appendable} methods throw an {@code IOException}, this method does not.
+ * Instead, any {@code IOException} is wrapped in a runtime exception.
+ *
+ * @param temporal  the temporal object to format, not null
+ * @param appendable  the appendable to format to, not null
+ * @throws DateTimeException if an error occurs during formatting
+ */
+public void formatTo(TemporalAccessor temporal, Appendable appendable) {
+    Objects.requireNonNull(temporal, "temporal");
+    Objects.requireNonNull(appendable, "appendable");
+    try {
+        DateTimePrintContext context = new DateTimePrintContext(temporal, this);
+        if (appendable instanceof StringBuilder) {
+            printerParser.format(context, (StringBuilder) appendable);
+        } else {
+            // buffer output to avoid writing to appendable in case of error
+            StringBuilder buf = new StringBuilder(32);
+            printerParser.format(context, buf);
+            appendable.append(buf);
+        }
+    } catch (IOException ex) {
+        throw new DateTimeException(ex.getMessage(), ex);
+    }
+}

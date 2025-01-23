@@ -1,0 +1,12 @@
+/**
+ * Returns a {@link Callable} object that, when
+ * called, runs the given task and returns {@code null}.
+ * @param task the task to run
+ * @return a callable object
+ * @throws NullPointerException if task null
+ */
+public static Callable<Object> callable(Runnable task) {
+    if (task == null)
+        throw new NullPointerException();
+    return new RunnableAdapter<Object>(task, null);
+}

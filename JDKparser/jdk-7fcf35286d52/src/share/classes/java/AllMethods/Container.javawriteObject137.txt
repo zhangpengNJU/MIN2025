@@ -1,0 +1,45 @@
+/**
+ * Serializes this <code>Container</code> to the specified
+ * <code>ObjectOutputStream</code>.
+ * <ul>
+ *    <li>Writes default serializable fields to the stream.</li>
+ *    <li>Writes a list of serializable ContainerListener(s) as optional
+ *        data. The non-serializable ContainerListner(s) are detected and
+ *        no attempt is made to serialize them.</li>
+ *    <li>Write this Container's FocusTraversalPolicy if and only if it
+ *        is Serializable; otherwise, <code>null</code> is written.</li>
+ * </ul>
+ *
+ * @param s the <code>ObjectOutputStream</code> to write
+ * @serialData <code>null</code> terminated sequence of 0 or more pairs;
+ *   the pair consists of a <code>String</code> and <code>Object</code>;
+ *   the <code>String</code> indicates the type of object and
+ *   is one of the following:
+ *   <code>containerListenerK</code> indicating an
+ *     <code>ContainerListener</code> object;
+ *   the <code>Container</code>'s <code>FocusTraversalPolicy</code>,
+ *     or <code>null</code>
+ *
+ * @see AWTEventMulticaster#save(java.io.ObjectOutputStream, java.lang.String, java.util.EventListener)
+ * @see Container#containerListenerK
+ * @see #readObject(ObjectInputStream)
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    ObjectOutputStream.PutField f = s.putFields();
+    f.put("ncomponents", component.size());
+    f.put("component", component.toArray(EMPTY_ARRAY));
+    f.put("layoutMgr", layoutMgr);
+    f.put("dispatcher", dispatcher);
+    f.put("maxSize", maxSize);
+    f.put("focusCycleRoot", focusCycleRoot);
+    f.put("containerSerializedDataVersion", containerSerializedDataVersion);
+    f.put("focusTraversalPolicyProvider", focusTraversalPolicyProvider);
+    s.writeFields();
+    AWTEventMulticaster.save(s, containerListenerK, containerListener);
+    s.writeObject(null);
+    if (focusTraversalPolicy instanceof java.io.Serializable) {
+        s.writeObject(focusTraversalPolicy);
+    } else {
+        s.writeObject(null);
+    }
+}

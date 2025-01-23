@@ -1,0 +1,46 @@
+/**
+ * Reconstitute the Hashtable from a stream (i.e., deserialize it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
+    // Read in the threshold and loadFactor
+    s.defaultReadObject();
+    // Validate loadFactor (ignore threshold - it will be re-computed)
+    if (loadFactor <= 0 || Float.isNaN(loadFactor))
+        throw new StreamCorruptedException("Illegal Load: " + loadFactor);
+    // Read the original length of the array and number of elements
+    int origlength = s.readInt();
+    int elements = s.readInt();
+    // Validate # of elements
+    if (elements < 0)
+        throw new StreamCorruptedException("Illegal # of Elements: " + elements);
+    // Clamp original length to be more than elements / loadFactor
+    // (this is the invariant enforced with auto-growth)
+    origlength = Math.max(origlength, (int) (elements / loadFactor) + 1);
+    // Compute new length with a bit of room 5% + 3 to grow but
+    // no larger than the clamped original length.  Make the length
+    // odd if it's large enough, this helps distribute the entries.
+    // Guard against the length ending up zero, that's not valid.
+    int length = (int) ((elements + elements / 20) / loadFactor) + 3;
+    if (length > elements && (length & 1) == 0)
+        length--;
+    length = Math.min(length, origlength);
+    if (length < 0) {
+        // overflow
+        length = origlength;
+    }
+    // Check Map.Entry[].class since it's the nearest public type to
+    // what we're actually creating.
+    SharedSecrets.getJavaOISAccess().checkArray(s, Map.Entry[].class, length);
+    table = new Entry<?, ?>[length];
+    threshold = (int) Math.min(length * loadFactor, MAX_ARRAY_SIZE + 1);
+    count = 0;
+    // Read the number of elements and then all the key/value objects
+    for (; elements > 0; elements--) {
+        @SuppressWarnings("unchecked")
+        K key = (K) s.readObject();
+        @SuppressWarnings("unchecked")
+        V value = (V) s.readObject();
+        // sync is eliminated for performance
+        reconstitutionPut(table, key, value);
+    }
+}

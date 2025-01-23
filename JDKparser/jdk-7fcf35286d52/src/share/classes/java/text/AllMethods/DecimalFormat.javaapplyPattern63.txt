@@ -1,0 +1,296 @@
+/**
+ * Does the real work of applying a pattern.
+ */
+private void applyPattern(String pattern, boolean localized) {
+    char zeroDigit = PATTERN_ZERO_DIGIT;
+    char groupingSeparator = PATTERN_GROUPING_SEPARATOR;
+    char decimalSeparator = PATTERN_DECIMAL_SEPARATOR;
+    char percent = PATTERN_PERCENT;
+    char perMill = PATTERN_PER_MILLE;
+    char digit = PATTERN_DIGIT;
+    char separator = PATTERN_SEPARATOR;
+    String exponent = PATTERN_EXPONENT;
+    char minus = PATTERN_MINUS;
+    if (localized) {
+        zeroDigit = symbols.getZeroDigit();
+        groupingSeparator = symbols.getGroupingSeparator();
+        decimalSeparator = symbols.getDecimalSeparator();
+        percent = symbols.getPercent();
+        perMill = symbols.getPerMill();
+        digit = symbols.getDigit();
+        separator = symbols.getPatternSeparator();
+        exponent = symbols.getExponentSeparator();
+        minus = symbols.getMinusSign();
+    }
+    boolean gotNegative = false;
+    decimalSeparatorAlwaysShown = false;
+    isCurrencyFormat = false;
+    useExponentialNotation = false;
+    // Two variables are used to record the subrange of the pattern
+    // occupied by phase 1.  This is used during the processing of the
+    // second pattern (the one representing negative numbers) to ensure
+    // that no deviation exists in phase 1 between the two patterns.
+    int phaseOneStart = 0;
+    int phaseOneLength = 0;
+    int start = 0;
+    for (int j = 1; j >= 0 && start < pattern.length(); --j) {
+        boolean inQuote = false;
+        StringBuffer prefix = new StringBuffer();
+        StringBuffer suffix = new StringBuffer();
+        int decimalPos = -1;
+        int multiplier = 1;
+        int digitLeftCount = 0, zeroDigitCount = 0, digitRightCount = 0;
+        byte groupingCount = -1;
+        // The phase ranges from 0 to 2.  Phase 0 is the prefix.  Phase 1 is
+        // the section of the pattern with digits, decimal separator,
+        // grouping characters.  Phase 2 is the suffix.  In phases 0 and 2,
+        // percent, per mille, and currency symbols are recognized and
+        // translated.  The separation of the characters into phases is
+        // strictly enforced; if phase 1 characters are to appear in the
+        // suffix, for example, they must be quoted.
+        int phase = 0;
+        // The affix is either the prefix or the suffix.
+        StringBuffer affix = prefix;
+        for (int pos = start; pos < pattern.length(); ++pos) {
+            char ch = pattern.charAt(pos);
+            switch(phase) {
+                case 0:
+                case 2:
+                    // Process the prefix / suffix characters
+                    if (inQuote) {
+                        // A quote within quotes indicates either the closing
+                        // quote or two quotes, which is a quote literal. That
+                        // is, we have the second quote in 'do' or 'don''t'.
+                        if (ch == QUOTE) {
+                            if ((pos + 1) < pattern.length() && pattern.charAt(pos + 1) == QUOTE) {
+                                ++pos;
+                                // 'don''t'
+                                affix.append("''");
+                            } else {
+                                // 'do'
+                                inQuote = false;
+                            }
+                            continue;
+                        }
+                    } else {
+                        // Process unquoted characters seen in prefix or suffix
+                        // phase.
+                        if (ch == digit || ch == zeroDigit || ch == groupingSeparator || ch == decimalSeparator) {
+                            phase = 1;
+                            if (j == 1) {
+                                phaseOneStart = pos;
+                            }
+                            // Reprocess this character
+                            --pos;
+                            continue;
+                        } else if (ch == CURRENCY_SIGN) {
+                            // Use lookahead to determine if the currency sign
+                            // is doubled or not.
+                            boolean doubled = (pos + 1) < pattern.length() && pattern.charAt(pos + 1) == CURRENCY_SIGN;
+                            if (doubled) {
+                                // Skip over the doubled character
+                                ++pos;
+                            }
+                            isCurrencyFormat = true;
+                            affix.append(doubled ? "'\u00A4\u00A4" : "'\u00A4");
+                            continue;
+                        } else if (ch == QUOTE) {
+                            // A quote outside quotes indicates either the
+                            // opening quote or two quotes, which is a quote
+                            // literal. That is, we have the first quote in 'do'
+                            // or o''clock.
+                            if (ch == QUOTE) {
+                                if ((pos + 1) < pattern.length() && pattern.charAt(pos + 1) == QUOTE) {
+                                    ++pos;
+                                    // o''clock
+                                    affix.append("''");
+                                } else {
+                                    // 'do'
+                                    inQuote = true;
+                                }
+                                continue;
+                            }
+                        } else if (ch == separator) {
+                            // Don't allow separators before we see digit
+                            // characters of phase 1, and don't allow separators
+                            // in the second pattern (j == 0).
+                            if (phase == 0 || j == 0) {
+                                throw new IllegalArgumentException("Unquoted special character '" + ch + "' in pattern \"" + pattern + '"');
+                            }
+                            start = pos + 1;
+                            pos = pattern.length();
+                            continue;
+                        } else // Next handle characters which are appended directly.
+                        if (ch == percent) {
+                            if (multiplier != 1) {
+                                throw new IllegalArgumentException("Too many percent/per mille characters in pattern \"" + pattern + '"');
+                            }
+                            multiplier = 100;
+                            affix.append("'%");
+                            continue;
+                        } else if (ch == perMill) {
+                            if (multiplier != 1) {
+                                throw new IllegalArgumentException("Too many percent/per mille characters in pattern \"" + pattern + '"');
+                            }
+                            multiplier = 1000;
+                            affix.append("'\u2030");
+                            continue;
+                        } else if (ch == minus) {
+                            affix.append("'-");
+                            continue;
+                        }
+                    }
+                    // Note that if we are within quotes, or if this is an
+                    // unquoted, non-special character, then we usually fall
+                    // through to here.
+                    affix.append(ch);
+                    break;
+                case 1:
+                    // Phase one must be identical in the two sub-patterns. We
+                    // enforce this by doing a direct comparison. While
+                    // processing the first sub-pattern, we just record its
+                    // length. While processing the second, we compare
+                    // characters.
+                    if (j == 1) {
+                        ++phaseOneLength;
+                    } else {
+                        if (--phaseOneLength == 0) {
+                            phase = 2;
+                            affix = suffix;
+                        }
+                        continue;
+                    }
+                    // Process the digits, decimal, and grouping characters. We
+                    // record five pieces of information. We expect the digits
+                    // to occur in the pattern ####0000.####, and we record the
+                    // number of left digits, zero (central) digits, and right
+                    // digits. The position of the last grouping character is
+                    // recorded (should be somewhere within the first two blocks
+                    // of characters), as is the position of the decimal point,
+                    // if any (should be in the zero digits). If there is no
+                    // decimal point, then there should be no right digits.
+                    if (ch == digit) {
+                        if (zeroDigitCount > 0) {
+                            ++digitRightCount;
+                        } else {
+                            ++digitLeftCount;
+                        }
+                        if (groupingCount >= 0 && decimalPos < 0) {
+                            ++groupingCount;
+                        }
+                    } else if (ch == zeroDigit) {
+                        if (digitRightCount > 0) {
+                            throw new IllegalArgumentException("Unexpected '0' in pattern \"" + pattern + '"');
+                        }
+                        ++zeroDigitCount;
+                        if (groupingCount >= 0 && decimalPos < 0) {
+                            ++groupingCount;
+                        }
+                    } else if (ch == groupingSeparator) {
+                        groupingCount = 0;
+                    } else if (ch == decimalSeparator) {
+                        if (decimalPos >= 0) {
+                            throw new IllegalArgumentException("Multiple decimal separators in pattern \"" + pattern + '"');
+                        }
+                        decimalPos = digitLeftCount + zeroDigitCount + digitRightCount;
+                    } else if (pattern.regionMatches(pos, exponent, 0, exponent.length())) {
+                        if (useExponentialNotation) {
+                            throw new IllegalArgumentException("Multiple exponential " + "symbols in pattern \"" + pattern + '"');
+                        }
+                        useExponentialNotation = true;
+                        minExponentDigits = 0;
+                        // Use lookahead to parse out the exponential part
+                        // of the pattern, then jump into phase 2.
+                        pos = pos + exponent.length();
+                        while (pos < pattern.length() && pattern.charAt(pos) == zeroDigit) {
+                            ++minExponentDigits;
+                            ++phaseOneLength;
+                            ++pos;
+                        }
+                        if ((digitLeftCount + zeroDigitCount) < 1 || minExponentDigits < 1) {
+                            throw new IllegalArgumentException("Malformed exponential " + "pattern \"" + pattern + '"');
+                        }
+                        // Transition to phase 2
+                        phase = 2;
+                        affix = suffix;
+                        --pos;
+                        continue;
+                    } else {
+                        phase = 2;
+                        affix = suffix;
+                        --pos;
+                        --phaseOneLength;
+                        continue;
+                    }
+                    break;
+            }
+        }
+        // Handle patterns with no '0' pattern character. These patterns
+        // are legal, but must be interpreted.  "##.###" -> "#0.###".
+        // ".###" -> ".0##".
+        /* We allow patterns of the form "####" to produce a zeroDigitCount
+             * of zero (got that?); although this seems like it might make it
+             * possible for format() to produce empty strings, format() checks
+             * for this condition and outputs a zero digit in this situation.
+             * Having a zeroDigitCount of zero yields a minimum integer digits
+             * of zero, which allows proper round-trip patterns.  That is, we
+             * don't want "#" to become "#0" when toPattern() is called (even
+             * though that's what it really is, semantically).
+             */
+        if (zeroDigitCount == 0 && digitLeftCount > 0 && decimalPos >= 0) {
+            // Handle "###.###" and "###." and ".###"
+            int n = decimalPos;
+            if (n == 0) {
+                // Handle ".###"
+                ++n;
+            }
+            digitRightCount = digitLeftCount - n;
+            digitLeftCount = n - 1;
+            zeroDigitCount = 1;
+        }
+        // Do syntax checking on the digits.
+        if ((decimalPos < 0 && digitRightCount > 0) || (decimalPos >= 0 && (decimalPos < digitLeftCount || decimalPos > (digitLeftCount + zeroDigitCount))) || groupingCount == 0 || inQuote) {
+            throw new IllegalArgumentException("Malformed pattern \"" + pattern + '"');
+        }
+        if (j == 1) {
+            posPrefixPattern = prefix.toString();
+            posSuffixPattern = suffix.toString();
+            // assume these for now
+            negPrefixPattern = posPrefixPattern;
+            negSuffixPattern = posSuffixPattern;
+            int digitTotalCount = digitLeftCount + zeroDigitCount + digitRightCount;
+            /* The effectiveDecimalPos is the position the decimal is at or
+                 * would be at if there is no decimal. Note that if decimalPos<0,
+                 * then digitTotalCount == digitLeftCount + zeroDigitCount.
+                 */
+            int effectiveDecimalPos = decimalPos >= 0 ? decimalPos : digitTotalCount;
+            setMinimumIntegerDigits(effectiveDecimalPos - digitLeftCount);
+            setMaximumIntegerDigits(useExponentialNotation ? digitLeftCount + getMinimumIntegerDigits() : MAXIMUM_INTEGER_DIGITS);
+            setMaximumFractionDigits(decimalPos >= 0 ? (digitTotalCount - decimalPos) : 0);
+            setMinimumFractionDigits(decimalPos >= 0 ? (digitLeftCount + zeroDigitCount - decimalPos) : 0);
+            setGroupingUsed(groupingCount > 0);
+            this.groupingSize = (groupingCount > 0) ? groupingCount : 0;
+            this.multiplier = multiplier;
+            setDecimalSeparatorAlwaysShown(decimalPos == 0 || decimalPos == digitTotalCount);
+        } else {
+            negPrefixPattern = prefix.toString();
+            negSuffixPattern = suffix.toString();
+            gotNegative = true;
+        }
+    }
+    if (pattern.length() == 0) {
+        posPrefixPattern = posSuffixPattern = "";
+        setMinimumIntegerDigits(0);
+        setMaximumIntegerDigits(MAXIMUM_INTEGER_DIGITS);
+        setMinimumFractionDigits(0);
+        setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+    }
+    // If there was no negative pattern, or if the negative pattern is
+    // identical to the positive pattern, then prepend the minus sign to
+    // the positive pattern to form the negative pattern.
+    if (!gotNegative || (negPrefixPattern.equals(posPrefixPattern) && negSuffixPattern.equals(posSuffixPattern))) {
+        negSuffixPattern = posSuffixPattern;
+        negPrefixPattern = "'-" + posPrefixPattern;
+    }
+    expandAffixes();
+}

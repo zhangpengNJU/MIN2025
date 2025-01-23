@@ -1,0 +1,21 @@
+/**
+ * Obtains the current time from the specified clock.
+ * <p>
+ * This will query the specified clock to obtain the current time.
+ * Using this method allows the use of an alternate clock for testing.
+ * The alternate clock may be introduced using {@link Clock dependency injection}.
+ *
+ * @param clock  the clock to use, not null
+ * @return the current time, not null
+ */
+public static LocalTime now(Clock clock) {
+    Objects.requireNonNull(clock, "clock");
+    // inline OffsetTime factory to avoid creating object and InstantProvider checks
+    // called once
+    final Instant now = clock.instant();
+    ZoneOffset offset = clock.getZone().getRules().getOffset(now);
+    // overflow caught later
+    long localSecond = now.getEpochSecond() + offset.getTotalSeconds();
+    int secsOfDay = (int) Math.floorMod(localSecond, SECONDS_PER_DAY);
+    return ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + now.getNano());
+}

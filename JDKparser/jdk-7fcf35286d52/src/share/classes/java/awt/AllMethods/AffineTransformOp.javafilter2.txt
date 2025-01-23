@@ -1,0 +1,51 @@
+/**
+ * Transforms the source <CODE>Raster</CODE> and stores the results in
+ * the destination <CODE>Raster</CODE>.  This operation performs the
+ * transform band by band.
+ * <p>
+ * If the destination <CODE>Raster</CODE> is null, a new
+ * <CODE>Raster</CODE> is created.
+ * An <CODE>IllegalArgumentException</CODE> may be thrown if the source is
+ * the same as the destination or if the number of bands in
+ * the source is not equal to the number of bands in the
+ * destination.
+ * <p>
+ * The coordinates of the rectangle returned by
+ * <code>getBounds2D(Raster)</code>
+ * are not necessarily the same as the coordinates of the
+ * <code>WritableRaster</code> returned by this method.  If the
+ * upper-left corner coordinates of rectangle are negative then
+ * this part of the rectangle is not drawn.  If the coordinates
+ * of the rectangle are positive then the filtered image is drawn at
+ * that position in the destination <code>Raster</code>.
+ * <p>
+ * @param src The <CODE>Raster</CODE> to transform.
+ * @param dst The <CODE>Raster</CODE> in which to store the results of the
+ * transformation.
+ *
+ * @return The transformed <CODE>Raster</CODE>.
+ *
+ * @throws ImagingOpException if the raster cannot be transformed
+ *         because of a data-processing error that might be
+ *         caused by an invalid image format, tile format, or
+ *         image-processing operation, or any other unsupported
+ *         operation.
+ */
+public final WritableRaster filter(Raster src, WritableRaster dst) {
+    if (src == null) {
+        throw new NullPointerException("src image is null");
+    }
+    if (dst == null) {
+        dst = createCompatibleDestRaster(src);
+    }
+    if (src == dst) {
+        throw new IllegalArgumentException("src image cannot be the " + "same as the dst image");
+    }
+    if (src.getNumBands() != dst.getNumBands()) {
+        throw new IllegalArgumentException("Number of src bands (" + src.getNumBands() + ") does not match number of " + " dst bands (" + dst.getNumBands() + ")");
+    }
+    if (ImagingLib.filter(this, src, dst) == null) {
+        throw new ImagingOpException("Unable to transform src image");
+    }
+    return dst;
+}

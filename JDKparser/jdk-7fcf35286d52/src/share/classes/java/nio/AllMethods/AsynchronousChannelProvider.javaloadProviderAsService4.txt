@@ -1,0 +1,15 @@
+private static AsynchronousChannelProvider loadProviderAsService() {
+    ServiceLoader<AsynchronousChannelProvider> sl = ServiceLoader.load(AsynchronousChannelProvider.class, ClassLoader.getSystemClassLoader());
+    Iterator<AsynchronousChannelProvider> i = sl.iterator();
+    for (; ; ) {
+        try {
+            return (i.hasNext()) ? i.next() : null;
+        } catch (ServiceConfigurationError sce) {
+            if (sce.getCause() instanceof SecurityException) {
+                // Ignore the security exception, try the next provider
+                continue;
+            }
+            throw sce;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+static IdentityArrayList<Window> getAllUnblockedWindows() {
+    synchronized (allWindows) {
+        IdentityArrayList<Window> unblocked = new IdentityArrayList<Window>();
+        for (int i = 0; i < allWindows.size(); i++) {
+            Window w = allWindows.get(i);
+            if (!w.isModalBlocked()) {
+                unblocked.add(w);
+            }
+        }
+        return unblocked;
+    }
+}

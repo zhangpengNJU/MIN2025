@@ -1,0 +1,14 @@
+/**
+ * Converts Java time to DOS time, encoding any milliseconds lost
+ * in the conversion into the upper half of the returned long.
+ *
+ * @param time milliseconds since epoch
+ * @return DOS time with 2s remainder encoded into upper half
+ */
+public static long javaToExtendedDosTime(long time) {
+    if (time < 0) {
+        return ZipEntry.DOSTIME_BEFORE_1980;
+    }
+    long dostime = javaToDosTime(time);
+    return (dostime != ZipEntry.DOSTIME_BEFORE_1980) ? dostime + ((time % 2000) << 32) : ZipEntry.DOSTIME_BEFORE_1980;
+}

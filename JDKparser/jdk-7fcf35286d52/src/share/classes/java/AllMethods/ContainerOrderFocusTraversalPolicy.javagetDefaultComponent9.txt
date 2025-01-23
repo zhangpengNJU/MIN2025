@@ -1,0 +1,16 @@
+/**
+ * Returns the default Component to focus. This Component will be the first
+ * to receive focus when traversing down into a new focus traversal cycle
+ * rooted at aContainer. The default implementation of this method
+ * returns the same Component as <code>getFirstComponent</code>.
+ *
+ * @param aContainer the focus cycle root or focus traversal policy provider whose default
+ *        Component is to be returned
+ * @return the default Component in the traversal cycle of aContainer,
+ *         or null if no suitable Component can be found
+ * @see #getFirstComponent
+ * @throws IllegalArgumentException if aContainer is null
+ */
+public Component getDefaultComponent(Container aContainer) {
+    return getFirstComponent(aContainer);
+}

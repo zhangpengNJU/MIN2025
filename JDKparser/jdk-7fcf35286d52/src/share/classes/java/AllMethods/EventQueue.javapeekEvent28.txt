@@ -1,0 +1,22 @@
+/**
+ * Returns the first event with the specified id, if any.
+ * @param id the id of the type of event desired
+ * @return the first event of the specified id or <code>null</code>
+ *    if there is no such event
+ */
+public AWTEvent peekEvent(int id) {
+    pushPopLock.lock();
+    try {
+        for (int i = NUM_PRIORITIES - 1; i >= 0; i--) {
+            EventQueueItem q = queues[i].head;
+            for (; q != null; q = q.next) {
+                if (q.event.getID() == id) {
+                    return q.event;
+                }
+            }
+        }
+    } finally {
+        pushPopLock.unlock();
+    }
+    return null;
+}

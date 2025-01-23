@@ -1,0 +1,16 @@
+private static BigDecimal add(BigInteger fst, int scale1, BigInteger snd, int scale2) {
+    int rscale = scale1;
+    long sdiff = (long) rscale - scale2;
+    if (sdiff != 0) {
+        if (sdiff < 0) {
+            int raise = checkScale(fst, -sdiff);
+            rscale = scale2;
+            fst = bigMultiplyPowerTen(fst, raise);
+        } else {
+            int raise = checkScale(snd, sdiff);
+            snd = bigMultiplyPowerTen(snd, raise);
+        }
+    }
+    BigInteger sum = fst.add(snd);
+    return (fst.signum == snd.signum) ? new BigDecimal(sum, INFLATED, rscale, 0) : valueOf(sum, rscale, 0);
+}

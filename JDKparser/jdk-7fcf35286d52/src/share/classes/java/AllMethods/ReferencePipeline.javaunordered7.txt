@@ -1,0 +1,14 @@
+// Stream
+// Stateless intermediate operations from Stream
+@Override
+public Stream<P_OUT> unordered() {
+    if (!isOrdered())
+        return this;
+    return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE, StreamOpFlag.NOT_ORDERED) {
+
+        @Override
+        Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
+            return sink;
+        }
+    };
+}

@@ -1,0 +1,46 @@
+/* match on private key usage range */
+private boolean matchPrivateKeyValid(X509Certificate xcert) {
+    if (privateKeyValid == null) {
+        return true;
+    }
+    PrivateKeyUsageExtension ext = null;
+    try {
+        ext = (PrivateKeyUsageExtension) getExtensionObject(xcert, PRIVATE_KEY_USAGE_ID);
+        if (ext != null) {
+            ext.valid(privateKeyValid);
+        }
+    } catch (CertificateExpiredException e1) {
+        if (debug != null) {
+            String time = "n/a";
+            try {
+                Date notAfter = ext.get(PrivateKeyUsageExtension.NOT_AFTER);
+                time = notAfter.toString();
+            } catch (CertificateException ex) {
+            // not able to retrieve notAfter value
+            }
+            debug.println("X509CertSelector.match: private key usage not " + "within validity date; ext.NOT_After: " + time + "; X509CertSelector: " + this.toString());
+            e1.printStackTrace();
+        }
+        return false;
+    } catch (CertificateNotYetValidException e2) {
+        if (debug != null) {
+            String time = "n/a";
+            try {
+                Date notBefore = ext.get(PrivateKeyUsageExtension.NOT_BEFORE);
+                time = notBefore.toString();
+            } catch (CertificateException ex) {
+            // not able to retrieve notBefore value
+            }
+            debug.println("X509CertSelector.match: private key usage not " + "within validity date; ext.NOT_BEFORE: " + time + "; X509CertSelector: " + this.toString());
+            e2.printStackTrace();
+        }
+        return false;
+    } catch (IOException e4) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: IOException in " + "private key usage check; X509CertSelector: " + this.toString());
+            e4.printStackTrace();
+        }
+        return false;
+    }
+    return true;
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns a <code>Font</code> object from the system properties list.
+ * <code>nm</code> is treated as the name of a system property to be
+ * obtained.  The <code>String</code> value of this property is then
+ * interpreted as a <code>Font</code> object according to the
+ * specification of <code>Font.decode(String)</code>
+ * If the specified property is not found, or the executing code does
+ * not have permission to read the property, null is returned instead.
+ *
+ * @param nm the property name
+ * @return a <code>Font</code> object that the property name
+ *          describes, or null if no such property exists.
+ * @throws NullPointerException if nm is null.
+ * @since 1.2
+ * @see #decode(String)
+ */
+public static Font getFont(String nm) {
+    return getFont(nm, null);
+}

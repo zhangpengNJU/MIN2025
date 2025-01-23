@@ -1,0 +1,12 @@
+synchronized public LambdaForm setCachedLambdaForm(int which, LambdaForm form) {
+    // Simulate a CAS, to avoid racy duplication of results.
+    SoftReference<LambdaForm> entry = lambdaForms[which];
+    if (entry != null) {
+        LambdaForm prev = entry.get();
+        if (prev != null) {
+            return prev;
+        }
+    }
+    lambdaForms[which] = new SoftReference<>(form);
+    return form;
+}

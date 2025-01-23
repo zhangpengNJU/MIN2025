@@ -1,0 +1,10 @@
+/**
+ * Throws InvalidClassException if not initialized.
+ * To be called in cases where an uninitialized class descriptor indicates
+ * a problem in the serialization stream.
+ */
+final void checkInitialized() throws InvalidClassException {
+    if (!initialized) {
+        throw new InvalidClassException("Class descriptor should be initialized");
+    }
+}

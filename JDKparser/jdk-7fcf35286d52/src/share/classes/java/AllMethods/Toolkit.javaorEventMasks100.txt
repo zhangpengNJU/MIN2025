@@ -1,0 +1,16 @@
+public void orEventMasks(long mask) {
+    eventMask |= mask;
+    // For each event bit set in mask, increment its call count.
+    for (int i = 0; i < Toolkit.LONG_BITS; i++) {
+        // If no bits are set, break out of loop.
+        if (mask == 0) {
+            break;
+        }
+        if ((mask & 1L) != 0) {
+            // Always test bit 0.
+            calls[i]++;
+        }
+        // Right shift, fill with zeros on left.
+        mask >>>= 1;
+    }
+}

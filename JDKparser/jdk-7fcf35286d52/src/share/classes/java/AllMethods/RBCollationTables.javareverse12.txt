@@ -1,0 +1,17 @@
+/**
+ * Reverse a string.
+ */
+// shemran/Note: this is used for secondary order value reverse, no
+// need to consider supplementary pair.
+static void reverse(StringBuffer result, int from, int to) {
+    int i = from;
+    char swap;
+    int j = to - 1;
+    while (i < j) {
+        swap = result.charAt(i);
+        result.setCharAt(i, result.charAt(j));
+        result.setCharAt(j, swap);
+        i++;
+        j--;
+    }
+}

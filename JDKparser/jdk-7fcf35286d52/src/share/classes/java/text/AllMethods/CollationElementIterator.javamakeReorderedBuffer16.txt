@@ -1,0 +1,49 @@
+/**
+ * This method produces a buffer which contains the collation
+ * elements for the two characters, with colFirst's values preceding
+ * another character's.  Presumably, the other character precedes colFirst
+ * in logical order (otherwise you wouldn't need this method would you?).
+ * The assumption is that the other char's value(s) have already been
+ * computed.  If this char has a single element it is passed to this
+ * method as lastValue, and lastExpansion is null.  If it has an
+ * expansion it is passed in lastExpansion, and colLastValue is ignored.
+ */
+private int[] makeReorderedBuffer(int colFirst, int lastValue, int[] lastExpansion, boolean forward) {
+    int[] result;
+    int firstValue = ordering.getUnicodeOrder(colFirst);
+    if (firstValue >= RuleBasedCollator.CONTRACTCHARINDEX) {
+        firstValue = forward ? nextContractChar(colFirst) : prevContractChar(colFirst);
+    }
+    int[] firstExpansion = null;
+    if (firstValue >= RuleBasedCollator.EXPANDCHARINDEX) {
+        firstExpansion = ordering.getExpandValueList(firstValue);
+    }
+    if (!forward) {
+        int temp1 = firstValue;
+        firstValue = lastValue;
+        lastValue = temp1;
+        int[] temp2 = firstExpansion;
+        firstExpansion = lastExpansion;
+        lastExpansion = temp2;
+    }
+    if (firstExpansion == null && lastExpansion == null) {
+        result = new int[2];
+        result[0] = firstValue;
+        result[1] = lastValue;
+    } else {
+        int firstLength = firstExpansion == null ? 1 : firstExpansion.length;
+        int lastLength = lastExpansion == null ? 1 : lastExpansion.length;
+        result = new int[firstLength + lastLength];
+        if (firstExpansion == null) {
+            result[0] = firstValue;
+        } else {
+            System.arraycopy(firstExpansion, 0, result, 0, firstLength);
+        }
+        if (lastExpansion == null) {
+            result[firstLength] = lastValue;
+        } else {
+            System.arraycopy(lastExpansion, 0, result, firstLength, lastLength);
+        }
+    }
+    return result;
+}

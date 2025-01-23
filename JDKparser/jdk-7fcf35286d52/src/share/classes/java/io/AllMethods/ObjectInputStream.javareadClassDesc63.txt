@@ -1,0 +1,32 @@
+/**
+ * Reads in and returns (possibly null) class descriptor.  Sets passHandle
+ * to class descriptor's assigned handle.  If class descriptor cannot be
+ * resolved to a class in the local VM, a ClassNotFoundException is
+ * associated with the class descriptor's handle.
+ */
+private ObjectStreamClass readClassDesc(boolean unshared) throws IOException {
+    byte tc = bin.peekByte();
+    ObjectStreamClass descriptor;
+    switch(tc) {
+        case TC_NULL:
+            descriptor = (ObjectStreamClass) readNull();
+            break;
+        case TC_REFERENCE:
+            descriptor = (ObjectStreamClass) readHandle(unshared);
+            // Should only reference initialized class descriptors
+            descriptor.checkInitialized();
+            break;
+        case TC_PROXYCLASSDESC:
+            descriptor = readProxyDesc(unshared);
+            break;
+        case TC_CLASSDESC:
+            descriptor = readNonProxyDesc(unshared);
+            break;
+        default:
+            throw new StreamCorruptedException(String.format("invalid type code: %02X", tc));
+    }
+    if (descriptor != null) {
+        validateDescriptor(descriptor);
+    }
+    return descriptor;
+}

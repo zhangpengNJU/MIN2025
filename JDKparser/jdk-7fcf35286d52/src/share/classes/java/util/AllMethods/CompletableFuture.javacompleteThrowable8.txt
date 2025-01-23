@@ -1,0 +1,6 @@
+/**
+ * Completes with an exceptional result, unless already completed.
+ */
+final boolean completeThrowable(Throwable x) {
+    return UNSAFE.compareAndSwapObject(this, RESULT, null, encodeThrowable(x));
+}

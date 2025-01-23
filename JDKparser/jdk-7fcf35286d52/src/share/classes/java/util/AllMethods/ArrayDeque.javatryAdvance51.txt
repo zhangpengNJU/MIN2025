@@ -1,0 +1,16 @@
+public boolean tryAdvance(Consumer<? super E> consumer) {
+    if (consumer == null)
+        throw new NullPointerException();
+    Object[] a = deq.elements;
+    int m = a.length - 1, f = getFence(), i = index;
+    if (i != fence) {
+        @SuppressWarnings("unchecked")
+        E e = (E) a[i];
+        index = (i + 1) & m;
+        if (e == null)
+            throw new ConcurrentModificationException();
+        consumer.accept(e);
+        return true;
+    }
+    return false;
+}

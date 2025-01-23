@@ -1,0 +1,23 @@
+// Miscellaneous
+/**
+ * Returns an immutable list consisting of <tt>n</tt> copies of the
+ * specified object.  The newly allocated data object is tiny (it contains
+ * a single reference to the data object).  This method is useful in
+ * combination with the <tt>List.addAll</tt> method to grow lists.
+ * The returned list is serializable.
+ *
+ * @param  <T> the class of the object to copy and of the objects
+ *         in the returned list.
+ * @param  n the number of elements in the returned list.
+ * @param  o the element to appear repeatedly in the returned list.
+ * @return an immutable list consisting of <tt>n</tt> copies of the
+ *         specified object.
+ * @throws IllegalArgumentException if {@code n < 0}
+ * @see    List#addAll(Collection)
+ * @see    List#addAll(int, Collection)
+ */
+public static <T> List<T> nCopies(int n, T o) {
+    if (n < 0)
+        throw new IllegalArgumentException("List length = " + n);
+    return new CopiesList<>(n, o);
+}

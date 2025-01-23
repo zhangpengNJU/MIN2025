@@ -1,0 +1,25 @@
+/**
+ * Compute the number of completed elements in this node.
+ * <p>
+ * Computation terminates if all nodes have been processed or the
+ * number of completed elements is greater than or equal to the target
+ * size.
+ *
+ * @param target the target size
+ * @return the number of completed elements
+ */
+private long completedSize(long target) {
+    if (completed)
+        return thisNodeSize;
+    else {
+        SliceTask<P_IN, P_OUT> left = leftChild;
+        SliceTask<P_IN, P_OUT> right = rightChild;
+        if (left == null || right == null) {
+            // must be completed
+            return thisNodeSize;
+        } else {
+            long leftSize = left.completedSize(target);
+            return (leftSize >= target) ? leftSize : leftSize + right.completedSize(target);
+        }
+    }
+}

@@ -1,0 +1,16 @@
+void writeChars(char[] v, int off, int len) throws IOException {
+    int limit = MAX_BLOCK_SIZE - 2;
+    int endoff = off + len;
+    while (off < endoff) {
+        if (pos <= limit) {
+            int avail = (MAX_BLOCK_SIZE - pos) >> 1;
+            int stop = Math.min(endoff, off + avail);
+            while (off < stop) {
+                Bits.putChar(buf, pos, v[off++]);
+                pos += 2;
+            }
+        } else {
+            dout.writeChar(v[off++]);
+        }
+    }
+}

@@ -1,0 +1,5 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    // System.out.println("instantiate: " + type + " " + oldInstance);
+    Class<?> oldClass = oldInstance.getClass();
+    return new Expression(oldInstance, Array.class, "newInstance", new Object[] { oldClass.getComponentType(), new Integer(Array.getLength(oldInstance)) });
+}

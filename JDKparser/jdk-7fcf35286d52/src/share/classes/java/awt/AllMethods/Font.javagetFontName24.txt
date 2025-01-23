@@ -1,0 +1,17 @@
+/**
+ * Returns the font face name of the <code>Font</code>, localized
+ * for the specified locale. For example, Helvetica Fett could be
+ * returned as the font face name.
+ * Use <code>getFamily</code> to get the family name of the font.
+ * @param l a locale for which to get the font face name
+ * @return a <code>String</code> representing the font face name,
+ *          localized for the specified locale.
+ * @see #getFamily
+ * @see java.util.Locale
+ */
+public String getFontName(Locale l) {
+    if (l == null) {
+        throw new NullPointerException("null locale doesn't mean default");
+    }
+    return getFont2D().getFontName(l);
+}

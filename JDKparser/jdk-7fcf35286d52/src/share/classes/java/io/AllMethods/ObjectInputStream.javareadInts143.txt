@@ -1,0 +1,20 @@
+void readInts(int[] v, int off, int len) throws IOException {
+    int stop, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            int span = Math.min(endoff - off, MAX_BLOCK_SIZE >> 2);
+            in.readFully(buf, 0, span << 2);
+            stop = off + span;
+            pos = 0;
+        } else if (end - pos < 4) {
+            v[off++] = din.readInt();
+            continue;
+        } else {
+            stop = Math.min(endoff, off + ((end - pos) >> 2));
+        }
+        while (off < stop) {
+            v[off++] = Bits.getInt(buf, pos);
+            pos += 4;
+        }
+    }
+}

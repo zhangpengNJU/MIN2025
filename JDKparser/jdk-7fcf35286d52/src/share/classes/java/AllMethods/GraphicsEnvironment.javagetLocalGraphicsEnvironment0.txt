@@ -1,0 +1,10 @@
+/**
+ * Returns the local <code>GraphicsEnvironment</code>.
+ * @return the local <code>GraphicsEnvironment</code>
+ */
+public static synchronized GraphicsEnvironment getLocalGraphicsEnvironment() {
+    if (localEnv == null) {
+        localEnv = createGE();
+    }
+    return localEnv;
+}

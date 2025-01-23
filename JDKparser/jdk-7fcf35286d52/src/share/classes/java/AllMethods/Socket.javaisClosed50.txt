@@ -1,0 +1,12 @@
+/**
+ * Returns the closed state of the socket.
+ *
+ * @return true if the socket has been closed
+ * @since 1.4
+ * @see #close
+ */
+public boolean isClosed() {
+    synchronized (closeLock) {
+        return closed;
+    }
+}

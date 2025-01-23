@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if this duration is equal to the specified {@code Duration}.
+ * <p>
+ * The comparison is based on the total length of the durations.
+ *
+ * @param otherDuration  the other duration, null returns false
+ * @return true if the other duration is equal to this one
+ */
+@Override
+public boolean equals(Object otherDuration) {
+    if (this == otherDuration) {
+        return true;
+    }
+    if (otherDuration instanceof Duration) {
+        Duration other = (Duration) otherDuration;
+        return this.seconds == other.seconds && this.nanos == other.nanos;
+    }
+    return false;
+}

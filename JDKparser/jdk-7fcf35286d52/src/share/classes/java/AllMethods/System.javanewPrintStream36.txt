@@ -1,0 +1,12 @@
+/**
+ * Create PrintStream for stdout/err based on encoding.
+ */
+private static PrintStream newPrintStream(FileOutputStream fos, String enc) {
+    if (enc != null) {
+        try {
+            return new PrintStream(new BufferedOutputStream(fos, 128), true, enc);
+        } catch (UnsupportedEncodingException uee) {
+        }
+    }
+    return new PrintStream(new BufferedOutputStream(fos, 128), true);
+}

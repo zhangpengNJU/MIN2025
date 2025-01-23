@@ -1,0 +1,9 @@
+@Override
+public T[] asArray(IntFunction<T[]> generator) {
+    long size = count();
+    if (size >= MAX_ARRAY_SIZE)
+        throw new IllegalArgumentException(BAD_SIZE);
+    T[] array = generator.apply((int) size);
+    copyInto(array, 0);
+    return array;
+}

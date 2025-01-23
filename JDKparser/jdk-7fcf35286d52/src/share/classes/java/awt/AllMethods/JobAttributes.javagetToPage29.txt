@@ -1,0 +1,24 @@
+/**
+ * Returns, for jobs using these attributes, the last page (inclusive)
+ * to be printed, if a range of pages is to be printed. This attribute is
+ * updated to the value chosen by the user. An application should ignore
+ * this attribute on output, unless the return value of the <code>
+ * getDefaultSelection</code> method is DefaultSelectionType.RANGE. An
+ * application should honor the return value of <code>getPageRanges</code>
+ * over the return value of this method, if possible.
+ *
+ * @return  an integer greater than zero and greater than or equal
+ *          to <i>toPage</i> and greater than or equal to <i>minPage</i>
+ *          and less than or equal to <i>maxPage</i>.
+ */
+public int getToPage() {
+    if (toPage != 0) {
+        return toPage;
+    } else if (fromPage != 0) {
+        return fromPage;
+    } else if (pageRanges != null) {
+        return prLast;
+    } else {
+        return getMinPage();
+    }
+}

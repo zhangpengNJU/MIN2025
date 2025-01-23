@@ -1,0 +1,23 @@
+/**
+ * Retrieves the value of the designated column in the current row
+ * of this <code>ResultSet</code> object as an <code>Object</code>
+ * in the Java programming language.
+ * If the value is an SQL <code>NULL</code>,
+ * the driver returns a Java <code>null</code>.
+ * This method uses the given <code>Map</code> object
+ * for the custom mapping of the
+ * SQL structured or distinct type that is being retrieved.
+ *
+ * @param columnIndex the first column is 1, the second is 2, ...
+ * @param map a <code>java.util.Map</code> object that contains the mapping
+ * from SQL type names to classes in the Java programming language
+ * @return an <code>Object</code> in the Java programming language
+ * representing the SQL value
+ * @exception SQLException if the columnIndex is not valid;
+ * if a database access error occurs
+ * or this method is called on a closed result set
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+Object getObject(int columnIndex, java.util.Map<String, Class<?>> map) throws SQLException;

@@ -1,0 +1,36 @@
+/**
+ * Returns a map of names and values of all system properties.
+ * This method calls {@link System#getProperties} to get all
+ * system properties.  Properties whose name or value is not
+ * a <tt>String</tt> are omitted.
+ *
+ * <p>
+ * <b>MBeanServer access</b>:<br>
+ * The mapped type of {@code Map<String,String>} is
+ * {@link javax.management.openmbean.TabularData TabularData}
+ * with two items in each row as follows:
+ * <blockquote>
+ * <table border summary="Name and Type for each item">
+ * <tr>
+ *   <th>Item Name</th>
+ *   <th>Item Type</th>
+ *   </tr>
+ * <tr>
+ *   <td><tt>key</tt></td>
+ *   <td><tt>String</tt></td>
+ *   </tr>
+ * <tr>
+ *   <td><tt>value</tt></td>
+ *   <td><tt>String</tt></td>
+ *   </tr>
+ * </table>
+ * </blockquote>
+ *
+ * @return a map of names and values of all system properties.
+ *
+ * @throws  java.lang.SecurityException
+ *     if a security manager exists and its
+ *     <code>checkPropertiesAccess</code> method doesn't allow access
+ *     to the system properties.
+ */
+public java.util.Map<String, String> getSystemProperties();

@@ -1,0 +1,15 @@
+protected FilterAction acceptWindow(Window w) {
+    if (w.isModalExcluded(Dialog.ModalExclusionType.TOOLKIT_EXCLUDE)) {
+        return FilterAction.ACCEPT;
+    }
+    if (w.appContext != appContext) {
+        return FilterAction.REJECT;
+    }
+    while (w != null) {
+        if (w == modalDialog) {
+            return FilterAction.ACCEPT_IMMEDIATELY;
+        }
+        w = w.getOwner();
+    }
+    return FilterAction.REJECT;
+}

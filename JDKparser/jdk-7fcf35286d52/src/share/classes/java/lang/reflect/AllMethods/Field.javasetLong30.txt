@@ -1,0 +1,34 @@
+/**
+ * Sets the value of a field as a {@code long} on the specified object.
+ * This method is equivalent to
+ * {@code set(obj, lObj)},
+ * where {@code lObj} is a {@code Long} object and
+ * {@code lObj.longValue() == l}.
+ *
+ * @param obj the object whose field should be modified
+ * @param l   the new value for the field of {@code obj}
+ * being modified
+ *
+ * @exception IllegalAccessException    if this {@code Field} object
+ *              is enforcing Java language access control and the underlying
+ *              field is either inaccessible or final.
+ * @exception IllegalArgumentException  if the specified object is not an
+ *              instance of the class or interface declaring the underlying
+ *              field (or a subclass or implementor thereof),
+ *              or if an unwrapping conversion fails.
+ * @exception NullPointerException      if the specified object is null
+ *              and the field is an instance field.
+ * @exception ExceptionInInitializerError if the initialization provoked
+ *              by this method fails.
+ * @see       Field#set
+ */
+@CallerSensitive
+public void setLong(Object obj, long l) throws IllegalArgumentException, IllegalAccessException {
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class<?> caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, obj, modifiers);
+        }
+    }
+    getFieldAccessor(obj).setLong(obj, l);
+}

@@ -1,0 +1,20 @@
+/* match on name constraints */
+private boolean matchNameConstraints(X509Certificate xcert) {
+    if (nc == null) {
+        return true;
+    }
+    try {
+        if (!nc.verify(xcert)) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: " + "name constraints not satisfied");
+            }
+            return false;
+        }
+    } catch (IOException e) {
+        if (debug != null) {
+            debug.println("X509CertSelector.match: " + "IOException in name constraints check");
+        }
+        return false;
+    }
+    return true;
+}

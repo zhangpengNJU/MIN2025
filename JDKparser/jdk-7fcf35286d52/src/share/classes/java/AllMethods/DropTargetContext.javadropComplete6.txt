@@ -1,0 +1,14 @@
+/**
+ * This method signals that the drop is completed and
+ * if it was successful or not.
+ * <P>
+ * @param success true for success, false if not
+ * <P>
+ * @throws InvalidDnDOperationException if a drop is not outstanding/extant
+ */
+public void dropComplete(boolean success) throws InvalidDnDOperationException {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    if (peer != null) {
+        peer.dropComplete(success);
+    }
+}

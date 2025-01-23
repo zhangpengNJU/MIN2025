@@ -1,0 +1,27 @@
+public Set<Attribute> getAllAttributeKeys() {
+    // ??? This should screen out attribute keys that aren't relevant to the client
+    if (runAttributes == null) {
+        // ??? would be nice to return null, but current spec doesn't allow it
+        // returning HashSet saves us from dealing with emptiness
+        return new HashSet<>();
+    }
+    synchronized (AttributedString.this) {
+        // ??? should try to create this only once, then update if necessary,
+        // and give callers read-only view
+        Set<Attribute> keys = new HashSet<>();
+        int i = 0;
+        while (i < runCount) {
+            if (runStarts[i] < endIndex && (i == runCount - 1 || runStarts[i + 1] > beginIndex)) {
+                Vector<Attribute> currentRunAttributes = runAttributes[i];
+                if (currentRunAttributes != null) {
+                    int j = currentRunAttributes.size();
+                    while (j-- > 0) {
+                        keys.add(currentRunAttributes.get(j));
+                    }
+                }
+            }
+            i++;
+        }
+        return keys;
+    }
+}

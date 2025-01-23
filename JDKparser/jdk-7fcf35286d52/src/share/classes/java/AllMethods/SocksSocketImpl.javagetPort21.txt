@@ -1,0 +1,13 @@
+/**
+ * Returns the value of this socket's {@code port} field.
+ *
+ * @return  the value of this socket's {@code port} field.
+ * @see     java.net.SocketImpl#port
+ */
+@Override
+protected int getPort() {
+    if (external_address != null)
+        return external_address.getPort();
+    else
+        return super.getPort();
+}

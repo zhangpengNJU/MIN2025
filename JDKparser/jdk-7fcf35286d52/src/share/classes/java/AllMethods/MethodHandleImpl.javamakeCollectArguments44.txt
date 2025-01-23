@@ -1,0 +1,59 @@
+/**
+ * Factory method:  Collect or filter selected argument(s).
+ */
+static MethodHandle makeCollectArguments(MethodHandle target, MethodHandle collector, int collectArgPos, boolean retainOriginalArgs) {
+    // (a..., c, [b...])=>r
+    MethodType targetType = target.type();
+    // (b...)=>c
+    MethodType collectorType = collector.type();
+    int collectArgCount = collectorType.parameterCount();
+    Class<?> collectValType = collectorType.returnType();
+    int collectValCount = (collectValType == void.class ? 0 : 1);
+    MethodType srcType = // (a..., [b...])=>r
+    targetType.dropParameterTypes(collectArgPos, collectArgPos + collectValCount);
+    if (!retainOriginalArgs) {
+        // (a..., b...)=>r
+        srcType = srcType.insertParameterTypes(collectArgPos, collectorType.parameterList());
+    }
+    // in  arglist: [0: ...keep1 | cpos: collect...  | cpos+cacount: keep2... ]
+    // out arglist: [0: ...keep1 | cpos: collectVal? | cpos+cvcount: keep2... ]
+    // out(retain): [0: ...keep1 | cpos: cV? coll... | cpos+cvc+cac: keep2... ]
+    // Now build a LambdaForm.
+    MethodType lambdaType = srcType.invokerType();
+    Name[] names = arguments(2, lambdaType);
+    final int collectNamePos = names.length - 2;
+    final int targetNamePos = names.length - 1;
+    Name[] collectorArgs = Arrays.copyOfRange(names, 1 + collectArgPos, 1 + collectArgPos + collectArgCount);
+    names[collectNamePos] = new Name(collector, (Object[]) collectorArgs);
+    // Build argument array for the target.
+    // Incoming LF args to copy are: [ (mh) headArgs collectArgs tailArgs ].
+    // Output argument array is [ headArgs (collectVal)? (collectArgs)? tailArgs ].
+    Name[] targetArgs = new Name[targetType.parameterCount()];
+    // incoming LF args to copy to target
+    int inputArgPos = 1;
+    // fill pointer for targetArgs
+    int targetArgPos = 0;
+    // |headArgs|
+    int chunk = collectArgPos;
+    System.arraycopy(names, inputArgPos, targetArgs, targetArgPos, chunk);
+    inputArgPos += chunk;
+    targetArgPos += chunk;
+    if (collectValType != void.class) {
+        targetArgs[targetArgPos++] = names[collectNamePos];
+    }
+    chunk = collectArgCount;
+    if (retainOriginalArgs) {
+        System.arraycopy(names, inputArgPos, targetArgs, targetArgPos, chunk);
+        // optionally pass on the collected chunk
+        targetArgPos += chunk;
+    }
+    inputArgPos += chunk;
+    // all the rest
+    chunk = targetArgs.length - targetArgPos;
+    System.arraycopy(names, inputArgPos, targetArgs, targetArgPos, chunk);
+    // use of rest of input args also
+    assert (inputArgPos + chunk == collectNamePos);
+    names[targetNamePos] = new Name(target, (Object[]) targetArgs);
+    LambdaForm form = new LambdaForm("collect", lambdaType.parameterCount(), names);
+    return SimpleMethodHandle.make(srcType, form);
+}

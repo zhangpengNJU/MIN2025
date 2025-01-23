@@ -1,0 +1,14 @@
+@SuppressWarnings("unchecked")
+public E next() {
+    if (expectedModCount != modCount)
+        throw new ConcurrentModificationException();
+    if (cursor < size)
+        return (E) queue[lastRet = cursor++];
+    if (forgetMeNot != null) {
+        lastRet = -1;
+        lastRetElt = forgetMeNot.poll();
+        if (lastRetElt != null)
+            return lastRetElt;
+    }
+    throw new NoSuchElementException();
+}

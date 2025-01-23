@@ -1,0 +1,6 @@
+static void putDouble(ByteBuffer bb, int bi, double x, boolean bigEndian) {
+    if (bigEndian)
+        putDoubleB(bb, bi, x);
+    else
+        putDoubleL(bb, bi, x);
+}

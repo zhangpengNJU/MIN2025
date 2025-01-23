@@ -1,0 +1,6 @@
+// These methods are intended to be be replaced by virtual machine
+// intrinsics.
+private static int[] implMontgomeryMultiply(int[] a, int[] b, int[] n, int len, long inv, int[] product) {
+    product = multiplyToLen(a, len, b, len, product);
+    return montReduce(product, n, len, (int) inv);
+}

@@ -1,0 +1,21 @@
+/**
+ * Searches for the network interface with the specified name.
+ *
+ * @param   name
+ *          The name of the network interface.
+ *
+ * @return  A {@code NetworkInterface} with the specified name,
+ *          or {@code null} if there is no network interface
+ *          with the specified name.
+ *
+ * @throws  SocketException
+ *          If an I/O error occurs.
+ *
+ * @throws  NullPointerException
+ *          If the specified name is {@code null}.
+ */
+public static NetworkInterface getByName(String name) throws SocketException {
+    if (name == null)
+        throw new NullPointerException();
+    return getByName0(name);
+}

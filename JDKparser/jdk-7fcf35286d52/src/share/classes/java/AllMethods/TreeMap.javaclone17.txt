@@ -1,0 +1,28 @@
+/**
+ * Returns a shallow copy of this {@code TreeMap} instance. (The keys and
+ * values themselves are not cloned.)
+ *
+ * @return a shallow copy of this map
+ */
+public Object clone() {
+    TreeMap<?, ?> clone;
+    try {
+        clone = (TreeMap<?, ?>) super.clone();
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+    // Put clone into "virgin" state (except for comparator)
+    clone.root = null;
+    clone.size = 0;
+    clone.modCount = 0;
+    clone.entrySet = null;
+    clone.navigableKeySet = null;
+    clone.descendingMap = null;
+    // Initialize clone with our mappings
+    try {
+        clone.buildFromSorted(size, entrySet().iterator(), null, null);
+    } catch (java.io.IOException cannotHappen) {
+    } catch (ClassNotFoundException cannotHappen) {
+    }
+    return clone;
+}

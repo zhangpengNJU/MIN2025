@@ -1,0 +1,55 @@
+/**
+ * Sets the state of this frame (obsolete).
+ * <p>
+ * In older versions of JDK a frame state could only be NORMAL or
+ * ICONIFIED.  Since JDK 1.4 set of supported frame states is
+ * expanded and frame state is represented as a bitwise mask.
+ * <p>
+ * For compatibility with applications developed
+ * earlier this method still accepts
+ * {@code Frame.NORMAL} and
+ * {@code Frame.ICONIFIED} only.  The iconic
+ * state of the frame is only changed, other aspects
+ * of frame state are not affected by this method. If
+ * the state passed to this method is neither {@code
+ * Frame.NORMAL} nor {@code Frame.ICONIFIED} the
+ * method performs no actions at all.
+ * <p>Note that if the state is not supported on a
+ * given platform, neither the state nor the return
+ * value of the {@link #getState} method will be
+ * changed. The application may determine whether a
+ * specific state is supported via the {@link
+ * java.awt.Toolkit#isFrameStateSupported} method.
+ * <p><b>If the frame is currently visible on the
+ * screen</b> (the {@link #isShowing} method returns
+ * {@code true}), the developer should examine the
+ * return value of the  {@link
+ * java.awt.event.WindowEvent#getNewState} method of
+ * the {@code WindowEvent} received through the
+ * {@link java.awt.event.WindowStateListener} to
+ * determine that the state has actually been
+ * changed.
+ * <p><b>If the frame is not visible on the
+ * screen</b>, the events may or may not be
+ * generated.  In this case the developer may assume
+ * that the state changes immediately after this
+ * method returns.  Later, when the {@code
+ * setVisible(true)} method is invoked, the frame
+ * will attempt to apply this state. Receiving any
+ * {@link
+ * java.awt.event.WindowEvent#WINDOW_STATE_CHANGED}
+ * events is not guaranteed in this case also.
+ *
+ * @param state either <code>Frame.NORMAL</code> or
+ *     <code>Frame.ICONIFIED</code>.
+ * @see #setExtendedState(int)
+ * @see java.awt.Window#addWindowStateListener
+ */
+public synchronized void setState(int state) {
+    int current = getExtendedState();
+    if (state == ICONIFIED && (current & ICONIFIED) == 0) {
+        setExtendedState(current | ICONIFIED);
+    } else if (state == NORMAL && (current & ICONIFIED) != 0) {
+        setExtendedState(current & ~ICONIFIED);
+    }
+}

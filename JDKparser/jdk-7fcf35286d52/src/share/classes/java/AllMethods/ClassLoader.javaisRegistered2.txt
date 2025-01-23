@@ -1,0 +1,9 @@
+/**
+ * Returns {@code true} if the given class loader type is
+ * registered as parallel capable.
+ */
+static boolean isRegistered(Class<? extends ClassLoader> c) {
+    synchronized (loaderTypes) {
+        return loaderTypes.contains(c);
+    }
+}

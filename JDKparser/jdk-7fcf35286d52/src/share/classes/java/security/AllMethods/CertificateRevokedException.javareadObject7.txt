@@ -1,0 +1,28 @@
+/**
+ * Deserialize the {@code CertificateRevokedException} instance.
+ */
+private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    // Read in the non-transient fields
+    // (revocationDate, reason, authority)
+    ois.defaultReadObject();
+    // Defensively copy the revocation date
+    revocationDate = new Date(revocationDate.getTime());
+    // Read in the size (number of mappings) of the extensions map
+    // and create the extensions map
+    int size = ois.readInt();
+    if (size == 0) {
+        extensions = Collections.emptyMap();
+    } else if (size < 0) {
+        throw new IOException("size cannot be negative");
+    } else {
+        extensions = new HashMap<>(size > 20 ? 20 : size);
+    }
+    // Read in the extensions and put the mappings in the extensions map
+    for (int i = 0; i < size; i++) {
+        String oid = (String) ois.readObject();
+        boolean critical = ois.readBoolean();
+        byte[] extVal = IOUtils.readExactlyNBytes(ois, ois.readInt());
+        Extension ext = sun.security.x509.Extension.newExtension(new ObjectIdentifier(oid), critical, extVal);
+        extensions.put(oid, ext);
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * Returns the value of a socket option.
+ *
+ * @param   <T>
+ *          The type of the socket option value
+ * @param   name
+ *          The socket option
+ *
+ * @return  The value of the socket option. A value of {@code null} may be
+ *          a valid value for some socket options.
+ *
+ * @throws  UnsupportedOperationException
+ *          If the socket option is not supported by this channel
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @see java.net.StandardSocketOptions
+ */
+<T> T getOption(SocketOption<T> name) throws IOException;

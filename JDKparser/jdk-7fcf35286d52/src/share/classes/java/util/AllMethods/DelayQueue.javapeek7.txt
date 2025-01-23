@@ -1,0 +1,19 @@
+/**
+ * Retrieves, but does not remove, the head of this queue, or
+ * returns {@code null} if this queue is empty.  Unlike
+ * {@code poll}, if no expired elements are available in the queue,
+ * this method returns the element that will expire next,
+ * if one exists.
+ *
+ * @return the head of this queue, or {@code null} if this
+ *         queue is empty
+ */
+public E peek() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return q.peek();
+    } finally {
+        lock.unlock();
+    }
+}

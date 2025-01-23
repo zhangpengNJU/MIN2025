@@ -1,0 +1,48 @@
+private Object invokeInternal(Object proxy, Method method, Object[] arguments) {
+    String methodName = method.getName();
+    if (method.getDeclaringClass() == Object.class) {
+        // Handle the Object public methods.
+        if (methodName.equals("hashCode")) {
+            return new Integer(System.identityHashCode(proxy));
+        } else if (methodName.equals("equals")) {
+            return (proxy == arguments[0] ? Boolean.TRUE : Boolean.FALSE);
+        } else if (methodName.equals("toString")) {
+            return proxy.getClass().getName() + '@' + Integer.toHexString(proxy.hashCode());
+        }
+    }
+    if (listenerMethodName == null || listenerMethodName.equals(methodName)) {
+        Class[] argTypes = null;
+        Object[] newArgs = null;
+        if (eventPropertyName == null) {
+            // Nullary method.
+            newArgs = new Object[] {};
+            argTypes = new Class<?>[] {};
+        } else {
+            Object input = applyGetters(arguments[0], getEventPropertyName());
+            newArgs = new Object[] { input };
+            argTypes = new Class<?>[] { input == null ? null : input.getClass() };
+        }
+        try {
+            int lastDot = action.lastIndexOf('.');
+            if (lastDot != -1) {
+                target = applyGetters(target, action.substring(0, lastDot));
+                action = action.substring(lastDot + 1);
+            }
+            Method targetMethod = Statement.getMethod(target.getClass(), action, argTypes);
+            if (targetMethod == null) {
+                targetMethod = Statement.getMethod(target.getClass(), "set" + NameGenerator.capitalize(action), argTypes);
+            }
+            if (targetMethod == null) {
+                String argTypeString = (argTypes.length == 0) ? " with no arguments" : " with argument " + argTypes[0];
+                throw new RuntimeException("No method called " + action + " on " + target.getClass() + argTypeString);
+            }
+            return MethodUtil.invoke(targetMethod, target, newArgs);
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        } catch (InvocationTargetException ex) {
+            Throwable th = ex.getTargetException();
+            throw (th instanceof RuntimeException) ? (RuntimeException) th : new RuntimeException(th);
+        }
+    }
+    return null;
+}

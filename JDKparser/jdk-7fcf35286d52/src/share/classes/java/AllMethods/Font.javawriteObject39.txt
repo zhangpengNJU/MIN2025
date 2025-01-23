@@ -1,0 +1,19 @@
+/**
+ * Writes default serializable fields to a stream.
+ *
+ * @param s the <code>ObjectOutputStream</code> to write
+ * @see AWTEventMulticaster#save(ObjectOutputStream, String, EventListener)
+ * @see #readObject(java.io.ObjectInputStream)
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.lang.ClassNotFoundException, java.io.IOException {
+    if (values != null) {
+        synchronized (values) {
+            // transient
+            fRequestedAttributes = values.toSerializableHashtable();
+            s.defaultWriteObject();
+            fRequestedAttributes = null;
+        }
+    } else {
+        s.defaultWriteObject();
+    }
+}

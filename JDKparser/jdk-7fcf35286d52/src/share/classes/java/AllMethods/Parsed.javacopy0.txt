@@ -1,0 +1,12 @@
+/**
+ * Creates a copy.
+ */
+Parsed copy() {
+    // only copy fields used in parsing stage
+    Parsed cloned = new Parsed();
+    cloned.fieldValues.putAll(this.fieldValues);
+    cloned.zone = this.zone;
+    cloned.chrono = this.chrono;
+    cloned.leapSecond = this.leapSecond;
+    return cloned;
+}

@@ -1,0 +1,21 @@
+void writeExternal(DataOutput out) throws IOException {
+    if (nano == 0) {
+        if (second == 0) {
+            if (minute == 0) {
+                out.writeByte(~hour);
+            } else {
+                out.writeByte(hour);
+                out.writeByte(~minute);
+            }
+        } else {
+            out.writeByte(hour);
+            out.writeByte(minute);
+            out.writeByte(~second);
+        }
+    } else {
+        out.writeByte(hour);
+        out.writeByte(minute);
+        out.writeByte(second);
+        out.writeInt(nano);
+    }
+}

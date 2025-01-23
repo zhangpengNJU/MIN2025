@@ -1,0 +1,24 @@
+/**
+ * Returns the number of weeks in a period between fixedDay1 and
+ * fixedDate. The getFirstDayOfWeek-getMinimalDaysInFirstWeek rule
+ * is applied to calculate the number of weeks.
+ *
+ * @param fixedDay1 the fixed date of the first day of the period
+ * @param fixedDate the fixed date of the last day of the period
+ * @return the number of weeks of the given period
+ */
+private int getWeekNumber(long fixedDay1, long fixedDate) {
+    // We can always use `gcal' since Julian and Gregorian are the
+    // same thing for this calculation.
+    long fixedDay1st = Gregorian.getDayOfWeekDateOnOrBefore(fixedDay1 + 6, getFirstDayOfWeek());
+    int ndays = (int) (fixedDay1st - fixedDay1);
+    assert ndays <= 7;
+    if (ndays >= getMinimalDaysInFirstWeek()) {
+        fixedDay1st -= 7;
+    }
+    int normalizedDayOfPeriod = (int) (fixedDate - fixedDay1st);
+    if (normalizedDayOfPeriod >= 0) {
+        return normalizedDayOfPeriod / 7 + 1;
+    }
+    return CalendarUtils.floorDivide(normalizedDayOfPeriod, 7) + 1;
+}

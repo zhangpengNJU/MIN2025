@@ -1,0 +1,7 @@
+private void resolvePeriod() {
+    // add whole days if we have both date and time
+    if (date != null && time != null && excessDays.isZero() == false) {
+        date = date.plus(excessDays);
+        excessDays = Period.ZERO;
+    }
+}

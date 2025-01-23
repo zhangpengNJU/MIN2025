@@ -1,0 +1,10 @@
+private void setIndexedWriteMethod0(Method writeMethod) {
+    this.indexedWriteMethodRef.set(writeMethod);
+    if (writeMethod == null) {
+        indexedWriteMethodName = null;
+        return;
+    }
+    setClass0(writeMethod.getDeclaringClass());
+    indexedWriteMethodName = writeMethod.getName();
+    setTransient(writeMethod.getAnnotation(Transient.class));
+}

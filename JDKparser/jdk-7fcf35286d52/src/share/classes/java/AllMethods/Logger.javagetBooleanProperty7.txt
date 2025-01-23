@@ -1,0 +1,10 @@
+private static boolean getBooleanProperty(final String key) {
+    String s = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+        @Override
+        public String run() {
+            return System.getProperty(key);
+        }
+    });
+    return Boolean.valueOf(s);
+}

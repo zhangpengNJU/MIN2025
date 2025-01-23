@@ -1,0 +1,36 @@
+@Override
+public ChronoLocalDate resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+    Long yearLong = fieldValues.get(YEAR);
+    Long qoyLong = fieldValues.get(QUARTER_OF_YEAR);
+    if (yearLong == null || qoyLong == null) {
+        return null;
+    }
+    // always validate
+    int y = YEAR.checkValidIntValue(yearLong);
+    long doq = fieldValues.get(DAY_OF_QUARTER);
+    ensureIso(partialTemporal);
+    LocalDate date;
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        date = LocalDate.of(y, 1, 1).plusMonths(Math.multiplyExact(Math.subtractExact(qoyLong, 1), 3));
+        doq = Math.subtractExact(doq, 1);
+    } else {
+        // validated
+        int qoy = QUARTER_OF_YEAR.range().checkValidIntValue(qoyLong, QUARTER_OF_YEAR);
+        date = LocalDate.of(y, ((qoy - 1) * 3) + 1, 1);
+        if (doq < 1 || doq > 90) {
+            if (resolverStyle == ResolverStyle.STRICT) {
+                // only allow exact range
+                rangeRefinedBy(date).checkValidValue(doq, this);
+            } else {
+                // SMART
+                // allow 1-92 rolling into next quarter
+                range().checkValidValue(doq, this);
+            }
+        }
+        doq--;
+    }
+    fieldValues.remove(this);
+    fieldValues.remove(YEAR);
+    fieldValues.remove(QUARTER_OF_YEAR);
+    return date.plusDays(doq);
+}

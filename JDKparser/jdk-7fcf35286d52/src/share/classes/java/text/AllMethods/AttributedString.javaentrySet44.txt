@@ -1,0 +1,19 @@
+public Set<Map.Entry<Attribute, Object>> entrySet() {
+    HashSet<Map.Entry<Attribute, Object>> set = new HashSet<>();
+    synchronized (AttributedString.this) {
+        int size = runAttributes[runIndex].size();
+        for (int i = 0; i < size; i++) {
+            Attribute key = runAttributes[runIndex].get(i);
+            Object value = runAttributeValues[runIndex].get(i);
+            if (value instanceof Annotation) {
+                value = AttributedString.this.getAttributeCheckRange(key, runIndex, beginIndex, endIndex);
+                if (value == null) {
+                    continue;
+                }
+            }
+            Map.Entry<Attribute, Object> entry = new AttributeEntry(key, value);
+            set.add(entry);
+        }
+    }
+    return set;
+}

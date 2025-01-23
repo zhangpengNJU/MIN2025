@@ -1,0 +1,34 @@
+// 
+// 
+// java.lang.reflect.Constructor handling
+// 
+// 
+// Returns an array of "root" constructors. These Constructor
+// objects must NOT be propagated to the outside world, but must
+// instead be copied via ReflectionFactory.copyConstructor.
+private Constructor<T>[] privateGetDeclaredConstructors(boolean publicOnly) {
+    checkInitted();
+    Constructor<T>[] res;
+    ReflectionData<T> rd = reflectionData();
+    if (rd != null) {
+        res = publicOnly ? rd.publicConstructors : rd.declaredConstructors;
+        if (res != null)
+            return res;
+    }
+    // No cached value available; request value from VM
+    if (isInterface()) {
+        @SuppressWarnings("unchecked")
+        Constructor<T>[] temporaryRes = (Constructor<T>[]) new Constructor<?>[0];
+        res = temporaryRes;
+    } else {
+        res = getDeclaredConstructors0(publicOnly);
+    }
+    if (rd != null) {
+        if (publicOnly) {
+            rd.publicConstructors = res;
+        } else {
+            rd.declaredConstructors = res;
+        }
+    }
+    return res;
+}

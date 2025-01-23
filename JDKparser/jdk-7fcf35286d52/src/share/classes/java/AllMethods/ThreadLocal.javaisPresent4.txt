@@ -1,0 +1,12 @@
+/**
+ * Returns {@code true} if there is a value in the current thread's copy of
+ * this thread-local variable, even if that values is {@code null}.
+ *
+ * @return {@code true} if current thread has associated value in this
+ *         thread-local variable; {@code false} if not
+ */
+boolean isPresent() {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    return map != null && map.getEntry(this) != null;
+}

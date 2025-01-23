@@ -1,0 +1,12 @@
+private String[] getTypeAndAlgorithm(String key) {
+    int i = key.indexOf(".");
+    if (i < 1) {
+        if (debug != null) {
+            debug.println("Ignoring invalid entry in provider " + name + ":" + key);
+        }
+        return null;
+    }
+    String type = key.substring(0, i);
+    String alg = key.substring(i + 1);
+    return new String[] { type, alg };
+}

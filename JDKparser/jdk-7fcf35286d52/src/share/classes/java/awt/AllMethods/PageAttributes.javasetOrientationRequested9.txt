@@ -1,0 +1,25 @@
+/**
+ * Specifies the print orientation for pages using these attributes.
+ * Specifying <code>3</code> denotes portrait. Specifying <code>4</code>
+ * denotes landscape. Specifying any other value will generate an
+ * IllegalArgumentException. Not specifying the property is equivalent
+ * to calling setOrientationRequested(OrientationRequestedType.PORTRAIT).
+ *
+ * @param   orientationRequested <code>3</code> or <code>4</code>
+ * @throws  IllegalArgumentException if orientationRequested is not
+ *          <code>3</code> or <code>4</code>
+ */
+public void setOrientationRequested(int orientationRequested) {
+    switch(orientationRequested) {
+        case 3:
+            setOrientationRequested(OrientationRequestedType.PORTRAIT);
+            break;
+        case 4:
+            setOrientationRequested(OrientationRequestedType.LANDSCAPE);
+            break;
+        default:
+            // This will throw an IllegalArgumentException
+            setOrientationRequested(null);
+            break;
+    }
+}

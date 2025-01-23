@@ -1,0 +1,10 @@
+synchronized String get(String key) {
+    if (++queryCount >= queryOverflow) {
+        cleanup();
+    }
+    Entry entry = entryFor(key);
+    if (entry != null) {
+        return entry.val();
+    }
+    return null;
+}

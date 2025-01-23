@@ -1,0 +1,27 @@
+/**
+ * Constructs a quantified predicate matcher for an {@code IntStream}.
+ *
+ * @param predicate the {@code Predicate} to apply to stream elements
+ * @param matchKind the kind of quantified match (all, any, none)
+ * @return a {@code TerminalOp} implementing the desired quantified match
+ *         criteria
+ */
+public static TerminalOp<Integer, Boolean> makeInt(IntPredicate predicate, MatchKind matchKind) {
+    Objects.requireNonNull(predicate);
+    Objects.requireNonNull(matchKind);
+    class MatchSink extends BooleanTerminalSink<Integer> implements Sink.OfInt {
+
+        MatchSink() {
+            super(matchKind);
+        }
+
+        @Override
+        public void accept(int t) {
+            if (!stop && predicate.test(t) == matchKind.stopOnPredicateMatches) {
+                stop = true;
+                value = matchKind.shortCircuitResult;
+            }
+        }
+    }
+    return new MatchOp<>(StreamShape.INT_VALUE, matchKind, MatchSink::new);
+}

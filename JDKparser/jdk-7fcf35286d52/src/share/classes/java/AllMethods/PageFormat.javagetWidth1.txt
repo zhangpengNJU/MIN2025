@@ -1,0 +1,16 @@
+/**
+ * Returns the width, in 1/72nds of an inch, of the page.
+ * This method takes into account the orientation of the
+ * page when determining the width.
+ * @return the width of the page.
+ */
+public double getWidth() {
+    double width;
+    int orientation = getOrientation();
+    if (orientation == PORTRAIT) {
+        width = mPaper.getWidth();
+    } else {
+        width = mPaper.getHeight();
+    }
+    return width;
+}

@@ -1,0 +1,33 @@
+/**
+ * Retargets an event to a new source. This method is typically used to
+ * retarget an event to a lightweight child Component of the original
+ * heavyweight source.
+ * <p>
+ * This method is intended to be used only by event targeting subsystems,
+ * such as client-defined KeyboardFocusManagers. It is not for general
+ * client use.
+ *
+ * @param newSource the new Object to which the event should be dispatched
+ * @since 1.4
+ */
+public void setSource(Object newSource) {
+    if (source == newSource) {
+        return;
+    }
+    Component comp = null;
+    if (newSource instanceof Component) {
+        comp = (Component) newSource;
+        while (comp != null && comp.peer != null && (comp.peer instanceof LightweightPeer)) {
+            comp = comp.parent;
+        }
+    }
+    synchronized (this) {
+        source = newSource;
+        if (comp != null) {
+            ComponentPeer peer = comp.peer;
+            if (peer != null) {
+                nativeSetSource(peer);
+            }
+        }
+    }
+}

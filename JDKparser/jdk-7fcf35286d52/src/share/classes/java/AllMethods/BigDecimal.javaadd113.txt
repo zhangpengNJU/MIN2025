@@ -1,0 +1,13 @@
+/*
+     * returns INFLATED if oveflow
+     */
+private static long add(long xs, long ys) {
+    long sum = xs + ys;
+    // See "Hacker's Delight" section 2-12 for explanation of
+    // the overflow test.
+    if ((((sum ^ xs) & (sum ^ ys))) >= 0L) {
+        // not overflowed
+        return sum;
+    }
+    return INFLATED;
+}

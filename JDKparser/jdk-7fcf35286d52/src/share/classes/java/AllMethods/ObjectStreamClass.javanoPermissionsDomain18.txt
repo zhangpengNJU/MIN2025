@@ -1,0 +1,8 @@
+/**
+ * Creates a PermissionDomain that grants no permission.
+ */
+private ProtectionDomain noPermissionsDomain() {
+    PermissionCollection perms = new Permissions();
+    perms.setReadOnly();
+    return new ProtectionDomain(null, perms);
+}

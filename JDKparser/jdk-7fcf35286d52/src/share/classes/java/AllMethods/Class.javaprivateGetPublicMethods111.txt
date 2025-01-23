@@ -1,0 +1,61 @@
+// Returns an array of "root" methods. These Method objects must NOT
+// be propagated to the outside world, but must instead be copied
+// via ReflectionFactory.copyMethod.
+private Method[] privateGetPublicMethods() {
+    checkInitted();
+    Method[] res;
+    ReflectionData<T> rd = reflectionData();
+    if (rd != null) {
+        res = rd.publicMethods;
+        if (res != null)
+            return res;
+    }
+    // No cached value available; compute value recursively.
+    // Start by fetching public declared methods
+    MethodArray methods = new MethodArray();
+    {
+        Method[] tmp = privateGetDeclaredMethods(true);
+        methods.addAll(tmp);
+    }
+    // Now recur over superclass and direct superinterfaces.
+    // Go over superinterfaces first so we can more easily filter
+    // out concrete implementations inherited from superclasses at
+    // the end.
+    MethodArray inheritedMethods = new MethodArray();
+    for (Class<?> i : getInterfaces()) {
+        inheritedMethods.addInterfaceMethods(i.privateGetPublicMethods());
+    }
+    if (!isInterface()) {
+        Class<?> c = getSuperclass();
+        if (c != null) {
+            MethodArray supers = new MethodArray();
+            supers.addAll(c.privateGetPublicMethods());
+            // Filter out concrete implementations of any
+            // interface methods
+            for (int i = 0; i < supers.length(); i++) {
+                Method m = supers.get(i);
+                if (m != null && !Modifier.isAbstract(m.getModifiers()) && !m.isDefault()) {
+                    inheritedMethods.removeByNameAndDescriptor(m);
+                }
+            }
+            // Insert superclass's inherited methods before
+            // superinterfaces' to satisfy getMethod's search
+            // order
+            supers.addAll(inheritedMethods);
+            inheritedMethods = supers;
+        }
+    }
+    // Filter out all local methods from inherited ones
+    for (int i = 0; i < methods.length(); i++) {
+        Method m = methods.get(i);
+        inheritedMethods.removeByNameAndDescriptor(m);
+    }
+    methods.addAllIfNotPresent(inheritedMethods);
+    methods.removeLessSpecifics();
+    methods.compactAndTrim();
+    res = methods.getArray();
+    if (rd != null) {
+        rd.publicMethods = res;
+    }
+    return res;
+}

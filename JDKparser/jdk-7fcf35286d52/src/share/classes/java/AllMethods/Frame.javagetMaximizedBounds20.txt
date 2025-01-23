@@ -1,0 +1,14 @@
+/**
+ * Gets maximized bounds for this frame.
+ * Some fields may contain <code>Integer.MAX_VALUE</code> to indicate
+ * that system supplied values for this field must be used.
+ *
+ * @return  maximized bounds for this frame;  may be <code>null</code>
+ * @see     #setMaximizedBounds(Rectangle)
+ * @since   1.4
+ */
+public Rectangle getMaximizedBounds() {
+    synchronized (getObjectLock()) {
+        return maximizedBounds;
+    }
+}

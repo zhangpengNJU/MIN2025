@@ -1,0 +1,35 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code Chronology} from a locale.
+ * <p>
+ * See {@link Chronology#ofLocale(Locale)}.
+ *
+ * @param locale  the locale to use to obtain the calendar system, not null
+ * @return the calendar system associated with the locale, not null
+ * @throws java.time.DateTimeException if the locale-specified calendar cannot be found
+ */
+static Chronology ofLocale(Locale locale) {
+    Objects.requireNonNull(locale, "locale");
+    String type = locale.getUnicodeLocaleType("ca");
+    if (type == null || "iso".equals(type) || "iso8601".equals(type)) {
+        return IsoChronology.INSTANCE;
+    }
+    // Not pre-defined; lookup by the type
+    do {
+        Chronology chrono = CHRONOS_BY_TYPE.get(type);
+        if (chrono != null) {
+            return chrono;
+        }
+    // If not found, do the initialization (once) and repeat the lookup
+    } while (initCache());
+    // Look for a Chronology using ServiceLoader of the Thread's ContextClassLoader
+    // Application provided Chronologies must not be cached
+    @SuppressWarnings("rawtypes")
+    ServiceLoader<Chronology> loader = ServiceLoader.load(Chronology.class);
+    for (Chronology chrono : loader) {
+        if (type.equals(chrono.getCalendarType())) {
+            return chrono;
+        }
+    }
+    throw new DateTimeException("Unknown calendar system: " + type);
+}

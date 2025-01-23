@@ -1,0 +1,23 @@
+/**
+ * Sets this check box menu item to the specified state.
+ * The boolean value <code>true</code> indicates "on" while
+ * <code>false</code> indicates "off."
+ *
+ * <p>Note that this method should be primarily used to
+ * initialize the state of the check box menu item.
+ * Programmatically setting the state of the check box
+ * menu item will <i>not</i> trigger
+ * an <code>ItemEvent</code>.  The only way to trigger an
+ * <code>ItemEvent</code> is by user interaction.
+ *
+ * @param      b   <code>true</code> if the check box
+ *             menu item is on, otherwise <code>false</code>
+ * @see        #getState
+ */
+public synchronized void setState(boolean b) {
+    state = b;
+    CheckboxMenuItemPeer peer = (CheckboxMenuItemPeer) this.peer;
+    if (peer != null) {
+        peer.setState(b);
+    }
+}

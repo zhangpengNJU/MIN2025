@@ -1,0 +1,31 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code Chronology} from a chronology ID or
+ * calendar system type.
+ * <p>
+ * See {@link Chronology#of(String)}.
+ *
+ * @param id  the chronology ID or calendar system type, not null
+ * @return the chronology with the identifier requested, not null
+ * @throws java.time.DateTimeException if the chronology cannot be found
+ */
+static Chronology of(String id) {
+    Objects.requireNonNull(id, "id");
+    do {
+        Chronology chrono = of0(id);
+        if (chrono != null) {
+            return chrono;
+        }
+    // If not found, do the initialization (once) and repeat the lookup
+    } while (initCache());
+    // Look for a Chronology using ServiceLoader of the Thread's ContextClassLoader
+    // Application provided Chronologies must not be cached
+    @SuppressWarnings("rawtypes")
+    ServiceLoader<Chronology> loader = ServiceLoader.load(Chronology.class);
+    for (Chronology chrono : loader) {
+        if (id.equals(chrono.getId()) || id.equals(chrono.getCalendarType())) {
+            return chrono;
+        }
+    }
+    throw new DateTimeException("Unknown chronology: " + id);
+}

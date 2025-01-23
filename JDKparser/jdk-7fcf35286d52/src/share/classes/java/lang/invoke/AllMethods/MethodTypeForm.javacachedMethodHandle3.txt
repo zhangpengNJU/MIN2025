@@ -1,0 +1,5 @@
+public MethodHandle cachedMethodHandle(int which) {
+    assert (assertIsBasicType());
+    SoftReference<MethodHandle> entry = methodHandles[which];
+    return (entry != null) ? entry.get() : null;
+}

@@ -1,0 +1,57 @@
+/**
+ * Find a conversion function from the given source to the given destination.
+ * This conversion function will be used as a LF NamedFunction.
+ * Return a Class object if a simple cast is needed.
+ * Return void.class if void is involved.
+ */
+static Object valueConversion(Class<?> src, Class<?> dst, boolean strict, boolean monobox) {
+    // caller responsibility
+    assert (!VerifyType.isNullConversion(src, dst, /*keepInterfaces=*/
+    strict));
+    if (dst == void.class)
+        return dst;
+    MethodHandle fn;
+    if (src.isPrimitive()) {
+        if (src == void.class) {
+            // caller must recognize this specially
+            return void.class;
+        } else if (dst.isPrimitive()) {
+            // Examples: int->byte, byte->int, boolean->int (!strict)
+            fn = ValueConversions.convertPrimitive(src, dst);
+        } else {
+            // Examples: int->Integer, boolean->Object, float->Number
+            Wrapper wsrc = Wrapper.forPrimitiveType(src);
+            fn = ValueConversions.boxExact(wsrc);
+            assert (fn.type().parameterType(0) == wsrc.primitiveType());
+            assert (fn.type().returnType() == wsrc.wrapperType());
+            if (!VerifyType.isNullConversion(wsrc.wrapperType(), dst, strict)) {
+                // Corner case, such as int->Long, which will probably fail.
+                MethodType mt = MethodType.methodType(dst, src);
+                if (strict)
+                    fn = fn.asType(mt);
+                else
+                    fn = MethodHandleImpl.makePairwiseConvert(fn, mt, /*strict=*/
+                    false);
+            }
+        }
+    } else if (dst.isPrimitive()) {
+        Wrapper wdst = Wrapper.forPrimitiveType(dst);
+        if (monobox || src == wdst.wrapperType()) {
+            // Use a strongly-typed unboxer, if possible.
+            fn = ValueConversions.unboxExact(wdst, strict);
+        } else {
+            // Examples:  Object->int, Number->int, Comparable->int, Byte->int
+            // must include additional conversions
+            // src must be examined at runtime, to detect Byte, Character, etc.
+            fn = (strict ? ValueConversions.unboxWiden(wdst) : ValueConversions.unboxCast(wdst));
+        }
+    } else {
+        // Simple reference conversion.
+        // Note:  Do not check for a class hierarchy relation
+        // between src and dst.  In all cases a 'null' argument
+        // will pass the cast conversion.
+        return dst;
+    }
+    assert (fn.type().parameterCount() <= 1) : "pc" + Arrays.asList(src.getSimpleName(), dst.getSimpleName(), fn);
+    return fn;
+}

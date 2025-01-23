@@ -1,0 +1,14 @@
+/**
+ * This method calls <code>dragMouseMoved</code> on the
+ * <code>DragSourceMotionListener</code>s registered with this
+ * <code>DragSource</code>, and passes them the specified
+ * <code>DragSourceDragEvent</code>.
+ *
+ * @param dsde the <code>DragSourceEvent</code>
+ */
+void processDragMouseMoved(DragSourceDragEvent dsde) {
+    DragSourceMotionListener dsml = motionListener;
+    if (dsml != null) {
+        dsml.dragMouseMoved(dsde);
+    }
+}

@@ -1,0 +1,26 @@
+/**
+ * Emit an invoke for the given name.
+ */
+void emitInvoke(Name name) {
+    // should use the static path for these
+    assert (!isLinkerMethodInvoke(name));
+    if (true) {
+        // push receiver
+        MethodHandle target = name.function.resolvedHandle;
+        assert (target != null) : name.exprString();
+        mv.visitLdcInsn(constantPlaceholder(target));
+        emitReferenceCast(MethodHandle.class, target);
+    } else {
+        // load receiver
+        emitAloadInsn(0);
+        emitReferenceCast(MethodHandle.class, null);
+        mv.visitFieldInsn(Opcodes.GETFIELD, MH, "form", LF_SIG);
+        mv.visitFieldInsn(Opcodes.GETFIELD, LF, "names", LFN_SIG);
+    // TODO more to come
+    }
+    // push arguments
+    emitPushArguments(name);
+    // invocation
+    MethodType type = name.function.methodType();
+    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, MH, "invokeBasic", type.basicType().toMethodDescriptorString(), false);
+}

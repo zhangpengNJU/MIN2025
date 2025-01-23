@@ -1,0 +1,24 @@
+/**
+ * Sets whether this dialog is resizable by the user.
+ * @param     resizable <code>true</code> if the user can
+ *                 resize this dialog; <code>false</code> otherwise.
+ * @see       java.awt.Dialog#isResizable
+ */
+public void setResizable(boolean resizable) {
+    boolean testvalid = false;
+    synchronized (this) {
+        this.resizable = resizable;
+        DialogPeer peer = (DialogPeer) this.peer;
+        if (peer != null) {
+            peer.setResizable(resizable);
+            testvalid = true;
+        }
+    }
+    // On some platforms, changing the resizable state affects
+    // the insets of the Dialog. If we could, we'd call invalidate()
+    // from the peer, but we need to guarantee that we're not holding
+    // the Dialog lock when we call invalidate().
+    if (testvalid) {
+        invalidateIfValid();
+    }
+}

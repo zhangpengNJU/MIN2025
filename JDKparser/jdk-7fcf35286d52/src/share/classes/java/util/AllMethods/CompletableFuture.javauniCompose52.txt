@@ -1,0 +1,32 @@
+final <S> boolean uniCompose(CompletableFuture<S> a, Function<? super S, ? extends CompletionStage<T>> f, UniCompose<S, T> c) {
+    Object r;
+    Throwable x;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    tryComplete: if (result == null) {
+        if (r instanceof AltResult) {
+            if ((x = ((AltResult) r).ex) != null) {
+                completeThrowable(x, r);
+                break tryComplete;
+            }
+            r = null;
+        }
+        try {
+            if (c != null && !c.claim())
+                return false;
+            @SuppressWarnings("unchecked")
+            S s = (S) r;
+            CompletableFuture<T> g = f.apply(s).toCompletableFuture();
+            if (g.result == null || !uniRelay(g)) {
+                UniRelay<T> copy = new UniRelay<T>(this, g);
+                g.push(copy);
+                copy.tryFire(SYNC);
+                if (result == null)
+                    return false;
+            }
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

@@ -1,0 +1,54 @@
+/**
+ * Connects this socket to a remote socket address (IP address + port number).
+ * Binds socket if not already bound.
+ * <p>
+ * @param   address The remote address.
+ * @param   port    The remote port
+ * @throws  SocketException if binding the socket fails.
+ */
+private synchronized void connectInternal(InetAddress address, int port) throws SocketException {
+    if (port < 0 || port > 0xFFFF) {
+        throw new IllegalArgumentException("connect: " + port);
+    }
+    if (address == null) {
+        throw new IllegalArgumentException("connect: null address");
+    }
+    checkAddress(address, "connect");
+    if (isClosed())
+        return;
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        if (address.isMulticastAddress()) {
+            security.checkMulticast(address);
+        } else {
+            security.checkConnect(address.getHostAddress(), port);
+            security.checkAccept(address.getHostAddress(), port);
+        }
+    }
+    if (!isBound())
+        bind(new InetSocketAddress(0));
+    // old impls do not support connect/disconnect
+    if (oldImpl || (impl instanceof AbstractPlainDatagramSocketImpl && ((AbstractPlainDatagramSocketImpl) impl).nativeConnectDisabled())) {
+        connectState = ST_CONNECTED_NO_IMPL;
+    } else {
+        try {
+            getImpl().connect(address, port);
+            // socket is now connected by the impl
+            connectState = ST_CONNECTED;
+            // Do we need to filter some packets?
+            int avail = getImpl().dataAvailable();
+            if (avail == -1) {
+                throw new SocketException();
+            }
+            explicitFilter = avail > 0;
+            if (explicitFilter) {
+                bytesLeftToFilter = getReceiveBufferSize();
+            }
+        } catch (SocketException se) {
+            // connection will be emulated by DatagramSocket
+            connectState = ST_CONNECTED_NO_IMPL;
+        }
+    }
+    connectedAddress = address;
+    connectedPort = port;
+}

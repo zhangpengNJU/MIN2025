@@ -1,0 +1,64 @@
+private void startLWModal() {
+    // Store the app context on which this component is being shown.
+    // Event dispatch thread of this app context will be sleeping until
+    // we wake it by any event from hideAndDisposeHandler().
+    modalAppContext = AppContext.getAppContext();
+    // keep the KeyEvents from being dispatched
+    // until the focus has been transfered
+    long time = Toolkit.getEventQueue().getMostRecentKeyEventTime();
+    Component predictedFocusOwner = (Component.isInstanceOf(this, "javax.swing.JInternalFrame")) ? ((javax.swing.JInternalFrame) (this)).getMostRecentFocusOwner() : null;
+    if (predictedFocusOwner != null) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().enqueueKeyEvents(time, predictedFocusOwner);
+    }
+    // We have two mechanisms for blocking: 1. If we're on the
+    // EventDispatchThread, start a new event pump. 2. If we're
+    // on any other thread, call wait() on the treelock.
+    final Container nativeContainer;
+    synchronized (getTreeLock()) {
+        nativeContainer = getHeavyweightContainer();
+        if (nativeContainer.modalComp != null) {
+            this.modalComp = nativeContainer.modalComp;
+            nativeContainer.modalComp = this;
+            return;
+        } else {
+            nativeContainer.modalComp = this;
+        }
+    }
+    Runnable pumpEventsForHierarchy = new Runnable() {
+
+        public void run() {
+            EventDispatchThread dispatchThread = (EventDispatchThread) Thread.currentThread();
+            dispatchThread.pumpEventsForHierarchy(new Conditional() {
+
+                public boolean evaluate() {
+                    return ((windowClosingException == null) && (nativeContainer.modalComp != null));
+                }
+            }, Container.this);
+        }
+    };
+    if (EventQueue.isDispatchThread()) {
+        SequencedEvent currentSequencedEvent = KeyboardFocusManager.getCurrentKeyboardFocusManager().getCurrentSequencedEvent();
+        if (currentSequencedEvent != null) {
+            currentSequencedEvent.dispose();
+        }
+        pumpEventsForHierarchy.run();
+    } else {
+        synchronized (getTreeLock()) {
+            Toolkit.getEventQueue().postEvent(new PeerEvent(this, pumpEventsForHierarchy, PeerEvent.PRIORITY_EVENT));
+            while ((windowClosingException == null) && (nativeContainer.modalComp != null)) {
+                try {
+                    getTreeLock().wait();
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+    }
+    if (windowClosingException != null) {
+        windowClosingException.fillInStackTrace();
+        throw windowClosingException;
+    }
+    if (predictedFocusOwner != null) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().dequeueKeyEvents(time, predictedFocusOwner);
+    }
+}

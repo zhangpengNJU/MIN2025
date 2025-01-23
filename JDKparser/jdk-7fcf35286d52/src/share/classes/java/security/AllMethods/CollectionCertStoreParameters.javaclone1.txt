@@ -1,0 +1,14 @@
+/**
+ * Returns a copy of this object. Note that only a reference to the
+ * {@code Collection} is copied, and not the contents.
+ *
+ * @return the copy
+ */
+public Object clone() {
+    try {
+        return super.clone();
+    } catch (CloneNotSupportedException e) {
+        /* Cannot happen */
+        throw new InternalError(e.toString(), e);
+    }
+}

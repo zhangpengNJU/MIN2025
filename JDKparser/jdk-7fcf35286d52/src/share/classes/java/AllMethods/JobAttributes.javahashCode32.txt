@@ -1,0 +1,22 @@
+/**
+ * Returns a hash code value for this JobAttributes.
+ *
+ * @return  the hash code.
+ */
+public int hashCode() {
+    int rest = ((copies + fromPage + maxPage + minPage + prFirst + prLast + toPage) * 31) << 21;
+    if (pageRanges != null) {
+        int sum = 0;
+        for (int i = 0; i < pageRanges.length; i++) {
+            sum += pageRanges[i][0] + pageRanges[i][1];
+        }
+        rest ^= (sum * 31) << 11;
+    }
+    if (fileName != null) {
+        rest ^= fileName.hashCode();
+    }
+    if (printer != null) {
+        rest ^= printer.hashCode();
+    }
+    return (defaultSelection.hashCode() << 6 ^ destination.hashCode() << 5 ^ dialog.hashCode() << 3 ^ multipleDocumentHandling.hashCode() << 2 ^ sides.hashCode() ^ rest);
+}

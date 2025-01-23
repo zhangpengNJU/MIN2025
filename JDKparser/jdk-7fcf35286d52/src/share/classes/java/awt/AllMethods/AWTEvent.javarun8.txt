@@ -1,0 +1,17 @@
+public Field run() {
+    Field field = null;
+    try {
+        field = InputEvent.class.getDeclaredField("canAccessSystemClipboard");
+        field.setAccessible(true);
+        return field;
+    } catch (SecurityException e) {
+        if (log.isLoggable(PlatformLogger.Level.FINE)) {
+            log.fine("AWTEvent.get_InputEvent_CanAccessSystemClipboard() got SecurityException ", e);
+        }
+    } catch (NoSuchFieldException e) {
+        if (log.isLoggable(PlatformLogger.Level.FINE)) {
+            log.fine("AWTEvent.get_InputEvent_CanAccessSystemClipboard() got NoSuchFieldException ", e);
+        }
+    }
+    return null;
+}

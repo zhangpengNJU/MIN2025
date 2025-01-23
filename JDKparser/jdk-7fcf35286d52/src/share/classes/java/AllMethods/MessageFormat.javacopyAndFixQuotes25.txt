@@ -1,0 +1,24 @@
+private static final void copyAndFixQuotes(String source, int start, int end, StringBuilder target) {
+    boolean quoted = false;
+    for (int i = start; i < end; ++i) {
+        char ch = source.charAt(i);
+        if (ch == '{') {
+            if (!quoted) {
+                target.append('\'');
+                quoted = true;
+            }
+            target.append(ch);
+        } else if (ch == '\'') {
+            target.append("''");
+        } else {
+            if (quoted) {
+                target.append('\'');
+                quoted = false;
+            }
+            target.append(ch);
+        }
+    }
+    if (quoted) {
+        target.append('\'');
+    }
+}

@@ -1,0 +1,16 @@
+/**
+ * Returns an array of all the adjustment listeners
+ * registered on this scrollbar.
+ *
+ * @return all of this scrollbar's <code>AdjustmentListener</code>s
+ *         or an empty array if no adjustment
+ *         listeners are currently registered
+ * @see             #addAdjustmentListener
+ * @see             #removeAdjustmentListener
+ * @see             java.awt.event.AdjustmentEvent
+ * @see             java.awt.event.AdjustmentListener
+ * @since 1.4
+ */
+public synchronized AdjustmentListener[] getAdjustmentListeners() {
+    return getListeners(AdjustmentListener.class);
+}

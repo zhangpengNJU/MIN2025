@@ -1,0 +1,22 @@
+/**
+ * Returns true if the pattern {@code src} is found in {@code b}.
+ * The {@code lastOcc} and {@code optoSft} arrays are the precomputed
+ * bad character and good suffix shifts.
+ */
+private boolean match(char[] src, byte[] b, int[] lastOcc, int[] optoSft) {
+    int len = src.length;
+    int last = b.length - len;
+    int i = 0;
+    next: while (i <= last) {
+        for (int j = (len - 1); j >= 0; j--) {
+            char c = (char) b[i + j];
+            c = (((c - 'A') | ('Z' - c)) >= 0) ? (char) (c + 32) : c;
+            if (c != src[j]) {
+                i += Math.max(j + 1 - lastOcc[c & 0x7F], optoSft[j]);
+                continue next;
+            }
+        }
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,43 @@
+@Override
+public ChronoLocalDate resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+    Long wbyLong = fieldValues.get(WEEK_BASED_YEAR);
+    Long dowLong = fieldValues.get(DAY_OF_WEEK);
+    if (wbyLong == null || dowLong == null) {
+        return null;
+    }
+    // always validate
+    int wby = WEEK_BASED_YEAR.range().checkValidIntValue(wbyLong, WEEK_BASED_YEAR);
+    long wowby = fieldValues.get(WEEK_OF_WEEK_BASED_YEAR);
+    ensureIso(partialTemporal);
+    LocalDate date = LocalDate.of(wby, 1, 4);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        // unvalidated
+        long dow = dowLong;
+        if (dow > 7) {
+            date = date.plusWeeks((dow - 1) / 7);
+            dow = ((dow - 1) % 7) + 1;
+        } else if (dow < 1) {
+            date = date.plusWeeks(Math.subtractExact(dow, 7) / 7);
+            dow = ((dow + 6) % 7) + 1;
+        }
+        date = date.plusWeeks(Math.subtractExact(wowby, 1)).with(DAY_OF_WEEK, dow);
+    } else {
+        // validated
+        int dow = DAY_OF_WEEK.checkValidIntValue(dowLong);
+        if (wowby < 1 || wowby > 52) {
+            if (resolverStyle == ResolverStyle.STRICT) {
+                // only allow exact range
+                getWeekRange(date).checkValidValue(wowby, this);
+            } else {
+                // SMART
+                // allow 1-53 rolling into next year
+                range().checkValidValue(wowby, this);
+            }
+        }
+        date = date.plusWeeks(wowby - 1).with(DAY_OF_WEEK, dow);
+    }
+    fieldValues.remove(this);
+    fieldValues.remove(WEEK_BASED_YEAR);
+    fieldValues.remove(DAY_OF_WEEK);
+    return date;
+}

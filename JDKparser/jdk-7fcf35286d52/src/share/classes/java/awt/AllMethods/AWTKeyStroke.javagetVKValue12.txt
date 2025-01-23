@@ -1,0 +1,24 @@
+/**
+ * Returns the integer constant for the KeyEvent.VK field named
+ * <code>key</code>. This will throw an
+ * <code>IllegalArgumentException</code> if <code>key</code> is
+ * not a valid constant.
+ */
+private static int getVKValue(String key) {
+    VKCollection vkCollect = getVKCollection();
+    Integer value = vkCollect.findCode(key);
+    if (value == null) {
+        int keyCode = 0;
+        final String errmsg = "String formatted incorrectly";
+        try {
+            keyCode = KeyEvent.class.getField(key).getInt(KeyEvent.class);
+        } catch (NoSuchFieldException nsfe) {
+            throw new IllegalArgumentException(errmsg);
+        } catch (IllegalAccessException iae) {
+            throw new IllegalArgumentException(errmsg);
+        }
+        value = Integer.valueOf(keyCode);
+        vkCollect.put(key, value);
+    }
+    return value.intValue();
+}

@@ -1,0 +1,13 @@
+@Override
+default long getLong(TemporalField field) {
+    if (field instanceof ChronoField) {
+        switch((ChronoField) field) {
+            case INSTANT_SECONDS:
+                return toEpochSecond();
+            case OFFSET_SECONDS:
+                return getOffset().getTotalSeconds();
+        }
+        return toLocalDateTime().getLong(field);
+    }
+    return field.getFrom(this);
+}

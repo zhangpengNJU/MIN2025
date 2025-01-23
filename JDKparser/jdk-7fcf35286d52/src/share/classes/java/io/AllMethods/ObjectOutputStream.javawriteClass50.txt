@@ -1,0 +1,8 @@
+/**
+ * Writes representation of given class to stream.
+ */
+private void writeClass(Class<?> cl, boolean unshared) throws IOException {
+    bout.writeByte(TC_CLASS);
+    writeClassDesc(ObjectStreamClass.lookup(cl, true), false);
+    handles.assign(unshared ? null : cl);
+}

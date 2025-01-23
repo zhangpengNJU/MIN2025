@@ -1,0 +1,16 @@
+public void run() {
+    CompletableFuture<T> d;
+    Supplier<T> f;
+    if ((d = dep) != null && (f = fn) != null) {
+        dep = null;
+        fn = null;
+        if (d.result == null) {
+            try {
+                d.completeValue(f.get());
+            } catch (Throwable ex) {
+                d.completeThrowable(ex);
+            }
+        }
+        d.postComplete();
+    }
+}

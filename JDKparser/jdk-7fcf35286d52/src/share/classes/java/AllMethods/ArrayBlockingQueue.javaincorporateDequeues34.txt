@@ -1,0 +1,33 @@
+/**
+ * Adjusts indices to incorporate all dequeues since the last
+ * operation on this iterator.  Call only from iterating thread.
+ */
+private void incorporateDequeues() {
+    // assert lock.getHoldCount() == 1;
+    // assert itrs != null;
+    // assert !isDetached();
+    // assert count > 0;
+    final int cycles = itrs.cycles;
+    final int takeIndex = ArrayBlockingQueue.this.takeIndex;
+    final int prevCycles = this.prevCycles;
+    final int prevTakeIndex = this.prevTakeIndex;
+    if (cycles != prevCycles || takeIndex != prevTakeIndex) {
+        final int len = items.length;
+        // how far takeIndex has advanced since the previous
+        // operation of this iterator
+        long dequeues = (cycles - prevCycles) * len + (takeIndex - prevTakeIndex);
+        // Check indices for invalidation
+        if (invalidated(lastRet, prevTakeIndex, dequeues, len))
+            lastRet = REMOVED;
+        if (invalidated(nextIndex, prevTakeIndex, dequeues, len))
+            nextIndex = REMOVED;
+        if (invalidated(cursor, prevTakeIndex, dequeues, len))
+            cursor = takeIndex;
+        if (cursor < 0 && nextIndex < 0 && lastRet < 0)
+            detach();
+        else {
+            this.prevCycles = cycles;
+            this.prevTakeIndex = takeIndex;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+/**
+ * Returns the number of milliseconds since January 1, 1970, 00:00:00 GMT
+ * represented by this <code>Timestamp</code> object.
+ *
+ * @return  the number of milliseconds since January 1, 1970, 00:00:00 GMT
+ *          represented by this date.
+ * @see #setTime
+ */
+public long getTime() {
+    long time = super.getTime();
+    return (time + (nanos / 1000000));
+}

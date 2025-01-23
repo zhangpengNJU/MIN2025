@@ -1,0 +1,23 @@
+/**
+ * Sets the alignment for this label to the specified alignment.
+ * Possible values are <code>Label.LEFT</code>,
+ * <code>Label.RIGHT</code>, and <code>Label.CENTER</code>.
+ * @param      alignment    the alignment to be set.
+ * @exception  IllegalArgumentException if an improper value for
+ *                          <code>alignment</code> is given.
+ * @see        java.awt.Label#getAlignment
+ */
+public synchronized void setAlignment(int alignment) {
+    switch(alignment) {
+        case LEFT:
+        case CENTER:
+        case RIGHT:
+            this.alignment = alignment;
+            LabelPeer peer = (LabelPeer) this.peer;
+            if (peer != null) {
+                peer.setAlignment(alignment);
+            }
+            return;
+    }
+    throw new IllegalArgumentException("improper alignment: " + alignment);
+}

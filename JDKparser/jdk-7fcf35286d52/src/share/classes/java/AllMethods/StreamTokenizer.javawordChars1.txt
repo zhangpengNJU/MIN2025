@@ -1,0 +1,16 @@
+/**
+ * Specifies that all characters <i>c</i> in the range
+ * <code>low&nbsp;&lt;=&nbsp;<i>c</i>&nbsp;&lt;=&nbsp;high</code>
+ * are word constituents. A word token consists of a word constituent
+ * followed by zero or more word constituents or number constituents.
+ *
+ * @param   low   the low end of the range.
+ * @param   hi    the high end of the range.
+ */
+public void wordChars(int low, int hi) {
+    if (low < 0)
+        low = 0;
+    if (hi >= ctype.length)
+        hi = ctype.length - 1;
+    while (low <= hi) ctype[low++] |= CT_ALPHA;
+}

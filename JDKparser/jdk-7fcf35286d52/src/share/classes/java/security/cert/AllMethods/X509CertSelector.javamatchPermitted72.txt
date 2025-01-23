@@ -1,0 +1,37 @@
+private boolean matchPermitted(GeneralSubtrees permitted) {
+    /*
+         * Enumerate through pathToNames, checking that each pathToName
+         * is in at least one of the subtrees listed in permitted.
+         * If not, return false. However, if no subtrees of a given type
+         * are listed, all names of that type are permitted.
+         */
+    Iterator<GeneralNameInterface> i = pathToGeneralNames.iterator();
+    while (i.hasNext()) {
+        GeneralNameInterface pathToName = i.next();
+        Iterator<GeneralSubtree> t = permitted.iterator();
+        boolean permittedNameFound = false;
+        boolean nameTypeFound = false;
+        String names = "";
+        while (t.hasNext() && !permittedNameFound) {
+            GeneralSubtree tree = t.next();
+            GeneralNameInterface permittedName = tree.getName().getName();
+            if (permittedName.getType() == pathToName.getType()) {
+                nameTypeFound = true;
+                names = names + "  " + permittedName;
+                switch(pathToName.constrains(permittedName)) {
+                    case GeneralNameInterface.NAME_WIDENS:
+                    case GeneralNameInterface.NAME_MATCH:
+                        permittedNameFound = true;
+                        break;
+                    default:
+                }
+            }
+        }
+        if (!permittedNameFound && nameTypeFound) {
+            if (debug != null)
+                debug.println("X509CertSelector.match: " + "name constraints inhibit path to specified name; " + "permitted names of type " + pathToName.getType() + ": " + names);
+            return false;
+        }
+    }
+    return true;
+}

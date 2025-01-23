@@ -1,0 +1,25 @@
+/**
+ * Sets the preferred size of this component to a constant
+ * value.  Subsequent calls to <code>getPreferredSize</code> will always
+ * return this value.  Setting the preferred size to <code>null</code>
+ * restores the default behavior.
+ *
+ * @param preferredSize The new preferred size, or null
+ * @see #getPreferredSize
+ * @see #isPreferredSizeSet
+ * @since 1.5
+ */
+public void setPreferredSize(Dimension preferredSize) {
+    Dimension old;
+    // If the preferred size was set, use it as the old value, otherwise
+    // use null to indicate we didn't previously have a set preferred
+    // size.
+    if (prefSizeSet) {
+        old = this.prefSize;
+    } else {
+        old = null;
+    }
+    this.prefSize = preferredSize;
+    prefSizeSet = (preferredSize != null);
+    firePropertyChange("preferredSize", old, preferredSize);
+}

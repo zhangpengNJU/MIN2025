@@ -1,0 +1,9 @@
+void interruptBlocking() {
+    if (isModal()) {
+        disposeImpl();
+    } else if (windowClosingException != null) {
+        windowClosingException.fillInStackTrace();
+        windowClosingException.printStackTrace();
+        windowClosingException = null;
+    }
+}

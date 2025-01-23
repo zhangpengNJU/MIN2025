@@ -1,0 +1,17 @@
+/**
+ * Compares the equality of two <code>SimpleTimeZone</code> objects.
+ *
+ * @param obj  The <code>SimpleTimeZone</code> object to be compared with.
+ * @return     True if the given <code>obj</code> is the same as this
+ *             <code>SimpleTimeZone</code> object; false otherwise.
+ */
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (!(obj instanceof SimpleTimeZone)) {
+        return false;
+    }
+    SimpleTimeZone that = (SimpleTimeZone) obj;
+    return getID().equals(that.getID()) && hasSameRules(that);
+}

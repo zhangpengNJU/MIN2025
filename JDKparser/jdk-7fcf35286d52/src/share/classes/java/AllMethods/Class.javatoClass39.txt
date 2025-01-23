@@ -1,0 +1,5 @@
+private static Class<?> toClass(Type o) {
+    if (o instanceof GenericArrayType)
+        return Array.newInstance(toClass(((GenericArrayType) o).getGenericComponentType()), 0).getClass();
+    return (Class<?>) o;
+}

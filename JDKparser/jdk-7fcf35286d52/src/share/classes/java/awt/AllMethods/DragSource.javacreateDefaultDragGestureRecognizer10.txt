@@ -1,0 +1,25 @@
+/**
+ * Creates a new <code>DragGestureRecognizer</code>
+ * that implements the default
+ * abstract subclass of <code>DragGestureRecognizer</code>
+ * for this <code>DragSource</code>,
+ * and sets the specified <code>Component</code>
+ * and <code>DragGestureListener</code> on the
+ * newly created object.
+ *
+ * For this <code>DragSource</code>
+ * the default is <code>MouseDragGestureRecognizer</code>.
+ * <P>
+ * @param c       the <code>Component</code> target for the recognizer
+ * @param actions the permitted source actions
+ * @param dgl     the <code>DragGestureListener</code> to notify
+ * <P>
+ * @return the new <code>DragGestureRecognizer</code> or <code>null</code>
+ *    if the <code>Toolkit.createDragGestureRecognizer</code> method
+ *    has no implementation available for
+ *    the requested <code>DragGestureRecognizer</code>
+ *    subclass and returns <code>null</code>
+ */
+public DragGestureRecognizer createDefaultDragGestureRecognizer(Component c, int actions, DragGestureListener dgl) {
+    return Toolkit.getDefaultToolkit().createDragGestureRecognizer(MouseDragGestureRecognizer.class, this, c, actions, dgl);
+}

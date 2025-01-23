@@ -1,0 +1,13 @@
+/**
+ * fill_array_to_right(N).invoke(a, argL..arg[N-1])
+ *  fills a[L]..a[N-1] with corresponding arguments,
+ *  and then returns a.  The value L is a global constant (LEFT_ARGS).
+ */
+private static MethodHandle fillToRight(int nargs) {
+    MethodHandle filler = FILL_ARRAY_TO_RIGHT[nargs];
+    if (filler != null)
+        return filler;
+    filler = buildFiller(nargs);
+    assert (assertCorrectArity(filler, nargs - LEFT_ARGS + 1));
+    return FILL_ARRAY_TO_RIGHT[nargs] = filler;
+}

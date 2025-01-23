@@ -1,0 +1,47 @@
+/**
+ * Chooses provider instance, following above documentation.
+ *
+ * This method assumes that it has been invoked in a privileged block.
+ */
+private static RMIClassLoaderSpi initializeProvider() {
+    /*
+         * First check for the system property being set:
+         */
+    String providerClassName = System.getProperty("java.rmi.server.RMIClassLoaderSpi");
+    if (providerClassName != null) {
+        if (providerClassName.equals("default")) {
+            return defaultProvider;
+        }
+        try {
+            Class<? extends RMIClassLoaderSpi> providerClass = Class.forName(providerClassName, false, ClassLoader.getSystemClassLoader()).asSubclass(RMIClassLoaderSpi.class);
+            return providerClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new NoClassDefFoundError(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new IllegalAccessError(e.getMessage());
+        } catch (InstantiationException e) {
+            throw new InstantiationError(e.getMessage());
+        } catch (ClassCastException e) {
+            Error error = new LinkageError("provider class not assignable to RMIClassLoaderSpi");
+            error.initCause(e);
+            throw error;
+        }
+    }
+    /*
+         * Next look for a provider configuration file installed:
+         */
+    Iterator<RMIClassLoaderSpi> iter = ServiceLoader.load(RMIClassLoaderSpi.class, ClassLoader.getSystemClassLoader()).iterator();
+    if (iter.hasNext()) {
+        try {
+            return iter.next();
+        } catch (ClassCastException e) {
+            Error error = new LinkageError("provider class not assignable to RMIClassLoaderSpi");
+            error.initCause(e);
+            throw error;
+        }
+    }
+    /*
+         * Finally, return the canonical instance of the default provider.
+         */
+    return defaultProvider;
+}

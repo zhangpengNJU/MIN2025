@@ -1,0 +1,31 @@
+/**
+ * Tests if the interior of the <code>Shape</code> intersects the
+ * interior of a specified <code>Rectangle2D</code>.
+ * The {@code Shape.intersects()} method allows a {@code Shape}
+ * implementation to conservatively return {@code true} when:
+ * <ul>
+ * <li>
+ * there is a high probability that the <code>Rectangle2D</code> and the
+ * <code>Shape</code> intersect, but
+ * <li>
+ * the calculations to accurately determine this intersection
+ * are prohibitively expensive.
+ * </ul>
+ * This means that for some {@code Shapes} this method might
+ * return {@code true} even though the {@code Rectangle2D} does not
+ * intersect the {@code Shape}.
+ * The {@link java.awt.geom.Area Area} class performs
+ * more accurate computations of geometric intersection than most
+ * {@code Shape} objects and therefore can be used if a more precise
+ * answer is required.
+ *
+ * @param r the specified <code>Rectangle2D</code>
+ * @return <code>true</code> if the interior of the <code>Shape</code> and
+ *          the interior of the specified <code>Rectangle2D</code>
+ *          intersect, or are both highly likely to intersect and intersection
+ *          calculations would be too expensive to perform; <code>false</code>
+ *          otherwise.
+ * @see #intersects(double, double, double, double)
+ * @since 1.2
+ */
+public boolean intersects(Rectangle2D r);

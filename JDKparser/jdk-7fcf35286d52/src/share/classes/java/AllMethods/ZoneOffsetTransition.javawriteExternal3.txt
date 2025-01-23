@@ -1,0 +1,11 @@
+/**
+ * Writes the state to the stream.
+ *
+ * @param out  the output stream, not null
+ * @throws IOException if an error occurs
+ */
+void writeExternal(DataOutput out) throws IOException {
+    Ser.writeEpochSec(toEpochSecond(), out);
+    Ser.writeOffset(offsetBefore, out);
+    Ser.writeOffset(offsetAfter, out);
+}

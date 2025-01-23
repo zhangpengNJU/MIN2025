@@ -1,0 +1,11 @@
+/**
+ * Returns true if represented class is serializable/externalizable and can
+ * be instantiated by the serialization runtime--i.e., if it is
+ * externalizable and defines a public no-arg constructor, or if it is
+ * non-externalizable and its first non-serializable superclass defines an
+ * accessible no-arg constructor.  Otherwise, returns false.
+ */
+boolean isInstantiable() {
+    requireInitialized();
+    return (cons != null);
+}

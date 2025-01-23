@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>Component.setCursor(Cursor)</code>.
+ */
+@Deprecated
+public void setCursor(int cursorType) {
+    if (cursorType < DEFAULT_CURSOR || cursorType > MOVE_CURSOR) {
+        throw new IllegalArgumentException("illegal cursor type");
+    }
+    setCursor(Cursor.getPredefinedCursor(cursorType));
+}

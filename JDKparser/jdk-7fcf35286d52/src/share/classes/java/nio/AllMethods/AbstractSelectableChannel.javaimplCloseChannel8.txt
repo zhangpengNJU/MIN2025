@@ -1,0 +1,22 @@
+// -- Closing --
+/**
+ * Closes this channel.
+ *
+ * <p> This method, which is specified in the {@link
+ * AbstractInterruptibleChannel} class and is invoked by the {@link
+ * java.nio.channels.Channel#close close} method, in turn invokes the
+ * {@link #implCloseSelectableChannel implCloseSelectableChannel} method in
+ * order to perform the actual work of closing this channel.  It then
+ * cancels all of this channel's keys.  </p>
+ */
+protected final void implCloseChannel() throws IOException {
+    implCloseSelectableChannel();
+    synchronized (keyLock) {
+        int count = (keys == null) ? 0 : keys.length;
+        for (int i = 0; i < count; i++) {
+            SelectionKey k = keys[i];
+            if (k != null)
+                k.cancel();
+        }
+    }
+}

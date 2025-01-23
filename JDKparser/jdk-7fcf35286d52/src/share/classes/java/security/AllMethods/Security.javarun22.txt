@@ -1,0 +1,30 @@
+public Void run() {
+    try {
+        /* Get the class via the bootstrap class loader. */
+        Class<?> cl = Class.forName("java.lang.SecurityManager", false, null);
+        Field f = null;
+        boolean accessible = false;
+        if (pa) {
+            f = cl.getDeclaredField("packageAccessValid");
+            accessible = f.isAccessible();
+            f.setAccessible(true);
+        } else {
+            f = cl.getDeclaredField("packageDefinitionValid");
+            accessible = f.isAccessible();
+            f.setAccessible(true);
+        }
+        f.setBoolean(f, false);
+        f.setAccessible(accessible);
+    } catch (Exception e1) {
+    /* If we couldn't get the class, it hasn't
+                         * been loaded yet.  If there is no such
+                         * field, we shouldn't try to set it.  There
+                         * shouldn't be a security execption, as we
+                         * are loaded by boot class loader, and we
+                         * are inside a doPrivileged() here.
+                         *
+                         * NOOP: don't do anything...
+                         */
+    }
+    return null;
+}

@@ -1,0 +1,34 @@
+/**
+ * Converts this {@code BigDecimal} to a {@code long}.
+ * This conversion is analogous to the
+ * <i>narrowing primitive conversion</i> from {@code double} to
+ * {@code short} as defined in section 5.1.3 of
+ * <cite>The Java&trade; Language Specification</cite>:
+ * any fractional part of this
+ * {@code BigDecimal} will be discarded, and if the resulting
+ * "{@code BigInteger}" is too big to fit in a
+ * {@code long}, only the low-order 64 bits are returned.
+ * Note that this conversion can lose information about the
+ * overall magnitude and precision of this {@code BigDecimal} value as well
+ * as return a result with the opposite sign.
+ *
+ * @return this {@code BigDecimal} converted to a {@code long}.
+ */
+public long longValue() {
+    if (intCompact != INFLATED && scale == 0) {
+        return intCompact;
+    } else {
+        // Fastpath zero and small values
+        if (this.signum() == 0 || fractionOnly() || // Fastpath very large-scale values that will result
+        // in a truncated value of zero. If the scale is -64
+        // or less, there are at least 64 powers of 10 in the
+        // value of the numerical result. Since 10 = 2*5, in
+        // that case there would also be 64 powers of 2 in the
+        // result, meaning all 64 bits of a long will be zero.
+        scale <= -64) {
+            return 0;
+        } else {
+            return toBigInteger().longValue();
+        }
+    }
+}

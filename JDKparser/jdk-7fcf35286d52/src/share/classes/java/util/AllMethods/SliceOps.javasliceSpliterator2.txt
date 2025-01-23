@@ -1,0 +1,22 @@
+/**
+ * Creates a slice spliterator given a stream shape governing the
+ * spliterator type.  Requires that the underlying Spliterator
+ * be SUBSIZED.
+ */
+@SuppressWarnings("unchecked")
+private static <P_IN> Spliterator<P_IN> sliceSpliterator(StreamShape shape, Spliterator<P_IN> s, long skip, long limit) {
+    assert s.hasCharacteristics(Spliterator.SUBSIZED);
+    long sliceFence = calcSliceFence(skip, limit);
+    switch(shape) {
+        case REFERENCE:
+            return new StreamSpliterators.SliceSpliterator.OfRef<>(s, skip, sliceFence);
+        case INT_VALUE:
+            return (Spliterator<P_IN>) new StreamSpliterators.SliceSpliterator.OfInt((Spliterator.OfInt) s, skip, sliceFence);
+        case LONG_VALUE:
+            return (Spliterator<P_IN>) new StreamSpliterators.SliceSpliterator.OfLong((Spliterator.OfLong) s, skip, sliceFence);
+        case DOUBLE_VALUE:
+            return (Spliterator<P_IN>) new StreamSpliterators.SliceSpliterator.OfDouble((Spliterator.OfDouble) s, skip, sliceFence);
+        default:
+            throw new IllegalStateException("Unknown shape " + shape);
+    }
+}

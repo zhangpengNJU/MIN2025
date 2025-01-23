@@ -1,0 +1,20 @@
+private byte[] encode(ObjectIdentifier type, String[] values) throws IOException {
+    DerOutputStream attribute = new DerOutputStream();
+    attribute.putOID(type);
+    DerOutputStream attrContent = new DerOutputStream();
+    for (String value : values) {
+        if (COLON_SEPARATED_HEX_PAIRS.matcher(value).matches()) {
+            byte[] bytes = new BigInteger(value.replace(":", ""), 16).toByteArray();
+            if (bytes[0] == 0) {
+                bytes = Arrays.copyOfRange(bytes, 1, bytes.length);
+            }
+            attrContent.putOctetString(bytes);
+        } else {
+            attrContent.putUTF8String(value);
+        }
+    }
+    attribute.write(DerValue.tag_Set, attrContent);
+    DerOutputStream attributeValue = new DerOutputStream();
+    attributeValue.write(DerValue.tag_Sequence, attribute);
+    return attributeValue.toByteArray();
+}

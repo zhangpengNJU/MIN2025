@@ -1,0 +1,86 @@
+public void put(URI uri, Map<String, List<String>> responseHeaders) throws IOException {
+    // pre-condition check
+    if (uri == null || responseHeaders == null) {
+        throw new IllegalArgumentException("Argument is null");
+    }
+    // if there's no default CookieStore, no need to remember any cookie
+    if (cookieJar == null)
+        return;
+    PlatformLogger logger = PlatformLogger.getLogger("java.net.CookieManager");
+    for (String headerKey : responseHeaders.keySet()) {
+        // RFC 2965 3.2.2, key must be 'Set-Cookie2'
+        // we also accept 'Set-Cookie' here for backward compatibility
+        if (headerKey == null || !(headerKey.equalsIgnoreCase("Set-Cookie2") || headerKey.equalsIgnoreCase("Set-Cookie"))) {
+            continue;
+        }
+        for (String headerValue : responseHeaders.get(headerKey)) {
+            try {
+                List<HttpCookie> cookies;
+                try {
+                    cookies = HttpCookie.parse(headerValue);
+                } catch (IllegalArgumentException e) {
+                    // Bogus header, make an empty list and log the error
+                    cookies = java.util.Collections.emptyList();
+                    if (logger.isLoggable(PlatformLogger.Level.SEVERE)) {
+                        logger.severe("Invalid cookie for " + uri + ": " + headerValue);
+                    }
+                }
+                for (HttpCookie cookie : cookies) {
+                    if (cookie.getPath() == null) {
+                        // If no path is specified, then by default
+                        // the path is the directory of the page/doc
+                        String path = uri.getPath();
+                        if (!path.endsWith("/")) {
+                            int i = path.lastIndexOf("/");
+                            if (i > 0) {
+                                path = path.substring(0, i + 1);
+                            } else {
+                                path = "/";
+                            }
+                        }
+                        cookie.setPath(path);
+                    }
+                    // As per RFC 2965, section 3.3.1:
+                    // Domain  Defaults to the effective request-host.  (Note that because
+                    // there is no dot at the beginning of effective request-host,
+                    // the default Domain can only domain-match itself.)
+                    if (cookie.getDomain() == null) {
+                        String host = uri.getHost();
+                        if (host != null && !host.contains("."))
+                            host += ".local";
+                        cookie.setDomain(host);
+                    }
+                    String ports = cookie.getPortlist();
+                    if (ports != null) {
+                        int port = uri.getPort();
+                        if (port == -1) {
+                            port = "https".equals(uri.getScheme()) ? 443 : 80;
+                        }
+                        if (ports.isEmpty()) {
+                            // Empty port list means this should be restricted
+                            // to the incoming URI port
+                            cookie.setPortlist("" + port);
+                            if (shouldAcceptInternal(uri, cookie)) {
+                                cookieJar.add(uri, cookie);
+                            }
+                        } else {
+                            // Only store cookies with a port list
+                            // IF the URI port is in that list, as per
+                            // RFC 2965 section 3.3.2
+                            if (isInPortList(ports, port) && shouldAcceptInternal(uri, cookie)) {
+                                cookieJar.add(uri, cookie);
+                            }
+                        }
+                    } else {
+                        if (shouldAcceptInternal(uri, cookie)) {
+                            cookieJar.add(uri, cookie);
+                        }
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+            // invalid set-cookie header string
+            // no-op
+            }
+        }
+    }
+}

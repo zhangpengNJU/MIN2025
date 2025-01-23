@@ -1,0 +1,38 @@
+/**
+ *  Sets the logging/tracing <code>PrintWriter</code> object
+ *  that is used by the <code>DriverManager</code> and all drivers.
+ *  <P>
+ *  There is a minor versioning problem created by the introduction
+ *  of the method <code>setLogWriter</code>.  The
+ *  method <code>setLogWriter</code> cannot create a <code>PrintStream</code> object
+ *  that will be returned by <code>getLogStream</code>---the Java platform does
+ *  not provide a backward conversion.  As a result, a new application
+ *  that uses <code>setLogWriter</code> and also uses a JDBC 1.0 driver that uses
+ *  <code>getLogStream</code> will likely not see debugging information written
+ *  by that driver.
+ * <P>
+ *  Starting with the Java 2 SDK, Standard Edition, version 1.3 release, this method checks
+ *  to see that there is an <code>SQLPermission</code> object before setting
+ *  the logging stream.  If a <code>SecurityManager</code> exists and its
+ *  <code>checkPermission</code> method denies setting the log writer, this
+ *  method throws a <code>java.lang.SecurityException</code>.
+ *
+ *  @param out the new logging/tracing <code>PrintStream</code> object;
+ *       <code>null</code> to disable logging and tracing
+ *  @throws SecurityException
+ *     if a security manager exists and its
+ *     <code>checkPermission</code> method denies
+ *     setting the log writer
+ *
+ *  @see SecurityManager#checkPermission
+ *  @see #getLogWriter
+ *  @since 1.2
+ */
+public static void setLogWriter(java.io.PrintWriter out) {
+    SecurityManager sec = System.getSecurityManager();
+    if (sec != null) {
+        sec.checkPermission(SET_LOG_PERMISSION);
+    }
+    logStream = null;
+    logWriter = out;
+}

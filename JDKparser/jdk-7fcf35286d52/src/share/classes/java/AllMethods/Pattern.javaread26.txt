@@ -1,0 +1,9 @@
+/**
+ * Read the next character, and advance the cursor by one.
+ */
+private int read() {
+    int ch = temp[cursor++];
+    if (has(COMMENTS))
+        ch = parsePastWhitespace(ch);
+    return ch;
+}

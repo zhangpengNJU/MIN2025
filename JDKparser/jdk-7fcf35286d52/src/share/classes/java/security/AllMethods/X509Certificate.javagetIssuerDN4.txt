@@ -1,0 +1,40 @@
+/**
+ * <strong>Denigrated</strong>, replaced by {@linkplain
+ * #getIssuerX500Principal()}. This method returns the {@code issuer}
+ * as an implementation specific Principal object, which should not be
+ * relied upon by portable code.
+ *
+ * <p>
+ * Gets the {@code issuer} (issuer distinguished name) value from
+ * the certificate. The issuer name identifies the entity that signed (and
+ * issued) the certificate.
+ *
+ * <p>The issuer name field contains an
+ * X.500 distinguished name (DN).
+ * The ASN.1 definition for this is:
+ * <pre>
+ * issuer    Name
+ *
+ * Name ::= CHOICE { RDNSequence }
+ * RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
+ * RelativeDistinguishedName ::=
+ *     SET OF AttributeValueAssertion
+ *
+ * AttributeValueAssertion ::= SEQUENCE {
+ *                               AttributeType,
+ *                               AttributeValue }
+ * AttributeType ::= OBJECT IDENTIFIER
+ * AttributeValue ::= ANY
+ * </pre>
+ * The {@code Name} describes a hierarchical name composed of
+ * attributes,
+ * such as country name, and corresponding values, such as US.
+ * The type of the {@code AttributeValue} component is determined by
+ * the {@code AttributeType}; in general it will be a
+ * {@code directoryString}. A {@code directoryString} is usually
+ * one of {@code PrintableString},
+ * {@code TeletexString} or {@code UniversalString}.
+ *
+ * @return a Principal whose name is the issuer distinguished name.
+ */
+public abstract Principal getIssuerDN();

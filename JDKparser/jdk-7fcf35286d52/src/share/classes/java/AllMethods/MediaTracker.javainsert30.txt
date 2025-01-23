@@ -1,0 +1,18 @@
+static MediaEntry insert(MediaEntry head, MediaEntry me) {
+    MediaEntry cur = head;
+    MediaEntry prev = null;
+    while (cur != null) {
+        if (cur.ID > me.ID) {
+            break;
+        }
+        prev = cur;
+        cur = cur.next;
+    }
+    me.next = cur;
+    if (prev == null) {
+        head = me;
+    } else {
+        prev.next = me;
+    }
+    return head;
+}

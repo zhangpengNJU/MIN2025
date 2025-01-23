@@ -1,0 +1,18 @@
+/**
+ * The put method for readObject.  It does not resize the table,
+ * update modCount, etc.
+ */
+private void putForCreate(K key, V value) throws java.io.StreamCorruptedException {
+    Object k = maskNull(key);
+    Object[] tab = table;
+    int len = tab.length;
+    int i = hash(k, len);
+    Object item;
+    while ((item = tab[i]) != null) {
+        if (item == k)
+            throw new java.io.StreamCorruptedException();
+        i = nextKeyIndex(i, len);
+    }
+    tab[i] = k;
+    tab[i + 1] = value;
+}

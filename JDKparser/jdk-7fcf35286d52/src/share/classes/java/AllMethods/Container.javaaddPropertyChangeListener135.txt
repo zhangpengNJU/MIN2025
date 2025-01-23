@@ -1,0 +1,36 @@
+/**
+ * Adds a PropertyChangeListener to the listener list. The listener is
+ * registered for all bound properties of this class, including the
+ * following:
+ * <ul>
+ *    <li>this Container's font ("font")</li>
+ *    <li>this Container's background color ("background")</li>
+ *    <li>this Container's foreground color ("foreground")</li>
+ *    <li>this Container's focusability ("focusable")</li>
+ *    <li>this Container's focus traversal keys enabled state
+ *        ("focusTraversalKeysEnabled")</li>
+ *    <li>this Container's Set of FORWARD_TRAVERSAL_KEYS
+ *        ("forwardFocusTraversalKeys")</li>
+ *    <li>this Container's Set of BACKWARD_TRAVERSAL_KEYS
+ *        ("backwardFocusTraversalKeys")</li>
+ *    <li>this Container's Set of UP_CYCLE_TRAVERSAL_KEYS
+ *        ("upCycleFocusTraversalKeys")</li>
+ *    <li>this Container's Set of DOWN_CYCLE_TRAVERSAL_KEYS
+ *        ("downCycleFocusTraversalKeys")</li>
+ *    <li>this Container's focus traversal policy ("focusTraversalPolicy")
+ *        </li>
+ *    <li>this Container's focus-cycle-root state ("focusCycleRoot")</li>
+ * </ul>
+ * Note that if this Container is inheriting a bound property, then no
+ * event will be fired in response to a change in the inherited property.
+ * <p>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param    listener  the PropertyChangeListener to be added
+ *
+ * @see Component#removePropertyChangeListener
+ * @see #addPropertyChangeListener(java.lang.String,java.beans.PropertyChangeListener)
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    super.addPropertyChangeListener(listener);
+}

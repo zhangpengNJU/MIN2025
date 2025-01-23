@@ -1,0 +1,7 @@
+private static boolean definesEquals(Class<?> type) {
+    try {
+        return type == type.getMethod("equals", Object.class).getDeclaringClass();
+    } catch (NoSuchMethodException e) {
+        return false;
+    }
+}

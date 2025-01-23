@@ -1,0 +1,23 @@
+/**
+ * Filters the information provided in the
+ * {@link ImageConsumer#setColorModel(ColorModel) setColorModel} method
+ * of the <code>ImageConsumer</code> interface.
+ * <p>
+ * If <code>model</code> is <code>null</code>, this
+ * method clears the current <code>ColorModel</code> of this
+ * <code>BufferedImageFilter</code>.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code>
+ * whose pixels are being filtered.  Developers using this
+ * class to retrieve pixels from an image
+ * should avoid calling this method directly since that
+ * operation could result in problems with retrieving the
+ * requested pixels.
+ * @param model the {@link ColorModel} to which to set the
+ *        <code>ColorModel</code> of this <code>BufferedImageFilter</code>
+ * @see ImageConsumer#setColorModel
+ */
+public void setColorModel(ColorModel model) {
+    this.model = model;
+}

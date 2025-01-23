@@ -1,0 +1,21 @@
+// --------------------------JDBC 4.1 -----------------------------
+/**
+ * Sets the given schema name to access.
+ * <P>
+ * If the driver does not support schemas, it will
+ * silently ignore this request.
+ * <p>
+ * Calling {@code setSchema} has no effect on previously created or prepared
+ * {@code Statement} objects. It is implementation defined whether a DBMS
+ * prepare operation takes place immediately when the {@code Connection}
+ * method {@code prepareStatement} or {@code prepareCall} is invoked.
+ * For maximum portability, {@code setSchema} should be called before a
+ * {@code Statement} is created or prepared.
+ *
+ * @param schema the name of a schema  in which to work
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ * @see #getSchema
+ * @since 1.7
+ */
+void setSchema(String schema) throws SQLException;

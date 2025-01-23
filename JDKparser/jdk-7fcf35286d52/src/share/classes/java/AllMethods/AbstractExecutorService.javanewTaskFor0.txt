@@ -1,0 +1,16 @@
+/**
+ * Returns a {@code RunnableFuture} for the given runnable and default
+ * value.
+ *
+ * @param runnable the runnable task being wrapped
+ * @param value the default value for the returned future
+ * @param <T> the type of the given value
+ * @return a {@code RunnableFuture} which, when run, will run the
+ * underlying runnable and which, as a {@code Future}, will yield
+ * the given value as its result and provide for cancellation of
+ * the underlying task
+ * @since 1.6
+ */
+protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+    return new FutureTask<T>(runnable, value);
+}

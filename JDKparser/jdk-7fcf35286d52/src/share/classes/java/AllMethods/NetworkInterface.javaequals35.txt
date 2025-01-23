@@ -1,0 +1,53 @@
+/**
+ * Compares this object against the specified object.
+ * The result is {@code true} if and only if the argument is
+ * not {@code null} and it represents the same NetworkInterface
+ * as this object.
+ * <p>
+ * Two instances of {@code NetworkInterface} represent the same
+ * NetworkInterface if both name and addrs are the same for both.
+ *
+ * @param   obj   the object to compare against.
+ * @return  {@code true} if the objects are the same;
+ *          {@code false} otherwise.
+ * @see     java.net.InetAddress#getAddress()
+ */
+public boolean equals(Object obj) {
+    if (!(obj instanceof NetworkInterface)) {
+        return false;
+    }
+    NetworkInterface that = (NetworkInterface) obj;
+    if (this.name != null) {
+        if (!this.name.equals(that.name)) {
+            return false;
+        }
+    } else {
+        if (that.name != null) {
+            return false;
+        }
+    }
+    if (this.addrs == null) {
+        return that.addrs == null;
+    } else if (that.addrs == null) {
+        return false;
+    }
+    /* Both addrs not null. Compare number of addresses */
+    if (this.addrs.length != that.addrs.length) {
+        return false;
+    }
+    InetAddress[] thatAddrs = that.addrs;
+    int count = thatAddrs.length;
+    for (int i = 0; i < count; i++) {
+        boolean found = false;
+        for (int j = 0; j < count; j++) {
+            if (addrs[i].equals(thatAddrs[j])) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            return false;
+        }
+    }
+    return true;
+}

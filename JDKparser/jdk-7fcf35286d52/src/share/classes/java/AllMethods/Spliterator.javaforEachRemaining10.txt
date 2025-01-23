@@ -1,0 +1,20 @@
+/**
+ * Performs the given action for each remaining element, sequentially in
+ * the current thread, until all elements have been processed or the
+ * action throws an exception.  If this Spliterator is {@link #ORDERED},
+ * actions are performed in encounter order.  Exceptions thrown by the
+ * action are relayed to the caller.
+ *
+ * @implSpec
+ * The default implementation repeatedly invokes {@link #tryAdvance}
+ * until it returns {@code false}.  It should be overridden whenever
+ * possible.
+ *
+ * @param action The action
+ * @throws NullPointerException if the specified action is null
+ */
+@SuppressWarnings("overloads")
+default void forEachRemaining(T_CONS action) {
+    do {
+    } while (tryAdvance(action));
+}

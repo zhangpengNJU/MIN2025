@@ -1,0 +1,8 @@
+final int nextGetIndex(int nb) {
+    // package-private
+    int p = position;
+    if (limit - p < nb)
+        throw new BufferUnderflowException();
+    position = p + nb;
+    return p;
+}

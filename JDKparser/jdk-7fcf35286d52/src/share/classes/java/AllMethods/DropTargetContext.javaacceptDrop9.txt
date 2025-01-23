@@ -1,0 +1,13 @@
+/**
+ * called to signal that the drop is acceptable
+ * using the specified operation.
+ * must be called during DropTargetListener.drop method invocation.
+ * <P>
+ * @param dropOperation the supported action(s)
+ */
+protected void acceptDrop(int dropOperation) {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    if (peer != null) {
+        peer.acceptDrop(dropOperation);
+    }
+}

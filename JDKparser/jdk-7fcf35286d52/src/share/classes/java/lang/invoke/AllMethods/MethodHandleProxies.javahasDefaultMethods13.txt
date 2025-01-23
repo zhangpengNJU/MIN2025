@@ -1,0 +1,8 @@
+private static boolean hasDefaultMethods(Class<?> intfc) {
+    for (Method m : intfc.getMethods()) {
+        if (!isObjectMethod(m) && !Modifier.isAbstract(m.getModifiers())) {
+            return true;
+        }
+    }
+    return false;
+}

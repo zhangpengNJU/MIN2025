@@ -1,0 +1,50 @@
+/*
+     * Combine the current (stack) and assigned domains.
+     */
+private static ProtectionDomain[] combine(ProtectionDomain[] current, ProtectionDomain[] assigned) {
+    // current could be null if only system code is on the stack;
+    // in that case, ignore the stack context
+    boolean skipStack = (current == null);
+    // assigned could be null if only system code was involved;
+    // in that case, ignore the assigned context
+    boolean skipAssigned = (assigned == null);
+    int slen = (skipStack) ? 0 : current.length;
+    // optimization: if there is no assigned context and the stack length
+    // is less then or equal to two; there is no reason to compress the
+    // stack context, it already is
+    if (skipAssigned && slen <= 2) {
+        return current;
+    }
+    int n = (skipAssigned) ? 0 : assigned.length;
+    // now we combine both of them, and create a new context
+    ProtectionDomain[] pd = new ProtectionDomain[slen + n];
+    // first copy in the assigned context domains, no need to compress
+    if (!skipAssigned) {
+        System.arraycopy(assigned, 0, pd, 0, n);
+    }
+    // now add the stack context domains, discarding nulls and duplicates
+    outer: for (int i = 0; i < slen; i++) {
+        ProtectionDomain sd = current[i];
+        if (sd != null) {
+            for (int j = 0; j < n; j++) {
+                if (sd == pd[j]) {
+                    continue outer;
+                }
+            }
+            pd[n++] = sd;
+        }
+    }
+    // if length isn't equal, we need to shorten the array
+    if (n != pd.length) {
+        // optimization: if we didn't really combine anything
+        if (!skipAssigned && n == assigned.length) {
+            return assigned;
+        } else if (skipAssigned && n == slen) {
+            return current;
+        }
+        ProtectionDomain[] tmp = new ProtectionDomain[n];
+        System.arraycopy(pd, 0, tmp, 0, n);
+        pd = tmp;
+    }
+    return pd;
+}

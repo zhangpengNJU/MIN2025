@@ -1,0 +1,43 @@
+/**
+ * Returns the profile class.
+ * @return One of the predefined profile class constants.
+ */
+public int getProfileClass() {
+    byte[] theHeader;
+    int theClassSig, theClass;
+    if (deferralInfo != null) {
+        return deferralInfo.profileClass;
+    /* Need to have this info for
+                                                 ICC_ColorSpace without
+                                                 causing a deferred profile
+                                                 to be loaded */
+    }
+    theHeader = getData(icSigHead);
+    theClassSig = intFromBigEndian(theHeader, icHdrDeviceClass);
+    switch(theClassSig) {
+        case icSigInputClass:
+            theClass = CLASS_INPUT;
+            break;
+        case icSigDisplayClass:
+            theClass = CLASS_DISPLAY;
+            break;
+        case icSigOutputClass:
+            theClass = CLASS_OUTPUT;
+            break;
+        case icSigLinkClass:
+            theClass = CLASS_DEVICELINK;
+            break;
+        case icSigColorSpaceClass:
+            theClass = CLASS_COLORSPACECONVERSION;
+            break;
+        case icSigAbstractClass:
+            theClass = CLASS_ABSTRACT;
+            break;
+        case icSigNamedColorClass:
+            theClass = CLASS_NAMEDCOLOR;
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown profile class");
+    }
+    return theClass;
+}

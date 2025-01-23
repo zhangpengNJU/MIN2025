@@ -1,0 +1,14 @@
+/**
+ *  Continues reading in the next stream if an EOF is reached.
+ */
+final void nextStream() throws IOException {
+    if (in != null) {
+        in.close();
+    }
+    if (e.hasMoreElements()) {
+        in = (InputStream) e.nextElement();
+        if (in == null)
+            throw new NullPointerException();
+    } else
+        in = null;
+}

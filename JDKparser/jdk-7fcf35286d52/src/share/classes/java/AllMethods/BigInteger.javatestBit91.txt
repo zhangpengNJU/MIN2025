@@ -1,0 +1,14 @@
+// Single Bit Operations
+/**
+ * Returns {@code true} if and only if the designated bit is set.
+ * (Computes {@code ((this & (1<<n)) != 0)}.)
+ *
+ * @param  n index of bit to test.
+ * @return {@code true} if and only if the designated bit is set.
+ * @throws ArithmeticException {@code n} is negative.
+ */
+public boolean testBit(int n) {
+    if (n < 0)
+        throw new ArithmeticException("Negative bit address");
+    return (getInt(n >>> 5) & (1 << (n & 31))) != 0;
+}

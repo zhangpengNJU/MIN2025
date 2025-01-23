@@ -1,0 +1,35 @@
+/**
+ * {@inheritDoc}
+ *
+ * <p>This implementation iterates over the collection looking for the
+ * specified element.  If it finds the element, it removes the element
+ * from the collection using the iterator's remove method.
+ *
+ * <p>Note that this implementation throws an
+ * <tt>UnsupportedOperationException</tt> if the iterator returned by this
+ * collection's iterator method does not implement the <tt>remove</tt>
+ * method and this collection contains the specified object.
+ *
+ * @throws UnsupportedOperationException {@inheritDoc}
+ * @throws ClassCastException            {@inheritDoc}
+ * @throws NullPointerException          {@inheritDoc}
+ */
+public boolean remove(Object o) {
+    Iterator<E> it = iterator();
+    if (o == null) {
+        while (it.hasNext()) {
+            if (it.next() == null) {
+                it.remove();
+                return true;
+            }
+        }
+    } else {
+        while (it.hasNext()) {
+            if (o.equals(it.next())) {
+                it.remove();
+                return true;
+            }
+        }
+    }
+    return false;
+}

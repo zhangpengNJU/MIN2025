@@ -1,0 +1,19 @@
+/**
+ * Concatenates the current <code>Graphics2D</code>
+ * <code>Transform</code> with a shearing transform.
+ * Subsequent renderings are sheared by the specified
+ * multiplier relative to the previous position.
+ * This is equivalent to calling <code>transform(SH)</code>, where SH
+ * is an <code>AffineTransform</code> represented by the following
+ * matrix:
+ * <pre>
+ *          [   1   shx   0   ]
+ *          [  shy   1    0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param shx the multiplier by which coordinates are shifted in
+ * the positive X axis direction as a function of their Y coordinate
+ * @param shy the multiplier by which coordinates are shifted in
+ * the positive Y axis direction as a function of their X coordinate
+ */
+public abstract void shear(double shx, double shy);

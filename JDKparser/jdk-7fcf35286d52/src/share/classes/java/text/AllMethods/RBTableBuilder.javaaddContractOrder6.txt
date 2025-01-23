@@ -1,0 +1,53 @@
+/**
+ *  Adds the contracting string into the collation table.
+ */
+private final void addContractOrder(String groupChars, int anOrder, boolean fwd) {
+    if (contractTable == null) {
+        contractTable = new Vector<>(INITIALTABLESIZE);
+    }
+    // initial character
+    int ch = groupChars.codePointAt(0);
+    /*
+        char ch0 = groupChars.charAt(0);
+        int ch = Character.isHighSurrogate(ch0)?
+          Character.toCodePoint(ch0, groupChars.charAt(1)):ch0;
+          */
+    // See if the initial character of the string already has a contract table.
+    int entry = mapping.elementAt(ch);
+    Vector<EntryPair> entryTable = getContractValuesImpl(entry - RBCollationTables.CONTRACTCHARINDEX);
+    if (entryTable == null) {
+        // We need to create a new table of contract entries for this base char
+        int tableIndex = RBCollationTables.CONTRACTCHARINDEX + contractTable.size();
+        entryTable = new Vector<>(INITIALTABLESIZE);
+        contractTable.addElement(entryTable);
+        // Add the initial character's current ordering first. then
+        // update its mapping to point to this contract table
+        entryTable.addElement(new EntryPair(groupChars.substring(0, Character.charCount(ch)), entry));
+        mapping.setElementAt(ch, tableIndex);
+    }
+    // Now add (or replace) this string in the table
+    int index = RBCollationTables.getEntry(entryTable, groupChars, fwd);
+    if (index != RBCollationTables.UNMAPPED) {
+        EntryPair pair = entryTable.elementAt(index);
+        pair.value = anOrder;
+    } else {
+        EntryPair pair = entryTable.lastElement();
+        // NOTE:  This little bit of logic is here to speed CollationElementIterator
+        // .nextContractChar().  This code ensures that the longest sequence in
+        // this list is always the _last_ one in the list.  This keeps
+        // nextContractChar() from having to search the entire list for the longest
+        // sequence.
+        if (groupChars.length() > pair.entryName.length()) {
+            entryTable.addElement(new EntryPair(groupChars, anOrder, fwd));
+        } else {
+            entryTable.insertElementAt(new EntryPair(groupChars, anOrder, fwd), entryTable.size() - 1);
+        }
+    }
+    // If this was a forward mapping for a contracting string, also add a
+    // reverse mapping for it, so that CollationElementIterator.previous
+    // can work right
+    if (fwd && groupChars.length() > 1) {
+        addContractFlags(groupChars);
+        addContractOrder(new StringBuffer(groupChars).reverse().toString(), anOrder, false);
+    }
+}

@@ -1,0 +1,54 @@
+/**
+ * Returns the logical bounds of the specified array of characters
+ * in the specified <code>FontRenderContext</code>.  The logical
+ * bounds contains the origin, ascent, advance, and height, which
+ * includes the leading.  The logical bounds does not always enclose
+ * all the text.  For example, in some languages and in some fonts,
+ * accent marks can be positioned above the ascent or below the
+ * descent.  To obtain a visual bounding box, which encloses all the
+ * text, use the {@link TextLayout#getBounds() getBounds} method of
+ * <code>TextLayout</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.Font class notes}).
+ * @param chars an array of characters
+ * @param beginIndex the initial offset in the array of
+ * characters
+ * @param limit the end offset in the array of characters
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>Rectangle2D</code> that is the bounding box of the
+ * specified array of characters in the specified
+ * <code>FontRenderContext</code>.
+ * @throws IndexOutOfBoundsException if <code>beginIndex</code> is
+ *         less than zero, or <code>limit</code> is greater than the
+ *         length of <code>chars</code>, or <code>beginIndex</code>
+ *         is greater than <code>limit</code>.
+ * @see FontRenderContext
+ * @see Font#createGlyphVector
+ * @since 1.2
+ */
+public Rectangle2D getStringBounds(char[] chars, int beginIndex, int limit, FontRenderContext frc) {
+    if (beginIndex < 0) {
+        throw new IndexOutOfBoundsException("beginIndex: " + beginIndex);
+    }
+    if (limit > chars.length) {
+        throw new IndexOutOfBoundsException("limit: " + limit);
+    }
+    if (beginIndex > limit) {
+        throw new IndexOutOfBoundsException("range length: " + (limit - beginIndex));
+    }
+    // this code should be in textlayout
+    // quick check for simple text, assume GV ok to use if simple
+    boolean simple = values == null || (values.getKerning() == 0 && values.getLigatures() == 0 && values.getBaselineTransform() == null);
+    if (simple) {
+        simple = !FontUtilities.isComplexText(chars, beginIndex, limit);
+    }
+    if (simple) {
+        GlyphVector gv = new StandardGlyphVector(this, chars, beginIndex, limit - beginIndex, frc);
+        return gv.getLogicalBounds();
+    } else {
+        // need char array constructor on textlayout
+        String str = new String(chars, beginIndex, limit - beginIndex);
+        TextLayout tl = new TextLayout(str, this, frc);
+        return new Rectangle2D.Float(0, -tl.getAscent(), tl.getAdvance(), tl.getAscent() + tl.getDescent() + tl.getLeading());
+    }
+}

@@ -1,0 +1,6 @@
+// Duplicate of sun.util.locale.UnicodeLocaleExtension.isKey in order to
+// avoid its class loading.
+private static boolean isUnicodeExtensionKey(String s) {
+    // 2alphanum
+    return (s.length() == 2) && LocaleUtils.isAlphaNumericString(s);
+}

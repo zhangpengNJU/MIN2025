@@ -1,0 +1,24 @@
+/**
+ * Sets this check box's label to be the string argument.
+ *
+ * @param    label   a string to set as the new label, or
+ *                        <code>null</code> for no label.
+ * @see      #getLabel
+ */
+public void setLabel(String label) {
+    boolean testvalid = false;
+    synchronized (this) {
+        if (label != this.label && (this.label == null || !this.label.equals(label))) {
+            this.label = label;
+            CheckboxPeer peer = (CheckboxPeer) this.peer;
+            if (peer != null) {
+                peer.setLabel(label);
+            }
+            testvalid = true;
+        }
+    }
+    // This could change the preferred size of the Component.
+    if (testvalid) {
+        invalidateIfValid();
+    }
+}

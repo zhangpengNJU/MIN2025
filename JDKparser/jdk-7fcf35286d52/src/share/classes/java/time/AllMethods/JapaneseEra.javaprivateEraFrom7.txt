@@ -1,0 +1,9 @@
+static sun.util.calendar.Era privateEraFrom(LocalDate isoDate) {
+    for (int i = KNOWN_ERAS.length - 1; i > 0; i--) {
+        JapaneseEra era = KNOWN_ERAS[i];
+        if (isoDate.compareTo(era.since) >= 0) {
+            return ERA_CONFIG[i];
+        }
+    }
+    return null;
+}

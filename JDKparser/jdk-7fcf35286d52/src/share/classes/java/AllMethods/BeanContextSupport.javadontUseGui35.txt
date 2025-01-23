@@ -1,0 +1,16 @@
+/**
+ * notify this instance that it may no longer render a GUI.
+ */
+public synchronized void dontUseGui() {
+    if (okToUseGui) {
+        okToUseGui = false;
+        // lets also tell the Children that can that they may not use their GUI's
+        synchronized (children) {
+            for (Iterator i = children.keySet().iterator(); i.hasNext(); ) {
+                Visibility v = getChildVisibility(i.next());
+                if (v != null)
+                    v.dontUseGui();
+            }
+        }
+    }
+}

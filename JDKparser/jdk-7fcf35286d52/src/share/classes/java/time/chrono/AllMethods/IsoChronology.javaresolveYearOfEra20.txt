@@ -1,0 +1,36 @@
+// override for enhanced behaviour
+@Override
+LocalDate resolveYearOfEra(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    Long yoeLong = fieldValues.remove(YEAR_OF_ERA);
+    if (yoeLong != null) {
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            YEAR_OF_ERA.checkValidValue(yoeLong);
+        }
+        Long era = fieldValues.remove(ERA);
+        if (era == null) {
+            Long year = fieldValues.get(YEAR);
+            if (resolverStyle == ResolverStyle.STRICT) {
+                // do not invent era if strict, but do cross-check with year
+                if (year != null) {
+                    addFieldValue(fieldValues, YEAR, (year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+                } else {
+                    // reinstate the field removed earlier, no cross-check issues
+                    fieldValues.put(YEAR_OF_ERA, yoeLong);
+                }
+            } else {
+                // invent era
+                addFieldValue(fieldValues, YEAR, (year == null || year > 0 ? yoeLong : Math.subtractExact(1, yoeLong)));
+            }
+        } else if (era.longValue() == 1L) {
+            addFieldValue(fieldValues, YEAR, yoeLong);
+        } else if (era.longValue() == 0L) {
+            addFieldValue(fieldValues, YEAR, Math.subtractExact(1, yoeLong));
+        } else {
+            throw new DateTimeException("Invalid value for era: " + era);
+        }
+    } else if (fieldValues.containsKey(ERA)) {
+        // always validated
+        ERA.checkValidValue(fieldValues.get(ERA));
+    }
+    return null;
+}

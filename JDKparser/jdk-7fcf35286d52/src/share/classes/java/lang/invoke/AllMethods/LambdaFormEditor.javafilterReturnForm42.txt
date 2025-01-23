@@ -1,0 +1,46 @@
+LambdaForm filterReturnForm(BasicType newType, boolean constantZero) {
+    Transform.Kind kind = (constantZero ? Transform.Kind.FILTER_RETURN_TO_ZERO : Transform.Kind.FILTER_RETURN);
+    Transform key = Transform.of(kind, newType.ordinal());
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.arity == lambdaForm.arity);
+        assert (form.returnType() == newType);
+        return form;
+    }
+    LambdaFormBuffer buf = buffer();
+    buf.startEdit();
+    int insPos = lambdaForm.names.length;
+    Name callFilter;
+    if (constantZero) {
+        // Synthesize a constant zero value for the given type.
+        if (newType == V_TYPE)
+            callFilter = null;
+        else
+            callFilter = new Name(constantZero(newType));
+    } else {
+        BoundMethodHandle.SpeciesData oldData = oldSpeciesData();
+        BoundMethodHandle.SpeciesData newData = newSpeciesData(L_TYPE);
+        // The newly created LF will run with a different BMH.
+        // Switch over any pre-existing BMH field references to the new BMH class.
+        // BMH holding the values
+        Name oldBaseAddress = lambdaForm.parameter(0);
+        buf.replaceFunctions(oldData.getterFunctions(), newData.getterFunctions(), oldBaseAddress);
+        Name newBaseAddress = oldBaseAddress.withConstraint(newData);
+        buf.renameParameter(0, newBaseAddress);
+        Name getFilter = new Name(newData.getterFunction(oldData.fieldCount()), newBaseAddress);
+        buf.insertExpression(insPos++, getFilter);
+        BasicType oldType = lambdaForm.returnType();
+        if (oldType == V_TYPE) {
+            MethodType filterType = MethodType.methodType(newType.basicTypeClass());
+            callFilter = new Name(filterType, getFilter);
+        } else {
+            MethodType filterType = MethodType.methodType(newType.basicTypeClass(), oldType.basicTypeClass());
+            callFilter = new Name(filterType, getFilter, lambdaForm.names[lambdaForm.result]);
+        }
+    }
+    if (callFilter != null)
+        buf.insertExpression(insPos++, callFilter);
+    buf.setResult(callFilter);
+    form = buf.endEdit();
+    return putInCache(key, form);
+}

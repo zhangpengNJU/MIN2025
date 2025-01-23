@@ -1,0 +1,8 @@
+Object getValue(Expression exp) {
+    try {
+        return (exp == null) ? null : exp.getValue();
+    } catch (Exception e) {
+        getExceptionListener().exceptionThrown(e);
+        throw new RuntimeException("failed to evaluate: " + exp.toString());
+    }
+}

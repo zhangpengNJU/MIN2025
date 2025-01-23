@@ -1,0 +1,22 @@
+public FilterAction acceptEvent(AWTEvent event) {
+    if (disabled || !modalDialog.isVisible()) {
+        return FilterAction.ACCEPT;
+    }
+    int eventID = event.getID();
+    if ((eventID >= MouseEvent.MOUSE_FIRST && eventID <= MouseEvent.MOUSE_LAST) || (eventID >= ActionEvent.ACTION_FIRST && eventID <= ActionEvent.ACTION_LAST) || eventID == WindowEvent.WINDOW_CLOSING) {
+        Object o = event.getSource();
+        if (o instanceof sun.awt.ModalExclude) {
+        // Exclude this object from modality and
+        // continue to pump it's events.
+        } else if (o instanceof Component) {
+            Component c = (Component) o;
+            while ((c != null) && !(c instanceof Window)) {
+                c = c.getParent_NoClientCode();
+            }
+            if (c != null) {
+                return acceptWindow((Window) c);
+            }
+        }
+    }
+    return FilterAction.ACCEPT;
+}

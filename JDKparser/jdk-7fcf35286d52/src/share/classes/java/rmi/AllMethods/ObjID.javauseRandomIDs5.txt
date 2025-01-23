@@ -1,0 +1,4 @@
+private static boolean useRandomIDs() {
+    String value = AccessController.doPrivileged(new GetPropertyAction("java.rmi.server.randomIDs"));
+    return value == null ? true : Boolean.parseBoolean(value);
+}

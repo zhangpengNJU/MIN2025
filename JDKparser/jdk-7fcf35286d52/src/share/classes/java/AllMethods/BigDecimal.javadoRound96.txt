@@ -1,0 +1,54 @@
+/**
+ * Returns a {@code BigDecimal} rounded according to the MathContext
+ * settings;
+ * If rounding is needed a new {@code BigDecimal} is created and returned.
+ *
+ * @param val the value to be rounded
+ * @param mc the context to use.
+ * @return a {@code BigDecimal} rounded according to the MathContext
+ *         settings.  May return {@code value}, if no rounding needed.
+ * @throws ArithmeticException if the rounding mode is
+ *         {@code RoundingMode.UNNECESSARY} and the
+ *         result is inexact.
+ */
+private static BigDecimal doRound(BigDecimal val, MathContext mc) {
+    int mcp = mc.precision;
+    boolean wasDivided = false;
+    if (mcp > 0) {
+        BigInteger intVal = val.intVal;
+        long compactVal = val.intCompact;
+        int scale = val.scale;
+        int prec = val.precision();
+        int mode = mc.roundingMode.oldMode;
+        int drop;
+        if (compactVal == INFLATED) {
+            drop = prec - mcp;
+            while (drop > 0) {
+                scale = checkScaleNonZero((long) scale - drop);
+                intVal = divideAndRoundByTenPow(intVal, drop, mode);
+                wasDivided = true;
+                compactVal = compactValFor(intVal);
+                if (compactVal != INFLATED) {
+                    prec = longDigitLength(compactVal);
+                    break;
+                }
+                prec = bigDigitLength(intVal);
+                drop = prec - mcp;
+            }
+        }
+        if (compactVal != INFLATED) {
+            // drop can't be more than 18
+            drop = prec - mcp;
+            while (drop > 0) {
+                scale = checkScaleNonZero((long) scale - drop);
+                compactVal = divideAndRound(compactVal, LONG_TEN_POWERS_TABLE[drop], mc.roundingMode.oldMode);
+                wasDivided = true;
+                prec = longDigitLength(compactVal);
+                drop = prec - mcp;
+                intVal = null;
+            }
+        }
+        return wasDivided ? new BigDecimal(intVal, compactVal, scale, prec) : val;
+    }
+    return val;
+}

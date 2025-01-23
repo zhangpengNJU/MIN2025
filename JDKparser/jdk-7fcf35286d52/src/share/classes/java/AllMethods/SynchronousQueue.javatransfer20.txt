@@ -1,0 +1,99 @@
+/**
+ * Puts or takes an item.
+ */
+@SuppressWarnings("unchecked")
+E transfer(E e, boolean timed, long nanos) {
+    /* Basic algorithm is to loop trying to take either of
+             * two actions:
+             *
+             * 1. If queue apparently empty or holding same-mode nodes,
+             *    try to add node to queue of waiters, wait to be
+             *    fulfilled (or cancelled) and return matching item.
+             *
+             * 2. If queue apparently contains waiting items, and this
+             *    call is of complementary mode, try to fulfill by CAS'ing
+             *    item field of waiting node and dequeuing it, and then
+             *    returning matching item.
+             *
+             * In each case, along the way, check for and try to help
+             * advance head and tail on behalf of other stalled/slow
+             * threads.
+             *
+             * The loop starts off with a null check guarding against
+             * seeing uninitialized head or tail values. This never
+             * happens in current SynchronousQueue, but could if
+             * callers held non-volatile/final ref to the
+             * transferer. The check is here anyway because it places
+             * null checks at top of loop, which is usually faster
+             * than having them implicitly interspersed.
+             */
+    // constructed/reused as needed
+    QNode s = null;
+    boolean isData = (e != null);
+    for (; ; ) {
+        QNode t = tail;
+        QNode h = head;
+        if (// saw uninitialized value
+        t == null || h == null)
+            // spin
+            continue;
+        if (h == t || t.isData == isData) {
+            // empty or same-mode
+            QNode tn = t.next;
+            if (// inconsistent read
+            t != tail)
+                continue;
+            if (tn != null) {
+                // lagging tail
+                advanceTail(t, tn);
+                continue;
+            }
+            if (// can't wait
+            timed && nanos <= 0)
+                return null;
+            if (s == null)
+                s = new QNode(e, isData);
+            if (// failed to link in
+            !t.casNext(null, s))
+                continue;
+            // swing tail and wait
+            advanceTail(t, s);
+            Object x = awaitFulfill(s, e, timed, nanos);
+            if (x == s) {
+                // wait was cancelled
+                clean(t, s);
+                return null;
+            }
+            if (!s.isOffList()) {
+                // not already unlinked
+                // unlink if head
+                advanceHead(t, s);
+                if (// and forget fields
+                x != null)
+                    s.item = s;
+                s.waiter = null;
+            }
+            return (x != null) ? (E) x : e;
+        } else {
+            // complementary-mode
+            // node to fulfill
+            QNode m = h.next;
+            if (t != tail || m == null || h != head)
+                // inconsistent read
+                continue;
+            Object x = m.item;
+            if (// m already fulfilled
+            isData == (x != null) || // m cancelled
+            x == m || !m.casItem(x, e)) {
+                // lost CAS
+                // dequeue and retry
+                advanceHead(h, m);
+                continue;
+            }
+            // successfully fulfilled
+            advanceHead(h, m);
+            LockSupport.unpark(m.waiter);
+            return (x != null) ? (E) x : e;
+        }
+    }
+}

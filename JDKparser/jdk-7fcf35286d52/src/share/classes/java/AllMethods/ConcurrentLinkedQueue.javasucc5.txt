@@ -1,0 +1,9 @@
+/**
+ * Returns the successor of p, or the head node if p.next has been
+ * linked to self, which will only be true if traversing with a
+ * stale pointer that is now off the list.
+ */
+final Node<E> succ(Node<E> p) {
+    Node<E> next = p.next;
+    return (p == next) ? head : next;
+}

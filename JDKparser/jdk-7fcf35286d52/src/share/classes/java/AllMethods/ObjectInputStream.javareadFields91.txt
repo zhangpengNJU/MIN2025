@@ -1,0 +1,14 @@
+/**
+ * Reads primitive and object field values from stream.
+ */
+void readFields() throws IOException {
+    bin.readFully(primVals, 0, primVals.length, false);
+    int oldHandle = passHandle;
+    ObjectStreamField[] fields = desc.getFields(false);
+    int numPrimFields = fields.length - objVals.length;
+    for (int i = 0; i < objVals.length; i++) {
+        objVals[i] = readObject0(Object.class, fields[numPrimFields + i].isUnshared());
+        objHandles[i] = passHandle;
+    }
+    passHandle = oldHandle;
+}

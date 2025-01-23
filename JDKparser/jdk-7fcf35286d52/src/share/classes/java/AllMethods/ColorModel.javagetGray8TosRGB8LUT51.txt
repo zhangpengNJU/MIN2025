@@ -1,0 +1,42 @@
+/*
+     * Return a byte LUT that converts 8-bit gray values in the grayCS
+     * ColorSpace to the appropriate 8-bit sRGB value.  I.e., if lut
+     * is the byte array returned by this method and sval = lut[gval],
+     * then the sRGB triple (sval,sval,sval) is the best match to gval.
+     * Cache references to any computed LUT in a Map.
+     */
+static byte[] getGray8TosRGB8LUT(ICC_ColorSpace grayCS) {
+    if (isLinearGRAYspace(grayCS)) {
+        return getLinearRGB8TosRGB8LUT();
+    }
+    if (g8Tos8Map != null) {
+        byte[] g8Tos8LUT = g8Tos8Map.get(grayCS);
+        if (g8Tos8LUT != null) {
+            return g8Tos8LUT;
+        }
+    }
+    byte[] g8Tos8LUT = new byte[256];
+    for (int i = 0; i <= 255; i++) {
+        g8Tos8LUT[i] = (byte) i;
+    }
+    ColorTransform[] transformList = new ColorTransform[2];
+    PCMM mdl = CMSManager.getModule();
+    ICC_ColorSpace srgbCS = (ICC_ColorSpace) ColorSpace.getInstance(ColorSpace.CS_sRGB);
+    transformList[0] = mdl.createTransform(grayCS.getProfile(), ColorTransform.Any, ColorTransform.In);
+    transformList[1] = mdl.createTransform(srgbCS.getProfile(), ColorTransform.Any, ColorTransform.Out);
+    ColorTransform t = mdl.createTransform(transformList);
+    byte[] tmp = t.colorConvert(g8Tos8LUT, null);
+    for (int i = 0, j = 2; i <= 255; i++, j += 3) {
+        // All three components of tmp should be equal, since
+        // the input color space to colorConvert is a gray scale
+        // space.  However, there are slight anomalies in the results.
+        // Copy tmp starting at index 2, since colorConvert seems
+        // to be slightly more accurate for the third component!
+        g8Tos8LUT[i] = tmp[j];
+    }
+    if (g8Tos8Map == null) {
+        g8Tos8Map = Collections.synchronizedMap(new WeakHashMap<ICC_ColorSpace, byte[]>(2));
+    }
+    g8Tos8Map.put(grayCS, g8Tos8LUT);
+    return g8Tos8LUT;
+}

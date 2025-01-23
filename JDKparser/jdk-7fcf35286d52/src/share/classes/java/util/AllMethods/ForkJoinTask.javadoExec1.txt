@@ -1,0 +1,21 @@
+/**
+ * Primary execution method for stolen tasks. Unless done, calls
+ * exec and records status if completed, but doesn't wait for
+ * completion otherwise.
+ *
+ * @return status on exit from this method
+ */
+final int doExec() {
+    int s;
+    boolean completed;
+    if ((s = status) >= 0) {
+        try {
+            completed = exec();
+        } catch (Throwable rex) {
+            return setExceptionalCompletion(rex);
+        }
+        if (completed)
+            s = setCompletion(NORMAL);
+    }
+    return s;
+}

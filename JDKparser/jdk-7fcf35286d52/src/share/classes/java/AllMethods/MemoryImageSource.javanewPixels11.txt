@@ -1,0 +1,21 @@
+/**
+ * Changes to a new byte array to hold the pixels for this image.
+ * If the animation flag has been turned on through the setAnimated()
+ * method, then the new pixels will be immediately delivered to any
+ * ImageConsumers that are currently interested in the data for
+ * this image.
+ * @param newpix the new pixel array
+ * @param newmodel the specified <code>ColorModel</code>
+ * @param offset the offset into the array
+ * @param scansize the distance from one row of pixels to the next in
+ * the array
+ * @see #newPixels(int, int, int, int, boolean)
+ * @see #setAnimated
+ */
+public synchronized void newPixels(byte[] newpix, ColorModel newmodel, int offset, int scansize) {
+    this.pixels = newpix;
+    this.model = newmodel;
+    this.pixeloffset = offset;
+    this.pixelscan = scansize;
+    newPixels();
+}

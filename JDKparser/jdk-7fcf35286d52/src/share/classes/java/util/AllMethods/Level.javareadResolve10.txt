@@ -1,0 +1,12 @@
+// Serialization magic to prevent "doppelgangers".
+// This is a performance optimization.
+private Object readResolve() {
+    KnownLevel o = KnownLevel.matches(this);
+    if (o != null) {
+        return o.levelObject;
+    }
+    // Woops.  Whoever sent us this object knows
+    // about a new log level.  Add it to our list.
+    Level level = new Level(this.name, this.value, this.resourceBundleName);
+    return level;
+}

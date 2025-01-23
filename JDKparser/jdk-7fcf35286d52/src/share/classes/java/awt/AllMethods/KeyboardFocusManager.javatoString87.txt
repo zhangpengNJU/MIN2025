@@ -1,0 +1,20 @@
+public String toString() {
+    boolean first = true;
+    String str = "HeavyweightFocusRequest[heavweight=" + heavyweight + ",lightweightRequests=";
+    if (lightweightRequests == null) {
+        str += null;
+    } else {
+        str += "[";
+        for (LightweightFocusRequest lwRequest : lightweightRequests) {
+            if (first) {
+                first = false;
+            } else {
+                str += ",";
+            }
+            str += lwRequest;
+        }
+        str += "]";
+    }
+    str += "]";
+    return str;
+}

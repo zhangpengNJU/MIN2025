@@ -1,0 +1,17 @@
+/**
+ * Stores the names of all the files that the user selects.
+ *
+ * Note that the method is private and it's intended to be used
+ * by the peers through the AWTAccessor API.
+ *
+ * @param files     the array that contains the short names of
+ *                  all the files that the user selects.
+ *
+ * @see #getFiles
+ * @since 1.7
+ */
+private void setFiles(File[] files) {
+    synchronized (getObjectLock()) {
+        this.files = files;
+    }
+}

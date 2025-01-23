@@ -1,0 +1,8 @@
+protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+    if (!super.mutatesTo(oldInstance, newInstance)) {
+        return false;
+    }
+    Date oldDate = (Date) oldInstance;
+    Date newDate = (Date) newInstance;
+    return oldDate.getTime() == newDate.getTime();
+}

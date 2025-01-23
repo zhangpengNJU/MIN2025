@@ -1,0 +1,21 @@
+/**
+ * Validate inclusive start index and exclusive end index against the length
+ * of an array.
+ * @param arrayLength The length of the array
+ * @param origin The inclusive start index
+ * @param fence The exclusive end index
+ * @throws ArrayIndexOutOfBoundsException if the start index is greater than
+ * the end index, if the start index is negative, or the end index is
+ * greater than the array length
+ */
+private static void checkFromToBounds(int arrayLength, int origin, int fence) {
+    if (origin > fence) {
+        throw new ArrayIndexOutOfBoundsException("origin(" + origin + ") > fence(" + fence + ")");
+    }
+    if (origin < 0) {
+        throw new ArrayIndexOutOfBoundsException(origin);
+    }
+    if (fence > arrayLength) {
+        throw new ArrayIndexOutOfBoundsException(fence);
+    }
+}

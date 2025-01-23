@@ -1,0 +1,20 @@
+void verifyAndMaybeSetProvider(BeanContextServiceProvider bcsp, boolean isDelegated) {
+    BeanContextServiceProvider current;
+    if (isDelegated) {
+        // the provider is delegated
+        current = delegateProvider;
+        if (current == null || bcsp == null) {
+            delegateProvider = bcsp;
+            return;
+        }
+    } else {
+        // the provider is registered with this BCS
+        current = serviceProvider;
+        if (current == null || bcsp == null) {
+            serviceProvider = bcsp;
+            return;
+        }
+    }
+    if (!current.equals(bcsp))
+        throw new UnsupportedOperationException("existing service reference obtained from different BeanContextServiceProvider not supported");
+}

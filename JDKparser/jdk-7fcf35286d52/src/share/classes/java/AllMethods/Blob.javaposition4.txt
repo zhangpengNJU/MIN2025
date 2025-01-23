@@ -1,0 +1,18 @@
+/**
+ * Retrieves the byte position in the <code>BLOB</code> value
+ * designated by this <code>Blob</code> object at which
+ * <code>pattern</code> begins.  The search begins at position
+ * <code>start</code>.
+ *
+ * @param pattern the <code>Blob</code> object designating
+ * the <code>BLOB</code> value for which to search
+ * @param start the position in the <code>BLOB</code> value
+ *        at which to begin searching; the first position is 1
+ * @return the position at which the pattern begins, else -1
+ * @exception SQLException if there is an error accessing the
+ *            <code>BLOB</code> value or if start is less than 1
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.2
+ */
+long position(Blob pattern, long start) throws SQLException;

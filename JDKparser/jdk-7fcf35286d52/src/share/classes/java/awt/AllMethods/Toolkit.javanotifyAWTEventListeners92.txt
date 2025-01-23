@@ -1,0 +1,20 @@
+/*
+     * This method notifies any AWTEventListeners that an event
+     * is about to be dispatched.
+     *
+     * @param theEvent the event which will be dispatched.
+     */
+void notifyAWTEventListeners(AWTEvent theEvent) {
+    // This is a workaround for headless toolkits.  It would be
+    // better to override this method but it is declared package private.
+    // "this instanceof" syntax defeats polymorphism.
+    // --mm, 03/03/00
+    if (this instanceof HeadlessToolkit) {
+        ((HeadlessToolkit) this).getUnderlyingToolkit().notifyAWTEventListeners(theEvent);
+        return;
+    }
+    AWTEventListener eventListener = this.eventListener;
+    if (eventListener != null) {
+        eventListener.eventDispatched(theEvent);
+    }
+}

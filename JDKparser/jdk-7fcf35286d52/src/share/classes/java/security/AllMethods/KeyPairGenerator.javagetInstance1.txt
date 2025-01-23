@@ -1,0 +1,14 @@
+private static KeyPairGenerator getInstance(Instance instance, String algorithm) {
+    KeyPairGenerator kpg;
+    if (instance.impl instanceof KeyPairGenerator) {
+        kpg = (KeyPairGenerator) instance.impl;
+    } else {
+        KeyPairGeneratorSpi spi = (KeyPairGeneratorSpi) instance.impl;
+        kpg = new Delegate(spi, algorithm);
+    }
+    kpg.provider = instance.provider;
+    if (!skipDebug && pdebug != null) {
+        pdebug.println("KeyPairGenerator." + algorithm + " algorithm from: " + kpg.provider.getName());
+    }
+    return kpg;
+}

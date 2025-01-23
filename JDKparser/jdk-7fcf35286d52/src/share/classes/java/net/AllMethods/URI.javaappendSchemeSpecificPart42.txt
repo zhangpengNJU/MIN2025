@@ -1,0 +1,32 @@
+private void appendSchemeSpecificPart(StringBuffer sb, String opaquePart, String authority, String userInfo, String host, int port, String path, String query) {
+    if (opaquePart != null) {
+        /* check if SSP begins with an IPv6 address
+             * because we must not quote a literal IPv6 address
+             */
+        if (opaquePart.startsWith("//[")) {
+            int end = opaquePart.indexOf("]");
+            if (end != -1 && opaquePart.indexOf(":") != -1) {
+                String doquote, dontquote;
+                if (end == opaquePart.length()) {
+                    dontquote = opaquePart;
+                    doquote = "";
+                } else {
+                    dontquote = opaquePart.substring(0, end + 1);
+                    doquote = opaquePart.substring(end + 1);
+                }
+                sb.append(dontquote);
+                sb.append(quote(doquote, L_URIC, H_URIC));
+            }
+        } else {
+            sb.append(quote(opaquePart, L_URIC, H_URIC));
+        }
+    } else {
+        appendAuthority(sb, authority, userInfo, host, port);
+        if (path != null)
+            sb.append(quote(path, L_PATH, H_PATH));
+        if (query != null) {
+            sb.append('?');
+            sb.append(quote(query, L_URIC, H_URIC));
+        }
+    }
+}

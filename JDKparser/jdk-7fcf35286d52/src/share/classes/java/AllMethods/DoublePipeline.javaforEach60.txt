@@ -1,0 +1,9 @@
+// Optimized sequential terminal operations for the head of the pipeline
+@Override
+public void forEach(DoubleConsumer consumer) {
+    if (!isParallel()) {
+        adapt(sourceStageSpliterator()).forEachRemaining(consumer);
+    } else {
+        super.forEach(consumer);
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns the number of key-value mappings in this map.  If this map
+ * contains more than {@code Integer.MAX_VALUE} elements, it
+ * returns {@code Integer.MAX_VALUE}.
+ *
+ * <p>Beware that, unlike in most collections, this method is
+ * <em>NOT</em> a constant-time operation. Because of the
+ * asynchronous nature of these maps, determining the current
+ * number of elements requires traversing them all to count them.
+ * Additionally, it is possible for the size to change during
+ * execution of this method, in which case the returned result
+ * will be inaccurate. Thus, this method is typically not very
+ * useful in concurrent applications.
+ *
+ * @return the number of elements in this map
+ */
+public int size() {
+    long count = 0;
+    for (Node<K, V> n = findFirst(); n != null; n = n.next) {
+        if (n.getValidValue() != null)
+            ++count;
+    }
+    return (count >= Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) count;
+}

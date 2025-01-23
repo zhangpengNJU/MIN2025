@@ -1,0 +1,12 @@
+public boolean equals(Object obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj instanceof FieldReflectorKey) {
+        FieldReflectorKey other = (FieldReflectorKey) obj;
+        Class<?> referent;
+        return (nullClass ? other.nullClass : ((referent = get()) != null) && (referent == other.get())) && Arrays.equals(sigs, other.sigs);
+    } else {
+        return false;
+    }
+}

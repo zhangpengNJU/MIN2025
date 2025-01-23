@@ -1,0 +1,21 @@
+/**
+ * Sole factory method to find or create an interned method type.
+ * @param rtype desired return type
+ * @param ptypes desired parameter types
+ * @param trusted whether the ptypes can be used without cloning
+ * @return the unique method type of the desired structure
+ */
+/*trusted*/
+static MethodType makeImpl(Class<?> rtype, Class<?>[] ptypes, boolean trusted) {
+    MethodType mt = internTable.get(new MethodType(ptypes, rtype));
+    if (mt != null)
+        return mt;
+    if (ptypes.length == 0) {
+        ptypes = NO_PTYPES;
+        trusted = true;
+    }
+    mt = new MethodType(rtype, ptypes, trusted);
+    // promote the object to the Real Thing, and reprobe
+    mt.form = MethodTypeForm.findForm(mt);
+    return internTable.add(mt);
+}

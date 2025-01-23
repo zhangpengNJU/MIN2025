@@ -1,0 +1,12 @@
+private int getFence() {
+    // initialize on first use
+    int hi;
+    if ((hi = fence) < 0) {
+        synchronized (list) {
+            array = list.elementData;
+            expectedModCount = list.modCount;
+            hi = fence = list.elementCount;
+        }
+    }
+    return hi;
+}

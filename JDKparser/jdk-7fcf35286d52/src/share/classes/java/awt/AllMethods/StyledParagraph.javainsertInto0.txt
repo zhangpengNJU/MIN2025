@@ -1,0 +1,9 @@
+/**
+ * Adjust indices in starts to reflect an insertion after pos.
+ * Any index in starts greater than pos will be increased by 1.
+ */
+private static void insertInto(int pos, int[] starts, int numStarts) {
+    while (starts[--numStarts] > pos) {
+        starts[numStarts] += 1;
+    }
+}

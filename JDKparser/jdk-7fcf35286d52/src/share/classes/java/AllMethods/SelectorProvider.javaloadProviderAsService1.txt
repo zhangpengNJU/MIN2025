@@ -1,0 +1,18 @@
+private static boolean loadProviderAsService() {
+    ServiceLoader<SelectorProvider> sl = ServiceLoader.load(SelectorProvider.class, ClassLoader.getSystemClassLoader());
+    Iterator<SelectorProvider> i = sl.iterator();
+    for (; ; ) {
+        try {
+            if (!i.hasNext())
+                return false;
+            provider = i.next();
+            return true;
+        } catch (ServiceConfigurationError sce) {
+            if (sce.getCause() instanceof SecurityException) {
+                // Ignore the security exception, try the next provider
+                continue;
+            }
+            throw sce;
+        }
+    }
+}

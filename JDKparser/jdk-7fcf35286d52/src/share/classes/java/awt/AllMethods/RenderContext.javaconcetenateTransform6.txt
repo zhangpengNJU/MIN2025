@@ -1,0 +1,19 @@
+/**
+ * Modifies the current user-to-device transform by appending another
+ * transform.  In matrix notation the operation is:
+ * <pre>
+ * [this] = [this] x [modTransform]
+ * </pre>
+ * This method does the same thing as the concatenateTransform
+ * method.  It is here for backward compatibility with previous releases
+ * which misspelled the method name.
+ *
+ * @param modTransform the AffineTransform to append to the
+ *        current usr2dev transform.
+ * @deprecated     replaced by
+ *                 <code>concatenateTransform(AffineTransform)</code>.
+ */
+@Deprecated
+public void concetenateTransform(AffineTransform modTransform) {
+    usr2dev.concatenate(modTransform);
+}

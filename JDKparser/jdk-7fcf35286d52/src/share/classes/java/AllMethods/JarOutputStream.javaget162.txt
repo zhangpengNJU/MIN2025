@@ -1,0 +1,7 @@
+/*
+     * Fetches unsigned 16-bit value from byte array at specified offset.
+     * The bytes are assumed to be in Intel (little-endian) byte order.
+     */
+private static int get16(byte[] b, int off) {
+    return Byte.toUnsignedInt(b[off]) | (Byte.toUnsignedInt(b[off + 1]) << 8);
+}

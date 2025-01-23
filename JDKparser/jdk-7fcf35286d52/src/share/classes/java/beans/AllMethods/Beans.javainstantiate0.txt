@@ -1,0 +1,18 @@
+/**
+ * <p>
+ * Instantiate a JavaBean.
+ * </p>
+ * @return a JavaBean
+ * @param     cls         the class-loader from which we should create
+ *                        the bean.  If this is null, then the system
+ *                        class-loader is used.
+ * @param     beanName    the name of the bean within the class-loader.
+ *                        For example "sun.beanbox.foobah"
+ *
+ * @exception ClassNotFoundException if the class of a serialized
+ *              object could not be found.
+ * @exception IOException if an I/O error occurs.
+ */
+public static Object instantiate(ClassLoader cls, String beanName) throws IOException, ClassNotFoundException {
+    return Beans.instantiate(cls, beanName, null, null);
+}

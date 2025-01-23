@@ -1,0 +1,34 @@
+/**
+ *  Retrieves the update count for each update statement in the batch
+ *  update that executed successfully before this exception occurred.
+ *  A driver that implements batch updates may or may not continue to
+ *  process the remaining commands in a batch when one of the commands
+ *  fails to execute properly. If the driver continues processing commands,
+ *  the array returned by this method will have as many elements as
+ *  there are commands in the batch; otherwise, it will contain an
+ *  update count for each command that executed successfully before
+ *  the <code>BatchUpdateException</code> was thrown.
+ * <P>
+ *  The possible return values for this method were modified for
+ *  the Java 2 SDK, Standard Edition, version 1.3.  This was done to
+ *  accommodate the new option of continuing to process commands
+ *  in a batch update after a <code>BatchUpdateException</code> object
+ *  has been thrown.
+ *
+ *  @return an array of <code>int</code> containing the update counts
+ *  for the updates that were executed successfully before this error
+ *  occurred.  Or, if the driver continues to process commands after an
+ *  error, one of the following for every command in the batch:
+ *  <OL>
+ *  <LI>an update count
+ *   <LI><code>Statement.SUCCESS_NO_INFO</code> to indicate that the command
+ *      executed successfully but the number of rows affected is unknown
+ *   <LI><code>Statement.EXECUTE_FAILED</code> to indicate that the command
+ *      failed to execute successfully
+ *  </OL>
+ *  @since 1.3
+ *  @see #getLargeUpdateCounts()
+ */
+public int[] getUpdateCounts() {
+    return (updateCounts == null) ? null : Arrays.copyOf(updateCounts, updateCounts.length);
+}

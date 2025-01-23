@@ -1,0 +1,36 @@
+/**
+ * Adds a KeyEventPostProcessor to this KeyboardFocusManager's post-
+ * processor chain. After a KeyEvent has been dispatched to and handled by
+ * its target, KeyboardFocusManager will request that each
+ * KeyEventPostProcessor perform any necessary post-processing as part
+ * of the KeyEvent's final resolution. KeyEventPostProcessors
+ * will be notified in the order in which they were added; the current
+ * KeyboardFocusManager will be notified last. Notifications will halt
+ * as soon as one KeyEventPostProcessor returns <code>true</code> from its
+ * <code>postProcessKeyEvent</code> method. There is no limit to the the
+ * total number of KeyEventPostProcessors that can be added, nor to the
+ * number of times that a particular KeyEventPostProcessor instance can be
+ * added.
+ * <p>
+ * If a null post-processor is specified, no action is taken and no
+ * exception is thrown.
+ * <p>
+ * In a multithreaded application, {@link KeyEventPostProcessor} behaves
+ * the same as other AWT listeners.  See
+ * <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for more details.
+ *
+ * @param processor the KeyEventPostProcessor to add to the post-processor
+ *        chain
+ * @see #removeKeyEventPostProcessor
+ */
+public void addKeyEventPostProcessor(KeyEventPostProcessor processor) {
+    if (processor != null) {
+        synchronized (this) {
+            if (keyEventPostProcessors == null) {
+                keyEventPostProcessors = new java.util.LinkedList<>();
+            }
+            keyEventPostProcessors.add(processor);
+        }
+    }
+}

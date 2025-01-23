@@ -1,0 +1,72 @@
+private static <S, T> void doCompute(ForEachOrderedTask<S, T> task) {
+    Spliterator<S> rightSplit = task.spliterator, leftSplit;
+    long sizeThreshold = task.targetSize;
+    boolean forkRight = false;
+    while (rightSplit.estimateSize() > sizeThreshold && (leftSplit = rightSplit.trySplit()) != null) {
+        ForEachOrderedTask<S, T> leftChild = new ForEachOrderedTask<>(task, leftSplit, task.leftPredecessor);
+        ForEachOrderedTask<S, T> rightChild = new ForEachOrderedTask<>(task, rightSplit, leftChild);
+        // Fork the parent task
+        // Completion of the left and right children "happens-before"
+        // completion of the parent
+        task.addToPendingCount(1);
+        // Completion of the left child "happens-before" completion of
+        // the right child
+        rightChild.addToPendingCount(1);
+        task.completionMap.put(leftChild, rightChild);
+        // If task is not on the left spine
+        if (task.leftPredecessor != null) {
+            /*
+                     * Completion of left-predecessor, or left subtree,
+                     * "happens-before" completion of left-most leaf node of
+                     * right subtree.
+                     * The left child's pending count needs to be updated before
+                     * it is associated in the completion map, otherwise the
+                     * left child can complete prematurely and violate the
+                     * "happens-before" constraint.
+                     */
+            leftChild.addToPendingCount(1);
+            // Update association of left-predecessor to left-most
+            // leaf node of right subtree
+            if (task.completionMap.replace(task.leftPredecessor, task, leftChild)) {
+                // If replaced, adjust the pending count of the parent
+                // to complete when its children complete
+                task.addToPendingCount(-1);
+            } else {
+                // Left-predecessor has already completed, parent's
+                // pending count is adjusted by left-predecessor;
+                // left child is ready to complete
+                leftChild.addToPendingCount(-1);
+            }
+        }
+        ForEachOrderedTask<S, T> taskToFork;
+        if (forkRight) {
+            forkRight = false;
+            rightSplit = leftSplit;
+            task = leftChild;
+            taskToFork = rightChild;
+        } else {
+            forkRight = true;
+            task = rightChild;
+            taskToFork = leftChild;
+        }
+        taskToFork.fork();
+    }
+    /*
+             * Task's pending count is either 0 or 1.  If 1 then the completion
+             * map will contain a value that is task, and two calls to
+             * tryComplete are required for completion, one below and one
+             * triggered by the completion of task's left-predecessor in
+             * onCompletion.  Therefore there is no data race within the if
+             * block.
+             */
+    if (task.getPendingCount() > 0) {
+        // Cannot complete just yet so buffer elements into a Node
+        // for use when completion occurs
+        @SuppressWarnings("unchecked")
+        IntFunction<T[]> generator = size -> (T[]) new Object[size];
+        Node.Builder<T> nb = task.helper.makeNodeBuilder(task.helper.exactOutputSizeIfKnown(rightSplit), generator);
+        task.node = task.helper.wrapAndCopyInto(nb, rightSplit).build();
+        task.spliterator = null;
+    }
+    task.tryComplete();
+}

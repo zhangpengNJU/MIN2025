@@ -1,0 +1,46 @@
+/**
+ * If this Window is visible, brings this Window to the front and may make
+ * it the focused Window.
+ * <p>
+ * Places this Window at the top of the stacking order and shows it in
+ * front of any other Windows in this VM. No action will take place if this
+ * Window is not visible. Some platforms do not allow Windows which own
+ * other Windows to appear on top of those owned Windows. Some platforms
+ * may not permit this VM to place its Windows above windows of native
+ * applications, or Windows of other VMs. This permission may depend on
+ * whether a Window in this VM is already focused. Every attempt will be
+ * made to move this Window as high as possible in the stacking order;
+ * however, developers should not assume that this method will move this
+ * Window above all other windows in every situation.
+ * <p>
+ * Developers must never assume that this Window is the focused or active
+ * Window until this Window receives a WINDOW_GAINED_FOCUS or WINDOW_ACTIVATED
+ * event. On platforms where the top-most window is the focused window, this
+ * method will <b>probably</b> focus this Window (if it is not already focused)
+ * under the following conditions:
+ * <ul>
+ * <li> The window meets the requirements outlined in the
+ *      {@link #isFocusableWindow} method.
+ * <li> The window's property {@code autoRequestFocus} is of the
+ *      {@code true} value.
+ * <li> Native windowing system allows the window to get focused.
+ * </ul>
+ * On platforms where the stacking order does not typically affect the focused
+ * window, this method will <b>probably</b> leave the focused and active
+ * Windows unchanged.
+ * <p>
+ * If this method causes this Window to be focused, and this Window is a
+ * Frame or a Dialog, it will also become activated. If this Window is
+ * focused, but it is not a Frame or a Dialog, then the first Frame or
+ * Dialog that is an owner of this Window will be activated.
+ * <p>
+ * If this window is blocked by modal dialog, then the blocking dialog
+ * is brought to the front and remains above the blocked window.
+ *
+ * @see       #toBack
+ * @see       #setAutoRequestFocus
+ * @see       #isFocusableWindow
+ */
+public void toFront() {
+    toFront_NoClientCode();
+}

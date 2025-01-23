@@ -1,0 +1,34 @@
+/**
+ * Returns a {@code Collector} which partitions the input elements according
+ * to a {@code Predicate}, reduces the values in each partition according to
+ * another {@code Collector}, and organizes them into a
+ * {@code Map<Boolean, D>} whose values are the result of the downstream
+ * reduction.
+ *
+ * <p>There are no guarantees on the type, mutability,
+ * serializability, or thread-safety of the {@code Map} returned.
+ *
+ * @param <T> the type of the input elements
+ * @param <A> the intermediate accumulation type of the downstream collector
+ * @param <D> the result type of the downstream reduction
+ * @param predicate a predicate used for classifying input elements
+ * @param downstream a {@code Collector} implementing the downstream
+ *                   reduction
+ * @return a {@code Collector} implementing the cascaded partitioning
+ *         operation
+ *
+ * @see #partitioningBy(Predicate)
+ */
+public static <T, D, A> Collector<T, ?, Map<Boolean, D>> partitioningBy(Predicate<? super T> predicate, Collector<? super T, A, D> downstream) {
+    BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
+    BiConsumer<Partition<A>, T> accumulator = (result, t) -> downstreamAccumulator.accept(predicate.test(t) ? result.forTrue : result.forFalse, t);
+    BinaryOperator<A> op = downstream.combiner();
+    BinaryOperator<Partition<A>> merger = (left, right) -> new Partition<>(op.apply(left.forTrue, right.forTrue), op.apply(left.forFalse, right.forFalse));
+    Supplier<Partition<A>> supplier = () -> new Partition<>(downstream.supplier().get(), downstream.supplier().get());
+    if (downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+        return new CollectorImpl<>(supplier, accumulator, merger, CH_ID);
+    } else {
+        Function<Partition<A>, Map<Boolean, D>> finisher = par -> new Partition<>(downstream.finisher().apply(par.forTrue), downstream.finisher().apply(par.forFalse));
+        return new CollectorImpl<>(supplier, accumulator, merger, finisher, CH_NOID);
+    }
+}

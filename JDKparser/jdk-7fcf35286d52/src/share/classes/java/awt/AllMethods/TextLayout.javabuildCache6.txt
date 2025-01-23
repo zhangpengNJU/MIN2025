@@ -1,0 +1,48 @@
+private void buildCache() {
+    lineMetrics = textLine.getMetrics();
+    // compute visibleAdvance
+    if (textLine.isDirectionLTR()) {
+        int lastNonSpace = characterCount - 1;
+        while (lastNonSpace != -1) {
+            int logIndex = textLine.visualToLogical(lastNonSpace);
+            if (!textLine.isCharSpace(logIndex)) {
+                break;
+            } else {
+                --lastNonSpace;
+            }
+        }
+        if (lastNonSpace == characterCount - 1) {
+            visibleAdvance = lineMetrics.advance;
+        } else if (lastNonSpace == -1) {
+            visibleAdvance = 0;
+        } else {
+            int logIndex = textLine.visualToLogical(lastNonSpace);
+            visibleAdvance = textLine.getCharLinePosition(logIndex) + textLine.getCharAdvance(logIndex);
+        }
+    } else {
+        int leftmostNonSpace = 0;
+        while (leftmostNonSpace != characterCount) {
+            int logIndex = textLine.visualToLogical(leftmostNonSpace);
+            if (!textLine.isCharSpace(logIndex)) {
+                break;
+            } else {
+                ++leftmostNonSpace;
+            }
+        }
+        if (leftmostNonSpace == characterCount) {
+            visibleAdvance = 0;
+        } else if (leftmostNonSpace == 0) {
+            visibleAdvance = lineMetrics.advance;
+        } else {
+            int logIndex = textLine.visualToLogical(leftmostNonSpace);
+            float pos = textLine.getCharLinePosition(logIndex);
+            visibleAdvance = lineMetrics.advance - pos;
+        }
+    }
+    // naturalBounds, boundsRect will be generated on demand
+    naturalBounds = null;
+    boundsRect = null;
+    // hashCode will be regenerated on demand
+    hashCodeCache = 0;
+    cacheIsValid = true;
+}

@@ -1,0 +1,47 @@
+/**
+ * Sets the fields of the {@code URL} argument to the indicated values.
+ * Only classes derived from URLStreamHandler are able
+ * to use this method to set the values of the URL fields.
+ *
+ * @param   u         the URL to modify.
+ * @param   protocol  the protocol name. This value is ignored since 1.2.
+ * @param   host      the remote host value for the URL.
+ * @param   port      the port on the remote machine.
+ * @param   file      the file.
+ * @param   ref       the reference.
+ * @exception       SecurityException       if the protocol handler of the URL is
+ *                                  different from this one
+ * @deprecated Use setURL(URL, String, String, int, String, String, String,
+ *             String);
+ */
+@Deprecated
+protected void setURL(URL u, String protocol, String host, int port, String file, String ref) {
+    /*
+         * Only old URL handlers call this, so assume that the host
+         * field might contain "user:passwd@host". Fix as necessary.
+         */
+    String authority = null;
+    String userInfo = null;
+    if (host != null && host.length() != 0) {
+        authority = (port == -1) ? host : host + ":" + port;
+        int at = host.lastIndexOf('@');
+        if (at != -1) {
+            userInfo = host.substring(0, at);
+            host = host.substring(at + 1);
+        }
+    }
+    /*
+         * Assume file might contain query part. Fix as necessary.
+         */
+    String path = null;
+    String query = null;
+    if (file != null) {
+        int q = file.lastIndexOf('?');
+        if (q != -1) {
+            query = file.substring(q + 1);
+            path = file.substring(0, q);
+        } else
+            path = file;
+    }
+    setURL(u, protocol, host, port, authority, userInfo, path, query, ref);
+}

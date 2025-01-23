@@ -1,0 +1,22 @@
+/**
+ * Removes an item from the <code>Choice</code> at the
+ * specified position, but does not invalidate the <code>Choice</code>.
+ * Client methods must provide their
+ * own synchronization before invoking this method.
+ * @param      position   the position of the item
+ */
+private void removeNoInvalidate(int position) {
+    pItems.removeElementAt(position);
+    ChoicePeer peer = (ChoicePeer) this.peer;
+    if (peer != null) {
+        peer.remove(position);
+    }
+    /* Adjust selectedIndex if selected item was removed. */
+    if (pItems.size() == 0) {
+        selectedIndex = -1;
+    } else if (selectedIndex == position) {
+        select(0);
+    } else if (selectedIndex > position) {
+        select(selectedIndex - 1);
+    }
+}

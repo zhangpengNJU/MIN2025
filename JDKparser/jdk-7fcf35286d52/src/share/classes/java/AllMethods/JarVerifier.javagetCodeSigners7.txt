@@ -1,0 +1,20 @@
+public CodeSigner[] getCodeSigners(JarFile jar, JarEntry entry) {
+    String name = entry.getName();
+    if (eagerValidation && sigFileSigners.get(name) != null) {
+        /*
+             * Force a read of the entry data to generate the
+             * verification hash.
+             */
+        try {
+            InputStream s = jar.getInputStream(entry);
+            byte[] buffer = new byte[1024];
+            int n = buffer.length;
+            while (n != -1) {
+                n = s.read(buffer, 0, buffer.length);
+            }
+            s.close();
+        } catch (IOException e) {
+        }
+    }
+    return getCodeSigners(name);
+}

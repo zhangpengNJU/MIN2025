@@ -1,0 +1,13 @@
+/**
+ * Returns JVM type signature for given list of parameters and return type.
+ */
+private static String getMethodSignature(Class<?>[] paramTypes, Class<?> retType) {
+    StringBuilder sbuf = new StringBuilder();
+    sbuf.append('(');
+    for (int i = 0; i < paramTypes.length; i++) {
+        sbuf.append(getClassSignature(paramTypes[i]));
+    }
+    sbuf.append(')');
+    sbuf.append(getClassSignature(retType));
+    return sbuf.toString();
+}

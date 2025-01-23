@@ -1,0 +1,12 @@
+final int getFence() {
+    // initialize fence and size on first use
+    int hi;
+    if ((hi = fence) < 0) {
+        HashMap<K, V> m = map;
+        est = m.size;
+        expectedModCount = m.modCount;
+        Node<K, V>[] tab = m.table;
+        hi = fence = (tab == null) ? 0 : tab.length;
+    }
+    return hi;
+}

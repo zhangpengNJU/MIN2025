@@ -1,0 +1,49 @@
+/**
+ * Returns an array (in logical order) of the TextLineComponents representing
+ * the text.  The components are both logically and visually contiguous.
+ */
+public static TextLineComponent[] getComponents(StyledParagraph styledParagraph, char[] chars, int textStart, int textLimit, int[] charsLtoV, byte[] levels, TextLabelFactory factory) {
+    FontRenderContext frc = factory.getFontRenderContext();
+    int numComponents = 0;
+    TextLineComponent[] tempComponents = new TextLineComponent[1];
+    int pos = textStart;
+    do {
+        int runLimit = Math.min(styledParagraph.getRunLimit(pos), textLimit);
+        Decoration decorator = styledParagraph.getDecorationAt(pos);
+        Object graphicOrFont = styledParagraph.getFontOrGraphicAt(pos);
+        if (graphicOrFont instanceof GraphicAttribute) {
+            // AffineTransform baseRot = styledParagraph.getBaselineRotationAt(pos);
+            // !!! For now, let's assign runs of text with both fonts and graphic attributes
+            // a null rotation (e.g. the baseline rotation goes away when a graphic
+            // is applied.
+            AffineTransform baseRot = null;
+            GraphicAttribute graphicAttribute = (GraphicAttribute) graphicOrFont;
+            do {
+                int chunkLimit = firstVisualChunk(charsLtoV, levels, pos, runLimit);
+                GraphicComponent nextGraphic = new GraphicComponent(graphicAttribute, decorator, charsLtoV, levels, pos, chunkLimit, baseRot);
+                pos = chunkLimit;
+                ++numComponents;
+                if (numComponents >= tempComponents.length) {
+                    tempComponents = expandArray(tempComponents);
+                }
+                tempComponents[numComponents - 1] = nextGraphic;
+            } while (pos < runLimit);
+        } else {
+            Font font = (Font) graphicOrFont;
+            tempComponents = createComponentsOnRun(pos, runLimit, chars, charsLtoV, levels, factory, font, null, frc, decorator, tempComponents, numComponents);
+            pos = runLimit;
+            numComponents = tempComponents.length;
+            while (tempComponents[numComponents - 1] == null) {
+                numComponents -= 1;
+            }
+        }
+    } while (pos < textLimit);
+    TextLineComponent[] components;
+    if (tempComponents.length == numComponents) {
+        components = tempComponents;
+    } else {
+        components = new TextLineComponent[numComponents];
+        System.arraycopy(tempComponents, 0, components, 0, numComponents);
+    }
+    return components;
+}

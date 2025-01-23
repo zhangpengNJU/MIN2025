@@ -1,0 +1,14 @@
+private static void setExpirationTime(CacheKey cacheKey, Control control) {
+    long ttl = control.getTimeToLive(cacheKey.getName(), cacheKey.getLocale());
+    if (ttl >= 0) {
+        // If any expiration time is specified, set the time to be
+        // expired in the cache.
+        long now = System.currentTimeMillis();
+        cacheKey.loadTime = now;
+        cacheKey.expirationTime = now + ttl;
+    } else if (ttl >= Control.TTL_NO_EXPIRATION_CONTROL) {
+        cacheKey.expirationTime = ttl;
+    } else {
+        throw new IllegalArgumentException("Invalid Control: TTL=" + ttl);
+    }
+}

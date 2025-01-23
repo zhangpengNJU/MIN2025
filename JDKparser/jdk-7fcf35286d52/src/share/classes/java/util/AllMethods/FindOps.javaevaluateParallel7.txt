@@ -1,0 +1,4 @@
+@Override
+public <P_IN> O evaluateParallel(PipelineHelper<T> helper, Spliterator<P_IN> spliterator) {
+    return new FindTask<>(this, helper, spliterator).invoke();
+}

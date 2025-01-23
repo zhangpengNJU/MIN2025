@@ -1,0 +1,18 @@
+/**
+ * Decodes outcome to return result or throw unchecked exception.
+ */
+private static <T> T reportJoin(Object r) {
+    if (r instanceof AltResult) {
+        Throwable x;
+        if ((x = ((AltResult) r).ex) == null)
+            return null;
+        if (x instanceof CancellationException)
+            throw (CancellationException) x;
+        if (x instanceof CompletionException)
+            throw (CompletionException) x;
+        throw new CompletionException(x);
+    }
+    @SuppressWarnings("unchecked")
+    T t = (T) r;
+    return t;
+}

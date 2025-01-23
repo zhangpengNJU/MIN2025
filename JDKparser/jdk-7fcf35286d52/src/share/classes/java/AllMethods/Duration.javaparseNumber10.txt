@@ -1,0 +1,12 @@
+private static long parseNumber(CharSequence text, String parsed, int multiplier, String errorText) {
+    // regex limits to [-+]?[0-9]+
+    if (parsed == null) {
+        return 0;
+    }
+    try {
+        long val = Long.parseLong(parsed);
+        return Math.multiplyExact(val, multiplier);
+    } catch (NumberFormatException | ArithmeticException ex) {
+        throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: " + errorText, text, 0).initCause(ex);
+    }
+}

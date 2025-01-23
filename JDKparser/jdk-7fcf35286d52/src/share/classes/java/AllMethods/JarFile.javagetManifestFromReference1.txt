@@ -1,0 +1,26 @@
+private Manifest getManifestFromReference() throws IOException {
+    Manifest man = manRef != null ? manRef.get() : null;
+    if (man == null) {
+        JarEntry manEntry = getManEntry();
+        // If found then load the manifest
+        if (manEntry != null) {
+            if (verify) {
+                byte[] b = getBytes(manEntry);
+                if (!jvInitialized) {
+                    if (JUZFA.getManifestNum(this) == 1) {
+                        jv = new JarVerifier(manEntry.getName(), b);
+                    } else {
+                        if (JarVerifier.debug != null) {
+                            JarVerifier.debug.println("Multiple MANIFEST.MF found. Treat JAR file as unsigned");
+                        }
+                    }
+                }
+                man = new Manifest(jv, new ByteArrayInputStream(b));
+            } else {
+                man = new Manifest(super.getInputStream(manEntry));
+            }
+            manRef = new SoftReference<>(man);
+        }
+    }
+    return man;
+}

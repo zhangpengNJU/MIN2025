@@ -1,0 +1,45 @@
+private boolean preDispatchKeyEvent(KeyEvent ke) {
+    if (((AWTEvent) ke).isPosted) {
+        Component focusOwner = getFocusOwner();
+        ke.setSource(((focusOwner != null) ? focusOwner : getFocusedWindow()));
+    }
+    if (ke.getSource() == null) {
+        return true;
+    }
+    // Explicitly set the key event timestamp here (not in Component.dispatchEventImpl):
+    // - A key event is anyway passed to this method which starts its actual dispatching.
+    // - If a key event is put to the type ahead queue, its time stamp should not be registered
+    // until its dispatching actually starts (by this method).
+    EventQueue.setCurrentEventAndMostRecentTime(ke);
+    /**
+     * Fix for 4495473.
+     * This fix allows to correctly dispatch events when native
+     * event proxying mechanism is active.
+     * If it is active we should redispatch key events after
+     * we detected its correct target.
+     */
+    if (KeyboardFocusManager.isProxyActive(ke)) {
+        Component source = (Component) ke.getSource();
+        Container target = source.getNativeContainer();
+        if (target != null) {
+            ComponentPeer peer = target.getPeer();
+            if (peer != null) {
+                peer.handleEvent(ke);
+                /**
+                 * Fix for 4478780 - consume event after it was dispatched by peer.
+                 */
+                ke.consume();
+            }
+        }
+        return true;
+    }
+    java.util.List<KeyEventDispatcher> dispatchers = getKeyEventDispatchers();
+    if (dispatchers != null) {
+        for (java.util.Iterator<KeyEventDispatcher> iter = dispatchers.iterator(); iter.hasNext(); ) {
+            if (iter.next().dispatchKeyEvent(ke)) {
+                return true;
+            }
+        }
+    }
+    return dispatchKeyEvent(ke);
+}

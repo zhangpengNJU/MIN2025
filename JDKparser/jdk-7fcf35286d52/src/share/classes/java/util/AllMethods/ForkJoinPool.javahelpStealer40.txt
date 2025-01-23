@@ -1,0 +1,78 @@
+/**
+ * Tries to locate and execute tasks for a stealer of the given
+ * task, or in turn one of its stealers, Traces currentSteal ->
+ * currentJoin links looking for a thread working on a descendant
+ * of the given task and with a non-empty queue to steal back and
+ * execute tasks from. The first call to this method upon a
+ * waiting join will often entail scanning/search, (which is OK
+ * because the joiner has nothing better to do), but this method
+ * leaves hints in workers to speed up subsequent calls.
+ *
+ * @param w caller
+ * @param task the task to join
+ */
+private void helpStealer(WorkQueue w, ForkJoinTask<?> task) {
+    WorkQueue[] ws = workQueues;
+    int oldSum = 0, checkSum, m;
+    if (ws != null && (m = ws.length - 1) >= 0 && w != null && task != null) {
+        do {
+            // restart point
+            // for stability check
+            checkSum = 0;
+            ForkJoinTask<?> subtask;
+            // v is subtask stealer
+            WorkQueue j = w, v;
+            descent: for (subtask = task; subtask.status >= 0; ) {
+                for (int h = j.hint | 1, k = 0, i; ; k += 2) {
+                    if (// can't find stealer
+                    k > m)
+                        break descent;
+                    if ((v = ws[i = (h + k) & m]) != null) {
+                        if (v.currentSteal == subtask) {
+                            j.hint = i;
+                            break;
+                        }
+                        checkSum += v.base;
+                    }
+                }
+                for (; ; ) {
+                    // help v or descend
+                    ForkJoinTask<?>[] a;
+                    int b;
+                    checkSum += (b = v.base);
+                    ForkJoinTask<?> next = v.currentJoin;
+                    if (subtask.status < 0 || j.currentJoin != subtask || // stale
+                    v.currentSteal != subtask)
+                        break descent;
+                    if (b - v.top >= 0 || (a = v.array) == null) {
+                        if ((subtask = next) == null)
+                            break descent;
+                        j = v;
+                        break;
+                    }
+                    int i = (((a.length - 1) & b) << ASHIFT) + ABASE;
+                    ForkJoinTask<?> t = ((ForkJoinTask<?>) U.getObjectVolatile(a, i));
+                    if (v.base == b) {
+                        if (// stale
+                        t == null)
+                            break descent;
+                        if (U.compareAndSwapObject(a, i, t, null)) {
+                            v.base = b + 1;
+                            ForkJoinTask<?> ps = w.currentSteal;
+                            int top = w.top;
+                            do {
+                                U.putOrderedObject(w, QCURRENTSTEAL, t);
+                                // clear local tasks too
+                                t.doExec();
+                            } while (task.status >= 0 && w.top != top && (t = w.pop()) != null);
+                            U.putOrderedObject(w, QCURRENTSTEAL, ps);
+                            if (w.base != w.top)
+                                // can't further help
+                                return;
+                        }
+                    }
+                }
+            }
+        } while (task.status >= 0 && oldSum != (oldSum = checkSum));
+    }
+}

@@ -1,0 +1,12 @@
+public void dispose() {
+    if (owner != null) {
+        Window parent = owner.get();
+        if (parent != null) {
+            parent.removeOwnedWindow(weakThis);
+        }
+    }
+    AppContext ac = context.get();
+    if (null != ac) {
+        Window.removeFromWindowList(ac, weakThis);
+    }
+}

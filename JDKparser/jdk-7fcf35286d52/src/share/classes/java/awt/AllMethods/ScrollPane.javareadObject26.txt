@@ -1,0 +1,31 @@
+/**
+ * Reads default serializable fields to stream.
+ * @exception HeadlessException if
+ * <code>GraphicsEnvironment.isHeadless()</code> returns
+ * <code>true</code>
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    // 4352819: Gotcha!  Cannot use s.defaultReadObject here and
+    // then continue with reading optional data.  Use GetField instead.
+    ObjectInputStream.GetField f = s.readFields();
+    // Old fields
+    scrollbarDisplayPolicy = f.get("scrollbarDisplayPolicy", SCROLLBARS_AS_NEEDED);
+    hAdjustable = (ScrollPaneAdjustable) f.get("hAdjustable", null);
+    vAdjustable = (ScrollPaneAdjustable) f.get("vAdjustable", null);
+    // Since 1.4
+    wheelScrollingEnabled = f.get("wheelScrollingEnabled", defaultWheelScroll);
+// // Note to future maintainers
+// if (f.defaulted("wheelScrollingEnabled")) {
+// // We are reading pre-1.4 stream that doesn't have
+// // optional data, not even the TC_ENDBLOCKDATA marker.
+// // Reading anything after this point is unsafe as we will
+// // read unrelated objects further down the stream (4352819).
+// }
+// else {
+// // Reading data from 1.4 or later, it's ok to try to read
+// // optional data as OptionalDataException with eof == true
+// // will be correctly reported
+// }
+}

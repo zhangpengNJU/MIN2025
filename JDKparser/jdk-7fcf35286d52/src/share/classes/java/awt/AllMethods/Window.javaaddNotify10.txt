@@ -1,0 +1,24 @@
+/**
+ * Makes this Window displayable by creating the connection to its
+ * native screen resource.
+ * This method is called internally by the toolkit and should
+ * not be called directly by programs.
+ * @see Component#isDisplayable
+ * @see Container#removeNotify
+ * @since JDK1.0
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        Container parent = this.parent;
+        if (parent != null && parent.getPeer() == null) {
+            parent.addNotify();
+        }
+        if (peer == null) {
+            peer = getToolkit().createWindow(this);
+        }
+        synchronized (allWindows) {
+            allWindows.add(this);
+        }
+        super.addNotify();
+    }
+}

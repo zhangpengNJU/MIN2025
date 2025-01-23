@@ -1,0 +1,10 @@
+private long secondsUntil(Instant end) {
+    long secsDiff = Math.subtractExact(end.seconds, seconds);
+    long nanosDiff = end.nanos - nanos;
+    if (secsDiff > 0 && nanosDiff < 0) {
+        secsDiff--;
+    } else if (secsDiff < 0 && nanosDiff > 0) {
+        secsDiff++;
+    }
+    return secsDiff;
+}

@@ -1,0 +1,40 @@
+/**
+ * Multiplies two BigIntegers using the Karatsuba multiplication
+ * algorithm.  This is a recursive divide-and-conquer algorithm which is
+ * more efficient for large numbers than what is commonly called the
+ * "grade-school" algorithm used in multiplyToLen.  If the numbers to be
+ * multiplied have length n, the "grade-school" algorithm has an
+ * asymptotic complexity of O(n^2).  In contrast, the Karatsuba algorithm
+ * has complexity of O(n^(log2(3))), or O(n^1.585).  It achieves this
+ * increased performance by doing 3 multiplies instead of 4 when
+ * evaluating the product.  As it has some overhead, should be used when
+ * both numbers are larger than a certain threshold (found
+ * experimentally).
+ *
+ * See:  http://en.wikipedia.org/wiki/Karatsuba_algorithm
+ */
+private static BigInteger multiplyKaratsuba(BigInteger x, BigInteger y) {
+    int xlen = x.mag.length;
+    int ylen = y.mag.length;
+    // The number of ints in each half of the number.
+    int half = (Math.max(xlen, ylen) + 1) / 2;
+    // xl and yl are the lower halves of x and y respectively,
+    // xh and yh are the upper halves.
+    BigInteger xl = x.getLower(half);
+    BigInteger xh = x.getUpper(half);
+    BigInteger yl = y.getLower(half);
+    BigInteger yh = y.getUpper(half);
+    // p1 = xh*yh
+    BigInteger p1 = xh.multiply(yh);
+    // p2 = xl*yl
+    BigInteger p2 = xl.multiply(yl);
+    // p3=(xh+xl)*(yh+yl)
+    BigInteger p3 = xh.add(xl).multiply(yh.add(yl));
+    // result = p1 * 2^(32*2*half) + (p3 - p1 - p2) * 2^(32*half) + p2
+    BigInteger result = p1.shiftLeft(32 * half).add(p3.subtract(p1).subtract(p2)).shiftLeft(32 * half).add(p2);
+    if (x.signum != y.signum) {
+        return result.negate();
+    } else {
+        return result;
+    }
+}

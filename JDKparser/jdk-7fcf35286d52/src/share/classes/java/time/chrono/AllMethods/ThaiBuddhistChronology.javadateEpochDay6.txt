@@ -1,0 +1,12 @@
+/**
+ * Obtains a local date in the Thai Buddhist calendar system from the epoch-day.
+ *
+ * @param epochDay  the epoch day
+ * @return the Thai Buddhist local date, not null
+ * @throws DateTimeException if unable to create the date
+ */
+// override with covariant return type
+@Override
+public ThaiBuddhistDate dateEpochDay(long epochDay) {
+    return new ThaiBuddhistDate(LocalDate.ofEpochDay(epochDay));
+}

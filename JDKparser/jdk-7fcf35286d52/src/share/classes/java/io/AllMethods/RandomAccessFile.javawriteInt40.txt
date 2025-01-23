@@ -1,0 +1,14 @@
+/**
+ * Writes an {@code int} to the file as four bytes, high byte first.
+ * The write starts at the current position of the file pointer.
+ *
+ * @param      v   an {@code int} to be written.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public final void writeInt(int v) throws IOException {
+    write((v >>> 24) & 0xFF);
+    write((v >>> 16) & 0xFF);
+    write((v >>> 8) & 0xFF);
+    write((v >>> 0) & 0xFF);
+// written += 4;
+}

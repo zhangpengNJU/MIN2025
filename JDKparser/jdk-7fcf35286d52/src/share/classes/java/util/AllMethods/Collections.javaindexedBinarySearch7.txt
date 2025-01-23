@@ -1,0 +1,18 @@
+private static <T> int indexedBinarySearch(List<? extends T> l, T key, Comparator<? super T> c) {
+    int low = 0;
+    int high = l.size() - 1;
+    while (low <= high) {
+        int mid = (low + high) >>> 1;
+        T midVal = l.get(mid);
+        int cmp = c.compare(midVal, key);
+        if (cmp < 0)
+            low = mid + 1;
+        else if (cmp > 0)
+            high = mid - 1;
+        else
+            // key found
+            return mid;
+    }
+    // key not found
+    return -(low + 1);
+}

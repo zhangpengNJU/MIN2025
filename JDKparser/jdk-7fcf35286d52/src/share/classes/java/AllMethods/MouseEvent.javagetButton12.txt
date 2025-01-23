@@ -1,0 +1,55 @@
+/**
+ * Returns which, if any, of the mouse buttons has changed state.
+ * The returned value is ranged
+ * from 0 to the {@link java.awt.MouseInfo#getNumberOfButtons() MouseInfo.getNumberOfButtons()}
+ * value.
+ * The returned value includes at least the following constants:
+ * <ul>
+ * <li> {@code NOBUTTON}
+ * <li> {@code BUTTON1}
+ * <li> {@code BUTTON2}
+ * <li> {@code BUTTON3}
+ * </ul>
+ * It is allowed to use those constants to compare with the returned button number in the application.
+ * For example,
+ * <pre>
+ * if (anEvent.getButton() == MouseEvent.BUTTON1) {
+ * </pre>
+ * In particular, for a mouse with one, two, or three buttons this method may return the following values:
+ * <ul>
+ * <li> 0 ({@code NOBUTTON})
+ * <li> 1 ({@code BUTTON1})
+ * <li> 2 ({@code BUTTON2})
+ * <li> 3 ({@code BUTTON3})
+ * </ul>
+ * Button numbers greater then {@code BUTTON3} have no constant identifier. So if a mouse with five buttons is
+ * installed, this method may return the following values:
+ * <ul>
+ * <li> 0 ({@code NOBUTTON})
+ * <li> 1 ({@code BUTTON1})
+ * <li> 2 ({@code BUTTON2})
+ * <li> 3 ({@code BUTTON3})
+ * <li> 4
+ * <li> 5
+ * </ul>
+ * <p>
+ * Note: If support for extended mouse buttons is {@link Toolkit#areExtraMouseButtonsEnabled() disabled} by Java
+ * then the AWT event subsystem does not produce mouse events for the extended mouse
+ * buttons. So it is not expected that this method returns anything except {@code NOBUTTON}, {@code BUTTON1},
+ * {@code BUTTON2}, {@code BUTTON3}.
+ *
+ * @return one of the values from 0 to {@link java.awt.MouseInfo#getNumberOfButtons() MouseInfo.getNumberOfButtons()}
+ *         if support for the extended mouse buttons is {@link Toolkit#areExtraMouseButtonsEnabled() enabled} by Java.
+ *         That range includes {@code NOBUTTON}, {@code BUTTON1}, {@code BUTTON2}, {@code BUTTON3};
+ *         <br>
+ *         {@code NOBUTTON}, {@code BUTTON1}, {@code BUTTON2} or {@code BUTTON3}
+ *         if support for the extended mouse buttons is {@link Toolkit#areExtraMouseButtonsEnabled() disabled} by Java
+ * @since 1.4
+ * @see Toolkit#areExtraMouseButtonsEnabled()
+ * @see java.awt.MouseInfo#getNumberOfButtons()
+ * @see #MouseEvent(Component, int, long, int, int, int, int, int, int, boolean, int)
+ * @see InputEvent#getMaskForButton(int)
+ */
+public int getButton() {
+    return button;
+}

@@ -1,0 +1,6 @@
+final TreeMap.Entry<K, V> absHigher(K key) {
+    if (tooLow(key))
+        return absLowest();
+    TreeMap.Entry<K, V> e = m.getHigherEntry(key);
+    return (e == null || tooHigh(e.key)) ? null : e;
+}

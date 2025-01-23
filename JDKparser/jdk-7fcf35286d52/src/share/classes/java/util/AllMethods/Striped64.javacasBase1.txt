@@ -1,0 +1,6 @@
+/**
+ * CASes the base field.
+ */
+final boolean casBase(long cmp, long val) {
+    return UNSAFE.compareAndSwapLong(this, BASE, cmp, val);
+}

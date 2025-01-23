@@ -1,0 +1,14 @@
+public boolean hasMoreElements() {
+    if (entry != null) {
+        return true;
+    }
+    while (enum_.hasMoreElements()) {
+        ZipEntry ze = enum_.nextElement();
+        if (JarVerifier.isSigningRelated(ze.getName())) {
+            continue;
+        }
+        entry = ze;
+        return true;
+    }
+    return false;
+}

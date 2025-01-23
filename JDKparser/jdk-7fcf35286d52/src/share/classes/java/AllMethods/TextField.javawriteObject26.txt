@@ -1,0 +1,20 @@
+/**
+ * Writes default serializable fields to stream.  Writes
+ * a list of serializable ActionListener(s) as optional data.
+ * The non-serializable ActionListener(s) are detected and
+ * no attempt is made to serialize them.
+ *
+ * @serialData Null terminated sequence of zero or more pairs.
+ *             A pair consists of a String and Object.
+ *             The String indicates the type of object and
+ *             is one of the following :
+ *             ActionListenerK indicating and ActionListener object.
+ *
+ * @see AWTEventMulticaster#save(ObjectOutputStream, String, EventListener)
+ * @see java.awt.Component#actionListenerK
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    AWTEventMulticaster.save(s, actionListenerK, actionListener);
+    s.writeObject(null);
+}

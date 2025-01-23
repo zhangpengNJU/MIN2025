@@ -1,0 +1,15 @@
+/**
+ * Returns true if node is on sync queue by searching backwards from tail.
+ * Called only when needed by isOnSyncQueue.
+ * @return true if present
+ */
+private boolean findNodeFromTail(Node node) {
+    Node t = tail;
+    for (; ; ) {
+        if (t == node)
+            return true;
+        if (t == null)
+            return false;
+        t = t.prev;
+    }
+}

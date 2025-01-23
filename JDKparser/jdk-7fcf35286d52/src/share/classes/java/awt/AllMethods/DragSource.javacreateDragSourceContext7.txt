@@ -1,0 +1,49 @@
+/**
+ * Creates the {@code DragSourceContext} to handle the current drag
+ * operation.
+ * <p>
+ * To incorporate a new <code>DragSourceContext</code>
+ * subclass, subclass <code>DragSource</code> and
+ * override this method.
+ * <p>
+ * If <code>dragImage</code> is <code>null</code>, no image is used
+ * to represent the drag over feedback for this drag operation, but
+ * <code>NullPointerException</code> is not thrown.
+ * <p>
+ * If <code>dsl</code> is <code>null</code>, no drag source listener
+ * is registered with the created <code>DragSourceContext</code>,
+ * but <code>NullPointerException</code> is not thrown.
+ *
+ * @param dscp          The <code>DragSourceContextPeer</code> for this drag
+ * @param dgl           The <code>DragGestureEvent</code> that triggered the
+ *                      drag
+ * @param dragCursor     The initial {@code Cursor} for this drag operation
+ *                       or {@code null} for the default cursor handling;
+ *                       see <a href="DragSourceContext.html#defaultCursor">DragSourceContext</a> class
+ *                       for more details on the cursor handling mechanism during drag and drop
+ * @param dragImage     The <code>Image</code> to drag or <code>null</code>
+ * @param imageOffset   The offset of the <code>Image</code> origin from the
+ *                      hotspot of the cursor at the instant of the trigger
+ * @param t             The subject data of the drag
+ * @param dsl           The <code>DragSourceListener</code>
+ *
+ * @return the <code>DragSourceContext</code>
+ *
+ * @throws NullPointerException if <code>dscp</code> is <code>null</code>
+ * @throws NullPointerException if <code>dgl</code> is <code>null</code>
+ * @throws NullPointerException if <code>dragImage</code> is not
+ *    <code>null</code> and <code>imageOffset</code> is <code>null</code>
+ * @throws NullPointerException if <code>t</code> is <code>null</code>
+ * @throws IllegalArgumentException if the <code>Component</code>
+ *         associated with the trigger event is <code>null</code>.
+ * @throws IllegalArgumentException if the <code>DragSource</code> for the
+ *         trigger event is <code>null</code>.
+ * @throws IllegalArgumentException if the drag action for the
+ *         trigger event is <code>DnDConstants.ACTION_NONE</code>.
+ * @throws IllegalArgumentException if the source actions for the
+ *         <code>DragGestureRecognizer</code> associated with the trigger
+ *         event are equal to <code>DnDConstants.ACTION_NONE</code>.
+ */
+protected DragSourceContext createDragSourceContext(DragSourceContextPeer dscp, DragGestureEvent dgl, Cursor dragCursor, Image dragImage, Point imageOffset, Transferable t, DragSourceListener dsl) {
+    return new DragSourceContext(dscp, dgl, dragCursor, dragImage, imageOffset, t, dsl);
+}

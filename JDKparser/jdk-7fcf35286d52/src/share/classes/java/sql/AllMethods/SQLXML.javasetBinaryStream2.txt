@@ -1,0 +1,18 @@
+/**
+ * Retrieves a stream that can be used to write the XML value that this SQLXML instance represents.
+ * The stream begins at position 0.
+ * The bytes of the stream are interpreted according to appendix F of the XML 1.0 specification
+ * The behavior of this method is the same as ResultSet.updateBinaryStream()
+ * when the designated column of the ResultSet has a type java.sql.Types of SQLXML.
+ * <p>
+ * The SQL XML object becomes not writeable when this method is called and
+ * may also become not readable depending on implementation.
+ *
+ * @return a stream to which data can be written.
+ * @throws SQLException if there is an error processing the XML value.
+ *   An exception is thrown if the state is not writable.
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+OutputStream setBinaryStream() throws SQLException;

@@ -1,0 +1,25 @@
+/**
+ * Returns a <CODE>Raster</CODE> representing the alpha channel of an image,
+ * extracted from the input <CODE>Raster</CODE>.
+ * This method assumes that <CODE>Raster</CODE> objects associated with
+ * this <CODE>ColorModel</CODE> store the alpha band, if present, as
+ * the last band of image data. Returns null if there is no separate spatial
+ * alpha channel associated with this <CODE>ColorModel</CODE>.
+ * This method creates a new <CODE>Raster</CODE>, but will share the data
+ * array.
+ *
+ * @param raster The <CODE>WritableRaster</CODE> from which to extract the
+ * alpha  channel.
+ *
+ * @return A <CODE>WritableRaster</CODE> containing the image's alpha channel.
+ */
+public WritableRaster getAlphaRaster(WritableRaster raster) {
+    if (hasAlpha() == false) {
+        return null;
+    }
+    int x = raster.getMinX();
+    int y = raster.getMinY();
+    int[] band = new int[1];
+    band[0] = raster.getNumBands() - 1;
+    return raster.createWritableChild(x, y, raster.getWidth(), raster.getHeight(), x, y, band);
+}

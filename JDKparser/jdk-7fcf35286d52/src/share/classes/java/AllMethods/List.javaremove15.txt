@@ -1,0 +1,17 @@
+/**
+ * Removes the first occurrence of an item from the list.
+ * If the specified item is selected, and is the only selected
+ * item in the list, the list is set to have no selection.
+ * @param        item  the item to remove from the list
+ * @exception    IllegalArgumentException
+ *                     if the item doesn't exist in the list
+ * @since        JDK1.1
+ */
+public synchronized void remove(String item) {
+    int index = items.indexOf(item);
+    if (index < 0) {
+        throw new IllegalArgumentException("item " + item + " not found in list");
+    } else {
+        remove(index);
+    }
+}

@@ -1,0 +1,15 @@
+void writeFloats(float[] v, int off, int len) throws IOException {
+    int limit = MAX_BLOCK_SIZE - 4;
+    int endoff = off + len;
+    while (off < endoff) {
+        if (pos <= limit) {
+            int avail = (MAX_BLOCK_SIZE - pos) >> 2;
+            int chunklen = Math.min(endoff - off, avail);
+            floatsToBytes(v, off, buf, pos, chunklen);
+            off += chunklen;
+            pos += chunklen << 2;
+        } else {
+            dout.writeFloat(v[off++]);
+        }
+    }
+}

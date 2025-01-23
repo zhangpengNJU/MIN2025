@@ -1,0 +1,10 @@
+private synchronized void setGetListenerMethod(Method method) {
+    if (method == null) {
+        return;
+    }
+    if (getClass0() == null) {
+        setClass0(method.getDeclaringClass());
+    }
+    getMethodDescriptor = new MethodDescriptor(method);
+    setTransient(method.getAnnotation(Transient.class));
+}

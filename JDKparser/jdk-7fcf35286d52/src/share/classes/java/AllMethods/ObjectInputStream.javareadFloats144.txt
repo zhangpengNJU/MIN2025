@@ -1,0 +1,18 @@
+void readFloats(float[] v, int off, int len) throws IOException {
+    int span, endoff = off + len;
+    while (off < endoff) {
+        if (!blkmode) {
+            span = Math.min(endoff - off, MAX_BLOCK_SIZE >> 2);
+            in.readFully(buf, 0, span << 2);
+            pos = 0;
+        } else if (end - pos < 4) {
+            v[off++] = din.readFloat();
+            continue;
+        } else {
+            span = Math.min(endoff - off, ((end - pos) >> 2));
+        }
+        bytesToFloats(buf, pos, v, off, span);
+        off += span;
+        pos += span << 2;
+    }
+}

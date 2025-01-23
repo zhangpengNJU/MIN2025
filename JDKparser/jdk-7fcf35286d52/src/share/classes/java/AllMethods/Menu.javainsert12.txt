@@ -1,0 +1,37 @@
+/**
+ * Inserts a menu item into this menu
+ * at the specified position.
+ *
+ * @param         menuitem  the menu item to be inserted.
+ * @param         index     the position at which the menu
+ *                          item should be inserted.
+ * @see           java.awt.Menu#add(java.lang.String)
+ * @see           java.awt.Menu#add(java.awt.MenuItem)
+ * @exception     IllegalArgumentException if the value of
+ *                    <code>index</code> is less than zero
+ * @since         JDK1.1
+ */
+public void insert(MenuItem menuitem, int index) {
+    synchronized (getTreeLock()) {
+        if (index < 0) {
+            throw new IllegalArgumentException("index less than zero.");
+        }
+        int nitems = getItemCount();
+        Vector<MenuItem> tempItems = new Vector<>();
+        /* Remove the item at index, nitems-index times
+               storing them in a temporary vector in the
+               order they appear on the menu.
+            */
+        for (int i = index; i < nitems; i++) {
+            tempItems.addElement(getItem(index));
+            remove(index);
+        }
+        add(menuitem);
+        /* Add the removed items back to the menu, they are
+               already in the correct order in the temp vector.
+            */
+        for (int i = 0; i < tempItems.size(); i++) {
+            add(tempItems.elementAt(i));
+        }
+    }
+}

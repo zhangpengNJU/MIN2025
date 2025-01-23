@@ -1,0 +1,11 @@
+/**
+ * Returns the transparency mode for this <code>GradientPaint</code>.
+ * @return an integer value representing this <code>GradientPaint</code>
+ * object's transparency mode.
+ * @see Transparency
+ */
+public int getTransparency() {
+    int a1 = color1.getAlpha();
+    int a2 = color2.getAlpha();
+    return (((a1 & a2) == 0xff) ? OPAQUE : TRANSLUCENT);
+}

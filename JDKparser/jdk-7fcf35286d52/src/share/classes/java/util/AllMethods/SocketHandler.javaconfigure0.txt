@@ -1,0 +1,22 @@
+// Private method to configure a SocketHandler from LogManager
+// properties and/or default values as specified in the class
+// javadoc.
+private void configure() {
+    LogManager manager = LogManager.getLogManager();
+    String cname = getClass().getName();
+    setLevel(manager.getLevelProperty(cname + ".level", Level.ALL));
+    setFilter(manager.getFilterProperty(cname + ".filter", null));
+    setFormatter(manager.getFormatterProperty(cname + ".formatter", new XMLFormatter()));
+    try {
+        setEncoding(manager.getStringProperty(cname + ".encoding", null));
+    } catch (Exception ex) {
+        try {
+            setEncoding(null);
+        } catch (Exception ex2) {
+        // doing a setEncoding with null should always work.
+        // assert false;
+        }
+    }
+    port = manager.getIntProperty(cname + ".port", 0);
+    host = manager.getStringProperty(cname + ".host", null);
+}

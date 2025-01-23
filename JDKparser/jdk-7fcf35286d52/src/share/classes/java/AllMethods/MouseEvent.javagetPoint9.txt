@@ -1,0 +1,15 @@
+/**
+ * Returns the x,y position of the event relative to the source component.
+ *
+ * @return a <code>Point</code> object containing the x and y coordinates
+ *         relative to the source component
+ */
+public Point getPoint() {
+    int x;
+    int y;
+    synchronized (this) {
+        x = this.x;
+        y = this.y;
+    }
+    return new Point(x, y);
+}

@@ -1,0 +1,23 @@
+/**
+ * Pushes back a portion of an array of characters by copying it to the
+ * front of the pushback buffer.  After this method returns, the next
+ * character to be read will have the value <code>cbuf[off]</code>, the
+ * character after that will have the value <code>cbuf[off+1]</code>, and
+ * so forth.
+ *
+ * @param  cbuf  Character array
+ * @param  off   Offset of first character to push back
+ * @param  len   Number of characters to push back
+ *
+ * @exception  IOException  If there is insufficient room in the pushback
+ *                          buffer, or if some other I/O error occurs
+ */
+public void unread(char[] cbuf, int off, int len) throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        if (len > pos)
+            throw new IOException("Pushback buffer overflow");
+        pos -= len;
+        System.arraycopy(cbuf, off, buf, pos, len);
+    }
+}

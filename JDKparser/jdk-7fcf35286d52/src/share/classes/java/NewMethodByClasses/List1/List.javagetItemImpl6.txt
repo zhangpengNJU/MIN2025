@@ -1,0 +1,7 @@
+// NOTE: This method may be called by privileged threads.
+// We implement this functionality in a package-private method
+// to insure that it cannot be overridden by client subclasses.
+// DO NOT INVOKE CLIENT CODE ON THIS THREAD!
+final String getItemImpl(int index) {
+    return items.elementAt(index);
+}

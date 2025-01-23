@@ -1,0 +1,34 @@
+private static String fixDebugName(String debugName) {
+    if (DEBUG_NAME_COUNTERS != null) {
+        int under = debugName.indexOf('_');
+        int length = debugName.length();
+        if (under < 0)
+            under = length;
+        String debugNameStem = debugName.substring(0, under);
+        Integer ctr;
+        synchronized (DEBUG_NAME_COUNTERS) {
+            ctr = DEBUG_NAME_COUNTERS.get(debugNameStem);
+            if (ctr == null)
+                ctr = 0;
+            DEBUG_NAME_COUNTERS.put(debugNameStem, ctr + 1);
+        }
+        StringBuilder buf = new StringBuilder(debugNameStem);
+        buf.append('_');
+        int leadingZero = buf.length();
+        buf.append((int) ctr);
+        for (int i = buf.length() - leadingZero; i < 3; i++) buf.insert(leadingZero, '0');
+        if (under < length) {
+            // skip "_"
+            ++under;
+            while (under < length && Character.isDigit(debugName.charAt(under))) {
+                ++under;
+            }
+            if (under < length && debugName.charAt(under) == '_')
+                ++under;
+            if (under < length)
+                buf.append('_').append(debugName, under, length);
+        }
+        return buf.toString();
+    }
+    return debugName;
+}

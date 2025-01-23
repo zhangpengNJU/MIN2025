@@ -1,0 +1,8 @@
+@Override
+public boolean equals(Object obj) {
+    if (obj instanceof TickClock) {
+        TickClock other = (TickClock) obj;
+        return baseClock.equals(other.baseClock) && tickNanos == other.tickNanos;
+    }
+    return false;
+}

@@ -1,0 +1,12 @@
+/*
+     * Utility to throw an expection if an invalid TextHitInfo is passed
+     * as a parameter.  Avoids code duplication.
+     */
+private void checkTextHit(TextHitInfo hit) {
+    if (hit == null) {
+        throw new IllegalArgumentException("TextHitInfo is null.");
+    }
+    if (hit.getInsertionIndex() < 0 || hit.getInsertionIndex() > characterCount) {
+        throw new IllegalArgumentException("TextHitInfo is out of range");
+    }
+}

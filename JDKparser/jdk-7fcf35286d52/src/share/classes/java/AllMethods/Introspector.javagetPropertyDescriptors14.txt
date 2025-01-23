@@ -1,0 +1,8 @@
+private PropertyDescriptor[] getPropertyDescriptors(BeanInfo info) {
+    PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+    int index = info.getDefaultPropertyIndex();
+    if ((0 <= index) && (index < descriptors.length)) {
+        this.defaultPropertyName = descriptors[index].getName();
+    }
+    return descriptors;
+}

@@ -1,0 +1,13 @@
+/**
+ * Reads this object out of a serialization stream, handling
+ * objects written by older versions of the class that didn't contain all
+ * of the fields we use now..
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    if (serialVersionOnStream < 1) {
+        // "newAlign" field wasn't present, so use the old "align" field.
+        setAlignment(this.align);
+    }
+    serialVersionOnStream = currentSerialVersion;
+}

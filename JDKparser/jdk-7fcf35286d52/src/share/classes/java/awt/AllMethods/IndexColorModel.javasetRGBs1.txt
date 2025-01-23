@@ -1,0 +1,35 @@
+private void setRGBs(int size, byte[] r, byte[] g, byte[] b, byte[] a) {
+    if (size < 1) {
+        throw new IllegalArgumentException("Map size (" + size + ") must be >= 1");
+    }
+    map_size = size;
+    rgb = new int[calcRealMapSize(pixel_bits, size)];
+    int alpha = 0xff;
+    int transparency = OPAQUE;
+    boolean allgray = true;
+    for (int i = 0; i < size; i++) {
+        int rc = r[i] & 0xff;
+        int gc = g[i] & 0xff;
+        int bc = b[i] & 0xff;
+        allgray = allgray && (rc == gc) && (gc == bc);
+        if (a != null) {
+            alpha = a[i] & 0xff;
+            if (alpha != 0xff) {
+                if (alpha == 0x00) {
+                    if (transparency == OPAQUE) {
+                        transparency = BITMASK;
+                    }
+                    if (transparent_index < 0) {
+                        transparent_index = i;
+                    }
+                } else {
+                    transparency = TRANSLUCENT;
+                }
+                allgray = false;
+            }
+        }
+        rgb[i] = (alpha << 24) | (rc << 16) | (gc << 8) | bc;
+    }
+    this.allgrayopaque = allgray;
+    setTransparency(transparency);
+}

@@ -1,0 +1,43 @@
+/**
+ * Inserts the string into this character sequence.
+ * <p>
+ * The characters of the {@code String} argument are inserted, in
+ * order, into this sequence at the indicated offset, moving up any
+ * characters originally above that position and increasing the length
+ * of this sequence by the length of the argument. If
+ * {@code str} is {@code null}, then the four characters
+ * {@code "null"} are inserted into this sequence.
+ * <p>
+ * The character at index <i>k</i> in the new character sequence is
+ * equal to:
+ * <ul>
+ * <li>the character at index <i>k</i> in the old character sequence, if
+ * <i>k</i> is less than {@code offset}
+ * <li>the character at index <i>k</i>{@code -offset} in the
+ * argument {@code str}, if <i>k</i> is not less than
+ * {@code offset} but is less than {@code offset+str.length()}
+ * <li>the character at index <i>k</i>{@code -str.length()} in the
+ * old character sequence, if <i>k</i> is not less than
+ * {@code offset+str.length()}
+ * </ul><p>
+ * The {@code offset} argument must be greater than or equal to
+ * {@code 0}, and less than or equal to the {@linkplain #length() length}
+ * of this sequence.
+ *
+ * @param      offset   the offset.
+ * @param      str      a string.
+ * @return     a reference to this object.
+ * @throws     StringIndexOutOfBoundsException  if the offset is invalid.
+ */
+public AbstractStringBuilder insert(int offset, String str) {
+    if ((offset < 0) || (offset > length()))
+        throw new StringIndexOutOfBoundsException(offset);
+    if (str == null)
+        str = "null";
+    int len = str.length();
+    ensureCapacityInternal(count + len);
+    System.arraycopy(value, offset, value, offset + len, count - offset);
+    str.getChars(value, offset);
+    count += len;
+    return this;
+}

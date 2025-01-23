@@ -1,0 +1,18 @@
+/**
+ * Report that we have been modified to any interested listeners.
+ */
+public void firePropertyChange() {
+    java.util.Vector<PropertyChangeListener> targets;
+    synchronized (this) {
+        if (listeners == null) {
+            return;
+        }
+        targets = unsafeClone(listeners);
+    }
+    // Tell our listeners that "everything" has changed.
+    PropertyChangeEvent evt = new PropertyChangeEvent(source, null, null, null);
+    for (int i = 0; i < targets.size(); i++) {
+        PropertyChangeListener target = targets.elementAt(i);
+        target.propertyChange(evt);
+    }
+}

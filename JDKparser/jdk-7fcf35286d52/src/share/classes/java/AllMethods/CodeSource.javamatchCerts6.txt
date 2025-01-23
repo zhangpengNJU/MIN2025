@@ -1,0 +1,54 @@
+/**
+ * Returns true if all the certs in this
+ * CodeSource are also in <i>that</i>.
+ *
+ * @param that the CodeSource to check against.
+ * @param strict If true then a strict equality match is performed.
+ *               Otherwise a subset match is performed.
+ */
+private boolean matchCerts(CodeSource that, boolean strict) {
+    boolean match;
+    // match any key
+    if (certs == null && signers == null) {
+        if (strict) {
+            return (that.certs == null && that.signers == null);
+        } else {
+            return true;
+        }
+    // both have signers
+    } else if (signers != null && that.signers != null) {
+        if (strict && signers.length != that.signers.length) {
+            return false;
+        }
+        for (int i = 0; i < signers.length; i++) {
+            match = false;
+            for (int j = 0; j < that.signers.length; j++) {
+                if (signers[i].equals(that.signers[j])) {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match)
+                return false;
+        }
+        return true;
+    // both have certs
+    } else if (certs != null && that.certs != null) {
+        if (strict && certs.length != that.certs.length) {
+            return false;
+        }
+        for (int i = 0; i < certs.length; i++) {
+            match = false;
+            for (int j = 0; j < that.certs.length; j++) {
+                if (certs[i].equals(that.certs[j])) {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match)
+                return false;
+        }
+        return true;
+    }
+    return false;
+}

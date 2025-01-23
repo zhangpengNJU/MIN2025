@@ -1,0 +1,34 @@
+// -----------------------------------------------------------------------
+/**
+ * Validates the offset fields.
+ *
+ * @param hours  the time-zone offset in hours, from -18 to +18
+ * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59
+ * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59
+ * @throws DateTimeException if the offset is not in the required range
+ */
+private static void validate(int hours, int minutes, int seconds) {
+    if (hours < -18 || hours > 18) {
+        throw new DateTimeException("Zone offset hours not in valid range: value " + hours + " is not in the range -18 to 18");
+    }
+    if (hours > 0) {
+        if (minutes < 0 || seconds < 0) {
+            throw new DateTimeException("Zone offset minutes and seconds must be positive because hours is positive");
+        }
+    } else if (hours < 0) {
+        if (minutes > 0 || seconds > 0) {
+            throw new DateTimeException("Zone offset minutes and seconds must be negative because hours is negative");
+        }
+    } else if ((minutes > 0 && seconds < 0) || (minutes < 0 && seconds > 0)) {
+        throw new DateTimeException("Zone offset minutes and seconds must have the same sign");
+    }
+    if (minutes < -59 || minutes > 59) {
+        throw new DateTimeException("Zone offset minutes not in valid range: value " + minutes + " is not in the range -59 to 59");
+    }
+    if (seconds < -59 || seconds > 59) {
+        throw new DateTimeException("Zone offset seconds not in valid range: value " + seconds + " is not in the range -59 to 59");
+    }
+    if (Math.abs(hours) == 18 && (minutes | seconds) != 0) {
+        throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
+    }
+}

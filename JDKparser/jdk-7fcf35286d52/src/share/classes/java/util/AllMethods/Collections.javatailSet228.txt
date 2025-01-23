@@ -1,0 +1,5 @@
+public NavigableSet<E> tailSet(E fromElement) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableSet<>(ns.tailSet(fromElement, true), mutex);
+    }
+}

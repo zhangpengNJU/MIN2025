@@ -1,0 +1,9 @@
+/*
+     * The main goal of this method is to post an appropriate event
+     * to the event queue when menu shortcut is pressed. However,
+     * in subclasses this method may do more than just posting
+     * an event.
+     */
+void doMenuEvent(long when, int modifiers) {
+    Toolkit.getEventQueue().postEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, getActionCommand(), when, modifiers));
+}

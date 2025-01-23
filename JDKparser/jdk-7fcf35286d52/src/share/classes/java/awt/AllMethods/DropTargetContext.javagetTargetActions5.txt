@@ -1,0 +1,10 @@
+/**
+ * This method returns an <code>int</code> representing the
+ * current actions this <code>DropTarget</code> will accept.
+ * <P>
+ * @return the current actions acceptable to this <code>DropTarget</code>
+ */
+protected int getTargetActions() {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    return ((peer != null) ? peer.getTargetActions() : dropTarget.getDefaultActions());
+}

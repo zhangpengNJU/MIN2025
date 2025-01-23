@@ -1,0 +1,14 @@
+private Method findMethod(Class<?> type, String property) {
+    if (property == null) {
+        throw new IllegalArgumentException("Property name is null");
+    }
+    PropertyDescriptor pd = getPropertyDescriptor(type, property);
+    if (pd == null) {
+        throw new IllegalStateException("Could not find property by the name " + property);
+    }
+    Method method = pd.getReadMethod();
+    if (method == null) {
+        throw new IllegalStateException("Could not find getter for the property " + property);
+    }
+    return method;
+}

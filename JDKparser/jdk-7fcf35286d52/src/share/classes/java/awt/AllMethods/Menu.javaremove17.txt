@@ -1,0 +1,15 @@
+/**
+ * Removes the specified menu item from this menu.
+ * @param  item the item to be removed from the menu.
+ *         If <code>item</code> is <code>null</code>
+ *         or is not in this menu, this method does
+ *         nothing.
+ */
+public void remove(MenuComponent item) {
+    synchronized (getTreeLock()) {
+        int index = items.indexOf(item);
+        if (index >= 0) {
+            remove(index);
+        }
+    }
+}

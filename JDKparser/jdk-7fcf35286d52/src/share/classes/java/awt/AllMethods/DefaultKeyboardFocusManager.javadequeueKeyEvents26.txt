@@ -1,0 +1,42 @@
+/**
+ * Releases for normal dispatching to the current focus owner all
+ * KeyEvents which were enqueued because of a call to
+ * <code>enqueueKeyEvents</code> with the same timestamp and Component.
+ * If the given timestamp is less than zero, the outstanding enqueue
+ * request for the given Component with the <b>oldest</b> timestamp (if
+ * any) should be cancelled.
+ *
+ * @param after the timestamp specified in the call to
+ *        <code>enqueueKeyEvents</code>, or any value &lt; 0
+ * @param untilFocused the Component specified in the call to
+ *        <code>enqueueKeyEvents</code>
+ * @see #enqueueKeyEvents
+ * @see #discardKeyEvents
+ */
+protected synchronized void dequeueKeyEvents(long after, Component untilFocused) {
+    if (untilFocused == null) {
+        return;
+    }
+    if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+        focusLog.finer("Dequeue at {0} for {1}", after, untilFocused);
+    }
+    TypeAheadMarker marker;
+    ListIterator<TypeAheadMarker> iter = typeAheadMarkers.listIterator((after >= 0) ? typeAheadMarkers.size() : 0);
+    if (after < 0) {
+        while (iter.hasNext()) {
+            marker = iter.next();
+            if (marker.untilFocused == untilFocused) {
+                iter.remove();
+                return;
+            }
+        }
+    } else {
+        while (iter.hasPrevious()) {
+            marker = iter.previous();
+            if (marker.untilFocused == untilFocused && marker.after == after) {
+                iter.remove();
+                return;
+            }
+        }
+    }
+}

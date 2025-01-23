@@ -1,0 +1,101 @@
+/**
+ * Returns a <code>Shape</code> enclosing the logical selection in the
+ * specified range, extended to the specified <code>bounds</code>.
+ * <p>
+ * If the selection range includes the first logical character, the
+ * selection is extended to the portion of <code>bounds</code> before
+ * the start of this <code>TextLayout</code>.  If the range includes
+ * the last logical character, the selection is extended to the portion
+ * of <code>bounds</code> after the end of this <code>TextLayout</code>.
+ * The height (width on vertical lines) of the selection is always
+ * extended to <code>bounds</code>.
+ * <p>
+ * The selection can be discontiguous on lines with mixed-direction text.
+ * Only those characters in the logical range between start and limit
+ * appear selected.  For example, consider the text 'ABCdef' where capital
+ * letters indicate right-to-left text, rendered on a right-to-left line,
+ * with a logical selection from 0 to 4 ('ABCd').  The text appears as
+ * follows, with bold standing in for the selection, and underlining for
+ * the extension:
+ * <br><pre>
+ *    <u><b>d</b></u>ef<u><b>CBA  </b></u>
+ * </pre>
+ * The selection is discontiguous because the selected characters are
+ * visually discontiguous. Also note that since the range includes the
+ * first logical character (A), the selection is extended to the portion
+ * of the <code>bounds</code> before the start of the layout, which in
+ * this case (a right-to-left line) is the right portion of the
+ * <code>bounds</code>.
+ * @param firstEndpoint an endpoint in the range of characters to select
+ * @param secondEndpoint the other endpoint of the range of characters
+ * to select. Can be less than <code>firstEndpoint</code>.  The range
+ * includes the character at min(firstEndpoint, secondEndpoint), but
+ * excludes max(firstEndpoint, secondEndpoint).
+ * @param bounds the bounding rectangle to which to extend the selection.
+ *     This is in baseline-relative coordinates.
+ * @return an area enclosing the selection.  This is in standard
+ *     coordinates.
+ * @see #getVisualHighlightShape(TextHitInfo, TextHitInfo, Rectangle2D)
+ */
+public Shape getLogicalHighlightShape(int firstEndpoint, int secondEndpoint, Rectangle2D bounds) {
+    if (bounds == null) {
+        throw new IllegalArgumentException("Null Rectangle2D passed to TextLayout.getLogicalHighlightShape()");
+    }
+    ensureCache();
+    if (firstEndpoint > secondEndpoint) {
+        int t = firstEndpoint;
+        firstEndpoint = secondEndpoint;
+        secondEndpoint = t;
+    }
+    if (firstEndpoint < 0 || secondEndpoint > characterCount) {
+        throw new IllegalArgumentException("Range is invalid in TextLayout.getLogicalHighlightShape()");
+    }
+    GeneralPath result = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
+    // would this ever not handle all cases?
+    int[] carets = new int[10];
+    int count = 0;
+    if (firstEndpoint < secondEndpoint) {
+        int logIndex = firstEndpoint;
+        do {
+            carets[count++] = hitToCaret(TextHitInfo.leading(logIndex));
+            boolean ltr = textLine.isCharLTR(logIndex);
+            do {
+                logIndex++;
+            } while (logIndex < secondEndpoint && textLine.isCharLTR(logIndex) == ltr);
+            int hitCh = logIndex;
+            carets[count++] = hitToCaret(TextHitInfo.trailing(hitCh - 1));
+            if (count == carets.length) {
+                int[] temp = new int[carets.length + 10];
+                System.arraycopy(carets, 0, temp, 0, count);
+                carets = temp;
+            }
+        } while (logIndex < secondEndpoint);
+    } else {
+        count = 2;
+        carets[0] = carets[1] = hitToCaret(TextHitInfo.leading(firstEndpoint));
+    }
+    // now create paths for pairs of carets
+    for (int i = 0; i < count; i += 2) {
+        result.append(caretBoundingShape(carets[i], carets[i + 1], bounds), false);
+    }
+    if (firstEndpoint != secondEndpoint) {
+        if ((textLine.isDirectionLTR() && firstEndpoint == 0) || (!textLine.isDirectionLTR() && secondEndpoint == characterCount)) {
+            GeneralPath ls = leftShape(bounds);
+            if (!ls.getBounds().isEmpty()) {
+                result.append(ls, false);
+            }
+        }
+        if ((textLine.isDirectionLTR() && secondEndpoint == characterCount) || (!textLine.isDirectionLTR() && firstEndpoint == 0)) {
+            GeneralPath rs = rightShape(bounds);
+            if (!rs.getBounds().isEmpty()) {
+                result.append(rs, false);
+            }
+        }
+    }
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    if (lp != null) {
+        // dlf cast safe?
+        result = (GeneralPath) lp.mapShape(result);
+    }
+    return result;
+}

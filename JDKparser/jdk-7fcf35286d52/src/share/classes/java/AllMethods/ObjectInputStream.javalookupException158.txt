@@ -1,0 +1,8 @@
+/**
+ * Looks up and returns ClassNotFoundException associated with the
+ * given handle.  Returns null if the given handle is NULL_HANDLE, or
+ * if there is no ClassNotFoundException associated with the handle.
+ */
+ClassNotFoundException lookupException(int handle) {
+    return (handle != NULL_HANDLE && status[handle] == STATUS_EXCEPTION) ? (ClassNotFoundException) entries[handle] : null;
+}

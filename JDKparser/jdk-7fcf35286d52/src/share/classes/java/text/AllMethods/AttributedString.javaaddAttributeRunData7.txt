@@ -1,0 +1,30 @@
+// add the attribute attribute/value to all runs where beginRunIndex <= runIndex < endRunIndex
+private void addAttributeRunData(Attribute attribute, Object value, int beginRunIndex, int endRunIndex) {
+    for (int i = beginRunIndex; i < endRunIndex; i++) {
+        // index of key and value in our vectors; assume we don't have an entry yet
+        int keyValueIndex = -1;
+        if (runAttributes[i] == null) {
+            Vector<Attribute> newRunAttributes = new Vector<>();
+            Vector<Object> newRunAttributeValues = new Vector<>();
+            runAttributes[i] = newRunAttributes;
+            runAttributeValues[i] = newRunAttributeValues;
+        } else {
+            // check whether we have an entry already
+            keyValueIndex = runAttributes[i].indexOf(attribute);
+        }
+        if (keyValueIndex == -1) {
+            // create new entry
+            int oldSize = runAttributes[i].size();
+            runAttributes[i].addElement(attribute);
+            try {
+                runAttributeValues[i].addElement(value);
+            } catch (Exception e) {
+                runAttributes[i].setSize(oldSize);
+                runAttributeValues[i].setSize(oldSize);
+            }
+        } else {
+            // update existing entry
+            runAttributeValues[i].set(keyValueIndex, value);
+        }
+    }
+}

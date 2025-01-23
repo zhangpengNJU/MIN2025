@@ -1,0 +1,11 @@
+void releaseRef(boolean delegated) {
+    if (delegated) {
+        if (--delegateRefs == 0) {
+            delegateProvider = null;
+        }
+    } else {
+        if (--serviceRefs <= 0) {
+            serviceProvider = null;
+        }
+    }
+}

@@ -1,0 +1,29 @@
+private void pumpApprovedKeyEvents() {
+    KeyEvent ke;
+    do {
+        ke = null;
+        synchronized (this) {
+            if (enqueuedKeyEvents.size() != 0) {
+                ke = enqueuedKeyEvents.getFirst();
+                if (typeAheadMarkers.size() != 0) {
+                    TypeAheadMarker marker = typeAheadMarkers.getFirst();
+                    // Fixed 5064013: may appears that the events have the same time
+                    // if (ke.getWhen() >= marker.after) {
+                    // The fix is rolled out.
+                    if (ke.getWhen() > marker.after) {
+                        ke = null;
+                    }
+                }
+                if (ke != null) {
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+                        focusLog.finer("Pumping approved event {0}", ke);
+                    }
+                    enqueuedKeyEvents.removeFirst();
+                }
+            }
+        }
+        if (ke != null) {
+            preDispatchKeyEvent(ke);
+        }
+    } while (ke != null);
+}

@@ -1,0 +1,17 @@
+// --------------------------JDBC 2.0-----------------------------------
+/**
+ * <p>Returns the fully-qualified name of the Java class whose instances
+ * are manufactured if the method <code>ResultSet.getObject</code>
+ * is called to retrieve a value
+ * from the column.  <code>ResultSet.getObject</code> may return a subclass of the
+ * class returned by this method.
+ *
+ * @param column the first column is 1, the second is 2, ...
+ * @return the fully-qualified name of the class in the Java programming
+ *         language that would be used by the method
+ * <code>ResultSet.getObject</code> to retrieve the value in the specified
+ * column. This is the class name used for custom mapping.
+ * @exception SQLException if a database access error occurs
+ * @since 1.2
+ */
+String getColumnClassName(int column) throws SQLException;

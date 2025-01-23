@@ -1,0 +1,10 @@
+/*non-public*/
+MethodHandle setVarargs(MemberName member) throws IllegalAccessException {
+    if (!member.isVarargs())
+        return this;
+    Class<?> arrayType = type().lastParameterType();
+    if (arrayType.isArray()) {
+        return MethodHandleImpl.makeVarargsCollector(this, arrayType);
+    }
+    throw member.makeAccessException("cannot make variable arity", null);
+}

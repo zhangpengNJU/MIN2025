@@ -1,0 +1,31 @@
+/*
+     * Checks if the focus window event follows key events waiting in the type-ahead
+     * queue (if any). This may happen when a user types ahead in the window, the client
+     * listeners hang EDT for a while, and the user switches b/w toplevels. In that
+     * case the focus window events may be dispatched before the type-ahead events
+     * get handled. This may lead to wrong focus behavior and in order to avoid it,
+     * the focus window events are reposted to the end of the event queue. See 6981400.
+     */
+private boolean repostIfFollowsKeyEvents(WindowEvent e) {
+    if (!(e instanceof TimedWindowEvent)) {
+        return false;
+    }
+    TimedWindowEvent we = (TimedWindowEvent) e;
+    long time = we.getWhen();
+    synchronized (this) {
+        KeyEvent ke = enqueuedKeyEvents.isEmpty() ? null : enqueuedKeyEvents.getFirst();
+        if (ke != null && time >= ke.getWhen()) {
+            TypeAheadMarker marker = typeAheadMarkers.isEmpty() ? null : typeAheadMarkers.getFirst();
+            if (marker != null) {
+                Window toplevel = marker.untilFocused.getContainingWindow();
+                // Check that the component awaiting focus belongs to
+                // the current focused window. See 8015454.
+                if (toplevel != null && toplevel.isFocused()) {
+                    SunToolkit.postEvent(AppContext.getAppContext(), new SequencedEvent(e));
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

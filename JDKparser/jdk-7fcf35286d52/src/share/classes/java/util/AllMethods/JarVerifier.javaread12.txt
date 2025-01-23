@@ -1,0 +1,15 @@
+public int read(byte[] b, int off, int len) throws IOException {
+    if ((numLeft > 0) && (numLeft < len)) {
+        len = (int) numLeft;
+    }
+    if (numLeft > 0) {
+        int n = is.read(b, off, len);
+        jv.update(n, b, off, len, mev);
+        numLeft -= n;
+        if (numLeft == 0)
+            jv.update(-1, b, off, len, mev);
+        return n;
+    } else {
+        return -1;
+    }
+}

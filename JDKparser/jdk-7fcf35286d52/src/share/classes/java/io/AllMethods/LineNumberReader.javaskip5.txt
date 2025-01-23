@@ -1,0 +1,31 @@
+/**
+ * Skip characters.
+ *
+ * @param  n
+ *         The number of characters to skip
+ *
+ * @return  The number of characters actually skipped
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ *
+ * @throws  IllegalArgumentException
+ *          If <tt>n</tt> is negative
+ */
+public long skip(long n) throws IOException {
+    if (n < 0)
+        throw new IllegalArgumentException("skip() value is negative");
+    int nn = (int) Math.min(n, maxSkipBufferSize);
+    synchronized (lock) {
+        if ((skipBuffer == null) || (skipBuffer.length < nn))
+            skipBuffer = new char[nn];
+        long r = n;
+        while (r > 0) {
+            int nc = read(skipBuffer, 0, (int) Math.min(r, nn));
+            if (nc == -1)
+                break;
+            r -= nc;
+        }
+        return n - r;
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Compares this {@code OffsetDateTime} to another date-time.
+ * The comparison is based on the instant.
+ *
+ * @param datetime1  the first date-time to compare, not null
+ * @param datetime2  the other date-time to compare to, not null
+ * @return the comparator value, negative if less, positive if greater
+ */
+private static int compareInstant(OffsetDateTime datetime1, OffsetDateTime datetime2) {
+    if (datetime1.getOffset().equals(datetime2.getOffset())) {
+        return datetime1.toLocalDateTime().compareTo(datetime2.toLocalDateTime());
+    }
+    int cmp = Long.compare(datetime1.toEpochSecond(), datetime2.toEpochSecond());
+    if (cmp == 0) {
+        cmp = datetime1.toLocalTime().getNano() - datetime2.toLocalTime().getNano();
+    }
+    return cmp;
+}

@@ -1,0 +1,7 @@
+@Override
+public synchronized void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+    PropertyChangeSupport pcs = (PropertyChangeSupport) AppContext.getAppContext().get(PROP_CHANGE_SUPPORT_KEY);
+    if (null != pcs) {
+        pcs.removePropertyChangeListener(propertyName, listener);
+    }
+}

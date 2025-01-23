@@ -1,0 +1,6 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> action) {
+    Objects.requireNonNull(action);
+    action.accept(s.get());
+    return true;
+}

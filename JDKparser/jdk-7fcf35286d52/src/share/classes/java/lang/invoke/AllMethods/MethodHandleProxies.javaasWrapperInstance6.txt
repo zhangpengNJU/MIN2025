@@ -1,0 +1,8 @@
+private static WrapperInstance asWrapperInstance(Object x) {
+    try {
+        if (x != null)
+            return (WrapperInstance) x;
+    } catch (ClassCastException ex) {
+    }
+    throw newIllegalArgumentException("not a wrapper instance");
+}

@@ -1,0 +1,14 @@
+/**
+ * Retrieves the fully-qualified name of the Java class whose instances
+ * should be passed to the method <code>PreparedStatement.setObject</code>.
+ *
+ * @param param the first parameter is 1, the second is 2, ...
+ * @return the fully-qualified name of the class in the Java programming
+ *         language that would be used by the method
+ *         <code>PreparedStatement.setObject</code> to set the value
+ *         in the specified parameter. This is the class name used
+ *         for custom mapping.
+ * @exception SQLException if a database access error occurs
+ * @since 1.4
+ */
+String getParameterClassName(int param) throws SQLException;

@@ -1,0 +1,20 @@
+/**
+ * Registers the given channel with this selector.
+ *
+ * <p> This method is invoked by a channel's {@link
+ * AbstractSelectableChannel#register register} method in order to perform
+ * the actual work of registering the channel with this selector.  </p>
+ *
+ * @param  ch
+ *         The channel to be registered
+ *
+ * @param  ops
+ *         The initial interest set, which must be valid
+ *
+ * @param  att
+ *         The initial attachment for the resulting key
+ *
+ * @return  A new key representing the registration of the given channel
+ *          with this selector
+ */
+protected abstract SelectionKey register(AbstractSelectableChannel ch, int ops, Object att);

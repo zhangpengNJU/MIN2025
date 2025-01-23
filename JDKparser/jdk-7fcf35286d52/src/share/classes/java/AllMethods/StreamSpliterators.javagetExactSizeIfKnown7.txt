@@ -1,0 +1,5 @@
+@Override
+public final long getExactSizeIfKnown() {
+    init();
+    return StreamOpFlag.SIZED.isKnown(ph.getStreamAndOpFlags()) ? spliterator.getExactSizeIfKnown() : -1;
+}

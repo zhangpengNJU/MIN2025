@@ -1,0 +1,9 @@
+public E pollLast() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return unlinkLast();
+    } finally {
+        lock.unlock();
+    }
+}

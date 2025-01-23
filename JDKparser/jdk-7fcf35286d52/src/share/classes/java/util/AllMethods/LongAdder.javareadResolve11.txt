@@ -1,0 +1,12 @@
+/**
+ * Return a {@code LongAdder} object with initial state
+ * held by this proxy.
+ *
+ * @return a {@code LongAdder} object with initial state
+ * held by this proxy.
+ */
+private Object readResolve() {
+    LongAdder a = new LongAdder();
+    a.base = value;
+    return a;
+}

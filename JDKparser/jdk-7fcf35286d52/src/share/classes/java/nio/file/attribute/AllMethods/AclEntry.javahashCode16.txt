@@ -1,0 +1,18 @@
+/**
+ * Returns the hash-code value for this ACL entry.
+ *
+ * <p> This method satisfies the general contract of the {@link
+ * Object#hashCode} method.
+ */
+@Override
+public int hashCode() {
+    // return cached hash if available
+    if (hash != 0)
+        return hash;
+    int h = type.hashCode();
+    h = hash(h, who);
+    h = hash(h, perms);
+    h = hash(h, flags);
+    hash = h;
+    return hash;
+}

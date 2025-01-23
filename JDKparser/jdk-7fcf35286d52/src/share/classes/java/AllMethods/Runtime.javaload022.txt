@@ -1,0 +1,10 @@
+synchronized void load0(Class<?> fromClass, String filename) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkLink(filename);
+    }
+    if (!(new File(filename).isAbsolute())) {
+        throw new UnsatisfiedLinkError("Expecting an absolute path of the library: " + filename);
+    }
+    ClassLoader.loadLibrary(fromClass, filename, true);
+}

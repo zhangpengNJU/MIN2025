@@ -1,0 +1,14 @@
+/**
+ * Returns the descent of this <code>TextLayout</code>.
+ * The descent is the distance from the baseline to the bottom (left) of
+ * the <code>TextLayout</code>.  It is always either positive or zero.
+ * The descent is sufficient to accommodate subscripted text and is the
+ * maximum of the sum of the descent, offset, and baseline of each glyph.
+ * This is the maximum descent from the baseline of all the text in
+ * the TextLayout.  It is in baseline-relative coordinates.
+ * @return the descent of this <code>TextLayout</code>.
+ */
+public float getDescent() {
+    ensureCache();
+    return lineMetrics.descent;
+}

@@ -1,0 +1,20 @@
+/**
+ * Return a new week-based-year date of the Chronology, year, week-of-year,
+ * and dow of week.
+ * @param chrono The chronology of the new date
+ * @param yowby the year of the week-based-year
+ * @param wowby the week of the week-based-year
+ * @param dow the day of the week
+ * @return a ChronoLocalDate for the requested year, week of year, and day of week
+ */
+private ChronoLocalDate ofWeekBasedYear(Chronology chrono, int yowby, int wowby, int dow) {
+    ChronoLocalDate date = chrono.date(yowby, 1, 1);
+    int ldow = localizedDayOfWeek(date);
+    int offset = startOfWeekOffset(1, ldow);
+    // Clamp the week of year to keep it in the same year
+    int yearLen = date.lengthOfYear();
+    int newYearWeek = computeWeek(offset, yearLen + weekDef.getMinimalDaysInFirstWeek());
+    wowby = Math.min(wowby, newYearWeek - 1);
+    int days = -offset + (dow - 1) + (wowby - 1) * 7;
+    return date.plus(days, DAYS);
+}

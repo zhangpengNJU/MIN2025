@@ -1,0 +1,13 @@
+@Override
+public boolean tryAdvance(Consumer<? super T> consumer) {
+    boolean hasNext;
+    if (beforeSplit) {
+        hasNext = aSpliterator.tryAdvance(consumer);
+        if (!hasNext) {
+            beforeSplit = false;
+            hasNext = bSpliterator.tryAdvance(consumer);
+        }
+    } else
+        hasNext = bSpliterator.tryAdvance(consumer);
+    return hasNext;
+}

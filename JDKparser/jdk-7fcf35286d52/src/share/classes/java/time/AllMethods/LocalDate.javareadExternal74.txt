@@ -1,0 +1,6 @@
+static LocalDate readExternal(DataInput in) throws IOException {
+    int year = in.readInt();
+    int month = in.readByte();
+    int dayOfMonth = in.readByte();
+    return LocalDate.of(year, month, dayOfMonth);
+}

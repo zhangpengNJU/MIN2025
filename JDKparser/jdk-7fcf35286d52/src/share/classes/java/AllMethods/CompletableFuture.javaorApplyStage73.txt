@@ -1,0 +1,12 @@
+private <U extends T, V> CompletableFuture<V> orApplyStage(Executor e, CompletionStage<U> o, Function<? super T, ? extends V> f) {
+    CompletableFuture<U> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<V> d = new CompletableFuture<V>();
+    if (e != null || !d.orApply(this, b, f, null)) {
+        OrApply<T, U, V> c = new OrApply<T, U, V>(e, d, this, b, f);
+        orpush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

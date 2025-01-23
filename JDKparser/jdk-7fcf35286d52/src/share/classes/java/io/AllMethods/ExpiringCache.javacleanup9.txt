@@ -1,0 +1,13 @@
+private void cleanup() {
+    Set<String> keySet = map.keySet();
+    // Avoid ConcurrentModificationExceptions
+    String[] keys = new String[keySet.size()];
+    int i = 0;
+    for (String key : keySet) {
+        keys[i++] = key;
+    }
+    for (int j = 0; j < keys.length; j++) {
+        entryFor(keys[j]);
+    }
+    queryCount = 0;
+}

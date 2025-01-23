@@ -1,0 +1,13 @@
+/**
+ * Returns whether a network interface is a point to point interface.
+ * A typical point to point interface would be a PPP connection through
+ * a modem.
+ *
+ * @return  {@code true} if the interface is a point to point
+ *          interface.
+ * @exception       SocketException if an I/O error occurs.
+ * @since 1.6
+ */
+public boolean isPointToPoint() throws SocketException {
+    return isP2P0(name, index);
+}

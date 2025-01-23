@@ -1,0 +1,19 @@
+// Utility methods.
+// NOTE: class/name/type and reference kind constitute a symbolic reference
+// member and modifiers are an add-on, derived from Core Reflection (or the equivalent)
+/**
+ * Reflects the underlying member as a method, constructor, or field object.
+ * If the underlying member is public, it is reflected as if by
+ * {@code getMethod}, {@code getConstructor}, or {@code getField}.
+ * Otherwise, it is reflected as if by
+ * {@code getDeclaredMethod}, {@code getDeclaredConstructor}, or {@code getDeclaredField}.
+ * The underlying member must be accessible to the given lookup object.
+ * @param <T> the desired type of the result, either {@link Member} or a subtype
+ * @param expected a class object representing the desired result type {@code T}
+ * @param lookup the lookup object that created this MethodHandleInfo, or one with equivalent access privileges
+ * @return a reference to the method, constructor, or field object
+ * @exception ClassCastException if the member is not of the expected type
+ * @exception NullPointerException if either argument is {@code null}
+ * @exception IllegalArgumentException if the underlying member is not accessible to the given lookup object
+ */
+public <T extends Member> T reflectAs(Class<T> expected, Lookup lookup);

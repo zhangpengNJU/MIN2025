@@ -1,0 +1,50 @@
+/**
+ * This is a convenience method to aid in the implementation of
+ * the common-case MouseWheelListener - to scroll a ScrollPane or
+ * JScrollPane by an amount which conforms to the platform settings.
+ * (Note, however, that <code>ScrollPane</code> and
+ * <code>JScrollPane</code> already have this functionality built in.)
+ * <P>
+ * This method returns the number of units to scroll when scroll type is
+ * MouseWheelEvent.WHEEL_UNIT_SCROLL, and should only be called if
+ * <code>getScrollType</code> returns MouseWheelEvent.WHEEL_UNIT_SCROLL.
+ * <P>
+ * Direction of scroll, amount of wheel movement,
+ * and platform settings for wheel scrolling are all accounted for.
+ * This method does not and cannot take into account value of the
+ * Adjustable/Scrollable unit increment, as this will vary among
+ * scrolling components.
+ * <P>
+ * A simplified example of how this method might be used in a
+ * listener:
+ * <pre>
+ *  mouseWheelMoved(MouseWheelEvent event) {
+ *      ScrollPane sp = getScrollPaneFromSomewhere();
+ *      Adjustable adj = sp.getVAdjustable()
+ *      if (MouseWheelEvent.getScrollType() == WHEEL_UNIT_SCROLL) {
+ *          int totalScrollAmount =
+ *              event.getUnitsToScroll() *
+ *              adj.getUnitIncrement();
+ *          adj.setValue(adj.getValue() + totalScrollAmount);
+ *      }
+ *  }
+ * </pre>
+ *
+ * @return the number of units to scroll based on the direction and amount
+ *  of mouse wheel rotation, and on the wheel scrolling settings of the
+ *  native platform
+ * @see #getScrollType
+ * @see #getScrollAmount
+ * @see MouseWheelListener
+ * @see java.awt.Adjustable
+ * @see java.awt.Adjustable#getUnitIncrement
+ * @see javax.swing.Scrollable
+ * @see javax.swing.Scrollable#getScrollableUnitIncrement
+ * @see java.awt.ScrollPane
+ * @see java.awt.ScrollPane#setWheelScrollingEnabled
+ * @see javax.swing.JScrollPane
+ * @see javax.swing.JScrollPane#setWheelScrollingEnabled
+ */
+public int getUnitsToScroll() {
+    return scrollAmount * wheelRotation;
+}

@@ -1,0 +1,92 @@
+/**
+ * Returns a name for the locale that is appropriate for display
+ * to the user.  This will be the values returned by
+ * getDisplayLanguage(), getDisplayScript(),getDisplayCountry(),
+ * and getDisplayVariant() assembled into a single string.
+ * The non-empty values are used in order,
+ * with the second and subsequent names in parentheses.  For example:
+ * <blockquote>
+ * language (script, country, variant)<br>
+ * language (country)<br>
+ * language (variant)<br>
+ * script (country)<br>
+ * country<br>
+ * </blockquote>
+ * depending on which fields are specified in the locale.  If the
+ * language, script, country, and variant fields are all empty,
+ * this function returns the empty string.
+ *
+ * @param inLocale The locale for which to retrieve the display name.
+ * @return The name of the locale appropriate to display.
+ * @throws NullPointerException if <code>inLocale</code> is <code>null</code>
+ */
+public String getDisplayName(Locale inLocale) {
+    LocaleResources lr = LocaleProviderAdapter.forJRE().getLocaleResources(inLocale);
+    String languageName = getDisplayLanguage(inLocale);
+    String scriptName = getDisplayScript(inLocale);
+    String countryName = getDisplayCountry(inLocale);
+    String[] variantNames = getDisplayVariantArray(inLocale);
+    // Get the localized patterns for formatting a display name.
+    String displayNamePattern = lr.getLocaleName("DisplayNamePattern");
+    String listPattern = lr.getLocaleName("ListPattern");
+    String listCompositionPattern = lr.getLocaleName("ListCompositionPattern");
+    // The display name consists of a main name, followed by qualifiers.
+    // Typically, the format is "MainName (Qualifier, Qualifier)" but this
+    // depends on what pattern is stored in the display locale.
+    String mainName = null;
+    String[] qualifierNames = null;
+    // The main name is the language, or if there is no language, the script,
+    // then if no script, the country. If there is no language/script/country
+    // (an anomalous situation) then the display name is simply the variant's
+    // display name.
+    if (languageName.length() == 0 && scriptName.length() == 0 && countryName.length() == 0) {
+        if (variantNames.length == 0) {
+            return "";
+        } else {
+            return formatList(variantNames, listPattern, listCompositionPattern);
+        }
+    }
+    ArrayList<String> names = new ArrayList<>(4);
+    if (languageName.length() != 0) {
+        names.add(languageName);
+    }
+    if (scriptName.length() != 0) {
+        names.add(scriptName);
+    }
+    if (countryName.length() != 0) {
+        names.add(countryName);
+    }
+    if (variantNames.length != 0) {
+        names.addAll(Arrays.asList(variantNames));
+    }
+    // The first one in the main name
+    mainName = names.get(0);
+    // Others are qualifiers
+    int numNames = names.size();
+    qualifierNames = (numNames > 1) ? names.subList(1, numNames).toArray(new String[numNames - 1]) : new String[0];
+    // Create an array whose first element is the number of remaining
+    // elements.  This serves as a selector into a ChoiceFormat pattern from
+    // the resource.  The second and third elements are the main name and
+    // the qualifier; if there are no qualifiers, the third element is
+    // unused by the format pattern.
+    Object[] displayNames = { new Integer(qualifierNames.length != 0 ? 2 : 1), mainName, // We could also just call formatList() and have it handle the empty
+    // list case, but this is more efficient, and we want it to be
+    // efficient since all the language-only locales will not have any
+    // qualifiers.
+    qualifierNames.length != 0 ? formatList(qualifierNames, listPattern, listCompositionPattern) : null };
+    if (displayNamePattern != null) {
+        return new MessageFormat(displayNamePattern).format(displayNames);
+    } else {
+        // If we cannot get the message format pattern, then we use a simple
+        // hard-coded pattern.  This should not occur in practice unless the
+        // installation is missing some core files (FormatData etc.).
+        StringBuilder result = new StringBuilder();
+        result.append((String) displayNames[1]);
+        if (displayNames.length > 2) {
+            result.append(" (");
+            result.append((String) displayNames[2]);
+            result.append(')');
+        }
+        return result.toString();
+    }
+}

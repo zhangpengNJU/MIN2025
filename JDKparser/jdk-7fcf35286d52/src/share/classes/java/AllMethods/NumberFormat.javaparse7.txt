@@ -1,0 +1,16 @@
+/**
+ * Returns a Long if possible (e.g., within the range [Long.MIN_VALUE,
+ * Long.MAX_VALUE] and with no decimals), otherwise a Double.
+ * If IntegerOnly is set, will stop at a decimal
+ * point (or equivalent; e.g., for rational numbers "1 2/3", will stop
+ * after the 1).
+ * Does not throw an exception; if no object can be parsed, index is
+ * unchanged!
+ *
+ * @param source the String to parse
+ * @param parsePosition the parse position
+ * @return the parsed value
+ * @see java.text.NumberFormat#isParseIntegerOnly
+ * @see java.text.Format#parseObject
+ */
+public abstract Number parse(String source, ParsePosition parsePosition);

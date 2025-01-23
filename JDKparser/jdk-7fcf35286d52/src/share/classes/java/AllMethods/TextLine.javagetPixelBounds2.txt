@@ -1,0 +1,61 @@
+public Rectangle getPixelBounds(FontRenderContext frc, float x, float y) {
+    Rectangle result = null;
+    // if we have a matching frc, set it to null so we don't have to test it
+    // for each component
+    if (frc != null && frc.equals(this.frc)) {
+        frc = null;
+    }
+    // only cache integral locations with the default frc, this is a bit strict
+    int ix = (int) Math.floor(x);
+    int iy = (int) Math.floor(y);
+    float rx = x - ix;
+    float ry = y - iy;
+    boolean canCache = frc == null && rx == 0 && ry == 0;
+    if (canCache && pixelBounds != null) {
+        result = new Rectangle(pixelBounds);
+        result.x += ix;
+        result.y += iy;
+        return result;
+    }
+    // couldn't use cache, or didn't have it, so compute
+    if (isSimple) {
+        // all glyphvectors with no decorations, no layout path
+        for (int i = 0, n = 0; i < fComponents.length; i++, n += 2) {
+            TextLineComponent tlc = fComponents[getComponentLogicalIndex(i)];
+            Rectangle pb = tlc.getPixelBounds(frc, locs[n] + rx, locs[n + 1] + ry);
+            if (!pb.isEmpty()) {
+                if (result == null) {
+                    result = pb;
+                } else {
+                    result.add(pb);
+                }
+            }
+        }
+        if (result == null) {
+            result = new Rectangle(0, 0, 0, 0);
+        }
+    } else {
+        // draw and test
+        final int MARGIN = 3;
+        Rectangle2D r2d = getVisualBounds();
+        if (lp != null) {
+            r2d = lp.mapShape(r2d).getBounds();
+        }
+        Rectangle bounds = r2d.getBounds();
+        BufferedImage im = new BufferedImage(bounds.width + MARGIN * 2, bounds.height + MARGIN * 2, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = im.createGraphics();
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, im.getWidth(), im.getHeight());
+        g2d.setColor(Color.BLACK);
+        draw(g2d, rx + MARGIN - bounds.x, ry + MARGIN - bounds.y);
+        result = computePixelBounds(im);
+        result.x -= MARGIN - bounds.x;
+        result.y -= MARGIN - bounds.y;
+    }
+    if (canCache) {
+        pixelBounds = new Rectangle(result);
+    }
+    result.x += ix;
+    result.y += iy;
+    return result;
+}

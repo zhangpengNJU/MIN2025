@@ -1,0 +1,22 @@
+/**
+ * Requests, on behalf of the <code>ImageConsumer</code>,
+ * that the <code>ImageProducer</code> attempt to resend
+ * the image data one more time in TOPDOWNLEFTRIGHT order
+ * so that higher quality conversion algorithms which
+ * depend on receiving pixels in order can be used to
+ * produce a better output version of the image.  The
+ * <code>ImageProducer</code> is free to
+ * ignore this call if it cannot resend the data in that
+ * order.  If the data can be resent, the
+ * <code>ImageProducer</code> should respond by executing
+ * the following minimum set of <code>ImageConsumer</code>
+ * method calls:
+ * <pre>{@code
+ *  ic.setHints(TOPDOWNLEFTRIGHT | < otherhints >);
+ *  ic.setPixels(...);      // As many times as needed
+ *  ic.imageComplete();
+ * }</pre>
+ * @param ic the specified <code>ImageConsumer</code>
+ * @see ImageConsumer#setHints
+ */
+public void requestTopDownLeftRightResend(ImageConsumer ic);

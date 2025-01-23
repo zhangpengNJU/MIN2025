@@ -1,0 +1,18 @@
+/**
+ * Returns the current x,y position within the child which is displayed
+ * at the 0,0 location of the scrolled panel's view port.
+ * This is a convenience method which interfaces with the adjustable
+ * objects which represent the state of the scrollbars.
+ * @return the coordinate position for the current scroll position
+ * @throws NullPointerException if the scrollpane does not contain
+ *     a child
+ */
+@Transient
+public Point getScrollPosition() {
+    synchronized (getTreeLock()) {
+        if (getComponentCount() == 0) {
+            throw new NullPointerException("child is null");
+        }
+        return new Point(hAdjustable.getValue(), vAdjustable.getValue());
+    }
+}

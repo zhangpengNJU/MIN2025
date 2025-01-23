@@ -1,0 +1,138 @@
+/**
+ *  Returns the <code>Font</code> that the <code>str</code>
+ *  argument describes.
+ *  To ensure that this method returns the desired Font,
+ *  format the <code>str</code> parameter in
+ *  one of these ways
+ *
+ *  <ul>
+ *  <li><em>fontname-style-pointsize</em>
+ *  <li><em>fontname-pointsize</em>
+ *  <li><em>fontname-style</em>
+ *  <li><em>fontname</em>
+ *  <li><em>fontname style pointsize</em>
+ *  <li><em>fontname pointsize</em>
+ *  <li><em>fontname style</em>
+ *  <li><em>fontname</em>
+ *  </ul>
+ *  in which <i>style</i> is one of the four
+ *  case-insensitive strings:
+ *  <code>"PLAIN"</code>, <code>"BOLD"</code>, <code>"BOLDITALIC"</code>, or
+ *  <code>"ITALIC"</code>, and pointsize is a positive decimal integer
+ *  representation of the point size.
+ *  For example, if you want a font that is Arial, bold, with
+ *  a point size of 18, you would call this method with:
+ *  "Arial-BOLD-18".
+ *  This is equivalent to calling the Font constructor :
+ *  <code>new Font("Arial", Font.BOLD, 18);</code>
+ *  and the values are interpreted as specified by that constructor.
+ *  <p>
+ *  A valid trailing decimal field is always interpreted as the pointsize.
+ *  Therefore a fontname containing a trailing decimal value should not
+ *  be used in the fontname only form.
+ *  <p>
+ *  If a style name field is not one of the valid style strings, it is
+ *  interpreted as part of the font name, and the default style is used.
+ *  <p>
+ *  Only one of ' ' or '-' may be used to separate fields in the input.
+ *  The identified separator is the one closest to the end of the string
+ *  which separates a valid pointsize, or a valid style name from
+ *  the rest of the string.
+ *  Null (empty) pointsize and style fields are treated
+ *  as valid fields with the default value for that field.
+ * <p>
+ *  Some font names may include the separator characters ' ' or '-'.
+ *  If <code>str</code> is not formed with 3 components, e.g. such that
+ *  <code>style</code> or <code>pointsize</code> fields are not present in
+ *  <code>str</code>, and <code>fontname</code> also contains a
+ *  character determined to be the separator character
+ *  then these characters where they appear as intended to be part of
+ *  <code>fontname</code> may instead be interpreted as separators
+ *  so the font name may not be properly recognised.
+ *
+ *  <p>
+ *  The default size is 12 and the default style is PLAIN.
+ *  If <code>str</code> does not specify a valid size, the returned
+ *  <code>Font</code> has a size of 12.  If <code>str</code> does not
+ *  specify a valid style, the returned Font has a style of PLAIN.
+ *  If you do not specify a valid font name in
+ *  the <code>str</code> argument, this method will return
+ *  a font with the family name "Dialog".
+ *  To determine what font family names are available on
+ *  your system, use the
+ *  {@link GraphicsEnvironment#getAvailableFontFamilyNames()} method.
+ *  If <code>str</code> is <code>null</code>, a new <code>Font</code>
+ *  is returned with the family name "Dialog", a size of 12 and a
+ *  PLAIN style.
+ *  @param str the name of the font, or <code>null</code>
+ *  @return the <code>Font</code> object that <code>str</code>
+ *           describes, or a new default <code>Font</code> if
+ *           <code>str</code> is <code>null</code>.
+ *  @see #getFamily
+ *  @since JDK1.1
+ */
+public static Font decode(String str) {
+    String fontName = str;
+    String styleName = "";
+    int fontSize = 12;
+    int fontStyle = Font.PLAIN;
+    if (str == null) {
+        return new Font(DIALOG, fontStyle, fontSize);
+    }
+    int lastHyphen = str.lastIndexOf('-');
+    int lastSpace = str.lastIndexOf(' ');
+    char sepChar = (lastHyphen > lastSpace) ? '-' : ' ';
+    int sizeIndex = str.lastIndexOf(sepChar);
+    int styleIndex = str.lastIndexOf(sepChar, sizeIndex - 1);
+    int strlen = str.length();
+    if (sizeIndex > 0 && sizeIndex + 1 < strlen) {
+        try {
+            fontSize = Integer.valueOf(str.substring(sizeIndex + 1)).intValue();
+            if (fontSize <= 0) {
+                fontSize = 12;
+            }
+        } catch (NumberFormatException e) {
+            /* It wasn't a valid size, if we didn't also find the
+                 * start of the style string perhaps this is the style */
+            styleIndex = sizeIndex;
+            sizeIndex = strlen;
+            if (str.charAt(sizeIndex - 1) == sepChar) {
+                sizeIndex--;
+            }
+        }
+    }
+    if (styleIndex >= 0 && styleIndex + 1 < strlen) {
+        styleName = str.substring(styleIndex + 1, sizeIndex);
+        styleName = styleName.toLowerCase(Locale.ENGLISH);
+        if (styleName.equals("bolditalic")) {
+            fontStyle = Font.BOLD | Font.ITALIC;
+        } else if (styleName.equals("italic")) {
+            fontStyle = Font.ITALIC;
+        } else if (styleName.equals("bold")) {
+            fontStyle = Font.BOLD;
+        } else if (styleName.equals("plain")) {
+            fontStyle = Font.PLAIN;
+        } else {
+            /* this string isn't any of the expected styles, so
+                 * assume its part of the font name
+                 */
+            styleIndex = sizeIndex;
+            if (str.charAt(styleIndex - 1) == sepChar) {
+                styleIndex--;
+            }
+        }
+        fontName = str.substring(0, styleIndex);
+    } else {
+        int fontEnd = strlen;
+        if (styleIndex > 0) {
+            fontEnd = styleIndex;
+        } else if (sizeIndex > 0) {
+            fontEnd = sizeIndex;
+        }
+        if (fontEnd > 0 && str.charAt(fontEnd - 1) == sepChar) {
+            fontEnd--;
+        }
+        fontName = str.substring(0, fontEnd);
+    }
+    return new Font(fontName, fontStyle, fontSize);
+}

@@ -1,0 +1,7 @@
+private void setCursorImpl(Cursor c) {
+    if (cursor == null || !cursor.equals(c)) {
+        cursor = c;
+        if (peer != null)
+            peer.setCursor(cursor);
+    }
+}

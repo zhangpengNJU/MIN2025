@@ -1,0 +1,6 @@
+@Override
+public int hashCode() {
+    if (isParam())
+        return index | (type.ordinal() << 8);
+    return function.hashCode() ^ Arrays.hashCode(arguments);
+}

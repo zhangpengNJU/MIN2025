@@ -1,0 +1,14 @@
+/**
+ * Returns the {@link LineMetrics} object for the specified
+ * character array in the specified {@link Graphics} context.
+ * @param chars the specified character array
+ * @param beginIndex the initial offset of <code>chars</code>
+ * @param limit the end offset of <code>chars</code>
+ * @param context the specified <code>Graphics</code> context
+ * @return a <code>LineMetrics</code> object created with the
+ * specified character array and <code>Graphics</code> context.
+ * @see java.awt.Font#getLineMetrics(char[], int, int, FontRenderContext)
+ */
+public LineMetrics getLineMetrics(char[] chars, int beginIndex, int limit, Graphics context) {
+    return font.getLineMetrics(chars, beginIndex, limit, myFRC(context));
+}

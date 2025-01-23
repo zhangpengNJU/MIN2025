@@ -1,0 +1,7 @@
+private final BaseCalendar.Date getCalendarDate() {
+    if (cdate == null) {
+        BaseCalendar cal = getCalendarSystem(fastTime);
+        cdate = (BaseCalendar.Date) cal.getCalendarDate(fastTime, TimeZone.getDefaultRef());
+    }
+    return cdate;
+}

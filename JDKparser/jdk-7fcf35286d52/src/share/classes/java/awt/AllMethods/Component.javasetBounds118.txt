@@ -1,0 +1,23 @@
+/**
+ * Moves and resizes this component to conform to the new
+ * bounding rectangle <code>r</code>. This component's new
+ * position is specified by <code>r.x</code> and <code>r.y</code>,
+ * and its new size is specified by <code>r.width</code> and
+ * <code>r.height</code>
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy.
+ *
+ * @param r the new bounding rectangle for this component
+ * @throws NullPointerException if {@code r} is {@code null}
+ * @see       #getBounds
+ * @see       #setLocation(int, int)
+ * @see       #setLocation(Point)
+ * @see       #setSize(int, int)
+ * @see       #setSize(Dimension)
+ * @see #invalidate
+ * @since     JDK1.1
+ */
+public void setBounds(Rectangle r) {
+    setBounds(r.x, r.y, r.width, r.height);
+}

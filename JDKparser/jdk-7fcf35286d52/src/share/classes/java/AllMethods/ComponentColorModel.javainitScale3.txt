@@ -1,0 +1,127 @@
+private void initScale() {
+    // This method is called the first time any method which uses
+    // pixel sample value to color component value scaling information
+    // is called if the transferType supports non-standard scaling
+    // as defined above (byte, ushort, int, and short), unless the
+    // method is getNormalizedComponents(Object, float[], int) (that
+    // method must be overridden to use non-standard scaling).  This
+    // method also sets up the noUnnorm boolean variable for these
+    // transferTypes.  After this method is called, the nonStdScale
+    // variable will be true if getNormalizedComponents() maps a
+    // sample value of 0 to anything other than 0.0f OR maps a
+    // sample value of 2^^n - 1 (2^^15 - 1 for short transferType)
+    // to anything other than 1.0f.  Note that this can be independent
+    // of the colorSpace min/max component values, if the
+    // getNormalizedComponents() method has been overridden for some
+    // reason, e.g. to provide greater dynamic range in the sample
+    // values than in the color component values.  Unfortunately,
+    // this method can't be called at construction time, since a
+    // subclass may still have uninitialized state that would cause
+    // getNormalizedComponents() to return an incorrect result.
+    // only needs to called once
+    needScaleInit = false;
+    if (nonStdScale || signed) {
+        // The unnormalized form is only supported for unsigned
+        // transferTypes and when the ColorSpace min/max values
+        // are 0.0/1.0.  When this method is called nonStdScale is
+        // true if the latter condition does not hold.  In addition,
+        // the unnormalized form requires that the full range of
+        // the pixel sample values map to the full 0.0 - 1.0 range
+        // of color component values.  That condition is checked
+        // later in this method.
+        noUnnorm = true;
+    } else {
+        noUnnorm = false;
+    }
+    float[] lowVal, highVal;
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            {
+                byte[] bpixel = new byte[numComponents];
+                for (int i = 0; i < numColorComponents; i++) {
+                    bpixel[i] = 0;
+                }
+                if (supportsAlpha) {
+                    bpixel[numColorComponents] = (byte) ((1 << nBits[numColorComponents]) - 1);
+                }
+                lowVal = getNormalizedComponents(bpixel, null, 0);
+                for (int i = 0; i < numColorComponents; i++) {
+                    bpixel[i] = (byte) ((1 << nBits[i]) - 1);
+                }
+                highVal = getNormalizedComponents(bpixel, null, 0);
+            }
+            break;
+        case DataBuffer.TYPE_USHORT:
+            {
+                short[] uspixel = new short[numComponents];
+                for (int i = 0; i < numColorComponents; i++) {
+                    uspixel[i] = 0;
+                }
+                if (supportsAlpha) {
+                    uspixel[numColorComponents] = (short) ((1 << nBits[numColorComponents]) - 1);
+                }
+                lowVal = getNormalizedComponents(uspixel, null, 0);
+                for (int i = 0; i < numColorComponents; i++) {
+                    uspixel[i] = (short) ((1 << nBits[i]) - 1);
+                }
+                highVal = getNormalizedComponents(uspixel, null, 0);
+            }
+            break;
+        case DataBuffer.TYPE_INT:
+            {
+                int[] ipixel = new int[numComponents];
+                for (int i = 0; i < numColorComponents; i++) {
+                    ipixel[i] = 0;
+                }
+                if (supportsAlpha) {
+                    ipixel[numColorComponents] = ((1 << nBits[numColorComponents]) - 1);
+                }
+                lowVal = getNormalizedComponents(ipixel, null, 0);
+                for (int i = 0; i < numColorComponents; i++) {
+                    ipixel[i] = ((1 << nBits[i]) - 1);
+                }
+                highVal = getNormalizedComponents(ipixel, null, 0);
+            }
+            break;
+        case DataBuffer.TYPE_SHORT:
+            {
+                short[] spixel = new short[numComponents];
+                for (int i = 0; i < numColorComponents; i++) {
+                    spixel[i] = 0;
+                }
+                if (supportsAlpha) {
+                    spixel[numColorComponents] = 32767;
+                }
+                lowVal = getNormalizedComponents(spixel, null, 0);
+                for (int i = 0; i < numColorComponents; i++) {
+                    spixel[i] = 32767;
+                }
+                highVal = getNormalizedComponents(spixel, null, 0);
+            }
+            break;
+        default:
+            // to keep the compiler from complaining
+            lowVal = highVal = null;
+            break;
+    }
+    nonStdScale = false;
+    for (int i = 0; i < numColorComponents; i++) {
+        if ((lowVal[i] != 0.0f) || (highVal[i] != 1.0f)) {
+            nonStdScale = true;
+            break;
+        }
+    }
+    if (nonStdScale) {
+        noUnnorm = true;
+        is_sRGB_stdScale = false;
+        is_LinearRGB_stdScale = false;
+        is_LinearGray_stdScale = false;
+        is_ICCGray_stdScale = false;
+        compOffset = new float[numColorComponents];
+        compScale = new float[numColorComponents];
+        for (int i = 0; i < numColorComponents; i++) {
+            compOffset[i] = lowVal[i];
+            compScale[i] = 1.0f / (highVal[i] - lowVal[i]);
+        }
+    }
+}

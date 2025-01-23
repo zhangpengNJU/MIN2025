@@ -1,0 +1,12 @@
+private static String[] getConstructorProperties(Class<?> type) {
+    String[] names = null;
+    int length = 0;
+    for (Constructor<?> constructor : type.getConstructors()) {
+        String[] value = getAnnotationValue(constructor);
+        if ((value != null) && (length < value.length) && isValid(constructor, value)) {
+            names = value;
+            length = value.length;
+        }
+    }
+    return names;
+}

@@ -1,0 +1,20 @@
+/**
+ * Returns a collection containing threads that may be waiting to
+ * acquire.  Because the actual set of threads may change
+ * dynamically while constructing this result, the returned
+ * collection is only a best-effort estimate.  The elements of the
+ * returned collection are in no particular order.  This method is
+ * designed to facilitate construction of subclasses that provide
+ * more extensive monitoring facilities.
+ *
+ * @return the collection of threads
+ */
+public final Collection<Thread> getQueuedThreads() {
+    ArrayList<Thread> list = new ArrayList<Thread>();
+    for (Node p = tail; p != null; p = p.prev) {
+        Thread t = p.thread;
+        if (t != null)
+            list.add(t);
+    }
+    return list;
+}

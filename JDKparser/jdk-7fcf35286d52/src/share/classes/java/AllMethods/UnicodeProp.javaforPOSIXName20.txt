@@ -1,0 +1,6 @@
+public static UnicodeProp forPOSIXName(String propName) {
+    propName = posix.get(propName.toUpperCase(Locale.ENGLISH));
+    if (propName == null)
+        return null;
+    return valueOf(propName);
+}

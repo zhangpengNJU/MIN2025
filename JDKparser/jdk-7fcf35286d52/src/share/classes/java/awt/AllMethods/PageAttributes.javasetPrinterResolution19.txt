@@ -1,0 +1,14 @@
+/**
+ * Specifies the desired cross feed and feed print resolutions in dots per
+ * inch for pages using these attributes. The same value is used for both
+ * resolutions. The actual resolutions will be determined by the
+ * limitations of the implementation and the target printer. Not
+ * specifying the property is equivalent to specifying <code>72</code>.
+ *
+ * @param   printerResolution an integer greater than 0.
+ * @throws  IllegalArgumentException if printerResolution is less than or
+ *          equal to 0.
+ */
+public void setPrinterResolution(int printerResolution) {
+    setPrinterResolution(new int[] { printerResolution, printerResolution, 3 });
+}

@@ -1,0 +1,22 @@
+/**
+ * Sets the selected item in this <code>Choice</code> menu
+ * to be the item whose name is equal to the specified string.
+ * If more than one item matches (is equal to) the specified string,
+ * the one with the smallest index is selected.
+ *
+ * <p>Note that this method should be primarily used to
+ * initially select an item in this component.
+ * Programmatically calling this method will <i>not</i> trigger
+ * an <code>ItemEvent</code>.  The only way to trigger an
+ * <code>ItemEvent</code> is by user interaction.
+ *
+ * @param       str     the specified string
+ * @see         #getSelectedItem
+ * @see         #getSelectedIndex
+ */
+public synchronized void select(String str) {
+    int index = pItems.indexOf(str);
+    if (index >= 0) {
+        select(index);
+    }
+}

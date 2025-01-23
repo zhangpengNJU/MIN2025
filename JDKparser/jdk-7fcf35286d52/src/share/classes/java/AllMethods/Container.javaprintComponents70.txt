@@ -1,0 +1,11 @@
+/**
+ * Prints each of the components in this container.
+ * @param     g   the graphics context.
+ * @see       Component#print
+ * @see       Component#printAll
+ */
+public void printComponents(Graphics g) {
+    if (isShowing()) {
+        GraphicsCallback.PrintAllCallback.getInstance().runComponents(getComponentsSync(), g, GraphicsCallback.TWO_PASSES);
+    }
+}

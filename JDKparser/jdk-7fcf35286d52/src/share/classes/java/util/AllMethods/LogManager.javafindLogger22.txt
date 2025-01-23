@@ -1,0 +1,16 @@
+synchronized Logger findLogger(String name) {
+    // ensure that this context is properly initialized before
+    // looking for loggers.
+    ensureInitialized();
+    LoggerWeakRef ref = namedLoggers.get(name);
+    if (ref == null) {
+        return null;
+    }
+    Logger logger = ref.get();
+    if (logger == null) {
+        // Hashtable holds stale weak reference
+        // to a logger which has been GC-ed.
+        ref.dispose();
+    }
+    return logger;
+}

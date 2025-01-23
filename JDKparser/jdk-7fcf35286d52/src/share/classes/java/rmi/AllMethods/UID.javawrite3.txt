@@ -1,0 +1,23 @@
+/**
+ * Marshals a binary representation of this <code>UID</code> to
+ * a <code>DataOutput</code> instance.
+ *
+ * <p>Specifically, this method first invokes the given stream's
+ * {@link DataOutput#writeInt(int)} method with this <code>UID</code>'s
+ * <code>unique</code> value, then it invokes the stream's
+ * {@link DataOutput#writeLong(long)} method with this <code>UID</code>'s
+ * <code>time</code> value, and then it invokes the stream's
+ * {@link DataOutput#writeShort(int)} method with this <code>UID</code>'s
+ * <code>count</code> value.
+ *
+ * @param   out the <code>DataOutput</code> instance to write
+ * this <code>UID</code> to
+ *
+ * @throws  IOException if an I/O error occurs while performing
+ * this operation
+ */
+public void write(DataOutput out) throws IOException {
+    out.writeInt(unique);
+    out.writeLong(time);
+    out.writeShort(count);
+}

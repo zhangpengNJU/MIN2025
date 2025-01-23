@@ -1,0 +1,16 @@
+/**
+ * Pushes elements obtained from the {@code Spliterator} into the provided
+ * {@code Sink}.  If the stream pipeline is known to have short-circuiting
+ * stages in it (see {@link StreamOpFlag#SHORT_CIRCUIT}), the
+ * {@link Sink#cancellationRequested()} is checked after each
+ * element, stopping if cancellation is requested.
+ *
+ * @implSpec
+ * This method conforms to the {@code Sink} protocol of calling
+ * {@code Sink.begin} before pushing elements, via {@code Sink.accept}, and
+ * calling {@code Sink.end} after all elements have been pushed.
+ *
+ * @param wrappedSink the destination {@code Sink}
+ * @param spliterator the source {@code Spliterator}
+ */
+abstract <P_IN> void copyInto(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator);

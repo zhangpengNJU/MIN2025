@@ -1,0 +1,15 @@
+/**
+ * Returns the offsets in the given array. The array is also returned
+ * for convenience.  If offsets is null, a new array
+ * will be allocated.
+ * @param offsets the array to contain the offsets of
+ *        this <code>RescaleOp</code>
+ * @return the offsets of this <code>RescaleOp</code>.
+ */
+final public float[] getOffsets(float[] offsets) {
+    if (offsets == null) {
+        return (float[]) this.offsets.clone();
+    }
+    System.arraycopy(this.offsets, 0, offsets, 0, Math.min(this.offsets.length, offsets.length));
+    return offsets;
+}

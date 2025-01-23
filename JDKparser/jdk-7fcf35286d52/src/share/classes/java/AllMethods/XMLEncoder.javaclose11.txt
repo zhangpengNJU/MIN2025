@@ -1,0 +1,14 @@
+/**
+ * This method calls <code>flush</code>, writes the closing
+ * postamble and then closes the output stream associated
+ * with this stream.
+ */
+public void close() {
+    flush();
+    writeln("</java>");
+    try {
+        out.close();
+    } catch (IOException e) {
+        getExceptionListener().exceptionThrown(e);
+    }
+}

@@ -1,0 +1,17 @@
+/**
+ * Returns the size of an ulp, a unit in the last place, of this
+ * {@code BigDecimal}.  An ulp of a nonzero {@code BigDecimal}
+ * value is the positive distance between this value and the
+ * {@code BigDecimal} value next larger in magnitude with the
+ * same number of digits.  An ulp of a zero value is numerically
+ * equal to 1 with the scale of {@code this}.  The result is
+ * stored with the same scale as {@code this} so the result
+ * for zero and nonzero values is equal to {@code [1,
+ * this.scale()]}.
+ *
+ * @return the size of an ulp of {@code this}
+ * @since 1.5
+ */
+public BigDecimal ulp() {
+    return BigDecimal.valueOf(1, this.scale(), 1);
+}

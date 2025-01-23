@@ -1,0 +1,34 @@
+private final void byteFilter(ByteLookupTable lookup, Raster src, WritableRaster dst, int width, int height, int numBands) {
+    int[] srcPix = null;
+    // Find the ref to the table and the offset
+    byte[][] table = lookup.getTable();
+    int offset = lookup.getOffset();
+    int tidx;
+    int step = 1;
+    // Check if it is one lookup applied to all bands
+    if (table.length == 1) {
+        step = 0;
+    }
+    int x;
+    int y;
+    int band;
+    int len = table[0].length;
+    // Loop through the data
+    for (y = 0; y < height; y++) {
+        tidx = 0;
+        for (band = 0; band < numBands; band++, tidx += step) {
+            // Find data for this band, scanline
+            srcPix = src.getSamples(0, y, width, 1, band, srcPix);
+            for (x = 0; x < width; x++) {
+                int index = srcPix[x] - offset;
+                if (index < 0 || index > len) {
+                    throw new IllegalArgumentException("index (" + index + "(out of range: " + " srcPix[" + x + "]=" + srcPix[x] + " offset=" + offset);
+                }
+                // Do the lookup
+                srcPix[x] = table[tidx][index];
+            }
+            // Put it back
+            dst.setSamples(0, y, width, 1, band, srcPix);
+        }
+    }
+}

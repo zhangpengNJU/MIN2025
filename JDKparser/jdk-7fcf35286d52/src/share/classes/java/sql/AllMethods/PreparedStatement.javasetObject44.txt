@@ -1,0 +1,47 @@
+/**
+ * <p>Sets the value of the designated parameter with the given object.
+ *
+ * If the second argument is an <code>InputStream</code> then the stream must contain
+ * the number of bytes specified by scaleOrLength.  If the second argument is a
+ * <code>Reader</code> then the reader must contain the number of characters specified
+ * by scaleOrLength. If these conditions are not true the driver will generate a
+ * <code>SQLException</code> when the prepared statement is executed.
+ *
+ * <p>The given Java object will be converted to the given targetSqlType
+ * before being sent to the database.
+ *
+ * If the object has a custom mapping (is of a class implementing the
+ * interface <code>SQLData</code>),
+ * the JDBC driver should call the method <code>SQLData.writeSQL</code> to
+ * write it to the SQL data stream.
+ * If, on the other hand, the object is of a class implementing
+ * <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,  <code>NClob</code>,
+ *  <code>Struct</code>, <code>java.net.URL</code>,
+ * or <code>Array</code>, the driver should pass it to the database as a
+ * value of the corresponding SQL type.
+ *
+ * <p>Note that this method may be used to pass database-specific
+ * abstract data types.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2, ...
+ * @param x the object containing the input parameter value
+ * @param targetSqlType the SQL type (as defined in java.sql.Types) to be
+ * sent to the database. The scale argument may further qualify this type.
+ * @param scaleOrLength for <code>java.sql.Types.DECIMAL</code>
+ *          or <code>java.sql.Types.NUMERIC types</code>,
+ *          this is the number of digits after the decimal point. For
+ *          Java Object types <code>InputStream</code> and <code>Reader</code>,
+ *          this is the length
+ *          of the data in the stream or reader.  For all other types,
+ *          this value will be ignored.
+ * @exception SQLException if parameterIndex does not correspond to a parameter
+ * marker in the SQL statement; if a database access error occurs;
+ * this method is called on a closed <code>PreparedStatement</code> or
+ *            if the Java Object specified by x is an InputStream
+ *            or Reader object and the value of the scale parameter is less
+ *            than zero
+ * @exception SQLFeatureNotSupportedException if
+ * the JDBC driver does not support the specified targetSqlType
+ * @see Types
+ */
+void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException;

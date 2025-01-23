@@ -1,0 +1,22 @@
+/**
+ * Converts the {@code NumericShaper.Range} enum-based parameters,
+ * if any, to the bit mask-based counterparts and writes this
+ * object to the {@code stream}. Any enum constants that have no
+ * bit mask-based counterparts are ignored in the conversion.
+ *
+ * @param stream the output stream to write to
+ * @throws IOException if an I/O error occurs while writing to {@code stream}
+ * @since 1.7
+ */
+private void writeObject(ObjectOutputStream stream) throws IOException {
+    if (shapingRange != null) {
+        int index = Range.toRangeIndex(shapingRange);
+        if (index >= 0) {
+            key = index;
+        }
+    }
+    if (rangeSet != null) {
+        mask |= Range.toRangeMask(rangeSet);
+    }
+    stream.defaultWriteObject();
+}

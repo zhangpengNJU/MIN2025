@@ -1,0 +1,18 @@
+/**
+ * Verifies that this (possibly subclass) instance can be constructed
+ * without violating security constraints: the subclass must not override
+ * security-sensitive non-final methods, or else the
+ * "enableContextClassLoaderOverride" RuntimePermission is checked.
+ */
+private static boolean isCCLOverridden(Class<?> cl) {
+    if (cl == Thread.class)
+        return false;
+    processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
+    WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
+    Boolean result = Caches.subclassAudits.get(key);
+    if (result == null) {
+        result = Boolean.valueOf(auditSubclass(cl));
+        Caches.subclassAudits.putIfAbsent(key, result);
+    }
+    return result.booleanValue();
+}

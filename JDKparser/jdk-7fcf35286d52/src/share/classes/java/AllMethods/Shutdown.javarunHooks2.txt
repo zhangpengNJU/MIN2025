@@ -1,0 +1,22 @@
+/* Run all registered shutdown hooks
+     */
+private static void runHooks() {
+    for (int i = 0; i < MAX_SYSTEM_HOOKS; i++) {
+        try {
+            Runnable hook;
+            synchronized (lock) {
+                // acquire the lock to make sure the hook registered during
+                // shutdown is visible here.
+                currentRunningHook = i;
+                hook = hooks[i];
+            }
+            if (hook != null)
+                hook.run();
+        } catch (Throwable t) {
+            if (t instanceof ThreadDeath) {
+                ThreadDeath td = (ThreadDeath) t;
+                throw td;
+            }
+        }
+    }
+}

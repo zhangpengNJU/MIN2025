@@ -1,0 +1,18 @@
+/**
+ * Removes the specified window focus listener so that it no longer
+ * receives window events from this window.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window focus listener
+ * @see #addWindowFocusListener
+ * @see #getWindowFocusListeners
+ * @since 1.4
+ */
+public synchronized void removeWindowFocusListener(WindowFocusListener l) {
+    if (l == null) {
+        return;
+    }
+    windowFocusListener = AWTEventMulticaster.remove(windowFocusListener, l);
+}

@@ -1,0 +1,9 @@
+private boolean implRemove(Object key, Object value) {
+    if (key instanceof String && value instanceof String) {
+        if (!checkLegacy(key)) {
+            return false;
+        }
+        legacyStrings.remove((String) key, value);
+    }
+    return super.remove(key, value);
+}

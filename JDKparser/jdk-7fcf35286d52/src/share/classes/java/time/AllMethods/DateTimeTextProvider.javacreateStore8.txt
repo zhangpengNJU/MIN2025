@@ -1,0 +1,110 @@
+private Object createStore(TemporalField field, Locale locale) {
+    Map<TextStyle, Map<Long, String>> styleMap = new HashMap<>();
+    if (field == ERA) {
+        for (TextStyle textStyle : TextStyle.values()) {
+            if (textStyle.isStandalone()) {
+                // Stand-alone isn't applicable to era names.
+                continue;
+            }
+            Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames("gregory", Calendar.ERA, textStyle.toCalendarStyle(), locale);
+            if (displayNames != null) {
+                Map<Long, String> map = new HashMap<>();
+                for (Entry<String, Integer> entry : displayNames.entrySet()) {
+                    map.put((long) entry.getValue(), entry.getKey());
+                }
+                if (!map.isEmpty()) {
+                    styleMap.put(textStyle, map);
+                }
+            }
+        }
+        return new LocaleStore(styleMap);
+    }
+    if (field == MONTH_OF_YEAR) {
+        for (TextStyle textStyle : TextStyle.values()) {
+            Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames("gregory", Calendar.MONTH, textStyle.toCalendarStyle(), locale);
+            Map<Long, String> map = new HashMap<>();
+            if (displayNames != null) {
+                for (Entry<String, Integer> entry : displayNames.entrySet()) {
+                    map.put((long) (entry.getValue() + 1), entry.getKey());
+                }
+            } else {
+                // Narrow names may have duplicated names, such as "J" for January, Jun, July.
+                // Get names one by one in that case.
+                for (int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++) {
+                    String name;
+                    name = CalendarDataUtility.retrieveJavaTimeFieldValueName("gregory", Calendar.MONTH, month, textStyle.toCalendarStyle(), locale);
+                    if (name == null) {
+                        break;
+                    }
+                    map.put((long) (month + 1), name);
+                }
+            }
+            if (!map.isEmpty()) {
+                styleMap.put(textStyle, map);
+            }
+        }
+        return new LocaleStore(styleMap);
+    }
+    if (field == DAY_OF_WEEK) {
+        for (TextStyle textStyle : TextStyle.values()) {
+            Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames("gregory", Calendar.DAY_OF_WEEK, textStyle.toCalendarStyle(), locale);
+            Map<Long, String> map = new HashMap<>();
+            if (displayNames != null) {
+                for (Entry<String, Integer> entry : displayNames.entrySet()) {
+                    map.put((long) toWeekDay(entry.getValue()), entry.getKey());
+                }
+            } else {
+                // Narrow names may have duplicated names, such as "S" for Sunday and Saturday.
+                // Get names one by one in that case.
+                for (int wday = Calendar.SUNDAY; wday <= Calendar.SATURDAY; wday++) {
+                    String name;
+                    name = CalendarDataUtility.retrieveJavaTimeFieldValueName("gregory", Calendar.DAY_OF_WEEK, wday, textStyle.toCalendarStyle(), locale);
+                    if (name == null) {
+                        break;
+                    }
+                    map.put((long) toWeekDay(wday), name);
+                }
+            }
+            if (!map.isEmpty()) {
+                styleMap.put(textStyle, map);
+            }
+        }
+        return new LocaleStore(styleMap);
+    }
+    if (field == AMPM_OF_DAY) {
+        for (TextStyle textStyle : TextStyle.values()) {
+            if (textStyle.isStandalone()) {
+                // Stand-alone isn't applicable to AM/PM.
+                continue;
+            }
+            Map<String, Integer> displayNames = CalendarDataUtility.retrieveJavaTimeFieldValueNames("gregory", Calendar.AM_PM, textStyle.toCalendarStyle(), locale);
+            if (displayNames != null) {
+                Map<Long, String> map = new HashMap<>();
+                for (Entry<String, Integer> entry : displayNames.entrySet()) {
+                    map.put((long) entry.getValue(), entry.getKey());
+                }
+                if (!map.isEmpty()) {
+                    styleMap.put(textStyle, map);
+                }
+            }
+        }
+        return new LocaleStore(styleMap);
+    }
+    if (field == IsoFields.QUARTER_OF_YEAR) {
+        // The order of keys must correspond to the TextStyle.values() order.
+        final String[] keys = { "QuarterNames", "standalone.QuarterNames", "QuarterAbbreviations", "standalone.QuarterAbbreviations", "QuarterNarrows", "standalone.QuarterNarrows" };
+        for (int i = 0; i < keys.length; i++) {
+            String[] names = getLocalizedResource(keys[i], locale);
+            if (names != null) {
+                Map<Long, String> map = new HashMap<>();
+                for (int q = 0; q < names.length; q++) {
+                    map.put((long) (q + 1), names[q]);
+                }
+                styleMap.put(TextStyle.values()[i], map);
+            }
+        }
+        return new LocaleStore(styleMap);
+    }
+    // null marker for map
+    return "";
+}

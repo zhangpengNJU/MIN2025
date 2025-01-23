@@ -1,0 +1,18 @@
+/**
+ * Returns a {@code Collector} which applies an {@code int}-producing
+ * mapping function to each input element, and returns summary statistics
+ * for the resulting values.
+ *
+ * @param <T> the type of the input elements
+ * @param mapper a mapping function to apply to each element
+ * @return a {@code Collector} implementing the summary-statistics reduction
+ *
+ * @see #summarizingDouble(ToDoubleFunction)
+ * @see #summarizingLong(ToLongFunction)
+ */
+public static <T> Collector<T, ?, IntSummaryStatistics> summarizingInt(ToIntFunction<? super T> mapper) {
+    return new CollectorImpl<T, IntSummaryStatistics, IntSummaryStatistics>(IntSummaryStatistics::new, (r, t) -> r.accept(mapper.applyAsInt(t)), (l, r) -> {
+        l.combine(r);
+        return l;
+    }, CH_ID);
+}

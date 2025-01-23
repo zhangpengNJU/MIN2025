@@ -1,0 +1,9 @@
+/**
+ * Returns a CharProperty matching all characters in a named property.
+ */
+private CharProperty charPropertyNodeFor(String name) {
+    CharProperty p = CharPropertyNames.charPropertyFor(name);
+    if (p == null)
+        throw error("Unknown character property name {" + name + "}");
+    return p;
+}

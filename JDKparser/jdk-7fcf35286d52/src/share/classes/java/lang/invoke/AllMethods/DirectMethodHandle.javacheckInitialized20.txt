@@ -1,0 +1,23 @@
+private static boolean checkInitialized(MemberName member) {
+    Class<?> defc = member.getDeclaringClass();
+    WeakReference<Thread> ref = EnsureInitialized.INSTANCE.get(defc);
+    if (ref == null) {
+        // the final state
+        return true;
+    }
+    Thread clinitThread = ref.get();
+    // Somebody may still be running defc.<clinit>.
+    if (clinitThread == Thread.currentThread()) {
+        // If anybody is running defc.<clinit>, it is this thread.
+        if (UNSAFE.shouldBeInitialized(defc))
+            // Yes, we are running it; keep the barrier for now.
+            return false;
+    } else {
+        // We are in a random thread.  Block.
+        UNSAFE.ensureClassInitialized(defc);
+    }
+    assert (!UNSAFE.shouldBeInitialized(defc));
+    // put it into the final state
+    EnsureInitialized.INSTANCE.remove(defc);
+    return true;
+}

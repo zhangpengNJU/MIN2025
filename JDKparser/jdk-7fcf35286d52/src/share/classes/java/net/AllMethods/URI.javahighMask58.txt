@@ -1,0 +1,11 @@
+// Compute the high-order mask for the characters in the given string
+private static long highMask(String chars) {
+    int n = chars.length();
+    long m = 0;
+    for (int i = 0; i < n; i++) {
+        char c = chars.charAt(i);
+        if ((c >= 64) && (c < 128))
+            m |= (1L << (c - 64));
+    }
+    return m;
+}

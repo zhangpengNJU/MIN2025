@@ -1,0 +1,15 @@
+/**
+ * Given an array of bytes produced by packRules, interpret them
+ * as the start and end rules.
+ */
+private void unpackRules(byte[] rules) {
+    startDay = rules[0];
+    startDayOfWeek = rules[1];
+    endDay = rules[2];
+    endDayOfWeek = rules[3];
+    // As of serial version 2, include time modes
+    if (rules.length >= MAX_RULE_NUM) {
+        startTimeMode = rules[4];
+        endTimeMode = rules[5];
+    }
+}

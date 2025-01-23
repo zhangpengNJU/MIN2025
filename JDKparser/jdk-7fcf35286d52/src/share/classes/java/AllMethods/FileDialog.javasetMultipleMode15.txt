@@ -1,0 +1,13 @@
+/**
+ * Enables or disables multiple file selection for the file dialog.
+ *
+ * @param enable    if {@code true}, multiple file selection is enabled;
+ *                  {@code false} - disabled.
+ * @see #isMultipleMode
+ * @since 1.7
+ */
+public void setMultipleMode(boolean enable) {
+    synchronized (getObjectLock()) {
+        this.multipleMode = enable;
+    }
+}

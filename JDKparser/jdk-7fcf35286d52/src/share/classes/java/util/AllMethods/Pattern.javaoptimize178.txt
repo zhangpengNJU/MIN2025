@@ -1,0 +1,57 @@
+/**
+ * Pre calculates arrays needed to generate the bad character
+ * shift and the good suffix shift. Only the last seven bits
+ * are used to see if chars match; This keeps the tables small
+ * and covers the heavily used ASCII range, but occasionally
+ * results in an aliased match for the bad character shift.
+ */
+static Node optimize(Node node) {
+    if (!(node instanceof Slice)) {
+        return node;
+    }
+    int[] src = ((Slice) node).buffer;
+    int patternLength = src.length;
+    // The BM algorithm requires a bit of overhead;
+    // If the pattern is short don't use it, since
+    // a shift larger than the pattern length cannot
+    // be used anyway.
+    if (patternLength < 4) {
+        return node;
+    }
+    int i, j, k;
+    int[] lastOcc = new int[128];
+    int[] optoSft = new int[patternLength];
+    // Precalculate part of the bad character shift
+    // It is a table for where in the pattern each
+    // lower 7-bit value occurs
+    for (i = 0; i < patternLength; i++) {
+        lastOcc[src[i] & 0x7F] = i + 1;
+    }
+    // Precalculate the good suffix shift
+    // i is the shift amount being considered
+    NEXT: for (i = patternLength; i > 0; i--) {
+        // j is the beginning index of suffix being considered
+        for (j = patternLength - 1; j >= i; j--) {
+            // Testing for good suffix
+            if (src[j] == src[j - i]) {
+                // src[j..len] is a good suffix
+                optoSft[j - 1] = i;
+            } else {
+                // No match. The array has already been
+                // filled up with correct values before.
+                continue NEXT;
+            }
+        }
+        // This fills up the remaining of optoSft
+        // any suffix can not have larger shift amount
+        // then its sub-suffix. Why???
+        while (j > 0) {
+            optoSft[--j] = i;
+        }
+    }
+    // Set the guard value because of unicode compression
+    optoSft[patternLength - 1] = 1;
+    if (node instanceof SliceS)
+        return new BnMS(src, lastOcc, optoSft, node.next);
+    return new BnM(src, lastOcc, optoSft, node.next);
+}

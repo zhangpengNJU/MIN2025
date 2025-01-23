@@ -1,0 +1,33 @@
+/**
+ * Determines whether the permission with the specified permission target
+ * name should be granted or denied.
+ *
+ * <p> If the requested permission is allowed, this method returns
+ * quietly. If denied, a SecurityException is raised.
+ *
+ * <p> This method creates a <code>SecurityPermission</code> object for
+ * the given permission target name and calls <code>checkPermission</code>
+ * with it.
+ *
+ * <p> See the documentation for
+ * <code>{@link java.security.SecurityPermission}</code> for
+ * a list of possible permission target names.
+ *
+ * <p> If you override this method, then you should make a call to
+ * <code>super.checkSecurityAccess</code>
+ * at the point the overridden method would normally throw an
+ * exception.
+ *
+ * @param target the target name of the <code>SecurityPermission</code>.
+ *
+ * @exception SecurityException if the calling thread does not have
+ * permission for the requested access.
+ * @exception NullPointerException if <code>target</code> is null.
+ * @exception IllegalArgumentException if <code>target</code> is empty.
+ *
+ * @since   JDK1.1
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkSecurityAccess(String target) {
+    checkPermission(new SecurityPermission(target));
+}

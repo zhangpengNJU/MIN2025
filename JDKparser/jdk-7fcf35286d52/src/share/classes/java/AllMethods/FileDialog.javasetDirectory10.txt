@@ -1,0 +1,21 @@
+/**
+ * Sets the directory of this file dialog window to be the
+ * specified directory. Specifying a <code>null</code> or an
+ * invalid directory implies an implementation-defined default.
+ * This default will not be realized, however, until the user
+ * has selected a file. Until this point, <code>getDirectory()</code>
+ * will return the value passed into this method.
+ * <p>
+ * Specifying "" as the directory is exactly equivalent to
+ * specifying <code>null</code> as the directory.
+ *
+ * @param     dir   the specified directory
+ * @see       java.awt.FileDialog#getDirectory
+ */
+public void setDirectory(String dir) {
+    this.dir = (dir != null && dir.equals("")) ? null : dir;
+    FileDialogPeer peer = (FileDialogPeer) this.peer;
+    if (peer != null) {
+        peer.setDirectory(this.dir);
+    }
+}

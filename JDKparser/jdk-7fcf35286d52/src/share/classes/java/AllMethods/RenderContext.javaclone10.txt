@@ -1,0 +1,11 @@
+/**
+ * Makes a copy of a RenderContext. The area of interest is copied
+ * by reference.  The usr2dev AffineTransform and hints are cloned,
+ * while the area of interest is copied by reference.
+ *
+ * @return the new cloned RenderContext.
+ */
+public Object clone() {
+    RenderContext newRenderContext = new RenderContext(usr2dev, aoi, hints);
+    return newRenderContext;
+}

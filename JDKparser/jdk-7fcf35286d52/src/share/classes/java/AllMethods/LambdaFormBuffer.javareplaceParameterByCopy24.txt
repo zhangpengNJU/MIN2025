@@ -1,0 +1,10 @@
+/**
+ * Replace a parameter by another parameter or expression already in the form.
+ */
+LambdaFormBuffer replaceParameterByCopy(int pos, int valuePos) {
+    assert (pos != valuePos);
+    replaceName(pos, names[valuePos]);
+    // temporarily, will occur twice in the names array
+    noteDuplicate(pos, valuePos);
+    return this;
+}

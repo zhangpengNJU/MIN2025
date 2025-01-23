@@ -1,0 +1,26 @@
+// Accessor to private field isProxyActive of KeyEvent
+private static boolean isProxyActiveImpl(KeyEvent e) {
+    if (proxyActive == null) {
+        proxyActive = AccessController.doPrivileged(new PrivilegedAction<Field>() {
+
+            public Field run() {
+                Field field = null;
+                try {
+                    field = KeyEvent.class.getDeclaredField("isProxyActive");
+                    if (field != null) {
+                        field.setAccessible(true);
+                    }
+                } catch (NoSuchFieldException nsf) {
+                    assert (false);
+                }
+                return field;
+            }
+        });
+    }
+    try {
+        return proxyActive.getBoolean(e);
+    } catch (IllegalAccessException iae) {
+        assert (false);
+    }
+    return false;
+}

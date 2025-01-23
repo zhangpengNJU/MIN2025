@@ -1,0 +1,29 @@
+/**
+ * Reset the logging configuration.
+ * <p>
+ * For all named loggers, the reset operation removes and closes
+ * all Handlers and (except for the root logger) sets the level
+ * to null.  The root logger's level is set to Level.INFO.
+ *
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have LoggingPermission("control").
+ */
+public void reset() throws SecurityException {
+    checkPermission();
+    synchronized (this) {
+        props = new Properties();
+        // Since we are doing a reset we no longer want to initialize
+        // the global handlers, if they haven't been initialized yet.
+        initializedGlobalHandlers = true;
+    }
+    for (LoggerContext cx : contexts()) {
+        Enumeration<String> enum_ = cx.getLoggerNames();
+        while (enum_.hasMoreElements()) {
+            String name = enum_.nextElement();
+            Logger logger = cx.findLogger(name);
+            if (logger != null) {
+                resetLogger(logger);
+            }
+        }
+    }
+}

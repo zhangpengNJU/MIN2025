@@ -1,0 +1,11 @@
+/**
+ * Returns the input array stripped of any leading zero bytes.
+ * Since the source is trusted the copying may be skipped.
+ */
+private static int[] trustedStripLeadingZeroInts(int[] val) {
+    int vlen = val.length;
+    int keep;
+    // Find first nonzero byte
+    for (keep = 0; keep < vlen && val[keep] == 0; keep++) ;
+    return keep == 0 ? val : java.util.Arrays.copyOfRange(val, keep, vlen);
+}

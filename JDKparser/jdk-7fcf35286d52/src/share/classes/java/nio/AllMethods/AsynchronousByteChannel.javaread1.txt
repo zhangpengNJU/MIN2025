@@ -1,0 +1,25 @@
+/**
+ * Reads a sequence of bytes from this channel into the given buffer.
+ *
+ * <p> This method initiates an asynchronous read operation to read a
+ * sequence of bytes from this channel into the given buffer. The method
+ * behaves in exactly the same manner as the {@link
+ * #read(ByteBuffer,Object,CompletionHandler)
+ * read(ByteBuffer,Object,CompletionHandler)} method except that instead
+ * of specifying a completion handler, this method returns a {@code Future}
+ * representing the pending result. The {@code Future}'s {@link Future#get()
+ * get} method returns the number of bytes read or {@code -1} if no bytes
+ * could be read because the channel has reached end-of-stream.
+ *
+ * @param   dst
+ *          The buffer into which bytes are to be transferred
+ *
+ * @return  A Future representing the result of the operation
+ *
+ * @throws  IllegalArgumentException
+ *          If the buffer is read-only
+ * @throws  ReadPendingException
+ *          If the channel does not allow more than one read to be outstanding
+ *          and a previous read has not completed
+ */
+Future<Integer> read(ByteBuffer dst);

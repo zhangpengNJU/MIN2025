@@ -1,0 +1,11 @@
+// REMIND: remove when filtering is done at lower level
+boolean eventEnabled(AWTEvent e) {
+    int id = e.getID();
+    if (id == ContainerEvent.COMPONENT_ADDED || id == ContainerEvent.COMPONENT_REMOVED) {
+        if ((eventMask & AWTEvent.CONTAINER_EVENT_MASK) != 0 || containerListener != null) {
+            return true;
+        }
+        return false;
+    }
+    return super.eventEnabled(e);
+}

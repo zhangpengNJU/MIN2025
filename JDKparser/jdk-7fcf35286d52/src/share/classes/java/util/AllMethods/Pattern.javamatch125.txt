@@ -1,0 +1,16 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    int j;
+    for (j = 0; j < cmin; j++) {
+        if (atom.match(matcher, i, seq)) {
+            i = matcher.last;
+            continue;
+        }
+        return false;
+    }
+    if (type == GREEDY)
+        return match0(matcher, i, j, seq);
+    else if (type == LAZY)
+        return match1(matcher, i, j, seq);
+    else
+        return match2(matcher, i, j, seq);
+}

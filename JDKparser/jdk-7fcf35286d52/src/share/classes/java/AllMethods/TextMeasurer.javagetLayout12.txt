@@ -1,0 +1,25 @@
+/**
+ * Returns a <code>TextLayout</code> on the given character range.
+ *
+ * @param start the index of the first character
+ * @param limit the index after the last character.  Must be greater
+ *   than <code>start</code>
+ * @return a <code>TextLayout</code> for the characters beginning at
+ *  <code>start</code> up to (but not including) <code>limit</code>
+ * @throws IndexOutOfBoundsException if <code>limit</code> is less
+ *         than <code>start</code>
+ * @throws IllegalArgumentException if <code>start</code> or
+ *          <code>limit</code> is not between the beginning of
+ *          the paragraph and the end of the paragraph.
+ */
+public TextLayout getLayout(int start, int limit) {
+    int localStart = start - fStart;
+    int localLimit = limit - fStart;
+    ensureComponents(localStart, localLimit);
+    TextLine textLine = makeTextLineOnRange(localStart, localLimit);
+    if (localLimit < fChars.length) {
+        layoutCharCount += limit - start;
+        layoutCount++;
+    }
+    return new TextLayout(textLine, fBaseline, fBaselineOffsets, fJustifyRatio);
+}

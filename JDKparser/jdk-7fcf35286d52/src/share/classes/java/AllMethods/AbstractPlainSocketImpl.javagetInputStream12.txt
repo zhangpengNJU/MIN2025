@@ -1,0 +1,14 @@
+/**
+ * Gets an InputStream for this socket.
+ */
+protected synchronized InputStream getInputStream() throws IOException {
+    synchronized (fdLock) {
+        if (isClosedOrPending())
+            throw new IOException("Socket Closed");
+        if (shut_rd)
+            throw new IOException("Socket input is shutdown");
+        if (socketInputStream == null)
+            socketInputStream = new SocketInputStream(this);
+    }
+    return socketInputStream;
+}

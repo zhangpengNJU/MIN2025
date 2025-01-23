@@ -1,0 +1,14 @@
+/**
+ * Returns whether the windowing system supports changing the opacity
+ * value of top-level windows.
+ * Note that this method may sometimes return true, but the native
+ * windowing system may still not support the concept of
+ * translucency (due to the bugs in the windowing system).
+ */
+static boolean isWindowOpacitySupported() {
+    Toolkit curToolkit = Toolkit.getDefaultToolkit();
+    if (!(curToolkit instanceof SunToolkit)) {
+        return false;
+    }
+    return ((SunToolkit) curToolkit).isWindowOpacitySupported();
+}

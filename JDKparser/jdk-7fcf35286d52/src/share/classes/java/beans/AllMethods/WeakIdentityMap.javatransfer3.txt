@@ -1,0 +1,22 @@
+private void transfer(Entry<T>[] oldTable, Entry<T>[] newTable) {
+    for (int i = 0; i < oldTable.length; i++) {
+        Entry<T> entry = oldTable[i];
+        oldTable[i] = null;
+        while (entry != null) {
+            Entry<T> next = entry.next;
+            Object key = entry.get();
+            if (key == null) {
+                // Help GC
+                entry.value = null;
+                // Help GC
+                entry.next = null;
+                this.size--;
+            } else {
+                int index = getIndex(newTable, entry.hash);
+                entry.next = newTable[index];
+                newTable[index] = entry;
+            }
+            entry = next;
+        }
+    }
+}

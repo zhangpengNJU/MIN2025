@@ -1,0 +1,67 @@
+/**
+ * Returns an array of integer pixels in the default RGB color model
+ * (TYPE_INT_ARGB) and default sRGB color space,
+ * from a portion of the image data.  Color conversion takes
+ * place if the default model does not match the image
+ * <code>ColorModel</code>.  There are only 8-bits of precision for
+ * each color component in the returned data when
+ * using this method.  With a specified coordinate (x,&nbsp;y) in the
+ * image, the ARGB pixel can be accessed in this way:
+ *
+ * <pre>
+ *    pixel   = rgbArray[offset + (y-startY)*scansize + (x-startX)]; </pre>
+ *
+ * <p>
+ *
+ * An <code>ArrayOutOfBoundsException</code> may be thrown
+ * if the region is not in bounds.
+ * However, explicit bounds checking is not guaranteed.
+ *
+ * @param startX      the starting X coordinate
+ * @param startY      the starting Y coordinate
+ * @param w           width of region
+ * @param h           height of region
+ * @param rgbArray    if not <code>null</code>, the rgb pixels are
+ *          written here
+ * @param offset      offset into the <code>rgbArray</code>
+ * @param scansize    scanline stride for the <code>rgbArray</code>
+ * @return            array of RGB pixels.
+ * @see #setRGB(int, int, int)
+ * @see #setRGB(int, int, int, int, int[], int, int)
+ */
+public int[] getRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize) {
+    int yoff = offset;
+    int off;
+    Object data;
+    int nbands = raster.getNumBands();
+    int dataType = raster.getDataBuffer().getDataType();
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            data = new byte[nbands];
+            break;
+        case DataBuffer.TYPE_USHORT:
+            data = new short[nbands];
+            break;
+        case DataBuffer.TYPE_INT:
+            data = new int[nbands];
+            break;
+        case DataBuffer.TYPE_FLOAT:
+            data = new float[nbands];
+            break;
+        case DataBuffer.TYPE_DOUBLE:
+            data = new double[nbands];
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown data buffer type: " + dataType);
+    }
+    if (rgbArray == null) {
+        rgbArray = new int[offset + h * scansize];
+    }
+    for (int y = startY; y < startY + h; y++, yoff += scansize) {
+        off = yoff;
+        for (int x = startX; x < startX + w; x++) {
+            rgbArray[off++] = colorModel.getRGB(raster.getDataElements(x, y, data));
+        }
+    }
+    return rgbArray;
+}

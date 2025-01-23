@@ -1,0 +1,24 @@
+/**
+ * Inserts an item to this <code>Choice</code>,
+ * but does not invalidate the <code>Choice</code>.
+ * Client methods must provide their own synchronization before
+ * invoking this method.
+ * @param item the item to be added
+ * @param index the new item position
+ * @exception NullPointerException if the item's value is equal to
+ *          <code>null</code>
+ */
+private void insertNoInvalidate(String item, int index) {
+    if (item == null) {
+        throw new NullPointerException("cannot add null item to Choice");
+    }
+    pItems.insertElementAt(item, index);
+    ChoicePeer peer = (ChoicePeer) this.peer;
+    if (peer != null) {
+        peer.add(item, index);
+    }
+    // no selection or selection shifted up
+    if (selectedIndex < 0 || selectedIndex >= index) {
+        select(0);
+    }
+}

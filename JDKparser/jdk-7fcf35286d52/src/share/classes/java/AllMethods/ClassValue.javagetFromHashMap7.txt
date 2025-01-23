@@ -1,0 +1,23 @@
+/**
+ * Called when the fast path of get fails, and cache reprobe also fails.
+ */
+private T getFromHashMap(Class<?> type) {
+    // The fail-safe recovery is to fall back to the underlying classValueMap.
+    ClassValueMap map = getMap(type);
+    for (; ; ) {
+        Entry<T> e = map.startEntry(this);
+        if (!e.isPromise())
+            return e.value();
+        try {
+            // Try to make a real entry for the promised version.
+            e = makeEntry(e.version(), computeValue(type));
+        } finally {
+            // Whether computeValue throws or returns normally,
+            // be sure to remove the empty entry.
+            e = map.finishEntry(this, e);
+        }
+        if (e != null)
+            return e.value();
+    // else try again, in case a racing thread called remove (so e == null)
+    }
+}

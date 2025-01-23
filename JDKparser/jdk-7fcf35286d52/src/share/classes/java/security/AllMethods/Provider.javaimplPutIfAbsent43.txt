@@ -1,0 +1,9 @@
+private Object implPutIfAbsent(Object key, Object value) {
+    if ((key instanceof String) && (value instanceof String)) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.putIfAbsent((String) key, (String) value);
+    }
+    return super.putIfAbsent(key, value);
+}

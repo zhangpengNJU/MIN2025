@@ -1,0 +1,6 @@
+Node<K, V> replacementNode(Node<K, V> p, Node<K, V> next) {
+    LinkedHashMap.Entry<K, V> q = (LinkedHashMap.Entry<K, V>) p;
+    LinkedHashMap.Entry<K, V> t = new LinkedHashMap.Entry<K, V>(q.hash, q.key, q.value, next);
+    transferLinks(q, t);
+    return t;
+}

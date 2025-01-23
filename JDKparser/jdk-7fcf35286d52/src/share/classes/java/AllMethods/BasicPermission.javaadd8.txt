@@ -1,0 +1,40 @@
+/**
+ * Adds a permission to the BasicPermissions. The key for the hash is
+ * permission.path.
+ *
+ * @param permission the Permission object to add.
+ *
+ * @exception IllegalArgumentException - if the permission is not a
+ *                                       BasicPermission, or if
+ *                                       the permission is not of the
+ *                                       same Class as the other
+ *                                       permissions in this collection.
+ *
+ * @exception SecurityException - if this BasicPermissionCollection object
+ *                                has been marked readonly
+ */
+public void add(Permission permission) {
+    if (!(permission instanceof BasicPermission))
+        throw new IllegalArgumentException("invalid permission: " + permission);
+    if (isReadOnly())
+        throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+    BasicPermission bp = (BasicPermission) permission;
+    // make sure we only add new BasicPermissions of the same class
+    // Also check null for compatibility with deserialized form from
+    // previous versions.
+    if (permClass == null) {
+        // adding first permission
+        permClass = bp.getClass();
+    } else {
+        if (bp.getClass() != permClass)
+            throw new IllegalArgumentException("invalid permission: " + permission);
+    }
+    synchronized (this) {
+        perms.put(bp.getCanonicalName(), permission);
+    }
+    // No sync on all_allowed; staleness OK
+    if (!all_allowed) {
+        if (bp.getCanonicalName().equals("*"))
+            all_allowed = true;
+    }
+}

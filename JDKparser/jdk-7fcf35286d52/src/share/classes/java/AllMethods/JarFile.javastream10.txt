@@ -1,0 +1,4 @@
+@Override
+public Stream<JarEntry> stream() {
+    return StreamSupport.stream(Spliterators.spliterator(new JarEntryIterator(), size(), Spliterator.ORDERED | Spliterator.DISTINCT | Spliterator.IMMUTABLE | Spliterator.NONNULL), false);
+}

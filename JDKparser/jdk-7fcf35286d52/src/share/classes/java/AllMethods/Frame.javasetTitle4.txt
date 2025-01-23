@@ -1,0 +1,21 @@
+/**
+ * Sets the title for this frame to the specified string.
+ * @param title the title to be displayed in the frame's border.
+ *              A <code>null</code> value
+ *              is treated as an empty string, "".
+ * @see      #getTitle
+ */
+public void setTitle(String title) {
+    String oldTitle = this.title;
+    if (title == null) {
+        title = "";
+    }
+    synchronized (this) {
+        this.title = title;
+        FramePeer peer = (FramePeer) this.peer;
+        if (peer != null) {
+            peer.setTitle(title);
+        }
+    }
+    firePropertyChange("title", oldTitle, title);
+}

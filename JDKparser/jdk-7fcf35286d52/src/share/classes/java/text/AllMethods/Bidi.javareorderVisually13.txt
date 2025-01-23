@@ -1,0 +1,19 @@
+/**
+ * Reorder the objects in the array into visual order based on their levels.
+ * This is a utility function to use when you have a collection of objects
+ * representing runs of text in logical order, each run containing text
+ * at a single level.  The elements at <code>index</code> from
+ * <code>objectStart</code> up to <code>objectStart + count</code>
+ * in the objects array will be reordered into visual order assuming
+ * each run of text has the level indicated by the corresponding element
+ * in the levels array (at <code>index - objectStart + levelStart</code>).
+ *
+ * @param levels an array representing the bidi level of each object
+ * @param levelStart the start position in the levels array
+ * @param objects the array of objects to be reordered into visual order
+ * @param objectStart the start position in the objects array
+ * @param count the number of objects to reorder
+ */
+public static void reorderVisually(byte[] levels, int levelStart, Object[] objects, int objectStart, int count) {
+    BidiBase.reorderVisually(levels, levelStart, objects, objectStart, count);
+}

@@ -1,0 +1,43 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Long offsetSecs = context.getValue(OFFSET_SECONDS);
+    if (offsetSecs == null) {
+        return false;
+    }
+    // TODO: get localized version of 'GMT'
+    String gmtText = "GMT";
+    if (gmtText != null) {
+        buf.append(gmtText);
+    }
+    int totalSecs = Math.toIntExact(offsetSecs);
+    if (totalSecs != 0) {
+        // anything larger than 99 silently dropped
+        int absHours = Math.abs((totalSecs / 3600) % 100);
+        int absMinutes = Math.abs((totalSecs / 60) % 60);
+        int absSeconds = Math.abs(totalSecs % 60);
+        buf.append(totalSecs < 0 ? "-" : "+");
+        if (style == TextStyle.FULL) {
+            appendHMS(buf, absHours);
+            buf.append(':');
+            appendHMS(buf, absMinutes);
+            if (absSeconds != 0) {
+                buf.append(':');
+                appendHMS(buf, absSeconds);
+            }
+        } else {
+            if (absHours >= 10) {
+                buf.append((char) (absHours / 10 + '0'));
+            }
+            buf.append((char) (absHours % 10 + '0'));
+            if (absMinutes != 0 || absSeconds != 0) {
+                buf.append(':');
+                appendHMS(buf, absMinutes);
+                if (absSeconds != 0) {
+                    buf.append(':');
+                    appendHMS(buf, absSeconds);
+                }
+            }
+        }
+    }
+    return true;
+}

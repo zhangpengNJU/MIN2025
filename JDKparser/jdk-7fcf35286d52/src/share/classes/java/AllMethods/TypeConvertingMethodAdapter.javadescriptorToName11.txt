@@ -1,0 +1,10 @@
+private String descriptorToName(String desc) {
+    int last = desc.length() - 1;
+    if (desc.charAt(0) == 'L' && desc.charAt(last) == ';') {
+        // In descriptor form
+        return desc.substring(1, last);
+    } else {
+        // Already in internal name form
+        return desc;
+    }
+}

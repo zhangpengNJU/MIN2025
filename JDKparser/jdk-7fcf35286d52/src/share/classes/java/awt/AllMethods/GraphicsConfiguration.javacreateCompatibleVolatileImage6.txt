@@ -1,0 +1,34 @@
+/**
+ * Returns a {@link VolatileImage} with a data layout and color model
+ * compatible with this <code>GraphicsConfiguration</code>, using
+ * the specified image capabilities and transparency value.
+ * If the <code>caps</code> parameter is null, it is effectively ignored
+ * and this method will create a VolatileImage without regard to
+ * <code>ImageCapabilities</code> constraints.
+ *
+ * The returned <code>VolatileImage</code> has
+ * a layout and color model that is closest to this native device
+ * configuration and can therefore be optimally blitted to this
+ * device.
+ * @param width the width of the returned <code>VolatileImage</code>
+ * @param height the height of the returned <code>VolatileImage</code>
+ * @param caps the image capabilities
+ * @param transparency the specified transparency mode
+ * @return a <code>VolatileImage</code> whose data layout and color
+ * model is compatible with this <code>GraphicsConfiguration</code>.
+ * @see Transparency#OPAQUE
+ * @see Transparency#BITMASK
+ * @see Transparency#TRANSLUCENT
+ * @throws IllegalArgumentException if the transparency is not a valid value
+ * @exception AWTException if the supplied image capabilities could not
+ * be met by this graphics configuration
+ * @see Component#createVolatileImage(int, int)
+ * @since 1.5
+ */
+public VolatileImage createCompatibleVolatileImage(int width, int height, ImageCapabilities caps, int transparency) throws AWTException {
+    VolatileImage vi = new SunVolatileImage(this, width, height, transparency, caps);
+    if (caps != null && caps.isAccelerated() && !vi.getCapabilities().isAccelerated()) {
+        throw new AWTException("Supplied image capabilities could not " + "be met by this graphics configuration.");
+    }
+    return vi;
+}

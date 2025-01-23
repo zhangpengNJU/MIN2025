@@ -1,0 +1,21 @@
+/**
+ * Removes a {@code PropertyChangeListener} from the listener list
+ * for a specific property.
+ * <p>
+ * The {@code PropertyChangeListener} must be from this context.
+ * <p>
+ * If {@code propertyName} or {@code listener} is {@code null} or invalid,
+ * no exception is thrown and no action is taken.
+ *
+ * @param propertyName the specified property
+ * @param listener the PropertyChangeListener to be removed
+ *
+ * @see #addPropertyChangeListener
+ * @see #getPropertyChangeListeners
+ */
+public synchronized void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+    if (listener == null) {
+        return;
+    }
+    getCurrentChangeSupport().removePropertyChangeListener(propertyName, listener);
+}

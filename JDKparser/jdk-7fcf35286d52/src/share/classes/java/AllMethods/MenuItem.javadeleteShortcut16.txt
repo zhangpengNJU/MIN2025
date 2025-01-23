@@ -1,0 +1,12 @@
+/**
+ * Delete any <code>MenuShortcut</code> object associated
+ * with this menu item.
+ * @since      JDK1.1
+ */
+public void deleteShortcut() {
+    shortcut = null;
+    MenuItemPeer peer = (MenuItemPeer) this.peer;
+    if (peer != null) {
+        peer.setLabel(label);
+    }
+}

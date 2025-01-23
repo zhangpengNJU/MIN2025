@@ -1,0 +1,20 @@
+private final void rotate180() {
+    m00 = -m00;
+    m11 = -m11;
+    int state = this.state;
+    if ((state & (APPLY_SHEAR)) != 0) {
+        // If there was a shear, then this rotation has no
+        // effect on the state.
+        m01 = -m01;
+        m10 = -m10;
+    } else {
+        // No shear means the SCALE state may toggle when
+        // m00 and m11 are negated.
+        if (m00 == 1.0 && m11 == 1.0) {
+            this.state = state & ~APPLY_SCALE;
+        } else {
+            this.state = state | APPLY_SCALE;
+        }
+    }
+    type = TYPE_UNKNOWN;
+}

@@ -1,0 +1,14 @@
+private int precision(String s) {
+    precision = -1;
+    if (s != null) {
+        try {
+            // remove the '.'
+            precision = Integer.parseInt(s.substring(1));
+            if (precision < 0)
+                throw new IllegalFormatPrecisionException(precision);
+        } catch (NumberFormatException x) {
+            assert (false);
+        }
+    }
+    return precision;
+}

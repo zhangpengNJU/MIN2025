@@ -1,0 +1,25 @@
+/**
+ * Tests to see if this <code>Timestamp</code> object is
+ * equal to the given object.
+ *
+ * This version of the method <code>equals</code> has been added
+ * to fix the incorrect
+ * signature of <code>Timestamp.equals(Timestamp)</code> and to preserve backward
+ * compatibility with existing class files.
+ *
+ * Note: This method is not symmetric with respect to the
+ * <code>equals(Object)</code> method in the base class.
+ *
+ * @param ts the <code>Object</code> value to compare with
+ * @return <code>true</code> if the given <code>Object</code> is an instance
+ *         of a <code>Timestamp</code> that
+ *         is equal to this <code>Timestamp</code> object;
+ *         <code>false</code> otherwise
+ */
+public boolean equals(java.lang.Object ts) {
+    if (ts instanceof Timestamp) {
+        return this.equals((Timestamp) ts);
+    } else {
+        return false;
+    }
+}

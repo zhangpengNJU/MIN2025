@@ -1,0 +1,21 @@
+/**
+ * Adds the <code>Point2D</code> object <code>pt</code> to this
+ * <code>Rectangle2D</code>.
+ * The resulting <code>Rectangle2D</code> is the smallest
+ * <code>Rectangle2D</code> that contains both the original
+ * <code>Rectangle2D</code> and the specified <code>Point2D</code>.
+ * <p>
+ * After adding a point, a call to <code>contains</code> with the
+ * added point as an argument does not necessarily return
+ * <code>true</code>. The <code>contains</code>
+ * method does not return <code>true</code> for points on the right
+ * or bottom edges of a rectangle. Therefore, if the added point falls
+ * on the left or bottom edge of the enlarged rectangle,
+ * <code>contains</code> returns <code>false</code> for that point.
+ * @param     pt the new <code>Point2D</code> to add to this
+ * <code>Rectangle2D</code>.
+ * @since 1.2
+ */
+public void add(Point2D pt) {
+    add(pt.getX(), pt.getY());
+}

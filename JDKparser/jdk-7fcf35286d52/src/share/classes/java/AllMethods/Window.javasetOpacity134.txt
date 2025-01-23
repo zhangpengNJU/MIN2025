@@ -1,0 +1,71 @@
+/**
+ * Sets the opacity of the window.
+ * <p>
+ * The opacity value is in the range [0..1]. Note that setting the opacity
+ * level of 0 may or may not disable the mouse event handling on this
+ * window. This is a platform-dependent behavior.
+ * <p>
+ * The following conditions must be met in order to set the opacity value
+ * less than {@code 1.0f}:
+ * <ul>
+ * <li>The {@link GraphicsDevice.WindowTranslucency#TRANSLUCENT TRANSLUCENT}
+ * translucency must be supported by the underlying system
+ * <li>The window must be undecorated (see {@link Frame#setUndecorated}
+ * and {@link Dialog#setUndecorated})
+ * <li>The window must not be in full-screen mode (see {@link
+ * GraphicsDevice#setFullScreenWindow(Window)})
+ * </ul>
+ * <p>
+ * If the requested opacity value is less than {@code 1.0f}, and any of the
+ * above conditions are not met, the window opacity will not change,
+ * and the {@code IllegalComponentStateException} will be thrown.
+ * <p>
+ * The translucency levels of individual pixels may also be effected by the
+ * alpha component of their color (see {@link Window#setBackground(Color)}) and the
+ * current shape of this window (see {@link #setShape(Shape)}).
+ *
+ * @param opacity the opacity level to set to the window
+ *
+ * @throws IllegalArgumentException if the opacity is out of the range
+ *     [0..1]
+ * @throws IllegalComponentStateException if the window is decorated and
+ *     the opacity is less than {@code 1.0f}
+ * @throws IllegalComponentStateException if the window is in full screen
+ *     mode, and the opacity is less than {@code 1.0f}
+ * @throws UnsupportedOperationException if the {@code
+ *     GraphicsDevice.WindowTranslucency#TRANSLUCENT TRANSLUCENT}
+ *     translucency is not supported and the opacity is less than
+ *     {@code 1.0f}
+ *
+ * @see Window#getOpacity
+ * @see Window#setBackground(Color)
+ * @see Window#setShape(Shape)
+ * @see Frame#isUndecorated
+ * @see Dialog#isUndecorated
+ * @see GraphicsDevice.WindowTranslucency
+ * @see GraphicsDevice#isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency)
+ *
+ * @since 1.7
+ */
+public void setOpacity(float opacity) {
+    synchronized (getTreeLock()) {
+        if (opacity < 0.0f || opacity > 1.0f) {
+            throw new IllegalArgumentException("The value of opacity should be in the range [0.0f .. 1.0f].");
+        }
+        if (opacity < 1.0f) {
+            GraphicsConfiguration gc = getGraphicsConfiguration();
+            GraphicsDevice gd = gc.getDevice();
+            if (gc.getDevice().getFullScreenWindow() == this) {
+                throw new IllegalComponentStateException("Setting opacity for full-screen window is not supported.");
+            }
+            if (!gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.TRANSLUCENT)) {
+                throw new UnsupportedOperationException("TRANSLUCENT translucency is not supported.");
+            }
+        }
+        this.opacity = opacity;
+        WindowPeer peer = (WindowPeer) getPeer();
+        if (peer != null) {
+            peer.setOpacity(opacity);
+        }
+    }
+}

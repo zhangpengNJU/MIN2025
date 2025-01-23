@@ -1,0 +1,9 @@
+public InputSource resolveEntity(String pid, String sid) throws SAXException {
+    if (sid.equals(PREFS_DTD_URI)) {
+        InputSource is;
+        is = new InputSource(new StringReader(PREFS_DTD));
+        is.setSystemId(PREFS_DTD_URI);
+        return is;
+    }
+    throw new SAXException("Invalid system identifier: " + sid);
+}

@@ -1,0 +1,26 @@
+/**
+ * Tests if this path ends with the given path.
+ *
+ * <p> If the given path has <em>N</em> elements, and no root component,
+ * and this path has <em>N</em> or more elements, then this path ends with
+ * the given path if the last <em>N</em> elements of each path, starting at
+ * the element farthest from the root, are equal.
+ *
+ * <p> If the given path has a root component then this path ends with the
+ * given path if the root component of this path <em>ends with</em> the root
+ * component of the given path, and the corresponding elements of both paths
+ * are equal. Whether or not the root component of this path ends with the
+ * root component of the given path is file system specific. If this path
+ * does not have a root component and the given path has a root component
+ * then this path does not end with the given path.
+ *
+ * <p> If the given path is associated with a different {@code FileSystem}
+ * to this path then {@code false} is returned.
+ *
+ * @param   other
+ *          the given path
+ *
+ * @return  {@code true} if this path ends with the given path; otherwise
+ *          {@code false}
+ */
+boolean endsWith(Path other);

@@ -1,0 +1,11 @@
+/**
+ * @throws ClassCastException       {@inheritDoc}
+ * @throws NullPointerException if {@code fromKey} is null
+ *         and this map uses natural ordering, or its comparator
+ *         does not permit null keys
+ * @throws IllegalArgumentException {@inheritDoc}
+ * @since 1.6
+ */
+public NavigableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+    return new AscendingSubMap<>(this, false, fromKey, inclusive, true, null, true);
+}

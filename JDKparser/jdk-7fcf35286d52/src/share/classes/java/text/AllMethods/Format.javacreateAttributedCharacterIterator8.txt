@@ -1,0 +1,15 @@
+/**
+ * Returns an AttributedCharacterIterator with the String
+ * <code>string</code> and additional key/value pair <code>key</code>,
+ * <code>value</code>.
+ *
+ * @param string String to create AttributedCharacterIterator from
+ * @param key Key for AttributedCharacterIterator
+ * @param value Value associated with key in AttributedCharacterIterator
+ * @return AttributedCharacterIterator wrapping args
+ */
+AttributedCharacterIterator createAttributedCharacterIterator(String string, AttributedCharacterIterator.Attribute key, Object value) {
+    AttributedString as = new AttributedString(string);
+    as.addAttribute(key, value);
+    return as.getIterator();
+}

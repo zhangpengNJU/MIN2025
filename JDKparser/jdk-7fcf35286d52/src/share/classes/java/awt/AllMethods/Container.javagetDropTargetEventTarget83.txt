@@ -1,0 +1,6 @@
+/**
+ * Fetches the top-most (deepest) component to receive SunDropTargetEvents.
+ */
+Component getDropTargetEventTarget(int x, int y, boolean includeSelf) {
+    return getMouseEventTarget(x, y, includeSelf, DropTargetEventTargetFilter.FILTER, SEARCH_HEAVYWEIGHTS);
+}

@@ -1,0 +1,25 @@
+/**
+ * Sets the type of the window.
+ *
+ * This method can only be called while the window is not displayable.
+ *
+ * @throws IllegalComponentStateException if the window
+ *         is displayable.
+ * @throws IllegalArgumentException if the type is {@code null}
+ * @see    Component#isDisplayable
+ * @see    #getType
+ * @since 1.7
+ */
+public void setType(Type type) {
+    if (type == null) {
+        throw new IllegalArgumentException("type should not be null.");
+    }
+    synchronized (getTreeLock()) {
+        if (isDisplayable()) {
+            throw new IllegalComponentStateException("The window is displayable.");
+        }
+        synchronized (getObjectLock()) {
+            this.type = type;
+        }
+    }
+}

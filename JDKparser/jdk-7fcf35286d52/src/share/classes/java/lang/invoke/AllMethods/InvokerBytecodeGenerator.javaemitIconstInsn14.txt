@@ -1,0 +1,33 @@
+private void emitIconstInsn(int i) {
+    int opcode;
+    switch(i) {
+        case 0:
+            opcode = Opcodes.ICONST_0;
+            break;
+        case 1:
+            opcode = Opcodes.ICONST_1;
+            break;
+        case 2:
+            opcode = Opcodes.ICONST_2;
+            break;
+        case 3:
+            opcode = Opcodes.ICONST_3;
+            break;
+        case 4:
+            opcode = Opcodes.ICONST_4;
+            break;
+        case 5:
+            opcode = Opcodes.ICONST_5;
+            break;
+        default:
+            if (i == (byte) i) {
+                mv.visitIntInsn(Opcodes.BIPUSH, i & 0xFF);
+            } else if (i == (short) i) {
+                mv.visitIntInsn(Opcodes.SIPUSH, (char) i);
+            } else {
+                mv.visitLdcInsn(i);
+            }
+            return;
+    }
+    mv.visitInsn(opcode);
+}

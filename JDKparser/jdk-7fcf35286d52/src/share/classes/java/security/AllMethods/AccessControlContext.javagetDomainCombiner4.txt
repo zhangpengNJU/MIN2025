@@ -1,0 +1,22 @@
+/**
+ * Get the {@code DomainCombiner} associated with this
+ * {@code AccessControlContext}.
+ *
+ * <p>
+ *
+ * @return the {@code DomainCombiner} associated with this
+ *          {@code AccessControlContext}, or {@code null}
+ *          if there is none.
+ *
+ * @exception SecurityException if a security manager is installed and
+ *          the caller does not have the "getDomainCombiner"
+ *          {@link SecurityPermission}
+ * @since 1.3
+ */
+public DomainCombiner getDomainCombiner() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(SecurityConstants.GET_COMBINER_PERMISSION);
+    }
+    return getCombiner();
+}

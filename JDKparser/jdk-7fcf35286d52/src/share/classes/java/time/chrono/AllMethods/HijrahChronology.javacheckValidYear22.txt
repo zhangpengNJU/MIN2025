@@ -1,0 +1,12 @@
+// -----------------------------------------------------------------------
+/**
+ * Check the validity of a year.
+ *
+ * @param prolepticYear the year to check
+ */
+int checkValidYear(long prolepticYear) {
+    if (prolepticYear < getMinimumYear() || prolepticYear > getMaximumYear()) {
+        throw new DateTimeException("Invalid Hijrah year: " + prolepticYear);
+    }
+    return (int) prolepticYear;
+}

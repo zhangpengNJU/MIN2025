@@ -1,0 +1,8 @@
+@Override
+public Void run() {
+    ObjectInputFilter.Config.setObjectInputFilter(MarshalledObjectInputStream.this, filter);
+    if (MarshalledObjectInputStream.this.locIn != null) {
+        ObjectInputFilter.Config.setObjectInputFilter(MarshalledObjectInputStream.this.locIn, filter);
+    }
+    return null;
+}

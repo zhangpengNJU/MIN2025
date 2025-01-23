@@ -1,0 +1,10 @@
+private static String debugString(Object arg) {
+    if (arg instanceof MethodHandle) {
+        MethodHandle mh = (MethodHandle) arg;
+        MemberName member = mh.internalMemberName();
+        if (member != null)
+            return member.toString();
+        return mh.debugString();
+    }
+    return arg.toString();
+}

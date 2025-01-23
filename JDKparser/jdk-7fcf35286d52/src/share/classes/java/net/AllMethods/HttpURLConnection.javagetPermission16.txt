@@ -1,0 +1,18 @@
+/**
+ * Returns a {@link SocketPermission} object representing the
+ * permission necessary to connect to the destination host and port.
+ *
+ * @exception IOException if an error occurs while computing
+ *            the permission.
+ *
+ * @return a {@code SocketPermission} object representing the
+ *         permission necessary to connect to the destination
+ *         host and port.
+ */
+public Permission getPermission() throws IOException {
+    int port = url.getPort();
+    port = port < 0 ? 80 : port;
+    String host = url.getHost() + ":" + port;
+    Permission permission = new SocketPermission(host, "connect");
+    return permission;
+}

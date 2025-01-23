@@ -1,0 +1,51 @@
+/**
+ *  Creates a Raster with the specified SampleModel and DataBuffer.
+ *  The upper left corner of the Raster is given by the location argument.
+ *  If location is null, (0, 0) will be used.
+ *  @param sm the specified <code>SampleModel</code>
+ *  @param db the specified <code>DataBuffer</code>
+ *  @param location the upper-left corner of the <code>Raster</code>
+ *  @return a <code>Raster</code> with the specified
+ *          <code>SampleModel</code>, <code>DataBuffer</code>, and
+ *          location.
+ * @throws RasterFormatException if computing either
+ *         <code>location.x + sm.getWidth()</code> or
+ *         <code>location.y + sm.getHeight()</code> results in integer
+ *         overflow
+ * @throws RasterFormatException if <code>db</code> has more
+ *         than one bank and <code>sm</code> is a
+ *         PixelInterleavedSampleModel, SinglePixelPackedSampleModel,
+ *         or MultiPixelPackedSampleModel.
+ *  @throws NullPointerException if either SampleModel or DataBuffer is
+ *          null
+ */
+public static Raster createRaster(SampleModel sm, DataBuffer db, Point location) {
+    if ((sm == null) || (db == null)) {
+        throw new NullPointerException("SampleModel and DataBuffer cannot be null");
+    }
+    if (location == null) {
+        location = new Point(0, 0);
+    }
+    int dataType = sm.getDataType();
+    if (sm instanceof PixelInterleavedSampleModel) {
+        switch(dataType) {
+            case DataBuffer.TYPE_BYTE:
+                return new ByteInterleavedRaster(sm, db, location);
+            case DataBuffer.TYPE_USHORT:
+                return new ShortInterleavedRaster(sm, db, location);
+        }
+    } else if (sm instanceof SinglePixelPackedSampleModel) {
+        switch(dataType) {
+            case DataBuffer.TYPE_BYTE:
+                return new ByteInterleavedRaster(sm, db, location);
+            case DataBuffer.TYPE_USHORT:
+                return new ShortInterleavedRaster(sm, db, location);
+            case DataBuffer.TYPE_INT:
+                return new IntegerInterleavedRaster(sm, db, location);
+        }
+    } else if (sm instanceof MultiPixelPackedSampleModel && dataType == DataBuffer.TYPE_BYTE && sm.getSampleSize(0) < 8) {
+        return new BytePackedRaster(sm, db, location);
+    }
+    // we couldn't do anything special - do the generic thing
+    return new Raster(sm, db, location);
+}

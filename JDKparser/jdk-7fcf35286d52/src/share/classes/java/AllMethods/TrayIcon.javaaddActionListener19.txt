@@ -1,0 +1,24 @@
+/**
+ * Adds the specified action listener to receive
+ * <code>ActionEvent</code>s from this <code>TrayIcon</code>.
+ * Action events usually occur when a user selects the tray icon,
+ * using either the mouse or keyboard.  The conditions in which
+ * action events are generated are platform-dependent.
+ *
+ * <p>Calling this method with a <code>null</code> value has no
+ * effect.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param         listener the action listener
+ * @see           #removeActionListener
+ * @see           #getActionListeners
+ * @see           java.awt.event.ActionListener
+ * @see #setActionCommand(String)
+ */
+public synchronized void addActionListener(ActionListener listener) {
+    if (listener == null) {
+        return;
+    }
+    actionListener = AWTEventMulticaster.add(actionListener, listener);
+}

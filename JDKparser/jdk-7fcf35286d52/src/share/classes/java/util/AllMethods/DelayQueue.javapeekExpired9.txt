@@ -1,0 +1,9 @@
+/**
+ * Returns first element only if it is expired.
+ * Used only by drainTo.  Call only when holding lock.
+ */
+private E peekExpired() {
+    // assert lock.isHeldByCurrentThread();
+    E first = q.peek();
+    return (first == null || first.getDelay(NANOSECONDS) > 0) ? null : first;
+}

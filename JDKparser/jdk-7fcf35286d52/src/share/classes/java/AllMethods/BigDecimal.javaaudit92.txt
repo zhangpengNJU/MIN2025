@@ -1,0 +1,46 @@
+/**
+ * Check internal invariants of this BigDecimal.  These invariants
+ * include:
+ *
+ * <ul>
+ *
+ * <li>The object must be initialized; either intCompact must not be
+ * INFLATED or intVal is non-null.  Both of these conditions may
+ * be true.
+ *
+ * <li>If both intCompact and intVal and set, their values must be
+ * consistent.
+ *
+ * <li>If precision is nonzero, it must have the right value.
+ * </ul>
+ *
+ * Note: Since this is an audit method, we are not supposed to change the
+ * state of this BigDecimal object.
+ */
+private BigDecimal audit() {
+    if (intCompact == INFLATED) {
+        if (intVal == null) {
+            print("audit", this);
+            throw new AssertionError("null intVal");
+        }
+        // Check precision
+        if (precision > 0 && precision != bigDigitLength(intVal)) {
+            print("audit", this);
+            throw new AssertionError("precision mismatch");
+        }
+    } else {
+        if (intVal != null) {
+            long val = intVal.longValue();
+            if (val != intCompact) {
+                print("audit", this);
+                throw new AssertionError("Inconsistent state, intCompact=" + intCompact + "\t intVal=" + val);
+            }
+        }
+        // Check precision
+        if (precision > 0 && precision != longDigitLength(intCompact)) {
+            print("audit", this);
+            throw new AssertionError("precision mismatch");
+        }
+    }
+    return this;
+}

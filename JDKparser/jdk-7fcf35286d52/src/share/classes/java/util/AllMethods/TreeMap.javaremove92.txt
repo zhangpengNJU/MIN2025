@@ -1,0 +1,9 @@
+public void remove() {
+    if (lastReturned == null)
+        throw new IllegalStateException();
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    deleteEntry(lastReturned);
+    lastReturned = null;
+    expectedModCount = modCount;
+}

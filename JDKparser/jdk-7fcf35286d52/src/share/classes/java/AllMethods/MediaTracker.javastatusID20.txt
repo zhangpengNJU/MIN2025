@@ -1,0 +1,11 @@
+private synchronized int statusID(int id, boolean load, boolean verify) {
+    MediaEntry cur = head;
+    int status = 0;
+    while (cur != null) {
+        if (cur.getID() == id) {
+            status = status | cur.getStatus(load, verify);
+        }
+        cur = cur.next;
+    }
+    return status;
+}

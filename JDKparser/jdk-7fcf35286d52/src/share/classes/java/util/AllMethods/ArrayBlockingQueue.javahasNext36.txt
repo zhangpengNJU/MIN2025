@@ -1,0 +1,13 @@
+/**
+ * For performance reasons, we would like not to acquire a lock in
+ * hasNext in the common case.  To allow for this, we only access
+ * fields (i.e. nextItem) that are not modified by update operations
+ * triggered by queue modifications.
+ */
+public boolean hasNext() {
+    // assert lock.getHoldCount() == 0;
+    if (nextItem != null)
+        return true;
+    noNext();
+    return false;
+}

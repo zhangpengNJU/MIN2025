@@ -1,0 +1,39 @@
+/**
+ * Blocks until all tasks have completed execution after a
+ * shutdown request, or the timeout occurs, or the current thread
+ * is interrupted, whichever happens first. Because the {@link
+ * #commonPool()} never terminates until program shutdown, when
+ * applied to the common pool, this method is equivalent to {@link
+ * #awaitQuiescence(long, TimeUnit)} but always returns {@code false}.
+ *
+ * @param timeout the maximum time to wait
+ * @param unit the time unit of the timeout argument
+ * @return {@code true} if this executor terminated and
+ *         {@code false} if the timeout elapsed before termination
+ * @throws InterruptedException if interrupted while waiting
+ */
+public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    if (this == common) {
+        awaitQuiescence(timeout, unit);
+        return false;
+    }
+    long nanos = unit.toNanos(timeout);
+    if (isTerminated())
+        return true;
+    if (nanos <= 0L)
+        return false;
+    long deadline = System.nanoTime() + nanos;
+    synchronized (this) {
+        for (; ; ) {
+            if (isTerminated())
+                return true;
+            if (nanos <= 0L)
+                return false;
+            long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
+            wait(millis > 0L ? millis : 1L);
+            nanos = deadline - System.nanoTime();
+        }
+    }
+}

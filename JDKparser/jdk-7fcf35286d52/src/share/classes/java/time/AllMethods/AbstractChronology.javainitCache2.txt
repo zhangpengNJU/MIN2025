@@ -1,0 +1,40 @@
+/**
+ * Initialization of the maps from id and type to Chronology.
+ * The ServiceLoader is used to find and register any implementations
+ * of {@link java.time.chrono.AbstractChronology} found in the bootclass loader.
+ * The built-in chronologies are registered explicitly.
+ * Calendars configured via the Thread's context classloader are local
+ * to that thread and are ignored.
+ * <p>
+ * The initialization is done only once using the registration
+ * of the IsoChronology as the test and the final step.
+ * Multiple threads may perform the initialization concurrently.
+ * Only the first registration of each Chronology is retained by the
+ * ConcurrentHashMap.
+ * @return true if the cache was initialized
+ */
+private static boolean initCache() {
+    if (CHRONOS_BY_ID.get("ISO") == null) {
+        // Initialization is incomplete
+        // Register built-in Chronologies
+        registerChrono(HijrahChronology.INSTANCE);
+        registerChrono(JapaneseChronology.INSTANCE);
+        registerChrono(MinguoChronology.INSTANCE);
+        registerChrono(ThaiBuddhistChronology.INSTANCE);
+        // Register Chronologies from the ServiceLoader
+        @SuppressWarnings("rawtypes")
+        ServiceLoader<AbstractChronology> loader = ServiceLoader.load(AbstractChronology.class, null);
+        for (AbstractChronology chrono : loader) {
+            String id = chrono.getId();
+            if (id.equals("ISO") || registerChrono(chrono) != null) {
+                // Log the attempt to replace an existing Chronology
+                PlatformLogger logger = PlatformLogger.getLogger("java.time.chrono");
+                logger.warning("Ignoring duplicate Chronology, from ServiceLoader configuration " + id);
+            }
+        }
+        // finally, register IsoChronology to mark initialization is complete
+        registerChrono(IsoChronology.INSTANCE);
+        return true;
+    }
+    return false;
+}

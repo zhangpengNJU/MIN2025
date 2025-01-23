@@ -1,0 +1,19 @@
+private static int getPriority(AWTEvent theEvent) {
+    if (theEvent instanceof PeerEvent) {
+        PeerEvent peerEvent = (PeerEvent) theEvent;
+        if ((peerEvent.getFlags() & PeerEvent.ULTIMATE_PRIORITY_EVENT) != 0) {
+            return ULTIMATE_PRIORITY;
+        }
+        if ((peerEvent.getFlags() & PeerEvent.PRIORITY_EVENT) != 0) {
+            return HIGH_PRIORITY;
+        }
+        if ((peerEvent.getFlags() & PeerEvent.LOW_PRIORITY_EVENT) != 0) {
+            return LOW_PRIORITY;
+        }
+    }
+    int id = theEvent.getID();
+    if ((id >= PaintEvent.PAINT_FIRST) && (id <= PaintEvent.PAINT_LAST)) {
+        return LOW_PRIORITY;
+    }
+    return NORM_PRIORITY;
+}

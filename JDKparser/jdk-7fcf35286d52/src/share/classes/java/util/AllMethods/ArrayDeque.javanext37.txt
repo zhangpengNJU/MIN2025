@@ -1,0 +1,11 @@
+public E next() {
+    if (cursor == fence)
+        throw new NoSuchElementException();
+    cursor = (cursor - 1) & (elements.length - 1);
+    @SuppressWarnings("unchecked")
+    E result = (E) elements[cursor];
+    if (head != fence || result == null)
+        throw new ConcurrentModificationException();
+    lastRet = cursor;
+    return result;
+}

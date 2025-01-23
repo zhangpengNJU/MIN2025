@@ -1,0 +1,46 @@
+/**
+ * Semantically equivalent to 'flavorToNative.get(flav)'. This method
+ * handles the case where 'flav' is not found in 'flavorToNative' depending
+ * on the value of passes 'synthesize' parameter. If 'synthesize' is
+ * SYNTHESIZE_IF_NOT_FOUND a native is synthesized, stored, and returned by
+ * encoding the DataFlavor's MIME type. Otherwise an empty List is returned
+ * and 'flavorToNative' remains unaffected.
+ */
+private LinkedHashSet<String> flavorToNativeLookup(final DataFlavor flav, final boolean synthesize) {
+    LinkedHashSet<String> natives = getFlavorToNative().get(flav);
+    if (flav != null && !disabledMappingGenerationKeys.contains(flav)) {
+        DataTransferer transferer = DataTransferer.getInstance();
+        if (transferer != null) {
+            LinkedHashSet<String> platformNatives = transferer.getPlatformMappingsForFlavor(flav);
+            if (!platformNatives.isEmpty()) {
+                if (natives != null) {
+                    // Prepend the platform-specific mappings to ensure
+                    // that the natives added with
+                    // addUnencodedNativeForFlavor() are at the end of
+                    // list.
+                    platformNatives.addAll(natives);
+                }
+                natives = platformNatives;
+            }
+        }
+    }
+    if (natives == null) {
+        if (synthesize) {
+            String encoded = encodeDataFlavor(flav);
+            natives = new LinkedHashSet<>(1);
+            getFlavorToNative().put(flav, natives);
+            natives.add(encoded);
+            LinkedHashSet<DataFlavor> flavors = getNativeToFlavor().get(encoded);
+            if (flavors == null) {
+                flavors = new LinkedHashSet<>(1);
+                getNativeToFlavor().put(encoded, flavors);
+            }
+            flavors.add(flav);
+            nativesForFlavorCache.remove(flav);
+            flavorsForNativeCache.remove(encoded);
+        } else {
+            natives = new LinkedHashSet<>(0);
+        }
+    }
+    return new LinkedHashSet<>(natives);
+}

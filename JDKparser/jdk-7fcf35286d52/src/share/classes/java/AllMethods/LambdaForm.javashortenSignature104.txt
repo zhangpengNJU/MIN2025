@@ -1,0 +1,33 @@
+public static String shortenSignature(String signature) {
+    // Hack to make signatures more readable when they show up in method names.
+    final int NO_CHAR = -1, MIN_RUN = 3;
+    int c0, c1 = NO_CHAR, c1reps = 0;
+    StringBuilder buf = null;
+    int len = signature.length();
+    if (len < MIN_RUN)
+        return signature;
+    for (int i = 0; i <= len; i++) {
+        // shift in the next char:
+        c0 = c1;
+        c1 = (i == len ? NO_CHAR : signature.charAt(i));
+        if (c1 == c0) {
+            ++c1reps;
+            continue;
+        }
+        // shift in the next count:
+        int c0reps = c1reps;
+        c1reps = 1;
+        // end of a  character run
+        if (c0reps < MIN_RUN) {
+            if (buf != null) {
+                while (--c0reps >= 0) buf.append((char) c0);
+            }
+            continue;
+        }
+        // found three or more in a row
+        if (buf == null)
+            buf = new StringBuilder().append(signature, 0, i - c0reps);
+        buf.append((char) c0).append(c0reps);
+    }
+    return (buf == null) ? signature : buf.toString();
+}

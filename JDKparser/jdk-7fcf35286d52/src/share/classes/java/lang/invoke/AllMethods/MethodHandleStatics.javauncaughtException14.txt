@@ -1,0 +1,11 @@
+/**
+ * Propagate unchecked exceptions and errors, but wrap anything checked and throw that instead.
+ */
+/*non-public*/
+static Error uncaughtException(Throwable ex) {
+    if (ex instanceof Error)
+        throw (Error) ex;
+    if (ex instanceof RuntimeException)
+        throw (RuntimeException) ex;
+    throw newInternalError("uncaught exception", ex);
+}

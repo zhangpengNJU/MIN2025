@@ -1,0 +1,32 @@
+/**
+ * Copies all of the mappings from the specified map to this map.
+ * These mappings will replace any mappings that this map had for any
+ * of the keys currently in the specified map.
+ *
+ * @param m mappings to be stored in this map.
+ * @throws  NullPointerException if the specified map is null.
+ */
+public void putAll(Map<? extends K, ? extends V> m) {
+    int numKeysToBeAdded = m.size();
+    if (numKeysToBeAdded == 0)
+        return;
+    /*
+         * Expand the map if the map if the number of mappings to be added
+         * is greater than or equal to threshold.  This is conservative; the
+         * obvious condition is (m.size() + size) >= threshold, but this
+         * condition could result in a map with twice the appropriate capacity,
+         * if the keys to be added overlap with the keys already in this map.
+         * By using the conservative calculation, we subject ourself
+         * to at most one extra resize.
+         */
+    if (numKeysToBeAdded > threshold) {
+        int targetCapacity = (int) (numKeysToBeAdded / loadFactor + 1);
+        if (targetCapacity > MAXIMUM_CAPACITY)
+            targetCapacity = MAXIMUM_CAPACITY;
+        int newCapacity = table.length;
+        while (newCapacity < targetCapacity) newCapacity <<= 1;
+        if (newCapacity > table.length)
+            resize(newCapacity);
+    }
+    for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) put(e.getKey(), e.getValue());
+}

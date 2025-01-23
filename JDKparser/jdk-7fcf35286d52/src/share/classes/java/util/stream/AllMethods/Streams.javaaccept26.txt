@@ -1,0 +1,17 @@
+// StreamBuilder implementation
+@Override
+public void accept(long t) {
+    if (count == 0) {
+        first = t;
+        count++;
+    } else if (count > 0) {
+        if (buffer == null) {
+            buffer = new SpinedBuffer.OfLong();
+            buffer.accept(first);
+            count++;
+        }
+        buffer.accept(t);
+    } else {
+        throw new IllegalStateException();
+    }
+}

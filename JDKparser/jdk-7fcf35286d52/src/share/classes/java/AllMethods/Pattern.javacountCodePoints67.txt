@@ -1,0 +1,13 @@
+private static final int countCodePoints(CharSequence seq) {
+    int length = seq.length();
+    int n = 0;
+    for (int i = 0; i < length; ) {
+        n++;
+        if (Character.isHighSurrogate(seq.charAt(i++))) {
+            if (i < length && Character.isLowSurrogate(seq.charAt(i))) {
+                i++;
+            }
+        }
+    }
+    return n;
+}

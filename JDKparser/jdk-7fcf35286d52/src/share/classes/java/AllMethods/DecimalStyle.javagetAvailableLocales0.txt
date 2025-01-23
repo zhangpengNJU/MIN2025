@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+/**
+ * Lists all the locales that are supported.
+ * <p>
+ * The locale 'en_US' will always be present.
+ *
+ * @return a Set of Locales for which localization is supported
+ */
+public static Set<Locale> getAvailableLocales() {
+    Locale[] l = DecimalFormatSymbols.getAvailableLocales();
+    Set<Locale> locales = new HashSet<>(l.length);
+    Collections.addAll(locales, l);
+    return locales;
+}

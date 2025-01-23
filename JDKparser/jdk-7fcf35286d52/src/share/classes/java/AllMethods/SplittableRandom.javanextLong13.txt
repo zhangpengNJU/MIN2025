@@ -1,0 +1,24 @@
+/**
+ * Returns a pseudorandom {@code long} value between zero (inclusive)
+ * and the specified bound (exclusive).
+ *
+ * @param bound the upper bound (exclusive).  Must be positive.
+ * @return a pseudorandom {@code long} value between zero
+ *         (inclusive) and the bound (exclusive)
+ * @throws IllegalArgumentException if {@code bound} is not positive
+ */
+public long nextLong(long bound) {
+    if (bound <= 0)
+        throw new IllegalArgumentException(BadBound);
+    // Specialize internalNextLong for origin 0
+    long r = mix64(nextSeed());
+    long m = bound - 1;
+    if (// power of two
+    (bound & m) == 0L)
+        r &= m;
+    else {
+        // reject over-represented candidates
+        for (long u = r >>> 1; u + m - (r = u % bound) < 0L; u = mix64(nextSeed()) >>> 1) ;
+    }
+    return r;
+}

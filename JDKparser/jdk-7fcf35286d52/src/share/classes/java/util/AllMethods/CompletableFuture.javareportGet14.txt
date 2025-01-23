@@ -1,0 +1,21 @@
+/**
+ * Reports result using Future.get conventions.
+ */
+private static <T> T reportGet(Object r) throws InterruptedException, ExecutionException {
+    if (// by convention below, null means interrupted
+    r == null)
+        throw new InterruptedException();
+    if (r instanceof AltResult) {
+        Throwable x, cause;
+        if ((x = ((AltResult) r).ex) == null)
+            return null;
+        if (x instanceof CancellationException)
+            throw (CancellationException) x;
+        if ((x instanceof CompletionException) && (cause = x.getCause()) != null)
+            x = cause;
+        throw new ExecutionException(x);
+    }
+    @SuppressWarnings("unchecked")
+    T t = (T) r;
+    return t;
+}

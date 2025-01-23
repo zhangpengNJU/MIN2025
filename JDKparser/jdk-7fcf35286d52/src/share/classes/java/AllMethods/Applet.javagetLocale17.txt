@@ -1,0 +1,16 @@
+/**
+ * Gets the locale of the applet. It allows the applet
+ * to maintain its own locale separated from the locale
+ * of the browser or appletviewer.
+ *
+ * @return  the locale of the applet; if no locale has
+ *          been set, the default locale is returned.
+ * @since   JDK1.1
+ */
+public Locale getLocale() {
+    Locale locale = super.getLocale();
+    if (locale == null) {
+        return Locale.getDefault();
+    }
+    return locale;
+}

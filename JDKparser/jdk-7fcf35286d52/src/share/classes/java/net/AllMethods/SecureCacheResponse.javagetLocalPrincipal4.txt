@@ -1,0 +1,14 @@
+/**
+ * Returns the principal that was sent to the server during
+ * handshaking in the original connection that retrieved the
+ * network resource.
+ *
+ * @return the principal sent to the server. Returns an X500Principal
+ * of the end-entity certificate for X509-based cipher suites, and
+ * KerberosPrincipal for Kerberos cipher suites. If no principal was
+ * sent, then null is returned.
+ *
+ * @see #getLocalCertificateChain()
+ * @see #getPeerPrincipal()
+ */
+public abstract Principal getLocalPrincipal();

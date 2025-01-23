@@ -1,0 +1,18 @@
+/**
+ * Closes this output stream and releases any system resources
+ * associated with the stream.
+ * <p>
+ * The <code>close</code> method of <code>FilterOutputStream</code>
+ * calls its <code>flush</code> method, and then calls the
+ * <code>close</code> method of its underlying output stream.
+ *
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.FilterOutputStream#flush()
+ * @see        java.io.FilterOutputStream#out
+ */
+@SuppressWarnings("try")
+public void close() throws IOException {
+    try (OutputStream ostream = out) {
+        flush();
+    }
+}

@@ -1,0 +1,26 @@
+/**
+ * Creates an appropriate call object for a new remote method
+ * invocation on this object.  Passing operation array and index,
+ * allows the stubs generator to assign the operation indexes and
+ * interpret them. The remote reference may need the operation to
+ * encode in the call.
+ *
+ * @since JDK1.1
+ * @deprecated 1.2 style stubs no longer use this method. Instead of
+ * using a sequence of method calls on the stub's the remote reference
+ * (<code>newCall</code>, <code>invoke</code>, and <code>done</code>), a
+ * stub uses a single method, <code>invoke(Remote, Method, Object[],
+ * int)</code>, on the remote reference to carry out parameter
+ * marshalling, remote method executing and unmarshalling of the return
+ * value.
+ *
+ * @param obj remote stub through which to make call
+ * @param op array of stub operations
+ * @param opnum operation number
+ * @param hash stub/skeleton interface hash
+ * @return call object representing remote call
+ * @throws RemoteException if failed to initiate new remote call
+ * @see #invoke(Remote,java.lang.reflect.Method,Object[],long)
+ */
+@Deprecated
+RemoteCall newCall(RemoteObject obj, Operation[] op, int opnum, long hash) throws RemoteException;

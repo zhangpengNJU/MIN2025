@@ -1,0 +1,16 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    if (atom instanceof BnM) {
+        return atom.match(matcher, i, seq) && next.match(matcher, matcher.last, seq);
+    }
+    for (; ; ) {
+        if (i > matcher.to) {
+            matcher.hitEnd = true;
+            return false;
+        }
+        if (atom.match(matcher, i, seq)) {
+            return next.match(matcher, matcher.last, seq);
+        }
+        i += countChars(seq, i, 1);
+        matcher.first++;
+    }
+}

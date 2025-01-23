@@ -1,0 +1,6 @@
+public final void set(T obj, long newValue) {
+    accessCheck(obj);
+    synchronized (this) {
+        U.putLong(obj, offset, newValue);
+    }
+}

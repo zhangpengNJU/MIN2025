@@ -1,0 +1,13 @@
+private synchronized Map<String, CodeSigner[]> signerMap() {
+    if (signerMap == null) {
+        /*
+             * Snapshot signer state so it doesn't change on us. We care
+             * only about the asserted signatures. Verification of
+             * signature validity happens via the JarEntry apis.
+             */
+        signerMap = new HashMap<>(verifiedSigners.size() + sigFileSigners.size());
+        signerMap.putAll(verifiedSigners);
+        signerMap.putAll(sigFileSigners);
+    }
+    return signerMap;
+}

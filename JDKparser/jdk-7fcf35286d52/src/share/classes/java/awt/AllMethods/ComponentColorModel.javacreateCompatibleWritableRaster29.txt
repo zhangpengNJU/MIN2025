@@ -1,0 +1,28 @@
+/**
+ * Creates a <CODE>WritableRaster</CODE> with the specified width and height,
+ * that  has a data layout (<CODE>SampleModel</CODE>) compatible with
+ * this <CODE>ColorModel</CODE>.
+ *
+ * @param w The width of the <CODE>WritableRaster</CODE> you want to create.
+ * @param h The height of the <CODE>WritableRaster</CODE> you want to create.
+ *
+ * @return A <CODE>WritableRaster</CODE> that is compatible with
+ * this <CODE>ColorModel</CODE>.
+ * @see WritableRaster
+ * @see SampleModel
+ */
+public WritableRaster createCompatibleWritableRaster(int w, int h) {
+    int dataSize = w * h * numComponents;
+    WritableRaster raster = null;
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+        case DataBuffer.TYPE_USHORT:
+            raster = Raster.createInterleavedRaster(transferType, w, h, numComponents, null);
+            break;
+        default:
+            SampleModel sm = createCompatibleSampleModel(w, h);
+            DataBuffer db = sm.createDataBuffer();
+            raster = Raster.createWritableRaster(sm, db, null);
+    }
+    return raster;
+}

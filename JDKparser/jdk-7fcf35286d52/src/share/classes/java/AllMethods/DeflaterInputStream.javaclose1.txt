@@ -1,0 +1,19 @@
+/**
+ * Closes this input stream and its underlying input stream, discarding
+ * any pending uncompressed data.
+ *
+ * @throws IOException if an I/O error occurs
+ */
+public void close() throws IOException {
+    if (in != null) {
+        try {
+            // Clean up
+            if (usesDefaultDeflater) {
+                def.end();
+            }
+            in.close();
+        } finally {
+            in = null;
+        }
+    }
+}

@@ -1,0 +1,10 @@
+// package-private
+// Add a platform logger to the system context.
+// i.e. caller of sun.util.logging.PlatformLogger.getLogger
+static Logger getPlatformLogger(String name) {
+    LogManager manager = LogManager.getLogManager();
+    // all loggers in the system context will default to
+    // the system logger's resource bundle
+    Logger result = manager.demandSystemLogger(name, SYSTEM_LOGGER_RB_NAME);
+    return result;
+}

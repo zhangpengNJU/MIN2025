@@ -1,0 +1,5 @@
+private static MethodHandle makeIdentity(Class<?> ptype) {
+    MethodType mtype = MethodType.methodType(ptype, ptype);
+    LambdaForm lform = LambdaForm.identityForm(BasicType.basicType(ptype));
+    return MethodHandleImpl.makeIntrinsic(mtype, lform, Intrinsic.IDENTITY);
+}

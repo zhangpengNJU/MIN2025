@@ -1,0 +1,5 @@
+public SortedSet<E> headSet(E toElement) {
+    synchronized (mutex) {
+        return new SynchronizedSortedSet<>(ss.headSet(toElement), mutex);
+    }
+}

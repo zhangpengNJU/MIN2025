@@ -1,0 +1,77 @@
+/**
+ * Returns a <code>List</code> of <code>String</code> natives to which the
+ * specified <code>DataFlavor</code> can be translated by the data transfer
+ * subsystem. The <code>List</code> will be sorted from best native to
+ * worst. That is, the first native will best reflect data in the specified
+ * flavor to the underlying native platform.
+ * <p>
+ * If the specified <code>DataFlavor</code> is previously unknown to the
+ * data transfer subsystem and the data transfer subsystem is unable to
+ * translate this <code>DataFlavor</code> to any existing native, then
+ * invoking this method will establish a
+ * mapping in both directions between the specified <code>DataFlavor</code>
+ * and an encoded version of its MIME type as its native.
+ *
+ * @param flav the <code>DataFlavor</code> whose corresponding natives
+ *        should be returned. If <code>null</code> is specified, all
+ *        natives currently known to the data transfer subsystem are
+ *        returned in a non-deterministic order.
+ * @return a <code>java.util.List</code> of <code>java.lang.String</code>
+ *         objects which are platform-specific representations of platform-
+ *         specific data formats
+ *
+ * @see #encodeDataFlavor
+ * @since 1.4
+ */
+@Override
+public synchronized List<String> getNativesForFlavor(DataFlavor flav) {
+    LinkedHashSet<String> retval = nativesForFlavorCache.check(flav);
+    if (retval != null) {
+        return new ArrayList<>(retval);
+    }
+    if (flav == null) {
+        retval = new LinkedHashSet<>(getNativeToFlavor().keySet());
+    } else if (disabledMappingGenerationKeys.contains(flav)) {
+        // In this case we shouldn't synthesize a native for this flavor,
+        // since its mappings were explicitly specified.
+        retval = flavorToNativeLookup(flav, false);
+    } else if (DataTransferer.isFlavorCharsetTextType(flav)) {
+        retval = new LinkedHashSet<>(0);
+        // For text/* flavors, flavor-to-native mappings specified in
+        // flavormap.properties are stored per flavor's base type.
+        if ("text".equals(flav.getPrimaryType())) {
+            LinkedHashSet<String> textTypeNatives = getTextTypeToNative().get(flav.mimeType.getBaseType());
+            if (textTypeNatives != null) {
+                retval.addAll(textTypeNatives);
+            }
+        }
+        // Also include text/plain natives, but don't duplicate Strings
+        LinkedHashSet<String> textTypeNatives = getTextTypeToNative().get(TEXT_PLAIN_BASE_TYPE);
+        if (textTypeNatives != null) {
+            retval.addAll(textTypeNatives);
+        }
+        if (retval.isEmpty()) {
+            retval = flavorToNativeLookup(flav, true);
+        } else {
+            // In this branch it is guaranteed that natives explicitly
+            // listed for flav's MIME type were added with
+            // addUnencodedNativeForFlavor(), so they have lower priority.
+            retval.addAll(flavorToNativeLookup(flav, false));
+        }
+    } else if (DataTransferer.isFlavorNoncharsetTextType(flav)) {
+        retval = getTextTypeToNative().get(flav.mimeType.getBaseType());
+        if (retval == null || retval.isEmpty()) {
+            retval = flavorToNativeLookup(flav, true);
+        } else {
+            // In this branch it is guaranteed that natives explicitly
+            // listed for flav's MIME type were added with
+            // addUnencodedNativeForFlavor(), so they have lower priority.
+            retval.addAll(flavorToNativeLookup(flav, false));
+        }
+    } else {
+        retval = flavorToNativeLookup(flav, true);
+    }
+    nativesForFlavorCache.put(flav, retval);
+    // Create a copy, because client code can modify the returned list.
+    return new ArrayList<>(retval);
+}

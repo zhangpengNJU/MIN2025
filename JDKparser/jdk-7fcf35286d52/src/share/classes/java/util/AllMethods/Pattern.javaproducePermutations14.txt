@@ -1,0 +1,59 @@
+/**
+ * Returns an array of strings that have all the possible
+ * permutations of the characters in the input string.
+ * This is used to get a list of all possible orderings
+ * of a set of combining marks. Note that some of the permutations
+ * are invalid because of combining class collisions, and these
+ * possibilities must be removed because they are not canonically
+ * equivalent.
+ */
+private String[] producePermutations(String input) {
+    if (input.length() == countChars(input, 0, 1))
+        return new String[] { input };
+    if (input.length() == countChars(input, 0, 2)) {
+        int c0 = Character.codePointAt(input, 0);
+        int c1 = Character.codePointAt(input, Character.charCount(c0));
+        if (getClass(c1) == getClass(c0)) {
+            return new String[] { input };
+        }
+        String[] result = new String[2];
+        result[0] = input;
+        StringBuilder sb = new StringBuilder(2);
+        sb.appendCodePoint(c1);
+        sb.appendCodePoint(c0);
+        result[1] = sb.toString();
+        return result;
+    }
+    int length = 1;
+    int nCodePoints = countCodePoints(input);
+    for (int x = 1; x < nCodePoints; x++) length = length * (x + 1);
+    String[] temp = new String[length];
+    int[] combClass = new int[nCodePoints];
+    for (int x = 0, i = 0; x < nCodePoints; x++) {
+        int c = Character.codePointAt(input, i);
+        combClass[x] = getClass(c);
+        i += Character.charCount(c);
+    }
+    // For each char, take it out and add the permutations
+    // of the remaining chars
+    int index = 0;
+    int len;
+    // offset maintains the index in code units.
+    loop: for (int x = 0, offset = 0; x < nCodePoints; x++, offset += len) {
+        len = countChars(input, offset, 1);
+        boolean skip = false;
+        for (int y = x - 1; y >= 0; y--) {
+            if (combClass[y] == combClass[x]) {
+                continue loop;
+            }
+        }
+        StringBuilder sb = new StringBuilder(input);
+        String otherChars = sb.delete(offset, offset + len).toString();
+        String[] subResult = producePermutations(otherChars);
+        String prefix = input.substring(offset, offset + len);
+        for (int y = 0; y < subResult.length; y++) temp[index++] = prefix + subResult[y];
+    }
+    String[] result = new String[index];
+    for (int x = 0; x < index; x++) result[x] = temp[x];
+    return result;
+}

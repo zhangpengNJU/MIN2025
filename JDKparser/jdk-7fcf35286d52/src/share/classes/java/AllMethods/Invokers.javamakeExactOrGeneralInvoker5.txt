@@ -1,0 +1,12 @@
+private MethodHandle makeExactOrGeneralInvoker(boolean isExact) {
+    MethodType mtype = targetType;
+    MethodType invokerType = mtype.invokerType();
+    int which = (isExact ? MethodTypeForm.LF_EX_INVOKER : MethodTypeForm.LF_GEN_INVOKER);
+    LambdaForm lform = invokeHandleForm(mtype, false, which);
+    MethodHandle invoker = BoundMethodHandle.bindSingle(invokerType, lform, mtype);
+    String whichName = (isExact ? "invokeExact" : "invoke");
+    invoker = invoker.withInternalMemberName(MemberName.makeMethodHandleInvoke(whichName, mtype), false);
+    assert (checkInvoker(invoker));
+    maybeCompileToBytecode(invoker);
+    return invoker;
+}

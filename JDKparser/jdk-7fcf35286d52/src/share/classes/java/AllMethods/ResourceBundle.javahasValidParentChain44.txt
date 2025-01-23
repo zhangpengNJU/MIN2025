@@ -1,0 +1,21 @@
+/**
+ * Determines whether any of resource bundles in the parent chain,
+ * including the leaf, have expired.
+ */
+private static boolean hasValidParentChain(ResourceBundle bundle) {
+    long now = System.currentTimeMillis();
+    while (bundle != null) {
+        if (bundle.expired) {
+            return false;
+        }
+        CacheKey key = bundle.cacheKey;
+        if (key != null) {
+            long expirationTime = key.expirationTime;
+            if (expirationTime >= 0 && expirationTime <= now) {
+                return false;
+            }
+        }
+        bundle = bundle.parent;
+    }
+    return true;
+}

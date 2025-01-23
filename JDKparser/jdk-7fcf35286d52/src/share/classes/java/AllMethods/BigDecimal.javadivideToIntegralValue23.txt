@@ -1,0 +1,63 @@
+/**
+ * Returns a {@code BigDecimal} whose value is the integer part
+ * of {@code (this / divisor)}.  Since the integer part of the
+ * exact quotient does not depend on the rounding mode, the
+ * rounding mode does not affect the values returned by this
+ * method.  The preferred scale of the result is
+ * {@code (this.scale() - divisor.scale())}.  An
+ * {@code ArithmeticException} is thrown if the integer part of
+ * the exact quotient needs more than {@code mc.precision}
+ * digits.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @param  mc the context to use.
+ * @return The integer part of {@code this / divisor}.
+ * @throws ArithmeticException if {@code divisor==0}
+ * @throws ArithmeticException if {@code mc.precision} {@literal >} 0 and the result
+ *         requires a precision of more than {@code mc.precision} digits.
+ * @since  1.5
+ * @author Joseph D. Darcy
+ */
+public BigDecimal divideToIntegralValue(BigDecimal divisor, MathContext mc) {
+    if (// exact result
+    mc.precision == 0 || // zero result
+    (this.compareMagnitude(divisor) < 0))
+        return divideToIntegralValue(divisor);
+    // Calculate preferred scale
+    int preferredScale = saturateLong((long) this.scale - divisor.scale);
+    /*
+         * Perform a normal divide to mc.precision digits.  If the
+         * remainder has absolute value less than the divisor, the
+         * integer portion of the quotient fits into mc.precision
+         * digits.  Next, remove any fractional digits from the
+         * quotient and adjust the scale to the preferred value.
+         */
+    BigDecimal result = this.divide(divisor, new MathContext(mc.precision, RoundingMode.DOWN));
+    if (result.scale() < 0) {
+        /*
+             * Result is an integer. See if quotient represents the
+             * full integer portion of the exact quotient; if it does,
+             * the computed remainder will be less than the divisor.
+             */
+        BigDecimal product = result.multiply(divisor);
+        // If the quotient is the full integer value,
+        // |dividend-product| < |divisor|.
+        if (this.subtract(product).compareMagnitude(divisor) >= 0) {
+            throw new ArithmeticException("Division impossible");
+        }
+    } else if (result.scale() > 0) {
+        /*
+             * Integer portion of quotient will fit into precision
+             * digits; recompute quotient to scale 0 to avoid double
+             * rounding and then try to adjust, if necessary.
+             */
+        result = result.setScale(0, RoundingMode.DOWN);
+    }
+    // else result.scale() == 0;
+    int precisionDiff;
+    if ((preferredScale > result.scale()) && (precisionDiff = mc.precision - result.precision()) > 0) {
+        return result.setScale(result.scale() + Math.min(precisionDiff, preferredScale - result.scale));
+    } else {
+        return stripZerosToMatchScale(result.intVal, result.intCompact, result.scale, preferredScale);
+    }
+}

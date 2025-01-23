@@ -1,0 +1,33 @@
+/**
+ * Returns the hardware address (usually MAC) of the interface if it
+ * has one and if it can be accessed given the current privileges.
+ * If a security manager is set, then the caller must have
+ * the permission {@link NetPermission}("getNetworkInformation").
+ *
+ * @return  a byte array containing the address, or {@code null} if
+ *          the address doesn't exist, is not accessible or a security
+ *          manager is set and the caller does not have the permission
+ *          NetPermission("getNetworkInformation")
+ *
+ * @exception       SocketException if an I/O error occurs.
+ * @since 1.6
+ */
+public byte[] getHardwareAddress() throws SocketException {
+    SecurityManager sec = System.getSecurityManager();
+    if (sec != null) {
+        try {
+            sec.checkPermission(new NetPermission("getNetworkInformation"));
+        } catch (SecurityException e) {
+            if (!getInetAddresses().hasMoreElements()) {
+                // don't have connect permission to any local address
+                return null;
+            }
+        }
+    }
+    for (InetAddress addr : addrs) {
+        if (addr instanceof Inet4Address) {
+            return getMacAddr0(((Inet4Address) addr).getAddress(), name, index);
+        }
+    }
+    return getMacAddr0(null, name, index);
+}

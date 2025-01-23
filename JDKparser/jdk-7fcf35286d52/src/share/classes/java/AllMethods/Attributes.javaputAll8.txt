@@ -1,0 +1,13 @@
+/**
+ * Copies all of the attribute name-value mappings from the specified
+ * Attributes to this Map. Duplicate mappings will be replaced.
+ *
+ * @param attr the Attributes to be stored in this map
+ * @exception ClassCastException if attr is not an Attributes
+ */
+public void putAll(Map<?, ?> attr) {
+    // ## javac bug?
+    if (!Attributes.class.isInstance(attr))
+        throw new ClassCastException();
+    for (Map.Entry<?, ?> me : (attr).entrySet()) put(me.getKey(), me.getValue());
+}

@@ -1,0 +1,53 @@
+/**
+ * Validates this container and all of its subcomponents.
+ * <p>
+ * Validating a container means laying out its subcomponents.
+ * Layout-related changes, such as setting the bounds of a component, or
+ * adding a component to the container, invalidate the container
+ * automatically.  Note that the ancestors of the container may be
+ * invalidated also (see {@link Component#invalidate} for details.)
+ * Therefore, to restore the validity of the hierarchy, the {@code
+ * validate()} method should be invoked on the top-most invalid
+ * container of the hierarchy.
+ * <p>
+ * Validating the container may be a quite time-consuming operation. For
+ * performance reasons a developer may postpone the validation of the
+ * hierarchy till a set of layout-related operations completes, e.g. after
+ * adding all the children to the container.
+ * <p>
+ * If this {@code Container} is not valid, this method invokes
+ * the {@code validateTree} method and marks this {@code Container}
+ * as valid. Otherwise, no action is performed.
+ *
+ * @see #add(java.awt.Component)
+ * @see #invalidate
+ * @see Container#isValidateRoot
+ * @see javax.swing.JComponent#revalidate()
+ * @see #validateTree
+ */
+public void validate() {
+    boolean updateCur = false;
+    synchronized (getTreeLock()) {
+        if ((!isValid() || descendUnconditionallyWhenValidating) && peer != null) {
+            ContainerPeer p = null;
+            if (peer instanceof ContainerPeer) {
+                p = (ContainerPeer) peer;
+            }
+            if (p != null) {
+                p.beginValidate();
+            }
+            validateTree();
+            if (p != null) {
+                p.endValidate();
+                // Avoid updating cursor if this is an internal call.
+                // See validateUnconditionally() for details.
+                if (!descendUnconditionallyWhenValidating) {
+                    updateCur = isVisible();
+                }
+            }
+        }
+    }
+    if (updateCur) {
+        updateCursorImmediately();
+    }
+}

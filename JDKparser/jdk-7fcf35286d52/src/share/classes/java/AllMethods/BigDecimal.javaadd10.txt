@@ -1,0 +1,55 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this + augend)},
+ * with rounding according to the context settings.
+ *
+ * If either number is zero and the precision setting is nonzero then
+ * the other number, rounded if necessary, is used as the result.
+ *
+ * @param  augend value to be added to this {@code BigDecimal}.
+ * @param  mc the context to use.
+ * @return {@code this + augend}, rounded as necessary.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}.
+ * @since  1.5
+ */
+public BigDecimal add(BigDecimal augend, MathContext mc) {
+    if (mc.precision == 0)
+        return add(augend);
+    BigDecimal lhs = this;
+    // If either number is zero then the other number, rounded and
+    // scaled if necessary, is used as the result.
+    {
+        boolean lhsIsZero = lhs.signum() == 0;
+        boolean augendIsZero = augend.signum() == 0;
+        if (lhsIsZero || augendIsZero) {
+            int preferredScale = Math.max(lhs.scale(), augend.scale());
+            BigDecimal result;
+            if (lhsIsZero && augendIsZero)
+                return zeroValueOf(preferredScale);
+            result = lhsIsZero ? doRound(augend, mc) : doRound(lhs, mc);
+            if (result.scale() == preferredScale)
+                return result;
+            else if (result.scale() > preferredScale) {
+                return stripZerosToMatchScale(result.intVal, result.intCompact, result.scale, preferredScale);
+            } else {
+                // result.scale < preferredScale
+                int precisionDiff = mc.precision - result.precision();
+                int scaleDiff = preferredScale - result.scale();
+                if (precisionDiff >= scaleDiff)
+                    // can achieve target scale
+                    return result.setScale(preferredScale);
+                else
+                    return result.setScale(result.scale() + precisionDiff);
+            }
+        }
+    }
+    long padding = (long) lhs.scale - augend.scale;
+    if (padding != 0) {
+        // scales differ; alignment needed
+        BigDecimal[] arg = preAlign(lhs, augend, padding, mc);
+        matchScale(arg);
+        lhs = arg[0];
+        augend = arg[1];
+    }
+    return doRound(lhs.inflated().add(augend.inflated()), lhs.scale, mc);
+}

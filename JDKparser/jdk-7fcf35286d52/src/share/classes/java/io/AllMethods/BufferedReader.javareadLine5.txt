@@ -1,0 +1,68 @@
+/**
+ * Reads a line of text.  A line is considered to be terminated by any one
+ * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
+ * followed immediately by a linefeed.
+ *
+ * @param      ignoreLF  If true, the next '\n' will be skipped
+ *
+ * @return     A String containing the contents of the line, not including
+ *             any line-termination characters, or null if the end of the
+ *             stream has been reached
+ *
+ * @see        java.io.LineNumberReader#readLine()
+ *
+ * @exception  IOException  If an I/O error occurs
+ */
+String readLine(boolean ignoreLF) throws IOException {
+    StringBuilder s = null;
+    int startChar;
+    synchronized (lock) {
+        ensureOpen();
+        boolean omitLF = ignoreLF || skipLF;
+        bufferLoop: for (; ; ) {
+            if (nextChar >= nChars)
+                fill();
+            if (nextChar >= nChars) {
+                /* EOF */
+                if (s != null && s.length() > 0)
+                    return s.toString();
+                else
+                    return null;
+            }
+            boolean eol = false;
+            char c = 0;
+            int i;
+            /* Skip a leftover '\n', if necessary */
+            if (omitLF && (cb[nextChar] == '\n'))
+                nextChar++;
+            skipLF = false;
+            omitLF = false;
+            charLoop: for (i = nextChar; i < nChars; i++) {
+                c = cb[i];
+                if ((c == '\n') || (c == '\r')) {
+                    eol = true;
+                    break charLoop;
+                }
+            }
+            startChar = nextChar;
+            nextChar = i;
+            if (eol) {
+                String str;
+                if (s == null) {
+                    str = new String(cb, startChar, i - startChar);
+                } else {
+                    s.append(cb, startChar, i - startChar);
+                    str = s.toString();
+                }
+                nextChar++;
+                if (c == '\r') {
+                    skipLF = true;
+                }
+                return str;
+            }
+            if (s == null)
+                s = new StringBuilder(defaultExpectedLineLength);
+            s.append(cb, startChar, i - startChar);
+        }
+    }
+}

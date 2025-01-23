@@ -1,0 +1,8 @@
+public JarFileEntry nextElement() {
+    if (hasMoreElements()) {
+        ZipEntry ze = entry;
+        entry = null;
+        return new JarFileEntry(ze);
+    }
+    throw new NoSuchElementException();
+}

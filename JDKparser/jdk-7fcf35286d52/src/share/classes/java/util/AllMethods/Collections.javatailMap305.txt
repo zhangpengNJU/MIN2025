@@ -1,0 +1,5 @@
+public SortedMap<K, V> tailMap(K fromKey) {
+    synchronized (mutex) {
+        return new SynchronizedNavigableMap<>(nm.tailMap(fromKey, true), mutex);
+    }
+}

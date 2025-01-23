@@ -1,0 +1,89 @@
+/**
+ * If node non-null, forces cancel status and unsplices it from
+ * queue if possible and wakes up any cowaiters (of the node, or
+ * group, as applicable), and in any case helps release current
+ * first waiter if lock is free. (Calling with null arguments
+ * serves as a conditional form of release, which is not currently
+ * needed but may be needed under possible future cancellation
+ * policies). This is a variant of cancellation methods in
+ * AbstractQueuedSynchronizer (see its detailed explanation in AQS
+ * internal documentation).
+ *
+ * @param node if nonnull, the waiter
+ * @param group either node or the group node is cowaiting with
+ * @param interrupted if already interrupted
+ * @return INTERRUPTED if interrupted or Thread.interrupted, else zero
+ */
+private long cancelWaiter(WNode node, WNode group, boolean interrupted) {
+    if (node != null && group != null) {
+        Thread w;
+        node.status = CANCELLED;
+        // unsplice cancelled nodes from group
+        for (WNode p = group, q; (q = p.cowait) != null; ) {
+            if (q.status == CANCELLED) {
+                U.compareAndSwapObject(p, WCOWAIT, q, q.cowait);
+                // restart
+                p = group;
+            } else
+                p = q;
+        }
+        if (group == node) {
+            for (WNode r = group.cowait; r != null; r = r.cowait) {
+                if ((w = r.thread) != null)
+                    // wake up uncancelled co-waiters
+                    U.unpark(w);
+            }
+            for (WNode pred = node.prev; pred != null; ) {
+                // unsplice
+                // find valid successor
+                WNode succ, pp;
+                while ((succ = node.next) == null || succ.status == CANCELLED) {
+                    // find successor the slow way
+                    WNode q = null;
+                    for (WNode t = wtail; t != null && t != node; t = t.prev) if (t.status != CANCELLED)
+                        // don't link if succ cancelled
+                        q = t;
+                    if (// ensure accurate successor
+                    succ == q || U.compareAndSwapObject(node, WNEXT, succ, succ = q)) {
+                        if (succ == null && node == wtail)
+                            U.compareAndSwapObject(this, WTAIL, node, pred);
+                        break;
+                    }
+                }
+                if (// unsplice pred link
+                pred.next == node)
+                    U.compareAndSwapObject(pred, WNEXT, node, succ);
+                if (succ != null && (w = succ.thread) != null) {
+                    succ.thread = null;
+                    // wake up succ to observe new pred
+                    U.unpark(w);
+                }
+                if (pred.status != CANCELLED || (pp = pred.prev) == null)
+                    break;
+                // repeat if new pred wrong/cancelled
+                node.prev = pp;
+                U.compareAndSwapObject(pp, WNEXT, pred, succ);
+                pred = pp;
+            }
+        }
+    }
+    // Possibly release first waiter
+    WNode h;
+    while ((h = whead) != null) {
+        // similar to release() but check eligibility
+        long s;
+        // similar to release() but check eligibility
+        WNode q;
+        if ((q = h.next) == null || q.status == CANCELLED) {
+            for (WNode t = wtail; t != null && t != h; t = t.prev) if (t.status <= 0)
+                q = t;
+        }
+        if (h == whead) {
+            if (q != null && h.status == 0 && // waiter is eligible
+            ((s = state) & ABITS) != WBIT && (s == 0L || q.mode == RMODE))
+                release(h);
+            break;
+        }
+    }
+    return (interrupted || Thread.interrupted()) ? INTERRUPTED : 0L;
+}

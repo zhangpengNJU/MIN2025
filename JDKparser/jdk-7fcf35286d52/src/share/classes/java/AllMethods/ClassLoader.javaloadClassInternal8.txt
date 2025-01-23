@@ -1,0 +1,12 @@
+// This method is invoked by the virtual machine to load a class.
+private Class<?> loadClassInternal(String name) throws ClassNotFoundException {
+    // For backward compatibility, explicitly lock on 'this' when
+    // the current class loader is not parallel capable.
+    if (parallelLockMap == null) {
+        synchronized (this) {
+            return loadClass(name);
+        }
+    } else {
+        return loadClass(name);
+    }
+}

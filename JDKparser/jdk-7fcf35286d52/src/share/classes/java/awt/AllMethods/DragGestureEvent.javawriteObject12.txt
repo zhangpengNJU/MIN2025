@@ -1,0 +1,17 @@
+/**
+ * Serializes this <code>DragGestureEvent</code>. Performs default
+ * serialization and then writes out this object's <code>List</code> of
+ * gesture events if and only if the <code>List</code> can be serialized.
+ * If not, <code>null</code> is written instead. In this case, a
+ * <code>DragGestureEvent</code> created from the resulting deserialized
+ * stream will contain an empty <code>List</code> of gesture events.
+ *
+ * @serialData The default serializable fields, in alphabetical order,
+ *             followed by either a <code>List</code> instance, or
+ *             <code>null</code>.
+ * @since 1.4
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    s.writeObject(SerializationTester.test(events) ? events : null);
+}

@@ -1,0 +1,17 @@
+static FocusEvent retargetUnexpectedFocusEvent(FocusEvent fe) {
+    synchronized (heavyweightRequests) {
+        // Any other case represents a failure condition which we did
+        // not expect. We need to clearFocusRequestList() and patch up
+        // the event as best as possible.
+        if (removeFirstRequest()) {
+            return (FocusEvent) retargetFocusEvent(fe);
+        }
+        Component source = fe.getComponent();
+        Component opposite = fe.getOppositeComponent();
+        boolean temporary = false;
+        if (fe.getID() == FocusEvent.FOCUS_LOST && (opposite == null || isTemporary(opposite, source))) {
+            temporary = true;
+        }
+        return new CausedFocusEvent(source, fe.getID(), temporary, opposite, CausedFocusEvent.Cause.NATIVE_SYSTEM);
+    }
+}

@@ -1,0 +1,10 @@
+/**
+ * Returns a LocalGregorianCalendar.Date produced from the specified fixed date.
+ *
+ * @param fd the fixed date
+ */
+private static LocalGregorianCalendar.Date getCalendarDate(long fd) {
+    LocalGregorianCalendar.Date d = jcal.newCalendarDate(TimeZone.NO_TIMEZONE);
+    jcal.getCalendarDateFromFixedDate(d, fd);
+    return d;
+}

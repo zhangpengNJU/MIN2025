@@ -1,0 +1,20 @@
+/**
+ * Resolves the given path against this path's {@link #getParent parent}
+ * path. This is useful where a file name needs to be <i>replaced</i> with
+ * another file name. For example, suppose that the name separator is
+ * "{@code /}" and a path represents "{@code dir1/dir2/foo}", then invoking
+ * this method with the {@code Path} "{@code bar}" will result in the {@code
+ * Path} "{@code dir1/dir2/bar}". If this path does not have a parent path,
+ * or {@code other} is {@link #isAbsolute() absolute}, then this method
+ * returns {@code other}. If {@code other} is an empty path then this method
+ * returns this path's parent, or where this path doesn't have a parent, the
+ * empty path.
+ *
+ * @param   other
+ *          the path to resolve against this path's parent
+ *
+ * @return  the resulting path
+ *
+ * @see #resolve(Path)
+ */
+Path resolveSibling(Path other);

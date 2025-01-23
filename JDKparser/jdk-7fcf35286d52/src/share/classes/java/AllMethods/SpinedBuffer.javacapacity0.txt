@@ -1,0 +1,6 @@
+/**
+ * Returns the current capacity of the buffer
+ */
+protected long capacity() {
+    return (spineIndex == 0) ? curChunk.length : priorElementCount[spineIndex] + spine[spineIndex].length;
+}

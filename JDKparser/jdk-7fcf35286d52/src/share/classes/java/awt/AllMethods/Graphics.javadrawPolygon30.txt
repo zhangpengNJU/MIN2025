@@ -1,0 +1,20 @@
+/**
+ * Draws a closed polygon defined by
+ * arrays of <i>x</i> and <i>y</i> coordinates.
+ * Each pair of (<i>x</i>,&nbsp;<i>y</i>) coordinates defines a point.
+ * <p>
+ * This method draws the polygon defined by <code>nPoint</code> line
+ * segments, where the first <code>nPoint&nbsp;-&nbsp;1</code>
+ * line segments are line segments from
+ * <code>(xPoints[i&nbsp;-&nbsp;1],&nbsp;yPoints[i&nbsp;-&nbsp;1])</code>
+ * to <code>(xPoints[i],&nbsp;yPoints[i])</code>, for
+ * 1&nbsp;&le;&nbsp;<i>i</i>&nbsp;&le;&nbsp;<code>nPoints</code>.
+ * The figure is automatically closed by drawing a line connecting
+ * the final point to the first point, if those points are different.
+ * @param        xPoints   a an array of <code>x</code> coordinates.
+ * @param        yPoints   a an array of <code>y</code> coordinates.
+ * @param        nPoints   a the total number of points.
+ * @see          java.awt.Graphics#fillPolygon
+ * @see          java.awt.Graphics#drawPolyline
+ */
+public abstract void drawPolygon(int[] xPoints, int[] yPoints, int nPoints);

@@ -1,0 +1,93 @@
+/**
+ * Transforms an array of relative distance vectors by this
+ * transform.
+ * A relative distance vector is transformed without applying the
+ * translation components of the affine transformation matrix
+ * using the following equations:
+ * <pre>
+ *  [  x' ]   [  m00  m01 (m02) ] [  x  ]   [ m00x + m01y ]
+ *  [  y' ] = [  m10  m11 (m12) ] [  y  ] = [ m10x + m11y ]
+ *  [ (1) ]   [  (0)  (0) ( 1 ) ] [ (1) ]   [     (1)     ]
+ * </pre>
+ * The two coordinate array sections can be exactly the same or
+ * can be overlapping sections of the same array without affecting the
+ * validity of the results.
+ * This method ensures that no source coordinates are
+ * overwritten by a previous operation before they can be transformed.
+ * The coordinates are stored in the arrays starting at the indicated
+ * offset in the order <code>[x0, y0, x1, y1, ..., xn, yn]</code>.
+ * @param srcPts the array containing the source distance vectors.
+ * Each vector is stored as a pair of relative x,&nbsp;y coordinates.
+ * @param dstPts the array into which the transformed distance vectors
+ * are returned.  Each vector is stored as a pair of relative
+ * x,&nbsp;y coordinates.
+ * @param srcOff the offset to the first vector to be transformed
+ * in the source array
+ * @param dstOff the offset to the location of the first
+ * transformed vector that is stored in the destination array
+ * @param numPts the number of vector coordinate pairs to be
+ * transformed
+ * @since 1.2
+ */
+public void deltaTransform(double[] srcPts, int srcOff, double[] dstPts, int dstOff, int numPts) {
+    // For caching
+    double M00, M01, M10, M11;
+    if (dstPts == srcPts && dstOff > srcOff && dstOff < srcOff + numPts * 2) {
+        // If the arrays overlap partially with the destination higher
+        // than the source and we transform the coordinates normally
+        // we would overwrite some of the later source coordinates
+        // with results of previous transformations.
+        // To get around this we use arraycopy to copy the points
+        // to their final destination with correct overwrite
+        // handling and then transform them in place in the new
+        // safer location.
+        System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);
+        // srcPts = dstPts;         // They are known to be equal.
+        srcOff = dstOff;
+    }
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SHEAR | APPLY_SCALE):
+            M00 = m00;
+            M01 = m01;
+            M10 = m10;
+            M11 = m11;
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++];
+                double y = srcPts[srcOff++];
+                dstPts[dstOff++] = x * M00 + y * M01;
+                dstPts[dstOff++] = x * M10 + y * M11;
+            }
+            return;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            M01 = m01;
+            M10 = m10;
+            while (--numPts >= 0) {
+                double x = srcPts[srcOff++];
+                dstPts[dstOff++] = srcPts[srcOff++] * M01;
+                dstPts[dstOff++] = x * M10;
+            }
+            return;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            M00 = m00;
+            M11 = m11;
+            while (--numPts >= 0) {
+                dstPts[dstOff++] = srcPts[srcOff++] * M00;
+                dstPts[dstOff++] = srcPts[srcOff++] * M11;
+            }
+            return;
+        case (APPLY_TRANSLATE):
+        case (APPLY_IDENTITY):
+            if (srcPts != dstPts || srcOff != dstOff) {
+                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);
+            }
+            return;
+    }
+/* NOTREACHED */
+}

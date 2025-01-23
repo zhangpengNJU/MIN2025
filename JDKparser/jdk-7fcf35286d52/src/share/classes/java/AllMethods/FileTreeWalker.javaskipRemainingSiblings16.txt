@@ -1,0 +1,9 @@
+/**
+ * Skips the remaining entries in the directory at the top of the stack.
+ * This method is a no-op if the stack is empty or the walker is closed.
+ */
+void skipRemainingSiblings() {
+    if (!stack.isEmpty()) {
+        stack.peek().skip();
+    }
+}

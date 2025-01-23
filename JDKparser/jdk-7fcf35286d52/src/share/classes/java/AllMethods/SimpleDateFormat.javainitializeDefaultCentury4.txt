@@ -1,0 +1,8 @@
+/* Initialize the fields we use to disambiguate ambiguous years. Separate
+     * so we can call it from readObject().
+     */
+private void initializeDefaultCentury() {
+    calendar.setTimeInMillis(System.currentTimeMillis());
+    calendar.add(Calendar.YEAR, -80);
+    parseAmbiguousDatesAsAfter(calendar.getTime());
+}

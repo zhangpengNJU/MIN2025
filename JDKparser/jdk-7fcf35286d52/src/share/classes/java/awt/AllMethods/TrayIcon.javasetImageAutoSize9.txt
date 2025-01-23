@@ -1,0 +1,25 @@
+/**
+ * Sets the auto-size property.  Auto-size determines whether the
+ * tray image is automatically sized to fit the space allocated
+ * for the image on the tray.  By default, the auto-size property
+ * is set to <code>false</code>.
+ *
+ * <p> If auto-size is <code>false</code>, and the image size
+ * doesn't match the tray icon space, the image is painted as-is
+ * inside that space &#151; if larger than the allocated space, it will
+ * be cropped.
+ *
+ * <p> If auto-size is <code>true</code>, the image is stretched or shrunk to
+ * fit the tray icon space.
+ *
+ * @param autosize <code>true</code> to auto-size the image,
+ * <code>false</code> otherwise
+ * @see #isImageAutoSize
+ */
+public void setImageAutoSize(boolean autosize) {
+    this.autosize = autosize;
+    TrayIconPeer peer = this.peer;
+    if (peer != null) {
+        peer.updateImage();
+    }
+}

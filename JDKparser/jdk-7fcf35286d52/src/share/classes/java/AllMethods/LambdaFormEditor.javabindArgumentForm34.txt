@@ -1,0 +1,34 @@
+// / Editing methods for lambda forms.
+// Each editing method can (potentially) cache the edited LF so that it can be reused later.
+LambdaForm bindArgumentForm(int pos) {
+    Transform key = Transform.of(Transform.Kind.BIND_ARG, pos);
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.parameterConstraint(0) == newSpeciesData(lambdaForm.parameterType(pos)));
+        return form;
+    }
+    LambdaFormBuffer buf = buffer();
+    buf.startEdit();
+    BoundMethodHandle.SpeciesData oldData = oldSpeciesData();
+    BoundMethodHandle.SpeciesData newData = newSpeciesData(lambdaForm.parameterType(pos));
+    // BMH holding the values
+    Name oldBaseAddress = lambdaForm.parameter(0);
+    Name newBaseAddress;
+    NamedFunction getter = newData.getterFunction(oldData.fieldCount());
+    if (pos != 0) {
+        // The newly created LF will run with a different BMH.
+        // Switch over any pre-existing BMH field references to the new BMH class.
+        buf.replaceFunctions(oldData.getterFunctions(), newData.getterFunctions(), oldBaseAddress);
+        newBaseAddress = oldBaseAddress.withConstraint(newData);
+        buf.renameParameter(0, newBaseAddress);
+        buf.replaceParameterByNewExpression(pos, new Name(getter, newBaseAddress));
+    } else {
+        // cannot bind the MH arg itself, unless oldData is empty
+        assert (oldData == BoundMethodHandle.SpeciesData.EMPTY);
+        newBaseAddress = new Name(L_TYPE).withConstraint(newData);
+        buf.replaceParameterByNewExpression(0, new Name(getter, newBaseAddress));
+        buf.insertParameter(0, newBaseAddress);
+    }
+    form = buf.endEdit();
+    return putInCache(key, form);
+}

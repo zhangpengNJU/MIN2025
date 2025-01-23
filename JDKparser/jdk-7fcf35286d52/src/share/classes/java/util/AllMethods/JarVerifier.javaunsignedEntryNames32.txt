@@ -1,0 +1,40 @@
+private Enumeration<String> unsignedEntryNames(JarFile jar) {
+    final Map<String, CodeSigner[]> map = signerMap();
+    final Enumeration<JarEntry> entries = jar.entries();
+    return new Enumeration<String>() {
+
+        String name;
+
+        /*
+             * Grab entries from ZIP directory but screen out
+             * metadata.
+             */
+        public boolean hasMoreElements() {
+            if (name != null) {
+                return true;
+            }
+            while (entries.hasMoreElements()) {
+                String value;
+                ZipEntry e = entries.nextElement();
+                value = e.getName();
+                if (e.isDirectory() || isSigningRelated(value)) {
+                    continue;
+                }
+                if (map.get(value) == null) {
+                    name = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public String nextElement() {
+            if (hasMoreElements()) {
+                String value = name;
+                name = null;
+                return value;
+            }
+            throw new NoSuchElementException();
+        }
+    };
+}

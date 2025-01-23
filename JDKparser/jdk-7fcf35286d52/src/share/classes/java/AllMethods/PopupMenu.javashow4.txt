@@ -1,0 +1,55 @@
+/**
+ * Shows the popup menu at the x, y position relative to an origin
+ * component.
+ * The origin component must be contained within the component
+ * hierarchy of the popup menu's parent.  Both the origin and the parent
+ * must be showing on the screen for this method to be valid.
+ * <p>
+ * If this <code>PopupMenu</code> is being used as a <code>Menu</code>
+ * (i.e., it has a non-<code>Component</code> parent),
+ * then you cannot call this method on the <code>PopupMenu</code>.
+ *
+ * @param origin the component which defines the coordinate space
+ * @param x the x coordinate position to popup the menu
+ * @param y the y coordinate position to popup the menu
+ * @exception NullPointerException  if the parent is <code>null</code>
+ * @exception IllegalArgumentException  if this <code>PopupMenu</code>
+ *                has a non-<code>Component</code> parent
+ * @exception IllegalArgumentException if the origin is not in the
+ *                parent's hierarchy
+ * @exception RuntimeException if the parent is not showing on screen
+ */
+public void show(Component origin, int x, int y) {
+    // Use localParent for thread safety.
+    MenuContainer localParent = parent;
+    if (localParent == null) {
+        throw new NullPointerException("parent is null");
+    }
+    if (!(localParent instanceof Component)) {
+        throw new IllegalArgumentException("PopupMenus with non-Component parents cannot be shown");
+    }
+    Component compParent = (Component) localParent;
+    // Fixed 6278745: Incorrect exception throwing in PopupMenu.show() method
+    // Exception was not thrown if compParent was not equal to origin and
+    // was not Container
+    if (compParent != origin) {
+        if (compParent instanceof Container) {
+            if (!((Container) compParent).isAncestorOf(origin)) {
+                throw new IllegalArgumentException("origin not in parent's hierarchy");
+            }
+        } else {
+            throw new IllegalArgumentException("origin not in parent's hierarchy");
+        }
+    }
+    if (compParent.getPeer() == null || !compParent.isShowing()) {
+        throw new RuntimeException("parent not showing on screen");
+    }
+    if (peer == null) {
+        addNotify();
+    }
+    synchronized (getTreeLock()) {
+        if (peer != null) {
+            ((PopupMenuPeer) peer).show(new Event(origin, 0, Event.MOUSE_DOWN, x, y, 0, 0));
+        }
+    }
+}

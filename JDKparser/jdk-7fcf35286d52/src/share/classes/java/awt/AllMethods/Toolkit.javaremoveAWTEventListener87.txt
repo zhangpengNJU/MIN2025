@@ -1,0 +1,53 @@
+/**
+ * Removes an AWTEventListener from receiving dispatched AWTEvents.
+ * <p>
+ * First, if there is a security manager, its <code>checkPermission</code>
+ * method is called with an
+ * <code>AWTPermission("listenToAllAWTEvents")</code> permission.
+ * This may result in a SecurityException.
+ * <p>
+ * Note:  event listener use is not recommended for normal
+ * application use, but are intended solely to support special
+ * purpose facilities including support for accessibility,
+ * event record/playback, and diagnostic tracing.
+ *
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param    listener   the event listener.
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        <code>checkPermission</code> method doesn't allow the operation.
+ * @see      #addAWTEventListener
+ * @see      #getAWTEventListeners
+ * @see      SecurityManager#checkPermission
+ * @see      java.awt.AWTEvent
+ * @see      java.awt.AWTPermission
+ * @see      java.awt.event.AWTEventListener
+ * @see      java.awt.event.AWTEventListenerProxy
+ * @since    1.2
+ */
+public void removeAWTEventListener(AWTEventListener listener) {
+    AWTEventListener localL = deProxyAWTEventListener(listener);
+    if (listener == null) {
+        return;
+    }
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.ALL_AWT_EVENTS_PERMISSION);
+    }
+    synchronized (this) {
+        SelectiveAWTEventListener selectiveListener = listener2SelectiveListener.get(localL);
+        if (selectiveListener != null) {
+            listener2SelectiveListener.remove(localL);
+            int[] listenerCalls = selectiveListener.getCalls();
+            for (int i = 0; i < LONG_BITS; i++) {
+                calls[i] -= listenerCalls[i];
+                assert calls[i] >= 0 : "Negative Listeners count";
+                if (calls[i] == 0) {
+                    enabledOnToolkitMask &= ~(1L << i);
+                }
+            }
+        }
+        eventListener = ToolkitEventMulticaster.remove(eventListener, (selectiveListener == null) ? localL : selectiveListener);
+    }
+}

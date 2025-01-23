@@ -1,0 +1,7 @@
+private void defineSchemeSpecificPart() {
+    if (schemeSpecificPart != null)
+        return;
+    StringBuffer sb = new StringBuffer();
+    appendSchemeSpecificPart(sb, null, getAuthority(), getUserInfo(), host, port, getPath(), getQuery());
+    schemeSpecificPart = sb.toString();
+}

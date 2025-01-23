@@ -1,0 +1,17 @@
+@Override
+public final <U> Stream<U> mapToObj(IntFunction<? extends U> mapper) {
+    Objects.requireNonNull(mapper);
+    return new ReferencePipeline.StatelessOp<Integer, U>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<U> sink) {
+            return new Sink.ChainedInt<U>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    downstream.accept(mapper.apply(t));
+                }
+            };
+        }
+    };
+}

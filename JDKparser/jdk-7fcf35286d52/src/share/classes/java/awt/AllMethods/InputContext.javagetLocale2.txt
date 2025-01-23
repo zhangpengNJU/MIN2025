@@ -1,0 +1,22 @@
+/**
+ * Returns the current locale of the current input method or keyboard
+ * layout.
+ * Returns null if the input context does not have a current input method
+ * or keyboard layout or if the current input method's
+ * {@link java.awt.im.spi.InputMethod#getLocale()} method returns null.
+ *
+ * <p>
+ * Not all host operating systems provide API to determine the locale of
+ * the currently selected native input method or keyboard layout.
+ * For host operating systems that don't provide such API,
+ * <code>getLocale</code> assumes that the current locale of all native
+ * input methods or keyboard layouts provided by the host operating system
+ * is the system's default locale.
+ *
+ * @return the current locale of the current input method or keyboard layout
+ * @since 1.3
+ */
+public Locale getLocale() {
+    // real implementation is in sun.awt.im.InputContext
+    return null;
+}

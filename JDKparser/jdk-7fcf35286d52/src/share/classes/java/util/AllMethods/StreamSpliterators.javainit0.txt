@@ -1,0 +1,9 @@
+/**
+ * Called before advancing to set up spliterator, if needed.
+ */
+final void init() {
+    if (spliterator == null) {
+        spliterator = spliteratorSupplier.get();
+        spliteratorSupplier = null;
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Constructs a cookie header string representation of this cookie,
+ * which is in the format defined by corresponding cookie specification,
+ * but without the leading "Cookie:" token.
+ *
+ * @return  a string form of the cookie. The string has the defined format
+ */
+@Override
+public String toString() {
+    if (getVersion() > 0) {
+        return toRFC2965HeaderString();
+    } else {
+        return toNetscapeHeaderString();
+    }
+}

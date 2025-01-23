@@ -1,0 +1,44 @@
+/**
+ * Returns raw result after waiting, or null if interruptible and
+ * interrupted.
+ */
+private Object waitingGet(boolean interruptible) {
+    Signaller q = null;
+    boolean queued = false;
+    int spins = -1;
+    Object r;
+    while ((r = result) == null) {
+        if (spins < 0)
+            spins = SPINS;
+        else if (spins > 0) {
+            if (ThreadLocalRandom.nextSecondarySeed() >= 0)
+                --spins;
+        } else if (q == null)
+            q = new Signaller(interruptible, 0L, 0L);
+        else if (!queued)
+            queued = tryPushStack(q);
+        else if (interruptible && q.interruptControl < 0) {
+            q.thread = null;
+            cleanStack();
+            return null;
+        } else if (q.thread != null && result == null) {
+            try {
+                ForkJoinPool.managedBlock(q);
+            } catch (InterruptedException ie) {
+                q.interruptControl = -1;
+            }
+        }
+    }
+    if (q != null) {
+        q.thread = null;
+        if (q.interruptControl < 0) {
+            if (interruptible)
+                // report interruption
+                r = null;
+            else
+                Thread.currentThread().interrupt();
+        }
+    }
+    postComplete();
+    return r;
+}

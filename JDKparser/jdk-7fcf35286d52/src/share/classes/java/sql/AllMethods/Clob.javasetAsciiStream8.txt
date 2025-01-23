@@ -1,0 +1,28 @@
+/**
+ * Retrieves a stream to be used to write Ascii characters to the
+ * <code>CLOB</code> value that this <code>Clob</code> object represents,
+ * starting at position <code>pos</code>.  Characters written to the stream
+ * will overwrite the existing characters
+ * in the <code>Clob</code> object starting at the position
+ * <code>pos</code>.  If the end of the <code>Clob</code> value is reached
+ * while writing characters to the stream, then the length of the <code>Clob</code>
+ * value will be increased to accommodate the extra characters.
+ * <p>
+ * <b>Note:</b> If the value specified for <code>pos</code>
+ * is greater then the length+1 of the <code>CLOB</code> value then the
+ * behavior is undefined. Some JDBC drivers may throw a
+ * <code>SQLException</code> while other drivers may support this
+ * operation.
+ *
+ * @param pos the position at which to start writing to this
+ *        <code>CLOB</code> object; The first position is 1
+ * @return the stream to which ASCII encoded characters can be written
+ * @exception SQLException if there is an error accessing the
+ *            <code>CLOB</code> value or if pos is less than 1
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #getAsciiStream
+ *
+ * @since 1.4
+ */
+java.io.OutputStream setAsciiStream(long pos) throws SQLException;

@@ -1,0 +1,25 @@
+/**
+ * Sets the time limit for which threads may remain idle before
+ * being terminated.  If there are more than the core number of
+ * threads currently in the pool, after waiting this amount of
+ * time without processing a task, excess threads will be
+ * terminated.  This overrides any value set in the constructor.
+ *
+ * @param time the time to wait.  A time value of zero will cause
+ *        excess threads to terminate immediately after executing tasks.
+ * @param unit the time unit of the {@code time} argument
+ * @throws IllegalArgumentException if {@code time} less than zero or
+ *         if {@code time} is zero and {@code allowsCoreThreadTimeOut}
+ * @see #getKeepAliveTime(TimeUnit)
+ */
+public void setKeepAliveTime(long time, TimeUnit unit) {
+    if (time < 0)
+        throw new IllegalArgumentException();
+    if (time == 0 && allowsCoreThreadTimeOut())
+        throw new IllegalArgumentException("Core threads must have nonzero keep alive times");
+    long keepAliveTime = unit.toNanos(time);
+    long delta = keepAliveTime - this.keepAliveTime;
+    this.keepAliveTime = keepAliveTime;
+    if (delta < 0)
+        interruptIdleWorkers();
+}

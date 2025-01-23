@@ -1,0 +1,14 @@
+/**
+ * Clears all of the bits in this {@code BitSet} whose corresponding
+ * bit is set in the specified {@code BitSet}.
+ *
+ * @param  set the {@code BitSet} with which to mask this
+ *         {@code BitSet}
+ * @since  1.2
+ */
+public void andNot(BitSet set) {
+    // Perform logical (a & !b) on words in common
+    for (int i = Math.min(wordsInUse, set.wordsInUse) - 1; i >= 0; i--) words[i] &= ~set.words[i];
+    recalculateWordsInUse();
+    checkInvariants();
+}

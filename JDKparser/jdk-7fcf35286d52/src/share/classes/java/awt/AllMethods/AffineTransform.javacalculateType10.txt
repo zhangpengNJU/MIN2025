@@ -1,0 +1,118 @@
+/**
+ * This is the utility function to calculate the flag bits when
+ * they have not been cached.
+ * @see #getType
+ */
+@SuppressWarnings("fallthrough")
+private void calculateType() {
+    int ret = TYPE_IDENTITY;
+    boolean sgn0, sgn1;
+    double M0, M1, M2, M3;
+    updateState();
+    switch(state) {
+        default:
+            stateError();
+        /* NOTREACHED */
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            ret = TYPE_TRANSLATION;
+        /* NOBREAK */
+        case (APPLY_SHEAR | APPLY_SCALE):
+            if ((M0 = m00) * (M2 = m01) + (M3 = m10) * (M1 = m11) != 0) {
+                // Transformed unit vectors are not perpendicular...
+                this.type = TYPE_GENERAL_TRANSFORM;
+                return;
+            }
+            sgn0 = (M0 >= 0.0);
+            sgn1 = (M1 >= 0.0);
+            if (sgn0 == sgn1) {
+                // sgn(M0) == sgn(M1) therefore sgn(M2) == -sgn(M3)
+                // This is the "unflipped" (right-handed) state
+                if (M0 != M1 || M2 != -M3) {
+                    ret |= (TYPE_GENERAL_ROTATION | TYPE_GENERAL_SCALE);
+                } else if (M0 * M1 - M2 * M3 != 1.0) {
+                    ret |= (TYPE_GENERAL_ROTATION | TYPE_UNIFORM_SCALE);
+                } else {
+                    ret |= TYPE_GENERAL_ROTATION;
+                }
+            } else {
+                // sgn(M0) == -sgn(M1) therefore sgn(M2) == sgn(M3)
+                // This is the "flipped" (left-handed) state
+                if (M0 != -M1 || M2 != M3) {
+                    ret |= (TYPE_GENERAL_ROTATION | TYPE_FLIP | TYPE_GENERAL_SCALE);
+                } else if (M0 * M1 - M2 * M3 != 1.0) {
+                    ret |= (TYPE_GENERAL_ROTATION | TYPE_FLIP | TYPE_UNIFORM_SCALE);
+                } else {
+                    ret |= (TYPE_GENERAL_ROTATION | TYPE_FLIP);
+                }
+            }
+            break;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            ret = TYPE_TRANSLATION;
+        /* NOBREAK */
+        case (APPLY_SHEAR):
+            sgn0 = ((M0 = m01) >= 0.0);
+            sgn1 = ((M1 = m10) >= 0.0);
+            if (sgn0 != sgn1) {
+                // Different signs - simple 90 degree rotation
+                if (M0 != -M1) {
+                    ret |= (TYPE_QUADRANT_ROTATION | TYPE_GENERAL_SCALE);
+                } else if (M0 != 1.0 && M0 != -1.0) {
+                    ret |= (TYPE_QUADRANT_ROTATION | TYPE_UNIFORM_SCALE);
+                } else {
+                    ret |= TYPE_QUADRANT_ROTATION;
+                }
+            } else {
+                // Same signs - 90 degree rotation plus an axis flip too
+                if (M0 == M1) {
+                    ret |= (TYPE_QUADRANT_ROTATION | TYPE_FLIP | TYPE_UNIFORM_SCALE);
+                } else {
+                    ret |= (TYPE_QUADRANT_ROTATION | TYPE_FLIP | TYPE_GENERAL_SCALE);
+                }
+            }
+            break;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            ret = TYPE_TRANSLATION;
+        /* NOBREAK */
+        case (APPLY_SCALE):
+            sgn0 = ((M0 = m00) >= 0.0);
+            sgn1 = ((M1 = m11) >= 0.0);
+            if (sgn0 == sgn1) {
+                if (sgn0) {
+                    // Both scaling factors non-negative - simple scale
+                    // Note: APPLY_SCALE implies M0, M1 are not both 1
+                    if (M0 == M1) {
+                        ret |= TYPE_UNIFORM_SCALE;
+                    } else {
+                        ret |= TYPE_GENERAL_SCALE;
+                    }
+                } else {
+                    // Both scaling factors negative - 180 degree rotation
+                    if (M0 != M1) {
+                        ret |= (TYPE_QUADRANT_ROTATION | TYPE_GENERAL_SCALE);
+                    } else if (M0 != -1.0) {
+                        ret |= (TYPE_QUADRANT_ROTATION | TYPE_UNIFORM_SCALE);
+                    } else {
+                        ret |= TYPE_QUADRANT_ROTATION;
+                    }
+                }
+            } else {
+                // Scaling factor signs different - flip about some axis
+                if (M0 == -M1) {
+                    if (M0 == 1.0 || M0 == -1.0) {
+                        ret |= TYPE_FLIP;
+                    } else {
+                        ret |= (TYPE_FLIP | TYPE_UNIFORM_SCALE);
+                    }
+                } else {
+                    ret |= (TYPE_FLIP | TYPE_GENERAL_SCALE);
+                }
+            }
+            break;
+        case (APPLY_TRANSLATE):
+            ret = TYPE_TRANSLATION;
+            break;
+        case (APPLY_IDENTITY):
+            break;
+    }
+    this.type = ret;
+}

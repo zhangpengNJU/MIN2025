@@ -1,0 +1,19 @@
+// inner class AccessibleAWTFocusHandler
+/**
+ * Adds a <code>PropertyChangeListener</code> to the listener list.
+ *
+ * @param listener  the property change listener to be added
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    if (accessibleAWTComponentHandler == null) {
+        accessibleAWTComponentHandler = new AccessibleAWTComponentHandler();
+    }
+    if (accessibleAWTFocusHandler == null) {
+        accessibleAWTFocusHandler = new AccessibleAWTFocusHandler();
+    }
+    if (propertyListenersCount++ == 0) {
+        Component.this.addComponentListener(accessibleAWTComponentHandler);
+        Component.this.addFocusListener(accessibleAWTFocusHandler);
+    }
+    super.addPropertyChangeListener(listener);
+}

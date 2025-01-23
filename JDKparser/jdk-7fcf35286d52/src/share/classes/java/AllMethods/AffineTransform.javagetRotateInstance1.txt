@@ -1,0 +1,23 @@
+/**
+ * Returns a transform representing a rotation transformation.
+ * The matrix representing the returned transform is:
+ * <pre>
+ *          [   cos(theta)    -sin(theta)    0   ]
+ *          [   sin(theta)     cos(theta)    0   ]
+ *          [       0              0         1   ]
+ * </pre>
+ * Rotating by a positive angle theta rotates points on the positive
+ * X axis toward the positive Y axis.
+ * Note also the discussion of
+ * <a href="#quadrantapproximation">Handling 90-Degree Rotations</a>
+ * above.
+ * @param theta the angle of rotation measured in radians
+ * @return an <code>AffineTransform</code> object that is a rotation
+ *  transformation, created with the specified angle of rotation.
+ * @since 1.2
+ */
+public static AffineTransform getRotateInstance(double theta) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToRotation(theta);
+    return Tx;
+}

@@ -1,0 +1,11 @@
+/**
+ * @throws CancellationException {@inheritDoc}
+ */
+public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    if (unit == null)
+        throw new NullPointerException();
+    int s = state;
+    if (s <= COMPLETING && (s = awaitDone(true, unit.toNanos(timeout))) <= COMPLETING)
+        throw new TimeoutException();
+    return report(s);
+}

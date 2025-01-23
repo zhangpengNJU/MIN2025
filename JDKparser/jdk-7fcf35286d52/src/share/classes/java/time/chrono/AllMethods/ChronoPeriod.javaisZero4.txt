@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if all the supported units of this period are zero.
+ *
+ * @return true if this period is zero-length
+ */
+default boolean isZero() {
+    for (TemporalUnit unit : getUnits()) {
+        if (get(unit) != 0) {
+            return false;
+        }
+    }
+    return true;
+}

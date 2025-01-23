@@ -1,0 +1,14 @@
+/**
+ * Returns the elements of this enum class or null if this
+ * Class object does not represent an enum type.
+ *
+ * @return an array containing the values comprising the enum class
+ *     represented by this Class object in the order they're
+ *     declared, or null if this Class object does not
+ *     represent an enum type
+ * @since 1.5
+ */
+public T[] getEnumConstants() {
+    T[] values = getEnumConstantsShared();
+    return (values != null) ? values.clone() : null;
+}

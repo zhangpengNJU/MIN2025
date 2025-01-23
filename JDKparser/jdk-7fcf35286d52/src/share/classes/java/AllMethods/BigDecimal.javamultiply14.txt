@@ -1,0 +1,24 @@
+/**
+ * Returns a {@code BigDecimal} whose value is <tt>(this &times;
+ * multiplicand)</tt>, and whose scale is {@code (this.scale() +
+ * multiplicand.scale())}.
+ *
+ * @param  multiplicand value to be multiplied by this {@code BigDecimal}.
+ * @return {@code this * multiplicand}
+ */
+public BigDecimal multiply(BigDecimal multiplicand) {
+    int productScale = checkScale((long) scale + multiplicand.scale);
+    if (this.intCompact != INFLATED) {
+        if ((multiplicand.intCompact != INFLATED)) {
+            return multiply(this.intCompact, multiplicand.intCompact, productScale);
+        } else {
+            return multiply(this.intCompact, multiplicand.intVal, productScale);
+        }
+    } else {
+        if ((multiplicand.intCompact != INFLATED)) {
+            return multiply(multiplicand.intCompact, this.intVal, productScale);
+        } else {
+            return multiply(this.intVal, multiplicand.intVal, productScale);
+        }
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Sends a whole new buffer of pixels to any ImageConsumers that
+ * are currently interested in the data for this image and notify
+ * them that an animation frame is complete.
+ * This method only has effect if the animation flag has been
+ * turned on through the setAnimated() method.
+ * @see #newPixels(int, int, int, int, boolean)
+ * @see ImageConsumer
+ * @see #setAnimated
+ */
+public void newPixels() {
+    newPixels(0, 0, width, height, true);
+}

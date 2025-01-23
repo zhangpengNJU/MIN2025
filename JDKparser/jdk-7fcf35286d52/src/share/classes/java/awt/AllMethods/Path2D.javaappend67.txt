@@ -1,0 +1,24 @@
+/**
+ * Appends the geometry of the specified
+ * {@link PathIterator} object
+ * to the path, possibly connecting the new geometry to the existing
+ * path segments with a line segment.
+ * If the {@code connect} parameter is {@code true} and the
+ * path is not empty then any initial {@code moveTo} in the
+ * geometry of the appended {@code Shape} is turned into a
+ * {@code lineTo} segment.
+ * If the destination coordinates of such a connecting {@code lineTo}
+ * segment match the ending coordinates of a currently open
+ * subpath then the segment is omitted as superfluous.
+ * The winding rule of the specified {@code Shape} is ignored
+ * and the appended geometry is governed by the winding
+ * rule specified for this path.
+ *
+ * @param pi the {@code PathIterator} whose geometry is appended to
+ *           this path
+ * @param connect a boolean to control whether or not to turn an initial
+ *                {@code moveTo} segment into a {@code lineTo} segment
+ *                to connect the new geometry to the existing path
+ * @since 1.6
+ */
+public abstract void append(PathIterator pi, boolean connect);

@@ -1,0 +1,25 @@
+@Override
+public String toString() {
+    StringBuilder buf = new StringBuilder();
+    long bits = packedBytes;
+    if (bits != 0) {
+        buf.append("(");
+        while (bits != 0) {
+            buf.append(bits & PACKED_BYTE_MASK);
+            bits >>>= PACKED_BYTE_SIZE;
+            if (bits != 0)
+                buf.append(",");
+        }
+        buf.append(")");
+    }
+    if (fullBytes != null) {
+        buf.append("unpacked");
+        buf.append(Arrays.toString(fullBytes));
+    }
+    LambdaForm result = get();
+    if (result != null) {
+        buf.append(" result=");
+        buf.append(result);
+    }
+    return buf.toString();
+}

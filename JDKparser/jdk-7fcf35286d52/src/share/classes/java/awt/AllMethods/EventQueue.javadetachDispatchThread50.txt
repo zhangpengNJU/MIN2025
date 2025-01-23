@@ -1,0 +1,30 @@
+final void detachDispatchThread(EventDispatchThread edt) {
+    /*
+         * Minimize discard possibility for non-posted events
+         */
+    SunToolkit.flushPendingEvents(appContext);
+    /*
+         * This synchronized block is to secure that the event dispatch
+         * thread won't die in the middle of posting a new event to the
+         * associated event queue. It is important because we notify
+         * that the event dispatch thread is busy after posting a new event
+         * to its queue, so the EventQueue.dispatchThread reference must
+         * be valid at that point.
+         */
+    pushPopLock.lock();
+    try {
+        if (edt == dispatchThread) {
+            dispatchThread = null;
+        }
+        AWTAutoShutdown.getInstance().notifyThreadFree(edt);
+        /*
+             * Event was posted after EDT events pumping had stopped, so start
+             * another EDT to handle this event
+             */
+        if (peekEvent() != null) {
+            initDispatchThread();
+        }
+    } finally {
+        pushPopLock.unlock();
+    }
+}

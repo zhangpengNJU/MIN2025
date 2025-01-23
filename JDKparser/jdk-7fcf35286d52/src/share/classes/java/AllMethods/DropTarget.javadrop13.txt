@@ -1,0 +1,25 @@
+/**
+ * Calls <code>drop</code> on the registered
+ * <code>DropTargetListener</code> and passes it
+ * the specified <code>DropTargetDropEvent</code>
+ * if this <code>DropTarget</code> is active.
+ *
+ * @param dtde the <code>DropTargetDropEvent</code>
+ *
+ * @throws NullPointerException if <code>dtde</code> is null
+ *         and at least one of the following is true: this
+ *         <code>DropTarget</code> is not active, or there is
+ *         no a <code>DropTargetListener</code> registered.
+ *
+ * @see #isActive
+ */
+public synchronized void drop(DropTargetDropEvent dtde) {
+    isDraggingInside = false;
+    clearAutoscroll();
+    if (dtListener != null && active)
+        dtListener.drop(dtde);
+    else {
+        // we should'nt get here ...
+        dtde.rejectDrop();
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Updates internal buffers (both volatile and non-volatile)
+ * by requesting the back-buffer from the peer.
+ */
+private void updateInternalBuffers() {
+    // get the images associated with the draw buffer
+    drawBuffer = getBackBuffer();
+    if (drawBuffer instanceof VolatileImage) {
+        drawVBuffer = (VolatileImage) drawBuffer;
+    } else {
+        drawVBuffer = null;
+    }
+}

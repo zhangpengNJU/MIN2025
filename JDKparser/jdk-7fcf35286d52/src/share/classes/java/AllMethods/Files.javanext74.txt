@@ -1,0 +1,8 @@
+@Override
+public Path next() {
+    try {
+        return delegate.next();
+    } catch (DirectoryIteratorException e) {
+        throw new UncheckedIOException(e.getCause());
+    }
+}

@@ -1,0 +1,9 @@
+@Override
+public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    return m.merge(key, value, (v1, v2) -> {
+        V newValue = remappingFunction.apply(v1, v2);
+        typeCheck(null, newValue);
+        return newValue;
+    });
+}

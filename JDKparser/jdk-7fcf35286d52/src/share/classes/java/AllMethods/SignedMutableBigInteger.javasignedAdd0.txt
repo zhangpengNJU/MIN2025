@@ -1,0 +1,10 @@
+// Arithmetic Operations
+/**
+ * Signed addition built upon unsigned add and subtract.
+ */
+void signedAdd(SignedMutableBigInteger addend) {
+    if (sign == addend.sign)
+        add(addend);
+    else
+        sign = sign * subtract(addend);
+}

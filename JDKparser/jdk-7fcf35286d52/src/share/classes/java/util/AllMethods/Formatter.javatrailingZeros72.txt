@@ -1,0 +1,11 @@
+// Add trailing zeros in the case precision is greater than the number
+// of available digits after the decimal separator.
+private char[] trailingZeros(char[] mant, int nzeros) {
+    char[] tmp = mant;
+    if (nzeros > 0) {
+        tmp = new char[mant.length + nzeros];
+        System.arraycopy(mant, 0, tmp, 0, mant.length);
+        for (int i = mant.length; i < tmp.length; i++) tmp[i] = '0';
+    }
+    return tmp;
+}

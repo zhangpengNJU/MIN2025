@@ -1,0 +1,38 @@
+/**
+ *  <p>Sets the value of the designated parameter using the given object.
+ *
+ *  <p>The JDBC specification specifies a standard mapping from
+ *  Java <code>Object</code> types to SQL types.  The given argument
+ *  will be converted to the corresponding SQL type before being
+ *  sent to the database.
+ *
+ *  <p>Note that this method may be used to pass datatabase-
+ *  specific abstract data types, by using a driver-specific Java
+ *  type.
+ *
+ *  If the object is of a class implementing the interface <code>SQLData</code>,
+ *  the JDBC driver should call the method <code>SQLData.writeSQL</code>
+ *  to write it to the SQL data stream.
+ *  If, on the other hand, the object is of a class implementing
+ *  <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,  <code>NClob</code>,
+ *   <code>Struct</code>, <code>java.net.URL</code>, <code>RowId</code>, <code>SQLXML</code>
+ *  or <code>Array</code>, the driver should pass it to the database as a
+ *  value of the corresponding SQL type.
+ *  <P>
+ * <b>Note:</b> Not all databases allow for a non-typed Null to be sent to
+ *  the backend. For maximum portability, the <code>setNull</code> or the
+ *  <code>setObject(int parameterIndex, Object x, int sqlType)</code>
+ *  method should be used
+ *  instead of <code>setObject(int parameterIndex, Object x)</code>.
+ * <p>
+ *  <b>Note:</b> This method throws an exception if there is an ambiguity, for example, if the
+ *  object is of a class implementing more than one of the interfaces named above.
+ *
+ *  @param parameterIndex the first parameter is 1, the second is 2, ...
+ *  @param x the object containing the input parameter value
+ *  @exception SQLException if parameterIndex does not correspond to a parameter
+ *  marker in the SQL statement; if a database access error occurs;
+ *   this method is called on a closed <code>PreparedStatement</code>
+ *  or the type of the given object is ambiguous
+ */
+void setObject(int parameterIndex, Object x) throws SQLException;

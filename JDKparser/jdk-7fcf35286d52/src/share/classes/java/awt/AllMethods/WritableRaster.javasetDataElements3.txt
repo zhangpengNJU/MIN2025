@@ -1,0 +1,26 @@
+/**
+ * Sets the data for a single pixel from a
+ * primitive array of type TransferType.  For image data supported by
+ * the Java 2D(tm) API, this will be one of DataBuffer.TYPE_BYTE,
+ * DataBuffer.TYPE_USHORT, DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,
+ * DataBuffer.TYPE_FLOAT, or DataBuffer.TYPE_DOUBLE.  Data in the array
+ * may be in a packed format, thus increasing efficiency for data
+ * transfers.
+ * An ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds, or if inData is not large enough to hold the pixel data.
+ * However, explicit bounds checking is not guaranteed.
+ * A ClassCastException will be thrown if the input object is not null
+ * and references anything other than an array of TransferType.
+ * @see java.awt.image.SampleModel#setDataElements(int, int, Object, DataBuffer)
+ * @param x        The X coordinate of the pixel location.
+ * @param y        The Y coordinate of the pixel location.
+ * @param inData   An object reference to an array of type defined by
+ *                 getTransferType() and length getNumDataElements()
+ *                 containing the pixel data to place at x,y.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are not
+ * in bounds, or if inData is too small to hold the input.
+ */
+public void setDataElements(int x, int y, Object inData) {
+    sampleModel.setDataElements(x - sampleModelTranslateX, y - sampleModelTranslateY, inData, dataBuffer);
+}

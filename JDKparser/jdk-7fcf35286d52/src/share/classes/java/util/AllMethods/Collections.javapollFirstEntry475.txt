@@ -1,0 +1,4 @@
+public Entry<K, V> pollFirstEntry() {
+    Entry<K, V> entry = nm.pollFirstEntry();
+    return (null == entry) ? null : new CheckedMap.CheckedEntrySet.CheckedEntry<>(entry, valueType);
+}

@@ -1,0 +1,30 @@
+/**
+ * Computes an arbitrary rectangular region of the
+ * <code>BufferedImage</code> and copies it into a specified
+ * <code>WritableRaster</code>.  The region to be computed is
+ * determined from the bounds of the specified
+ * <code>WritableRaster</code>.  The specified
+ * <code>WritableRaster</code> must have a
+ * <code>SampleModel</code> that is compatible with this image.  If
+ * <code>outRaster</code> is <code>null</code>,
+ * an appropriate <code>WritableRaster</code> is created.
+ * @param outRaster a <code>WritableRaster</code> to hold the returned
+ *          part of the image, or <code>null</code>
+ * @return a reference to the supplied or created
+ *          <code>WritableRaster</code>.
+ */
+public WritableRaster copyData(WritableRaster outRaster) {
+    if (outRaster == null) {
+        return (WritableRaster) getData();
+    }
+    int width = outRaster.getWidth();
+    int height = outRaster.getHeight();
+    int startX = outRaster.getMinX();
+    int startY = outRaster.getMinY();
+    Object tdata = null;
+    for (int i = startY; i < startY + height; i++) {
+        tdata = raster.getDataElements(startX, i, width, 1, tdata);
+        outRaster.setDataElements(startX, i, width, 1, tdata);
+    }
+    return outRaster;
+}

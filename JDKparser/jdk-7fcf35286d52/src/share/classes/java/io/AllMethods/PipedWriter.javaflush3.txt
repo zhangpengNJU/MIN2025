@@ -1,0 +1,17 @@
+/**
+ * Flushes this output stream and forces any buffered output characters
+ * to be written out.
+ * This will notify any readers that characters are waiting in the pipe.
+ *
+ * @exception  IOException  if the pipe is closed, or an I/O error occurs.
+ */
+public synchronized void flush() throws IOException {
+    if (sink != null) {
+        if (sink.closedByReader || closed) {
+            throw new IOException("Pipe closed");
+        }
+        synchronized (sink) {
+            sink.notifyAll();
+        }
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * Reset the stream to the most recent mark.
+ *
+ * @throws  IOException
+ *          If the stream has not been marked, or if the mark has been
+ *          invalidated
+ */
+public void reset() throws IOException {
+    synchronized (lock) {
+        super.reset();
+        lineNumber = markedLineNumber;
+        skipLF = markedSkipLF;
+    }
+}

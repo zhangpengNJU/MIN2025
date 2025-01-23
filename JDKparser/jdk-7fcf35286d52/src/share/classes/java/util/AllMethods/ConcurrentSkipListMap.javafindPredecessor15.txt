@@ -1,0 +1,39 @@
+/* ---------------- Traversal -------------- */
+/**
+ * Returns a base-level node with key strictly less than given key,
+ * or the base-level header if there is no such node.  Also
+ * unlinks indexes to deleted nodes found along the way.  Callers
+ * rely on this side-effect of clearing indices to deleted nodes.
+ * @param key the key
+ * @return a predecessor of key
+ */
+private Node<K, V> findPredecessor(Object key, Comparator<? super K> cmp) {
+    if (key == null)
+        // don't postpone errors
+        throw new NullPointerException();
+    for (; ; ) {
+        for (Index<K, V> q = head, r = q.right, d; ; ) {
+            if (r != null) {
+                Node<K, V> n = r.node;
+                K k = n.key;
+                if (n.value == null) {
+                    if (!q.unlink(r))
+                        // restart
+                        break;
+                    // reread r
+                    r = q.right;
+                    continue;
+                }
+                if (cpr(cmp, key, k) > 0) {
+                    q = r;
+                    r = r.right;
+                    continue;
+                }
+            }
+            if ((d = q.down) == null)
+                return q.node;
+            q = d;
+            r = d.right;
+        }
+    }
+}

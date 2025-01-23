@@ -1,0 +1,20 @@
+/*
+     * Resizes the bounding box to accommodate the specified coordinates.
+     * @param x,&nbsp;y the specified coordinates
+     */
+void updateBounds(int x, int y) {
+    if (x < bounds.x) {
+        bounds.width = bounds.width + (bounds.x - x);
+        bounds.x = x;
+    } else {
+        bounds.width = Math.max(bounds.width, x - bounds.x);
+    // bounds.x = bounds.x;
+    }
+    if (y < bounds.y) {
+        bounds.height = bounds.height + (bounds.y - y);
+        bounds.y = y;
+    } else {
+        bounds.height = Math.max(bounds.height, y - bounds.y);
+    // bounds.y = bounds.y;
+    }
+}

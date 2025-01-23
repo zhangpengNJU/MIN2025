@@ -1,0 +1,17 @@
+/**
+ * Returns an array of all the action listeners
+ * registered on this menu item.
+ *
+ * @return all of this menu item's <code>ActionListener</code>s
+ *         or an empty array if no action
+ *         listeners are currently registered
+ *
+ * @see        #addActionListener
+ * @see        #removeActionListener
+ * @see        java.awt.event.ActionEvent
+ * @see        java.awt.event.ActionListener
+ * @since 1.4
+ */
+public synchronized ActionListener[] getActionListeners() {
+    return getListeners(ActionListener.class);
+}

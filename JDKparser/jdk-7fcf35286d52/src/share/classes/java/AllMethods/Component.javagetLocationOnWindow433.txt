@@ -1,0 +1,9 @@
+Point getLocationOnWindow() {
+    checkTreeLock();
+    Point curLocation = getLocation();
+    for (Container parent = getContainer(); parent != null && !(parent instanceof Window); parent = parent.getContainer()) {
+        curLocation.x += parent.getX();
+        curLocation.y += parent.getY();
+    }
+    return curLocation;
+}

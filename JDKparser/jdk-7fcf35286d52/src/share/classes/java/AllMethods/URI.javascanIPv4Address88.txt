@@ -1,0 +1,52 @@
+// Scan an IPv4 address.
+// 
+// If the strict argument is true then we require that the given
+// interval contain nothing besides an IPv4 address; if it is false
+// then we only require that it start with an IPv4 address.
+// 
+// If the interval does not contain or start with (depending upon the
+// strict argument) a legal IPv4 address characters then we return -1
+// immediately; otherwise we insist that these characters parse as a
+// legal IPv4 address and throw an exception on failure.
+// 
+// We assume that any string of decimal digits and dots must be an IPv4
+// address.  It won't parse as a hostname anyway, so making that
+// assumption here allows more meaningful exceptions to be thrown.
+// 
+private int scanIPv4Address(int start, int n, boolean strict) throws URISyntaxException {
+    int p = start;
+    int q;
+    int m = scan(p, n, L_DIGIT | L_DOT, H_DIGIT | H_DOT);
+    if ((m <= p) || (strict && (m != n)))
+        return -1;
+    for (; ; ) {
+        // Per RFC2732: At most three digits per byte
+        // Further constraint: Each element fits in a byte
+        if ((q = scanByte(p, m)) <= p)
+            break;
+        p = q;
+        if ((q = scan(p, m, '.')) <= p)
+            break;
+        p = q;
+        if ((q = scanByte(p, m)) <= p)
+            break;
+        p = q;
+        if ((q = scan(p, m, '.')) <= p)
+            break;
+        p = q;
+        if ((q = scanByte(p, m)) <= p)
+            break;
+        p = q;
+        if ((q = scan(p, m, '.')) <= p)
+            break;
+        p = q;
+        if ((q = scanByte(p, m)) <= p)
+            break;
+        p = q;
+        if (q < m)
+            break;
+        return q;
+    }
+    fail("Malformed IPv4 address", q);
+    return -1;
+}

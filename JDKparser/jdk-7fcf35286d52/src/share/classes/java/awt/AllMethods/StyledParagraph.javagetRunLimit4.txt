@@ -1,0 +1,23 @@
+/**
+ * Return the index at which there is a different Font, GraphicAttribute, or
+ * Dcoration than at the given index.
+ * @param index a valid index in the paragraph
+ * @return the first index where there is a change in attributes from
+ *      those at index
+ */
+public int getRunLimit(int index) {
+    if (index < 0 || index >= length) {
+        throw new IllegalArgumentException("index out of range");
+    }
+    int limit1 = length;
+    if (decorations != null) {
+        int run = findRunContaining(index, decorationStarts);
+        limit1 = decorationStarts[run + 1];
+    }
+    int limit2 = length;
+    if (fonts != null) {
+        int run = findRunContaining(index, fontStarts);
+        limit2 = fontStarts[run + 1];
+    }
+    return Math.min(limit1, limit2);
+}

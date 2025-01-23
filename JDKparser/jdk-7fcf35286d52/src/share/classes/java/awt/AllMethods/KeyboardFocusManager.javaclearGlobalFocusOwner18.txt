@@ -1,0 +1,33 @@
+/**
+ * Clears the global focus owner at both the Java and native levels. If
+ * there exists a focus owner, that Component will receive a permanent
+ * FOCUS_LOST event. After this operation completes, the native windowing
+ * system will discard all user-generated KeyEvents until the user selects
+ * a new Component to receive focus, or a Component is given focus
+ * explicitly via a call to <code>requestFocus()</code>. This operation
+ * does not change the focused or active Windows.
+ * <p>
+ * If a SecurityManager is installed, the calling thread must be granted
+ * the "replaceKeyboardFocusManager" AWTPermission. If this permission is
+ * not granted, this method will throw a SecurityException, and the current
+ * focus owner will not be cleared.
+ * <p>
+ * This method is intended to be used only by KeyboardFocusManager set as
+ * current KeyboardFocusManager for the calling thread's context. It is not
+ * for general client use.
+ *
+ * @see KeyboardFocusManager#clearFocusOwner
+ * @see Component#requestFocus()
+ * @see java.awt.event.FocusEvent#FOCUS_LOST
+ * @throws SecurityException if the calling thread does not have
+ *         "replaceKeyboardFocusManager" permission
+ */
+public void clearGlobalFocusOwner() throws SecurityException {
+    checkReplaceKFMPermission();
+    if (!GraphicsEnvironment.isHeadless()) {
+        // Toolkit must be fully initialized, otherwise
+        // _clearGlobalFocusOwner will crash or throw an exception
+        Toolkit.getDefaultToolkit();
+        _clearGlobalFocusOwner();
+    }
+}

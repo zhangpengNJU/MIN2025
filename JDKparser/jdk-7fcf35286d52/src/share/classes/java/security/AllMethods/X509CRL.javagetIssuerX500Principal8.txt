@@ -1,0 +1,16 @@
+/**
+ * Returns the issuer (issuer distinguished name) value from the
+ * CRL as an {@code X500Principal}.
+ * <p>
+ * It is recommended that subclasses override this method.
+ *
+ * @return an {@code X500Principal} representing the issuer
+ *          distinguished name
+ * @since 1.4
+ */
+public X500Principal getIssuerX500Principal() {
+    if (issuerPrincipal == null) {
+        issuerPrincipal = X509CRLImpl.getIssuerX500Principal(this);
+    }
+    return issuerPrincipal;
+}

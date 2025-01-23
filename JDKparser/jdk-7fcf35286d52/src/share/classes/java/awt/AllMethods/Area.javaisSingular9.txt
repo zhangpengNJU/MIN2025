@@ -1,0 +1,25 @@
+/**
+ * Tests whether this <code>Area</code> is comprised of a single
+ * closed subpath.  This method returns <code>true</code> if the
+ * path contains 0 or 1 subpaths, or <code>false</code> if the path
+ * contains more than 1 subpath.  The subpaths are counted by the
+ * number of {@link PathIterator#SEG_MOVETO SEG_MOVETO}  segments
+ * that appear in the path.
+ * @return    <code>true</code> if the <code>Area</code> is comprised
+ * of a single basic geometry; <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean isSingular() {
+    if (curves.size() < 3) {
+        return true;
+    }
+    Enumeration enum_ = curves.elements();
+    // First Order0 "moveto"
+    enum_.nextElement();
+    while (enum_.hasMoreElements()) {
+        if (((Curve) enum_.nextElement()).getOrder() == 0) {
+            return false;
+        }
+    }
+    return true;
+}

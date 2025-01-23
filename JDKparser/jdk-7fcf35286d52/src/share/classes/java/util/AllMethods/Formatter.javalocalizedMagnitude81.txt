@@ -1,0 +1,55 @@
+private StringBuilder localizedMagnitude(StringBuilder sb, char[] value, Flags f, int width, Locale l) {
+    if (sb == null)
+        sb = new StringBuilder();
+    int begin = sb.length();
+    char zero = getZero(l);
+    // determine localized grouping separator and size
+    char grpSep = '\0';
+    int grpSize = -1;
+    char decSep = '\0';
+    int len = value.length;
+    int dot = len;
+    for (int j = 0; j < len; j++) {
+        if (value[j] == '.') {
+            dot = j;
+            break;
+        }
+    }
+    if (dot < len) {
+        if (l == null || l.equals(Locale.US)) {
+            decSep = '.';
+        } else {
+            DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(l);
+            decSep = dfs.getDecimalSeparator();
+        }
+    }
+    if (f.contains(Flags.GROUP)) {
+        if (l == null || l.equals(Locale.US)) {
+            grpSep = ',';
+            grpSize = 3;
+        } else {
+            DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(l);
+            grpSep = dfs.getGroupingSeparator();
+            DecimalFormat df = (DecimalFormat) NumberFormat.getIntegerInstance(l);
+            grpSize = df.getGroupingSize();
+        }
+    }
+    // localize the digits inserting group separators as necessary
+    for (int j = 0; j < len; j++) {
+        if (j == dot) {
+            sb.append(decSep);
+            // no more group separators after the decimal separator
+            grpSep = '\0';
+            continue;
+        }
+        char c = value[j];
+        sb.append((char) ((c - '0') + zero));
+        if (grpSep != '\0' && j != dot - 1 && ((dot - j) % grpSize == 1))
+            sb.append(grpSep);
+    }
+    // apply zero padding
+    len = sb.length();
+    if (width != -1 && f.contains(Flags.ZERO_PAD))
+        for (int k = 0; k < width - len; k++) sb.insert(begin, zero);
+    return sb;
+}

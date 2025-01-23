@@ -1,0 +1,25 @@
+/**
+ * Returns an {@code AnnotatedType} object that represents the use of a
+ * type to specify the superclass of the entity represented by this {@code
+ * Class} object. (The <em>use</em> of type Foo to specify the superclass
+ * in '...  extends Foo' is distinct from the <em>declaration</em> of type
+ * Foo.)
+ *
+ * <p> If this {@code Class} object represents a type whose declaration
+ * does not explicitly indicate an annotated superclass, then the return
+ * value is an {@code AnnotatedType} object representing an element with no
+ * annotations.
+ *
+ * <p> If this {@code Class} represents either the {@code Object} class, an
+ * interface type, an array type, a primitive type, or void, the return
+ * value is {@code null}.
+ *
+ * @return an object representing the superclass
+ * @since 1.8
+ */
+public AnnotatedType getAnnotatedSuperclass() {
+    if (this == Object.class || isInterface() || isArray() || isPrimitive() || this == Void.TYPE) {
+        return null;
+    }
+    return TypeAnnotationParser.buildAnnotatedSuperclass(getRawTypeAnnotations(), getConstantPool(), this);
+}

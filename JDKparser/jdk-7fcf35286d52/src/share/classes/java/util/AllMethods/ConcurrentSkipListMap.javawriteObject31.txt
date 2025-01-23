@@ -1,0 +1,25 @@
+/* ---------------- Serialization -------------- */
+/**
+ * Saves this map to a stream (that is, serializes it).
+ *
+ * @param s the stream
+ * @throws java.io.IOException if an I/O error occurs
+ * @serialData The key (Object) and value (Object) for each
+ * key-value mapping represented by the map, followed by
+ * {@code null}. The key-value mappings are emitted in key-order
+ * (as determined by the Comparator, or by the keys' natural
+ * ordering if no Comparator).
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    // Write out the Comparator and any hidden stuff
+    s.defaultWriteObject();
+    // Write out keys and values (alternating)
+    for (Node<K, V> n = findFirst(); n != null; n = n.next) {
+        V v = n.getValidValue();
+        if (v != null) {
+            s.writeObject(n.key);
+            s.writeObject(v);
+        }
+    }
+    s.writeObject(null);
+}

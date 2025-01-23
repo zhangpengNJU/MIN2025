@@ -1,0 +1,15 @@
+private int deriveNumericScope(String ifname) throws UnknownHostException {
+    Enumeration<NetworkInterface> en;
+    try {
+        en = NetworkInterface.getNetworkInterfaces();
+    } catch (SocketException e) {
+        throw new UnknownHostException("could not enumerate local network interfaces");
+    }
+    while (en.hasMoreElements()) {
+        NetworkInterface ifc = en.nextElement();
+        if (ifc.getName().equals(ifname)) {
+            return deriveNumericScope(holder6.ipaddress, ifc);
+        }
+    }
+    throw new UnknownHostException("No matching address found for interface : " + ifname);
+}

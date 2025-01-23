@@ -1,0 +1,8 @@
+void updateGenericsFor(Class<?> type) {
+    super.updateGenericsFor(type);
+    try {
+        setIndexedPropertyType(findIndexedPropertyType(this.indexedReadMethodRef.get(), this.indexedWriteMethodRef.get()));
+    } catch (IntrospectionException exception) {
+        setIndexedPropertyType(null);
+    }
+}

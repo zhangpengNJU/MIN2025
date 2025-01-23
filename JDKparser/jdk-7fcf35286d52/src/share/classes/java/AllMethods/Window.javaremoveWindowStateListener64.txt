@@ -1,0 +1,19 @@
+/**
+ * Removes the specified window state listener so that it no
+ * longer receives window events from this window.  If
+ * {@code l} is {@code null}, no exception is thrown and
+ * no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param   l the window state listener
+ * @see #addWindowStateListener
+ * @see #getWindowStateListeners
+ * @since 1.4
+ */
+public synchronized void removeWindowStateListener(WindowStateListener l) {
+    if (l == null) {
+        return;
+    }
+    windowStateListener = AWTEventMulticaster.remove(windowStateListener, l);
+}

@@ -1,0 +1,6 @@
+private static void filterReturnValueChecks(MethodType targetType, MethodType filterType) throws RuntimeException {
+    Class<?> rtype = targetType.returnType();
+    int filterValues = filterType.parameterCount();
+    if (filterValues == 0 ? (rtype != void.class) : (rtype != filterType.parameterType(0) || filterValues != 1))
+        throw newIllegalArgumentException("target and filter types do not match", targetType, filterType);
+}

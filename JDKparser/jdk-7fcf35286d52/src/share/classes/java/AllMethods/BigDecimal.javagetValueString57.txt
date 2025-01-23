@@ -1,0 +1,23 @@
+/* Returns a digit.digit string */
+private String getValueString(int signum, String intString, int scale) {
+    /* Insert decimal point */
+    StringBuilder buf;
+    int insertionPoint = intString.length() - scale;
+    if (insertionPoint == 0) {
+        /* Point goes right before intVal */
+        return (signum < 0 ? "-0." : "0.") + intString;
+    } else if (insertionPoint > 0) {
+        /* Point goes inside intVal */
+        buf = new StringBuilder(intString);
+        buf.insert(insertionPoint, '.');
+        if (signum < 0)
+            buf.insert(0, '-');
+    } else {
+        /* We must insert zeros between point and intVal */
+        buf = new StringBuilder(3 - insertionPoint + intString.length());
+        buf.append(signum < 0 ? "-0." : "0.");
+        for (int i = 0; i < -insertionPoint; i++) buf.append('0');
+        buf.append(intString);
+    }
+    return buf.toString();
+}

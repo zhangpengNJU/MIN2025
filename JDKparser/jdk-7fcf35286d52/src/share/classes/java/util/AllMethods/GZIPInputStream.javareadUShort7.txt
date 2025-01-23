@@ -1,0 +1,7 @@
+/*
+     * Reads unsigned short in Intel byte order.
+     */
+private int readUShort(InputStream in) throws IOException {
+    int b = readUByte(in);
+    return (readUByte(in) << 8) | b;
+}

@@ -1,0 +1,16 @@
+/**
+ * Returns a copy of this date-time with the new date and time, checking
+ * to see if a new object is in fact required.
+ *
+ * @param newDate  the date of the new date-time, not null
+ * @param newTime  the time of the new date-time, not null
+ * @return the date-time, not null
+ */
+private ChronoLocalDateTimeImpl<D> with(Temporal newDate, LocalTime newTime) {
+    if (date == newDate && time == newTime) {
+        return this;
+    }
+    // Validate that the new Temporal is a ChronoLocalDate (and not something else)
+    D cd = ChronoLocalDateImpl.ensureValid(date.getChronology(), newDate);
+    return new ChronoLocalDateTimeImpl<>(cd, newTime);
+}

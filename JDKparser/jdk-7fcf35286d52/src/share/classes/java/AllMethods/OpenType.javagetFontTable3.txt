@@ -1,0 +1,15 @@
+/**
+ * Returns a subset of the table as an array of bytes
+ * for a specified tag.  Tags for sfnt tables include
+ * items like <i>cmap</i>, <i>name</i> and <i>head</i>.
+ * The byte array returned is a copy of the font data in
+ * memory.
+ * @param     sfntTag a four-character code as a 32-bit integer
+ * @param     offset index of first byte to return from table
+ * @param     count number of bytes to return from table
+ * @return a subset of the table corresponding to
+ *            <code>sfntTag</code> and containing the bytes
+ *            starting at <code>offset</code> byte and including
+ *            <code>count</code> bytes.
+ */
+public byte[] getFontTable(int sfntTag, int offset, int count);

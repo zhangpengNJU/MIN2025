@@ -1,0 +1,6 @@
+public Map.Entry<K, V> next() {
+    Node<K, V> n = next;
+    V v = nextValue;
+    advance();
+    return new AbstractMap.SimpleImmutableEntry<K, V>(n.key, v);
+}

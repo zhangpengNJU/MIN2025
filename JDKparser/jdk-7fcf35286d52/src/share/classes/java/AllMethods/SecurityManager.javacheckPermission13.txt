@@ -1,0 +1,38 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * specified security context is denied access to the resource
+ * specified by the given permission.
+ * The context must be a security
+ * context returned by a previous call to
+ * <code>getSecurityContext</code> and the access control
+ * decision is based upon the configured security policy for
+ * that security context.
+ * <p>
+ * If <code>context</code> is an instance of
+ * <code>AccessControlContext</code> then the
+ * <code>AccessControlContext.checkPermission</code> method is
+ * invoked with the specified permission.
+ * <p>
+ * If <code>context</code> is not an instance of
+ * <code>AccessControlContext</code> then a
+ * <code>SecurityException</code> is thrown.
+ *
+ * @param      perm      the specified permission
+ * @param      context   a system-dependent security context.
+ * @exception  SecurityException  if the specified security context
+ *             is not an instance of <code>AccessControlContext</code>
+ *             (e.g., is <code>null</code>), or is denied access to the
+ *             resource specified by the given permission.
+ * @exception  NullPointerException if the permission argument is
+ *             <code>null</code>.
+ * @see        java.lang.SecurityManager#getSecurityContext()
+ * @see java.security.AccessControlContext#checkPermission(java.security.Permission)
+ * @since      1.2
+ */
+public void checkPermission(Permission perm, Object context) {
+    if (context instanceof AccessControlContext) {
+        ((AccessControlContext) context).checkPermission(perm);
+    } else {
+        throw new SecurityException();
+    }
+}

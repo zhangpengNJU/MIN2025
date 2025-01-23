@@ -1,0 +1,99 @@
+/**
+ * Sets the pattern used by this message format.
+ * The method parses the pattern and creates a list of subformats
+ * for the format elements contained in it.
+ * Patterns and their interpretation are specified in the
+ * <a href="#patterns">class description</a>.
+ *
+ * @param pattern the pattern for this message format
+ * @exception IllegalArgumentException if the pattern is invalid
+ */
+// fallthrough in switch is expected, suppress it
+@SuppressWarnings("fallthrough")
+public void applyPattern(String pattern) {
+    StringBuilder[] segments = new StringBuilder[4];
+    // Allocate only segments[SEG_RAW] here. The rest are
+    // allocated on demand.
+    segments[SEG_RAW] = new StringBuilder();
+    int part = SEG_RAW;
+    int formatNumber = 0;
+    boolean inQuote = false;
+    int braceStack = 0;
+    maxOffset = -1;
+    for (int i = 0; i < pattern.length(); ++i) {
+        char ch = pattern.charAt(i);
+        if (part == SEG_RAW) {
+            if (ch == '\'') {
+                if (i + 1 < pattern.length() && pattern.charAt(i + 1) == '\'') {
+                    // handle doubles
+                    segments[part].append(ch);
+                    ++i;
+                } else {
+                    inQuote = !inQuote;
+                }
+            } else if (ch == '{' && !inQuote) {
+                part = SEG_INDEX;
+                if (segments[SEG_INDEX] == null) {
+                    segments[SEG_INDEX] = new StringBuilder();
+                }
+            } else {
+                segments[part].append(ch);
+            }
+        } else {
+            if (inQuote) {
+                // just copy quotes in parts
+                segments[part].append(ch);
+                if (ch == '\'') {
+                    inQuote = false;
+                }
+            } else {
+                switch(ch) {
+                    case ',':
+                        if (part < SEG_MODIFIER) {
+                            if (segments[++part] == null) {
+                                segments[part] = new StringBuilder();
+                            }
+                        } else {
+                            segments[part].append(ch);
+                        }
+                        break;
+                    case '{':
+                        ++braceStack;
+                        segments[part].append(ch);
+                        break;
+                    case '}':
+                        if (braceStack == 0) {
+                            part = SEG_RAW;
+                            makeFormat(i, formatNumber, segments);
+                            formatNumber++;
+                            // throw away other segments
+                            segments[SEG_INDEX] = null;
+                            segments[SEG_TYPE] = null;
+                            segments[SEG_MODIFIER] = null;
+                        } else {
+                            --braceStack;
+                            segments[part].append(ch);
+                        }
+                        break;
+                    case ' ':
+                        // Skip any leading space chars for SEG_TYPE.
+                        if (part != SEG_TYPE || segments[SEG_TYPE].length() > 0) {
+                            segments[part].append(ch);
+                        }
+                        break;
+                    case '\'':
+                        inQuote = true;
+                    // fall through, so we keep quotes in other parts
+                    default:
+                        segments[part].append(ch);
+                        break;
+                }
+            }
+        }
+    }
+    if (braceStack == 0 && part != 0) {
+        maxOffset = -1;
+        throw new IllegalArgumentException("Unmatched braces in the pattern.");
+    }
+    this.pattern = segments[0].toString();
+}

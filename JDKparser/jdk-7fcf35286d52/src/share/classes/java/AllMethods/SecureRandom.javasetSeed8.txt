@@ -1,0 +1,25 @@
+/**
+ * Reseeds this random object, using the eight bytes contained
+ * in the given {@code long seed}. The given seed supplements,
+ * rather than replaces, the existing seed. Thus, repeated calls
+ * are guaranteed never to reduce randomness.
+ *
+ * <p>This method is defined for compatibility with
+ * {@code java.util.Random}.
+ *
+ * @param seed the seed.
+ *
+ * @see #getSeed
+ */
+@Override
+public void setSeed(long seed) {
+    /*
+         * Ignore call from super constructor (as well as any other calls
+         * unfortunate enough to be passing 0).  It's critical that we
+         * ignore call from superclass constructor, as digest has not
+         * yet been initialized at that point.
+         */
+    if (seed != 0) {
+        secureRandomSpi.engineSetSeed(longToByteArray(seed));
+    }
+}

@@ -1,0 +1,12 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if this field represents a component of a date.
+ * <p>
+ * Fields from day-of-week to era are date-based.
+ *
+ * @return true if it is a component of a date
+ */
+@Override
+public boolean isDateBased() {
+    return ordinal() >= DAY_OF_WEEK.ordinal() && ordinal() <= ERA.ordinal();
+}

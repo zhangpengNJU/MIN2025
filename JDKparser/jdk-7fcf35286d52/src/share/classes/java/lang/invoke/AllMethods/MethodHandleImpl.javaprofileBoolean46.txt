@@ -1,0 +1,13 @@
+// Intrinsified by C2. Counters are used during parsing to calculate branch frequencies.
+@LambdaForm.Hidden
+static boolean profileBoolean(boolean result, int[] counters) {
+    // Profile is int[2] where [0] and [1] correspond to false and true occurrences respectively.
+    int idx = result ? 1 : 0;
+    try {
+        counters[idx] = Math.addExact(counters[idx], 1);
+    } catch (ArithmeticException e) {
+        // Avoid continuous overflow by halving the problematic count.
+        counters[idx] = counters[idx] / 2;
+    }
+    return result;
+}

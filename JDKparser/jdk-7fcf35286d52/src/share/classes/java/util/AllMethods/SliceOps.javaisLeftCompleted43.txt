@@ -1,0 +1,24 @@
+/**
+ * Determine if the number of completed elements in this node and nodes
+ * to the left of this node is greater than or equal to the target size.
+ *
+ * @param target the target size
+ * @return true if the number of elements is greater than or equal to
+ *         the target size, otherwise false.
+ */
+private boolean isLeftCompleted(long target) {
+    long size = completed ? thisNodeSize : completedSize(target);
+    if (size >= target)
+        return true;
+    for (SliceTask<P_IN, P_OUT> parent = getParent(), node = this; parent != null; node = parent, parent = parent.getParent()) {
+        if (node == parent.rightChild) {
+            SliceTask<P_IN, P_OUT> left = parent.leftChild;
+            if (left != null) {
+                size += left.completedSize(target);
+                if (size >= target)
+                    return true;
+            }
+        }
+    }
+    return size >= target;
+}

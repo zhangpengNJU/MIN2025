@@ -1,0 +1,22 @@
+/**
+ * Write a {@code Throwable} object to a stream.
+ *
+ * A {@code null} stack trace field is represented in the serial
+ * form as a one-element array whose element is equal to {@code
+ * new StackTraceElement("", "", null, Integer.MIN_VALUE)}.
+ */
+private synchronized void writeObject(ObjectOutputStream s) throws IOException {
+    // Ensure that the stackTrace field is initialized to a
+    // non-null value, if appropriate.  As of JDK 7, a null stack
+    // trace field is a valid value indicating the stack trace
+    // should not be set.
+    getOurStackTrace();
+    StackTraceElement[] oldStackTrace = stackTrace;
+    try {
+        if (stackTrace == null)
+            stackTrace = SentinelHolder.STACK_TRACE_SENTINEL;
+        s.defaultWriteObject();
+    } finally {
+        stackTrace = oldStackTrace;
+    }
+}

@@ -1,0 +1,19 @@
+/**
+ * Tests if two paths locate the same file. This method works in exactly the
+ * manner specified by the {@link Files#isSameFile} method.
+ *
+ * @param   path
+ *          one path to the file
+ * @param   path2
+ *          the other path
+ *
+ * @return  {@code true} if, and only if, the two paths locate the same file
+ *
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkRead(String) checkRead}
+ *          method is invoked to check read access to both files.
+ */
+public abstract boolean isSameFile(Path path, Path path2) throws IOException;

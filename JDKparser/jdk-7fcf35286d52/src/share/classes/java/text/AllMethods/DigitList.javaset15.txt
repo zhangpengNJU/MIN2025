@@ -1,0 +1,15 @@
+/**
+ * Set the digit list to a representation of the given BigDecimal value.
+ * This method supports both fixed-point and exponential notation.
+ * @param isNegative Boolean value indicating whether the number is negative.
+ * @param source Value to be converted; must not be a value <= 0.
+ * @param maximumDigits The most fractional or total digits which should
+ * be converted.
+ * @param fixedPoint If true, then maximumDigits is the maximum
+ * fractional digits to be converted.  If false, total digits.
+ */
+final void set(boolean isNegative, BigDecimal source, int maximumDigits, boolean fixedPoint) {
+    String s = source.toString();
+    extendDigits(s.length());
+    set(isNegative, s, false, true, maximumDigits, fixedPoint);
+}

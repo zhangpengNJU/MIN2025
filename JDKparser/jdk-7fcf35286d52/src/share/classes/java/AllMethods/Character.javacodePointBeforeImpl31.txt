@@ -1,0 +1,11 @@
+// throws ArrayIndexOutOfBoundsException if index-1 out of bounds
+static int codePointBeforeImpl(char[] a, int index, int start) {
+    char c2 = a[--index];
+    if (isLowSurrogate(c2) && index > start) {
+        char c1 = a[--index];
+        if (isHighSurrogate(c1)) {
+            return toCodePoint(c1, c2);
+        }
+    }
+    return c2;
+}

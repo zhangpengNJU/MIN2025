@@ -1,0 +1,32 @@
+private void getDefaultPRNG(boolean setSeed, byte[] seed) {
+    String prng = getPrngAlgorithm();
+    if (prng == null) {
+        // bummer, get the SUN implementation
+        prng = "SHA1PRNG";
+        this.secureRandomSpi = new sun.security.provider.SecureRandom();
+        this.provider = Providers.getSunProvider();
+        if (setSeed) {
+            this.secureRandomSpi.engineSetSeed(seed);
+        }
+    } else {
+        try {
+            SecureRandom random = SecureRandom.getInstance(prng);
+            this.secureRandomSpi = random.getSecureRandomSpi();
+            this.provider = random.getProvider();
+            if (setSeed) {
+                this.secureRandomSpi.engineSetSeed(seed);
+            }
+        } catch (NoSuchAlgorithmException nsae) {
+            // never happens, because we made sure the algorithm exists
+            throw new RuntimeException(nsae);
+        }
+    }
+    // JDK 1.1 based implementations subclass SecureRandom instead of
+    // SecureRandomSpi. They will also go through this code path because
+    // they must call a SecureRandom constructor as it is their superclass.
+    // If we are dealing with such an implementation, do not set the
+    // algorithm value as it would be inaccurate.
+    if (getClass() == SecureRandom.class) {
+        this.algorithm = prng;
+    }
+}

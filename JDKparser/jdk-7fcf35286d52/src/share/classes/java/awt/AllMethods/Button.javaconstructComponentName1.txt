@@ -1,0 +1,9 @@
+/**
+ * Construct a name for this component.  Called by getName() when the
+ * name is null.
+ */
+String constructComponentName() {
+    synchronized (Button.class) {
+        return base + nameCounter++;
+    }
+}

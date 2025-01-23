@@ -1,0 +1,22 @@
+/**
+ * Returns the nth <code>Accessible</code> child of the object.
+ *
+ * @param i zero-based index of child
+ * @return the nth <code>Accessible</code> child of the object
+ */
+Accessible getAccessibleChild(int i) {
+    synchronized (getTreeLock()) {
+        Component[] children = this.getComponents();
+        int count = 0;
+        for (int j = 0; j < children.length; j++) {
+            if (children[j] instanceof Accessible) {
+                if (count == i) {
+                    return (Accessible) children[j];
+                } else {
+                    count++;
+                }
+            }
+        }
+        return null;
+    }
+}

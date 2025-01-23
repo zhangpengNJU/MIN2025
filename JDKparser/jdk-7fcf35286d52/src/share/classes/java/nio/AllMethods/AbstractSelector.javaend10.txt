@@ -1,0 +1,11 @@
+/**
+ * Marks the end of an I/O operation that might block indefinitely.
+ *
+ * <p> This method should be invoked in tandem with the {@link #begin begin}
+ * method, using a <tt>try</tt>&nbsp;...&nbsp;<tt>finally</tt> block as
+ * shown <a href="#be">above</a>, in order to implement interruption for
+ * this selector.  </p>
+ */
+protected final void end() {
+    AbstractInterruptibleChannel.blockedOn(null);
+}

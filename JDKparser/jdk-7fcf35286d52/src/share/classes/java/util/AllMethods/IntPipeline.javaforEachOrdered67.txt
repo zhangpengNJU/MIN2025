@@ -1,0 +1,8 @@
+@Override
+public void forEachOrdered(IntConsumer action) {
+    if (!isParallel()) {
+        adapt(sourceStageSpliterator()).forEachRemaining(action);
+    } else {
+        super.forEachOrdered(action);
+    }
+}

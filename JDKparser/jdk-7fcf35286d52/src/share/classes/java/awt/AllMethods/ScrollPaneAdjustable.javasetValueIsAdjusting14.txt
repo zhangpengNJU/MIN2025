@@ -1,0 +1,14 @@
+/**
+ * Sets the <code>valueIsAdjusting</code> property.
+ *
+ * @param b new adjustment-in-progress status
+ * @see #getValueIsAdjusting
+ * @since 1.4
+ */
+public void setValueIsAdjusting(boolean b) {
+    if (isAdjusting != b) {
+        isAdjusting = b;
+        AdjustmentEvent e = new AdjustmentEvent(this, AdjustmentEvent.ADJUSTMENT_VALUE_CHANGED, AdjustmentEvent.TRACK, value, b);
+        adjustmentListener.adjustmentValueChanged(e);
+    }
+}

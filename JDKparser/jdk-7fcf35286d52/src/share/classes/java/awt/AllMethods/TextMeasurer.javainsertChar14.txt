@@ -1,0 +1,50 @@
+/**
+ * Updates the <code>TextMeasurer</code> after a single character has
+ * been inserted
+ * into the paragraph currently represented by this
+ * <code>TextMeasurer</code>.  After this call, this
+ * <code>TextMeasurer</code> is equivalent to a new
+ * <code>TextMeasurer</code> created from the text;  however, it will
+ * usually be more efficient to update an existing
+ * <code>TextMeasurer</code> than to create a new one from scratch.
+ *
+ * @param newParagraph the text of the paragraph after performing
+ * the insertion.  Cannot be null.
+ * @param insertPos the position in the text where the character was
+ * inserted.  Must not be less than the start of
+ * <code>newParagraph</code>, and must be less than the end of
+ * <code>newParagraph</code>.
+ * @throws IndexOutOfBoundsException if <code>insertPos</code> is less
+ *         than the start of <code>newParagraph</code> or greater than
+ *         or equal to the end of <code>newParagraph</code>
+ * @throws NullPointerException if <code>newParagraph</code> is
+ *         <code>null</code>
+ */
+public void insertChar(AttributedCharacterIterator newParagraph, int insertPos) {
+    if (collectStats) {
+        printStats();
+    }
+    if (wantStats) {
+        collectStats = true;
+    }
+    fStart = newParagraph.getBeginIndex();
+    int end = newParagraph.getEndIndex();
+    if (end - fStart != fChars.length + 1) {
+        initAll(newParagraph);
+    }
+    char[] newChars = new char[end - fStart];
+    int newCharIndex = insertPos - fStart;
+    System.arraycopy(fChars, 0, newChars, 0, newCharIndex);
+    char newChar = newParagraph.setIndex(insertPos);
+    newChars[newCharIndex] = newChar;
+    System.arraycopy(fChars, newCharIndex, newChars, newCharIndex + 1, end - insertPos - 1);
+    fChars = newChars;
+    if (fBidi != null || Bidi.requiresBidi(newChars, newCharIndex, newCharIndex + 1) || newParagraph.getAttribute(TextAttribute.BIDI_EMBEDDING) != null) {
+        fBidi = new Bidi(newParagraph);
+        if (fBidi.isLeftToRight()) {
+            fBidi = null;
+        }
+    }
+    fParagraph = StyledParagraph.insertChar(newParagraph, fChars, insertPos, fParagraph);
+    invalidateComponents();
+}

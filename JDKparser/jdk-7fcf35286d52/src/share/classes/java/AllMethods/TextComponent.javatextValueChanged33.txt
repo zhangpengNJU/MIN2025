@@ -1,0 +1,7 @@
+/**
+ * TextListener notification of a text value change.
+ */
+public void textValueChanged(TextEvent textEvent) {
+    Integer cpos = Integer.valueOf(TextComponent.this.getCaretPosition());
+    firePropertyChange(ACCESSIBLE_TEXT_PROPERTY, null, cpos);
+}

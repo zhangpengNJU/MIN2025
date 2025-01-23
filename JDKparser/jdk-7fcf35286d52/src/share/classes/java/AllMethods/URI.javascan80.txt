@@ -1,0 +1,21 @@
+// Scan chars that match the given mask pair
+// 
+private int scan(int start, int n, long lowMask, long highMask) throws URISyntaxException {
+    int p = start;
+    while (p < n) {
+        char c = charAt(p);
+        if (match(c, lowMask, highMask)) {
+            p++;
+            continue;
+        }
+        if ((lowMask & L_ESCAPED) != 0) {
+            int q = scanEscape(p, n, c);
+            if (q > p) {
+                p = q;
+                continue;
+            }
+        }
+        break;
+    }
+    return p;
+}

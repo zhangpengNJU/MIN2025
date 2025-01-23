@@ -1,0 +1,24 @@
+/**
+ * Returns a value equal to what {@code b.leftShift(32*ints); return compare(b);}
+ * would return, but doesn't change the value of {@code b}.
+ */
+private int compareShifted(MutableBigInteger b, int ints) {
+    int blen = b.intLen;
+    int alen = intLen - ints;
+    if (alen < blen)
+        return -1;
+    if (alen > blen)
+        return 1;
+    // Add Integer.MIN_VALUE to make the comparison act as unsigned integer
+    // comparison.
+    int[] bval = b.value;
+    for (int i = offset, j = b.offset; i < alen + offset; i++, j++) {
+        int b1 = value[i] + 0x80000000;
+        int b2 = bval[j] + 0x80000000;
+        if (b1 < b2)
+            return -1;
+        if (b1 > b2)
+            return 1;
+    }
+    return 0;
+}

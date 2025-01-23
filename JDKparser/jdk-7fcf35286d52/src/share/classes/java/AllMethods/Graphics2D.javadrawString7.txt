@@ -1,0 +1,24 @@
+/**
+ * Renders the text of the specified <code>String</code>, using the
+ * current text attribute state in the <code>Graphics2D</code> context.
+ * The baseline of the
+ * first character is at position (<i>x</i>,&nbsp;<i>y</i>) in
+ * the User Space.
+ * The rendering attributes applied include the <code>Clip</code>,
+ * <code>Transform</code>, <code>Paint</code>, <code>Font</code> and
+ * <code>Composite</code> attributes.  For characters in script
+ * systems such as Hebrew and Arabic, the glyphs can be rendered from
+ * right to left, in which case the coordinate supplied is the
+ * location of the leftmost character on the baseline.
+ * @param str the string to be rendered
+ * @param x the x coordinate of the location where the
+ * <code>String</code> should be rendered
+ * @param y the y coordinate of the location where the
+ * <code>String</code> should be rendered
+ * @throws NullPointerException if <code>str</code> is
+ *         <code>null</code>
+ * @see         java.awt.Graphics#drawBytes
+ * @see         java.awt.Graphics#drawChars
+ * @since       JDK1.0
+ */
+public abstract void drawString(String str, int x, int y);

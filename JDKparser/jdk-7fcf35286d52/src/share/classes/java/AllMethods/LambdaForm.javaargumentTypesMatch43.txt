@@ -1,0 +1,15 @@
+// The next few routines are called only from assert expressions
+// They verify that the built-in invokers process the correct raw data types.
+private static boolean argumentTypesMatch(String sig, Object[] av) {
+    int arity = signatureArity(sig);
+    assert (av.length == arity) : "av.length == arity: av.length=" + av.length + ", arity=" + arity;
+    assert (av[0] instanceof MethodHandle) : "av[0] not instace of MethodHandle: " + av[0];
+    MethodHandle mh = (MethodHandle) av[0];
+    MethodType mt = mh.type();
+    assert (mt.parameterCount() == arity - 1);
+    for (int i = 0; i < av.length; i++) {
+        Class<?> pt = (i == 0 ? MethodHandle.class : mt.parameterType(i - 1));
+        assert (valueMatches(basicType(sig.charAt(i)), pt, av[i]));
+    }
+    return true;
+}

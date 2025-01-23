@@ -1,0 +1,12 @@
+/**
+ * Craft a LambdaForm customized for this particular MethodHandle
+ */
+/*non-public*/
+void customize() {
+    if (form.customized == null) {
+        LambdaForm newForm = form.customize(this);
+        updateForm(newForm);
+    } else {
+        assert (form.customized == this);
+    }
+}

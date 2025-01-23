@@ -1,0 +1,7 @@
+@Override
+public MinguoDate date(TemporalAccessor temporal) {
+    if (temporal instanceof MinguoDate) {
+        return (MinguoDate) temporal;
+    }
+    return new MinguoDate(LocalDate.from(temporal));
+}

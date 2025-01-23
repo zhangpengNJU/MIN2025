@@ -1,0 +1,17 @@
+@Override
+public final LongStream mapToLong(IntToLongFunction mapper) {
+    Objects.requireNonNull(mapper);
+    return new LongPipeline.StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedInt<Long>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    downstream.accept(mapper.applyAsLong(t));
+                }
+            };
+        }
+    };
+}

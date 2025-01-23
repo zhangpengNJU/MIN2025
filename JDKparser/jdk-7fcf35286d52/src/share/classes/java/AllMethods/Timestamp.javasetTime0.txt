@@ -1,0 +1,17 @@
+/**
+ * Sets this <code>Timestamp</code> object to represent a point in time that is
+ * <tt>time</tt> milliseconds after January 1, 1970 00:00:00 GMT.
+ *
+ * @param time   the number of milliseconds.
+ * @see #getTime
+ * @see #Timestamp(long time)
+ * @see java.util.Calendar
+ */
+public void setTime(long time) {
+    super.setTime((time / 1000) * 1000);
+    nanos = (int) ((time % 1000) * 1000000);
+    if (nanos < 0) {
+        nanos = 1000000000 + nanos;
+        super.setTime(((time / 1000) - 1) * 1000);
+    }
+}

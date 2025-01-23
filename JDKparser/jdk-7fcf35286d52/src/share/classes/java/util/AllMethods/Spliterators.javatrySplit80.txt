@@ -1,0 +1,27 @@
+/**
+ * {@inheritDoc}
+ *
+ * This implementation permits limited parallelism.
+ */
+@Override
+public Spliterator.OfDouble trySplit() {
+    HoldingDoubleConsumer holder = new HoldingDoubleConsumer();
+    long s = est;
+    if (s > 1 && tryAdvance(holder)) {
+        int n = batch + BATCH_UNIT;
+        if (n > s)
+            n = (int) s;
+        if (n > MAX_BATCH)
+            n = MAX_BATCH;
+        double[] a = new double[n];
+        int j = 0;
+        do {
+            a[j] = holder.value;
+        } while (++j < n && tryAdvance(holder));
+        batch = j;
+        if (est != Long.MAX_VALUE)
+            est -= j;
+        return new DoubleArraySpliterator(a, 0, j, characteristics());
+    }
+    return null;
+}

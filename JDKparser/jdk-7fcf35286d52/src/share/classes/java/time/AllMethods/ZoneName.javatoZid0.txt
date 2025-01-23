@@ -1,0 +1,16 @@
+public static String toZid(String zid, Locale locale) {
+    String mzone = zidToMzone.get(zid);
+    if (mzone == null && aliases.containsKey(zid)) {
+        zid = aliases.get(zid);
+        mzone = zidToMzone.get(zid);
+    }
+    if (mzone != null) {
+        Map<String, String> map = mzoneToZidL.get(mzone);
+        if (map != null && map.containsKey(locale.getCountry())) {
+            zid = map.get(locale.getCountry());
+        } else {
+            zid = mzoneToZid.get(mzone);
+        }
+    }
+    return toZid(zid);
+}

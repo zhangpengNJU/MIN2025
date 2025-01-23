@@ -1,0 +1,20 @@
+/**
+ * Hides the Dialog and then causes {@code show} to return if it is currently
+ * blocked.
+ * @see Window#show
+ * @see Window#dispose
+ * @see Window#setVisible(boolean)
+ * @deprecated As of JDK version 1.5, replaced by
+ * {@link #setVisible(boolean) setVisible(boolean)}.
+ */
+@Deprecated
+public void hide() {
+    hideAndDisposePreHandler();
+    super.hide();
+    // fix for 5048370: if hide() is called from super.doDispose(), then
+    // hideAndDisposeHandler() should not be called here as it will be called
+    // at the end of doDispose()
+    if (!isInDispose) {
+        hideAndDisposeHandler();
+    }
+}

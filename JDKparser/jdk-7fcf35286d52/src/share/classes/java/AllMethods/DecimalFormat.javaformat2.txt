@@ -1,0 +1,60 @@
+/**
+ * Formats a double to produce a string.
+ * @param number    The double to format
+ * @param result    where the text is to be appended
+ * @param delegate notified of locations of sub fields
+ * @exception       ArithmeticException if rounding is needed with rounding
+ *                  mode being set to RoundingMode.UNNECESSARY
+ * @return The formatted number string
+ */
+private StringBuffer format(double number, StringBuffer result, FieldDelegate delegate) {
+    if (Double.isNaN(number) || (Double.isInfinite(number) && multiplier == 0)) {
+        int iFieldStart = result.length();
+        result.append(symbols.getNaN());
+        delegate.formatted(INTEGER_FIELD, Field.INTEGER, Field.INTEGER, iFieldStart, result.length(), result);
+        return result;
+    }
+    /* Detecting whether a double is negative is easy with the exception of
+         * the value -0.0.  This is a double which has a zero mantissa (and
+         * exponent), but a negative sign bit.  It is semantically distinct from
+         * a zero with a positive sign bit, and this distinction is important
+         * to certain kinds of computations.  However, it's a little tricky to
+         * detect, since (-0.0 == 0.0) and !(-0.0 < 0.0).  How then, you may
+         * ask, does it behave distinctly from +0.0?  Well, 1/(-0.0) ==
+         * -Infinity.  Proper detection of -0.0 is needed to deal with the
+         * issues raised by bugs 4106658, 4106667, and 4147706.  Liu 7/6/98.
+         */
+    boolean isNegative = ((number < 0.0) || (number == 0.0 && 1 / number < 0.0)) ^ (multiplier < 0);
+    if (multiplier != 1) {
+        number *= multiplier;
+    }
+    if (Double.isInfinite(number)) {
+        if (isNegative) {
+            append(result, negativePrefix, delegate, getNegativePrefixFieldPositions(), Field.SIGN);
+        } else {
+            append(result, positivePrefix, delegate, getPositivePrefixFieldPositions(), Field.SIGN);
+        }
+        int iFieldStart = result.length();
+        result.append(symbols.getInfinity());
+        delegate.formatted(INTEGER_FIELD, Field.INTEGER, Field.INTEGER, iFieldStart, result.length(), result);
+        if (isNegative) {
+            append(result, negativeSuffix, delegate, getNegativeSuffixFieldPositions(), Field.SIGN);
+        } else {
+            append(result, positiveSuffix, delegate, getPositiveSuffixFieldPositions(), Field.SIGN);
+        }
+        return result;
+    }
+    if (isNegative) {
+        number = -number;
+    }
+    // at this point we are guaranteed a nonnegative finite number.
+    assert (number >= 0 && !Double.isInfinite(number));
+    synchronized (digitList) {
+        int maxIntDigits = super.getMaximumIntegerDigits();
+        int minIntDigits = super.getMinimumIntegerDigits();
+        int maxFraDigits = super.getMaximumFractionDigits();
+        int minFraDigits = super.getMinimumFractionDigits();
+        digitList.set(isNegative, number, useExponentialNotation ? maxIntDigits + maxFraDigits : maxFraDigits, !useExponentialNotation);
+        return subformat(result, delegate, isNegative, false, maxIntDigits, minIntDigits, maxFraDigits, minFraDigits);
+    }
+}

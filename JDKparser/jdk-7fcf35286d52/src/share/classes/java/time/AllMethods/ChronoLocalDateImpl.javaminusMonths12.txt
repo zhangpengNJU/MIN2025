@@ -1,0 +1,20 @@
+/**
+ * Returns a copy of this date with the specified number of months subtracted.
+ * <p>
+ * This subtracts the specified period in months to the date.
+ * In some cases, subtracting months can cause the resulting date to become invalid.
+ * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+ * that the result is valid. Typically this will select the last valid day of the month.
+ * <p>
+ * The default implementation uses {@link #plusMonths(long)}.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param monthsToSubtract  the months to subtract, may be negative
+ * @return a date based on this one with the months subtracted, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+@SuppressWarnings("unchecked")
+D minusMonths(long monthsToSubtract) {
+    return (monthsToSubtract == Long.MIN_VALUE ? ((ChronoLocalDateImpl<D>) plusMonths(Long.MAX_VALUE)).plusMonths(1) : plusMonths(-monthsToSubtract));
+}

@@ -1,0 +1,10 @@
+// Package private method to get a String property.
+// If the property is not defined we return the given
+// default value.
+String getStringProperty(String name, String defaultValue) {
+    String val = getProperty(name);
+    if (val == null) {
+        return defaultValue;
+    }
+    return val.trim();
+}

@@ -1,0 +1,15 @@
+private float applyFunctionAtIndex(int logicalIndex, Function f) {
+    if (logicalIndex < 0) {
+        throw new IllegalArgumentException("Negative logicalIndex.");
+    }
+    int tlcStart = 0;
+    for (int i = 0; i < fComponents.length; i++) {
+        int tlcLimit = tlcStart + fComponents[i].getNumCharacters();
+        if (tlcLimit > logicalIndex) {
+            return f.computeFunction(this, i, logicalIndex - tlcStart);
+        } else {
+            tlcStart = tlcLimit;
+        }
+    }
+    throw new IllegalArgumentException("logicalIndex too large.");
+}

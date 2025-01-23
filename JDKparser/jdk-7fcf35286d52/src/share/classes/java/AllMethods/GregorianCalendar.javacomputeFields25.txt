@@ -1,0 +1,238 @@
+/**
+ * This computeFields implements the conversion from UTC
+ * (millisecond offset from the Epoch) to calendar
+ * field values. fieldMask specifies which fields to change the
+ * setting state to COMPUTED, although all fields are set to
+ * the correct values. This is required to fix 4685354.
+ *
+ * @param fieldMask a bit mask to specify which fields to change
+ * the setting state.
+ * @param tzMask a bit mask to specify which time zone offset
+ * fields to be used for time calculations
+ * @return a new field mask that indicates what field values have
+ * actually been set.
+ */
+private int computeFields(int fieldMask, int tzMask) {
+    int zoneOffset = 0;
+    TimeZone tz = getZone();
+    if (zoneOffsets == null) {
+        zoneOffsets = new int[2];
+    }
+    if (tzMask != (ZONE_OFFSET_MASK | DST_OFFSET_MASK)) {
+        if (tz instanceof ZoneInfo) {
+            zoneOffset = ((ZoneInfo) tz).getOffsets(time, zoneOffsets);
+        } else {
+            zoneOffset = tz.getOffset(time);
+            zoneOffsets[0] = tz.getRawOffset();
+            zoneOffsets[1] = zoneOffset - zoneOffsets[0];
+        }
+    }
+    if (tzMask != 0) {
+        if (isFieldSet(tzMask, ZONE_OFFSET)) {
+            zoneOffsets[0] = internalGet(ZONE_OFFSET);
+        }
+        if (isFieldSet(tzMask, DST_OFFSET)) {
+            zoneOffsets[1] = internalGet(DST_OFFSET);
+        }
+        zoneOffset = zoneOffsets[0] + zoneOffsets[1];
+    }
+    // By computing time and zoneOffset separately, we can take
+    // the wider range of time+zoneOffset than the previous
+    // implementation.
+    long fixedDate = zoneOffset / ONE_DAY;
+    int timeOfDay = zoneOffset % (int) ONE_DAY;
+    fixedDate += time / ONE_DAY;
+    timeOfDay += (int) (time % ONE_DAY);
+    if (timeOfDay >= ONE_DAY) {
+        timeOfDay -= ONE_DAY;
+        ++fixedDate;
+    } else {
+        while (timeOfDay < 0) {
+            timeOfDay += ONE_DAY;
+            --fixedDate;
+        }
+    }
+    fixedDate += EPOCH_OFFSET;
+    int era = CE;
+    int year;
+    if (fixedDate >= gregorianCutoverDate) {
+        // Handle Gregorian dates.
+        assert cachedFixedDate == Long.MIN_VALUE || gdate.isNormalized() : "cache control: not normalized";
+        assert cachedFixedDate == Long.MIN_VALUE || gcal.getFixedDate(gdate.getNormalizedYear(), gdate.getMonth(), gdate.getDayOfMonth(), gdate) == cachedFixedDate : "cache control: inconsictency" + ", cachedFixedDate=" + cachedFixedDate + ", computed=" + gcal.getFixedDate(gdate.getNormalizedYear(), gdate.getMonth(), gdate.getDayOfMonth(), gdate) + ", date=" + gdate;
+        // See if we can use gdate to avoid date calculation.
+        if (fixedDate != cachedFixedDate) {
+            gcal.getCalendarDateFromFixedDate(gdate, fixedDate);
+            cachedFixedDate = fixedDate;
+        }
+        year = gdate.getYear();
+        if (year <= 0) {
+            year = 1 - year;
+            era = BCE;
+        }
+        calsys = gcal;
+        cdate = gdate;
+        assert cdate.getDayOfWeek() > 0 : "dow=" + cdate.getDayOfWeek() + ", date=" + cdate;
+    } else {
+        // Handle Julian calendar dates.
+        calsys = getJulianCalendarSystem();
+        cdate = (BaseCalendar.Date) jcal.newCalendarDate(getZone());
+        jcal.getCalendarDateFromFixedDate(cdate, fixedDate);
+        Era e = cdate.getEra();
+        if (e == jeras[0]) {
+            era = BCE;
+        }
+        year = cdate.getYear();
+    }
+    // Always set the ERA and YEAR values.
+    internalSet(ERA, era);
+    internalSet(YEAR, year);
+    int mask = fieldMask | (ERA_MASK | YEAR_MASK);
+    // 0-based
+    int month = cdate.getMonth() - 1;
+    int dayOfMonth = cdate.getDayOfMonth();
+    // Set the basic date fields.
+    if ((fieldMask & (MONTH_MASK | DAY_OF_MONTH_MASK | DAY_OF_WEEK_MASK)) != 0) {
+        internalSet(MONTH, month);
+        internalSet(DAY_OF_MONTH, dayOfMonth);
+        internalSet(DAY_OF_WEEK, cdate.getDayOfWeek());
+        mask |= MONTH_MASK | DAY_OF_MONTH_MASK | DAY_OF_WEEK_MASK;
+    }
+    if ((fieldMask & (HOUR_OF_DAY_MASK | AM_PM_MASK | HOUR_MASK | MINUTE_MASK | SECOND_MASK | MILLISECOND_MASK)) != 0) {
+        if (timeOfDay != 0) {
+            int hours = timeOfDay / ONE_HOUR;
+            internalSet(HOUR_OF_DAY, hours);
+            // Assume AM == 0
+            internalSet(AM_PM, hours / 12);
+            internalSet(HOUR, hours % 12);
+            int r = timeOfDay % ONE_HOUR;
+            internalSet(MINUTE, r / ONE_MINUTE);
+            r %= ONE_MINUTE;
+            internalSet(SECOND, r / ONE_SECOND);
+            internalSet(MILLISECOND, r % ONE_SECOND);
+        } else {
+            internalSet(HOUR_OF_DAY, 0);
+            internalSet(AM_PM, AM);
+            internalSet(HOUR, 0);
+            internalSet(MINUTE, 0);
+            internalSet(SECOND, 0);
+            internalSet(MILLISECOND, 0);
+        }
+        mask |= (HOUR_OF_DAY_MASK | AM_PM_MASK | HOUR_MASK | MINUTE_MASK | SECOND_MASK | MILLISECOND_MASK);
+    }
+    if ((fieldMask & (ZONE_OFFSET_MASK | DST_OFFSET_MASK)) != 0) {
+        internalSet(ZONE_OFFSET, zoneOffsets[0]);
+        internalSet(DST_OFFSET, zoneOffsets[1]);
+        mask |= (ZONE_OFFSET_MASK | DST_OFFSET_MASK);
+    }
+    if ((fieldMask & (DAY_OF_YEAR_MASK | WEEK_OF_YEAR_MASK | WEEK_OF_MONTH_MASK | DAY_OF_WEEK_IN_MONTH_MASK)) != 0) {
+        int normalizedYear = cdate.getNormalizedYear();
+        long fixedDateJan1 = calsys.getFixedDate(normalizedYear, 1, 1, cdate);
+        int dayOfYear = (int) (fixedDate - fixedDateJan1) + 1;
+        long fixedDateMonth1 = fixedDate - dayOfMonth + 1;
+        int cutoverGap = 0;
+        int cutoverYear = (calsys == gcal) ? gregorianCutoverYear : gregorianCutoverYearJulian;
+        int relativeDayOfMonth = dayOfMonth - 1;
+        // If we are in the cutover year, we need some special handling.
+        if (normalizedYear == cutoverYear) {
+            // Need to take care of the "missing" days.
+            if (gregorianCutoverYearJulian <= gregorianCutoverYear) {
+                // We need to find out where we are. The cutover
+                // gap could even be more than one year.  (One
+                // year difference in ~48667 years.)
+                fixedDateJan1 = getFixedDateJan1(cdate, fixedDate);
+                if (fixedDate >= gregorianCutoverDate) {
+                    fixedDateMonth1 = getFixedDateMonth1(cdate, fixedDate);
+                }
+            }
+            int realDayOfYear = (int) (fixedDate - fixedDateJan1) + 1;
+            cutoverGap = dayOfYear - realDayOfYear;
+            dayOfYear = realDayOfYear;
+            relativeDayOfMonth = (int) (fixedDate - fixedDateMonth1);
+        }
+        internalSet(DAY_OF_YEAR, dayOfYear);
+        internalSet(DAY_OF_WEEK_IN_MONTH, relativeDayOfMonth / 7 + 1);
+        int weekOfYear = getWeekNumber(fixedDateJan1, fixedDate);
+        // The spec is to calculate WEEK_OF_YEAR in the
+        // ISO8601-style. This creates problems, though.
+        if (weekOfYear == 0) {
+            // If the date belongs to the last week of the
+            // previous year, use the week number of "12/31" of
+            // the "previous" year. Again, if the previous year is
+            // the Gregorian cutover year, we need to take care of
+            // it.  Usually the previous day of January 1 is
+            // December 31, which is not always true in
+            // GregorianCalendar.
+            long fixedDec31 = fixedDateJan1 - 1;
+            long prevJan1 = fixedDateJan1 - 365;
+            if (normalizedYear > (cutoverYear + 1)) {
+                if (CalendarUtils.isGregorianLeapYear(normalizedYear - 1)) {
+                    --prevJan1;
+                }
+            } else if (normalizedYear <= gregorianCutoverYearJulian) {
+                if (CalendarUtils.isJulianLeapYear(normalizedYear - 1)) {
+                    --prevJan1;
+                }
+            } else {
+                BaseCalendar calForJan1 = calsys;
+                // int prevYear = normalizedYear - 1;
+                int prevYear = getCalendarDate(fixedDec31).getNormalizedYear();
+                if (prevYear == gregorianCutoverYear) {
+                    calForJan1 = getCutoverCalendarSystem();
+                    if (calForJan1 == jcal) {
+                        prevJan1 = calForJan1.getFixedDate(prevYear, BaseCalendar.JANUARY, 1, null);
+                    } else {
+                        prevJan1 = gregorianCutoverDate;
+                        calForJan1 = gcal;
+                    }
+                } else if (prevYear <= gregorianCutoverYearJulian) {
+                    calForJan1 = getJulianCalendarSystem();
+                    prevJan1 = calForJan1.getFixedDate(prevYear, BaseCalendar.JANUARY, 1, null);
+                }
+            }
+            weekOfYear = getWeekNumber(prevJan1, fixedDec31);
+        } else {
+            if (normalizedYear > gregorianCutoverYear || normalizedYear < (gregorianCutoverYearJulian - 1)) {
+                // Regular years
+                if (weekOfYear >= 52) {
+                    long nextJan1 = fixedDateJan1 + 365;
+                    if (cdate.isLeapYear()) {
+                        nextJan1++;
+                    }
+                    long nextJan1st = BaseCalendar.getDayOfWeekDateOnOrBefore(nextJan1 + 6, getFirstDayOfWeek());
+                    int ndays = (int) (nextJan1st - nextJan1);
+                    if (ndays >= getMinimalDaysInFirstWeek() && fixedDate >= (nextJan1st - 7)) {
+                        // The first days forms a week in which the date is included.
+                        weekOfYear = 1;
+                    }
+                }
+            } else {
+                BaseCalendar calForJan1 = calsys;
+                int nextYear = normalizedYear + 1;
+                if (nextYear == (gregorianCutoverYearJulian + 1) && nextYear < gregorianCutoverYear) {
+                    // In case the gap is more than one year.
+                    nextYear = gregorianCutoverYear;
+                }
+                if (nextYear == gregorianCutoverYear) {
+                    calForJan1 = getCutoverCalendarSystem();
+                }
+                long nextJan1;
+                if (nextYear > gregorianCutoverYear || gregorianCutoverYearJulian == gregorianCutoverYear || nextYear == gregorianCutoverYearJulian) {
+                    nextJan1 = calForJan1.getFixedDate(nextYear, BaseCalendar.JANUARY, 1, null);
+                } else {
+                    nextJan1 = gregorianCutoverDate;
+                    calForJan1 = gcal;
+                }
+                long nextJan1st = BaseCalendar.getDayOfWeekDateOnOrBefore(nextJan1 + 6, getFirstDayOfWeek());
+                int ndays = (int) (nextJan1st - nextJan1);
+                if (ndays >= getMinimalDaysInFirstWeek() && fixedDate >= (nextJan1st - 7)) {
+                    // The first days forms a week in which the date is included.
+                    weekOfYear = 1;
+                }
+            }
+        }
+        internalSet(WEEK_OF_YEAR, weekOfYear);
+        internalSet(WEEK_OF_MONTH, getWeekNumber(fixedDateMonth1, fixedDate));
+        mask |= (DAY_OF_YEAR_MASK | WEEK_OF_YEAR_MASK | WEEK_OF_MONTH_MASK | DAY_OF_WEEK_IN_MONTH_MASK);
+    }
+    return mask;
+}

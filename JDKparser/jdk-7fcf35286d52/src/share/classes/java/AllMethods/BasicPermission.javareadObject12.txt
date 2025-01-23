@@ -1,0 +1,28 @@
+/**
+ * readObject is called to restore the state of the
+ * BasicPermissionCollection from a stream.
+ */
+private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get permissions
+    // writeObject writes a Hashtable<String, Permission> for the
+    // permissions key, so this cast is safe, unless the data is corrupt.
+    @SuppressWarnings("unchecked")
+    Hashtable<String, Permission> permissions = (Hashtable<String, Permission>) gfields.get("permissions", null);
+    perms = new HashMap<String, Permission>(permissions.size() * 2);
+    perms.putAll(permissions);
+    // Get all_allowed
+    all_allowed = gfields.get("all_allowed", false);
+    // Get permClass
+    permClass = (Class<?>) gfields.get("permClass", null);
+    if (permClass == null) {
+        // set permClass
+        Enumeration<Permission> e = permissions.elements();
+        if (e.hasMoreElements()) {
+            Permission p = e.nextElement();
+            permClass = p.getClass();
+        }
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * If lock is available, poll stale refs and remove them.
+ * Called from ForkJoinPool when pools become quiescent.
+ */
+static final void helpExpungeStaleExceptions() {
+    final ReentrantLock lock = exceptionTableLock;
+    if (lock.tryLock()) {
+        try {
+            expungeStaleExceptions();
+        } finally {
+            lock.unlock();
+        }
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Returns a {@link Set} view of the keys contained in this map.
+ * The set is backed by the map, so changes to the map are
+ * reflected in the set, and vice-versa. The set supports element
+ * removal, which removes the corresponding mapping from this map,
+ * via the {@code Iterator.remove}, {@code Set.remove},
+ * {@code removeAll}, {@code retainAll}, and {@code clear}
+ * operations.  It does not support the {@code add} or
+ * {@code addAll} operations.
+ *
+ * <p>The view's iterators and spliterators are
+ * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
+ *
+ * <p>The view's {@code spliterator} reports {@link Spliterator#CONCURRENT},
+ * {@link Spliterator#DISTINCT}, and {@link Spliterator#NONNULL}.
+ *
+ * @return the set view
+ */
+public KeySetView<K, V> keySet() {
+    KeySetView<K, V> ks;
+    return (ks = keySet) != null ? ks : (keySet = new KeySetView<K, V>(this, null));
+}

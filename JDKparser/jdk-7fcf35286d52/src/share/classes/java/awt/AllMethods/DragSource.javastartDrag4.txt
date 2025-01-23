@@ -1,0 +1,27 @@
+/**
+ * Start a drag, given the <code>DragGestureEvent</code>
+ * that initiated the drag, the initial
+ * <code>Cursor</code> to use,
+ * the <code>Transferable</code> subject data
+ * of the drag, the <code>DragSourceListener</code>,
+ * and the <code>FlavorMap</code>.
+ * <P>
+ * @param trigger        the <code>DragGestureEvent</code> that
+ * initiated the drag
+ * @param dragCursor     the initial {@code Cursor} for this drag operation
+ *                       or {@code null} for the default cursor handling;
+ *                       see <a href="DragSourceContext.html#defaultCursor">DragSourceContext</a>
+ *                       for more details on the cursor handling mechanism during drag and drop
+ * @param transferable   the subject data of the drag
+ * @param dsl            the <code>DragSourceListener</code>
+ * @param flavorMap      the <code>FlavorMap</code> to use or <code>null</code>
+ * <P>
+ * @throws java.awt.dnd.InvalidDnDOperationException
+ *    if the Drag and Drop
+ *    system is unable to initiate a drag operation, or if the user
+ *    attempts to start a drag while an existing drag operation
+ *    is still executing
+ */
+public void startDrag(DragGestureEvent trigger, Cursor dragCursor, Transferable transferable, DragSourceListener dsl, FlavorMap flavorMap) throws InvalidDnDOperationException {
+    startDrag(trigger, dragCursor, null, null, transferable, dsl, flavorMap);
+}

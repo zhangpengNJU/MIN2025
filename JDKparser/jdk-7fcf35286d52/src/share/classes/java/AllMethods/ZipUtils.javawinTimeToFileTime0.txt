@@ -1,0 +1,6 @@
+/**
+ * Converts Windows time (in microseconds, UTC/GMT) time to FileTime.
+ */
+public static final FileTime winTimeToFileTime(long wtime) {
+    return FileTime.from(wtime / 10 + WINDOWS_EPOCH_IN_MICROSECONDS, TimeUnit.MICROSECONDS);
+}

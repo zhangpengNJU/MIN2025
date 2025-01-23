@@ -1,0 +1,12 @@
+public final boolean exec() {
+    try {
+        result = callable.call();
+        return true;
+    } catch (Error err) {
+        throw err;
+    } catch (RuntimeException rex) {
+        throw rex;
+    } catch (Exception ex) {
+        throw new RuntimeException(ex);
+    }
+}

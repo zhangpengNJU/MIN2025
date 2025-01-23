@@ -1,0 +1,12 @@
+private static Logger demandLogger(String name, String resourceBundleName, Class<?> caller) {
+    LogManager manager = LogManager.getLogManager();
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null && !SystemLoggerHelper.disableCallerCheck) {
+        if (caller.getClassLoader() == null) {
+            return manager.demandSystemLogger(name, resourceBundleName);
+        }
+    }
+    return manager.demandLogger(name, resourceBundleName, caller);
+// ends up calling new Logger(name, resourceBundleName, caller)
+// iff the logger doesn't exist already
+}

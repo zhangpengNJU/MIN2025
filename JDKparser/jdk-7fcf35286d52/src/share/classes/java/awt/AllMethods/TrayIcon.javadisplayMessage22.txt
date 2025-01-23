@@ -1,0 +1,33 @@
+/**
+ * Displays a popup message near the tray icon.  The message will
+ * disappear after a time or if the user clicks on it.  Clicking
+ * on the message may trigger an {@code ActionEvent}.
+ *
+ * <p>Either the caption or the text may be <code>null</code>, but an
+ * <code>NullPointerException</code> is thrown if both are
+ * <code>null</code>.
+ *
+ * When displayed, the caption or text strings may be truncated on
+ * some platforms; the number of characters that may be displayed is
+ * platform-dependent.
+ *
+ * <p><strong>Note:</strong> Some platforms may not support
+ * showing a message.
+ *
+ * @param caption the caption displayed above the text, usually in
+ * bold; may be <code>null</code>
+ * @param text the text displayed for the particular message; may be
+ * <code>null</code>
+ * @param messageType an enum indicating the message type
+ * @throws NullPointerException if both <code>caption</code>
+ * and <code>text</code> are <code>null</code>
+ */
+public void displayMessage(String caption, String text, MessageType messageType) {
+    if (caption == null && text == null) {
+        throw new NullPointerException("displaying the message with both caption and text being null");
+    }
+    TrayIconPeer peer = this.peer;
+    if (peer != null) {
+        peer.displayMessage(caption, text, messageType.name());
+    }
+}

@@ -1,0 +1,16 @@
+// 
+// for cookie purpose, the effective uri should only be http://host
+// the path will be taken into account when path-match algorithm applied
+// 
+private URI getEffectiveURI(URI uri) {
+    URI effectiveURI = null;
+    try {
+        effectiveURI = new URI("http", uri.getHost(), // path component
+        null, // query component
+        null, // fragment component
+        null);
+    } catch (URISyntaxException ignored) {
+        effectiveURI = uri;
+    }
+    return effectiveURI;
+}

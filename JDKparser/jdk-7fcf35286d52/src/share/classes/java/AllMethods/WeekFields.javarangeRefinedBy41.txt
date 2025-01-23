@@ -1,0 +1,19 @@
+@Override
+public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+    if (rangeUnit == ChronoUnit.WEEKS) {
+        // day-of-week
+        return range;
+    } else if (rangeUnit == MONTHS) {
+        // week-of-month
+        return rangeByWeek(temporal, DAY_OF_MONTH);
+    } else if (rangeUnit == YEARS) {
+        // week-of-year
+        return rangeByWeek(temporal, DAY_OF_YEAR);
+    } else if (rangeUnit == WEEK_BASED_YEARS) {
+        return rangeWeekOfWeekBasedYear(temporal);
+    } else if (rangeUnit == FOREVER) {
+        return YEAR.range();
+    } else {
+        throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
+    }
+}

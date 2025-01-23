@@ -1,0 +1,19 @@
+public void forEachRemaining(Consumer<? super V> action) {
+    if (action == null)
+        throw new NullPointerException();
+    int i, hi, mc;
+    IdentityHashMap<K, V> m;
+    Object[] a;
+    if ((m = map) != null && (a = m.table) != null && (i = index) >= 0 && (index = hi = getFence()) <= a.length) {
+        for (; i < hi; i += 2) {
+            if (a[i] != null) {
+                @SuppressWarnings("unchecked")
+                V v = (V) a[i + 1];
+                action.accept(v);
+            }
+        }
+        if (m.modCount == expectedModCount)
+            return;
+    }
+    throw new ConcurrentModificationException();
+}

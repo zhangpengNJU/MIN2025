@@ -1,0 +1,46 @@
+/**
+ * Returns an array of all the <code>AWTEventListener</code>s
+ * registered on this toolkit.
+ * If there is a security manager, its {@code checkPermission}
+ * method is called with an
+ * {@code AWTPermission("listenToAllAWTEvents")} permission.
+ * This may result in a SecurityException.
+ * Listeners can be returned
+ * within <code>AWTEventListenerProxy</code> objects, which also contain
+ * the event mask for the given listener.
+ * Note that listener objects
+ * added multiple times appear only once in the returned array.
+ *
+ * @return all of the <code>AWTEventListener</code>s or an empty
+ *         array if no listeners are currently registered
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        <code>checkPermission</code> method doesn't allow the operation.
+ * @see      #addAWTEventListener
+ * @see      #removeAWTEventListener
+ * @see      SecurityManager#checkPermission
+ * @see      java.awt.AWTEvent
+ * @see      java.awt.AWTPermission
+ * @see      java.awt.event.AWTEventListener
+ * @see      java.awt.event.AWTEventListenerProxy
+ * @since 1.4
+ */
+public AWTEventListener[] getAWTEventListeners() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.ALL_AWT_EVENTS_PERMISSION);
+    }
+    synchronized (this) {
+        EventListener[] la = ToolkitEventMulticaster.getListeners(eventListener, AWTEventListener.class);
+        AWTEventListener[] ret = new AWTEventListener[la.length];
+        for (int i = 0; i < la.length; i++) {
+            SelectiveAWTEventListener sael = (SelectiveAWTEventListener) la[i];
+            AWTEventListener tempL = sael.getListener();
+            // assert tempL is not an AWTEventListenerProxy - we should
+            // have weeded them all out
+            // don't want to wrap a proxy inside a proxy
+            ret[i] = new AWTEventListenerProxy(sael.getEventMask(), tempL);
+        }
+        return ret;
+    }
+}

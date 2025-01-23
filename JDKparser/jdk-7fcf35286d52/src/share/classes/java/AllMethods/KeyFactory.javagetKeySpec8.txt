@@ -1,0 +1,46 @@
+/**
+ * Returns a specification (key material) of the given key object.
+ * {@code keySpec} identifies the specification class in which
+ * the key material should be returned. It could, for example, be
+ * {@code DSAPublicKeySpec.class}, to indicate that the
+ * key material should be returned in an instance of the
+ * {@code DSAPublicKeySpec} class.
+ *
+ * @param <T> the type of the key specification to be returned
+ *
+ * @param key the key.
+ *
+ * @param keySpec the specification class in which
+ * the key material should be returned.
+ *
+ * @return the underlying key specification (key material) in an instance
+ * of the requested specification class.
+ *
+ * @exception InvalidKeySpecException if the requested key specification is
+ * inappropriate for the given key, or the given key cannot be processed
+ * (e.g., the given key has an unrecognized algorithm or format).
+ */
+public final <T extends KeySpec> T getKeySpec(Key key, Class<T> keySpec) throws InvalidKeySpecException {
+    if (serviceIterator == null) {
+        return spi.engineGetKeySpec(key, keySpec);
+    }
+    Exception failure = null;
+    KeyFactorySpi mySpi = spi;
+    do {
+        try {
+            return mySpi.engineGetKeySpec(key, keySpec);
+        } catch (Exception e) {
+            if (failure == null) {
+                failure = e;
+            }
+            mySpi = nextSpi(mySpi);
+        }
+    } while (mySpi != null);
+    if (failure instanceof RuntimeException) {
+        throw (RuntimeException) failure;
+    }
+    if (failure instanceof InvalidKeySpecException) {
+        throw (InvalidKeySpecException) failure;
+    }
+    throw new InvalidKeySpecException("Could not get key spec", failure);
+}

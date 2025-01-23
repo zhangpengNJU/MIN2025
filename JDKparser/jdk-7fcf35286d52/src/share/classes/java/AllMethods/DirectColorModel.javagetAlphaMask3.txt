@@ -1,0 +1,13 @@
+/**
+ * Returns the mask indicating which bits in an <code>int</code> pixel
+ * representation contain the alpha component.
+ * @return the mask, which indicates which bits of the <code>int</code>
+ *         pixel representation contain the alpha sample.
+ */
+final public int getAlphaMask() {
+    if (supportsAlpha) {
+        return maskArray[3];
+    } else {
+        return 0;
+    }
+}

@@ -1,0 +1,33 @@
+/**
+ * Enable the stream to do replacement of objects in the stream.  When
+ * enabled, the replaceObject method is called for every object being
+ * serialized.
+ *
+ * <p>If <code>enable</code> is true, and there is a security manager
+ * installed, this method first calls the security manager's
+ * <code>checkPermission</code> method with a
+ * <code>SerializablePermission("enableSubstitution")</code> permission to
+ * ensure it's ok to enable the stream to do replacement of objects in the
+ * stream.
+ *
+ * @param   enable boolean parameter to enable replacement of objects
+ * @return  the previous setting before this method was invoked
+ * @throws  SecurityException if a security manager exists and its
+ *          <code>checkPermission</code> method denies enabling the stream
+ *          to do replacement of objects in the stream.
+ * @see SecurityManager#checkPermission
+ * @see java.io.SerializablePermission
+ */
+protected boolean enableReplaceObject(boolean enable) throws SecurityException {
+    if (enable == enableReplace) {
+        return enable;
+    }
+    if (enable) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SUBSTITUTION_PERMISSION);
+        }
+    }
+    enableReplace = enable;
+    return !enableReplace;
+}

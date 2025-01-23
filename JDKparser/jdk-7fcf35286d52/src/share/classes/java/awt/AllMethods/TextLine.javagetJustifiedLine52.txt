@@ -1,0 +1,81 @@
+/*
+   * create a new line with characters between charStart and charLimit
+   * justified using the provided width and ratio.
+   */
+public TextLine getJustifiedLine(float justificationWidth, float justifyRatio, int justStart, int justLimit) {
+    TextLineComponent[] newComponents = new TextLineComponent[fComponents.length];
+    System.arraycopy(fComponents, 0, newComponents, 0, fComponents.length);
+    float leftHang = 0;
+    float adv = 0;
+    float justifyDelta = 0;
+    boolean rejustify = false;
+    do {
+        adv = getAdvanceBetween(newComponents, 0, characterCount());
+        // all characters outside the justification range must be in the base direction
+        // of the layout, otherwise justification makes no sense.
+        float justifyAdvance = getAdvanceBetween(newComponents, justStart, justLimit);
+        // get the actual justification delta
+        justifyDelta = (justificationWidth - justifyAdvance) * justifyRatio;
+        // generate an array of GlyphJustificationInfo records to pass to
+        // the justifier.  Array is visually ordered.
+        // get positions that each component will be using
+        int[] infoPositions = new int[newComponents.length];
+        int infoCount = 0;
+        for (int visIndex = 0; visIndex < newComponents.length; visIndex++) {
+            int logIndex = getComponentLogicalIndex(visIndex);
+            infoPositions[logIndex] = infoCount;
+            infoCount += newComponents[logIndex].getNumJustificationInfos();
+        }
+        GlyphJustificationInfo[] infos = new GlyphJustificationInfo[infoCount];
+        // get justification infos
+        int compStart = 0;
+        for (int i = 0; i < newComponents.length; i++) {
+            TextLineComponent comp = newComponents[i];
+            int compLength = comp.getNumCharacters();
+            int compLimit = compStart + compLength;
+            if (compLimit > justStart) {
+                int rangeMin = Math.max(0, justStart - compStart);
+                int rangeMax = Math.min(compLength, justLimit - compStart);
+                comp.getJustificationInfos(infos, infoPositions[i], rangeMin, rangeMax);
+                if (compLimit >= justLimit) {
+                    break;
+                }
+            }
+        }
+        // records are visually ordered, and contiguous, so start and end are
+        // simply the places where we didn't fetch records
+        int infoStart = 0;
+        int infoLimit = infoCount;
+        while (infoStart < infoLimit && infos[infoStart] == null) {
+            ++infoStart;
+        }
+        while (infoLimit > infoStart && infos[infoLimit - 1] == null) {
+            --infoLimit;
+        }
+        // invoke justifier on the records
+        TextJustifier justifier = new TextJustifier(infos, infoStart, infoLimit);
+        float[] deltas = justifier.justify(justifyDelta);
+        boolean canRejustify = rejustify == false;
+        boolean wantRejustify = false;
+        boolean[] flags = new boolean[1];
+        // apply justification deltas
+        compStart = 0;
+        for (int i = 0; i < newComponents.length; i++) {
+            TextLineComponent comp = newComponents[i];
+            int compLength = comp.getNumCharacters();
+            int compLimit = compStart + compLength;
+            if (compLimit > justStart) {
+                int rangeMin = Math.max(0, justStart - compStart);
+                int rangeMax = Math.min(compLength, justLimit - compStart);
+                newComponents[i] = comp.applyJustificationDeltas(deltas, infoPositions[i] * 2, flags);
+                wantRejustify |= flags[0];
+                if (compLimit >= justLimit) {
+                    break;
+                }
+            }
+        }
+        // only make two passes
+        rejustify = wantRejustify && !rejustify;
+    } while (rejustify);
+    return new TextLine(frc, newComponents, fBaselineOffsets, fChars, fCharsStart, fCharsLimit, fCharLogicalOrder, fCharLevels, fIsDirectionLTR);
+}

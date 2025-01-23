@@ -1,0 +1,7 @@
+/**
+ * Throws NotSerializableException, since NodeChangeEvent objects are not
+ * intended to be serializable.
+ */
+private void writeObject(java.io.ObjectOutputStream out) throws NotSerializableException {
+    throw new NotSerializableException("Not serializable.");
+}

@@ -1,0 +1,16 @@
+protected boolean prefixOf(CharSequence text, int off, int end) {
+    if (text instanceof String) {
+        return ((String) text).startsWith(key, off);
+    }
+    int len = key.length();
+    if (len > end - off) {
+        return false;
+    }
+    int off0 = 0;
+    while (len-- > 0) {
+        if (!isEqual(key.charAt(off0++), text.charAt(off++))) {
+            return false;
+        }
+    }
+    return true;
+}

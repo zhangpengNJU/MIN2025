@@ -1,0 +1,19 @@
+/**
+ * Check and ensure that the calendar data has been initialized.
+ * The initialization check is performed at the boundary between
+ * public and package methods.  If a public calls another public method
+ * a check is not necessary in the caller.
+ * The constructors of HijrahDate call {@link #getEpochDay} or
+ * {@link #getHijrahDateInfo} so every call from HijrahDate to a
+ * HijrahChronology via package private methods has been checked.
+ *
+ * @throws DateTimeException if the calendar data configuration is
+ *     malformed or IOExceptions occur loading the data
+ */
+private void checkCalendarInit() {
+    // Keep this short so it can be inlined for performance
+    if (initComplete == false) {
+        loadCalendarData();
+        initComplete = true;
+    }
+}

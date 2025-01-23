@@ -1,0 +1,56 @@
+/**
+ * Replaces the existing <code>EventQueue</code> with the specified one.
+ * Any pending events are transferred to the new <code>EventQueue</code>
+ * for processing by it.
+ *
+ * @param newEventQueue an <code>EventQueue</code>
+ *          (or subclass thereof) instance to be use
+ * @see      java.awt.EventQueue#pop
+ * @throws NullPointerException if <code>newEventQueue</code> is <code>null</code>
+ * @since           1.2
+ */
+public void push(EventQueue newEventQueue) {
+    if (getEventLog().isLoggable(PlatformLogger.Level.FINE)) {
+        getEventLog().fine("EventQueue.push(" + newEventQueue + ")");
+    }
+    pushPopLock.lock();
+    try {
+        EventQueue topQueue = this;
+        while (topQueue.nextQueue != null) {
+            topQueue = topQueue.nextQueue;
+        }
+        if (topQueue.fwDispatcher != null) {
+            throw new RuntimeException("push() to queue with fwDispatcher");
+        }
+        if ((topQueue.dispatchThread != null) && (topQueue.dispatchThread.getEventQueue() == this)) {
+            newEventQueue.dispatchThread = topQueue.dispatchThread;
+            topQueue.dispatchThread.setEventQueue(newEventQueue);
+        }
+        // Transfer all events forward to new EventQueue.
+        while (topQueue.peekEvent() != null) {
+            try {
+                // Use getNextEventPrivate() as it doesn't call flushPendingEvents()
+                newEventQueue.postEventPrivate(topQueue.getNextEventPrivate());
+            } catch (InterruptedException ie) {
+                if (getEventLog().isLoggable(PlatformLogger.Level.FINE)) {
+                    getEventLog().fine("Interrupted push", ie);
+                }
+            }
+        }
+        if (topQueue.dispatchThread != null) {
+            // Wake up EDT waiting in getNextEvent(), so it can
+            // pick up a new EventQueue. Post the waking event before
+            // topQueue.nextQueue is assigned, otherwise the event would
+            // go newEventQueue
+            topQueue.postEventPrivate(new InvocationEvent(topQueue, dummyRunnable));
+        }
+        newEventQueue.previousQueue = topQueue;
+        topQueue.nextQueue = newEventQueue;
+        if (appContext.get(AppContext.EVENT_QUEUE_KEY) == topQueue) {
+            appContext.put(AppContext.EVENT_QUEUE_KEY, newEventQueue);
+        }
+        pushPopCond.signalAll();
+    } finally {
+        pushPopLock.unlock();
+    }
+}

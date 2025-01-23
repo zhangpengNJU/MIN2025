@@ -1,0 +1,19 @@
+private String paramString() {
+    String params = "";
+    params += "mimetype=";
+    if (mimeType == null) {
+        params += "null";
+    } else {
+        params += mimeType.getBaseType();
+    }
+    params += ";representationclass=";
+    if (representationClass == null) {
+        params += "null";
+    } else {
+        params += representationClass.getName();
+    }
+    if (DataTransferer.isFlavorCharsetTextType(this) && (isRepresentationClassInputStream() || isRepresentationClassByteBuffer() || byte[].class.equals(representationClass))) {
+        params += ";charset=" + DataTransferer.getTextCharset(this);
+    }
+    return params;
+}

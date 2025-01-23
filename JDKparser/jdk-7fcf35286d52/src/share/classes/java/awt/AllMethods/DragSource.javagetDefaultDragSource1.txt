@@ -1,0 +1,16 @@
+/**
+ * Gets the <code>DragSource</code> object associated with
+ * the underlying platform.
+ *
+ * @return the platform DragSource
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ *            returns true
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ */
+public static DragSource getDefaultDragSource() {
+    if (GraphicsEnvironment.isHeadless()) {
+        throw new HeadlessException();
+    } else {
+        return dflt;
+    }
+}

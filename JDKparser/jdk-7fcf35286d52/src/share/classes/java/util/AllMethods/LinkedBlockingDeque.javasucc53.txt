@@ -1,0 +1,19 @@
+/**
+ * Returns the successor node of the given non-null, but
+ * possibly previously deleted, node.
+ */
+private Node<E> succ(Node<E> n) {
+    // Chains of deleted nodes ending in null or self-links
+    // are possible if multiple interior nodes are removed.
+    for (; ; ) {
+        Node<E> s = nextNode(n);
+        if (s == null)
+            return null;
+        else if (s.item != null)
+            return s;
+        else if (s == n)
+            return firstNode();
+        else
+            n = s;
+    }
+}

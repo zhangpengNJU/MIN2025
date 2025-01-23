@@ -1,0 +1,21 @@
+/**
+ * Return the LogStream identified by the given name.  If
+ * a log corresponding to "name" does not exist, a log using
+ * the default stream is created.
+ * @param name name identifying the desired LogStream
+ * @return log associated with given name
+ * @since JDK1.1
+ * @deprecated no replacement
+ */
+@Deprecated
+public static LogStream log(String name) {
+    LogStream stream;
+    synchronized (known) {
+        stream = known.get(name);
+        if (stream == null) {
+            stream = new LogStream(name, defaultStream);
+        }
+        known.put(name, stream);
+    }
+    return stream;
+}

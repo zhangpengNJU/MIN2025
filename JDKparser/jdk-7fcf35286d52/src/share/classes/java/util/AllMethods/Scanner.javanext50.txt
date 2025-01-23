@@ -1,0 +1,34 @@
+/**
+ * Returns the next token if it matches the specified pattern. This
+ * method may block while waiting for input to scan, even if a previous
+ * invocation of {@link #hasNext(Pattern)} returned <code>true</code>.
+ * If the match is successful, the scanner advances past the input that
+ * matched the pattern.
+ *
+ * @param pattern the pattern to scan for
+ * @return the next token
+ * @throws NoSuchElementException if no more tokens are available
+ * @throws IllegalStateException if this scanner is closed
+ */
+public String next(Pattern pattern) {
+    ensureOpen();
+    if (pattern == null)
+        throw new NullPointerException();
+    // Did we already find this pattern?
+    if (hasNextPattern == pattern)
+        return getCachedResult();
+    clearCaches();
+    // Search for the pattern
+    while (true) {
+        String token = getCompleteTokenInBuffer(pattern);
+        if (token != null) {
+            matchValid = true;
+            skipped = false;
+            return token;
+        }
+        if (needInput)
+            readInput();
+        else
+            throwFor();
+    }
+}

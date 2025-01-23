@@ -1,0 +1,24 @@
+/**
+ * Attempts to change the transaction isolation level for this
+ * <code>Connection</code> object to the one given.
+ * The constants defined in the interface <code>Connection</code>
+ * are the possible transaction isolation levels.
+ * <P>
+ * <B>Note:</B> If this method is called during a transaction, the result
+ * is implementation-defined.
+ *
+ * @param level one of the following <code>Connection</code> constants:
+ *        <code>Connection.TRANSACTION_READ_UNCOMMITTED</code>,
+ *        <code>Connection.TRANSACTION_READ_COMMITTED</code>,
+ *        <code>Connection.TRANSACTION_REPEATABLE_READ</code>, or
+ *        <code>Connection.TRANSACTION_SERIALIZABLE</code>.
+ *        (Note that <code>Connection.TRANSACTION_NONE</code> cannot be used
+ *        because it specifies that transactions are not supported.)
+ * @exception SQLException if a database access error occurs, this
+ * method is called on a closed connection
+ *            or the given parameter is not one of the <code>Connection</code>
+ *            constants
+ * @see DatabaseMetaData#supportsTransactionIsolationLevel
+ * @see #getTransactionIsolation
+ */
+void setTransactionIsolation(int level) throws SQLException;

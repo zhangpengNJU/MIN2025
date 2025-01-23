@@ -1,0 +1,41 @@
+/**
+ * Package private methods used by BigDecimal code to multiply a BigInteger
+ * with a long. Assumes v is not equal to INFLATED.
+ */
+BigInteger multiply(long v) {
+    if (v == 0 || signum == 0)
+        return ZERO;
+    if (v == BigDecimal.INFLATED)
+        return multiply(BigInteger.valueOf(v));
+    int rsign = (v > 0 ? signum : -signum);
+    if (v < 0)
+        v = -v;
+    // higher order bits
+    long dh = v >>> 32;
+    // lower order bits
+    long dl = v & LONG_MASK;
+    int xlen = mag.length;
+    int[] value = mag;
+    int[] rmag = (dh == 0L) ? (new int[xlen + 1]) : (new int[xlen + 2]);
+    long carry = 0;
+    int rstart = rmag.length - 1;
+    for (int i = xlen - 1; i >= 0; i--) {
+        long product = (value[i] & LONG_MASK) * dl + carry;
+        rmag[rstart--] = (int) product;
+        carry = product >>> 32;
+    }
+    rmag[rstart] = (int) carry;
+    if (dh != 0L) {
+        carry = 0;
+        rstart = rmag.length - 2;
+        for (int i = xlen - 1; i >= 0; i--) {
+            long product = (value[i] & LONG_MASK) * dh + (rmag[rstart] & LONG_MASK) + carry;
+            rmag[rstart--] = (int) product;
+            carry = product >>> 32;
+        }
+        rmag[0] = (int) carry;
+    }
+    if (carry == 0L)
+        rmag = java.util.Arrays.copyOfRange(rmag, 1, rmag.length);
+    return new BigInteger(rmag, rsign);
+}

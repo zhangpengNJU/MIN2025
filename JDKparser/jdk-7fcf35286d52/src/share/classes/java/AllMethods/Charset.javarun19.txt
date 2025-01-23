@@ -1,0 +1,12 @@
+public SortedMap<String, Charset> run() {
+    TreeMap<String, Charset> m = new TreeMap<String, Charset>(ASCIICaseInsensitiveComparator.CASE_INSENSITIVE_ORDER);
+    put(standardProvider.charsets(), m);
+    CharsetProvider ecp = ExtendedProviderHolder.extendedProvider;
+    if (ecp != null)
+        put(ecp.charsets(), m);
+    for (Iterator<CharsetProvider> i = providers(); i.hasNext(); ) {
+        CharsetProvider cp = i.next();
+        put(cp.charsets(), m);
+    }
+    return Collections.unmodifiableSortedMap(m);
+}

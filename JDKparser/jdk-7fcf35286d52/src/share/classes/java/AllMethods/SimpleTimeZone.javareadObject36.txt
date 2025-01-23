@@ -1,0 +1,41 @@
+/**
+ * Reconstitute this object from a stream (i.e., deserialize it).
+ *
+ * We handle both JDK 1.1
+ * binary formats and full formats with a packed byte array.
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    if (serialVersionOnStream < 1) {
+        // Fix a bug in the 1.1 SimpleTimeZone code -- namely,
+        // startDayOfWeek and endDayOfWeek were usually uninitialized.  We can't do
+        // too much, so we assume SUNDAY, which actually works most of the time.
+        if (startDayOfWeek == 0) {
+            startDayOfWeek = Calendar.SUNDAY;
+        }
+        if (endDayOfWeek == 0) {
+            endDayOfWeek = Calendar.SUNDAY;
+        }
+        // The variables dstSavings, startMode, and endMode are post-1.1, so they
+        // won't be present if we're reading from a 1.1 stream.  Fix them up.
+        startMode = endMode = DOW_IN_MONTH_MODE;
+        dstSavings = millisPerHour;
+    } else {
+        // For 1.1.4, in addition to the 3 new instance variables, we also
+        // store the actual rules (which have not be made compatible with 1.1)
+        // in the optional area.  Read them in here and parse them.
+        int length = stream.readInt();
+        if (length <= MAX_RULE_NUM) {
+            byte[] rules = new byte[length];
+            stream.readFully(rules);
+            unpackRules(rules);
+        } else {
+            throw new InvalidObjectException("Too many rules: " + length);
+        }
+    }
+    if (serialVersionOnStream >= 2) {
+        int[] times = (int[]) stream.readObject();
+        unpackTimes(times);
+    }
+    serialVersionOnStream = currentSerialVersion;
+}

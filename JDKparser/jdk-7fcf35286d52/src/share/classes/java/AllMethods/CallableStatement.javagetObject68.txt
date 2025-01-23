@@ -1,0 +1,22 @@
+/**
+ * Retrieves the value of a parameter as an <code>Object</code> in the Java
+ * programming language. If the value is an SQL <code>NULL</code>, the
+ * driver returns a Java <code>null</code>.
+ * <p>
+ * This method returns a Java object whose type corresponds to the JDBC
+ * type that was registered for this parameter using the method
+ * <code>registerOutParameter</code>.  By registering the target JDBC
+ * type as <code>java.sql.Types.OTHER</code>, this method can be used
+ * to read database-specific abstract data types.
+ * @param parameterName the name of the parameter
+ * @return A <code>java.lang.Object</code> holding the OUT parameter value.
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see Types
+ * @see #setObject
+ * @since 1.4
+ */
+Object getObject(String parameterName) throws SQLException;

@@ -1,0 +1,11 @@
+/**
+ * Calculates the total offset in seconds.
+ *
+ * @param hours  the time-zone offset in hours, from -18 to +18
+ * @param minutes  the time-zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
+ * @param seconds  the time-zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
+ * @return the total in seconds
+ */
+private static int totalSeconds(int hours, int minutes, int seconds) {
+    return hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds;
+}

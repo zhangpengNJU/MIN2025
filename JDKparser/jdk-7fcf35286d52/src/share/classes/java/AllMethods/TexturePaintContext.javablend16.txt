@@ -1,0 +1,48 @@
+/*
+     * Blends the four ARGB values in the rgbs array using the factors
+     * described by xmul and ymul in the following ratio:
+     *
+     *     rgbs[0] * (1-xmul) * (1-ymul) +
+     *     rgbs[1] * (  xmul) * (1-ymul) +
+     *     rgbs[2] * (1-xmul) * (  ymul) +
+     *     rgbs[3] * (  xmul) * (  ymul)
+     *
+     * xmul and ymul are integer values in the half-open range [0, 2^31)
+     * where 0 == 0.0 and 2^31 == 1.0.
+     *
+     * Note that since the range is half-open, the values are always
+     * logically less than 1.0.  This makes sense because while choosing
+     * pixels to blend, when the error values reach 1.0 we move to the
+     * next pixel and reset them to 0.0.
+     */
+public static int blend(int[] rgbs, int xmul, int ymul) {
+    // xmul/ymul are 31 bits wide, (0 => 2^31-1)
+    // shift them to 12 bits wide, (0 => 2^12-1)
+    xmul = (xmul >>> 19);
+    ymul = (ymul >>> 19);
+    int accumA, accumR, accumG, accumB;
+    accumA = accumR = accumG = accumB = 0;
+    for (int i = 0; i < 4; i++) {
+        int rgb = rgbs[i];
+        // The complement of the [xy]mul values (1-[xy]mul) can result
+        // in new values in the range (1 => 2^12).  Thus for any given
+        // loop iteration, the values could be anywhere in (0 => 2^12).
+        xmul = (1 << 12) - xmul;
+        if ((i & 1) == 0) {
+            ymul = (1 << 12) - ymul;
+        }
+        // xmul and ymul are each 12 bits (0 => 2^12)
+        // factor is thus 24 bits (0 => 2^24)
+        int factor = xmul * ymul;
+        if (factor != 0) {
+            // accum variables will accumulate 32 bits
+            // bytes extracted from rgb fit in 8 bits (0 => 255)
+            // byte * factor thus fits in 32 bits (0 => 255 * 2^24)
+            accumA += (((rgb >>> 24)) * factor);
+            accumR += (((rgb >>> 16) & 0xff) * factor);
+            accumG += (((rgb >>> 8) & 0xff) * factor);
+            accumB += (((rgb) & 0xff) * factor);
+        }
+    }
+    return ((((accumA + (1 << 23)) >>> 24) << 24) | (((accumR + (1 << 23)) >>> 24) << 16) | (((accumG + (1 << 23)) >>> 24) << 8) | (((accumB + (1 << 23)) >>> 24)));
+}

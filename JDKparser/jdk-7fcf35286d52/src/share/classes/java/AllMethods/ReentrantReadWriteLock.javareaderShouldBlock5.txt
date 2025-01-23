@@ -1,0 +1,11 @@
+/*
+         * Acquires and releases use the same code for fair and
+         * nonfair locks, but differ in whether/how they allow barging
+         * when queues are non-empty.
+         */
+/**
+ * Returns true if the current thread, when trying to acquire
+ * the read lock, and otherwise eligible to do so, should block
+ * because of policy for overtaking other waiting threads.
+ */
+abstract boolean readerShouldBlock();

@@ -1,0 +1,27 @@
+/**
+ * Returns <i>e</i><sup>x</sup>&nbsp;-1.  Note that for values of
+ * <i>x</i> near 0, the exact sum of
+ * {@code expm1(x)}&nbsp;+&nbsp;1 is much closer to the true
+ * result of <i>e</i><sup>x</sup> than {@code exp(x)}.
+ *
+ * <p>Special cases:
+ * <ul>
+ * <li>If the argument is NaN, the result is NaN.
+ *
+ * <li>If the argument is positive infinity, then the result is
+ * positive infinity.
+ *
+ * <li>If the argument is negative infinity, then the result is
+ * -1.0.
+ *
+ * <li>If the argument is zero, then the result is a zero with the
+ * same sign as the argument.
+ *
+ * </ul>
+ *
+ * @param   x   the exponent to raise <i>e</i> to in the computation of
+ *              <i>e</i><sup>{@code x}</sup>&nbsp;-1.
+ * @return  the value <i>e</i><sup>{@code x}</sup>&nbsp;-&nbsp;1.
+ * @since 1.5
+ */
+public static native double expm1(double x);

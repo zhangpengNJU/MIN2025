@@ -1,0 +1,12 @@
+private static boolean arityCheck(int arity, Class<?> rtype, MethodHandle mh, Object[] a) {
+    assert (a.length == arity) : Arrays.asList(a.length, arity);
+    assert (mh.type().basicType() == MethodType.genericMethodType(arity).changeReturnType(rtype)) : Arrays.asList(mh, rtype, arity);
+    MemberName member = mh.internalMemberName();
+    if (isInvokeBasic(member)) {
+        assert (arity > 0);
+        assert (a[0] instanceof MethodHandle);
+        MethodHandle mh2 = (MethodHandle) a[0];
+        assert (mh2.type().basicType() == MethodType.genericMethodType(arity - 1).changeReturnType(rtype)) : Arrays.asList(member, mh2, rtype, arity);
+    }
+    return true;
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns the square of the flatness, or maximum distance of a
+ * control point from the line connecting the end points, of the
+ * quadratic curve specified by the control points stored in the
+ * indicated array at the indicated index.
+ * @param coords an array containing coordinate values
+ * @param offset the index into <code>coords</code> from which to
+ *          to start getting the values from the array
+ * @return the flatness of the quadratic curve that is defined by the
+ *          values in the specified array at the specified index.
+ * @since 1.2
+ */
+public static double getFlatnessSq(double[] coords, int offset) {
+    return Line2D.ptSegDistSq(coords[offset + 0], coords[offset + 1], coords[offset + 4], coords[offset + 5], coords[offset + 2], coords[offset + 3]);
+}

@@ -1,0 +1,7 @@
+void engineInitVerify(PublicKey publicKey, AlgorithmParameterSpec params) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    if (sigSpi != null) {
+        sigSpi.engineInitVerify(publicKey, params);
+    } else {
+        chooseProvider(I_PUB_PARAM, publicKey, params, null);
+    }
+}

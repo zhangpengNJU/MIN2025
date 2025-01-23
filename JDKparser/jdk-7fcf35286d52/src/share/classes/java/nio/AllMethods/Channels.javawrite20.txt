@@ -1,0 +1,20 @@
+public int write(ByteBuffer src) throws IOException {
+    int len = src.remaining();
+    int totalWritten = 0;
+    synchronized (writeLock) {
+        while (totalWritten < len) {
+            int bytesToWrite = Math.min((len - totalWritten), TRANSFER_SIZE);
+            if (buf.length < bytesToWrite)
+                buf = new byte[bytesToWrite];
+            src.get(buf, 0, bytesToWrite);
+            try {
+                begin();
+                out.write(buf, 0, bytesToWrite);
+            } finally {
+                end(bytesToWrite > 0);
+            }
+            totalWritten += bytesToWrite;
+        }
+        return totalWritten;
+    }
+}

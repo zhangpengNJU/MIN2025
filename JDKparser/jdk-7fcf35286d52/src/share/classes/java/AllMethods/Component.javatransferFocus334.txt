@@ -1,0 +1,20 @@
+boolean transferFocus(boolean clearOnFailure) {
+    if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+        focusLog.finer("clearOnFailure = " + clearOnFailure);
+    }
+    Component toFocus = getNextFocusCandidate();
+    boolean res = false;
+    if (toFocus != null && !toFocus.isFocusOwner() && toFocus != this) {
+        res = toFocus.requestFocusInWindow(CausedFocusEvent.Cause.TRAVERSAL_FORWARD);
+    }
+    if (clearOnFailure && !res) {
+        if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+            focusLog.finer("clear global focus owner");
+        }
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwnerPriv();
+    }
+    if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+        focusLog.finer("returning result: " + res);
+    }
+    return res;
+}

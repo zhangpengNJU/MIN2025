@@ -1,0 +1,17 @@
+static byte[] getsRGB8ToLinearRGB8LUT() {
+    if (s8Tol8 == null) {
+        s8Tol8 = new byte[256];
+        float input, output;
+        // algorithm from IEC 61966-2-1 International Standard
+        for (int i = 0; i <= 255; i++) {
+            input = ((float) i) / 255.0f;
+            if (input <= 0.04045f) {
+                output = input / 12.92f;
+            } else {
+                output = (float) Math.pow((input + 0.055f) / 1.055f, 2.4);
+            }
+            s8Tol8[i] = (byte) Math.round(output * 255.0f);
+        }
+    }
+    return s8Tol8;
+}

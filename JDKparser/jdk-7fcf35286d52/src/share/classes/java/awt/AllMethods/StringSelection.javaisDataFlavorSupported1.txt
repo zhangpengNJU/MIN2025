@@ -1,0 +1,20 @@
+/**
+ * Returns whether the requested flavor is supported by this
+ * <code>Transferable</code>.
+ *
+ * @param flavor the requested flavor for the data
+ * @return true if <code>flavor</code> is equal to
+ *   <code>DataFlavor.stringFlavor</code> or
+ *   <code>DataFlavor.plainTextFlavor</code>; false if <code>flavor</code>
+ *   is not one of the above flavors
+ * @throws NullPointerException if flavor is <code>null</code>
+ */
+public boolean isDataFlavorSupported(DataFlavor flavor) {
+    // JCK Test StringSelection0003: if 'flavor' is null, throw NPE
+    for (int i = 0; i < flavors.length; i++) {
+        if (flavor.equals(flavors[i])) {
+            return true;
+        }
+    }
+    return false;
+}

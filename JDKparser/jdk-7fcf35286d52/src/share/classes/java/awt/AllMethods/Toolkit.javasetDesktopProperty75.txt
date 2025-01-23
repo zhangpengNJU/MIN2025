@@ -1,0 +1,24 @@
+/**
+ * Sets the named desktop property to the specified value and fires a
+ * property change event to notify any listeners that the value has changed.
+ */
+protected final void setDesktopProperty(String name, Object newValue) {
+    // This is a workaround for headless toolkits.  It would be
+    // better to override this method but it is declared final.
+    // "this instanceof" syntax defeats polymorphism.
+    // --mm, 03/03/00
+    if (this instanceof HeadlessToolkit) {
+        ((HeadlessToolkit) this).getUnderlyingToolkit().setDesktopProperty(name, newValue);
+        return;
+    }
+    Object oldValue;
+    synchronized (this) {
+        oldValue = desktopProperties.get(name);
+        desktopProperties.put(name, newValue);
+    }
+    // Don't fire change event if old and new values are null.
+    // It helps to avoid recursive resending of WM_THEMECHANGED
+    if (oldValue != null || newValue != null) {
+        desktopPropsSupport.firePropertyChange(name, oldValue, newValue);
+    }
+}

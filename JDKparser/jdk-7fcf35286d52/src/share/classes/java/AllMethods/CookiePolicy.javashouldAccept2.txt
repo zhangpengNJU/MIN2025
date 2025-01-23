@@ -1,0 +1,5 @@
+public boolean shouldAccept(URI uri, HttpCookie cookie) {
+    if (uri == null || cookie == null)
+        return false;
+    return HttpCookie.domainMatches(cookie.getDomain(), uri.getHost());
+}

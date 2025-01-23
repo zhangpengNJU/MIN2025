@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+/**
+ * SPI method to get the available zone IDs.
+ * <p>
+ * This obtains the IDs that this {@code ZoneRulesProvider} provides.
+ * A provider should provide data for at least one zone ID.
+ * <p>
+ * The returned zone IDs remain available and valid for the lifetime of the application.
+ * A dynamic provider may increase the set of IDs as more data becomes available.
+ *
+ * @return the set of zone IDs being provided, not null
+ * @throws ZoneRulesException if a problem occurs while providing the IDs
+ */
+protected abstract Set<String> provideZoneIds();

@@ -1,0 +1,74 @@
+/**
+ * Possibly blocks worker w waiting for a task to steal, or
+ * returns false if the worker should terminate.  If inactivating
+ * w has caused the pool to become quiescent, checks for pool
+ * termination, and, so long as this is not the only worker, waits
+ * for up to a given duration.  On timeout, if ctl has not
+ * changed, terminates the worker, which will in turn wake up
+ * another worker to possibly repeat this process.
+ *
+ * @param w the calling worker
+ * @param r a random seed (for spins)
+ * @return false if the worker should terminate
+ */
+private boolean awaitWork(WorkQueue w, int r) {
+    if (// w is terminating
+    w == null || w.qlock < 0)
+        return false;
+    for (int pred = w.stackPred, spins = SPINS, ss; ; ) {
+        if ((ss = w.scanState) >= 0)
+            break;
+        else if (spins > 0) {
+            r ^= r << 6;
+            r ^= r >>> 21;
+            r ^= r << 7;
+            if (r >= 0 && --spins == 0) {
+                // randomize spins
+                WorkQueue v;
+                WorkQueue[] ws;
+                int s, j;
+                AtomicLong sc;
+                if (pred != 0 && (ws = workQueues) != null && (j = pred & SMASK) < ws.length && // see if pred parking
+                (v = ws[j]) != null && (v.parker == null || v.scanState >= 0))
+                    // continue spinning
+                    spins = SPINS;
+            }
+        } else if (// recheck after spins
+        w.qlock < 0)
+            return false;
+        else if (!Thread.interrupted()) {
+            long c, prevctl, parkTime, deadline;
+            int ac = (int) ((c = ctl) >> AC_SHIFT) + (config & SMASK);
+            if ((ac <= 0 && tryTerminate(false, false)) || // pool terminating
+            (runState & STOP) != 0)
+                return false;
+            if (ac <= 0 && ss == (int) c) {
+                // is last waiter
+                prevctl = (UC_MASK & (c + AC_UNIT)) | (SP_MASK & pred);
+                // shrink excess spares
+                int t = (short) (c >>> TC_SHIFT);
+                if (t > 2 && U.compareAndSwapLong(this, CTL, c, prevctl))
+                    // else use timed wait
+                    return false;
+                parkTime = IDLE_TIMEOUT * ((t >= 0) ? 1 : 1 - t);
+                deadline = System.nanoTime() + parkTime - TIMEOUT_SLOP;
+            } else
+                prevctl = parkTime = deadline = 0L;
+            Thread wt = Thread.currentThread();
+            // emulate LockSupport
+            U.putObject(wt, PARKBLOCKER, this);
+            w.parker = wt;
+            if (// recheck before park
+            w.scanState < 0 && ctl == c)
+                U.park(false, parkTime);
+            U.putOrderedObject(w, QPARKER, null);
+            U.putObject(wt, PARKBLOCKER, null);
+            if (w.scanState >= 0)
+                break;
+            if (parkTime != 0L && ctl == c && deadline - System.nanoTime() <= 0L && U.compareAndSwapLong(this, CTL, c, prevctl))
+                // shrink pool
+                return false;
+        }
+    }
+    return true;
+}

@@ -1,0 +1,25 @@
+/**
+ * Gets the name of the log level associated with the specified logger.
+ * If the specified logger does not exist, <tt>null</tt>
+ * is returned.
+ * This method first finds the logger of the given name and
+ * then returns the name of the log level by calling:
+ * <blockquote>
+ *   {@link Logger#getLevel Logger.getLevel()}.{@link Level#getName getName()};
+ * </blockquote>
+ *
+ * <p>
+ * If the <tt>Level</tt> of the specified logger is <tt>null</tt>,
+ * which means that this logger's effective level is inherited
+ * from its parent, an empty string will be returned.
+ *
+ * @param loggerName The name of the <tt>Logger</tt> to be retrieved.
+ *
+ * @return The name of the log level of the specified logger; or
+ *         an empty string if the log level of the specified logger
+ *         is <tt>null</tt>.  If the specified logger does not
+ *         exist, <tt>null</tt> is returned.
+ *
+ * @see Logger#getLevel
+ */
+public String getLoggerLevel(String loggerName);

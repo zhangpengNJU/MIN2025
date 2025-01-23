@@ -1,0 +1,14 @@
+/**
+ * Returns the bounding box of the transformed destination.  The
+ * rectangle returned is the actual bounding box of the
+ * transformed points.  The coordinates of the upper-left corner
+ * of the returned rectangle might not be (0,&nbsp;0).
+ *
+ * @param src The <CODE>BufferedImage</CODE> to be transformed.
+ *
+ * @return The <CODE>Rectangle2D</CODE> representing the destination's
+ * bounding box.
+ */
+public final Rectangle2D getBounds2D(BufferedImage src) {
+    return getBounds2D(src.getRaster());
+}

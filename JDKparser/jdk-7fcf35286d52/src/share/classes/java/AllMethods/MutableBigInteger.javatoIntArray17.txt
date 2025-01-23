@@ -1,0 +1,9 @@
+/**
+ * Convert this MutableBigInteger into an int array with no leading
+ * zeros, of a length that is equal to this MutableBigInteger's intLen.
+ */
+int[] toIntArray() {
+    int[] result = new int[intLen];
+    for (int i = 0; i < intLen; i++) result[i] = value[offset + i];
+    return result;
+}

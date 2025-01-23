@@ -1,0 +1,28 @@
+private void mark(Object o, boolean isArgument) {
+    if (o == null || o == this) {
+        return;
+    }
+    ValueData d = getValueData(o);
+    Expression exp = d.exp;
+    // Do not mark liternal strings. Other strings, which might,
+    // for example, come from resource bundles should still be marked.
+    if (o.getClass() == String.class && exp == null) {
+        return;
+    }
+    // Bump the reference counts of all arguments
+    if (isArgument) {
+        d.refs++;
+    }
+    if (d.marked) {
+        return;
+    }
+    d.marked = true;
+    Object target = exp.getTarget();
+    mark(exp);
+    if (!(target instanceof Class)) {
+        statementList(target).add(exp);
+        // Pending: Why does the reference count need to
+        // be incremented here?
+        d.refs++;
+    }
+}

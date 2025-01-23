@@ -1,0 +1,44 @@
+/*
+     * Convert an array of certificates to an array of code signers.
+     * The array of certificates is a concatenation of certificate chains
+     * where the initial certificate in each chain is the end-entity cert.
+     *
+     * @return An array of code signers or null if none are generated.
+     */
+private CodeSigner[] convertCertArrayToSignerArray(java.security.cert.Certificate[] certs) {
+    if (certs == null) {
+        return null;
+    }
+    try {
+        // Initialize certificate factory
+        if (factory == null) {
+            factory = CertificateFactory.getInstance("X.509");
+        }
+        // Iterate through all the certificates
+        int i = 0;
+        List<CodeSigner> signers = new ArrayList<>();
+        while (i < certs.length) {
+            List<java.security.cert.Certificate> certChain = new ArrayList<>();
+            // first cert is an end-entity cert
+            certChain.add(certs[i++]);
+            int j = i;
+            // Extract chain of certificates
+            // (loop while certs are not end-entity certs)
+            while (j < certs.length && certs[j] instanceof X509Certificate && ((X509Certificate) certs[j]).getBasicConstraints() != -1) {
+                certChain.add(certs[j]);
+                j++;
+            }
+            i = j;
+            CertPath certPath = factory.generateCertPath(certChain);
+            signers.add(new CodeSigner(certPath, null));
+        }
+        if (signers.isEmpty()) {
+            return null;
+        } else {
+            return signers.toArray(new CodeSigner[signers.size()]);
+        }
+    } catch (CertificateException e) {
+        // TODO - may be better to throw an ex. here
+        return null;
+    }
+}

@@ -1,0 +1,8 @@
+@Override
+public final int hashCode() {
+    if (addr != null)
+        return addr.hashCode() + port;
+    if (hostname != null)
+        return hostname.toLowerCase().hashCode() + port;
+    return port;
+}

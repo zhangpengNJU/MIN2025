@@ -1,0 +1,15 @@
+// ------------------------------------------------------------
+// END     Package Private methods ... to be made public later
+// ------------------------------------------------------------
+/**
+ * Standard override.
+ */
+@Override
+public Object clone() {
+    try {
+        return (DecimalFormatSymbols) super.clone();
+    // other fields are bit-copied
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError(e);
+    }
+}

@@ -1,0 +1,14 @@
+public Object clone() {
+    try {
+        CacheKey clone = (CacheKey) super.clone();
+        if (loaderRef != null) {
+            clone.loaderRef = new LoaderReference(loaderRef.get(), referenceQueue, clone);
+        }
+        // Clear the reference to a Throwable
+        clone.cause = null;
+        return clone;
+    } catch (CloneNotSupportedException e) {
+        // this should never happen
+        throw new InternalError(e);
+    }
+}

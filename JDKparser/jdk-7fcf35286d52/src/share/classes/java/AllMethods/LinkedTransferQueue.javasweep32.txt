@@ -1,0 +1,20 @@
+/**
+ * Unlinks matched (typically cancelled) nodes encountered in a
+ * traversal from head.
+ */
+private void sweep() {
+    for (Node p = head, s, n; p != null && (s = p.next) != null; ) {
+        if (!s.isMatched())
+            // Unmatched nodes are never self-linked
+            p = s;
+        else if (// trailing node is pinned
+        (n = s.next) == null)
+            break;
+        else if (// stale
+        s == n)
+            // No need to also check for p == s, since that implies s == n
+            p = head;
+        else
+            p.casNext(s, n);
+    }
+}

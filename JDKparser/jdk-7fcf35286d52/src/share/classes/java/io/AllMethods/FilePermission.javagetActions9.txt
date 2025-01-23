@@ -1,0 +1,14 @@
+/**
+ * Returns the "canonical string representation" of the actions.
+ * That is, this method always returns present actions in the following order:
+ * read, write, execute, delete, readlink. For example, if this FilePermission
+ * object allows both write and read actions, a call to <code>getActions</code>
+ * will return the string "read,write".
+ *
+ * @return the canonical string representation of the actions.
+ */
+public String getActions() {
+    if (actions == null)
+        actions = getActions(this.mask);
+    return actions;
+}

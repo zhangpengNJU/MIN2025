@@ -1,0 +1,5 @@
+// Invoked in the VM to determine the context class in
+// JNI_Load/JNI_Unload
+static Class<?> getFromClass() {
+    return ClassLoader.nativeLibraryContext.peek().fromClass;
+}

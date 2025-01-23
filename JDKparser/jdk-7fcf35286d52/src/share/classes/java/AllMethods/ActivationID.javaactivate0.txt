@@ -1,0 +1,30 @@
+/**
+ * Activate the object for this id.
+ *
+ * @param force if true, forces the activator to contact the group
+ * when activating the object (instead of returning a cached reference);
+ * if false, returning a cached value is acceptable.
+ * @return the reference to the active remote object
+ * @exception ActivationException if activation fails
+ * @exception UnknownObjectException if the object is unknown
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public Remote activate(boolean force) throws ActivationException, UnknownObjectException, RemoteException {
+    try {
+        MarshalledObject<? extends Remote> mobj = activator.activate(this, force);
+        return AccessController.doPrivileged(new PrivilegedExceptionAction<Remote>() {
+
+            public Remote run() throws IOException, ClassNotFoundException {
+                return mobj.get();
+            }
+        }, NOPERMS_ACC);
+    } catch (PrivilegedActionException pae) {
+        Exception ex = pae.getException();
+        if (ex instanceof RemoteException) {
+            throw (RemoteException) ex;
+        } else {
+            throw new UnmarshalException("activation failed", ex);
+        }
+    }
+}

@@ -1,0 +1,33 @@
+/**
+ * Returns the {@code SplashScreen} object used for
+ * Java startup splash screen control on systems that support display.
+ *
+ * @throws UnsupportedOperationException if the splash screen feature is not
+ *         supported by the current toolkit
+ * @throws HeadlessException if {@code GraphicsEnvironment.isHeadless()}
+ *         returns true
+ * @return the {@link SplashScreen} instance, or <code>null</code> if there is
+ *         none or it has already been closed
+ */
+public static SplashScreen getSplashScreen() {
+    synchronized (SplashScreen.class) {
+        if (GraphicsEnvironment.isHeadless()) {
+            throw new HeadlessException();
+        }
+        // SplashScreen class is now a singleton
+        if (!wasClosed && theInstance == null) {
+            java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+
+                public Void run() {
+                    System.loadLibrary("splashscreen");
+                    return null;
+                }
+            });
+            long ptr = _getInstance();
+            if (ptr != 0 && _isVisible(ptr)) {
+                theInstance = new SplashScreen(ptr);
+            }
+        }
+        return theInstance;
+    }
+}

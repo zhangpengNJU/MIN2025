@@ -1,0 +1,11 @@
+/**
+ * Returns profile major version.
+ * @return  The major version of the profile.
+ */
+public int getMajorVersion() {
+    byte[] theHeader;
+    theHeader = getData(icSigHead);
+    /* getData will activate deferred
+                                           profiles if necessary */
+    return (int) theHeader[8];
+}

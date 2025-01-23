@@ -1,0 +1,21 @@
+/**
+ * Used with the byte count tracker for fonts created from streams.
+ * If a thread can create temp files anyway, no point in counting
+ * font bytes.
+ */
+private static boolean hasTempPermission() {
+    if (System.getSecurityManager() == null) {
+        return true;
+    }
+    File f = null;
+    boolean hasPerm = false;
+    try {
+        f = Files.createTempFile("+~JT", ".tmp").toFile();
+        f.delete();
+        f = null;
+        hasPerm = true;
+    } catch (Throwable t) {
+    /* inc. any kind of SecurityException */
+    }
+    return hasPerm;
+}

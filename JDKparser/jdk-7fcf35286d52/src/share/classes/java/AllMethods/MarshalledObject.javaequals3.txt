@@ -1,0 +1,37 @@
+/**
+ * Compares this <code>MarshalledObject</code> to another object.
+ * Returns true if and only if the argument refers to a
+ * <code>MarshalledObject</code> that contains exactly the same
+ * serialized representation of an object as this one does. The
+ * comparison ignores any class codebase annotation, meaning that
+ * two objects are equivalent if they have the same serialized
+ * representation <i>except</i> for the codebase of each class
+ * in the serialized representation.
+ *
+ * @param obj the object to compare with this <code>MarshalledObject</code>
+ * @return <code>true</code> if the argument contains an equivalent
+ * serialized object; <code>false</code> otherwise
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj == this)
+        return true;
+    if (obj != null && obj instanceof MarshalledObject) {
+        MarshalledObject<?> other = (MarshalledObject<?>) obj;
+        // if either is a ref to null, both must be
+        if (objBytes == null || other.objBytes == null)
+            return objBytes == other.objBytes;
+        // quick, easy test
+        if (objBytes.length != other.objBytes.length)
+            return false;
+        // !! There is talk about adding an array comparision method
+        // !! at 1.2 -- if so, this should be rewritten.  -arnold
+        for (int i = 0; i < objBytes.length; ++i) {
+            if (objBytes[i] != other.objBytes[i])
+                return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}

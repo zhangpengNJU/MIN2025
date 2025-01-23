@@ -1,0 +1,21 @@
+/**
+ * Takes next task, if one exists, in LIFO order.  Call only
+ * by owner in unshared queues.
+ */
+final ForkJoinTask<?> pop() {
+    ForkJoinTask<?>[] a;
+    ForkJoinTask<?> t;
+    int m;
+    if ((a = array) != null && (m = a.length - 1) >= 0) {
+        for (int s; (s = top - 1) - base >= 0; ) {
+            long j = ((m & s) << ASHIFT) + ABASE;
+            if ((t = (ForkJoinTask<?>) U.getObject(a, j)) == null)
+                break;
+            if (U.compareAndSwapObject(a, j, t, null)) {
+                U.putOrderedInt(this, QTOP, s);
+                return t;
+            }
+        }
+    }
+    return null;
+}

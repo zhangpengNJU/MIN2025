@@ -1,0 +1,16 @@
+public int getRunLimit(Set<? extends Attribute> attributes) {
+    if (currentRunLimit == endIndex || currentRunIndex == -1) {
+        return currentRunLimit;
+    } else {
+        int runLimit = currentRunLimit;
+        int runIndex = currentRunIndex;
+        while (runLimit < endIndex && AttributedString.this.attributeValuesMatch(attributes, currentRunIndex, runIndex + 1)) {
+            runIndex++;
+            runLimit = runIndex < runCount - 1 ? runStarts[runIndex + 1] : endIndex;
+        }
+        if (runLimit > endIndex) {
+            runLimit = endIndex;
+        }
+        return runLimit;
+    }
+}

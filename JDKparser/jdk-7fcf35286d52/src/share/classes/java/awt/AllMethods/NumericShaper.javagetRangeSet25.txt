@@ -1,0 +1,13 @@
+/**
+ * Returns a {@code Set} representing all the Unicode ranges in
+ * this {@code NumericShaper} that will be shaped.
+ *
+ * @return all the Unicode ranges to be shaped.
+ * @since 1.7
+ */
+public Set<Range> getRangeSet() {
+    if (rangeSet != null) {
+        return EnumSet.copyOf(rangeSet);
+    }
+    return Range.maskToRangeSet(mask);
+}

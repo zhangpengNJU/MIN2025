@@ -1,0 +1,24 @@
+/**
+ *  Returns a suitably optimized, single character matcher.
+ */
+private CharProperty newSingle(final int ch) {
+    if (has(CASE_INSENSITIVE)) {
+        int lower, upper;
+        if (has(UNICODE_CASE)) {
+            upper = Character.toUpperCase(ch);
+            lower = Character.toLowerCase(upper);
+            if (upper != lower)
+                return new SingleU(lower);
+        } else if (ASCII.isAscii(ch)) {
+            lower = ASCII.toLower(ch);
+            upper = ASCII.toUpper(ch);
+            if (lower != upper)
+                return new SingleI(lower, upper);
+        }
+    }
+    if (isSupplementary(ch))
+        // Match a given Unicode character
+        return new SingleS(ch);
+    // Match a given BMP character
+    return new Single(ch);
+}

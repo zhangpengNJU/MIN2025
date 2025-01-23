@@ -1,0 +1,36 @@
+/**
+ * Utility for ceiling, floor, lower, higher methods.
+ * @param key the key
+ * @param rel the relation -- OR'ed combination of EQ, LT, GT
+ * @return nearest node fitting relation, or null if no such
+ */
+final Node<K, V> findNear(K key, int rel, Comparator<? super K> cmp) {
+    if (key == null)
+        throw new NullPointerException();
+    for (; ; ) {
+        for (Node<K, V> b = findPredecessor(key, cmp), n = b.next; ; ) {
+            Object v;
+            if (n == null)
+                return ((rel & LT) == 0 || b.isBaseHeader()) ? null : b;
+            Node<K, V> f = n.next;
+            if (// inconsistent read
+            n != b.next)
+                break;
+            if ((v = n.value) == null) {
+                // n is deleted
+                n.helpDelete(b, f);
+                break;
+            }
+            if (// b is deleted
+            b.value == null || v == n)
+                break;
+            int c = cpr(cmp, key, n.key);
+            if ((c == 0 && (rel & EQ) != 0) || (c < 0 && (rel & LT) == 0))
+                return n;
+            if (c <= 0 && (rel & LT) != 0)
+                return b.isBaseHeader() ? null : b;
+            b = n;
+            n = f;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+@Override
+Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
+    return new Sink.ChainedDouble<Double>(sink) {
+
+        long n = skip;
+
+        long m = limit >= 0 ? limit : Long.MAX_VALUE;
+
+        @Override
+        public void begin(long size) {
+            downstream.begin(calcSize(size, skip, m));
+        }
+
+        @Override
+        public void accept(double t) {
+            if (n == 0) {
+                if (m > 0) {
+                    m--;
+                    downstream.accept(t);
+                }
+            } else {
+                n--;
+            }
+        }
+
+        @Override
+        public boolean cancellationRequested() {
+            return m == 0 || downstream.cancellationRequested();
+        }
+    };
+}

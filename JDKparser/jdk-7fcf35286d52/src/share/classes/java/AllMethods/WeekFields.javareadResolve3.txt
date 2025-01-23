@@ -1,0 +1,14 @@
+/**
+ * Return the singleton WeekFields associated with the
+ * {@code firstDayOfWeek} and {@code minimalDays}.
+ * @return the singleton WeekFields for the firstDayOfWeek and minimalDays.
+ * @throws InvalidObjectException if the serialized object has invalid
+ *     values for firstDayOfWeek or minimalDays.
+ */
+private Object readResolve() throws InvalidObjectException {
+    try {
+        return WeekFields.of(firstDayOfWeek, minimalDays);
+    } catch (IllegalArgumentException iae) {
+        throw new InvalidObjectException("Invalid serialized WeekFields: " + iae.getMessage());
+    }
+}

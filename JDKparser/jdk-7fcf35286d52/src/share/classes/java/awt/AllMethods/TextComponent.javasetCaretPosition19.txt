@@ -1,0 +1,31 @@
+/**
+ * Sets the position of the text insertion caret.
+ * The caret position is constrained to be between 0
+ * and the last character of the text, inclusive.
+ * If the passed-in value is greater than this range,
+ * the value is set to the last character (or 0 if
+ * the <code>TextComponent</code> contains no text)
+ * and no error is returned.  If the passed-in value is
+ * less than 0, an <code>IllegalArgumentException</code>
+ * is thrown.
+ *
+ * @param        position the position of the text insertion caret
+ * @exception    IllegalArgumentException if <code>position</code>
+ *               is less than zero
+ * @since        JDK1.1
+ */
+public synchronized void setCaretPosition(int position) {
+    if (position < 0) {
+        throw new IllegalArgumentException("position less than zero.");
+    }
+    int maxposition = getText().length();
+    if (position > maxposition) {
+        position = maxposition;
+    }
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        peer.setCaretPosition(position);
+    } else {
+        select(position, position);
+    }
+}

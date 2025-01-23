@@ -1,0 +1,23 @@
+// -----------------------------------------------------------------------
+/**
+ * Resolves the fields in this context.
+ *
+ * @param resolverStyle  the resolver style, not null
+ * @param resolverFields  the fields to use for resolving, null for all fields
+ * @return this, for method chaining
+ * @throws DateTimeException if resolving one field results in a value for
+ *  another field that is in conflict
+ */
+TemporalAccessor resolve(ResolverStyle resolverStyle, Set<TemporalField> resolverFields) {
+    if (resolverFields != null) {
+        fieldValues.keySet().retainAll(resolverFields);
+    }
+    this.resolverStyle = resolverStyle;
+    resolveFields();
+    resolveTimeLenient();
+    crossCheck();
+    resolvePeriod();
+    resolveFractional();
+    resolveInstant();
+    return this;
+}

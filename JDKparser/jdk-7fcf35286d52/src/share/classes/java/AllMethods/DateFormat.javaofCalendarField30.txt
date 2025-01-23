@@ -1,0 +1,18 @@
+/**
+ * Returns the <code>Field</code> constant that corresponds to
+ * the <code>Calendar</code> constant <code>calendarField</code>.
+ * If there is no direct mapping between the <code>Calendar</code>
+ * constant and a <code>Field</code>, null is returned.
+ *
+ * @throws IllegalArgumentException if <code>calendarField</code> is
+ *         not the value of a <code>Calendar</code> field constant.
+ * @param calendarField Calendar field constant
+ * @return Field instance representing calendarField.
+ * @see java.util.Calendar
+ */
+public static Field ofCalendarField(int calendarField) {
+    if (calendarField < 0 || calendarField >= calendarToFieldMapping.length) {
+        throw new IllegalArgumentException("Unknown Calendar constant " + calendarField);
+    }
+    return calendarToFieldMapping[calendarField];
+}

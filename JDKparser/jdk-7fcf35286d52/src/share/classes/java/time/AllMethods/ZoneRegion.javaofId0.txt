@@ -1,0 +1,23 @@
+/**
+ * Obtains an instance of {@code ZoneId} from an identifier.
+ *
+ * @param zoneId  the time-zone ID, not null
+ * @param checkAvailable  whether to check if the zone ID is available
+ * @return the zone ID, not null
+ * @throws DateTimeException if the ID format is invalid
+ * @throws ZoneRulesException if checking availability and the ID cannot be found
+ */
+static ZoneRegion ofId(String zoneId, boolean checkAvailable) {
+    Objects.requireNonNull(zoneId, "zoneId");
+    checkName(zoneId);
+    ZoneRules rules = null;
+    try {
+        // always attempt load for better behavior after deserialization
+        rules = ZoneRulesProvider.getRules(zoneId, true);
+    } catch (ZoneRulesException ex) {
+        if (checkAvailable) {
+            throw ex;
+        }
+    }
+    return new ZoneRegion(zoneId, rules);
+}

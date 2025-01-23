@@ -1,0 +1,7 @@
+void checkTargetChange(MethodHandle oldTarget, MethodHandle newTarget) {
+    MethodType oldType = oldTarget.type();
+    // null check!
+    MethodType newType = newTarget.type();
+    if (!newType.equals(oldType))
+        throw wrongTargetType(newTarget, oldType);
+}

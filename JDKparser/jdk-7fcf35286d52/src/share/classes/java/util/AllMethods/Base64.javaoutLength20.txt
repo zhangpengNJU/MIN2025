@@ -1,0 +1,36 @@
+private int outLength(byte[] src, int sp, int sl) {
+    int[] base64 = isURL ? fromBase64URL : fromBase64;
+    int paddings = 0;
+    int len = sl - sp;
+    if (len == 0)
+        return 0;
+    if (len < 2) {
+        if (isMIME && base64[0] == -1)
+            return 0;
+        throw new IllegalArgumentException("Input byte[] should at least have 2 bytes for base64 bytes");
+    }
+    if (isMIME) {
+        // scan all bytes to fill out all non-alphabet. a performance
+        // trade-off of pre-scan or Arrays.copyOf
+        int n = 0;
+        while (sp < sl) {
+            int b = src[sp++] & 0xff;
+            if (b == '=') {
+                len -= (sl - sp + 1);
+                break;
+            }
+            if ((b = base64[b]) == -1)
+                n++;
+        }
+        len -= n;
+    } else {
+        if (src[sl - 1] == '=') {
+            paddings++;
+            if (src[sl - 2] == '=')
+                paddings++;
+        }
+    }
+    if (paddings == 0 && (len & 0x3) != 0)
+        paddings = 4 - (len & 0x3);
+    return 3 * ((len + 3) / 4) - paddings;
+}

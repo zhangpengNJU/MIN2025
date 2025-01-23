@@ -1,0 +1,30 @@
+/**
+ * Obtains an instance of {@code ZonedDateTime} leniently, for advanced use cases,
+ * allowing any combination of local date-time, offset and zone ID.
+ * <p>
+ * This creates a zoned date-time with no checks other than no nulls.
+ * This means that the resulting zoned date-time may have an offset that is in conflict
+ * with the zone ID.
+ * <p>
+ * This method is intended for advanced use cases.
+ * For example, consider the case where a zoned date-time with valid fields is created
+ * and then stored in a database or serialization-based store. At some later point,
+ * the object is then re-loaded. However, between those points in time, the government
+ * that defined the time-zone has changed the rules, such that the originally stored
+ * local date-time now does not occur. This method can be used to create the object
+ * in an "invalid" state, despite the change in rules.
+ *
+ * @param localDateTime  the local date-time, not null
+ * @param offset  the zone offset, not null
+ * @param zone  the time-zone, not null
+ * @return the zoned date-time, not null
+ */
+private static ZonedDateTime ofLenient(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
+    Objects.requireNonNull(localDateTime, "localDateTime");
+    Objects.requireNonNull(offset, "offset");
+    Objects.requireNonNull(zone, "zone");
+    if (zone instanceof ZoneOffset && offset.equals(zone) == false) {
+        throw new IllegalArgumentException("ZoneId must match ZoneOffset");
+    }
+    return new ZonedDateTime(localDateTime, offset, zone);
+}

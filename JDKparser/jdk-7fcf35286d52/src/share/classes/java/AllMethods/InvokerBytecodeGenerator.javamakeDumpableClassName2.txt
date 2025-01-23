@@ -1,0 +1,13 @@
+private static String makeDumpableClassName(String className) {
+    Integer ctr;
+    synchronized (DUMP_CLASS_FILES_COUNTERS) {
+        ctr = DUMP_CLASS_FILES_COUNTERS.get(className);
+        if (ctr == null)
+            ctr = 0;
+        DUMP_CLASS_FILES_COUNTERS.put(className, ctr + 1);
+    }
+    String sfx = ctr.toString();
+    while (sfx.length() < 3) sfx = "0" + sfx;
+    className += sfx;
+    return className;
+}

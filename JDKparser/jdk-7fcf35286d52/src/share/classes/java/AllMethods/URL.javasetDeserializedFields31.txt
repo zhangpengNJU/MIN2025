@@ -1,0 +1,54 @@
+private URL setDeserializedFields(URLStreamHandler handler) {
+    URL replacementURL;
+    String userInfo = null;
+    String protocol = tempState.getProtocol();
+    String host = tempState.getHost();
+    int port = tempState.getPort();
+    String authority = tempState.getAuthority();
+    String file = tempState.getFile();
+    String ref = tempState.getRef();
+    int hashCode = tempState.getHashCode();
+    // Construct authority part
+    if (authority == null && ((host != null && host.length() > 0) || port != -1)) {
+        if (host == null)
+            host = "";
+        authority = (port == -1) ? host : host + ":" + port;
+        // Handle hosts with userInfo in them
+        int at = host.lastIndexOf('@');
+        if (at != -1) {
+            userInfo = host.substring(0, at);
+            host = host.substring(at + 1);
+        }
+    } else if (authority != null) {
+        // Construct user info part
+        int ind = authority.indexOf('@');
+        if (ind != -1)
+            userInfo = authority.substring(0, ind);
+    }
+    // Construct path and query part
+    String path = null;
+    String query = null;
+    if (file != null) {
+        // Fix: only do this if hierarchical?
+        int q = file.lastIndexOf('?');
+        if (q != -1) {
+            query = file.substring(q + 1);
+            path = file.substring(0, q);
+        } else
+            path = file;
+    }
+    // Set the object fields.
+    this.protocol = protocol;
+    this.host = host;
+    this.port = port;
+    this.file = file;
+    this.authority = authority;
+    this.ref = ref;
+    this.hashCode = hashCode;
+    this.handler = handler;
+    this.query = query;
+    this.path = path;
+    this.userInfo = userInfo;
+    replacementURL = this;
+    return replacementURL;
+}

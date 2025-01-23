@@ -1,0 +1,24 @@
+private String[] getFieldStrings(int field, int style, DateFormatSymbols symbols) {
+    // ignore the standalone mask
+    int baseStyle = getBaseStyle(style);
+    // DateFormatSymbols doesn't support any narrow names.
+    if (baseStyle == NARROW_FORMAT) {
+        return null;
+    }
+    String[] strings = null;
+    switch(field) {
+        case ERA:
+            strings = symbols.getEras();
+            break;
+        case MONTH:
+            strings = (baseStyle == LONG) ? symbols.getMonths() : symbols.getShortMonths();
+            break;
+        case DAY_OF_WEEK:
+            strings = (baseStyle == LONG) ? symbols.getWeekdays() : symbols.getShortWeekdays();
+            break;
+        case AM_PM:
+            strings = symbols.getAmPmStrings();
+            break;
+    }
+    return strings;
+}

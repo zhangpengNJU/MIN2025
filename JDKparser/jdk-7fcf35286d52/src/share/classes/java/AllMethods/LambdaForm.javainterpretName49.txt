@@ -1,0 +1,20 @@
+@Hidden
+@DontInline
+/**
+ * Evaluate a single Name within this form, applying its function to its arguments.
+ */
+Object interpretName(Name name, Object[] values) throws Throwable {
+    if (TRACE_INTERPRETER)
+        traceInterpreter("| interpretName", name.debugString(), (Object[]) null);
+    Object[] arguments = Arrays.copyOf(name.arguments, name.arguments.length, Object[].class);
+    for (int i = 0; i < arguments.length; i++) {
+        Object a = arguments[i];
+        if (a instanceof Name) {
+            int i2 = ((Name) a).index();
+            assert (names[i2] == a);
+            a = values[i2];
+            arguments[i] = a;
+        }
+    }
+    return name.function.invokeWithArguments(arguments);
+}

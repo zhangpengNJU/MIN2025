@@ -1,0 +1,22 @@
+@Hidden
+Object invokeWithArgumentsTracing(Object[] arguments) throws Throwable {
+    Object rval;
+    try {
+        traceInterpreter("[ call", this, arguments);
+        if (invoker == null) {
+            traceInterpreter("| getInvoker", this);
+            invoker();
+        }
+        if (resolvedHandle == null) {
+            traceInterpreter("| resolve", this);
+            resolvedHandle();
+        }
+        assert (checkArgumentTypes(arguments, methodType()));
+        rval = invoker().invokeBasic(resolvedHandle(), arguments);
+    } catch (Throwable ex) {
+        traceInterpreter("] throw =>", ex);
+        throw ex;
+    }
+    traceInterpreter("] return =>", rval);
+    return rval;
+}

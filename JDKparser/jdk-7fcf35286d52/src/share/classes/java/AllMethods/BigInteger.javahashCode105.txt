@@ -1,0 +1,11 @@
+// Hash Function
+/**
+ * Returns the hash code for this BigInteger.
+ *
+ * @return hash code for this BigInteger.
+ */
+public int hashCode() {
+    int hashCode = 0;
+    for (int i = 0; i < mag.length; i++) hashCode = (int) (31 * hashCode + (mag[i] & LONG_MASK));
+    return hashCode * signum;
+}

@@ -1,0 +1,12 @@
+@Override
+public void forEachRemaining(Consumer<? super E> action) {
+    Objects.requireNonNull(action);
+    Object[] elements = snapshot;
+    final int size = elements.length;
+    for (int i = cursor; i < size; i++) {
+        @SuppressWarnings("unchecked")
+        E e = (E) elements[i];
+        action.accept(e);
+    }
+    cursor = size;
+}

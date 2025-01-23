@@ -1,0 +1,15 @@
+// BlockingQueue methods
+/**
+ * Inserts the specified element at the end of this deque unless it would
+ * violate capacity restrictions.  When using a capacity-restricted deque,
+ * it is generally preferable to use method {@link #offer(Object) offer}.
+ *
+ * <p>This method is equivalent to {@link #addLast}.
+ *
+ * @throws IllegalStateException if this deque is full
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean add(E e) {
+    addLast(e);
+    return true;
+}

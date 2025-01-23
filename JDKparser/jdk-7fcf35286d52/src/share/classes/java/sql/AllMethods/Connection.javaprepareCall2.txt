@@ -1,0 +1,31 @@
+/**
+ * Creates a <code>CallableStatement</code> object for calling
+ * database stored procedures.
+ * The <code>CallableStatement</code> object provides
+ * methods for setting up its IN and OUT parameters, and
+ * methods for executing the call to a stored procedure.
+ *
+ * <P><B>Note:</B> This method is optimized for handling stored
+ * procedure call statements. Some drivers may send the call
+ * statement to the database when the method <code>prepareCall</code>
+ * is done; others
+ * may wait until the <code>CallableStatement</code> object
+ * is executed. This has no
+ * direct effect on users; however, it does affect which method
+ * throws certain SQLExceptions.
+ * <P>
+ * Result sets created using the returned <code>CallableStatement</code>
+ * object will by default be type <code>TYPE_FORWARD_ONLY</code>
+ * and have a concurrency level of <code>CONCUR_READ_ONLY</code>.
+ * The holdability of the created result sets can be determined by
+ * calling {@link #getHoldability}.
+ *
+ * @param sql an SQL statement that may contain one or more '?'
+ * parameter placeholders. Typically this statement is specified using JDBC
+ * call escape syntax.
+ * @return a new default <code>CallableStatement</code> object containing the
+ * pre-compiled SQL statement
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ */
+CallableStatement prepareCall(String sql) throws SQLException;

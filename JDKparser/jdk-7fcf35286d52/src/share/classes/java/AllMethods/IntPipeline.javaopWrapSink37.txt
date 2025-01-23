@@ -1,0 +1,16 @@
+@Override
+Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+    return new Sink.ChainedInt<Integer>(sink) {
+
+        @Override
+        public void begin(long size) {
+            downstream.begin(-1);
+        }
+
+        @Override
+        public void accept(int t) {
+            if (predicate.test(t))
+                downstream.accept(t);
+        }
+    };
+}

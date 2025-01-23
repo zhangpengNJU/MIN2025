@@ -1,0 +1,126 @@
+/**
+ *  Produces a method handle which adapts the calling sequence of the
+ *  given method handle to a new type, by reordering the arguments.
+ *  The resulting method handle is guaranteed to report a type
+ *  which is equal to the desired new type.
+ *  <p>
+ *  The given array controls the reordering.
+ *  Call {@code #I} the number of incoming parameters (the value
+ *  {@code newType.parameterCount()}, and call {@code #O} the number
+ *  of outgoing parameters (the value {@code target.type().parameterCount()}).
+ *  Then the length of the reordering array must be {@code #O},
+ *  and each element must be a non-negative number less than {@code #I}.
+ *  For every {@code N} less than {@code #O}, the {@code N}-th
+ *  outgoing argument will be taken from the {@code I}-th incoming
+ *  argument, where {@code I} is {@code reorder[N]}.
+ *  <p>
+ *  No argument or return value conversions are applied.
+ *  The type of each incoming argument, as determined by {@code newType},
+ *  must be identical to the type of the corresponding outgoing parameter
+ *  or parameters in the target method handle.
+ *  The return type of {@code newType} must be identical to the return
+ *  type of the original target.
+ *  <p>
+ *  The reordering array need not specify an actual permutation.
+ *  An incoming argument will be duplicated if its index appears
+ *  more than once in the array, and an incoming argument will be dropped
+ *  if its index does not appear in the array.
+ *  As in the case of {@link #dropArguments(MethodHandle,int,List) dropArguments},
+ *  incoming arguments which are not mentioned in the reordering array
+ *  are may be any type, as determined only by {@code newType}.
+ *  <blockquote><pre>{@code
+ * import static java.lang.invoke.MethodHandles.*;
+ * import static java.lang.invoke.MethodType.*;
+ * ...
+ * MethodType intfn1 = methodType(int.class, int.class);
+ * MethodType intfn2 = methodType(int.class, int.class, int.class);
+ * MethodHandle sub = ... (int x, int y) -> (x-y) ...;
+ * assert(sub.type().equals(intfn2));
+ * MethodHandle sub1 = permuteArguments(sub, intfn2, 0, 1);
+ * MethodHandle rsub = permuteArguments(sub, intfn2, 1, 0);
+ * assert((int)rsub.invokeExact(1, 100) == 99);
+ * MethodHandle add = ... (int x, int y) -> (x+y) ...;
+ * assert(add.type().equals(intfn2));
+ * MethodHandle twice = permuteArguments(add, intfn1, 0, 0);
+ * assert(twice.type().equals(intfn1));
+ * assert((int)twice.invokeExact(21) == 42);
+ *  }</pre></blockquote>
+ *  @param target the method handle to invoke after arguments are reordered
+ *  @param newType the expected type of the new method handle
+ *  @param reorder an index array which controls the reordering
+ *  @return a method handle which delegates to the target after it
+ *            drops unused arguments and moves and/or duplicates the other arguments
+ *  @throws NullPointerException if any argument is null
+ *  @throws IllegalArgumentException if the index array length is not equal to
+ *                   the arity of the target, or if any index array element
+ *                   not a valid index for a parameter of {@code newType},
+ *                   or if two corresponding parameter types in
+ *                   {@code target.type()} and {@code newType} are not identical,
+ */
+public static MethodHandle permuteArguments(MethodHandle target, MethodType newType, int... reorder) {
+    // get a private copy
+    reorder = reorder.clone();
+    MethodType oldType = target.type();
+    permuteArgumentChecks(reorder, newType, oldType);
+    // first detect dropped arguments and handle them separately
+    int[] originalReorder = reorder;
+    BoundMethodHandle result = target.rebind();
+    LambdaForm form = result.form;
+    int newArity = newType.parameterCount();
+    // Normalize the reordering into a real permutation,
+    // by removing duplicates and adding dropped elements.
+    // This somewhat improves lambda form caching, as well
+    // as simplifying the transform by breaking it up into steps.
+    for (int ddIdx; (ddIdx = findFirstDupOrDrop(reorder, newArity)) != 0; ) {
+        if (ddIdx > 0) {
+            // We found a duplicated entry at reorder[ddIdx].
+            // Example:  (x,y,z)->asList(x,y,z)
+            // permuted by [1*,0,1] => (a0,a1)=>asList(a1,a0,a1)
+            // permuted by [0,1,0*] => (a0,a1)=>asList(a0,a1,a0)
+            // The starred element corresponds to the argument
+            // deleted by the dupArgumentForm transform.
+            int srcPos = ddIdx, dstPos = srcPos, dupVal = reorder[srcPos];
+            boolean killFirst = false;
+            for (int val; (val = reorder[--dstPos]) != dupVal; ) {
+                // Set killFirst if the dup is larger than an intervening position.
+                // This will remove at least one inversion from the permutation.
+                if (dupVal > val)
+                    killFirst = true;
+            }
+            if (!killFirst) {
+                srcPos = dstPos;
+                dstPos = ddIdx;
+            }
+            form = form.editor().dupArgumentForm(1 + srcPos, 1 + dstPos);
+            assert (reorder[srcPos] == reorder[dstPos]);
+            oldType = oldType.dropParameterTypes(dstPos, dstPos + 1);
+            // contract the reordering by removing the element at dstPos
+            int tailPos = dstPos + 1;
+            System.arraycopy(reorder, tailPos, reorder, dstPos, reorder.length - tailPos);
+            reorder = Arrays.copyOf(reorder, reorder.length - 1);
+        } else {
+            int dropVal = ~ddIdx, insPos = 0;
+            while (insPos < reorder.length && reorder[insPos] < dropVal) {
+                // Find first element of reorder larger than dropVal.
+                // This is where we will insert the dropVal.
+                insPos += 1;
+            }
+            Class<?> ptype = newType.parameterType(dropVal);
+            form = form.editor().addArgumentForm(1 + insPos, BasicType.basicType(ptype));
+            oldType = oldType.insertParameterTypes(insPos, ptype);
+            // expand the reordering by inserting an element at insPos
+            int tailPos = insPos + 1;
+            reorder = Arrays.copyOf(reorder, reorder.length + 1);
+            System.arraycopy(reorder, insPos, reorder, tailPos, reorder.length - tailPos);
+            reorder[insPos] = dropVal;
+        }
+        assert (permuteArgumentChecks(reorder, newType, oldType));
+    }
+    // a perfect permutation
+    assert (reorder.length == newArity);
+    // Note:  This may cache too many distinct LFs. Consider backing off to varargs code.
+    form = form.editor().permuteArgumentsForm(1, reorder);
+    if (newType == result.type() && form == result.internalForm())
+        return result;
+    return result.copyWith(newType, form);
+}

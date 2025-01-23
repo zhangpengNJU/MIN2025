@@ -1,0 +1,9 @@
+public MethodType getMethodOrFieldType() {
+    if (isInvocable())
+        return getMethodType();
+    if (isGetter())
+        return MethodType.methodType(getFieldType());
+    if (isSetter())
+        return MethodType.methodType(void.class, getFieldType());
+    throw new InternalError("not a method or field: " + this);
+}

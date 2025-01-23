@@ -1,0 +1,9 @@
+/*
+     * @since 1.6
+     */
+private Object readResolve() throws ObjectStreamException {
+    if (transform == null || transform.isIdentity()) {
+        return IDENTITY;
+    }
+    return this;
+}

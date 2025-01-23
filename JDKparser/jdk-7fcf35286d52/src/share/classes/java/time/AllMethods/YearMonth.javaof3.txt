@@ -1,0 +1,13 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code YearMonth} from a year and month.
+ *
+ * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+ * @param month  the month-of-year to represent, not null
+ * @return the year-month, not null
+ * @throws DateTimeException if the year value is invalid
+ */
+public static YearMonth of(int year, Month month) {
+    Objects.requireNonNull(month, "month");
+    return of(year, month.getValue());
+}

@@ -1,0 +1,10 @@
+String getHostAddress() {
+    String s = numericToTextFormat(ipaddress);
+    if (scope_ifname != null) {
+        /* must check this first */
+        s = s + "%" + scope_ifname.getName();
+    } else if (scope_id_set) {
+        s = s + "%" + scope_id;
+    }
+    return s;
+}

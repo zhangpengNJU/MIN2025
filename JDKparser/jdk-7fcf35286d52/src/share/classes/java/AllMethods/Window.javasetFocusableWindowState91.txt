@@ -1,0 +1,51 @@
+/**
+ * Sets whether this Window can become the focused Window if it meets
+ * the other requirements outlined in {@code isFocusableWindow}. If
+ * this Window's focusable Window state is set to {@code false}, then
+ * {@code isFocusableWindow} will return {@code false}. If this
+ * Window's focusable Window state is set to {@code true}, then
+ * {@code isFocusableWindow} may return {@code true} or
+ * {@code false} depending upon the other requirements which must be
+ * met in order for a Window to be focusable.
+ * <p>
+ * Setting a Window's focusability state to {@code false} is the
+ * standard mechanism for an application to identify to the AWT a Window
+ * which will be used as a floating palette or toolbar, and thus should be
+ * a non-focusable Window.
+ *
+ * Setting the focusability state on a visible {@code Window}
+ * can have a delayed effect on some platforms &#151; the actual
+ * change may happen only when the {@code Window} becomes
+ * hidden and then visible again.  To ensure consistent behavior
+ * across platforms, set the {@code Window}'s focusable state
+ * when the {@code Window} is invisible and then show it.
+ *
+ * @param focusableWindowState whether this Window can be the focused
+ *        Window
+ * @see #isFocusableWindow
+ * @see #getFocusableWindowState
+ * @see #isShowing
+ * @see Component#setFocusable
+ * @since 1.4
+ */
+public void setFocusableWindowState(boolean focusableWindowState) {
+    boolean oldFocusableWindowState;
+    synchronized (this) {
+        oldFocusableWindowState = this.focusableWindowState;
+        this.focusableWindowState = focusableWindowState;
+    }
+    WindowPeer peer = (WindowPeer) this.peer;
+    if (peer != null) {
+        peer.updateFocusableWindowState();
+    }
+    firePropertyChange("focusableWindowState", oldFocusableWindowState, focusableWindowState);
+    if (oldFocusableWindowState && !focusableWindowState && isFocused()) {
+        for (Window owner = getOwner(); owner != null; owner = owner.getOwner()) {
+            Component toFocus = KeyboardFocusManager.getMostRecentFocusOwner(owner);
+            if (toFocus != null && toFocus.requestFocus(false, CausedFocusEvent.Cause.ACTIVATION)) {
+                return;
+            }
+        }
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwnerPriv();
+    }
+}

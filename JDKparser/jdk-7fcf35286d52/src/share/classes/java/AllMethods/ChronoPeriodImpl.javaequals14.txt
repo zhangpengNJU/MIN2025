@@ -1,0 +1,12 @@
+// -----------------------------------------------------------------------
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj instanceof ChronoPeriodImpl) {
+        ChronoPeriodImpl other = (ChronoPeriodImpl) obj;
+        return years == other.years && months == other.months && days == other.days && chrono.equals(other.chrono);
+    }
+    return false;
+}

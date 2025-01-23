@@ -1,0 +1,21 @@
+// ==================privates====================
+/**
+ * We lazily load the lookup hashtable.  This function does the
+ * loading.
+ */
+private synchronized void loadLookup() {
+    if (lookup != null)
+        return;
+    Object[][] contents = getContents();
+    HashMap<String, Object> temp = new HashMap<>(contents.length);
+    for (int i = 0; i < contents.length; ++i) {
+        // key must be non-null String, value must be non-null
+        String key = (String) contents[i][0];
+        Object value = contents[i][1];
+        if (key == null || value == null) {
+            throw new NullPointerException();
+        }
+        temp.put(key, value);
+    }
+    lookup = temp;
+}

@@ -1,0 +1,20 @@
+/**
+ * Intersects the current <code>Clip</code> with the interior of the
+ * specified <code>Shape</code> and sets the <code>Clip</code> to the
+ * resulting intersection.  The specified <code>Shape</code> is
+ * transformed with the current <code>Graphics2D</code>
+ * <code>Transform</code> before being intersected with the current
+ * <code>Clip</code>.  This method is used to make the current
+ * <code>Clip</code> smaller.
+ * To make the <code>Clip</code> larger, use <code>setClip</code>.
+ * The <i>user clip</i> modified by this method is independent of the
+ * clipping associated with device bounds and visibility.  If no clip has
+ * previously been set, or if the clip has been cleared using
+ * {@link Graphics#setClip(Shape) setClip} with a <code>null</code>
+ * argument, the specified <code>Shape</code> becomes the new
+ * user clip.
+ * @param s the <code>Shape</code> to be intersected with the current
+ *          <code>Clip</code>.  If <code>s</code> is <code>null</code>,
+ *          this method clears the current <code>Clip</code>.
+ */
+public abstract void clip(Shape s);

@@ -1,0 +1,21 @@
+/**
+ * Returns the kernel data in row major order.
+ * The <code>data</code> array is returned.  If <code>data</code>
+ * is <code>null</code>, a new array is allocated.
+ * @param data  if non-null, contains the returned kernel data
+ * @return the <code>data</code> array containing the kernel data
+ *         in row major order or, if <code>data</code> is
+ *         <code>null</code>, a newly allocated array containing
+ *         the kernel data in row major order
+ * @throws IllegalArgumentException if <code>data</code> is less
+ *         than the size of this <code>Kernel</code>
+ */
+final public float[] getKernelData(float[] data) {
+    if (data == null) {
+        data = new float[this.data.length];
+    } else if (data.length < this.data.length) {
+        throw new IllegalArgumentException("Data array too small " + "(should be " + this.data.length + " but is " + data.length + " )");
+    }
+    System.arraycopy(this.data, 0, data, 0, this.data.length);
+    return data;
+}

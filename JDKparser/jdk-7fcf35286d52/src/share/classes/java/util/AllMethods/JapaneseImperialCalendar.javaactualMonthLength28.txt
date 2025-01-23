@@ -1,0 +1,14 @@
+private int actualMonthLength() {
+    int length = jcal.getMonthLength(jdate);
+    int eraIndex = getTransitionEraIndex(jdate);
+    if (eraIndex != -1) {
+        long transitionFixedDate = sinceFixedDates[eraIndex];
+        CalendarDate d = eras[eraIndex].getSinceDate();
+        if (transitionFixedDate <= cachedFixedDate) {
+            length -= d.getDayOfMonth() - 1;
+        } else {
+            length = d.getDayOfMonth() - 1;
+        }
+    }
+    return length;
+}

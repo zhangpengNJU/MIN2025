@@ -1,0 +1,27 @@
+/**
+ * Return the maximum length of any expansion sequences that end
+ * with the specified comparison order.
+ *
+ * @param order a collation order returned by previous or next.
+ * @return the maximum length of any expansion seuences ending
+ *         with the specified order.
+ *
+ * @see CollationElementIterator#getMaxExpansion
+ */
+int getMaxExpansion(int order) {
+    int result = 1;
+    if (expandTable != null) {
+        // Right now this does a linear search through the entire
+        // expansion table.  If a collator had a large number of expansions,
+        // this could cause a performance problem, but in practise that
+        // rarely happens
+        for (int i = 0; i < expandTable.size(); i++) {
+            int[] valueList = expandTable.elementAt(i);
+            int length = valueList.length;
+            if (length > result && valueList[length - 1] == order) {
+                result = length;
+            }
+        }
+    }
+    return result;
+}

@@ -1,0 +1,34 @@
+static float[] expandCoords(float[] oldCoords, int needed) {
+    final int oldSize = oldCoords.length;
+    final int newSizeMin = oldSize + needed;
+    if (newSizeMin < oldSize) {
+        // hard overflow failure - we can't even accommodate
+        // new items without overflowing
+        throw new ArrayIndexOutOfBoundsException("coords exceeds maximum capacity !");
+    }
+    // growth algorithm computation
+    int grow = oldSize;
+    if (grow > EXPAND_MAX_COORDS) {
+        // 1/8th min
+        grow = Math.max(EXPAND_MAX_COORDS, oldSize >> 3);
+    } else if (grow < EXPAND_MIN) {
+        grow = EXPAND_MIN;
+    }
+    assert grow > needed;
+    int newSize = oldSize + grow;
+    if (newSize < newSizeMin) {
+        // overflow in growth algorithm computation
+        newSize = Integer.MAX_VALUE;
+    }
+    while (true) {
+        try {
+            // try allocating the larger array
+            return Arrays.copyOf(oldCoords, newSize);
+        } catch (OutOfMemoryError oome) {
+            if (newSize == newSizeMin) {
+                throw oome;
+            }
+        }
+        newSize = newSizeMin + (newSize - newSizeMin) / 2;
+    }
+}

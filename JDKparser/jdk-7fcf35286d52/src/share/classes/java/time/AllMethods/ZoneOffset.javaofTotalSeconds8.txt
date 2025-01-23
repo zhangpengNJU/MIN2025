@@ -1,0 +1,28 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code ZoneOffset} specifying the total offset in seconds
+ * <p>
+ * The offset must be in the range {@code -18:00} to {@code +18:00}, which corresponds to -64800 to +64800.
+ *
+ * @param totalSeconds  the total time-zone offset in seconds, from -64800 to +64800
+ * @return the ZoneOffset, not null
+ * @throws DateTimeException if the offset is not in the required range
+ */
+public static ZoneOffset ofTotalSeconds(int totalSeconds) {
+    if (totalSeconds < -MAX_SECONDS || totalSeconds > MAX_SECONDS) {
+        throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
+    }
+    if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
+        Integer totalSecs = totalSeconds;
+        ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+        if (result == null) {
+            result = new ZoneOffset(totalSeconds);
+            SECONDS_CACHE.putIfAbsent(totalSecs, result);
+            result = SECONDS_CACHE.get(totalSecs);
+            ID_CACHE.putIfAbsent(result.getId(), result);
+        }
+        return result;
+    } else {
+        return new ZoneOffset(totalSeconds);
+    }
+}

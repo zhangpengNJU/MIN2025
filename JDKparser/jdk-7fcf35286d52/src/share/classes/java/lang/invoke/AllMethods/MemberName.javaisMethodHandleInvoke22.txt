@@ -1,0 +1,11 @@
+/**
+ * Utility method to query if this member is a method handle invocation (invoke or invokeExact).
+ */
+public boolean isMethodHandleInvoke() {
+    final int bits = MH_INVOKE_MODS & ~Modifier.PUBLIC;
+    final int negs = Modifier.STATIC;
+    if (testFlags(bits | negs, bits) && clazz == MethodHandle.class) {
+        return isMethodHandleInvokeName(name);
+    }
+    return false;
+}

@@ -1,0 +1,42 @@
+/**
+ * Creates a new <code>Graphics</code> object based on this
+ * <code>Graphics</code> object, but with a new translation and clip area.
+ * The new <code>Graphics</code> object has its origin
+ * translated to the specified point (<i>x</i>,&nbsp;<i>y</i>).
+ * Its clip area is determined by the intersection of the original
+ * clip area with the specified rectangle.  The arguments are all
+ * interpreted in the coordinate system of the original
+ * <code>Graphics</code> object. The new graphics context is
+ * identical to the original, except in two respects:
+ *
+ * <ul>
+ * <li>
+ * The new graphics context is translated by (<i>x</i>,&nbsp;<i>y</i>).
+ * That is to say, the point (<code>0</code>,&nbsp;<code>0</code>) in the
+ * new graphics context is the same as (<i>x</i>,&nbsp;<i>y</i>) in
+ * the original graphics context.
+ * <li>
+ * The new graphics context has an additional clipping rectangle, in
+ * addition to whatever (translated) clipping rectangle it inherited
+ * from the original graphics context. The origin of the new clipping
+ * rectangle is at (<code>0</code>,&nbsp;<code>0</code>), and its size
+ * is specified by the <code>width</code> and <code>height</code>
+ * arguments.
+ * </ul>
+ * <p>
+ * @param      x   the <i>x</i> coordinate.
+ * @param      y   the <i>y</i> coordinate.
+ * @param      width   the width of the clipping rectangle.
+ * @param      height   the height of the clipping rectangle.
+ * @return     a new graphics context.
+ * @see        java.awt.Graphics#translate
+ * @see        java.awt.Graphics#clipRect
+ */
+public Graphics create(int x, int y, int width, int height) {
+    Graphics g = create();
+    if (g == null)
+        return null;
+    g.translate(x, y);
+    g.clipRect(0, 0, width, height);
+    return g;
+}

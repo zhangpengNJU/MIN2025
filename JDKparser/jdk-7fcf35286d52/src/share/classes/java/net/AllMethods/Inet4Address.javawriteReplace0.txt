@@ -1,0 +1,22 @@
+/**
+ * Replaces the object to be serialized with an InetAddress object.
+ *
+ * @return the alternate object to be serialized.
+ *
+ * @throws ObjectStreamException if a new object replacing this
+ * object could not be created
+ */
+private Object writeReplace() throws ObjectStreamException {
+    // will replace the to be serialized 'this' object
+    InetAddress inet = new InetAddress();
+    inet.holder().hostName = holder().getHostName();
+    inet.holder().address = holder().getAddress();
+    /**
+     * Prior to 1.4 an InetAddress was created with a family
+     * based on the platform AF_INET value (usually 2).
+     * For compatibility reasons we must therefore write the
+     * the InetAddress with this family.
+     */
+    inet.holder().family = 2;
+    return inet;
+}

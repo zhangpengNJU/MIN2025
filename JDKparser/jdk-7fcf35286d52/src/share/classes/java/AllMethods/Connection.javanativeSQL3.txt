@@ -1,0 +1,13 @@
+/**
+ * Converts the given SQL statement into the system's native SQL grammar.
+ * A driver may convert the JDBC SQL grammar into its system's
+ * native SQL grammar prior to sending it. This method returns the
+ * native form of the statement that the driver would have sent.
+ *
+ * @param sql an SQL statement that may contain one or more '?'
+ * parameter placeholders
+ * @return the native form of this statement
+ * @exception SQLException if a database access error occurs
+ * or this method is called on a closed connection
+ */
+String nativeSQL(String sql) throws SQLException;

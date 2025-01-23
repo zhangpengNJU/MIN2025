@@ -1,0 +1,10 @@
+/**
+ * True if the old return type can always be viewed (w/o casting) under new return type,
+ *  and the new parameters can be viewed (w/o casting) under the old parameter types.
+ */
+/*non-public*/
+boolean isViewableAs(MethodType newType, boolean keepInterfaces) {
+    if (!VerifyType.isNullConversion(returnType(), newType.returnType(), keepInterfaces))
+        return false;
+    return parametersAreViewableAs(newType, keepInterfaces);
+}

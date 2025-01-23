@@ -1,0 +1,16 @@
+/**
+ * Removes all items from the choice menu.
+ * @see       #remove
+ * @since     JDK1.1
+ */
+public void removeAll() {
+    synchronized (this) {
+        if (peer != null) {
+            ((ChoicePeer) peer).removeAll();
+        }
+        pItems.removeAllElements();
+        selectedIndex = -1;
+    }
+    // This could change the preferred size of the Component.
+    invalidateIfValid();
+}

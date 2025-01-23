@@ -1,0 +1,40 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a copy of this {@code LocalDateTime} with the specified period added.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param newDate  the new date to base the calculation on, not null
+ * @param hours  the hours to add, may be negative
+ * @param minutes the minutes to add, may be negative
+ * @param seconds the seconds to add, may be negative
+ * @param nanos the nanos to add, may be negative
+ * @param sign  the sign to determine add or subtract
+ * @return the combined result, not null
+ */
+private LocalDateTime plusWithOverflow(LocalDate newDate, long hours, long minutes, long seconds, long nanos, int sign) {
+    // 9223372036854775808 long, 2147483648 int
+    if ((hours | minutes | seconds | nanos) == 0) {
+        return with(newDate, time);
+    }
+    long totDays = // max/24*60*60*1B
+    nanos / NANOS_PER_DAY + // max/24*60*60
+    seconds / SECONDS_PER_DAY + // max/24*60
+    minutes / MINUTES_PER_DAY + // max/24
+    hours / HOURS_PER_DAY;
+    // total max*0.4237...
+    totDays *= sign;
+    long totNanos = // max  86400000000000
+    nanos % NANOS_PER_DAY + // max  86400000000000
+    (seconds % SECONDS_PER_DAY) * NANOS_PER_SECOND + // max  86400000000000
+    (minutes % MINUTES_PER_DAY) * NANOS_PER_MINUTE + // max  86400000000000
+    (hours % HOURS_PER_DAY) * NANOS_PER_HOUR;
+    // max  86400000000000
+    long curNoD = time.toNanoOfDay();
+    // total 432000000000000
+    totNanos = totNanos * sign + curNoD;
+    totDays += Math.floorDiv(totNanos, NANOS_PER_DAY);
+    long newNoD = Math.floorMod(totNanos, NANOS_PER_DAY);
+    LocalTime newTime = (newNoD == curNoD ? time : LocalTime.ofNanoOfDay(newNoD));
+    return with(newDate.plusDays(totDays), newTime);
+}

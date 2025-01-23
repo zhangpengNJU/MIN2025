@@ -1,0 +1,10 @@
+public long skip(long n) {
+    if (n > rem)
+        n = rem;
+    pos += n;
+    rem -= n;
+    if (rem == 0) {
+        close();
+    }
+    return n;
+}

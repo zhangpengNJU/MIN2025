@@ -1,0 +1,34 @@
+/*
+         * Reads 'len' bytes from the input stream, or until an end-of-line
+         * is reached. Returns the number of bytes read.
+         */
+public int readLine(byte[] b, int off, int len) throws IOException {
+    byte[] tbuf = this.buf;
+    int total = 0;
+    while (total < len) {
+        int avail = count - pos;
+        if (avail <= 0) {
+            fill();
+            avail = count - pos;
+            if (avail <= 0) {
+                return -1;
+            }
+        }
+        int n = len - total;
+        if (n > avail) {
+            n = avail;
+        }
+        int tpos = pos;
+        int maxpos = tpos + n;
+        while (tpos < maxpos && tbuf[tpos++] != '\n') ;
+        n = tpos - pos;
+        System.arraycopy(tbuf, pos, b, off, n);
+        off += n;
+        total += n;
+        pos = tpos;
+        if (tbuf[tpos - 1] == '\n') {
+            break;
+        }
+    }
+    return total;
+}

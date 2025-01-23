@@ -1,0 +1,28 @@
+void checkAccess(Class<?> caller, Class<?> clazz, Object obj, int modifiers) throws IllegalAccessException {
+    if (caller == clazz) {
+        // quick check
+        // ACCESS IS OK
+        return;
+    }
+    // read volatile
+    Object cache = securityCheckCache;
+    Class<?> targetClass = clazz;
+    if (obj != null && Modifier.isProtected(modifiers) && ((targetClass = obj.getClass()) != clazz)) {
+        // Must match a 2-list of { caller, targetClass }.
+        if (cache instanceof Class[]) {
+            Class<?>[] cache2 = (Class<?>[]) cache;
+            if (cache2[1] == targetClass && cache2[0] == caller) {
+                // ACCESS IS OK
+                return;
+            }
+        // (Test cache[1] first since range check for [1]
+        // subsumes range check for [0].)
+        }
+    } else if (cache == caller) {
+        // Non-protected case (or obj.class == this.clazz).
+        // ACCESS IS OK
+        return;
+    }
+    // If no return, fall through to the slow path.
+    slowCheckMemberAccess(caller, clazz, obj, modifiers, targetClass);
+}

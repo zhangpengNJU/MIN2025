@@ -1,0 +1,30 @@
+/**
+ * Reads a set of file attributes as a bulk operation. This method works in
+ * exactly the manner specified by the {@link
+ * Files#readAttributes(Path,String,LinkOption[])} method.
+ *
+ * @param   path
+ *          the path to the file
+ * @param   attributes
+ *          the attributes to read
+ * @param   options
+ *          options indicating how symbolic links are handled
+ *
+ * @return  a map of the attributes returned; may be empty. The map's keys
+ *          are the attribute names, its values are the attribute values
+ *
+ * @throws  UnsupportedOperationException
+ *          if the attribute view is not available
+ * @throws  IllegalArgumentException
+ *          if no attributes are specified or an unrecognized attributes is
+ *          specified
+ * @throws  IOException
+ *          If an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, its {@link SecurityManager#checkRead(String) checkRead}
+ *          method denies read access to the file. If this method is invoked
+ *          to read security sensitive attributes then the security manager
+ *          may be invoke to check for additional permissions.
+ */
+public abstract Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws IOException;

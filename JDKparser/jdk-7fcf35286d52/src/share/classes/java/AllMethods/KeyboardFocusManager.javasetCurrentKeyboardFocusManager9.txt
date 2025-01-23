@@ -1,0 +1,37 @@
+/**
+ * Sets the current KeyboardFocusManager instance for the calling thread's
+ * context. If null is specified, then the current KeyboardFocusManager
+ * is replaced with a new instance of DefaultKeyboardFocusManager.
+ * <p>
+ * If a SecurityManager is installed, the calling thread must be granted
+ * the AWTPermission "replaceKeyboardFocusManager" in order to replace the
+ * the current KeyboardFocusManager. If this permission is not granted,
+ * this method will throw a SecurityException, and the current
+ * KeyboardFocusManager will be unchanged.
+ *
+ * @param newManager the new KeyboardFocusManager for this thread's context
+ * @see #getCurrentKeyboardFocusManager
+ * @see DefaultKeyboardFocusManager
+ * @throws SecurityException if the calling thread does not have permission
+ *         to replace the current KeyboardFocusManager
+ */
+public static void setCurrentKeyboardFocusManager(KeyboardFocusManager newManager) throws SecurityException {
+    checkReplaceKFMPermission();
+    KeyboardFocusManager oldManager = null;
+    synchronized (KeyboardFocusManager.class) {
+        AppContext appcontext = AppContext.getAppContext();
+        if (newManager != null) {
+            oldManager = getCurrentKeyboardFocusManager(appcontext);
+            appcontext.put(KeyboardFocusManager.class, newManager);
+        } else {
+            oldManager = getCurrentKeyboardFocusManager(appcontext);
+            appcontext.remove(KeyboardFocusManager.class);
+        }
+    }
+    if (oldManager != null) {
+        oldManager.firePropertyChange("managingFocus", Boolean.TRUE, Boolean.FALSE);
+    }
+    if (newManager != null) {
+        newManager.firePropertyChange("managingFocus", Boolean.FALSE, Boolean.TRUE);
+    }
+}

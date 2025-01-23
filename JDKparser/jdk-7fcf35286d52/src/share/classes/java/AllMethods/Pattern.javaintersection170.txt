@@ -1,0 +1,11 @@
+/**
+ * Returns the set intersection of two CharProperty nodes.
+ */
+private static CharProperty intersection(final CharProperty lhs, final CharProperty rhs) {
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return lhs.isSatisfiedBy(ch) && rhs.isSatisfiedBy(ch);
+        }
+    };
+}

@@ -1,0 +1,25 @@
+/**
+ * If the given string has been specified as a contracting string
+ * in this collation table, return its ordering.
+ * Otherwise return UNMAPPED.
+ */
+private int getContractOrder(String groupChars) {
+    int result = RBCollationTables.UNMAPPED;
+    if (contractTable != null) {
+        int ch = groupChars.codePointAt(0);
+        /*
+            char ch0 = groupChars.charAt(0);
+            int ch = Character.isHighSurrogate(ch0)?
+              Character.toCodePoint(ch0, groupChars.charAt(1)):ch0;
+              */
+        Vector<EntryPair> entryTable = getContractValues(ch);
+        if (entryTable != null) {
+            int index = RBCollationTables.getEntry(entryTable, groupChars, true);
+            if (index != RBCollationTables.UNMAPPED) {
+                EntryPair pair = entryTable.elementAt(index);
+                result = pair.value;
+            }
+        }
+    }
+    return result;
+}

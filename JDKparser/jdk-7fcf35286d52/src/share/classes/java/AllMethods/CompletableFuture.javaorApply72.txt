@@ -1,0 +1,25 @@
+final <R, S extends R> boolean orApply(CompletableFuture<R> a, CompletableFuture<S> b, Function<? super R, ? extends T> f, OrApply<R, S, T> c) {
+    Object r;
+    Throwable x;
+    if (a == null || b == null || ((r = a.result) == null && (r = b.result) == null) || f == null)
+        return false;
+    tryComplete: if (result == null) {
+        try {
+            if (c != null && !c.claim())
+                return false;
+            if (r instanceof AltResult) {
+                if ((x = ((AltResult) r).ex) != null) {
+                    completeThrowable(x, r);
+                    break tryComplete;
+                }
+                r = null;
+            }
+            @SuppressWarnings("unchecked")
+            R rr = (R) r;
+            completeValue(f.apply(rr));
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

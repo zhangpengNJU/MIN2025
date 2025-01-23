@@ -1,0 +1,29 @@
+final boolean isMixingNeeded() {
+    if (SunToolkit.getSunAwtDisableMixing()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            mixingLog.finest("this = " + this + "; Mixing disabled via sun.awt.disableMixing");
+        }
+        return false;
+    }
+    if (!areBoundsValid()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; areBoundsValid = " + areBoundsValid());
+        }
+        return false;
+    }
+    Window window = getContainingWindow();
+    if (window != null) {
+        if (!window.hasHeavyweightDescendants() || !window.hasLightweightDescendants() || window.isDisposing()) {
+            if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+                mixingLog.fine("containing window = " + window + "; has h/w descendants = " + window.hasHeavyweightDescendants() + "; has l/w descendants = " + window.hasLightweightDescendants() + "; disposing = " + window.isDisposing());
+            }
+            return false;
+        }
+    } else {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; containing window is null");
+        }
+        return false;
+    }
+    return true;
+}

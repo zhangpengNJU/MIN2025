@@ -1,0 +1,10 @@
+/**
+ * Returns the length of the specified month in the year provided
+ * by internalGet(YEAR).
+ *
+ * @see GregorianCalendar#isLeapYear(int)
+ */
+private int monthLength(int month) {
+    assert jdate.isNormalized();
+    return jdate.isLeapYear() ? GregorianCalendar.LEAP_MONTH_LENGTH[month] : GregorianCalendar.MONTH_LENGTH[month];
+}

@@ -1,0 +1,26 @@
+/**
+ * Equivalent in effect to {@link #get} followed by {@link
+ * #reset}. This method may apply for example during quiescent
+ * points between multithreaded computations.  If there are
+ * updates concurrent with this method, the returned value is
+ * <em>not</em> guaranteed to be the final value occurring before
+ * the reset.
+ *
+ * @return the value before reset
+ */
+public long getThenReset() {
+    Cell[] as = cells;
+    Cell a;
+    long result = base;
+    base = identity;
+    if (as != null) {
+        for (int i = 0; i < as.length; ++i) {
+            if ((a = as[i]) != null) {
+                long v = a.value;
+                a.value = identity;
+                result = function.applyAsLong(result, v);
+            }
+        }
+    }
+    return result;
+}

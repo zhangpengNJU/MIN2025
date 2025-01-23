@@ -1,0 +1,59 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to access members.
+ * <p>
+ * The default policy is to allow access to PUBLIC members, as well
+ * as access to classes that have the same class loader as the caller.
+ * In all other cases, this method calls <code>checkPermission</code>
+ * with the <code>RuntimePermission("accessDeclaredMembers")
+ * </code> permission.
+ * <p>
+ * If this method is overridden, then a call to
+ * <code>super.checkMemberAccess</code> cannot be made,
+ * as the default implementation of <code>checkMemberAccess</code>
+ * relies on the code being checked being at a stack depth of
+ * 4.
+ *
+ * @param clazz the class that reflection is to be performed on.
+ *
+ * @param which type of access, PUBLIC or DECLARED.
+ *
+ * @exception  SecurityException if the caller does not have
+ *             permission to access members.
+ * @exception  NullPointerException if the <code>clazz</code> argument is
+ *             <code>null</code>.
+ *
+ * @deprecated This method relies on the caller being at a stack depth
+ *             of 4 which is error-prone and cannot be enforced by the runtime.
+ *             Users of this method should instead invoke {@link #checkPermission}
+ *             directly.  This method will be changed in a future release
+ *             to check the permission {@code java.security.AllPermission}.
+ *
+ * @see java.lang.reflect.Member
+ * @since JDK1.1
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+@Deprecated
+@CallerSensitive
+public void checkMemberAccess(Class<?> clazz, int which) {
+    if (clazz == null) {
+        throw new NullPointerException("class can't be null");
+    }
+    if (which != Member.PUBLIC) {
+        Class<?>[] stack = getClassContext();
+        /*
+             * stack depth of 4 should be the caller of one of the
+             * methods in java.lang.Class that invoke checkMember
+             * access. The stack should look like:
+             *
+             * someCaller                        [3]
+             * java.lang.Class.someReflectionAPI [2]
+             * java.lang.Class.checkMemberAccess [1]
+             * SecurityManager.checkMemberAccess [0]
+             *
+             */
+        if ((stack.length < 4) || (stack[3].getClassLoader() != clazz.getClassLoader())) {
+            checkPermission(SecurityConstants.CHECK_MEMBER_ACCESS_PERMISSION);
+        }
+    }
+}

@@ -1,0 +1,4 @@
+@Override
+SizedCollectorTask.OfInt<P_IN> makeChild(Spliterator<P_IN> spliterator, long offset, long size) {
+    return new SizedCollectorTask.OfInt<>(this, spliterator, offset, size);
+}

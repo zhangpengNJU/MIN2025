@@ -1,0 +1,17 @@
+/**
+ * Recursively descends the container tree and invalidates all
+ * contained components.
+ */
+void invalidateTree() {
+    synchronized (getTreeLock()) {
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            if (comp instanceof Container) {
+                ((Container) comp).invalidateTree();
+            } else {
+                comp.invalidateIfValid();
+            }
+        }
+        invalidateIfValid();
+    }
+}

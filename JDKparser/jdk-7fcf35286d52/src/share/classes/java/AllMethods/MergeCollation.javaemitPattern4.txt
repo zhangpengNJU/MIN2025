@@ -1,0 +1,17 @@
+/**
+ * emits the pattern for collation builder.
+ * @param withWhiteSpace puts spacing around the entries, and \n
+ * before & and <
+ * @return emits the string in the format understable to the collation
+ * builder.
+ */
+public String emitPattern(boolean withWhiteSpace) {
+    StringBuffer result = new StringBuffer();
+    for (int i = 0; i < patterns.size(); ++i) {
+        PatternEntry entry = patterns.get(i);
+        if (entry != null) {
+            entry.addToBuffer(result, true, withWhiteSpace, null);
+        }
+    }
+    return result.toString();
+}

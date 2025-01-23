@@ -1,0 +1,20 @@
+/**
+ * Atomically updates the element at index {@code i} with the results
+ * of applying the given function, returning the updated value. The
+ * function should be side-effect-free, since it may be re-applied
+ * when attempted updates fail due to contention among threads.
+ *
+ * @param i the index
+ * @param updateFunction a side-effect-free function
+ * @return the updated value
+ * @since 1.8
+ */
+public final long updateAndGet(int i, LongUnaryOperator updateFunction) {
+    long offset = checkedByteOffset(i);
+    long prev, next;
+    do {
+        prev = getRaw(offset);
+        next = updateFunction.applyAsLong(prev);
+    } while (!compareAndSetRaw(offset, prev, next));
+    return next;
+}

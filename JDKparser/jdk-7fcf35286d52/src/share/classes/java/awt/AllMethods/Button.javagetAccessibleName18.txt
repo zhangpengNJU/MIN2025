@@ -1,0 +1,17 @@
+/**
+ * Get the accessible name of this object.
+ *
+ * @return the localized name of the object -- can be null if this
+ * object does not have a name
+ */
+public String getAccessibleName() {
+    if (accessibleName != null) {
+        return accessibleName;
+    } else {
+        if (getLabel() == null) {
+            return super.getAccessibleName();
+        } else {
+            return getLabel();
+        }
+    }
+}

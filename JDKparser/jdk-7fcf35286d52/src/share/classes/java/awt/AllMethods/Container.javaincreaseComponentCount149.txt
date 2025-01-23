@@ -1,0 +1,23 @@
+// ************************** MIXING CODE *******************************
+final void increaseComponentCount(Component c) {
+    synchronized (getTreeLock()) {
+        if (!c.isDisplayable()) {
+            throw new IllegalStateException("Peer does not exist while invoking the increaseComponentCount() method");
+        }
+        int addHW = 0;
+        int addLW = 0;
+        if (c instanceof Container) {
+            addLW = ((Container) c).numOfLWComponents;
+            addHW = ((Container) c).numOfHWComponents;
+        }
+        if (c.isLightweight()) {
+            addLW++;
+        } else {
+            addHW++;
+        }
+        for (Container cont = this; cont != null; cont = cont.getContainer()) {
+            cont.numOfLWComponents += addLW;
+            cont.numOfHWComponents += addHW;
+        }
+    }
+}

@@ -1,0 +1,9 @@
+/**
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if {@code fromElement} or
+ *         {@code toElement} is null
+ * @throws IllegalArgumentException {@inheritDoc}
+ */
+public NavigableSet<E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive) {
+    return new ConcurrentSkipListSet<E>(m.subMap(fromElement, fromInclusive, toElement, toInclusive));
+}

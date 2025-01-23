@@ -1,0 +1,54 @@
+/**
+ * {@inheritDoc}
+ *
+ * <p>This implementation returns an array containing all the elements
+ * returned by this collection's iterator in the same order, stored in
+ * consecutive elements of the array, starting with index {@code 0}.
+ * If the number of elements returned by the iterator is too large to
+ * fit into the specified array, then the elements are returned in a
+ * newly allocated array with length equal to the number of elements
+ * returned by the iterator, even if the size of this collection
+ * changes during iteration, as might happen if the collection permits
+ * concurrent modification during iteration.  The {@code size} method is
+ * called only as an optimization hint; the correct result is returned
+ * even if the iterator returns a different number of elements.
+ *
+ * <p>This method is equivalent to:
+ *
+ *  <pre> {@code
+ * List<E> list = new ArrayList<E>(size());
+ * for (E e : this)
+ *     list.add(e);
+ * return list.toArray(a);
+ * }</pre>
+ *
+ * @throws ArrayStoreException  {@inheritDoc}
+ * @throws NullPointerException {@inheritDoc}
+ */
+@SuppressWarnings("unchecked")
+public <T> T[] toArray(T[] a) {
+    // Estimate size of array; be prepared to see more or fewer elements
+    int size = size();
+    T[] r = a.length >= size ? a : (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+    Iterator<E> it = iterator();
+    for (int i = 0; i < r.length; i++) {
+        if (!it.hasNext()) {
+            // fewer elements than expected
+            if (a == r) {
+                // null-terminate
+                r[i] = null;
+            } else if (a.length < i) {
+                return Arrays.copyOf(r, i);
+            } else {
+                System.arraycopy(r, 0, a, 0, i);
+                if (a.length > i) {
+                    a[i] = null;
+                }
+            }
+            return a;
+        }
+        r[i] = (T) it.next();
+    }
+    // more elements than expected
+    return it.hasNext() ? finishToArray(r, it) : r;
+}

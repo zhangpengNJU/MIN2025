@@ -1,0 +1,33 @@
+/**
+ * Creates a DateFormat with the given time and/or date style in the given
+ * locale.
+ * @param timeStyle a value from 0 to 3 indicating the time format,
+ * ignored if flags is 2
+ * @param dateStyle a value from 0 to 3 indicating the time format,
+ * ignored if flags is 1
+ * @param flags either 1 for a time format, 2 for a date format,
+ * or 3 for a date/time format
+ * @param loc the locale for the format
+ */
+private static DateFormat get(int timeStyle, int dateStyle, int flags, Locale loc) {
+    if ((flags & 1) != 0) {
+        if (timeStyle < 0 || timeStyle > 3) {
+            throw new IllegalArgumentException("Illegal time style " + timeStyle);
+        }
+    } else {
+        timeStyle = -1;
+    }
+    if ((flags & 2) != 0) {
+        if (dateStyle < 0 || dateStyle > 3) {
+            throw new IllegalArgumentException("Illegal date style " + dateStyle);
+        }
+    } else {
+        dateStyle = -1;
+    }
+    LocaleProviderAdapter adapter = LocaleProviderAdapter.getAdapter(DateFormatProvider.class, loc);
+    DateFormat dateFormat = get(adapter, timeStyle, dateStyle, loc);
+    if (dateFormat == null) {
+        dateFormat = get(LocaleProviderAdapter.forJRE(), timeStyle, dateStyle, loc);
+    }
+    return dateFormat;
+}

@@ -1,0 +1,20 @@
+public Rectangle2D getCharBounds(int logicalIndex) {
+    if (logicalIndex < 0) {
+        throw new IllegalArgumentException("Negative logicalIndex.");
+    }
+    int tlcStart = 0;
+    for (int i = 0; i < fComponents.length; i++) {
+        int tlcLimit = tlcStart + fComponents[i].getNumCharacters();
+        if (tlcLimit > logicalIndex) {
+            TextLineComponent tlc = fComponents[i];
+            int indexInTlc = logicalIndex - tlcStart;
+            Rectangle2D chBounds = tlc.getCharVisualBounds(indexInTlc);
+            int vi = getComponentVisualIndex(i);
+            chBounds.setRect(chBounds.getX() + locs[vi * 2], chBounds.getY() + locs[vi * 2 + 1], chBounds.getWidth(), chBounds.getHeight());
+            return chBounds;
+        } else {
+            tlcStart = tlcLimit;
+        }
+    }
+    throw new IllegalArgumentException("logicalIndex too large.");
+}

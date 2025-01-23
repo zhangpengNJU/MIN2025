@@ -1,0 +1,40 @@
+/**
+ * Causes this character sequence to be replaced by the reverse of
+ * the sequence. If there are any surrogate pairs included in the
+ * sequence, these are treated as single characters for the
+ * reverse operation. Thus, the order of the high-low surrogates
+ * is never reversed.
+ *
+ * Let <i>n</i> be the character length of this character sequence
+ * (not the length in {@code char} values) just prior to
+ * execution of the {@code reverse} method. Then the
+ * character at index <i>k</i> in the new character sequence is
+ * equal to the character at index <i>n-k-1</i> in the old
+ * character sequence.
+ *
+ * <p>Note that the reverse operation may result in producing
+ * surrogate pairs that were unpaired low-surrogates and
+ * high-surrogates before the operation. For example, reversing
+ * "\u005CuDC00\u005CuD800" produces "\u005CuD800\u005CuDC00" which is
+ * a valid surrogate pair.
+ *
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder reverse() {
+    boolean hasSurrogates = false;
+    int n = count - 1;
+    for (int j = (n - 1) >> 1; j >= 0; j--) {
+        int k = n - j;
+        char cj = value[j];
+        char ck = value[k];
+        value[j] = ck;
+        value[k] = cj;
+        if (Character.isSurrogate(cj) || Character.isSurrogate(ck)) {
+            hasSurrogates = true;
+        }
+    }
+    if (hasSurrogates) {
+        reverseAllValidSurrogatePairs();
+    }
+    return this;
+}

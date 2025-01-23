@@ -1,0 +1,13 @@
+/**
+ * Creates a <code>TextHitInfo</code> on the other side of the
+ * insertion point.  This <code>TextHitInfo</code> remains unchanged.
+ * @return a <code>TextHitInfo</code> on the other side of the
+ * insertion point.
+ */
+public TextHitInfo getOtherHit() {
+    if (isLeadingEdge) {
+        return trailing(charIndex - 1);
+    } else {
+        return leading(charIndex + 1);
+    }
+}

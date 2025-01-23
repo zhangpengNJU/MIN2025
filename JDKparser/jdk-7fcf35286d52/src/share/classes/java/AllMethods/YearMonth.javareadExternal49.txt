@@ -1,0 +1,5 @@
+static YearMonth readExternal(DataInput in) throws IOException {
+    int year = in.readInt();
+    byte month = in.readByte();
+    return YearMonth.of(year, month);
+}

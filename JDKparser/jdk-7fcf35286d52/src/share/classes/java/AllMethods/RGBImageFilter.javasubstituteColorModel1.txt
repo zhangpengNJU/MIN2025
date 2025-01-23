@@ -1,0 +1,12 @@
+/**
+ * Registers two ColorModel objects for substitution.  If the oldcm
+ * is encountered during any of the setPixels methods, the newcm
+ * is substituted and the pixels passed through
+ * untouched (but with the new ColorModel object).
+ * @param oldcm the ColorModel object to be replaced on the fly
+ * @param newcm the ColorModel object to replace oldcm on the fly
+ */
+public void substituteColorModel(ColorModel oldcm, ColorModel newcm) {
+    origmodel = oldcm;
+    newmodel = newcm;
+}

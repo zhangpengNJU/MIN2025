@@ -1,0 +1,15 @@
+/*
+     * This series of restoreFocus methods is used for recovering from a
+     * rejected focus or activation change. Rejections typically occur when
+     * the user attempts to focus a non-focusable Component or Window.
+     */
+private void restoreFocus(FocusEvent fe, Window newFocusedWindow) {
+    Component realOppositeComponent = this.realOppositeComponentWR.get();
+    Component vetoedComponent = fe.getComponent();
+    if (newFocusedWindow != null && restoreFocus(newFocusedWindow, vetoedComponent, false)) {
+    } else if (realOppositeComponent != null && doRestoreFocus(realOppositeComponent, vetoedComponent, false)) {
+    } else if (fe.getOppositeComponent() != null && doRestoreFocus(fe.getOppositeComponent(), vetoedComponent, false)) {
+    } else {
+        clearGlobalFocusOwnerPriv();
+    }
+}

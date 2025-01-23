@@ -1,0 +1,11 @@
+/**
+ * Tells whether this stream is ready to be read.
+ *
+ * @exception  IOException  If an I/O error occurs
+ */
+public boolean ready() throws IOException {
+    synchronized (lock) {
+        ensureOpen();
+        return (pos < buf.length) || super.ready();
+    }
+}

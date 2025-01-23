@@ -1,0 +1,18 @@
+/**
+ * Returns the minimum normalized color component value for the
+ * specified component.  The default implementation in this abstract
+ * class returns 0.0 for all components.  Subclasses should override
+ * this method if necessary.
+ *
+ * @param component the component index
+ * @return the minimum normalized component value
+ * @throws IllegalArgumentException if component is less than 0 or
+ *         greater than numComponents - 1
+ * @since 1.4
+ */
+public float getMinValue(int component) {
+    if ((component < 0) || (component > numComponents - 1)) {
+        throw new IllegalArgumentException("Component index out of range: " + component);
+    }
+    return 0.0f;
+}

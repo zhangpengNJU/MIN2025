@@ -1,0 +1,12 @@
+/**
+ * Records a new {@code long} value into the summary information.
+ *
+ * @param value the input value
+ */
+@Override
+public void accept(long value) {
+    ++count;
+    sum += value;
+    min = Math.min(min, value);
+    max = Math.max(max, value);
+}

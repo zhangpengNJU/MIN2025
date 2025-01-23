@@ -1,0 +1,12 @@
+/**
+ * Close the <tt>Handler</tt> and free all associated resources.
+ * This will also close the target <tt>Handler</tt>.
+ *
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have <tt>LoggingPermission("control")</tt>.
+ */
+@Override
+public void close() throws SecurityException {
+    target.close();
+    setLevel(Level.OFF);
+}

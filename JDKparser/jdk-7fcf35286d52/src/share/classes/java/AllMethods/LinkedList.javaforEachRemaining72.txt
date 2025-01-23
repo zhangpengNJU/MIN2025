@@ -1,0 +1,17 @@
+public void forEachRemaining(Consumer<? super E> action) {
+    Node<E> p;
+    int n;
+    if (action == null)
+        throw new NullPointerException();
+    if ((n = getEst()) > 0 && (p = current) != null) {
+        current = null;
+        est = 0;
+        do {
+            E e = p.item;
+            p = p.next;
+            action.accept(e);
+        } while (p != null && --n > 0);
+    }
+    if (list.modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+}

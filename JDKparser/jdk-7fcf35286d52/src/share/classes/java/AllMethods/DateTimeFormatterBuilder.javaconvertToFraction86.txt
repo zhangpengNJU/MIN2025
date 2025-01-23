@@ -1,0 +1,26 @@
+/**
+ * Converts a value for this field to a fraction between 0 and 1.
+ * <p>
+ * The fractional value is between 0 (inclusive) and 1 (exclusive).
+ * It can only be returned if the {@link java.time.temporal.TemporalField#range() value range} is fixed.
+ * The fraction is obtained by calculation from the field range using 9 decimal
+ * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
+ * The calculation is inaccurate if the values do not run continuously from smallest to largest.
+ * <p>
+ * For example, the second-of-minute value of 15 would be returned as 0.25,
+ * assuming the standard definition of 60 seconds in a minute.
+ *
+ * @param value  the value to convert, must be valid for this rule
+ * @return the value as a fraction within the range, from 0 to 1, not null
+ * @throws DateTimeException if the value cannot be converted to a fraction
+ */
+private BigDecimal convertToFraction(long value) {
+    ValueRange range = field.range();
+    range.checkValidValue(value, field);
+    BigDecimal minBD = BigDecimal.valueOf(range.getMinimum());
+    BigDecimal rangeBD = BigDecimal.valueOf(range.getMaximum()).subtract(minBD).add(BigDecimal.ONE);
+    BigDecimal valueBD = BigDecimal.valueOf(value).subtract(minBD);
+    BigDecimal fraction = valueBD.divide(rangeBD, 9, RoundingMode.FLOOR);
+    // stripTrailingZeros bug
+    return fraction.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : fraction.stripTrailingZeros();
+}

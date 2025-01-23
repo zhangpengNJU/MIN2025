@@ -1,0 +1,172 @@
+/**
+ * Returns a data element array representation of a pixel in this
+ * <code>ColorModel</code>, given an integer pixel representation in the
+ * default RGB color model.
+ * This array can then be passed to the <code>setDataElements</code>
+ * method of a <code>WritableRaster</code> object.  If the pixel variable
+ * is <code>null</code>, a new array is allocated.  If <code>pixel</code>
+ * is not <code>null</code>, it must be a primitive array of type
+ * <code>transferType</code>; otherwise, a
+ * <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is
+ * thrown if <code>pixel</code> is not large enough to hold a pixel
+ * value for this <code>ColorModel</code>.  The pixel array is returned.
+ * Since <code>DirectColorModel</code> can be subclassed, subclasses
+ * inherit the implementation of this method and if they don't
+ * override it then they throw an exception if they use an unsupported
+ * <code>transferType</code>.
+ *
+ * @param rgb the integer pixel representation in the default RGB
+ *            color model
+ * @param pixel the specified pixel
+ * @return an array representation of the specified pixel in this
+ *         <code>ColorModel</code>
+ * @exception ClassCastException if <code>pixel</code>
+ *  is not a primitive array of type <code>transferType</code>
+ * @exception ArrayIndexOutOfBoundsException if
+ *  <code>pixel</code> is not large enough to hold a pixel value
+ *  for this <code>ColorModel</code>
+ * @exception UnsupportedOperationException if this
+ *  <code>transferType</code> is not supported by this
+ *  <code>ColorModel</code>
+ * @see WritableRaster#setDataElements
+ * @see SampleModel#setDataElements
+ */
+public Object getDataElements(int rgb, Object pixel) {
+    // REMIND: maybe more efficient not to use int array for
+    // DataBuffer.TYPE_USHORT and DataBuffer.TYPE_INT
+    int[] intpixel = null;
+    if (transferType == DataBuffer.TYPE_INT && pixel != null) {
+        intpixel = (int[]) pixel;
+        intpixel[0] = 0;
+    } else {
+        intpixel = new int[1];
+    }
+    ColorModel defaultCM = ColorModel.getRGBdefault();
+    if (this == defaultCM || equals(defaultCM)) {
+        intpixel[0] = rgb;
+        return intpixel;
+    }
+    int red, grn, blu, alp;
+    red = (rgb >> 16) & 0xff;
+    grn = (rgb >> 8) & 0xff;
+    blu = rgb & 0xff;
+    if (is_sRGB || is_LinearRGB) {
+        int precision;
+        float factor;
+        if (is_LinearRGB) {
+            if (lRGBprecision == 8) {
+                red = fromsRGB8LUT8[red] & 0xff;
+                grn = fromsRGB8LUT8[grn] & 0xff;
+                blu = fromsRGB8LUT8[blu] & 0xff;
+                precision = 8;
+                factor = 1.0f / 255.0f;
+            } else {
+                red = fromsRGB8LUT16[red] & 0xffff;
+                grn = fromsRGB8LUT16[grn] & 0xffff;
+                blu = fromsRGB8LUT16[blu] & 0xffff;
+                precision = 16;
+                factor = 1.0f / 65535.0f;
+            }
+        } else {
+            precision = 8;
+            factor = 1.0f / 255.0f;
+        }
+        if (supportsAlpha) {
+            alp = (rgb >> 24) & 0xff;
+            if (isAlphaPremultiplied) {
+                factor *= (alp * (1.0f / 255.0f));
+                // force component calculations below
+                precision = -1;
+            }
+            if (nBits[3] != 8) {
+                alp = (int) ((alp * (1.0f / 255.0f) * ((1 << nBits[3]) - 1)) + 0.5f);
+                if (alp > ((1 << nBits[3]) - 1)) {
+                    // fix 4412670 - see comment below
+                    alp = (1 << nBits[3]) - 1;
+                }
+            }
+            intpixel[0] = alp << maskOffsets[3];
+        }
+        if (nBits[0] != precision) {
+            red = (int) ((red * factor * ((1 << nBits[0]) - 1)) + 0.5f);
+        }
+        if (nBits[1] != precision) {
+            grn = (int) ((grn * factor * ((1 << nBits[1]) - 1)) + 0.5f);
+        }
+        if (nBits[2] != precision) {
+            blu = (int) ((blu * factor * ((1 << nBits[2]) - 1)) + 0.5f);
+        }
+    } else {
+        // Need to convert the color
+        float[] norm = new float[3];
+        float factor = 1.0f / 255.0f;
+        norm[0] = red * factor;
+        norm[1] = grn * factor;
+        norm[2] = blu * factor;
+        norm = colorSpace.fromRGB(norm);
+        if (supportsAlpha) {
+            alp = (rgb >> 24) & 0xff;
+            if (isAlphaPremultiplied) {
+                factor *= alp;
+                for (int i = 0; i < 3; i++) {
+                    norm[i] *= factor;
+                }
+            }
+            if (nBits[3] != 8) {
+                alp = (int) ((alp * (1.0f / 255.0f) * ((1 << nBits[3]) - 1)) + 0.5f);
+                if (alp > ((1 << nBits[3]) - 1)) {
+                    // fix 4412670 - see comment below
+                    alp = (1 << nBits[3]) - 1;
+                }
+            }
+            intpixel[0] = alp << maskOffsets[3];
+        }
+        red = (int) ((norm[0] * ((1 << nBits[0]) - 1)) + 0.5f);
+        grn = (int) ((norm[1] * ((1 << nBits[1]) - 1)) + 0.5f);
+        blu = (int) ((norm[2] * ((1 << nBits[2]) - 1)) + 0.5f);
+    }
+    if (maxBits > 23) {
+        // fix 4412670 - for components of 24 or more bits
+        // some calculations done above with float precision
+        // may lose enough precision that the integer result
+        // overflows nBits, so we need to clamp.
+        if (red > ((1 << nBits[0]) - 1)) {
+            red = (1 << nBits[0]) - 1;
+        }
+        if (grn > ((1 << nBits[1]) - 1)) {
+            grn = (1 << nBits[1]) - 1;
+        }
+        if (blu > ((1 << nBits[2]) - 1)) {
+            blu = (1 << nBits[2]) - 1;
+        }
+    }
+    intpixel[0] |= (red << maskOffsets[0]) | (grn << maskOffsets[1]) | (blu << maskOffsets[2]);
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            {
+                byte[] bdata;
+                if (pixel == null) {
+                    bdata = new byte[1];
+                } else {
+                    bdata = (byte[]) pixel;
+                }
+                bdata[0] = (byte) (0xff & intpixel[0]);
+                return bdata;
+            }
+        case DataBuffer.TYPE_USHORT:
+            {
+                short[] sdata;
+                if (pixel == null) {
+                    sdata = new short[1];
+                } else {
+                    sdata = (short[]) pixel;
+                }
+                sdata[0] = (short) (intpixel[0] & 0xffff);
+                return sdata;
+            }
+        case DataBuffer.TYPE_INT:
+            return intpixel;
+    }
+    throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+}

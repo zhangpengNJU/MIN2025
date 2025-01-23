@@ -1,0 +1,12 @@
+final void removeAscending() {
+    if (lastReturned == null)
+        throw new IllegalStateException();
+    if (m.modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    // deleted entries are replaced by their successors
+    if (lastReturned.left != null && lastReturned.right != null)
+        next = lastReturned;
+    m.deleteEntry(lastReturned);
+    lastReturned = null;
+    expectedModCount = m.modCount;
+}

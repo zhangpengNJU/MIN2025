@@ -1,0 +1,7 @@
+private static Constructor<?> getConstructor(Class<?> c, Class<?>... types) {
+    try {
+        return (c == null) ? null : c.getDeclaredConstructor(types);
+    } catch (NoSuchMethodException x) {
+        throw new AssertionError(x);
+    }
+}

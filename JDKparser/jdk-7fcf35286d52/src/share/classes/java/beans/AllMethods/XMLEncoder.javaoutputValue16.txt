@@ -1,0 +1,55 @@
+private void outputValue(Object value, Object outer, boolean isArgument) {
+    if (value == null) {
+        writeln("<null/>");
+        return;
+    }
+    if (value instanceof Class) {
+        writeln("<class>" + ((Class) value).getName() + "</class>");
+        return;
+    }
+    ValueData d = getValueData(value);
+    if (d.exp != null) {
+        Object target = d.exp.getTarget();
+        String methodName = d.exp.getMethodName();
+        if (target == null || methodName == null) {
+            throw new NullPointerException((target == null ? "target" : "methodName") + " should not be null");
+        }
+        if (isArgument && target instanceof Field && methodName.equals("get")) {
+            Field f = (Field) target;
+            if (Modifier.isStatic(f.getModifiers())) {
+                writeln("<object class=" + quote(f.getDeclaringClass().getName()) + " field=" + quote(f.getName()) + "/>");
+                return;
+            }
+        }
+        Class<?> primitiveType = primitiveTypeFor(value.getClass());
+        if (primitiveType != null && target == value.getClass() && methodName.equals("new")) {
+            String primitiveTypeName = primitiveType.getName();
+            // Make sure that character types are quoted correctly.
+            if (primitiveType == Character.TYPE) {
+                char code = ((Character) value).charValue();
+                if (!isValidCharCode(code)) {
+                    writeln(createString(code));
+                    return;
+                }
+                value = quoteCharCode(code);
+                if (value == null) {
+                    value = Character.valueOf(code);
+                }
+            }
+            writeln("<" + primitiveTypeName + ">" + value + "</" + primitiveTypeName + ">");
+            return;
+        }
+    } else if (value instanceof String) {
+        writeln(createString((String) value));
+        return;
+    }
+    if (d.name != null) {
+        if (isArgument) {
+            writeln("<object idref=" + quote(d.name) + "/>");
+        } else {
+            outputXML("void", " idref=" + quote(d.name), value);
+        }
+    } else if (d.exp != null) {
+        outputStatement(d.exp, outer, isArgument);
+    }
+}

@@ -1,0 +1,18 @@
+/**
+ * Returns <code>true</code> if the two layouts are equal.
+ * Two layouts are equal if they contain equal glyphvectors in the same order.
+ * @param rhs the <code>TextLayout</code> to compare to this
+ *       <code>TextLayout</code>
+ * @return <code>true</code> if the specified <code>TextLayout</code>
+ *      equals this <code>TextLayout</code>.
+ */
+public boolean equals(TextLayout rhs) {
+    if (rhs == null) {
+        return false;
+    }
+    if (rhs == this) {
+        return true;
+    }
+    ensureCache();
+    return textLine.equals(rhs.textLine);
+}

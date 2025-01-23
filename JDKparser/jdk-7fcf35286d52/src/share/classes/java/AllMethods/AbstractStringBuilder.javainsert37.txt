@@ -1,0 +1,32 @@
+/**
+ * Inserts the string representation of a subarray of the {@code str}
+ * array argument into this sequence. The subarray begins at the
+ * specified {@code offset} and extends {@code len} {@code char}s.
+ * The characters of the subarray are inserted into this sequence at
+ * the position indicated by {@code index}. The length of this
+ * sequence increases by {@code len} {@code char}s.
+ *
+ * @param      index    position at which to insert subarray.
+ * @param      str       A {@code char} array.
+ * @param      offset   the index of the first {@code char} in subarray to
+ *             be inserted.
+ * @param      len      the number of {@code char}s in the subarray to
+ *             be inserted.
+ * @return     This object
+ * @throws     StringIndexOutOfBoundsException  if {@code index}
+ *             is negative or greater than {@code length()}, or
+ *             {@code offset} or {@code len} are negative, or
+ *             {@code (offset+len)} is greater than
+ *             {@code str.length}.
+ */
+public AbstractStringBuilder insert(int index, char[] str, int offset, int len) {
+    if ((index < 0) || (index > length()))
+        throw new StringIndexOutOfBoundsException(index);
+    if ((offset < 0) || (len < 0) || (offset > str.length - len))
+        throw new StringIndexOutOfBoundsException("offset " + offset + ", len " + len + ", str.length " + str.length);
+    ensureCapacityInternal(count + len);
+    System.arraycopy(value, index, value, index + len, count - index);
+    System.arraycopy(str, offset, value, index, len);
+    count += len;
+    return this;
+}

@@ -1,0 +1,12 @@
+/**
+ * Slow tail of ClassValue.get to retry at nearby locations in the cache,
+ * or take a slow lock and check the hash table.
+ * Called only if the first probe was empty or a collision.
+ * This is a separate method, so compilers can process it independently.
+ */
+private T getFromBackup(Entry<?>[] cache, Class<?> type) {
+    Entry<T> e = probeBackupLocations(cache, this);
+    if (e != null)
+        return e.value();
+    return getFromHashMap(type);
+}

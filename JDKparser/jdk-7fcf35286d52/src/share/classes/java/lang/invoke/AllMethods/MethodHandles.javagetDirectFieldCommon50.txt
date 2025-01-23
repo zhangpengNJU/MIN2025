@@ -1,0 +1,14 @@
+/**
+ * Common code for all fields; do not call directly except from immediately above.
+ */
+private MethodHandle getDirectFieldCommon(byte refKind, Class<?> refc, MemberName field, boolean checkSecurity) throws IllegalAccessException {
+    checkField(refKind, refc, field);
+    // Optionally check with the security manager; this isn't needed for unreflect* calls.
+    if (checkSecurity)
+        checkSecurityManager(refc, field);
+    DirectMethodHandle dmh = DirectMethodHandle.make(refc, field);
+    boolean doRestrict = (MethodHandleNatives.refKindHasReceiver(refKind) && restrictProtectedReceiver(field));
+    if (doRestrict)
+        return restrictReceiver(field, dmh, lookupClass());
+    return dmh;
+}

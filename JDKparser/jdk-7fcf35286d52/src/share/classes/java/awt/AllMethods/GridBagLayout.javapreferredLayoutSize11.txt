@@ -1,0 +1,15 @@
+/**
+ * Determines the preferred size of the <code>parent</code>
+ * container using this grid bag layout.
+ * <p>
+ * Most applications do not call this method directly.
+ *
+ * @param     parent   the container in which to do the layout
+ * @see       java.awt.Container#getPreferredSize
+ * @return the preferred size of the <code>parent</code>
+ *  container
+ */
+public Dimension preferredLayoutSize(Container parent) {
+    GridBagLayoutInfo info = getLayoutInfo(parent, PREFERREDSIZE);
+    return getMinSize(parent, info);
+}

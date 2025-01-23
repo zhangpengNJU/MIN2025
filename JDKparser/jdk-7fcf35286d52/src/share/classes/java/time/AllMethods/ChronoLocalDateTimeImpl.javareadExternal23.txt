@@ -1,0 +1,5 @@
+static ChronoLocalDateTime<?> readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    ChronoLocalDate date = (ChronoLocalDate) in.readObject();
+    LocalTime time = (LocalTime) in.readObject();
+    return date.atTime(time);
+}

@@ -1,0 +1,7 @@
+/**
+ * Long division
+ */
+private BigInteger remainderKnuth(BigInteger val) {
+    MutableBigInteger q = new MutableBigInteger(), a = new MutableBigInteger(this.mag), b = new MutableBigInteger(val.mag);
+    return a.divideKnuth(b, q).toBigInteger(this.signum);
+}

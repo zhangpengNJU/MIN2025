@@ -1,0 +1,8 @@
+/* Define one-century window into which to disambiguate dates using
+     * two-digit years.
+     */
+private void parseAmbiguousDatesAsAfter(Date startDate) {
+    defaultCenturyStart = startDate;
+    calendar.setTime(startDate);
+    defaultCenturyStartYear = calendar.get(Calendar.YEAR);
+}

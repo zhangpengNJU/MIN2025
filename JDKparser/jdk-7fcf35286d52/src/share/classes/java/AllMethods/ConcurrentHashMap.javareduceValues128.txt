@@ -1,0 +1,15 @@
+/**
+ * Returns the result of accumulating all values using the
+ * given reducer to combine values, or null if none.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param reducer a commutative associative combining function
+ * @return the result of accumulating all values
+ * @since 1.8
+ */
+public V reduceValues(long parallelismThreshold, BiFunction<? super V, ? super V, ? extends V> reducer) {
+    if (reducer == null)
+        throw new NullPointerException();
+    return new ReduceValuesTask<K, V>(null, batchFor(parallelismThreshold), 0, 0, table, null, reducer).invoke();
+}

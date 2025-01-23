@@ -1,0 +1,18 @@
+/**
+ * Returns the color/alpha components of the pixel in the default
+ * RGB color model format.  A color conversion is done if necessary.
+ * The pixel value is specified as an int.
+ * An <code>IllegalArgumentException</code> thrown if pixel values
+ * for this <code>ColorModel</code> are not conveniently representable
+ * as a single int.  The returned value is in a non
+ * pre-multiplied format. For example, if the alpha is premultiplied,
+ * this method divides it out of the color components.  If the alpha
+ * value is 0, the color values are 0.
+ * @param pixel the specified pixel
+ * @return the RGB value of the color/alpha components of the
+ *          specified pixel.
+ * @see ColorModel#getRGBdefault
+ */
+public int getRGB(int pixel) {
+    return (getAlpha(pixel) << 24) | (getRed(pixel) << 16) | (getGreen(pixel) << 8) | (getBlue(pixel) << 0);
+}

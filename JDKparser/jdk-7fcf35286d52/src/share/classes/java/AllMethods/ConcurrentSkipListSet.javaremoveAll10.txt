@@ -1,0 +1,20 @@
+/**
+ * Removes from this set all of its elements that are contained in
+ * the specified collection.  If the specified collection is also
+ * a set, this operation effectively modifies this set so that its
+ * value is the <i>asymmetric set difference</i> of the two sets.
+ *
+ * @param  c collection containing elements to be removed from this set
+ * @return {@code true} if this set changed as a result of the call
+ * @throws ClassCastException if the types of one or more elements in this
+ *         set are incompatible with the specified collection
+ * @throws NullPointerException if the specified collection or any
+ *         of its elements are null
+ */
+public boolean removeAll(Collection<?> c) {
+    // Override AbstractSet version to avoid unnecessary call to size()
+    boolean modified = false;
+    for (Object e : c) if (remove(e))
+        modified = true;
+    return modified;
+}

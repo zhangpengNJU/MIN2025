@@ -1,0 +1,67 @@
+/**
+ * Copies regular expression to an int array and invokes the parsing
+ * of the expression which will create the object tree.
+ */
+private void compile() {
+    // Handle canonical equivalences
+    if (has(CANON_EQ) && !has(LITERAL)) {
+        normalize();
+    } else {
+        normalizedPattern = pattern;
+    }
+    patternLength = normalizedPattern.length();
+    // Copy pattern to int array for convenience
+    // Use double zero to terminate pattern
+    temp = new int[patternLength + 2];
+    hasSupplementary = false;
+    int c, count = 0;
+    // Convert all chars into code points
+    for (int x = 0; x < patternLength; x += Character.charCount(c)) {
+        c = normalizedPattern.codePointAt(x);
+        if (isSupplementary(c)) {
+            hasSupplementary = true;
+        }
+        temp[count++] = c;
+    }
+    // patternLength now in code points
+    patternLength = count;
+    if (!has(LITERAL))
+        RemoveQEQuoting();
+    // Allocate all temporary objects here.
+    buffer = new int[32];
+    groupNodes = new GroupHead[10];
+    namedGroups = null;
+    if (has(LITERAL)) {
+        // Literal pattern handling
+        matchRoot = newSlice(temp, patternLength, hasSupplementary);
+        matchRoot.next = lastAccept;
+    } else {
+        // Start recursive descent parsing
+        matchRoot = expr(lastAccept);
+        // Check extra pattern characters
+        if (patternLength != cursor) {
+            if (peek() == ')') {
+                throw error("Unmatched closing ')'");
+            } else {
+                throw error("Unexpected internal error");
+            }
+        }
+    }
+    // Peephole optimization
+    if (matchRoot instanceof Slice) {
+        root = BnM.optimize(matchRoot);
+        if (root == matchRoot) {
+            root = hasSupplementary ? new StartS(matchRoot) : new Start(matchRoot);
+        }
+    } else if (matchRoot instanceof Begin || matchRoot instanceof First) {
+        root = matchRoot;
+    } else {
+        root = hasSupplementary ? new StartS(matchRoot) : new Start(matchRoot);
+    }
+    // Release temporary storage
+    temp = null;
+    buffer = null;
+    groupNodes = null;
+    patternLength = 0;
+    compiled = true;
+}

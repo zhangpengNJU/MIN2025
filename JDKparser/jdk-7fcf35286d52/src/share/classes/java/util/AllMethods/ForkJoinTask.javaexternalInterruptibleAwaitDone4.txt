@@ -1,0 +1,21 @@
+/**
+ * Blocks a non-worker-thread until completion or interruption.
+ */
+private int externalInterruptibleAwaitDone() throws InterruptedException {
+    int s;
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    if ((s = status) >= 0 && (s = ((this instanceof CountedCompleter) ? ForkJoinPool.common.externalHelpComplete((CountedCompleter<?>) this, 0) : ForkJoinPool.common.tryExternalUnpush(this) ? doExec() : 0)) >= 0) {
+        while ((s = status) >= 0) {
+            if (U.compareAndSwapInt(this, STATUS, s, s | SIGNAL)) {
+                synchronized (this) {
+                    if (status >= 0)
+                        wait(0L);
+                    else
+                        notifyAll();
+                }
+            }
+        }
+    }
+    return s;
+}

@@ -1,0 +1,10 @@
+// / Helper methods, all package-private.
+MemberName resolveOrFail(byte refKind, Class<?> refc, String name, Class<?> type) throws NoSuchFieldException, IllegalAccessException {
+    // do this before attempting to resolve
+    checkSymbolicClass(refc);
+    // NPE
+    name.getClass();
+    // NPE
+    type.getClass();
+    return IMPL_NAMES.resolveOrFail(refKind, new MemberName(refc, name, type, refKind), lookupClassOrNull(), NoSuchFieldException.class);
+}

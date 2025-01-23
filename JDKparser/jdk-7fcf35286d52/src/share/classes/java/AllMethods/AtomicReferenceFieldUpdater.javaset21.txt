@@ -1,0 +1,5 @@
+public final void set(T obj, V newValue) {
+    accessCheck(obj);
+    valueCheck(newValue);
+    U.putObjectVolatile(obj, offset, newValue);
+}

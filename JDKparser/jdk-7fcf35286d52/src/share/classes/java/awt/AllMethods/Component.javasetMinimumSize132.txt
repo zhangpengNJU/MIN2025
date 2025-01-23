@@ -1,0 +1,25 @@
+/**
+ * Sets the minimum size of this component to a constant
+ * value.  Subsequent calls to <code>getMinimumSize</code> will always
+ * return this value.  Setting the minimum size to <code>null</code>
+ * restores the default behavior.
+ *
+ * @param minimumSize the new minimum size of this component
+ * @see #getMinimumSize
+ * @see #isMinimumSizeSet
+ * @since 1.5
+ */
+public void setMinimumSize(Dimension minimumSize) {
+    Dimension old;
+    // If the minimum size was set, use it as the old value, otherwise
+    // use null to indicate we didn't previously have a set minimum
+    // size.
+    if (minSizeSet) {
+        old = this.minSize;
+    } else {
+        old = null;
+    }
+    this.minSize = minimumSize;
+    minSizeSet = (minimumSize != null);
+    firePropertyChange("minimumSize", old, minimumSize);
+}

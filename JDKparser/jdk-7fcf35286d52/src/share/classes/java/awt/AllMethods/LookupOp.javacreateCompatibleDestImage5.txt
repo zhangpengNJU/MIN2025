@@ -1,0 +1,65 @@
+/**
+ * Creates a zeroed destination image with the correct size and number of
+ * bands.  If destCM is <code>null</code>, an appropriate
+ * <code>ColorModel</code> will be used.
+ * @param src       Source image for the filter operation.
+ * @param destCM    the destination's <code>ColorModel</code>, which
+ *                  can be <code>null</code>.
+ * @return a filtered destination <code>BufferedImage</code>.
+ */
+public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
+    BufferedImage image;
+    int w = src.getWidth();
+    int h = src.getHeight();
+    int transferType = DataBuffer.TYPE_BYTE;
+    if (destCM == null) {
+        ColorModel cm = src.getColorModel();
+        Raster raster = src.getRaster();
+        if (cm instanceof ComponentColorModel) {
+            DataBuffer db = raster.getDataBuffer();
+            boolean hasAlpha = cm.hasAlpha();
+            boolean isPre = cm.isAlphaPremultiplied();
+            int trans = cm.getTransparency();
+            int[] nbits = null;
+            if (ltable instanceof ByteLookupTable) {
+                if (db.getDataType() == db.TYPE_USHORT) {
+                    // Dst raster should be of type byte
+                    if (hasAlpha) {
+                        nbits = new int[2];
+                        if (trans == cm.BITMASK) {
+                            nbits[1] = 1;
+                        } else {
+                            nbits[1] = 8;
+                        }
+                    } else {
+                        nbits = new int[1];
+                    }
+                    nbits[0] = 8;
+                }
+            // For byte, no need to change the cm
+            } else if (ltable instanceof ShortLookupTable) {
+                transferType = DataBuffer.TYPE_USHORT;
+                if (db.getDataType() == db.TYPE_BYTE) {
+                    if (hasAlpha) {
+                        nbits = new int[2];
+                        if (trans == cm.BITMASK) {
+                            nbits[1] = 1;
+                        } else {
+                            nbits[1] = 16;
+                        }
+                    } else {
+                        nbits = new int[1];
+                    }
+                    nbits[0] = 16;
+                }
+            }
+            if (nbits != null) {
+                cm = new ComponentColorModel(cm.getColorSpace(), nbits, hasAlpha, isPre, trans, transferType);
+            }
+        }
+        image = new BufferedImage(cm, cm.createCompatibleWritableRaster(w, h), cm.isAlphaPremultiplied(), null);
+    } else {
+        image = new BufferedImage(destCM, destCM.createCompatibleWritableRaster(w, h), destCM.isAlphaPremultiplied(), null);
+    }
+    return image;
+}

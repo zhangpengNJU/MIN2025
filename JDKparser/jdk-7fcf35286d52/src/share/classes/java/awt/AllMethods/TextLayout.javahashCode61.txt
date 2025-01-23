@@ -1,0 +1,11 @@
+/**
+ * Returns the hash code of this <code>TextLayout</code>.
+ * @return the hash code of this <code>TextLayout</code>.
+ */
+public int hashCode() {
+    if (hashCodeCache == 0) {
+        ensureCache();
+        hashCodeCache = textLine.hashCode();
+    }
+    return hashCodeCache;
+}

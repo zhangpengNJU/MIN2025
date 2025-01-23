@@ -1,0 +1,35 @@
+/**
+ * Creates a copy of this <code>TextLayout</code> justified to the
+ * specified width.
+ * <p>
+ * If this <code>TextLayout</code> has already been justified, an
+ * exception is thrown.  If this <code>TextLayout</code> object's
+ * justification ratio is zero, a <code>TextLayout</code> identical
+ * to this <code>TextLayout</code> is returned.
+ * @param justificationWidth the width to use when justifying the line.
+ * For best results, it should not be too different from the current
+ * advance of the line.
+ * @return a <code>TextLayout</code> justified to the specified width.
+ * @exception Error if this layout has already been justified, an Error is
+ * thrown.
+ */
+public TextLayout getJustifiedLayout(float justificationWidth) {
+    if (justificationWidth <= 0) {
+        throw new IllegalArgumentException("justificationWidth <= 0 passed to TextLayout.getJustifiedLayout()");
+    }
+    if (justifyRatio == ALREADY_JUSTIFIED) {
+        throw new Error("Can't justify again.");
+    }
+    // make sure textLine is not null
+    ensureCache();
+    // default justification range to exclude trailing logical whitespace
+    int limit = characterCount;
+    while (limit > 0 && textLine.isCharWhitespace(limit - 1)) {
+        --limit;
+    }
+    TextLine newLine = textLine.getJustifiedLine(justificationWidth, justifyRatio, 0, limit);
+    if (newLine != null) {
+        return new TextLayout(newLine, baseline, baselineOffsets, ALREADY_JUSTIFIED);
+    }
+    return this;
+}

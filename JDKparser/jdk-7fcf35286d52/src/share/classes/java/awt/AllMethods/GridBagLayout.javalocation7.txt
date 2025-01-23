@@ -1,0 +1,57 @@
+/**
+ * Determines which cell in the layout grid contains the point
+ * specified by <code>(x,&nbsp;y)</code>. Each cell is identified
+ * by its column index (ranging from 0 to the number of columns
+ * minus 1) and its row index (ranging from 0 to the number of
+ * rows minus 1).
+ * <p>
+ * If the <code>(x,&nbsp;y)</code> point lies
+ * outside the grid, the following rules are used.
+ * The column index is returned as zero if <code>x</code> lies to the
+ * left of the layout for a left-to-right container or to the right of
+ * the layout for a right-to-left container.  The column index is returned
+ * as the number of columns if <code>x</code> lies
+ * to the right of the layout in a left-to-right container or to the left
+ * in a right-to-left container.
+ * The row index is returned as zero if <code>y</code> lies above the
+ * layout, and as the number of rows if <code>y</code> lies
+ * below the layout.  The orientation of a container is determined by its
+ * <code>ComponentOrientation</code> property.
+ * @param      x    the <i>x</i> coordinate of a point
+ * @param      y    the <i>y</i> coordinate of a point
+ * @return     an ordered pair of indexes that indicate which cell
+ *             in the layout grid contains the point
+ *             (<i>x</i>,&nbsp;<i>y</i>).
+ * @see        java.awt.ComponentOrientation
+ * @since      JDK1.1
+ */
+public Point location(int x, int y) {
+    Point loc = new Point(0, 0);
+    int i, d;
+    if (layoutInfo == null)
+        return loc;
+    d = layoutInfo.startx;
+    if (!rightToLeft) {
+        for (i = 0; i < layoutInfo.width; i++) {
+            d += layoutInfo.minWidth[i];
+            if (d > x)
+                break;
+        }
+    } else {
+        for (i = layoutInfo.width - 1; i >= 0; i--) {
+            if (d > x)
+                break;
+            d += layoutInfo.minWidth[i];
+        }
+        i++;
+    }
+    loc.x = i;
+    d = layoutInfo.starty;
+    for (i = 0; i < layoutInfo.height; i++) {
+        d += layoutInfo.minHeight[i];
+        if (d > y)
+            break;
+    }
+    loc.y = i;
+    return loc;
+}

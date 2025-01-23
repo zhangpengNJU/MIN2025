@@ -1,0 +1,18 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code WeekFields} appropriate for a locale.
+ * <p>
+ * This will look up appropriate values from the provider of localization data.
+ *
+ * @param locale  the locale to use, not null
+ * @return the week-definition, not null
+ */
+public static WeekFields of(Locale locale) {
+    Objects.requireNonNull(locale, "locale");
+    // elminate variants
+    locale = new Locale(locale.getLanguage(), locale.getCountry());
+    int calDow = CalendarDataUtility.retrieveFirstDayOfWeek(locale);
+    DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
+    int minDays = CalendarDataUtility.retrieveMinimalDaysInFirstWeek(locale);
+    return WeekFields.of(dow, minDays);
+}

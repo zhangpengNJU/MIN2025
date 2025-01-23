@@ -1,0 +1,11 @@
+/**
+ * Helper function for setState and CheckboxGroup.setSelectedCheckbox
+ * Should remain package-private.
+ */
+void setStateInternal(boolean state) {
+    this.state = state;
+    CheckboxPeer peer = (CheckboxPeer) this.peer;
+    if (peer != null) {
+        peer.setState(state);
+    }
+}

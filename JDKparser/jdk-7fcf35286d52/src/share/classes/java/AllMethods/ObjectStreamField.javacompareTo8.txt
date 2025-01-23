@@ -1,0 +1,15 @@
+/**
+ * Compare this field with another <code>ObjectStreamField</code>.  Return
+ * -1 if this is smaller, 0 if equal, 1 if greater.  Types that are
+ * primitives are "smaller" than object types.  If equal, the field names
+ * are compared.
+ */
+// REMIND: deprecate?
+public int compareTo(Object obj) {
+    ObjectStreamField other = (ObjectStreamField) obj;
+    boolean isPrim = isPrimitive();
+    if (isPrim != other.isPrimitive()) {
+        return isPrim ? -1 : 1;
+    }
+    return name.compareTo(other.name);
+}

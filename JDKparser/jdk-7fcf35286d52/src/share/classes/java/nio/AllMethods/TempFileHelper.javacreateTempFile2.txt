@@ -1,0 +1,7 @@
+/**
+ * Creates a temporary file in the given directory, or in in the
+ * temporary directory if dir is {@code null}.
+ */
+static Path createTempFile(Path dir, String prefix, String suffix, FileAttribute<?>[] attrs) throws IOException {
+    return create(dir, prefix, suffix, false, attrs);
+}

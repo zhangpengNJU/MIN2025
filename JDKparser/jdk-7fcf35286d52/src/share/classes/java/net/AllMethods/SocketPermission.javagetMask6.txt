@@ -1,0 +1,77 @@
+/**
+ * Convert an action string to an integer actions mask.
+ *
+ * @param action the action string
+ * @return the action mask
+ */
+private static int getMask(String action) {
+    if (action == null) {
+        throw new NullPointerException("action can't be null");
+    }
+    if (action.equals("")) {
+        throw new IllegalArgumentException("action can't be empty");
+    }
+    int mask = NONE;
+    // Use object identity comparison against known-interned strings for
+    // performance benefit (these values are used heavily within the JDK).
+    if (action == SecurityConstants.SOCKET_RESOLVE_ACTION) {
+        return RESOLVE;
+    } else if (action == SecurityConstants.SOCKET_CONNECT_ACTION) {
+        return CONNECT;
+    } else if (action == SecurityConstants.SOCKET_LISTEN_ACTION) {
+        return LISTEN;
+    } else if (action == SecurityConstants.SOCKET_ACCEPT_ACTION) {
+        return ACCEPT;
+    } else if (action == SecurityConstants.SOCKET_CONNECT_ACCEPT_ACTION) {
+        return CONNECT | ACCEPT;
+    }
+    char[] a = action.toCharArray();
+    int i = a.length - 1;
+    if (i < 0)
+        return mask;
+    while (i != -1) {
+        char c;
+        // skip whitespace
+        while ((i != -1) && ((c = a[i]) == ' ' || c == '\r' || c == '\n' || c == '\f' || c == '\t')) i--;
+        // check for the known strings
+        int matchlen;
+        if (i >= 6 && (a[i - 6] == 'c' || a[i - 6] == 'C') && (a[i - 5] == 'o' || a[i - 5] == 'O') && (a[i - 4] == 'n' || a[i - 4] == 'N') && (a[i - 3] == 'n' || a[i - 3] == 'N') && (a[i - 2] == 'e' || a[i - 2] == 'E') && (a[i - 1] == 'c' || a[i - 1] == 'C') && (a[i] == 't' || a[i] == 'T')) {
+            matchlen = 7;
+            mask |= CONNECT;
+        } else if (i >= 6 && (a[i - 6] == 'r' || a[i - 6] == 'R') && (a[i - 5] == 'e' || a[i - 5] == 'E') && (a[i - 4] == 's' || a[i - 4] == 'S') && (a[i - 3] == 'o' || a[i - 3] == 'O') && (a[i - 2] == 'l' || a[i - 2] == 'L') && (a[i - 1] == 'v' || a[i - 1] == 'V') && (a[i] == 'e' || a[i] == 'E')) {
+            matchlen = 7;
+            mask |= RESOLVE;
+        } else if (i >= 5 && (a[i - 5] == 'l' || a[i - 5] == 'L') && (a[i - 4] == 'i' || a[i - 4] == 'I') && (a[i - 3] == 's' || a[i - 3] == 'S') && (a[i - 2] == 't' || a[i - 2] == 'T') && (a[i - 1] == 'e' || a[i - 1] == 'E') && (a[i] == 'n' || a[i] == 'N')) {
+            matchlen = 6;
+            mask |= LISTEN;
+        } else if (i >= 5 && (a[i - 5] == 'a' || a[i - 5] == 'A') && (a[i - 4] == 'c' || a[i - 4] == 'C') && (a[i - 3] == 'c' || a[i - 3] == 'C') && (a[i - 2] == 'e' || a[i - 2] == 'E') && (a[i - 1] == 'p' || a[i - 1] == 'P') && (a[i] == 't' || a[i] == 'T')) {
+            matchlen = 6;
+            mask |= ACCEPT;
+        } else {
+            // parse error
+            throw new IllegalArgumentException("invalid permission: " + action);
+        }
+        // make sure we didn't just match the tail of a word
+        // like "ackbarfaccept".  Also, skip to the comma.
+        boolean seencomma = false;
+        while (i >= matchlen && !seencomma) {
+            switch(a[i - matchlen]) {
+                case ',':
+                    seencomma = true;
+                    break;
+                case ' ':
+                case '\r':
+                case '\n':
+                case '\f':
+                case '\t':
+                    break;
+                default:
+                    throw new IllegalArgumentException("invalid permission: " + action);
+            }
+            i--;
+        }
+        // point i at the location of the comma minus one (or -1).
+        i -= matchlen;
+    }
+    return mask;
+}

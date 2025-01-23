@@ -1,0 +1,11 @@
+/**
+ * Copied from java.util.Properties.
+ */
+private boolean continueLine(String line) {
+    int slashCount = 0;
+    int index = line.length() - 1;
+    while ((index >= 0) && (line.charAt(index--) == '\\')) {
+        slashCount++;
+    }
+    return (slashCount % 2 == 1);
+}

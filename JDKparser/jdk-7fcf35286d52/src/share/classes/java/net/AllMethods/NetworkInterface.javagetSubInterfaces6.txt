@@ -1,0 +1,32 @@
+/**
+ * Get an Enumeration with all the subinterfaces (also known as virtual
+ * interfaces) attached to this network interface.
+ * <p>
+ * For instance eth0:1 will be a subinterface to eth0.
+ *
+ * @return an Enumeration object with all of the subinterfaces
+ * of this network interface
+ * @since 1.6
+ */
+public Enumeration<NetworkInterface> getSubInterfaces() {
+    class subIFs implements Enumeration<NetworkInterface> {
+
+        private int i = 0;
+
+        subIFs() {
+        }
+
+        public NetworkInterface nextElement() {
+            if (i < childs.length) {
+                return childs[i++];
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
+
+        public boolean hasMoreElements() {
+            return (i < childs.length);
+        }
+    }
+    return new subIFs();
+}

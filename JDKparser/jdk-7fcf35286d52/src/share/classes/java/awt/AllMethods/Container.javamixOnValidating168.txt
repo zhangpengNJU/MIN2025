@@ -1,0 +1,18 @@
+@Override
+void mixOnValidating() {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this);
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        if (hasHeavyweightDescendants()) {
+            recursiveApplyCurrentShape();
+        }
+        if (isLightweight() && isNonOpaqueForMixing()) {
+            subtractAndApplyShapeBelowMe();
+        }
+        super.mixOnValidating();
+    }
+}

@@ -1,0 +1,11 @@
+/**
+ * This method returns the logical intersection of
+ * the target drop action and the set of drop actions supported by
+ * the drag source.
+ *
+ * @return the logical intersection of the target drop action and
+ *         the set of drop actions supported by the drag source.
+ */
+public int getDropAction() {
+    return targetActions & getDragSourceContext().getSourceActions();
+}

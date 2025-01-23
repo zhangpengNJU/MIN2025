@@ -1,0 +1,12 @@
+/**
+ * Returns <code>true</code> if <code>raster</code> is compatible
+ * with this <code>ColorModel</code> or <code>false</code> if it
+ * is not compatible with this <code>ColorModel</code>.
+ * @param raster the {@link Raster} object to test for compatibility
+ * @return <code>true</code> if <code>raster</code> is compatible
+ * with this <code>ColorModel</code>; <code>false</code> otherwise.
+ */
+public boolean isCompatibleRaster(Raster raster) {
+    int size = raster.getSampleModel().getSampleSize(0);
+    return ((raster.getTransferType() == transferType) && (raster.getNumBands() == 1) && ((1 << size) >= map_size));
+}

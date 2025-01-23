@@ -1,0 +1,38 @@
+/**
+ * Draws the outline of a circular or elliptical arc
+ * covering the specified rectangle.
+ * <p>
+ * The resulting arc begins at <code>startAngle</code> and extends
+ * for <code>arcAngle</code> degrees, using the current color.
+ * Angles are interpreted such that 0&nbsp;degrees
+ * is at the 3&nbsp;o'clock position.
+ * A positive value indicates a counter-clockwise rotation
+ * while a negative value indicates a clockwise rotation.
+ * <p>
+ * The center of the arc is the center of the rectangle whose origin
+ * is (<i>x</i>,&nbsp;<i>y</i>) and whose size is specified by the
+ * <code>width</code> and <code>height</code> arguments.
+ * <p>
+ * The resulting arc covers an area
+ * <code>width&nbsp;+&nbsp;1</code> pixels wide
+ * by <code>height&nbsp;+&nbsp;1</code> pixels tall.
+ * <p>
+ * The angles are specified relative to the non-square extents of
+ * the bounding rectangle such that 45 degrees always falls on the
+ * line from the center of the ellipse to the upper right corner of
+ * the bounding rectangle. As a result, if the bounding rectangle is
+ * noticeably longer in one axis than the other, the angles to the
+ * start and end of the arc segment will be skewed farther along the
+ * longer axis of the bounds.
+ * @param        x the <i>x</i> coordinate of the
+ *                    upper-left corner of the arc to be drawn.
+ * @param        y the <i>y</i>  coordinate of the
+ *                    upper-left corner of the arc to be drawn.
+ * @param        width the width of the arc to be drawn.
+ * @param        height the height of the arc to be drawn.
+ * @param        startAngle the beginning angle.
+ * @param        arcAngle the angular extent of the arc,
+ *                    relative to the start angle.
+ * @see         java.awt.Graphics#fillArc
+ */
+public abstract void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle);

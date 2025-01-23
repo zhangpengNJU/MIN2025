@@ -1,0 +1,17 @@
+/**
+ * Closes this selectable channel.
+ *
+ * <p> This method is invoked by the {@link java.nio.channels.Channel#close
+ * close} method in order to perform the actual work of closing the
+ * channel.  This method is only invoked if the channel has not yet been
+ * closed, and it is never invoked more than once.
+ *
+ * <p> An implementation of this method must arrange for any other thread
+ * that is blocked in an I/O operation upon this channel to return
+ * immediately, either by throwing an exception or by returning normally.
+ * </p>
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+protected abstract void implCloseSelectableChannel() throws IOException;

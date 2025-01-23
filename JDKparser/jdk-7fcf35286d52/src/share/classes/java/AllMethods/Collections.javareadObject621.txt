@@ -1,0 +1,4 @@
+private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    ois.defaultReadObject();
+    SharedSecrets.getJavaOISAccess().checkArray(ois, Object[].class, n);
+}

@@ -1,0 +1,8 @@
+CharProperty complement() {
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return !CharProperty.this.isSatisfiedBy(ch);
+        }
+    };
+}

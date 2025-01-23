@@ -1,0 +1,20 @@
+/**
+ * Retrieves and removes the head of this queue, or returns {@code null}
+ * if this queue has no elements with an expired delay.
+ *
+ * @return the head of this queue, or {@code null} if this
+ *         queue has no elements with an expired delay
+ */
+public E poll() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        E first = q.peek();
+        if (first == null || first.getDelay(NANOSECONDS) > 0)
+            return null;
+        else
+            return q.poll();
+    } finally {
+        lock.unlock();
+    }
+}

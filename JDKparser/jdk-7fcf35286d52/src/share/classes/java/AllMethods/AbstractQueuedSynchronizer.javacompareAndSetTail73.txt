@@ -1,0 +1,6 @@
+/**
+ * CAS tail field. Used only by enq.
+ */
+private final boolean compareAndSetTail(Node expect, Node update) {
+    return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
+}

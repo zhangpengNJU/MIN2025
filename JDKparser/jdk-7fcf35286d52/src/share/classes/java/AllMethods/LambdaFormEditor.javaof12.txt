@@ -1,0 +1,7 @@
+static Transform of(Kind k, int b1, int b2) {
+    byte b0 = (byte) k.ordinal();
+    if (inRange(b0 | b1 | b2))
+        return new Transform(packedBytes(b0, b1, b2));
+    else
+        return new Transform(fullBytes(b0, b1, b2));
+}

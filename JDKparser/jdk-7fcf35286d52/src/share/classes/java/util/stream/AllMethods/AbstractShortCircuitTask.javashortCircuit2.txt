@@ -1,0 +1,13 @@
+/**
+ * Declares that a globally valid result has been found.  If another task has
+ * not already found the answer, the result is installed in
+ * {@code sharedResult}.  The {@code compute()} method will check
+ * {@code sharedResult} before proceeding with computation, so this causes
+ * the computation to terminate early.
+ *
+ * @param result the result found
+ */
+protected void shortCircuit(R result) {
+    if (result != null)
+        sharedResult.compareAndSet(null, result);
+}

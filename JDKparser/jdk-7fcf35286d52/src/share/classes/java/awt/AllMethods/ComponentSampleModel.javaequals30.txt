@@ -1,0 +1,7 @@
+public boolean equals(Object o) {
+    if ((o == null) || !(o instanceof ComponentSampleModel)) {
+        return false;
+    }
+    ComponentSampleModel that = (ComponentSampleModel) o;
+    return this.width == that.width && this.height == that.height && this.numBands == that.numBands && this.dataType == that.dataType && Arrays.equals(this.bandOffsets, that.bandOffsets) && Arrays.equals(this.bankIndices, that.bankIndices) && this.numBands == that.numBands && this.numBanks == that.numBanks && this.scanlineStride == that.scanlineStride && this.pixelStride == that.pixelStride;
+}

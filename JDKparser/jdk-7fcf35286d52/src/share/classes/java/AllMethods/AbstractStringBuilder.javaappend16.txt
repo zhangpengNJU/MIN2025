@@ -1,0 +1,27 @@
+/**
+ * Appends the specified string to this character sequence.
+ * <p>
+ * The characters of the {@code String} argument are appended, in
+ * order, increasing the length of this sequence by the length of the
+ * argument. If {@code str} is {@code null}, then the four
+ * characters {@code "null"} are appended.
+ * <p>
+ * Let <i>n</i> be the length of this character sequence just prior to
+ * execution of the {@code append} method. Then the character at
+ * index <i>k</i> in the new character sequence is equal to the character
+ * at index <i>k</i> in the old character sequence, if <i>k</i> is less
+ * than <i>n</i>; otherwise, it is equal to the character at index
+ * <i>k-n</i> in the argument {@code str}.
+ *
+ * @param   str   a string.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(String str) {
+    if (str == null)
+        return appendNull();
+    int len = str.length();
+    ensureCapacityInternal(count + len);
+    str.getChars(0, len, value, count);
+    count += len;
+    return this;
+}

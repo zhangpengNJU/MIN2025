@@ -1,0 +1,11 @@
+private synchronized void setParams(Class<?>[] param) {
+    if (param == null) {
+        return;
+    }
+    paramNames = new String[param.length];
+    params = new ArrayList<>(param.length);
+    for (int i = 0; i < param.length; i++) {
+        paramNames[i] = param[i].getName();
+        params.add(new WeakReference<Class<?>>(param[i]));
+    }
+}

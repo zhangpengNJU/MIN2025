@@ -1,0 +1,55 @@
+/**
+ * Fires a property change event to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * Any listener can throw a {@code PropertyVetoException} to veto the update.
+ * If one of the listeners vetoes the update, this method passes
+ * a new "undo" {@code PropertyChangeEvent} that reverts to the old value
+ * to all listeners that already confirmed this update
+ * and throws the {@code PropertyVetoException} again.
+ * <p>
+ * No event is fired if the given event's old and new values are equal and non-null.
+ *
+ * @param event  the {@code PropertyChangeEvent} to be fired
+ * @throws PropertyVetoException if one of listeners vetoes the property update
+ */
+public void fireVetoableChange(PropertyChangeEvent event) throws PropertyVetoException {
+    Object oldValue = event.getOldValue();
+    Object newValue = event.getNewValue();
+    if (oldValue == null || newValue == null || !oldValue.equals(newValue)) {
+        String name = event.getPropertyName();
+        VetoableChangeListener[] common = this.map.get(null);
+        VetoableChangeListener[] named = (name != null) ? this.map.get(name) : null;
+        VetoableChangeListener[] listeners;
+        if (common == null) {
+            listeners = named;
+        } else if (named == null) {
+            listeners = common;
+        } else {
+            listeners = new VetoableChangeListener[common.length + named.length];
+            System.arraycopy(common, 0, listeners, 0, common.length);
+            System.arraycopy(named, 0, listeners, common.length, named.length);
+        }
+        if (listeners != null) {
+            int current = 0;
+            try {
+                while (current < listeners.length) {
+                    listeners[current].vetoableChange(event);
+                    current++;
+                }
+            } catch (PropertyVetoException veto) {
+                event = new PropertyChangeEvent(this.source, name, newValue, oldValue);
+                for (int i = 0; i < current; i++) {
+                    try {
+                        listeners[i].vetoableChange(event);
+                    } catch (PropertyVetoException exception) {
+                    // ignore exceptions that occur during rolling back
+                    }
+                }
+                // rethrow the veto exception
+                throw veto;
+            }
+        }
+    }
+}

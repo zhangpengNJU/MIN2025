@@ -1,0 +1,8 @@
+private static Method[] copyMethods(Method[] arg) {
+    Method[] out = new Method[arg.length];
+    ReflectionFactory fact = getReflectionFactory();
+    for (int i = 0; i < arg.length; i++) {
+        out[i] = fact.copyMethod(arg[i]);
+    }
+    return out;
+}

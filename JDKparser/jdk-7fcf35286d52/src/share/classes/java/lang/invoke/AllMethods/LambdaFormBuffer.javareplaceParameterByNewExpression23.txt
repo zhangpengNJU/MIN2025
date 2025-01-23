@@ -1,0 +1,10 @@
+/**
+ * Replace a parameter by a fresh expression.
+ */
+LambdaFormBuffer replaceParameterByNewExpression(int pos, Name binding) {
+    assert (!binding.isParam());
+    // else use replaceParameterByCopy
+    assert (lastIndexOf(binding) < 0);
+    replaceName(pos, binding);
+    return this;
+}

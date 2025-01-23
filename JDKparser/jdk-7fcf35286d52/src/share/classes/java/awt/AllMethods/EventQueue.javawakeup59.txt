@@ -1,0 +1,21 @@
+/*
+     * Called from PostEventQueue.postEvent to notify that a new event
+     * appeared. First it proceeds to the EventQueue on the top of the
+     * stack, then notifies the associated dispatch thread if it exists
+     * or starts a new one otherwise.
+     */
+private void wakeup(boolean isShutdown) {
+    pushPopLock.lock();
+    try {
+        if (nextQueue != null) {
+            // Forward call to the top of EventQueue stack.
+            nextQueue.wakeup(isShutdown);
+        } else if (dispatchThread != null) {
+            pushPopCond.signalAll();
+        } else if (!isShutdown) {
+            initDispatchThread();
+        }
+    } finally {
+        pushPopLock.unlock();
+    }
+}

@@ -1,0 +1,11 @@
+@Hidden
+static void maybeStopCounting(Object o1) {
+    CountingWrapper wrapper = (CountingWrapper) o1;
+    if (wrapper.countDown()) {
+        // Reached invocation threshold. Replace counting behavior with a non-counting one.
+        LambdaForm lform = wrapper.nonCountingFormProducer.apply(wrapper.target);
+        // speed up warmup by avoiding LF interpretation again after transition
+        lform.compileToBytecode();
+        wrapper.updateForm(lform);
+    }
+}

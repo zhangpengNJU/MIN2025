@@ -1,0 +1,23 @@
+/**
+ * {@inheritDoc}
+ *
+ * @throws ClassCastException if the specified key cannot be compared
+ *         with the keys currently in the map
+ * @throws NullPointerException if any of the arguments are null
+ */
+public boolean replace(K key, V oldValue, V newValue) {
+    if (key == null || oldValue == null || newValue == null)
+        throw new NullPointerException();
+    for (; ; ) {
+        Node<K, V> n;
+        Object v;
+        if ((n = findNode(key)) == null)
+            return false;
+        if ((v = n.value) != null) {
+            if (!oldValue.equals(v))
+                return false;
+            if (n.casValue(v, newValue))
+                return true;
+        }
+    }
+}

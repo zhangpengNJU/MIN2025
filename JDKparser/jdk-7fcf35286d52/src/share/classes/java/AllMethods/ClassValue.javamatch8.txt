@@ -1,0 +1,10 @@
+/**
+ * Check that e is non-null, matches this ClassValue, and is live.
+ */
+boolean match(Entry<?> e) {
+    // racing e.version : null (blank) => unique Version token => null (GC-ed version)
+    // non-racing this.version : v1 => v2 => ... (updates are read faithfully from volatile)
+    return (e != null && e.get() == this.version);
+// invariant:  No false positives on version match.  Null is OK for false negative.
+// invariant:  If version matches, then e.value is readable (final set in Entry.<init>)
+}

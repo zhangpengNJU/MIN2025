@@ -1,0 +1,19 @@
+/**
+ * Determines whether or not a given string is a legal token.
+ *
+ * @throws NullPointerException if <code>s</code> is null
+ */
+private boolean isValidToken(String s) {
+    int len = s.length();
+    if (len > 0) {
+        for (int i = 0; i < len; ++i) {
+            char c = s.charAt(i);
+            if (!isTokenChar(c)) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}

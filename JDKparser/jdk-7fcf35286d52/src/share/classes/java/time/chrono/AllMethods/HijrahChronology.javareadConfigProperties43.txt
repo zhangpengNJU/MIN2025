@@ -1,0 +1,27 @@
+/**
+ * Return the configuration properties from the resource.
+ * <p>
+ * The default location of the variant configuration resource is:
+ * <pre>
+ *   "$java.home/lib/" + resource-name
+ * </pre>
+ *
+ * @param resource the name of the calendar property resource
+ * @return a Properties containing the properties read from the resource.
+ * @throws Exception if access to the property resource fails
+ */
+private static Properties readConfigProperties(final String resource) throws Exception {
+    try {
+        return AccessController.doPrivileged((java.security.PrivilegedExceptionAction<Properties>) () -> {
+            String libDir = System.getProperty("java.home") + File.separator + "lib";
+            File file = new File(libDir, resource);
+            Properties props = new Properties();
+            try (InputStream is = new FileInputStream(file)) {
+                props.load(is);
+            }
+            return props;
+        });
+    } catch (PrivilegedActionException pax) {
+        throw pax.getException();
+    }
+}

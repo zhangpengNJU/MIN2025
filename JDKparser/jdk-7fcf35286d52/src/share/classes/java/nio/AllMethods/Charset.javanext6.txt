@@ -1,0 +1,7 @@
+public CharsetProvider next() {
+    if (!getNext())
+        throw new NoSuchElementException();
+    CharsetProvider n = next;
+    next = null;
+    return n;
+}

@@ -1,0 +1,17 @@
+/**
+ * Sets the filename filter for this file dialog window to the
+ * specified filter.
+ * Filename filters do not function in Sun's reference
+ * implementation for Microsoft Windows.
+ *
+ * @param   filter   the specified filter
+ * @see     java.io.FilenameFilter
+ * @see     java.awt.FileDialog#getFilenameFilter
+ */
+public synchronized void setFilenameFilter(FilenameFilter filter) {
+    this.filter = filter;
+    FileDialogPeer peer = (FileDialogPeer) this.peer;
+    if (peer != null) {
+        peer.setFilenameFilter(filter);
+    }
+}

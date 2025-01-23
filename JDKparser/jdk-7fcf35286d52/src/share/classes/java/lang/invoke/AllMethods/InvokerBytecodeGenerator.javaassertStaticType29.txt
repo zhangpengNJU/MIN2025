@@ -1,0 +1,15 @@
+/**
+ * Update localClasses type map.  Return true if the information is already present.
+ */
+private boolean assertStaticType(Class<?> cls, Name n) {
+    int local = n.index();
+    Class<?> aclass = localClasses[local];
+    if (aclass != null && (aclass == cls || cls.isAssignableFrom(aclass))) {
+        // type info is already present
+        return true;
+    } else if (aclass == null || aclass.isAssignableFrom(cls)) {
+        // type info can be improved
+        localClasses[local] = cls;
+    }
+    return false;
+}

@@ -1,0 +1,23 @@
+/**
+ * Calls <code>dragExit</code> on the registered
+ * <code>DropTargetListener</code> and passes it
+ * the specified <code>DropTargetEvent</code>.
+ * Has no effect if this <code>DropTarget</code>
+ * is not active.
+ * <p>
+ * This method itself does not throw any exception
+ * for null parameter but for exceptions thrown by
+ * the respective method of the listener.
+ *
+ * @param dte the <code>DropTargetEvent</code>
+ *
+ * @see #isActive
+ */
+public synchronized void dragExit(DropTargetEvent dte) {
+    isDraggingInside = false;
+    if (!active)
+        return;
+    if (dtListener != null && active)
+        dtListener.dragExit(dte);
+    clearAutoscroll();
+}

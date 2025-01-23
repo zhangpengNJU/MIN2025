@@ -1,0 +1,8 @@
+private void checkParams(char[] text, int start, int count) {
+    if (text == null) {
+        throw new NullPointerException("text is null");
+    }
+    if ((start < 0) || (start > text.length) || ((start + count) < 0) || ((start + count) > text.length)) {
+        throw new IndexOutOfBoundsException("bad start or count for text of length " + text.length);
+    }
+}

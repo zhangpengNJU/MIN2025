@@ -1,0 +1,27 @@
+private static void setLayersOpaque(Component component, boolean isOpaque) {
+    // Shouldn't use instanceof to avoid loading Swing classes
+    // if it's a pure AWT application.
+    if (SunToolkit.isInstanceOf(component, "javax.swing.RootPaneContainer")) {
+        javax.swing.RootPaneContainer rpc = (javax.swing.RootPaneContainer) component;
+        javax.swing.JRootPane root = rpc.getRootPane();
+        javax.swing.JLayeredPane lp = root.getLayeredPane();
+        Container c = root.getContentPane();
+        javax.swing.JComponent content = (c instanceof javax.swing.JComponent) ? (javax.swing.JComponent) c : null;
+        lp.setOpaque(isOpaque);
+        root.setOpaque(isOpaque);
+        if (content != null) {
+            content.setOpaque(isOpaque);
+            // Iterate down one level to see whether we have a JApplet
+            // (which is also a RootPaneContainer) which requires processing
+            int numChildren = content.getComponentCount();
+            if (numChildren > 0) {
+                Component child = content.getComponent(0);
+                // It's OK to use instanceof here because we've
+                // already loaded the RootPaneContainer class by now
+                if (child instanceof javax.swing.RootPaneContainer) {
+                    setLayersOpaque(child, isOpaque);
+                }
+            }
+        }
+    }
+}

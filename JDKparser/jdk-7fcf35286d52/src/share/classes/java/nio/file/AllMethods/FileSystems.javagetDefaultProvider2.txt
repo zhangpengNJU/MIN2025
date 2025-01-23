@@ -1,0 +1,22 @@
+// returns default provider
+private static FileSystemProvider getDefaultProvider() {
+    FileSystemProvider provider = sun.nio.fs.DefaultFileSystemProvider.create();
+    // if the property java.nio.file.spi.DefaultFileSystemProvider is
+    // set then its value is the name of the default provider (or a list)
+    String propValue = System.getProperty("java.nio.file.spi.DefaultFileSystemProvider");
+    if (propValue != null) {
+        for (String cn : propValue.split(",")) {
+            try {
+                Class<?> c = Class.forName(cn, true, ClassLoader.getSystemClassLoader());
+                Constructor<?> ctor = c.getDeclaredConstructor(FileSystemProvider.class);
+                provider = (FileSystemProvider) ctor.newInstance(provider);
+                // must be "file"
+                if (!provider.getScheme().equals("file"))
+                    throw new Error("Default provider must use scheme 'file'");
+            } catch (Exception x) {
+                throw new Error(x);
+            }
+        }
+    }
+    return provider;
+}

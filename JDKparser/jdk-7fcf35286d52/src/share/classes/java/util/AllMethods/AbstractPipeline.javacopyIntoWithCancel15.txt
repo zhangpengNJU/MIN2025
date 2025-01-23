@@ -1,0 +1,12 @@
+@Override
+@SuppressWarnings("unchecked")
+final <P_IN> void copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    AbstractPipeline p = AbstractPipeline.this;
+    while (p.depth > 0) {
+        p = p.previousStage;
+    }
+    wrappedSink.begin(spliterator.getExactSizeIfKnown());
+    p.forEachWithCancel(spliterator, wrappedSink);
+    wrappedSink.end();
+}

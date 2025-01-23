@@ -1,0 +1,11 @@
+/**
+ * Create an alias for the method handle which, when called,
+ * appears to be called from the same class loader and protection domain
+ * as hostClass.
+ * This is an expensive no-op unless the method which is called
+ * is sensitive to its caller.  A small number of system methods
+ * are in this category, including Class.forName and Method.invoke.
+ */
+static MethodHandle bindCaller(MethodHandle mh, Class<?> hostClass) {
+    return BindCaller.bindCaller(mh, hostClass);
+}

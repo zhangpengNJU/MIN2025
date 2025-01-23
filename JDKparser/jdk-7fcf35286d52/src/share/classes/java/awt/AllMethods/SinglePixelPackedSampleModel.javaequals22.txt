@@ -1,0 +1,7 @@
+public boolean equals(Object o) {
+    if ((o == null) || !(o instanceof SinglePixelPackedSampleModel)) {
+        return false;
+    }
+    SinglePixelPackedSampleModel that = (SinglePixelPackedSampleModel) o;
+    return this.width == that.width && this.height == that.height && this.numBands == that.numBands && this.dataType == that.dataType && Arrays.equals(this.bitMasks, that.bitMasks) && Arrays.equals(this.bitOffsets, that.bitOffsets) && Arrays.equals(this.bitSizes, that.bitSizes) && this.maxBitSize == that.maxBitSize && this.scanlineStride == that.scanlineStride;
+}

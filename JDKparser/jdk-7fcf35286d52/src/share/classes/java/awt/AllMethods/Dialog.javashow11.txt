@@ -1,0 +1,107 @@
+/**
+ * Makes the {@code Dialog} visible. If the dialog and/or its owner
+ * are not yet displayable, both are made displayable.  The
+ * dialog will be validated prior to being made visible.
+ * If the dialog is already visible, this will bring the dialog
+ * to the front.
+ * <p>
+ * If the dialog is modal and is not already visible, this call
+ * will not return until the dialog is hidden by calling hide or
+ * dispose. It is permissible to show modal dialogs from the event
+ * dispatching thread because the toolkit will ensure that another
+ * event pump runs while the one which invoked this method is blocked.
+ * @see Component#hide
+ * @see Component#isDisplayable
+ * @see Component#validate
+ * @see #isModal
+ * @see Window#setVisible(boolean)
+ * @deprecated As of JDK version 1.5, replaced by
+ * {@link #setVisible(boolean) setVisible(boolean)}.
+ */
+@Deprecated
+public void show() {
+    if (!initialized) {
+        throw new IllegalStateException("The dialog component " + "has not been initialized properly");
+    }
+    beforeFirstShow = false;
+    if (!isModal()) {
+        conditionalShow(null, null);
+    } else {
+        AppContext showAppContext = AppContext.getAppContext();
+        AtomicLong time = new AtomicLong();
+        Component predictedFocusOwner = null;
+        try {
+            predictedFocusOwner = getMostRecentFocusOwner();
+            if (conditionalShow(predictedFocusOwner, time)) {
+                modalFilter = ModalEventFilter.createFilterForDialog(this);
+                final Conditional cond = new Conditional() {
+
+                    @Override
+                    public boolean evaluate() {
+                        return windowClosingException == null;
+                    }
+                };
+                // if this dialog is toolkit-modal, the filter should be added
+                // to all EDTs (for all AppContexts)
+                if (modalityType == ModalityType.TOOLKIT_MODAL) {
+                    Iterator<AppContext> it = AppContext.getAppContexts().iterator();
+                    while (it.hasNext()) {
+                        AppContext appContext = it.next();
+                        if (appContext == showAppContext) {
+                            continue;
+                        }
+                        EventQueue eventQueue = (EventQueue) appContext.get(AppContext.EVENT_QUEUE_KEY);
+                        // it may occur that EDT for appContext hasn't been started yet, so
+                        // we post an empty invocation event to trigger EDT initialization
+                        Runnable createEDT = new Runnable() {
+
+                            public void run() {
+                            }
+                        };
+                        eventQueue.postEvent(new InvocationEvent(this, createEDT));
+                        EventDispatchThread edt = eventQueue.getDispatchThread();
+                        edt.addEventFilter(modalFilter);
+                    }
+                }
+                modalityPushed();
+                try {
+                    final EventQueue eventQueue = AccessController.doPrivileged(new PrivilegedAction<EventQueue>() {
+
+                        public EventQueue run() {
+                            return Toolkit.getDefaultToolkit().getSystemEventQueue();
+                        }
+                    });
+                    secondaryLoop = eventQueue.createSecondaryLoop(cond, modalFilter, 0);
+                    if (!secondaryLoop.enter()) {
+                        secondaryLoop = null;
+                    }
+                } finally {
+                    modalityPopped();
+                }
+                // if this dialog is toolkit-modal, its filter must be removed
+                // from all EDTs (for all AppContexts)
+                if (modalityType == ModalityType.TOOLKIT_MODAL) {
+                    Iterator<AppContext> it = AppContext.getAppContexts().iterator();
+                    while (it.hasNext()) {
+                        AppContext appContext = it.next();
+                        if (appContext == showAppContext) {
+                            continue;
+                        }
+                        EventQueue eventQueue = (EventQueue) appContext.get(AppContext.EVENT_QUEUE_KEY);
+                        EventDispatchThread edt = eventQueue.getDispatchThread();
+                        edt.removeEventFilter(modalFilter);
+                    }
+                }
+                if (windowClosingException != null) {
+                    windowClosingException.fillInStackTrace();
+                    throw windowClosingException;
+                }
+            }
+        } finally {
+            if (predictedFocusOwner != null) {
+                // Restore normal key event dispatching
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().dequeueKeyEvents(time.get(), predictedFocusOwner);
+            }
+        }
+    }
+}

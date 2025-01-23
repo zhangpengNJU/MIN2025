@@ -1,0 +1,39 @@
+// Private method to do the work for parenting a child
+// Logger onto a parent logger.
+private void doSetParent(Logger newParent) {
+    // System.err.println("doSetParent \"" + getName() + "\" \""
+    // + newParent.getName() + "\"");
+    synchronized (treeLock) {
+        // Remove ourself from any previous parent.
+        LogManager.LoggerWeakRef ref = null;
+        if (parent != null) {
+            // assert parent.kids != null;
+            for (Iterator<LogManager.LoggerWeakRef> iter = parent.kids.iterator(); iter.hasNext(); ) {
+                ref = iter.next();
+                Logger kid = ref.get();
+                if (kid == this) {
+                    // ref is used down below to complete the reparenting
+                    iter.remove();
+                    break;
+                } else {
+                    ref = null;
+                }
+            }
+        // We have now removed ourself from our parents' kids.
+        }
+        // Set our new parent.
+        parent = newParent;
+        if (parent.kids == null) {
+            parent.kids = new ArrayList<>(2);
+        }
+        if (ref == null) {
+            // we didn't have a previous parent
+            ref = manager.new LoggerWeakRef(this);
+        }
+        ref.setParentRef(new WeakReference<>(parent));
+        parent.kids.add(ref);
+        // As a result of the reparenting, the effective level
+        // may have changed for us and our children.
+        updateEffectiveLevel();
+    }
+}

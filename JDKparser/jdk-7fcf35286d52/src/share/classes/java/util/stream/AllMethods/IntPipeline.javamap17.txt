@@ -1,0 +1,17 @@
+@Override
+public final IntStream map(IntUnaryOperator mapper) {
+    Objects.requireNonNull(mapper);
+    return new StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+            return new Sink.ChainedInt<Integer>(sink) {
+
+                @Override
+                public void accept(int t) {
+                    downstream.accept(mapper.applyAsInt(t));
+                }
+            };
+        }
+    };
+}

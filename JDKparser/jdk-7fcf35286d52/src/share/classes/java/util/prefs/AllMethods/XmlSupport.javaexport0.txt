@@ -1,0 +1,34 @@
+/**
+ * Export the specified preferences node and, if subTree is true, all
+ * subnodes, to the specified output stream.  Preferences are exported as
+ * an XML document conforming to the definition in the Preferences spec.
+ *
+ * @throws IOException if writing to the specified output stream
+ *         results in an <tt>IOException</tt>.
+ * @throws BackingStoreException if preference data cannot be read from
+ *         backing store.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link Preferences#removeNode()} method.
+ */
+static void export(OutputStream os, final Preferences p, boolean subTree) throws IOException, BackingStoreException {
+    if (((AbstractPreferences) p).isRemoved())
+        throw new IllegalStateException("Node has been removed");
+    Document doc = createPrefsDoc("preferences");
+    Element preferences = doc.getDocumentElement();
+    preferences.setAttribute("EXTERNAL_XML_VERSION", EXTERNAL_XML_VERSION);
+    Element xmlRoot = (Element) preferences.appendChild(doc.createElement("root"));
+    xmlRoot.setAttribute("type", (p.isUserNode() ? "user" : "system"));
+    // Get bottom-up list of nodes from p to root, excluding root
+    List<Preferences> ancestors = new ArrayList<>();
+    for (Preferences kid = p, dad = kid.parent(); dad != null; kid = dad, dad = kid.parent()) {
+        ancestors.add(kid);
+    }
+    Element e = xmlRoot;
+    for (int i = ancestors.size() - 1; i >= 0; i--) {
+        e.appendChild(doc.createElement("map"));
+        e = (Element) e.appendChild(doc.createElement("node"));
+        e.setAttribute("name", ancestors.get(i).name());
+    }
+    putPreferencesInXml(e, doc, p, subTree);
+    writeDoc(doc, os);
+}

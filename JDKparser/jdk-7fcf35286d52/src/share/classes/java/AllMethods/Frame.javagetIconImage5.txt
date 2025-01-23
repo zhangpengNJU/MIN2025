@@ -1,0 +1,24 @@
+/**
+ * Returns the image to be displayed as the icon for this frame.
+ * <p>
+ * This method is obsolete and kept for backward compatibility
+ * only. Use {@link Window#getIconImages Window.getIconImages()} instead.
+ * <p>
+ * If a list of several images was specified as a Window's icon,
+ * this method will return the first item of the list.
+ *
+ * @return    the icon image for this frame, or <code>null</code>
+ *                    if this frame doesn't have an icon image.
+ * @see       #setIconImage(Image)
+ * @see       Window#getIconImages()
+ * @see       Window#setIconImages
+ */
+public Image getIconImage() {
+    java.util.List<Image> icons = this.icons;
+    if (icons != null) {
+        if (icons.size() > 0) {
+            return icons.get(0);
+        }
+    }
+    return null;
+}

@@ -1,0 +1,22 @@
+/**
+ * A private version of getMouseEventTarget which has two additional
+ * controllable behaviors. This method searches for the top-most
+ * descendant of this container that contains the given coordinates
+ * and is accepted by the given filter. The search will be constrained to
+ * lightweight descendants if the last argument is <code>false</code>.
+ *
+ * @param filter EventTargetFilter instance to determine whether the
+ *        given component is a valid target for this event.
+ * @param searchHeavyweights if <code>false</code>, the method
+ *        will bypass heavyweight components during the search.
+ */
+private Component getMouseEventTarget(int x, int y, boolean includeSelf, EventTargetFilter filter, boolean searchHeavyweights) {
+    Component comp = null;
+    if (searchHeavyweights) {
+        comp = getMouseEventTargetImpl(x, y, includeSelf, filter, SEARCH_HEAVYWEIGHTS, searchHeavyweights);
+    }
+    if (comp == null || comp == this) {
+        comp = getMouseEventTargetImpl(x, y, includeSelf, filter, !SEARCH_HEAVYWEIGHTS, searchHeavyweights);
+    }
+    return comp;
+}

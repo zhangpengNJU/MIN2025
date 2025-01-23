@@ -1,0 +1,16 @@
+static byte[] getProfileDataFromStream(InputStream s) throws IOException {
+    BufferedInputStream bis = new BufferedInputStream(s);
+    bis.mark(128);
+    byte[] header = IOUtils.readNBytes(bis, 128);
+    if (header[36] != 0x61 || header[37] != 0x63 || header[38] != 0x73 || header[39] != 0x70) {
+        return null;
+    /* not a valid profile */
+    }
+    int profileSize = ((header[0] & 0xff) << 24) | ((header[1] & 0xff) << 16) | ((header[2] & 0xff) << 8) | (header[3] & 0xff);
+    bis.reset();
+    try {
+        return IOUtils.readNBytes(bis, profileSize);
+    } catch (OutOfMemoryError e) {
+        throw new IOException("Color profile is too big");
+    }
+}

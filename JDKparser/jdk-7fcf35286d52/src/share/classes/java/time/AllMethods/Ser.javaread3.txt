@@ -1,0 +1,4 @@
+static Object read(ObjectInput in) throws IOException, ClassNotFoundException {
+    byte type = in.readByte();
+    return readInternal(type, in);
+}

@@ -1,0 +1,28 @@
+/**
+ * Returns a <code>AffineTransform</code> that can be concatenated
+ * with the default <code>AffineTransform</code>
+ * of a <code>GraphicsConfiguration</code> so that 72 units in user
+ * space equals 1 inch in device space.
+ * <p>
+ * For a particular {@link Graphics2D}, g, one
+ * can reset the transformation to create
+ * such a mapping by using the following pseudocode:
+ * <pre>
+ *      GraphicsConfiguration gc = g.getDeviceConfiguration();
+ *
+ *      g.setTransform(gc.getDefaultTransform());
+ *      g.transform(gc.getNormalizingTransform());
+ * </pre>
+ * Note that sometimes this <code>AffineTransform</code> is identity,
+ * such as for printers or metafile output, and that this
+ * <code>AffineTransform</code> is only as accurate as the information
+ * supplied by the underlying system.  For image buffers not
+ * associated with a device, such as those not created by
+ * <code>createCompatibleImage</code>, this
+ * <code>AffineTransform</code> is the Identity transform
+ * since there is no valid distance measurement.
+ * @return an <code>AffineTransform</code> to concatenate to the
+ * default <code>AffineTransform</code> so that 72 units in user
+ * space is mapped to 1 inch in device space.
+ */
+public abstract AffineTransform getNormalizingTransform();

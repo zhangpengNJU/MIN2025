@@ -1,0 +1,17 @@
+/**
+ * Reconstitute the {@code TreeSet} instance from a stream (that is,
+ * deserialize it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Read in any hidden stuff
+    s.defaultReadObject();
+    // Read in Comparator
+    @SuppressWarnings("unchecked")
+    Comparator<? super E> c = (Comparator<? super E>) s.readObject();
+    // Create backing TreeMap
+    TreeMap<E, Object> tm = new TreeMap<>(c);
+    m = tm;
+    // Read in size
+    int size = s.readInt();
+    tm.readTreeSet(size, s, PRESENT);
+}

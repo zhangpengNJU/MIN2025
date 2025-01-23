@@ -1,0 +1,18 @@
+/**
+ * Compare this RuleBasedCollationKey to target. The collation rules of the
+ * Collator object which created these keys are applied. <strong>Note:</strong>
+ * RuleBasedCollationKeys created by different Collators can not be compared.
+ * @param target target RuleBasedCollationKey
+ * @return Returns an integer value. Value is less than zero if this is less
+ * than target, value is zero if this and target are equal and value is greater than
+ * zero if this is greater than target.
+ * @see java.text.Collator#compare
+ */
+public int compareTo(CollationKey target) {
+    int result = key.compareTo(((RuleBasedCollationKey) (target)).key);
+    if (result <= Collator.LESS)
+        return Collator.LESS;
+    else if (result >= Collator.GREATER)
+        return Collator.GREATER;
+    return Collator.EQUAL;
+}

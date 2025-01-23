@@ -1,0 +1,27 @@
+/**
+ * Left shift int array a up to len by n bits. Returns the array that
+ * results from the shift since space may have to be reallocated.
+ */
+private static int[] leftShift(int[] a, int len, int n) {
+    int nInts = n >>> 5;
+    int nBits = n & 0x1F;
+    int bitsInHighWord = bitLengthForInt(a[0]);
+    // If shift can be done without recopy, do so
+    if (n <= (32 - bitsInHighWord)) {
+        primitiveLeftShift(a, len, nBits);
+        return a;
+    } else {
+        // Array must be resized
+        if (nBits <= (32 - bitsInHighWord)) {
+            int[] result = new int[nInts + len];
+            System.arraycopy(a, 0, result, 0, len);
+            primitiveLeftShift(result, result.length, nBits);
+            return result;
+        } else {
+            int[] result = new int[nInts + len + 1];
+            System.arraycopy(a, 0, result, 0, len);
+            primitiveRightShift(result, result.length, 32 - nBits);
+            return result;
+        }
+    }
+}

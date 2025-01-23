@@ -1,0 +1,12 @@
+/*
+     * path-matches algorithm, as defined by RFC 2965
+     */
+private boolean pathMatches(String path, String pathToMatchWith) {
+    if (path == pathToMatchWith)
+        return true;
+    if (path == null || pathToMatchWith == null)
+        return false;
+    if (path.startsWith(pathToMatchWith))
+        return true;
+    return false;
+}

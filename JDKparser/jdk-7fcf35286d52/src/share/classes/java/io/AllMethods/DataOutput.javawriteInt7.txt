@@ -1,0 +1,20 @@
+/**
+ * Writes an <code>int</code> value, which is
+ * comprised of four bytes, to the output stream.
+ * The byte values to be written, in the  order
+ * shown, are:
+ * <pre>{@code
+ * (byte)(0xff & (v >> 24))
+ * (byte)(0xff & (v >> 16))
+ * (byte)(0xff & (v >>  8))
+ * (byte)(0xff & v)
+ * }</pre><p>
+ * The bytes written by this method may be read
+ * by the <code>readInt</code> method of interface
+ * <code>DataInput</code> , which will then
+ * return an <code>int</code> equal to <code>v</code>.
+ *
+ * @param      v   the <code>int</code> value to be written.
+ * @throws     IOException  if an I/O error occurs.
+ */
+void writeInt(int v) throws IOException;

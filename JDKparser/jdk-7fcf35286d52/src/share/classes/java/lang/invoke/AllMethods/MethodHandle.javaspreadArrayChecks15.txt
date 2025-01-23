@@ -1,0 +1,12 @@
+private void spreadArrayChecks(Class<?> arrayType, int arrayLength) {
+    Class<?> arrayElement = arrayType.getComponentType();
+    if (arrayElement == null)
+        throw newIllegalArgumentException("not an array type", arrayType);
+    if ((arrayLength & 0x7F) != arrayLength) {
+        if ((arrayLength & 0xFF) != arrayLength)
+            throw newIllegalArgumentException("array length is not legal", arrayLength);
+        assert (arrayLength >= 128);
+        if (arrayElement == long.class || arrayElement == double.class)
+            throw newIllegalArgumentException("array length is not legal for long[] or double[]", arrayLength);
+    }
+}

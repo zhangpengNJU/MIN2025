@@ -1,0 +1,9 @@
+public int visualToLogical(int visualIndex) {
+    if (fCharLogicalOrder == null) {
+        return visualIndex;
+    }
+    if (fCharVisualOrder == null) {
+        fCharVisualOrder = BidiUtils.createInverseMap(fCharLogicalOrder);
+    }
+    return fCharVisualOrder[visualIndex];
+}

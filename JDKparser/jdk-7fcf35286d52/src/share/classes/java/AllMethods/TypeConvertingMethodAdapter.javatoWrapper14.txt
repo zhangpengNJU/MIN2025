@@ -1,0 +1,7 @@
+private Wrapper toWrapper(String desc) {
+    char first = desc.charAt(0);
+    if (first == '[' || first == '(') {
+        first = 'L';
+    }
+    return Wrapper.forBasicType(first);
+}

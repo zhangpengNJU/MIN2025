@@ -1,0 +1,12 @@
+public List<E> subList(int fromIndex, int toIndex) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        checkForComodification();
+        if (fromIndex < 0 || toIndex > size || fromIndex > toIndex)
+            throw new IndexOutOfBoundsException();
+        return new COWSubList<E>(l, fromIndex + offset, toIndex + offset);
+    } finally {
+        lock.unlock();
+    }
+}

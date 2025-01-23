@@ -1,0 +1,7 @@
+void postProcessKeyEvent(KeyEvent e) {
+    if (menuBar != null && menuBar.handleShortcut(e)) {
+        e.consume();
+        return;
+    }
+    super.postProcessKeyEvent(e);
+}

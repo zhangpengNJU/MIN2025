@@ -1,0 +1,15 @@
+/**
+ * Pack the start and end rules into an array of bytes.  Only pack
+ * data which is not preserved by makeRulesCompatible.
+ */
+private byte[] packRules() {
+    byte[] rules = new byte[MAX_RULE_NUM];
+    rules[0] = (byte) startDay;
+    rules[1] = (byte) startDayOfWeek;
+    rules[2] = (byte) endDay;
+    rules[3] = (byte) endDayOfWeek;
+    // As of serial version 2, include time modes
+    rules[4] = (byte) startTimeMode;
+    rules[5] = (byte) endTimeMode;
+    return rules;
+}

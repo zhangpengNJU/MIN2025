@@ -1,0 +1,178 @@
+/**
+ * Forces the raster data to match the state specified in the
+ * <code>isAlphaPremultiplied</code> variable, assuming the data is
+ * currently correctly described by this <code>ColorModel</code>.  It
+ * may multiply or divide the color raster data by alpha, or do
+ * nothing if the data is in the correct state.  If the data needs to
+ * be coerced, this method will also return an instance of this
+ * <code>ColorModel</code> with the <code>isAlphaPremultiplied</code>
+ * flag set appropriately.  This method will throw a
+ * <code>UnsupportedOperationException</code> if this transferType is
+ * not supported by this <code>ColorModel</code>.  Since
+ * <code>ColorModel</code> can be subclassed, subclasses inherit the
+ * implementation of this method and if they don't override it then
+ * they throw an exception if they use an unsupported transferType.
+ *
+ * @param raster the <code>WritableRaster</code> data
+ * @param isAlphaPremultiplied <code>true</code> if the alpha is
+ * premultiplied; <code>false</code> otherwise
+ * @return a <code>ColorModel</code> object that represents the
+ * coerced data.
+ * @exception UnsupportedOperationException if this
+ *            <code>transferType</code> is not supported by this
+ *            color model
+ */
+final public ColorModel coerceData(WritableRaster raster, boolean isAlphaPremultiplied) {
+    if (!supportsAlpha || this.isAlphaPremultiplied() == isAlphaPremultiplied) {
+        return this;
+    }
+    int w = raster.getWidth();
+    int h = raster.getHeight();
+    int aIdx = numColorComponents;
+    float normAlpha;
+    float alphaScale = 1.0f / ((float) ((1 << nBits[aIdx]) - 1));
+    int rminX = raster.getMinX();
+    int rY = raster.getMinY();
+    int rX;
+    int[] pixel = null;
+    int[] zpixel = null;
+    if (isAlphaPremultiplied) {
+        // Must mean that we are currently not premultiplied so
+        // multiply by alpha
+        switch(transferType) {
+            case DataBuffer.TYPE_BYTE:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * normAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new int[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0);
+                                }
+                                raster.setPixel(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_USHORT:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * normAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new int[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0);
+                                }
+                                raster.setPixel(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_INT:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.f) {
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * normAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            } else {
+                                if (zpixel == null) {
+                                    zpixel = new int[numComponents];
+                                    java.util.Arrays.fill(zpixel, 0);
+                                }
+                                raster.setPixel(rX, rY, zpixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+        }
+    } else {
+        // We are premultiplied and want to divide it out
+        switch(transferType) {
+            case DataBuffer.TYPE_BYTE:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0.0f) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * invAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_USHORT:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * invAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DataBuffer.TYPE_INT:
+                {
+                    for (int y = 0; y < h; y++, rY++) {
+                        rX = rminX;
+                        for (int x = 0; x < w; x++, rX++) {
+                            pixel = raster.getPixel(rX, rY, pixel);
+                            normAlpha = pixel[aIdx] * alphaScale;
+                            if (normAlpha != 0) {
+                                float invAlpha = 1.0f / normAlpha;
+                                for (int c = 0; c < aIdx; c++) {
+                                    pixel[c] = (int) (pixel[c] * invAlpha + 0.5f);
+                                }
+                                raster.setPixel(rX, rY, pixel);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+        }
+    }
+    // Return a new color model
+    return new DirectColorModel(colorSpace, pixel_bits, maskArray[0], maskArray[1], maskArray[2], maskArray[3], isAlphaPremultiplied, transferType);
+}

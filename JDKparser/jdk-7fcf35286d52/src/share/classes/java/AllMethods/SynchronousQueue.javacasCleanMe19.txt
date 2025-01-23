@@ -1,0 +1,6 @@
+/**
+ * Tries to CAS cleanMe slot.
+ */
+boolean casCleanMe(QNode cmp, QNode val) {
+    return cleanMe == cmp && UNSAFE.compareAndSwapObject(this, cleanMeOffset, cmp, val);
+}

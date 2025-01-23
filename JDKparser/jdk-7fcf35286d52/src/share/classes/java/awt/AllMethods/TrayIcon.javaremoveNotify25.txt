@@ -1,0 +1,10 @@
+void removeNotify() {
+    TrayIconPeer p = null;
+    synchronized (this) {
+        p = peer;
+        peer = null;
+    }
+    if (p != null) {
+        p.dispose();
+    }
+}

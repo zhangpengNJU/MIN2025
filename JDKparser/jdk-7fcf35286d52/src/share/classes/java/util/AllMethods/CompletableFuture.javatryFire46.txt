@@ -1,0 +1,12 @@
+final CompletableFuture<T> tryFire(int mode) {
+    // never ASYNC
+    // assert mode != ASYNC;
+    CompletableFuture<T> d;
+    CompletableFuture<T> a;
+    if ((d = dep) == null || !d.uniExceptionally(a = src, fn, this))
+        return null;
+    dep = null;
+    src = null;
+    fn = null;
+    return d.postFire(a, mode);
+}

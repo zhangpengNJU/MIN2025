@@ -1,0 +1,21 @@
+/**
+ * Given a caret index, return a hit whose caret is at the index.
+ * The hit is NOT guaranteed to be strong!!!
+ *
+ * @param caret a caret index.
+ * @return a hit on this layout whose strong caret is at the requested
+ * index.
+ */
+private TextHitInfo caretToHit(int caret) {
+    if (caret == 0 || caret == characterCount) {
+        if ((caret == characterCount) == textLine.isDirectionLTR()) {
+            return TextHitInfo.leading(characterCount);
+        } else {
+            return TextHitInfo.trailing(-1);
+        }
+    } else {
+        int charIndex = textLine.visualToLogical(caret);
+        boolean leading = textLine.isCharLTR(charIndex);
+        return leading ? TextHitInfo.leading(charIndex) : TextHitInfo.trailing(charIndex);
+    }
+}

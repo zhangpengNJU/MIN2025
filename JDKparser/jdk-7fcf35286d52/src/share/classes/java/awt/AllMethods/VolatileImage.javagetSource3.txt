@@ -1,0 +1,37 @@
+// Image overrides
+/**
+ * This returns an ImageProducer for this VolatileImage.
+ * Note that the VolatileImage object is optimized for
+ * rendering operations and blitting to the screen or other
+ * VolatileImage objects, as opposed to reading back the
+ * pixels of the image.  Therefore, operations such as
+ * <code>getSource</code> may not perform as fast as
+ * operations that do not rely on reading the pixels.
+ * Note also that the pixel values read from the image are current
+ * with those in the image only at the time that they are
+ * retrieved. This method takes a snapshot
+ * of the image at the time the request is made and the
+ * ImageProducer object returned works with
+ * that static snapshot image, not the original VolatileImage.
+ * Calling getSource()
+ * is equivalent to calling getSnapshot().getSource().
+ * @return an {@link ImageProducer} that can be used to produce the
+ * pixels for a <code>BufferedImage</code> representation of
+ * this Image.
+ * @see ImageProducer
+ * @see #getSnapshot()
+ */
+public ImageProducer getSource() {
+    // REMIND: Make sure this functionality is in line with the
+    // spec.  In particular, we are returning the Source for a
+    // static image (the snapshot), not a changing image (the
+    // VolatileImage).  So if the user expects the Source to be
+    // up-to-date with the current contents of the VolatileImage,
+    // they will be disappointed...
+    // REMIND: This assumes that getSnapshot() returns something
+    // valid and not the default null object returned by this class
+    // (so it assumes that the actual VolatileImage object is
+    // subclassed off something that does the right thing
+    // (e.g., SunVolatileImage).
+    return getSnapshot().getSource();
+}

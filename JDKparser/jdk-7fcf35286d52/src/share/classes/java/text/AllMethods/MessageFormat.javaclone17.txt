@@ -1,0 +1,19 @@
+/**
+ * Creates and returns a copy of this object.
+ *
+ * @return a clone of this instance.
+ */
+public Object clone() {
+    MessageFormat other = (MessageFormat) super.clone();
+    // clone arrays. Can't do with utility because of bug in Cloneable
+    // shallow clone
+    other.formats = formats.clone();
+    for (int i = 0; i < formats.length; ++i) {
+        if (formats[i] != null)
+            other.formats[i] = (Format) formats[i].clone();
+    }
+    // for primitives or immutables, shallow clone is enough
+    other.offsets = offsets.clone();
+    other.argumentNumbers = argumentNumbers.clone();
+    return other;
+}

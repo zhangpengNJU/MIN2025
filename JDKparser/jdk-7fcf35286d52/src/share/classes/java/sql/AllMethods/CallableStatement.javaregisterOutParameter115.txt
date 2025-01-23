@@ -1,0 +1,39 @@
+/**
+ *  Registers the OUT parameter in ordinal position
+ *  {@code parameterIndex} to the JDBC type
+ *  {@code sqlType}.  All OUT parameters must be registered
+ *  before a stored procedure is executed.
+ *  <p>
+ *  The JDBC type specified by {@code sqlType} for an OUT
+ *  parameter determines the Java type that must be used
+ *  in the {@code get} method to read the value of that parameter.
+ *  <p>
+ *  If the JDBC type expected to be returned to this output parameter
+ *  is specific to this particular database, {@code sqlType}
+ *  may be {@code JDBCType.OTHER} or a {@code SQLType} that is supported by
+ *  the JDBC driver.  The method
+ *  {@link #getObject} retrieves the value.
+ * <P>
+ *  The default implementation will throw {@code SQLFeatureNotSupportedException}
+ *
+ *  @param parameterIndex the first parameter is 1, the second is 2,
+ *         and so on
+ *  @param sqlType the JDBC type code defined by {@code SQLType} to use to
+ *  register the OUT Parameter.
+ *         If the parameter is of JDBC type {@code JDBCType.NUMERIC}
+ *         or {@code JDBCType.DECIMAL}, the version of
+ *         {@code registerOutParameter} that accepts a scale value
+ *         should be used.
+ *
+ *  @exception SQLException if the parameterIndex is not valid;
+ *  if a database access error occurs or
+ *  this method is called on a closed {@code CallableStatement}
+ *  @exception SQLFeatureNotSupportedException if
+ *  the JDBC driver does not support the specified sqlType
+ *  @see JDBCType
+ *  @see SQLType
+ *  @since 1.8
+ */
+default void registerOutParameter(int parameterIndex, SQLType sqlType) throws SQLException {
+    throw new SQLFeatureNotSupportedException("registerOutParameter not implemented");
+}

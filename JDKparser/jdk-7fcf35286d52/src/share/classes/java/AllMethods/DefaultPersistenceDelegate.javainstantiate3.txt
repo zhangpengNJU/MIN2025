@@ -1,0 +1,29 @@
+/**
+ * This default implementation of the <code>instantiate</code> method returns
+ * an expression containing the predefined method name "new" which denotes a
+ * call to a constructor with the arguments as specified in
+ * the <code>DefaultPersistenceDelegate</code>'s constructor.
+ *
+ * @param  oldInstance The instance to be instantiated.
+ * @param  out The code output stream.
+ * @return An expression whose value is <code>oldInstance</code>.
+ *
+ * @throws NullPointerException if {@code out} is {@code null}
+ *                              and this value is used in the method
+ *
+ * @see #DefaultPersistenceDelegate(String[])
+ */
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    int nArgs = constructor.length;
+    Class<?> type = oldInstance.getClass();
+    Object[] constructorArgs = new Object[nArgs];
+    for (int i = 0; i < nArgs; i++) {
+        try {
+            Method method = findMethod(type, this.constructor[i]);
+            constructorArgs[i] = MethodUtil.invoke(method, oldInstance, new Object[0]);
+        } catch (Exception e) {
+            out.getExceptionListener().exceptionThrown(e);
+        }
+    }
+    return new Expression(oldInstance, oldInstance.getClass(), "new", constructorArgs);
+}

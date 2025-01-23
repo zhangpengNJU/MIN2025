@@ -1,0 +1,10 @@
+/**
+ * Called by readObject with the newly deserialized child and BCSChild.
+ * @param child the newly deserialized child
+ * @param bcsc the newly deserialized BCSChild
+ */
+protected void childDeserializedHook(Object child, BCSChild bcsc) {
+    synchronized (children) {
+        children.put(child, bcsc);
+    }
+}

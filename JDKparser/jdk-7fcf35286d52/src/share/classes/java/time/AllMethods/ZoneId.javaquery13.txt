@@ -1,0 +1,8 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R> R query(TemporalQuery<R> query) {
+    if (query == TemporalQueries.zoneId()) {
+        return (R) ZoneId.this;
+    }
+    return TemporalAccessor.super.query(query);
+}

@@ -1,0 +1,11 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getMinimumSize(int)</code>.
+ */
+@Deprecated
+public Dimension minimumSize(int rows) {
+    synchronized (getTreeLock()) {
+        ListPeer peer = (ListPeer) this.peer;
+        return (peer != null) ? peer.getMinimumSize(rows) : super.minimumSize();
+    }
+}

@@ -1,0 +1,12 @@
+@Override
+public IntStream unordered() {
+    if (!isOrdered())
+        return this;
+    return new StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_ORDERED) {
+
+        @Override
+        Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+            return sink;
+        }
+    };
+}

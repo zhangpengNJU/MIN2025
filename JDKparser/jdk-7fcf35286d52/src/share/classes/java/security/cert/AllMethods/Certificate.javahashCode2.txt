@@ -1,0 +1,18 @@
+/**
+ * Returns a hashcode value for this certificate from its
+ * encoded form.
+ *
+ * @return the hashcode value.
+ */
+public int hashCode() {
+    int h = hash;
+    if (h == -1) {
+        try {
+            h = Arrays.hashCode(X509CertImpl.getEncodedInternal(this));
+        } catch (CertificateException e) {
+            h = 0;
+        }
+        hash = h;
+    }
+    return h;
+}

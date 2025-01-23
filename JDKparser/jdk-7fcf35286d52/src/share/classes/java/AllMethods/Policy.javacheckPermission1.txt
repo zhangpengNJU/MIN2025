@@ -1,0 +1,6 @@
+private static void checkPermission(String type) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPermission(new SecurityPermission("createPolicy." + type));
+    }
+}

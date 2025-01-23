@@ -1,0 +1,10 @@
+// support for instrumentation
+/**
+ * Returns true if this condition was created by the given
+ * synchronization object.
+ *
+ * @return {@code true} if owned
+ */
+final boolean isOwnedBy(AbstractQueuedSynchronizer sync) {
+    return sync == AbstractQueuedSynchronizer.this;
+}

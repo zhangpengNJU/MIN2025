@@ -1,0 +1,29 @@
+/**
+ * Returns the hostname for this address.
+ * If the host is equal to null, then this address refers to any
+ * of the local machine's available network addresses.
+ * this is package private so SocketPermission can make calls into
+ * here without a security check.
+ *
+ * <p>If there is a security manager, this method first
+ * calls its {@code checkConnect} method
+ * with the hostname and {@code -1}
+ * as its arguments to see if the calling code is allowed to know
+ * the hostname for this IP address, i.e., to connect to the host.
+ * If the operation is not allowed, it will return
+ * the textual representation of the IP address.
+ *
+ * @return  the host name for this IP address, or if the operation
+ *    is not allowed by the security check, the textual
+ *    representation of the IP address.
+ *
+ * @param check make security check if true
+ *
+ * @see SecurityManager#checkConnect
+ */
+String getHostName(boolean check) {
+    if (holder().getHostName() == null) {
+        holder().hostName = InetAddress.getHostFromNameService(this, check);
+    }
+    return holder().getHostName();
+}

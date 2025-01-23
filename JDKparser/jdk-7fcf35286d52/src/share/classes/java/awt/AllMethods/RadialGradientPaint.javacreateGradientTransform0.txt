@@ -1,0 +1,8 @@
+private static AffineTransform createGradientTransform(Rectangle2D r) {
+    double cx = r.getCenterX();
+    double cy = r.getCenterY();
+    AffineTransform xform = AffineTransform.getTranslateInstance(cx, cy);
+    xform.scale(r.getWidth() / 2, r.getHeight() / 2);
+    xform.translate(-cx, -cy);
+    return xform;
+}

@@ -1,0 +1,33 @@
+/**
+ * Generic code path for unknown engine types. Call the
+ * no-args constructor if constructorParameter is null, otherwise
+ * use the first matching constructor.
+ */
+private Object newInstanceGeneric(Object constructorParameter) throws Exception {
+    Class<?> clazz = getImplClass();
+    if (constructorParameter == null) {
+        // create instance with public no-arg constructor if it exists
+        try {
+            Class<?>[] empty = {};
+            Constructor<?> con = clazz.getConstructor(empty);
+            return con.newInstance();
+        } catch (NoSuchMethodException e) {
+            throw new NoSuchAlgorithmException("No public no-arg " + "constructor found in class " + className);
+        }
+    }
+    Class<?> argClass = constructorParameter.getClass();
+    Constructor[] cons = clazz.getConstructors();
+    // find first public constructor that can take the
+    // argument as parameter
+    for (Constructor<?> con : cons) {
+        Class<?>[] paramTypes = con.getParameterTypes();
+        if (paramTypes.length != 1) {
+            continue;
+        }
+        if (paramTypes[0].isAssignableFrom(argClass) == false) {
+            continue;
+        }
+        return con.newInstance(constructorParameter);
+    }
+    throw new NoSuchAlgorithmException("No public constructor matching " + argClass.getName() + " found in class " + className);
+}

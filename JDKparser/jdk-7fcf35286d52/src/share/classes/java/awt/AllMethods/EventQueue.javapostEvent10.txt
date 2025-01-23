@@ -1,0 +1,14 @@
+/**
+ * Posts a 1.1-style event to the <code>EventQueue</code>.
+ * If there is an existing event on the queue with the same ID
+ * and event source, the source <code>Component</code>'s
+ * <code>coalesceEvents</code> method will be called.
+ *
+ * @param theEvent an instance of <code>java.awt.AWTEvent</code>,
+ *          or a subclass of it
+ * @throws NullPointerException if <code>theEvent</code> is <code>null</code>
+ */
+public void postEvent(AWTEvent theEvent) {
+    SunToolkit.flushPendingEvents(appContext);
+    postEventPrivate(theEvent);
+}

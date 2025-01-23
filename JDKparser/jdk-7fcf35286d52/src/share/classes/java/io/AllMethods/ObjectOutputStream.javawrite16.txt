@@ -1,0 +1,18 @@
+/**
+ * Writes a sub array of bytes.
+ *
+ * @param   buf the data to be written
+ * @param   off the start offset in the data
+ * @param   len the number of bytes that are written
+ * @throws  IOException If an I/O error has occurred.
+ */
+public void write(byte[] buf, int off, int len) throws IOException {
+    if (buf == null) {
+        throw new NullPointerException();
+    }
+    int endoff = off + len;
+    if (off < 0 || len < 0 || endoff > buf.length || endoff < 0) {
+        throw new IndexOutOfBoundsException();
+    }
+    bout.write(buf, off, len, false);
+}

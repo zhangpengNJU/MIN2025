@@ -1,0 +1,76 @@
+/**
+ * Gets an iterator of text to field for the specified chrono, field, locale and style
+ * for the purpose of parsing.
+ * <p>
+ * The iterator must be returned in order from the longest text to the shortest.
+ * <p>
+ * The null return value should be used if there is no applicable parsable text, or
+ * if the text would be a numeric representation of the value.
+ * Text can only be parsed if all the values for that field-style-locale combination are unique.
+ *
+ * @param chrono  the Chronology to get text for, not null
+ * @param field  the field to get text for, not null
+ * @param style  the style to get text for, null for all parsable text
+ * @param locale  the locale to get text for, not null
+ * @return the iterator of text to field pairs, in order from longest text to shortest text,
+ *  null if the field or style is not parsable
+ */
+public Iterator<Entry<String, Long>> getTextIterator(Chronology chrono, TemporalField field, TextStyle style, Locale locale) {
+    if (chrono == IsoChronology.INSTANCE || !(field instanceof ChronoField)) {
+        return getTextIterator(field, style, locale);
+    }
+    int fieldIndex;
+    switch((ChronoField) field) {
+        case ERA:
+            fieldIndex = Calendar.ERA;
+            break;
+        case MONTH_OF_YEAR:
+            fieldIndex = Calendar.MONTH;
+            break;
+        case DAY_OF_WEEK:
+            fieldIndex = Calendar.DAY_OF_WEEK;
+            break;
+        case AMPM_OF_DAY:
+            fieldIndex = Calendar.AM_PM;
+            break;
+        default:
+            return null;
+    }
+    int calendarStyle = (style == null) ? Calendar.ALL_STYLES : style.toCalendarStyle();
+    Map<String, Integer> map = CalendarDataUtility.retrieveJavaTimeFieldValueNames(chrono.getCalendarType(), fieldIndex, calendarStyle, locale);
+    if (map == null) {
+        return null;
+    }
+    List<Entry<String, Long>> list = new ArrayList<>(map.size());
+    switch(fieldIndex) {
+        case Calendar.ERA:
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                int era = entry.getValue();
+                if (chrono == JapaneseChronology.INSTANCE) {
+                    if (era == 0) {
+                        era = -999;
+                    } else {
+                        era -= 2;
+                    }
+                }
+                list.add(createEntry(entry.getKey(), (long) era));
+            }
+            break;
+        case Calendar.MONTH:
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                list.add(createEntry(entry.getKey(), (long) (entry.getValue() + 1)));
+            }
+            break;
+        case Calendar.DAY_OF_WEEK:
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                list.add(createEntry(entry.getKey(), (long) toWeekDay(entry.getValue())));
+            }
+            break;
+        default:
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                list.add(createEntry(entry.getKey(), (long) entry.getValue()));
+            }
+            break;
+    }
+    return list.iterator();
+}

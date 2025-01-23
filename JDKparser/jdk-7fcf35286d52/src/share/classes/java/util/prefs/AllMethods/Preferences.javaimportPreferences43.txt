@@ -1,0 +1,35 @@
+/**
+ * Imports all of the preferences represented by the XML document on the
+ * specified input stream.  The document may represent user preferences or
+ * system preferences.  If it represents user preferences, the preferences
+ * will be imported into the calling user's preference tree (even if they
+ * originally came from a different user's preference tree).  If any of
+ * the preferences described by the document inhabit preference nodes that
+ * do not exist, the nodes will be created.
+ *
+ * <p>The XML document must have the following DOCTYPE declaration:
+ * <pre>{@code
+ * <!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+ * }</pre>
+ * (This method is designed for use in conjunction with
+ * {@link #exportNode(OutputStream)} and
+ * {@link #exportSubtree(OutputStream)}.
+ *
+ * <p>This method is an exception to the general rule that the results of
+ * concurrently executing multiple methods in this class yields
+ * results equivalent to some serial execution.  The method behaves
+ * as if implemented on top of the other public methods in this class,
+ * notably {@link #node(String)} and {@link #put(String, String)}.
+ *
+ * @param is the input stream from which to read the XML document.
+ * @throws IOException if reading from the specified input stream
+ *         results in an <tt>IOException</tt>.
+ * @throws InvalidPreferencesFormatException Data on input stream does not
+ *         constitute a valid XML document with the mandated document type.
+ * @throws SecurityException If a security manager is present and
+ *         it denies <tt>RuntimePermission("preferences")</tt>.
+ * @see    RuntimePermission
+ */
+public static void importPreferences(InputStream is) throws IOException, InvalidPreferencesFormatException {
+    XmlSupport.importPreferences(is);
+}

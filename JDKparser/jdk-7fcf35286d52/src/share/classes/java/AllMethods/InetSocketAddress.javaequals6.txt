@@ -1,0 +1,14 @@
+@Override
+public final boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof InetSocketAddressHolder))
+        return false;
+    InetSocketAddressHolder that = (InetSocketAddressHolder) obj;
+    boolean sameIP;
+    if (addr != null)
+        sameIP = addr.equals(that.addr);
+    else if (hostname != null)
+        sameIP = (that.addr == null) && hostname.equalsIgnoreCase(that.hostname);
+    else
+        sameIP = (that.addr == null) && (that.hostname == null);
+    return sameIP && (port == that.port);
+}

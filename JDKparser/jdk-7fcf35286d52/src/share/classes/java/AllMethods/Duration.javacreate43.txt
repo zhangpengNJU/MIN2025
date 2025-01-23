@@ -1,0 +1,15 @@
+/**
+ * Creates an instance of {@code Duration} from a number of seconds.
+ *
+ * @param seconds  the number of seconds, up to scale 9, positive or negative
+ * @return a {@code Duration}, not null
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+private static Duration create(BigDecimal seconds) {
+    BigInteger nanos = seconds.movePointRight(9).toBigIntegerExact();
+    BigInteger[] divRem = nanos.divideAndRemainder(BI_NANOS_PER_SECOND);
+    if (divRem[0].bitLength() > 63) {
+        throw new ArithmeticException("Exceeds capacity of Duration: " + nanos);
+    }
+    return ofSeconds(divRem[0].longValue(), divRem[1].intValue());
+}

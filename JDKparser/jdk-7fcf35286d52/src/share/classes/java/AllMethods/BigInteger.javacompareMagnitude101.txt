@@ -1,0 +1,42 @@
+/**
+ * Version of compareMagnitude that compares magnitude with long value.
+ * val can't be Long.MIN_VALUE.
+ */
+final int compareMagnitude(long val) {
+    assert val != Long.MIN_VALUE;
+    int[] m1 = mag;
+    int len = m1.length;
+    if (len > 2) {
+        return 1;
+    }
+    if (val < 0) {
+        val = -val;
+    }
+    int highWord = (int) (val >>> 32);
+    if (highWord == 0) {
+        if (len < 1)
+            return -1;
+        if (len > 1)
+            return 1;
+        int a = m1[0];
+        int b = (int) val;
+        if (a != b) {
+            return ((a & LONG_MASK) < (b & LONG_MASK)) ? -1 : 1;
+        }
+        return 0;
+    } else {
+        if (len < 2)
+            return -1;
+        int a = m1[0];
+        int b = highWord;
+        if (a != b) {
+            return ((a & LONG_MASK) < (b & LONG_MASK)) ? -1 : 1;
+        }
+        a = m1[1];
+        b = (int) val;
+        if (a != b) {
+            return ((a & LONG_MASK) < (b & LONG_MASK)) ? -1 : 1;
+        }
+        return 0;
+    }
+}

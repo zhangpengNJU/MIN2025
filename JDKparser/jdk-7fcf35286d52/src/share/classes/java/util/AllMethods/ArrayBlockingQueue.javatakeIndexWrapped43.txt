@@ -1,0 +1,17 @@
+/**
+ * Called whenever takeIndex wraps around to zero.
+ *
+ * @return true if this iterator should be unlinked from itrs
+ */
+boolean takeIndexWrapped() {
+    // assert lock.getHoldCount() == 1;
+    if (isDetached())
+        return true;
+    if (itrs.cycles - prevCycles > 1) {
+        // All the elements that existed at the time of the last
+        // operation are gone, so abandon further iteration.
+        shutdown();
+        return true;
+    }
+    return false;
+}

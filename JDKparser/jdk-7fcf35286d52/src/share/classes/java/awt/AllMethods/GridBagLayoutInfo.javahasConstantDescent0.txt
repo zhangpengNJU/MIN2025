@@ -1,0 +1,7 @@
+/**
+ * Returns true if the specified row has any component aligned on the
+ * baseline with a baseline resize behavior of CONSTANT_DESCENT.
+ */
+boolean hasConstantDescent(int row) {
+    return ((baselineType[row] & (1 << Component.BaselineResizeBehavior.CONSTANT_DESCENT.ordinal())) != 0);
+}

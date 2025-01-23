@@ -1,0 +1,24 @@
+/**
+ * Sets a sample in the specified band for the pixel located at (x,y)
+ * in the DataBuffer using a double for input.
+ * The default implementation of this method casts the input
+ * double sample to an int and then calls the
+ * <code>setSample(int, int, int, DataBuffer)</code> method using
+ * that int value.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param b         The band to set.
+ * @param s         The input sample as a double.
+ * @param data      The DataBuffer containing the image data.
+ * @see #getSample(int, int, int, DataBuffer)
+ *
+ * @throws NullPointerException if data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates or
+ * the band index are not in bounds.
+ */
+public void setSample(int x, int y, int b, double s, DataBuffer data) {
+    int sample = (int) s;
+    setSample(x, y, b, sample, data);
+}

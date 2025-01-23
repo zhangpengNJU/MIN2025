@@ -1,0 +1,30 @@
+/**
+ * Returns the x coordinate of the upper left point of the
+ * imageable area of the <code>Paper</code> object
+ * associated with this <code>PageFormat</code>.
+ * This method takes into account the
+ * orientation of the page.
+ * @return the x coordinate of the upper left point of the
+ * imageable area of the <code>Paper</code> object
+ * associated with this <code>PageFormat</code>.
+ */
+public double getImageableX() {
+    double x;
+    switch(getOrientation()) {
+        case LANDSCAPE:
+            x = mPaper.getHeight() - (mPaper.getImageableY() + mPaper.getImageableHeight());
+            break;
+        case PORTRAIT:
+            x = mPaper.getImageableX();
+            break;
+        case REVERSE_LANDSCAPE:
+            x = mPaper.getImageableY();
+            break;
+        default:
+            /* This should never happen since it signifies that the
+             * PageFormat is in an invalid orientation.
+             */
+            throw new InternalError("unrecognized orientation");
+    }
+    return x;
+}

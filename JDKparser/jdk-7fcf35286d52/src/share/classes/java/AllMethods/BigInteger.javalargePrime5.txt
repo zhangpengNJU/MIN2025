@@ -1,0 +1,24 @@
+/**
+ * Find a random number of the specified bitLength that is probably prime.
+ * This method is more appropriate for larger bitlengths since it uses
+ * a sieve to eliminate most composites before using a more expensive
+ * test.
+ */
+private static BigInteger largePrime(int bitLength, int certainty, Random rnd) {
+    BigInteger p;
+    p = new BigInteger(bitLength, rnd).setBit(bitLength - 1);
+    p.mag[p.mag.length - 1] &= 0xfffffffe;
+    // Use a sieve length likely to contain the next prime number
+    int searchLen = getPrimeSearchLen(bitLength);
+    BitSieve searchSieve = new BitSieve(p, searchLen);
+    BigInteger candidate = searchSieve.retrieve(p, certainty, rnd);
+    while ((candidate == null) || (candidate.bitLength() != bitLength)) {
+        p = p.add(BigInteger.valueOf(2 * searchLen));
+        if (p.bitLength() != bitLength)
+            p = new BigInteger(bitLength, rnd).setBit(bitLength - 1);
+        p.mag[p.mag.length - 1] &= 0xfffffffe;
+        searchSieve = new BitSieve(p, searchLen);
+        candidate = searchSieve.retrieve(p, certainty, rnd);
+    }
+    return candidate;
+}

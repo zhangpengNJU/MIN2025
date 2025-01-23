@@ -1,0 +1,11 @@
+/**
+ * Returns a CalendarDate produced from the specified fixed date.
+ *
+ * @param fd the fixed date
+ */
+private BaseCalendar.Date getCalendarDate(long fd) {
+    BaseCalendar cal = (fd >= gregorianCutoverDate) ? gcal : getJulianCalendarSystem();
+    BaseCalendar.Date d = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
+    cal.getCalendarDateFromFixedDate(d, fd);
+    return d;
+}

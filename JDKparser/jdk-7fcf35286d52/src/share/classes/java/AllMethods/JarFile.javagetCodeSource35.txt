@@ -1,0 +1,18 @@
+CodeSource getCodeSource(URL url, String name) {
+    ensureInitialization();
+    if (jv != null) {
+        if (jv.eagerValidation) {
+            CodeSource cs = null;
+            JarEntry je = getJarEntry(name);
+            if (je != null) {
+                cs = jv.getCodeSource(url, this, je);
+            } else {
+                cs = jv.getCodeSource(url, name);
+            }
+            return cs;
+        } else {
+            return jv.getCodeSource(url, name);
+        }
+    }
+    return JarVerifier.getUnsignedCS(url);
+}

@@ -1,0 +1,16 @@
+private URL fabricateNewURL() throws InvalidObjectException {
+    // create URL string from deserialized object
+    URL replacementURL = null;
+    String urlString = tempState.reconstituteUrlString();
+    try {
+        replacementURL = new URL(urlString);
+    } catch (MalformedURLException mEx) {
+        resetState();
+        InvalidObjectException invoEx = new InvalidObjectException("Malformed URL: " + urlString);
+        invoEx.initCause(mEx);
+        throw invoEx;
+    }
+    replacementURL.setSerializedHashCode(tempState.getHashCode());
+    resetState();
+    return replacementURL;
+}

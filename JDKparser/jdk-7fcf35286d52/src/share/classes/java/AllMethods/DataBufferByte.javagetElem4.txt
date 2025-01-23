@@ -1,0 +1,12 @@
+/**
+ * Returns the requested data array element from the specified bank.
+ *
+ * @param bank The bank from which you want to get a data array element.
+ * @param i The data array element you want to get.
+ * @return The requested data array element as an integer.
+ * @see #setElem(int, int)
+ * @see #setElem(int, int, int)
+ */
+public int getElem(int bank, int i) {
+    return (int) (bankdata[bank][i + offsets[bank]]) & 0xff;
+}

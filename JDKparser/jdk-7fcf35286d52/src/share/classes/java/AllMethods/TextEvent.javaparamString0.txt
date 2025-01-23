@@ -1,0 +1,17 @@
+/**
+ * Returns a parameter string identifying this text event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case TEXT_VALUE_CHANGED:
+            typeStr = "TEXT_VALUE_CHANGED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr;
+}

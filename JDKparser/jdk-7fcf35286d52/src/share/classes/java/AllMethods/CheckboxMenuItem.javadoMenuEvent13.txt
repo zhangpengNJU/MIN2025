@@ -1,0 +1,7 @@
+/*
+     * Post an ItemEvent and toggle state.
+     */
+void doMenuEvent(long when, int modifiers) {
+    setState(!state);
+    Toolkit.getEventQueue().postEvent(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, getLabel(), state ? ItemEvent.SELECTED : ItemEvent.DESELECTED));
+}

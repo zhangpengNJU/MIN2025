@@ -1,0 +1,16 @@
+/**
+ * Compare for equality two objects of the form passed to
+ * setSubjectAlternativeNames (or X509CRLSelector.setIssuerNames).
+ * Throw an {@code IllegalArgumentException} or a
+ * {@code ClassCastException} if one of the objects is malformed.
+ *
+ * @param object1 a Collection containing the first object to compare
+ * @param object2 a Collection containing the second object to compare
+ * @return true if the objects are equal, false otherwise
+ */
+static boolean equalNames(Collection<?> object1, Collection<?> object2) {
+    if ((object1 == null) || (object2 == null)) {
+        return object1 == object2;
+    }
+    return object1.equals(object2);
+}

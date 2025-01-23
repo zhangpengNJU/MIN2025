@@ -1,0 +1,27 @@
+/**
+ * Tests whether the application can modify the file denoted by this
+ * abstract pathname. On some platforms it may be possible to start the
+ * Java virtual machine with special privileges that allow it to modify
+ * files that are marked read-only. Consequently this method may return
+ * {@code true} even though the file is marked read-only.
+ *
+ * @return  <code>true</code> if and only if the file system actually
+ *          contains a file denoted by this abstract pathname <em>and</em>
+ *          the application is allowed to write to the file;
+ *          <code>false</code> otherwise.
+ *
+ * @throws  SecurityException
+ *          If a security manager exists and its <code>{@link
+ *          java.lang.SecurityManager#checkWrite(java.lang.String)}</code>
+ *          method denies write access to the file
+ */
+public boolean canWrite() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkWrite(path);
+    }
+    if (isInvalid()) {
+        return false;
+    }
+    return fs.checkAccess(this, FileSystem.ACCESS_WRITE);
+}

@@ -1,0 +1,64 @@
+/**
+ * Get the ordering priority of the next contracting character in the
+ * string.
+ * @param ch the starting character of a contracting character token
+ * @return the next contracting character's ordering.  Returns NULLORDER
+ * if the end of string is reached.
+ */
+private int nextContractChar(int ch) {
+    // First get the ordering of this single character,
+    // which is always the first element in the list
+    Vector<EntryPair> list = ordering.getContractValues(ch);
+    EntryPair pair = list.firstElement();
+    int order = pair.value;
+    // find out the length of the longest contracting character sequence in the list.
+    // There's logic in the builder code to make sure the longest sequence is always
+    // the last.
+    pair = list.lastElement();
+    int maxLength = pair.entryName.length();
+    // (the Normalizer is cloned here so that the seeking we do in the next loop
+    // won't affect our real position in the text)
+    NormalizerBase tempText = (NormalizerBase) text.clone();
+    // extract the next maxLength characters in the string (we have to do this using the
+    // Normalizer to ensure that our offsets correspond to those the rest of the
+    // iterator is using) and store it in "fragment".
+    tempText.previous();
+    key.setLength(0);
+    int c = tempText.next();
+    while (maxLength > 0 && c != NormalizerBase.DONE) {
+        if (Character.isSupplementaryCodePoint(c)) {
+            key.append(Character.toChars(c));
+            maxLength -= 2;
+        } else {
+            key.append((char) c);
+            --maxLength;
+        }
+        c = tempText.next();
+    }
+    String fragment = key.toString();
+    // now that we have that fragment, iterate through this list looking for the
+    // longest sequence that matches the characters in the actual text.  (maxLength
+    // is used here to keep track of the length of the longest sequence)
+    // Upon exit from this loop, maxLength will contain the length of the matching
+    // sequence and order will contain the collation-element value corresponding
+    // to this sequence
+    maxLength = 1;
+    for (int i = list.size() - 1; i > 0; i--) {
+        pair = list.elementAt(i);
+        if (!pair.fwd)
+            continue;
+        if (fragment.startsWith(pair.entryName) && pair.entryName.length() > maxLength) {
+            maxLength = pair.entryName.length();
+            order = pair.value;
+        }
+    }
+    // seek our current iteration position to the end of the matching sequence
+    // and return the appropriate collation-element value (if there was no matching
+    // sequence, we're already seeked to the right position and order already contains
+    // the correct collation-element value for the single character)
+    while (maxLength > 1) {
+        c = text.next();
+        maxLength -= Character.charCount(c);
+    }
+    return order;
+}

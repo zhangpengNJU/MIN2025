@@ -1,0 +1,44 @@
+/**
+ * Create a LF which simply reinvokes a target of the given basic type.
+ */
+static LambdaForm makeReinvokerForm(MethodHandle target, int whichCache, Object constraint, String debugString, boolean forceInline, NamedFunction getTargetFn, NamedFunction preActionFn) {
+    MethodType mtype = target.type().basicType();
+    boolean customized = (whichCache < 0 || mtype.parameterSlotCount() > MethodType.MAX_MH_INVOKER_ARITY);
+    boolean hasPreAction = (preActionFn != null);
+    LambdaForm form;
+    if (!customized) {
+        form = mtype.form().cachedLambdaForm(whichCache);
+        if (form != null)
+            return form;
+    }
+    final int THIS_DMH = 0;
+    final int ARG_BASE = 1;
+    final int ARG_LIMIT = ARG_BASE + mtype.parameterCount();
+    int nameCursor = ARG_LIMIT;
+    final int PRE_ACTION = hasPreAction ? nameCursor++ : -1;
+    final int NEXT_MH = customized ? -1 : nameCursor++;
+    final int REINVOKE = nameCursor++;
+    LambdaForm.Name[] names = LambdaForm.arguments(nameCursor - ARG_LIMIT, mtype.invokerType());
+    assert (names.length == nameCursor);
+    names[THIS_DMH] = names[THIS_DMH].withConstraint(constraint);
+    Object[] targetArgs;
+    if (hasPreAction) {
+        names[PRE_ACTION] = new LambdaForm.Name(preActionFn, names[THIS_DMH]);
+    }
+    if (customized) {
+        targetArgs = Arrays.copyOfRange(names, ARG_BASE, ARG_LIMIT, Object[].class);
+        // the invoker is the target itself
+        names[REINVOKE] = new LambdaForm.Name(target, targetArgs);
+    } else {
+        names[NEXT_MH] = new LambdaForm.Name(getTargetFn, names[THIS_DMH]);
+        targetArgs = Arrays.copyOfRange(names, THIS_DMH, ARG_LIMIT, Object[].class);
+        // overwrite this MH with next MH
+        targetArgs[0] = names[NEXT_MH];
+        names[REINVOKE] = new LambdaForm.Name(mtype, targetArgs);
+    }
+    form = new LambdaForm(debugString, ARG_LIMIT, names, forceInline);
+    if (!customized) {
+        form = mtype.form().setCachedLambdaForm(whichCache, form);
+    }
+    return form;
+}

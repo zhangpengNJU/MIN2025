@@ -1,0 +1,19 @@
+/**
+ * Compares only the <code>mimeType</code> against the passed in
+ * <code>String</code> and <code>representationClass</code> is
+ * not considered in the comparison.
+ *
+ * If <code>representationClass</code> needs to be compared, then
+ * <code>equals(new DataFlavor(s))</code> may be used.
+ * @deprecated As inconsistent with <code>hashCode()</code> contract,
+ *             use <code>isMimeTypeEqual(String)</code> instead.
+ * @param s the {@code mimeType} to compare.
+ * @return true if the String (MimeType) is equal; false otherwise or if
+ *         {@code s} is {@code null}
+ */
+@Deprecated
+public boolean equals(String s) {
+    if (s == null || mimeType == null)
+        return false;
+    return isMimeTypeEqual(s);
+}

@@ -1,0 +1,11 @@
+/**
+ * Constructs a {@code TerminalOp} for streams of objects.
+ *
+ * @param <T> the type of elements of the stream
+ * @param mustFindFirst whether the {@code TerminalOp} must produce the
+ *        first element in the encounter order
+ * @return a {@code TerminalOp} implementing the find operation
+ */
+public static <T> TerminalOp<T, Optional<T>> makeRef(boolean mustFindFirst) {
+    return new FindOp<>(mustFindFirst, StreamShape.REFERENCE, Optional.empty(), Optional::isPresent, FindSink.OfRef::new);
+}

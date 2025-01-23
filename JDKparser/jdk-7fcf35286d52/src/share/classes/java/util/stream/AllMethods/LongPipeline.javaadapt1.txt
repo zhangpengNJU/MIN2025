@@ -1,0 +1,16 @@
+/**
+ * Adapt a {@code Spliterator<Long>} to a {@code Spliterator.OfLong}.
+ *
+ * @implNote
+ * The implementation attempts to cast to a Spliterator.OfLong, and throws
+ * an exception if this cast is not possible.
+ */
+private static Spliterator.OfLong adapt(Spliterator<Long> s) {
+    if (s instanceof Spliterator.OfLong) {
+        return (Spliterator.OfLong) s;
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(AbstractPipeline.class, "using LongStream.adapt(Spliterator<Long> s)");
+        throw new UnsupportedOperationException("LongStream.adapt(Spliterator<Long> s)");
+    }
+}

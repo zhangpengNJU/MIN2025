@@ -1,0 +1,43 @@
+/**
+ * Records the Statement so that the Encoder will
+ * produce the actual output when the stream is flushed.
+ * <P>
+ * This method should only be invoked within the context
+ * of initializing a persistence delegate.
+ *
+ * @param oldStm The statement that will be written
+ *               to the stream.
+ * @see java.beans.PersistenceDelegate#initialize
+ */
+public void writeStatement(Statement oldStm) {
+    // System.out.println("XMLEncoder::writeStatement: " + oldStm);
+    boolean internal = this.internal;
+    this.internal = true;
+    try {
+        super.writeStatement(oldStm);
+        /*
+               Note we must do the mark first as we may
+               require the results of previous values in
+               this context for this statement.
+               Test case is:
+                   os.setOwner(this);
+                   os.writeObject(this);
+            */
+        mark(oldStm);
+        Object target = oldStm.getTarget();
+        if (target instanceof Field) {
+            String method = oldStm.getMethodName();
+            Object[] args = oldStm.getArguments();
+            if ((method == null) || (args == null)) {
+            } else if (method.equals("get") && (args.length == 1)) {
+                target = args[0];
+            } else if (method.equals("set") && (args.length == 2)) {
+                target = args[0];
+            }
+        }
+        statementList(target).add(oldStm);
+    } catch (Exception e) {
+        getExceptionListener().exceptionThrown(new Exception("XMLEncoder: discarding statement " + oldStm, e));
+    }
+    this.internal = internal;
+}

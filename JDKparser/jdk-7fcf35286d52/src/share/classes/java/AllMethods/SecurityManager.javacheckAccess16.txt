@@ -1,0 +1,52 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to modify the thread argument.
+ * <p>
+ * This method is invoked for the current security manager by the
+ * <code>stop</code>, <code>suspend</code>, <code>resume</code>,
+ * <code>setPriority</code>, <code>setName</code>, and
+ * <code>setDaemon</code> methods of class <code>Thread</code>.
+ * <p>
+ * If the thread argument is a system thread (belongs to
+ * the thread group with a <code>null</code> parent) then
+ * this method calls <code>checkPermission</code> with the
+ * <code>RuntimePermission("modifyThread")</code> permission.
+ * If the thread argument is <i>not</i> a system thread,
+ * this method just returns silently.
+ * <p>
+ * Applications that want a stricter policy should override this
+ * method. If this method is overridden, the method that overrides
+ * it should additionally check to see if the calling thread has the
+ * <code>RuntimePermission("modifyThread")</code> permission, and
+ * if so, return silently. This is to ensure that code granted
+ * that permission (such as the JDK itself) is allowed to
+ * manipulate any thread.
+ * <p>
+ * If this method is overridden, then
+ * <code>super.checkAccess</code> should
+ * be called by the first statement in the overridden method, or the
+ * equivalent security check should be placed in the overridden method.
+ *
+ * @param      t   the thread to be checked.
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to modify the thread.
+ * @exception  NullPointerException if the thread argument is
+ *             <code>null</code>.
+ * @see        java.lang.Thread#resume() resume
+ * @see        java.lang.Thread#setDaemon(boolean) setDaemon
+ * @see        java.lang.Thread#setName(java.lang.String) setName
+ * @see        java.lang.Thread#setPriority(int) setPriority
+ * @see        java.lang.Thread#stop() stop
+ * @see        java.lang.Thread#suspend() suspend
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkAccess(Thread t) {
+    if (t == null) {
+        throw new NullPointerException("thread can't be null");
+    }
+    if (t.getThreadGroup() == rootGroup) {
+        checkPermission(SecurityConstants.MODIFY_THREAD_PERMISSION);
+    } else {
+    // just return
+    }
+}

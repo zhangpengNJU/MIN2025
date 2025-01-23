@@ -1,0 +1,20 @@
+/*
+     * We have "diamond" multiple interface inheritance here, and that
+     * introduces ambiguities.  Methods might end up with different
+     * specs depending on the branch chosen by javadoc.  Thus a lot of
+     * methods specs here are copied from superinterfaces.
+     */
+/**
+ * Inserts the specified element at the front of this deque if it is
+ * possible to do so immediately without violating capacity restrictions,
+ * throwing an {@code IllegalStateException} if no space is currently
+ * available.  When using a capacity-restricted deque, it is generally
+ * preferable to use {@link #offerFirst(Object) offerFirst}.
+ *
+ * @param e the element to add
+ * @throws IllegalStateException {@inheritDoc}
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if the specified element is null
+ * @throws IllegalArgumentException {@inheritDoc}
+ */
+void addFirst(E e);

@@ -1,0 +1,21 @@
+private Component retargetMouseEnterExit(Component targetOver, MouseEvent e, Component lastEntered, boolean inNativeContainer) {
+    int id = e.getID();
+    Component targetEnter = inNativeContainer ? targetOver : null;
+    if (lastEntered != targetEnter) {
+        if (lastEntered != null) {
+            retargetMouseEvent(lastEntered, MouseEvent.MOUSE_EXITED, e);
+        }
+        if (id == MouseEvent.MOUSE_EXITED) {
+            // consume native exit event if we generate one
+            e.consume();
+        }
+        if (targetEnter != null) {
+            retargetMouseEvent(targetEnter, MouseEvent.MOUSE_ENTERED, e);
+        }
+        if (id == MouseEvent.MOUSE_ENTERED) {
+            // consume native enter event if we generate one
+            e.consume();
+        }
+    }
+    return targetEnter;
+}

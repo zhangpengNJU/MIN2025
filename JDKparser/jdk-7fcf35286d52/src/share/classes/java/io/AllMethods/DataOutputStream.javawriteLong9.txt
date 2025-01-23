@@ -1,0 +1,21 @@
+/**
+ * Writes a <code>long</code> to the underlying output stream as eight
+ * bytes, high byte first. In no exception is thrown, the counter
+ * <code>written</code> is incremented by <code>8</code>.
+ *
+ * @param      v   a <code>long</code> to be written.
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.FilterOutputStream#out
+ */
+public final void writeLong(long v) throws IOException {
+    writeBuffer[0] = (byte) (v >>> 56);
+    writeBuffer[1] = (byte) (v >>> 48);
+    writeBuffer[2] = (byte) (v >>> 40);
+    writeBuffer[3] = (byte) (v >>> 32);
+    writeBuffer[4] = (byte) (v >>> 24);
+    writeBuffer[5] = (byte) (v >>> 16);
+    writeBuffer[6] = (byte) (v >>> 8);
+    writeBuffer[7] = (byte) (v >>> 0);
+    out.write(writeBuffer, 0, 8);
+    incCount(8);
+}

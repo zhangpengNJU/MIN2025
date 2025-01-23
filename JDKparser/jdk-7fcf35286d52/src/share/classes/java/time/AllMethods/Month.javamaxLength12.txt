@@ -1,0 +1,22 @@
+/**
+ * Gets the maximum length of this month in days.
+ * <p>
+ * February has a maximum length of 29 days.
+ * April, June, September and November have 30 days.
+ * All other months have 31 days.
+ *
+ * @return the maximum length of this month in days, from 29 to 31
+ */
+public int maxLength() {
+    switch(this) {
+        case FEBRUARY:
+            return 29;
+        case APRIL:
+        case JUNE:
+        case SEPTEMBER:
+        case NOVEMBER:
+            return 30;
+        default:
+            return 31;
+    }
+}

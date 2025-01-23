@@ -1,0 +1,25 @@
+private void shapeContextually(char[] text, int start, int count, Range ctxKey) {
+    // if we don't support the specified context, then don't shape.
+    if (ctxKey == null || !rangeSet.contains(ctxKey)) {
+        ctxKey = Range.EUROPEAN;
+    }
+    Range lastKey = ctxKey;
+    int base = ctxKey.getDigitBase();
+    char minDigit = (char) ('0' + ctxKey.getNumericBase());
+    final int end = start + count;
+    for (int i = start; i < end; ++i) {
+        char c = text[i];
+        if (c >= minDigit && c <= '9') {
+            text[i] = (char) (c + base);
+            continue;
+        }
+        if (isStrongDirectional(c)) {
+            ctxKey = rangeForCodePoint(c);
+            if (ctxKey != lastKey) {
+                lastKey = ctxKey;
+                base = ctxKey.getDigitBase();
+                minDigit = (char) ('0' + ctxKey.getNumericBase());
+            }
+        }
+    }
+}

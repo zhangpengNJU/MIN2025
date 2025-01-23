@@ -1,0 +1,23 @@
+/**
+ * Passes the properties from the source object along after adding a
+ * property indicating the stream of filters it has been run through.
+ * <p>
+ * Note: This method is intended to be called by the ImageProducer
+ * of the Image whose pixels are being filtered.  Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ *
+ * @param props the properties from the source object
+ * @exception NullPointerException if <code>props</code> is null
+ */
+public void setProperties(Hashtable<?, ?> props) {
+    Hashtable<Object, Object> p = (Hashtable<Object, Object>) props.clone();
+    Object o = p.get("filters");
+    if (o == null) {
+        p.put("filters", toString());
+    } else if (o instanceof String) {
+        p.put("filters", ((String) o) + toString());
+    }
+    consumer.setProperties(p);
+}

@@ -1,0 +1,11 @@
+public void set(E e) {
+    if (lastRet < 0)
+        throw new IllegalStateException();
+    checkForComodification();
+    try {
+        AbstractList.this.set(lastRet, e);
+        expectedModCount = modCount;
+    } catch (IndexOutOfBoundsException ex) {
+        throw new ConcurrentModificationException();
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * Returns the hit for the next caret to the left (top); if no such
+ * hit, returns <code>null</code>.
+ * If the hit character index is out of bounds, an
+ * <code>IllegalArgumentException</code> is thrown.
+ * @param hit a hit on a character in this <code>TextLayout</code>.
+ * @return a hit whose caret appears at the next position to the
+ * left (top) of the caret of the provided hit, or <code>null</code>.
+ */
+public TextHitInfo getNextLeftHit(TextHitInfo hit) {
+    ensureCache();
+    checkTextHit(hit);
+    int caret = hitToCaret(hit);
+    if (caret == 0) {
+        return null;
+    }
+    do {
+        --caret;
+    } while (!caretIsValid(caret));
+    return caretToHit(caret);
+}

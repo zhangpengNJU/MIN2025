@@ -1,0 +1,15 @@
+/**
+ * Returns the {@link LineMetrics} object for the specified
+ * {@link CharacterIterator} in the specified {@link Graphics}
+ * context.
+ * @param ci the specified <code>CharacterIterator</code>
+ * @param beginIndex the initial offset in <code>ci</code>
+ * @param limit the end index of <code>ci</code>
+ * @param context the specified <code>Graphics</code> context
+ * @return a <code>LineMetrics</code> object created with the
+ * specified arguments.
+ * @see java.awt.Font#getLineMetrics(CharacterIterator, int, int, FontRenderContext)
+ */
+public LineMetrics getLineMetrics(CharacterIterator ci, int beginIndex, int limit, Graphics context) {
+    return font.getLineMetrics(ci, beginIndex, limit, myFRC(context));
+}

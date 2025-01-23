@@ -1,0 +1,18 @@
+/**
+ * Converts this {@code BigInteger} to an {@code int}, checking
+ * for lost information.  If the value of this {@code BigInteger}
+ * is out of the range of the {@code int} type, then an
+ * {@code ArithmeticException} is thrown.
+ *
+ * @return this {@code BigInteger} converted to an {@code int}.
+ * @throws ArithmeticException if the value of {@code this} will
+ * not exactly fit in a {@code int}.
+ * @see BigInteger#intValue
+ * @since  1.8
+ */
+public int intValueExact() {
+    if (mag.length <= 1 && bitLength() <= 31)
+        return intValue();
+    else
+        throw new ArithmeticException("BigInteger out of int range");
+}

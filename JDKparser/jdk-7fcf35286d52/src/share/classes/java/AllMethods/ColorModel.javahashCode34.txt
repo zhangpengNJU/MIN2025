@@ -1,0 +1,15 @@
+/**
+ * Returns the hash code for this ColorModel.
+ *
+ * @return    a hash code for this ColorModel.
+ */
+public int hashCode() {
+    int result = 0;
+    result = (supportsAlpha ? 2 : 3) + (isAlphaPremultiplied ? 4 : 5) + pixel_bits * 6 + transparency * 7 + numComponents * 8;
+    if (nBits != null) {
+        for (int i = 0; i < numComponents; i++) {
+            result = result + nBits[i] * (i + 9);
+        }
+    }
+    return result;
+}

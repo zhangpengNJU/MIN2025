@@ -1,0 +1,8 @@
+@Override
+public int get(TemporalField field) {
+    if (field instanceof ChronoField) {
+        ChronoField f = (ChronoField) field;
+        return (f.isTimeBased() ? time.get(field) : date.get(field));
+    }
+    return range(field).checkValidIntValue(getLong(field), field);
+}

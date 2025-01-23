@@ -1,0 +1,10 @@
+private static Charset lookupCharset(String csn) {
+    if (Charset.isSupported(csn)) {
+        try {
+            return Charset.forName(csn);
+        } catch (UnsupportedCharsetException x) {
+            throw new Error(x);
+        }
+    }
+    return null;
+}

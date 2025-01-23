@@ -1,0 +1,13 @@
+/**
+ * Returns {@code true} if the apparent first queued thread, if one
+ * exists, is waiting in exclusive mode.  If this method returns
+ * {@code true}, and the current thread is attempting to acquire in
+ * shared mode (that is, this method is invoked from {@link
+ * #tryAcquireShared}) then it is guaranteed that the current thread
+ * is not the first queued thread.  Used only as a heuristic in
+ * ReentrantReadWriteLock.
+ */
+final boolean apparentlyFirstQueuedIsExclusive() {
+    Node h, s;
+    return (h = head) != null && (s = h.next) != null && !s.isShared() && s.thread != null;
+}

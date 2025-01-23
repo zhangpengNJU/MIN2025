@@ -1,0 +1,61 @@
+/**
+ * Initializes the symbols from the FormatData resource bundle.
+ */
+private void initialize(Locale locale) {
+    this.locale = locale;
+    // get resource bundle data
+    LocaleProviderAdapter adapter = LocaleProviderAdapter.getAdapter(DecimalFormatSymbolsProvider.class, locale);
+    // Avoid potential recursions
+    if (!(adapter instanceof ResourceBundleBasedAdapter)) {
+        adapter = LocaleProviderAdapter.getResourceBundleBased();
+    }
+    Object[] data = adapter.getLocaleResources(locale).getDecimalFormatSymbolsData();
+    String[] numberElements = (String[]) data[0];
+    decimalSeparator = numberElements[0].charAt(0);
+    groupingSeparator = numberElements[1].charAt(0);
+    patternSeparator = numberElements[2].charAt(0);
+    percent = numberElements[3].charAt(0);
+    // different for Arabic,etc.
+    zeroDigit = numberElements[4].charAt(0);
+    digit = numberElements[5].charAt(0);
+    minusSign = numberElements[6].charAt(0);
+    exponential = numberElements[7].charAt(0);
+    // string representation new since 1.6
+    exponentialSeparator = numberElements[7];
+    perMill = numberElements[8].charAt(0);
+    infinity = numberElements[9];
+    NaN = numberElements[10];
+    // Try to obtain the currency used in the locale's country.
+    // Check for empty country string separately because it's a valid
+    // country ID for Locale (and used for the C locale), but not a valid
+    // ISO 3166 country code, and exceptions are expensive.
+    if (locale.getCountry().length() > 0) {
+        try {
+            currency = Currency.getInstance(locale);
+        } catch (IllegalArgumentException e) {
+        // use default values below for compatibility
+        }
+    }
+    if (currency != null) {
+        intlCurrencySymbol = currency.getCurrencyCode();
+        if (data[1] != null && data[1] == intlCurrencySymbol) {
+            currencySymbol = (String) data[2];
+        } else {
+            currencySymbol = currency.getSymbol(locale);
+            data[1] = intlCurrencySymbol;
+            data[2] = currencySymbol;
+        }
+    } else {
+        // default values
+        intlCurrencySymbol = "XXX";
+        try {
+            currency = Currency.getInstance(intlCurrencySymbol);
+        } catch (IllegalArgumentException e) {
+        }
+        currencySymbol = "\u00A4";
+    }
+    // Currently the monetary decimal separator is the same as the
+    // standard decimal separator for all locales that we support.
+    // If that changes, add a new entry to NumberElements.
+    monetarySeparator = decimalSeparator;
+}

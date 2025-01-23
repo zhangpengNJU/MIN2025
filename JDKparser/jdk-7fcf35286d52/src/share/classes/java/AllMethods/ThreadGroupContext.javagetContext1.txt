@@ -1,0 +1,9 @@
+/**
+ * Returns the appropriate {@code ThreadGroupContext} for the caller,
+ * as determined by its {@code ThreadGroup}.
+ *
+ * @return  the application-dependent context
+ */
+static ThreadGroupContext getContext() {
+    return contexts.get(Thread.currentThread().getThreadGroup());
+}

@@ -1,0 +1,32 @@
+private void emitI2X(Wrapper type) {
+    switch(type) {
+        case BYTE:
+            mv.visitInsn(Opcodes.I2B);
+            break;
+        case SHORT:
+            mv.visitInsn(Opcodes.I2S);
+            break;
+        case CHAR:
+            mv.visitInsn(Opcodes.I2C);
+            break;
+        case INT:
+            /* naught */
+            break;
+        case LONG:
+            mv.visitInsn(Opcodes.I2L);
+            break;
+        case FLOAT:
+            mv.visitInsn(Opcodes.I2F);
+            break;
+        case DOUBLE:
+            mv.visitInsn(Opcodes.I2D);
+            break;
+        case BOOLEAN:
+            // For compatibility with ValueConversions and explicitCastArguments:
+            mv.visitInsn(Opcodes.ICONST_1);
+            mv.visitInsn(Opcodes.IAND);
+            break;
+        default:
+            throw new InternalError("unknown type: " + type);
+    }
+}

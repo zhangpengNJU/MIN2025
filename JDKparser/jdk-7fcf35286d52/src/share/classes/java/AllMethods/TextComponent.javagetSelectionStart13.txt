@@ -1,0 +1,14 @@
+/**
+ * Gets the start position of the selected text in
+ * this text component.
+ * @return      the start position of the selected text
+ * @see         java.awt.TextComponent#setSelectionStart
+ * @see         java.awt.TextComponent#getSelectionEnd
+ */
+public synchronized int getSelectionStart() {
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        selectionStart = peer.getSelectionStart();
+    }
+    return selectionStart;
+}

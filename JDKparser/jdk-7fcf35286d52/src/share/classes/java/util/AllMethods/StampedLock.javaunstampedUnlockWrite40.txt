@@ -1,0 +1,11 @@
+// Unlock methods without stamp argument checks for view classes.
+// Needed because view-class lock methods throw away stamps.
+final void unstampedUnlockWrite() {
+    WNode h;
+    long s;
+    if (((s = state) & WBIT) == 0L)
+        throw new IllegalMonitorStateException();
+    state = (s += WBIT) == 0L ? ORIGIN : s;
+    if ((h = whead) != null && h.status != 0)
+        release(h);
+}

@@ -1,0 +1,19 @@
+/**
+ * Shutdown the connection for writing without closing the channel.
+ *
+ * <p> Once shutdown for writing then further attempts to write to the
+ * channel will throw {@link ClosedChannelException}. If the output side of
+ * the connection is already shutdown then invoking this method has no
+ * effect. The effect on an outstanding write operation is system dependent
+ * and therefore not specified.
+ *
+ * @return  The channel
+ *
+ * @throws  NotYetConnectedException
+ *          If this channel is not yet connected
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract AsynchronousSocketChannel shutdownOutput() throws IOException;

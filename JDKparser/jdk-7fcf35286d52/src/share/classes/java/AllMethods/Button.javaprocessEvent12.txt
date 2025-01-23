@@ -1,0 +1,21 @@
+/**
+ * Processes events on this button. If an event is
+ * an instance of <code>ActionEvent</code>, this method invokes
+ * the <code>processActionEvent</code> method. Otherwise,
+ * it invokes <code>processEvent</code> on the superclass.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param        e the event
+ * @see          java.awt.event.ActionEvent
+ * @see          java.awt.Button#processActionEvent
+ * @since        JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ActionEvent) {
+        processActionEvent((ActionEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

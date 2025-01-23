@@ -1,0 +1,14 @@
+/**
+ * Removes the menu bar's peer.  The peer allows us to change the
+ * appearance of the menu bar without changing any of the menu bar's
+ * functionality.
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        int nmenus = getMenuCount();
+        for (int i = 0; i < nmenus; i++) {
+            getMenu(i).removeNotify();
+        }
+        super.removeNotify();
+    }
+}

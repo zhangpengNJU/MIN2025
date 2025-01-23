@@ -1,0 +1,25 @@
+/**
+ * Determines whether this component is showing on screen. This means
+ * that the component must be visible, and it must be in a container
+ * that is visible and showing.
+ * <p>
+ * <strong>Note:</strong> sometimes there is no way to detect whether the
+ * {@code Component} is actually visible to the user.  This can happen when:
+ * <ul>
+ * <li>the component has been added to a visible {@code ScrollPane} but
+ * the {@code Component} is not currently in the scroll pane's view port.
+ * <li>the {@code Component} is obscured by another {@code Component} or
+ * {@code Container}.
+ * </ul>
+ * @return <code>true</code> if the component is showing,
+ *          <code>false</code> otherwise
+ * @see #setVisible
+ * @since JDK1.0
+ */
+public boolean isShowing() {
+    if (visible && (peer != null)) {
+        Container parent = this.parent;
+        return (parent == null) || parent.isShowing();
+    }
+    return false;
+}

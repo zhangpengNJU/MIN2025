@@ -1,0 +1,27 @@
+char[] decode(byte[] ba, int off, int len) {
+    int en = scale(len, cd.maxCharsPerByte());
+    char[] ca = new char[en];
+    if (len == 0)
+        return ca;
+    if (cd instanceof ArrayDecoder) {
+        int clen = ((ArrayDecoder) cd).decode(ba, off, len, ca);
+        return safeTrim(ca, clen, cs, isTrusted);
+    } else {
+        cd.reset();
+        ByteBuffer bb = ByteBuffer.wrap(ba, off, len);
+        CharBuffer cb = CharBuffer.wrap(ca);
+        try {
+            CoderResult cr = cd.decode(bb, cb, true);
+            if (!cr.isUnderflow())
+                cr.throwException();
+            cr = cd.flush(cb);
+            if (!cr.isUnderflow())
+                cr.throwException();
+        } catch (CharacterCodingException x) {
+            // Substitution is always enabled,
+            // so this shouldn't happen
+            throw new Error(x);
+        }
+        return safeTrim(ca, cb.position(), cs, isTrusted);
+    }
+}

@@ -1,0 +1,5 @@
+private static MethodHandle buildArrayProducer(Class<?> arrayType) {
+    Class<?> elemType = arrayType.getComponentType();
+    assert (elemType.isPrimitive());
+    return Lazy.MH_copyAsPrimitiveArray.bindTo(Wrapper.forPrimitiveType(elemType));
+}

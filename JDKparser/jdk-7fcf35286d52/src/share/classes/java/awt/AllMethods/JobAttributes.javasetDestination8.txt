@@ -1,0 +1,14 @@
+/**
+ * Specifies whether output will be to a printer or a file for jobs using
+ * these attributes. Not specifying this attribute is equivalent to
+ * specifying DesintationType.PRINTER.
+ *
+ * @param   destination DesintationType.FILE or DesintationType.PRINTER.
+ * @throws  IllegalArgumentException if destination is null.
+ */
+public void setDestination(DestinationType destination) {
+    if (destination == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "destination");
+    }
+    this.destination = destination;
+}

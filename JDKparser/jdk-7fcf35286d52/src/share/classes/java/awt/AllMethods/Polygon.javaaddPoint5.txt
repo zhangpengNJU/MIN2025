@@ -1,0 +1,33 @@
+/**
+ * Appends the specified coordinates to this <code>Polygon</code>.
+ * <p>
+ * If an operation that calculates the bounding box of this
+ * <code>Polygon</code> has already been performed, such as
+ * <code>getBounds</code> or <code>contains</code>, then this
+ * method updates the bounding box.
+ * @param       x the specified X coordinate
+ * @param       y the specified Y coordinate
+ * @see         java.awt.Polygon#getBounds
+ * @see         java.awt.Polygon#contains
+ * @since 1.0
+ */
+public void addPoint(int x, int y) {
+    if (npoints >= xpoints.length || npoints >= ypoints.length) {
+        int newLength = npoints * 2;
+        // Make sure that newLength will be greater than MIN_LENGTH and
+        // aligned to the power of 2
+        if (newLength < MIN_LENGTH) {
+            newLength = MIN_LENGTH;
+        } else if ((newLength & (newLength - 1)) != 0) {
+            newLength = Integer.highestOneBit(newLength);
+        }
+        xpoints = Arrays.copyOf(xpoints, newLength);
+        ypoints = Arrays.copyOf(ypoints, newLength);
+    }
+    xpoints[npoints] = x;
+    ypoints[npoints] = y;
+    npoints++;
+    if (bounds != null) {
+        updateBounds(x, y);
+    }
+}

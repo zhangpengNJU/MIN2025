@@ -1,0 +1,57 @@
+@Override
+public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    if (value == null)
+        throw new NullPointerException();
+    if (remappingFunction == null)
+        throw new NullPointerException();
+    int hash = hash(key);
+    Node<K, V>[] tab;
+    Node<K, V> first;
+    int n, i;
+    int binCount = 0;
+    TreeNode<K, V> t = null;
+    Node<K, V> old = null;
+    if (size > threshold || (tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    if ((first = tab[i = (n - 1) & hash]) != null) {
+        if (first instanceof TreeNode)
+            old = (t = (TreeNode<K, V>) first).getTreeNode(hash, key);
+        else {
+            Node<K, V> e = first;
+            K k;
+            do {
+                if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k)))) {
+                    old = e;
+                    break;
+                }
+                ++binCount;
+            } while ((e = e.next) != null);
+        }
+    }
+    if (old != null) {
+        V v;
+        if (old.value != null)
+            v = remappingFunction.apply(old.value, value);
+        else
+            v = value;
+        if (v != null) {
+            old.value = v;
+            afterNodeAccess(old);
+        } else
+            removeNode(hash, key, null, false, true);
+        return v;
+    }
+    if (value != null) {
+        if (t != null)
+            t.putTreeVal(this, tab, hash, key, value);
+        else {
+            tab[i] = newNode(hash, key, value, first);
+            if (binCount >= TREEIFY_THRESHOLD - 1)
+                treeifyBin(tab, hash);
+        }
+        ++modCount;
+        ++size;
+        afterNodeInsertion(true);
+    }
+    return value;
+}

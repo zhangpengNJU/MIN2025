@@ -1,0 +1,35 @@
+/**
+ * Skips over and discards {@code n} bytes of data from this
+ * input stream. The {@code skip} method may, for a variety of
+ * reasons, end up skipping over some smaller number of bytes,
+ * possibly {@code 0}. The actual number of bytes skipped is
+ * returned.  If {@code n} is negative, no bytes are skipped.
+ * <p>
+ * The {@code skip} method of {@code LineNumberInputStream} creates
+ * a byte array and then repeatedly reads into it until
+ * {@code n} bytes have been read or the end of the stream has
+ * been reached.
+ *
+ * @param      n   the number of bytes to be skipped.
+ * @return     the actual number of bytes skipped.
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.FilterInputStream#in
+ */
+public long skip(long n) throws IOException {
+    int chunk = 2048;
+    long remaining = n;
+    byte[] data;
+    int nr;
+    if (n <= 0) {
+        return 0;
+    }
+    data = new byte[chunk];
+    while (remaining > 0) {
+        nr = read(data, 0, (int) Math.min(chunk, remaining));
+        if (nr < 0) {
+            break;
+        }
+        remaining -= nr;
+    }
+    return n - remaining;
+}

@@ -1,0 +1,18 @@
+/**
+ * Get the pixel buffer.  If the PixelGrabber was not constructed
+ * with an explicit pixel buffer to hold the pixels then this method
+ * will return null until the size and format of the image data is
+ * known.
+ * Since the PixelGrabber may fall back on accumulating the data
+ * in the default RGB ColorModel at any time if the source image
+ * uses more than one ColorModel to deliver the data, the array
+ * object returned by this method may change over time until the
+ * image grab is complete.
+ * @return either a byte array or an int array
+ * @see #getStatus
+ * @see #setPixels(int, int, int, int, ColorModel, byte[], int, int)
+ * @see #setPixels(int, int, int, int, ColorModel, int[], int, int)
+ */
+public synchronized Object getPixels() {
+    return (bytePixels == null) ? ((Object) intPixels) : ((Object) bytePixels);
+}

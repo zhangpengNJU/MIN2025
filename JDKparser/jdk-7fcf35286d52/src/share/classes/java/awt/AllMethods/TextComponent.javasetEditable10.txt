@@ -1,0 +1,26 @@
+/**
+ * Sets the flag that determines whether or not this
+ * text component is editable.
+ * <p>
+ * If the flag is set to <code>true</code>, this text component
+ * becomes user editable. If the flag is set to <code>false</code>,
+ * the user cannot change the text of this text component.
+ * By default, non-editable text components have a background color
+ * of SystemColor.control.  This default can be overridden by
+ * calling setBackground.
+ *
+ * @param     b   a flag indicating whether this text component
+ *                      is user editable.
+ * @see       java.awt.TextComponent#isEditable
+ * @since     JDK1.0
+ */
+public synchronized void setEditable(boolean b) {
+    if (editable == b) {
+        return;
+    }
+    editable = b;
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        peer.setEditable(b);
+    }
+}

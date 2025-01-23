@@ -1,0 +1,17 @@
+/**
+ *  Returns the TransferType used to transfer pixels by way of the
+ *  <code>getDataElements</code> and <code>setDataElements</code>
+ *  methods. The TransferType might or might not be the same as the
+ *  storage DataType.  The TransferType is one of
+ *  DataBuffer.TYPE_BYTE, DataBuffer.TYPE_USHORT,
+ *  or DataBuffer.TYPE_INT.
+ *  @return the transfertype.
+ */
+public int getTransferType() {
+    if (pixelBitStride > 16)
+        return DataBuffer.TYPE_INT;
+    else if (pixelBitStride > 8)
+        return DataBuffer.TYPE_USHORT;
+    else
+        return DataBuffer.TYPE_BYTE;
+}

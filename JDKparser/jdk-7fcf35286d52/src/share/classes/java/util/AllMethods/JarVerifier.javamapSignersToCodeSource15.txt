@@ -1,0 +1,25 @@
+/*
+     * Create a unique mapping from codeSigner cache entries to CodeSource.
+     * In theory, multiple URLs origins could map to a single locally cached
+     * and shared JAR file although in practice there will be a single URL in use.
+     */
+private synchronized CodeSource mapSignersToCodeSource(URL url, CodeSigner[] signers) {
+    Map<CodeSigner[], CodeSource> map;
+    if (url == lastURL) {
+        map = lastURLMap;
+    } else {
+        map = urlToCodeSourceMap.get(url);
+        if (map == null) {
+            map = new HashMap<>();
+            urlToCodeSourceMap.put(url, map);
+        }
+        lastURLMap = map;
+        lastURL = url;
+    }
+    CodeSource cs = map.get(signers);
+    if (cs == null) {
+        cs = new VerifierCodeSource(csdomain, url, signers);
+        signerToCodeSource.put(signers, cs);
+    }
+    return cs;
+}

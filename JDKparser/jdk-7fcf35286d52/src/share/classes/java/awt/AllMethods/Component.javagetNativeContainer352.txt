@@ -1,0 +1,11 @@
+/*
+     * Fetches the native container somewhere higher up in the component
+     * tree that contains this component.
+     */
+final Container getNativeContainer() {
+    Container p = getContainer();
+    while (p != null && p.peer instanceof LightweightPeer) {
+        p = p.getContainer();
+    }
+    return p;
+}

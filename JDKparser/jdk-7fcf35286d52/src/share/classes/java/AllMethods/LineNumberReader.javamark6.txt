@@ -1,0 +1,25 @@
+/**
+ * Mark the present position in the stream.  Subsequent calls to reset()
+ * will attempt to reposition the stream to this point, and will also reset
+ * the line number appropriately.
+ *
+ * @param  readAheadLimit
+ *         Limit on the number of characters that may be read while still
+ *         preserving the mark.  After reading this many characters,
+ *         attempting to reset the stream may fail.
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+public void mark(int readAheadLimit) throws IOException {
+    synchronized (lock) {
+        // If the most recently read character is '\r', then increment the
+        // read ahead limit as in this case if the next character is '\n',
+        // two characters would actually be read by the next read().
+        if (skipLF)
+            readAheadLimit++;
+        super.mark(readAheadLimit);
+        markedLineNumber = lineNumber;
+        markedSkipLF = skipLF;
+    }
+}

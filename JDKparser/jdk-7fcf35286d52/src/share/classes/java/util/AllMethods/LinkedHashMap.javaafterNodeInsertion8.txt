@@ -1,0 +1,8 @@
+void afterNodeInsertion(boolean evict) {
+    // possibly remove eldest
+    LinkedHashMap.Entry<K, V> first;
+    if (evict && (first = head) != null && removeEldestEntry(first)) {
+        K key = first.key;
+        removeNode(hash(key), key, null, false, true);
+    }
+}

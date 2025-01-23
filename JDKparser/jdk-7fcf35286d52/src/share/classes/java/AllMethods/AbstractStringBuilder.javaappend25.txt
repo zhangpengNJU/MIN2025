@@ -1,0 +1,21 @@
+/**
+ * Appends the string representation of the {@code char}
+ * argument to this sequence.
+ * <p>
+ * The argument is appended to the contents of this sequence.
+ * The length of this sequence increases by {@code 1}.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(char)},
+ * and the character in that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   c   a {@code char}.
+ * @return  a reference to this object.
+ */
+@Override
+public AbstractStringBuilder append(char c) {
+    ensureCapacityInternal(count + 1);
+    value[count++] = c;
+    return this;
+}

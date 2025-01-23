@@ -1,0 +1,50 @@
+/**
+ * Calculate GCD of this and v.
+ * Assumes that this and v are not zero.
+ */
+private MutableBigInteger binaryGCD(MutableBigInteger v) {
+    // Algorithm B from Knuth section 4.5.2
+    MutableBigInteger u = this;
+    MutableBigInteger r = new MutableBigInteger();
+    // step B1
+    int s1 = u.getLowestSetBit();
+    int s2 = v.getLowestSetBit();
+    int k = (s1 < s2) ? s1 : s2;
+    if (k != 0) {
+        u.rightShift(k);
+        v.rightShift(k);
+    }
+    // step B2
+    boolean uOdd = (k == s1);
+    MutableBigInteger t = uOdd ? v : u;
+    int tsign = uOdd ? -1 : 1;
+    int lb;
+    while ((lb = t.getLowestSetBit()) >= 0) {
+        // steps B3 and B4
+        t.rightShift(lb);
+        // step B5
+        if (tsign > 0)
+            u = t;
+        else
+            v = t;
+        // Special case one word numbers
+        if (u.intLen < 2 && v.intLen < 2) {
+            int x = u.value[u.offset];
+            int y = v.value[v.offset];
+            x = binaryGcd(x, y);
+            r.value[0] = x;
+            r.intLen = 1;
+            r.offset = 0;
+            if (k > 0)
+                r.leftShift(k);
+            return r;
+        }
+        // step B6
+        if ((tsign = u.difference(v)) == 0)
+            break;
+        t = (tsign >= 0) ? u : v;
+    }
+    if (k > 0)
+        u.leftShift(k);
+    return u;
+}

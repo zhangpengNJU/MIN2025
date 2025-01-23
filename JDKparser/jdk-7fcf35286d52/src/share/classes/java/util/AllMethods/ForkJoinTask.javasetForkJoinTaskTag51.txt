@@ -1,0 +1,13 @@
+/**
+ * Atomically sets the tag value for this task.
+ *
+ * @param tag the tag value
+ * @return the previous value of the tag
+ * @since 1.8
+ */
+public final short setForkJoinTaskTag(short tag) {
+    for (int s; ; ) {
+        if (U.compareAndSwapInt(this, STATUS, s = status, (s & ~SMASK) | (tag & SMASK)))
+            return (short) s;
+    }
+}

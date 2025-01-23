@@ -1,0 +1,96 @@
+/**
+ * Make a {@code GeneralNameInterface} out of a name type (0-8) and an
+ * Object that may be a byte array holding the ASN.1 DER encoded
+ * name or a String form of the name.  Except for X.509
+ * Distinguished Names, the String form of the name must not be the
+ * result from calling toString on an existing GeneralNameInterface
+ * implementing class.  The output of toString is not compatible
+ * with the String constructors for names other than Distinguished
+ * Names.
+ *
+ * @param type name type (0-8)
+ * @param name name as ASN.1 Der-encoded byte array or String
+ * @return a GeneralNameInterface name
+ * @throws IOException if a parsing error occurs
+ */
+static GeneralNameInterface makeGeneralNameInterface(int type, Object name) throws IOException {
+    GeneralNameInterface result;
+    if (debug != null) {
+        debug.println("X509CertSelector.makeGeneralNameInterface(" + type + ")...");
+    }
+    if (name instanceof String) {
+        if (debug != null) {
+            debug.println("X509CertSelector.makeGeneralNameInterface() " + "name is String: " + name);
+        }
+        switch(type) {
+            case NAME_RFC822:
+                result = new RFC822Name((String) name);
+                break;
+            case NAME_DNS:
+                result = new DNSName((String) name);
+                break;
+            case NAME_DIRECTORY:
+                result = new X500Name((String) name);
+                break;
+            case NAME_URI:
+                result = new URIName((String) name);
+                break;
+            case NAME_IP:
+                result = new IPAddressName((String) name);
+                break;
+            case NAME_OID:
+                result = new OIDName((String) name);
+                break;
+            default:
+                throw new IOException("unable to parse String names of type " + type);
+        }
+        if (debug != null) {
+            debug.println("X509CertSelector.makeGeneralNameInterface() " + "result: " + result.toString());
+        }
+    } else if (name instanceof byte[]) {
+        DerValue val = new DerValue((byte[]) name);
+        if (debug != null) {
+            debug.println("X509CertSelector.makeGeneralNameInterface() is byte[]");
+        }
+        switch(type) {
+            case NAME_ANY:
+                result = new OtherName(val);
+                break;
+            case NAME_RFC822:
+                result = new RFC822Name(val);
+                break;
+            case NAME_DNS:
+                result = new DNSName(val);
+                break;
+            case NAME_X400:
+                result = new X400Address(val);
+                break;
+            case NAME_DIRECTORY:
+                result = new X500Name(val);
+                break;
+            case NAME_EDI:
+                result = new EDIPartyName(val);
+                break;
+            case NAME_URI:
+                result = new URIName(val);
+                break;
+            case NAME_IP:
+                result = new IPAddressName(val);
+                break;
+            case NAME_OID:
+                result = new OIDName(val);
+                break;
+            default:
+                throw new IOException("unable to parse byte array names of " + "type " + type);
+        }
+        if (debug != null) {
+            debug.println("X509CertSelector.makeGeneralNameInterface() result: " + result.toString());
+        }
+    } else {
+        if (debug != null) {
+            debug.println("X509CertSelector.makeGeneralName() input name " + "not String or byte array");
+        }
+        throw new IOException("name not String or byte array");
+    }
+    return result;
+}

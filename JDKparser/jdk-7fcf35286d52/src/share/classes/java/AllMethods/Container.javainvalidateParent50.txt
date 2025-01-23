@@ -1,0 +1,10 @@
+/**
+ * Invalidates the parent of the container unless the container
+ * is a validate root.
+ */
+@Override
+void invalidateParent() {
+    if (!isJavaAwtSmartInvalidate || !isValidateRoot()) {
+        super.invalidateParent();
+    }
+}

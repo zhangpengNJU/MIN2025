@@ -1,0 +1,39 @@
+/**
+ * Writes the state to the stream.
+ *
+ * @param out  the output stream, not null
+ * @throws IOException if an error occurs
+ */
+void writeExternal(DataOutput out) throws IOException {
+    final int timeSecs = (timeEndOfDay ? 86400 : time.toSecondOfDay());
+    final int stdOffset = standardOffset.getTotalSeconds();
+    final int beforeDiff = offsetBefore.getTotalSeconds() - stdOffset;
+    final int afterDiff = offsetAfter.getTotalSeconds() - stdOffset;
+    final int timeByte = (timeSecs % 3600 == 0 ? (timeEndOfDay ? 24 : time.getHour()) : 31);
+    final int stdOffsetByte = (stdOffset % 900 == 0 ? stdOffset / 900 + 128 : 255);
+    final int beforeByte = (beforeDiff == 0 || beforeDiff == 1800 || beforeDiff == 3600 ? beforeDiff / 1800 : 3);
+    final int afterByte = (afterDiff == 0 || afterDiff == 1800 || afterDiff == 3600 ? afterDiff / 1800 : 3);
+    final int dowByte = (dow == null ? 0 : dow.getValue());
+    int b = // 4 bits
+    (month.getValue() << 28) + // 6 bits
+    ((dom + 32) << 22) + // 3 bits
+    (dowByte << 19) + // 5 bits
+    (timeByte << 14) + // 2 bits
+    (timeDefinition.ordinal() << 12) + // 8 bits
+    (stdOffsetByte << 4) + // 2 bits
+    (beforeByte << 2) + // 2 bits
+    afterByte;
+    out.writeInt(b);
+    if (timeByte == 31) {
+        out.writeInt(timeSecs);
+    }
+    if (stdOffsetByte == 255) {
+        out.writeInt(stdOffset);
+    }
+    if (beforeByte == 3) {
+        out.writeInt(offsetBefore.getTotalSeconds());
+    }
+    if (afterByte == 3) {
+        out.writeInt(offsetAfter.getTotalSeconds());
+    }
+}

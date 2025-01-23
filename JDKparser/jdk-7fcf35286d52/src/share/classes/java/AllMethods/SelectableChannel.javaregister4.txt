@@ -1,0 +1,66 @@
+// 
+// sync(keySet) { return findKey(sel); }
+/**
+ * Registers this channel with the given selector, returning a selection
+ * key.
+ *
+ * <p> If this channel is currently registered with the given selector then
+ * the selection key representing that registration is returned.  The key's
+ * interest set will have been changed to <tt>ops</tt>, as if by invoking
+ * the {@link SelectionKey#interestOps(int) interestOps(int)} method.  If
+ * the <tt>att</tt> argument is not <tt>null</tt> then the key's attachment
+ * will have been set to that value.  A {@link CancelledKeyException} will
+ * be thrown if the key has already been cancelled.
+ *
+ * <p> Otherwise this channel has not yet been registered with the given
+ * selector, so it is registered and the resulting new key is returned.
+ * The key's initial interest set will be <tt>ops</tt> and its attachment
+ * will be <tt>att</tt>.
+ *
+ * <p> This method may be invoked at any time.  If this method is invoked
+ * while another invocation of this method or of the {@link
+ * #configureBlocking(boolean) configureBlocking} method is in progress
+ * then it will first block until the other operation is complete.  This
+ * method will then synchronize on the selector's key set and therefore may
+ * block if invoked concurrently with another registration or selection
+ * operation involving the same selector. </p>
+ *
+ * <p> If this channel is closed while this operation is in progress then
+ * the key returned by this method will have been cancelled and will
+ * therefore be invalid. </p>
+ *
+ * @param  sel
+ *         The selector with which this channel is to be registered
+ *
+ * @param  ops
+ *         The interest set for the resulting key
+ *
+ * @param  att
+ *         The attachment for the resulting key; may be <tt>null</tt>
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  ClosedSelectorException
+ *          If the selector is closed
+ *
+ * @throws  IllegalBlockingModeException
+ *          If this channel is in blocking mode
+ *
+ * @throws  IllegalSelectorException
+ *          If this channel was not created by the same provider
+ *          as the given selector
+ *
+ * @throws  CancelledKeyException
+ *          If this channel is currently registered with the given selector
+ *          but the corresponding key has already been cancelled
+ *
+ * @throws  IllegalArgumentException
+ *          If a bit in the <tt>ops</tt> set does not correspond to an
+ *          operation that is supported by this channel, that is, if
+ *          {@code set & ~validOps() != 0}
+ *
+ * @return  A key representing the registration of this channel with
+ *          the given selector
+ */
+public abstract SelectionKey register(Selector sel, int ops, Object att) throws ClosedChannelException;

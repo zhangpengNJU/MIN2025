@@ -1,0 +1,20 @@
+/**
+ * Waits if necessary for the computation to complete, and then
+ * retrieves its result.
+ *
+ * @return the computed result
+ * @throws CancellationException if the computation was cancelled
+ * @throws ExecutionException if the computation threw an
+ * exception
+ * @throws InterruptedException if the current thread is not a
+ * member of a ForkJoinPool and was interrupted while waiting
+ */
+public final V get() throws InterruptedException, ExecutionException {
+    int s = (Thread.currentThread() instanceof ForkJoinWorkerThread) ? doJoin() : externalInterruptibleAwaitDone();
+    Throwable ex;
+    if ((s &= DONE_MASK) == CANCELLED)
+        throw new CancellationException();
+    if (s == EXCEPTIONAL && (ex = getThrowableException()) != null)
+        throw new ExecutionException(ex);
+    return getRawResult();
+}

@@ -1,0 +1,22 @@
+// -- compareTo/equals/hashCode --
+/**
+ * Compares two abstract paths lexicographically. The ordering defined by
+ * this method is provider specific, and in the case of the default
+ * provider, platform specific. This method does not access the file system
+ * and neither file is required to exist.
+ *
+ * <p> This method may not be used to compare paths that are associated
+ * with different file system providers.
+ *
+ * @param   other  the path compared to this path.
+ *
+ * @return  zero if the argument is {@link #equals equal} to this path, a
+ *          value less than zero if this path is lexicographically less than
+ *          the argument, or a value greater than zero if this path is
+ *          lexicographically greater than the argument
+ *
+ * @throws  ClassCastException
+ *          if the paths are associated with different providers
+ */
+@Override
+int compareTo(Path other);

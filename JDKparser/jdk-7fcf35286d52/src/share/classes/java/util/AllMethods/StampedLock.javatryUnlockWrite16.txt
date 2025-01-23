@@ -1,0 +1,18 @@
+/**
+ * Releases the write lock if it is held, without requiring a
+ * stamp value. This method may be useful for recovery after
+ * errors.
+ *
+ * @return {@code true} if the lock was held, else false
+ */
+public boolean tryUnlockWrite() {
+    long s;
+    WNode h;
+    if (((s = state) & WBIT) != 0L) {
+        state = (s += WBIT) == 0L ? ORIGIN : s;
+        if ((h = whead) != null && h.status != 0)
+            release(h);
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns the buffering capabilities of this
+ * <code>GraphicsConfiguration</code>.
+ * @return the buffering capabilities of this graphics
+ * configuration object
+ * @since 1.4
+ */
+public BufferCapabilities getBufferCapabilities() {
+    if (defaultBufferCaps == null) {
+        defaultBufferCaps = new DefaultBufferCapabilities(getImageCapabilities());
+    }
+    return defaultBufferCaps;
+}

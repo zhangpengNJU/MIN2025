@@ -1,0 +1,60 @@
+/**
+ * internal remove used when removal caused by
+ * unexpected <tt>setBeanContext</tt> or
+ * by <tt>remove()</tt> invocation.
+ * @param targetChild the JavaBean, BeanContext, or Object to be removed
+ * @param callChildSetBC used to indicate that
+ * the child should be notified that it is no
+ * longer nested in this <tt>BeanContext</tt>.
+ * @return whether or not was present before being removed
+ */
+protected boolean remove(Object targetChild, boolean callChildSetBC) {
+    if (targetChild == null)
+        throw new IllegalArgumentException();
+    synchronized (BeanContext.globalHierarchyLock) {
+        if (!containsKey(targetChild))
+            return false;
+        if (!validatePendingRemove(targetChild)) {
+            throw new IllegalStateException();
+        }
+        BCSChild bcsc = (BCSChild) children.get(targetChild);
+        BCSChild pbcsc = null;
+        Object peer = null;
+        // we are required to notify the child that it is no longer nested here if
+        // it implements java.beans.beancontext.BeanContextChild
+        synchronized (targetChild) {
+            if (callChildSetBC) {
+                BeanContextChild cbcc = getChildBeanContextChild(targetChild);
+                if (cbcc != null)
+                    synchronized (cbcc) {
+                        cbcc.removePropertyChangeListener("beanContext", childPCL);
+                        cbcc.removeVetoableChangeListener("beanContext", childVCL);
+                        try {
+                            cbcc.setBeanContext(null);
+                        } catch (PropertyVetoException pve1) {
+                            cbcc.addPropertyChangeListener("beanContext", childPCL);
+                            cbcc.addVetoableChangeListener("beanContext", childVCL);
+                            throw new IllegalStateException();
+                        }
+                    }
+            }
+            synchronized (children) {
+                children.remove(targetChild);
+                if (bcsc.isProxyPeer()) {
+                    pbcsc = (BCSChild) children.get(peer = bcsc.getProxyPeer());
+                    children.remove(peer);
+                }
+            }
+            if (getChildSerializable(targetChild) != null)
+                serializable--;
+            childJustRemovedHook(targetChild, bcsc);
+            if (peer != null) {
+                if (getChildSerializable(peer) != null)
+                    serializable--;
+                childJustRemovedHook(peer, pbcsc);
+            }
+        }
+        fireChildrenRemoved(new BeanContextMembershipEvent(getBeanContextPeer(), peer == null ? new Object[] { targetChild } : new Object[] { targetChild, peer }));
+    }
+    return true;
+}

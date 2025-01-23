@@ -1,0 +1,16 @@
+/**
+ * Adds the specified property change listener for the named desktop
+ * property. When a {@link java.beans.PropertyChangeListenerProxy} object is added,
+ * its property name is ignored, and the wrapped listener is added.
+ * If {@code name} is {@code null} or {@code pcl} is {@code null},
+ * no exception is thrown and no action is performed.
+ *
+ * @param   name The name of the property to listen for
+ * @param   pcl The property change listener
+ * @see PropertyChangeSupport#addPropertyChangeListener(String,
+ *                PropertyChangeListener)
+ * @since   1.2
+ */
+public void addPropertyChangeListener(String name, PropertyChangeListener pcl) {
+    desktopPropsSupport.addPropertyChangeListener(name, pcl);
+}

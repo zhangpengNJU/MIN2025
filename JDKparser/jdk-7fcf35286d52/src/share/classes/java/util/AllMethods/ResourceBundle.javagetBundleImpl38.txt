@@ -1,0 +1,64 @@
+private static ResourceBundle getBundleImpl(String baseName, Locale locale, ClassLoader loader, Control control) {
+    if (locale == null || control == null) {
+        throw new NullPointerException();
+    }
+    // We create a CacheKey here for use by this call. The base
+    // name and loader will never change during the bundle loading
+    // process. We have to make sure that the locale is set before
+    // using it as a cache key.
+    CacheKey cacheKey = new CacheKey(baseName, locale, loader);
+    ResourceBundle bundle = null;
+    // Quick lookup of the cache.
+    BundleReference bundleRef = cacheList.get(cacheKey);
+    if (bundleRef != null) {
+        bundle = bundleRef.get();
+        bundleRef = null;
+    }
+    // If this bundle and all of its parents are valid (not expired),
+    // then return this bundle. If any of the bundles is expired, we
+    // don't call control.needsReload here but instead drop into the
+    // complete loading process below.
+    if (isValidBundle(bundle) && hasValidParentChain(bundle)) {
+        return bundle;
+    }
+    // No valid bundle was found in the cache, so we need to load the
+    // resource bundle and its parents.
+    boolean isKnownControl = (control == Control.INSTANCE) || (control instanceof SingleFormatControl);
+    List<String> formats = control.getFormats(baseName);
+    if (!isKnownControl && !checkList(formats)) {
+        throw new IllegalArgumentException("Invalid Control: getFormats");
+    }
+    ResourceBundle baseBundle = null;
+    for (Locale targetLocale = locale; targetLocale != null; targetLocale = control.getFallbackLocale(baseName, targetLocale)) {
+        List<Locale> candidateLocales = control.getCandidateLocales(baseName, targetLocale);
+        if (!isKnownControl && !checkList(candidateLocales)) {
+            throw new IllegalArgumentException("Invalid Control: getCandidateLocales");
+        }
+        bundle = findBundle(cacheKey, candidateLocales, formats, 0, control, baseBundle);
+        // If the loaded bundle is the base bundle and exactly for the
+        // requested locale or the only candidate locale, then take the
+        // bundle as the resulting one. If the loaded bundle is the base
+        // bundle, it's put on hold until we finish processing all
+        // fallback locales.
+        if (isValidBundle(bundle)) {
+            boolean isBaseBundle = Locale.ROOT.equals(bundle.locale);
+            if (!isBaseBundle || bundle.locale.equals(locale) || (candidateLocales.size() == 1 && bundle.locale.equals(candidateLocales.get(0)))) {
+                break;
+            }
+            // If the base bundle has been loaded, keep the reference in
+            // baseBundle so that we can avoid any redundant loading in case
+            // the control specify not to cache bundles.
+            if (isBaseBundle && baseBundle == null) {
+                baseBundle = bundle;
+            }
+        }
+    }
+    if (bundle == null) {
+        if (baseBundle == null) {
+            throwMissingResourceException(baseName, locale, cacheKey.getCause());
+        }
+        bundle = baseBundle;
+    }
+    keepAlive(loader);
+    return bundle;
+}

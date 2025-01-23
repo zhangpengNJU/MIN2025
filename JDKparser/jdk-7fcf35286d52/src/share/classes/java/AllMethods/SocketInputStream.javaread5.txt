@@ -1,0 +1,63 @@
+int read(byte[] b, int off, int length, int timeout) throws IOException {
+    int n;
+    // EOF already encountered
+    if (eof) {
+        return -1;
+    }
+    // connection reset
+    if (impl.isConnectionReset()) {
+        throw new SocketException("Connection reset");
+    }
+    // bounds check
+    if (length <= 0 || off < 0 || length > b.length - off) {
+        if (length == 0) {
+            return 0;
+        }
+        throw new ArrayIndexOutOfBoundsException("length == " + length + " off == " + off + " buffer length == " + b.length);
+    }
+    boolean gotReset = false;
+    // acquire file descriptor and do the read
+    FileDescriptor fd = impl.acquireFD();
+    try {
+        n = socketRead(fd, b, off, length, timeout);
+        if (n > 0) {
+            return n;
+        }
+    } catch (ConnectionResetException rstExc) {
+        gotReset = true;
+    } finally {
+        impl.releaseFD();
+    }
+    /*
+         * We receive a "connection reset" but there may be bytes still
+         * buffered on the socket
+         */
+    if (gotReset) {
+        impl.setConnectionResetPending();
+        impl.acquireFD();
+        try {
+            n = socketRead(fd, b, off, length, timeout);
+            if (n > 0) {
+                return n;
+            }
+        } catch (ConnectionResetException rstExc) {
+        } finally {
+            impl.releaseFD();
+        }
+    }
+    /*
+         * If we get here we are at EOF, the socket has been closed,
+         * or the connection has been reset.
+         */
+    if (impl.isClosedOrPending()) {
+        throw new SocketException("Socket closed");
+    }
+    if (impl.isConnectionResetPending()) {
+        impl.setConnectionReset();
+    }
+    if (impl.isConnectionReset()) {
+        throw new SocketException("Connection reset");
+    }
+    eof = true;
+    return -1;
+}

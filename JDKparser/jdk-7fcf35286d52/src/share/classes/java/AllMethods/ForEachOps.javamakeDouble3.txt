@@ -1,0 +1,13 @@
+/**
+ * Constructs a {@code TerminalOp} that perform an action for every element
+ * of a {@code DoubleStream}.
+ *
+ * @param action the {@code DoubleConsumer} that receives all elements of
+ *        a stream
+ * @param ordered whether an ordered traversal is requested
+ * @return the {@code TerminalOp} instance
+ */
+public static TerminalOp<Double, Void> makeDouble(DoubleConsumer action, boolean ordered) {
+    Objects.requireNonNull(action);
+    return new ForEachOp.OfDouble(action, ordered);
+}

@@ -1,0 +1,33 @@
+/*
+     * performs divideAndRound for (dividend0*dividend1, divisor)
+     * returns null if quotient can't fit into long value;
+     */
+private static BigDecimal multiplyDivideAndRound(long dividend0, long dividend1, long divisor, int scale, int roundingMode, int preferredScale) {
+    int qsign = Long.signum(dividend0) * Long.signum(dividend1) * Long.signum(divisor);
+    dividend0 = Math.abs(dividend0);
+    dividend1 = Math.abs(dividend1);
+    divisor = Math.abs(divisor);
+    // multiply dividend0 * dividend1
+    long d0_hi = dividend0 >>> 32;
+    long d0_lo = dividend0 & LONG_MASK;
+    long d1_hi = dividend1 >>> 32;
+    long d1_lo = dividend1 & LONG_MASK;
+    long product = d0_lo * d1_lo;
+    long d0 = product & LONG_MASK;
+    long d1 = product >>> 32;
+    product = d0_hi * d1_lo + d1;
+    d1 = product & LONG_MASK;
+    long d2 = product >>> 32;
+    product = d0_lo * d1_hi + d1;
+    d1 = product & LONG_MASK;
+    d2 += product >>> 32;
+    long d3 = d2 >>> 32;
+    d2 &= LONG_MASK;
+    product = d0_hi * d1_hi + d2;
+    d2 = product & LONG_MASK;
+    d3 = ((product >>> 32) + d3) & LONG_MASK;
+    final long dividendHi = make64(d3, d2);
+    final long dividendLo = make64(d1, d0);
+    // divide
+    return divideAndRound128(dividendHi, dividendLo, divisor, qsign, scale, roundingMode, preferredScale);
+}

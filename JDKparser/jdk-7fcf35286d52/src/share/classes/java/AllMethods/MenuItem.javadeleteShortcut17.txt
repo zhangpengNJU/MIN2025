@@ -1,0 +1,13 @@
+/*
+     * Delete a matching MenuShortcut associated with this MenuItem.
+     * Used when iterating Menus.
+     */
+void deleteShortcut(MenuShortcut s) {
+    if (s.equals(shortcut)) {
+        shortcut = null;
+        MenuItemPeer peer = (MenuItemPeer) this.peer;
+        if (peer != null) {
+            peer.setLabel(label);
+        }
+    }
+}

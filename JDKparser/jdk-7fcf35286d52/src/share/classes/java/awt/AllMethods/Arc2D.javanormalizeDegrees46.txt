@@ -1,0 +1,27 @@
+/*
+     * Normalizes the specified angle into the range -180 to 180.
+     */
+static double normalizeDegrees(double angle) {
+    if (angle > 180.0) {
+        if (angle <= (180.0 + 360.0)) {
+            angle = angle - 360.0;
+        } else {
+            angle = Math.IEEEremainder(angle, 360.0);
+            // IEEEremainder can return -180 here for some input values...
+            if (angle == -180.0) {
+                angle = 180.0;
+            }
+        }
+    } else if (angle <= -180.0) {
+        if (angle > (-180.0 - 360.0)) {
+            angle = angle + 360.0;
+        } else {
+            angle = Math.IEEEremainder(angle, 360.0);
+            // IEEEremainder can return -180 here for some input values...
+            if (angle == -180.0) {
+                angle = 180.0;
+            }
+        }
+    }
+    return angle;
+}

@@ -1,0 +1,23 @@
+/**
+ * Sets the designated parameter to a <code>Reader</code> object.
+ * This method differs from the <code>setCharacterStream (int, Reader)</code> method
+ * because it informs the driver that the parameter value should be sent to
+ * the server as a <code>NCLOB</code>.  When the <code>setCharacterStream</code> method is used, the
+ * driver may have to do extra work to determine whether the parameter
+ * data should be send to the server as a <code>LONGNVARCHAR</code> or a <code>NCLOB</code>
+ * <P><B>Note:</B> Consult your JDBC driver documentation to determine if
+ * it might be more efficient to use a version of
+ * <code>setNClob</code> which takes a length parameter.
+ *
+ * @param parameterName the name of the parameter
+ * @param reader An object that contains the data to set the parameter value to.
+ * @throws SQLException if parameterName does not correspond to a named
+ * parameter; if the driver does not support national character sets;
+ * if the driver can detect that a data conversion
+ *  error could occur;  if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this method
+ *
+ * @since 1.6
+ */
+void setNClob(String parameterName, Reader reader) throws SQLException;

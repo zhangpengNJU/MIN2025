@@ -1,0 +1,17 @@
+/**
+ * Find my trustable caller class if m is a caller sensitive method.
+ * If this lookup object has private access, then the caller class is the lookupClass.
+ * Otherwise, if m is caller-sensitive, throw IllegalAccessException.
+ */
+Class<?> findBoundCallerClass(MemberName m) throws IllegalAccessException {
+    Class<?> callerClass = null;
+    if (MethodHandleNatives.isCallerSensitive(m)) {
+        // Only lookups with private access are allowed to resolve caller-sensitive methods
+        if (hasPrivateAccess()) {
+            callerClass = lookupClass;
+        } else {
+            throw new IllegalAccessException("Attempt to lookup caller-sensitive method using restricted lookup object");
+        }
+    }
+    return callerClass;
+}

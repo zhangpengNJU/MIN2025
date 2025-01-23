@@ -1,0 +1,10 @@
+@Override
+void setGraphicsConfiguration(GraphicsConfiguration gc) {
+    synchronized (getTreeLock()) {
+        CanvasPeer peer = (CanvasPeer) getPeer();
+        if (peer != null) {
+            gc = peer.getAppropriateGraphicsConfiguration(gc);
+        }
+        super.setGraphicsConfiguration(gc);
+    }
+}

@@ -1,0 +1,54 @@
+/**
+ * Performs the specified {@code PrivilegedAction} with privileges
+ * enabled and restricted by the specified
+ * {@code AccessControlContext} and with a privilege scope limited
+ * by specified {@code Permission} arguments.
+ *
+ * The action is performed with the intersection of the permissions
+ * possessed by the caller's protection domain, and those possessed
+ * by the domains represented by the specified
+ * {@code AccessControlContext}.
+ * <p>
+ * If the action's {@code run} method throws an (unchecked) exception,
+ * it will propagate through this method.
+ * <p>
+ * If a security manager is installed and the specified
+ * {@code AccessControlContext} was not created by system code and the
+ * caller's {@code ProtectionDomain} has not been granted the
+ * {@literal "createAccessControlContext"}
+ * {@link java.security.SecurityPermission}, then the action is performed
+ * with no permissions.
+ *
+ * @param <T> the type of the value returned by the PrivilegedAction's
+ *                  {@code run} method.
+ * @param action the action to be performed.
+ * @param context an <i>access control context</i>
+ *                representing the restriction to be applied to the
+ *                caller's domain's privileges before performing
+ *                the specified action.  If the context is
+ *                {@code null},
+ *                then no additional restriction is applied.
+ * @param perms the {@code Permission} arguments which limit the
+ *              scope of the caller's privileges. The number of arguments
+ *              is variable.
+ *
+ * @return the value returned by the action's {@code run} method.
+ *
+ * @throws NullPointerException if action or perms or any element of
+ *         perms is {@code null}
+ *
+ * @see #doPrivileged(PrivilegedAction)
+ * @see #doPrivileged(PrivilegedExceptionAction,AccessControlContext)
+ *
+ * @since 1.8
+ */
+@CallerSensitive
+public static <T> T doPrivileged(PrivilegedAction<T> action, AccessControlContext context, Permission... perms) {
+    AccessControlContext parent = getContext();
+    if (perms == null) {
+        throw new NullPointerException("null permissions parameter");
+    }
+    Class<?> caller = Reflection.getCallerClass();
+    DomainCombiner dc = (context == null) ? null : context.getCombiner();
+    return AccessController.doPrivileged(action, createWrapper(dc, caller, parent, context, perms));
+}

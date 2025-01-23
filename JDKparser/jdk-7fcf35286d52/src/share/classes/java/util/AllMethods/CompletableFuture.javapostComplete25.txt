@@ -1,0 +1,28 @@
+/**
+ * Pops and tries to trigger all reachable dependents.  Call only
+ * when known to be done.
+ */
+final void postComplete() {
+    /*
+         * On each step, variable f holds current dependents to pop
+         * and run.  It is extended along only one path at a time,
+         * pushing others to avoid unbounded recursion.
+         */
+    CompletableFuture<?> f = this;
+    Completion h;
+    while ((h = f.stack) != null || (f != this && (h = (f = this).stack) != null)) {
+        CompletableFuture<?> d;
+        Completion t;
+        if (f.casStack(h, t = h.next)) {
+            if (t != null) {
+                if (f != this) {
+                    pushStack(h);
+                    continue;
+                }
+                // detach
+                h.next = null;
+            }
+            f = (d = h.tryFire(NESTED)) == null ? this : d;
+        }
+    }
+}

@@ -1,0 +1,50 @@
+/*
+     * Reads local file (LOC) header for next entry.
+     */
+private ZipEntry readLOC() throws IOException {
+    try {
+        readFully(tmpbuf, 0, LOCHDR);
+    } catch (EOFException e) {
+        return null;
+    }
+    if (get32(tmpbuf, 0) != LOCSIG) {
+        return null;
+    }
+    // get flag first, we need check EFS.
+    flag = get16(tmpbuf, LOCFLG);
+    // get the entry name and create the ZipEntry first
+    int len = get16(tmpbuf, LOCNAM);
+    int blen = b.length;
+    if (len > blen) {
+        do {
+            blen = blen * 2;
+        } while (len > blen);
+        b = new byte[blen];
+    }
+    readFully(b, 0, len);
+    // Force to use UTF-8 if the EFS bit is ON, even the cs is NOT UTF-8
+    ZipEntry e = createZipEntry(((flag & EFS) != 0) ? zc.toStringUTF8(b, len) : zc.toString(b, len));
+    // now get the remaining fields for the entry
+    if ((flag & 1) == 1) {
+        throw new ZipException("encrypted ZIP entry not supported");
+    }
+    e.method = get16(tmpbuf, LOCHOW);
+    e.xdostime = get32(tmpbuf, LOCTIM);
+    if ((flag & 8) == 8) {
+        /* "Data Descriptor" present */
+        if (e.method != DEFLATED) {
+            throw new ZipException("only DEFLATED entries can have EXT descriptor");
+        }
+    } else {
+        e.crc = get32(tmpbuf, LOCCRC);
+        e.csize = get32(tmpbuf, LOCSIZ);
+        e.size = get32(tmpbuf, LOCLEN);
+    }
+    len = get16(tmpbuf, LOCEXT);
+    if (len > 0) {
+        byte[] extra = new byte[len];
+        readFully(extra, 0, len);
+        e.setExtra0(extra, e.csize == ZIP64_MAGICVAL || e.size == ZIP64_MAGICVAL);
+    }
+    return e;
+}

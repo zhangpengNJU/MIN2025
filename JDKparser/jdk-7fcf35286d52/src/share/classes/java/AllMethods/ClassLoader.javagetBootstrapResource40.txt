@@ -1,0 +1,8 @@
+/**
+ * Find resources from the VM's built-in classloader.
+ */
+private static URL getBootstrapResource(String name) {
+    URLClassPath ucp = getBootstrapClassPath();
+    Resource res = ucp.getResource(name);
+    return res != null ? res.getURL() : null;
+}

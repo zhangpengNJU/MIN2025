@@ -1,0 +1,25 @@
+/**
+ * Returns a short string describing this identity, telling its
+ * name and its scope (if any).
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "printIdentity"}
+ * as its argument to see if it's ok to return the string.
+ *
+ * @return information about this identity, such as its name and the
+ * name of its scope (if any).
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * returning a string describing this identity.
+ *
+ * @see SecurityManager#checkSecurityAccess
+ */
+public String toString() {
+    check("printIdentity");
+    String printable = name;
+    if (scope != null) {
+        printable += "[" + scope.getName() + "]";
+    }
+    return printable;
+}

@@ -1,0 +1,22 @@
+/**
+ * Change the list of package names that will be used for
+ *          finding BeanInfo classes.  The behaviour of
+ *          this method is undefined if parameter path
+ *          is null.
+ *
+ * <p>First, if there is a security manager, its <code>checkPropertiesAccess</code>
+ * method is called. This could result in a SecurityException.
+ *
+ * @param path  Array of package names.
+ * @exception  SecurityException  if a security manager exists and its
+ *             <code>checkPropertiesAccess</code> method doesn't allow setting
+ *              of system properties.
+ * @see SecurityManager#checkPropertiesAccess
+ */
+public static void setBeanInfoSearchPath(String[] path) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        sm.checkPropertiesAccess();
+    }
+    ThreadGroupContext.getContext().getBeanInfoFinder().setPackages(path);
+}

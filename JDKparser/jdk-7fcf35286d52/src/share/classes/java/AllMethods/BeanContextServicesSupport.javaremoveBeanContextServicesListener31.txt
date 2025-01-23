@@ -1,0 +1,13 @@
+/**
+ * remove a BeanContextServicesListener
+ */
+public void removeBeanContextServicesListener(BeanContextServicesListener bcsl) {
+    if (bcsl == null)
+        throw new NullPointerException("bcsl");
+    synchronized (bcsListeners) {
+        if (!bcsListeners.contains(bcsl))
+            return;
+        else
+            bcsListeners.remove(bcsl);
+    }
+}

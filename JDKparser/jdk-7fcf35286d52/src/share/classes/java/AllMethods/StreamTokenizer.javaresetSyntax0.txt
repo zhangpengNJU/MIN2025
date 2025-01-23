@@ -1,0 +1,10 @@
+/**
+ * Resets this tokenizer's syntax table so that all characters are
+ * "ordinary." See the {@code ordinaryChar} method
+ * for more information on a character being ordinary.
+ *
+ * @see     java.io.StreamTokenizer#ordinaryChar(int)
+ */
+public void resetSyntax() {
+    for (int i = ctype.length; --i >= 0; ) ctype[i] = 0;
+}

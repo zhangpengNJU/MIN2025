@@ -1,0 +1,14 @@
+/**
+ * map a component logical index to the visual index.
+ */
+private int getComponentVisualIndex(int li) {
+    if (fComponentVisualOrder == null) {
+        return li;
+    }
+    for (int i = 0; i < fComponentVisualOrder.length; ++i) {
+        if (fComponentVisualOrder[i] == li) {
+            return i;
+        }
+    }
+    throw new IndexOutOfBoundsException("bad component index: " + li);
+}

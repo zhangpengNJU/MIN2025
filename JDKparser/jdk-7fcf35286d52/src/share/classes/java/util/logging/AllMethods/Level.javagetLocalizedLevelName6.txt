@@ -1,0 +1,17 @@
+final synchronized String getLocalizedLevelName() {
+    // See if we have a cached localized name
+    final String cachedLocalizedName = getCachedLocalizedLevelName();
+    if (cachedLocalizedName != null) {
+        return cachedLocalizedName;
+    }
+    // No cached localized name or cache invalid.
+    // Need to compute the localized name.
+    final Locale newLocale = Locale.getDefault();
+    try {
+        localizedLevelName = computeLocalizedLevelName(newLocale);
+    } catch (Exception ex) {
+        localizedLevelName = name;
+    }
+    cachedLocale = newLocale;
+    return localizedLevelName;
+}

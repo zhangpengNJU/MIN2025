@@ -1,0 +1,21 @@
+/**
+ * Returns the result of accumulating the given transformation
+ * of all values using the given reducer to combine values, or
+ * null if none.
+ *
+ * @param parallelismThreshold the (estimated) number of elements
+ * needed for this operation to be executed in parallel
+ * @param transformer a function returning the transformation
+ * for an element, or null if there is no transformation (in
+ * which case it is not combined)
+ * @param reducer a commutative associative combining function
+ * @param <U> the return type of the transformer
+ * @return the result of accumulating the given transformation
+ * of all values
+ * @since 1.8
+ */
+public <U> U reduceValues(long parallelismThreshold, Function<? super V, ? extends U> transformer, BiFunction<? super U, ? super U, ? extends U> reducer) {
+    if (transformer == null || reducer == null)
+        throw new NullPointerException();
+    return new MapReduceValuesTask<K, V, U>(null, batchFor(parallelismThreshold), 0, 0, table, null, transformer, reducer).invoke();
+}

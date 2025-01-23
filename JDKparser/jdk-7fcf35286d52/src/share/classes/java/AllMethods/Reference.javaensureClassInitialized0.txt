@@ -1,0 +1,7 @@
+private static void ensureClassInitialized(Class<?> clazz) {
+    try {
+        Class.forName(clazz.getName(), true, clazz.getClassLoader());
+    } catch (ClassNotFoundException e) {
+        throw (Error) new NoClassDefFoundError(e.getMessage()).initCause(e);
+    }
+}

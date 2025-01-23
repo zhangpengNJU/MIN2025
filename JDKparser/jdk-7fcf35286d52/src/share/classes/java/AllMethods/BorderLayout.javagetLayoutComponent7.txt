@@ -1,0 +1,38 @@
+/**
+ * Gets the component that was added using the given constraint
+ *
+ * @param   constraints  the desired constraint, one of <code>CENTER</code>,
+ *                       <code>NORTH</code>, <code>SOUTH</code>,
+ *                       <code>WEST</code>, <code>EAST</code>,
+ *                       <code>PAGE_START</code>, <code>PAGE_END</code>,
+ *                       <code>LINE_START</code>, <code>LINE_END</code>
+ * @return  the component at the given location, or <code>null</code> if
+ *          the location is empty
+ * @exception   IllegalArgumentException  if the constraint object is
+ *              not one of the nine specified constants
+ * @see     #addLayoutComponent(java.awt.Component, java.lang.Object)
+ * @since 1.5
+ */
+public Component getLayoutComponent(Object constraints) {
+    if (CENTER.equals(constraints)) {
+        return center;
+    } else if (NORTH.equals(constraints)) {
+        return north;
+    } else if (SOUTH.equals(constraints)) {
+        return south;
+    } else if (WEST.equals(constraints)) {
+        return west;
+    } else if (EAST.equals(constraints)) {
+        return east;
+    } else if (PAGE_START.equals(constraints)) {
+        return firstLine;
+    } else if (PAGE_END.equals(constraints)) {
+        return lastLine;
+    } else if (LINE_START.equals(constraints)) {
+        return firstItem;
+    } else if (LINE_END.equals(constraints)) {
+        return lastItem;
+    } else {
+        throw new IllegalArgumentException("cannot get component: unknown constraint: " + constraints);
+    }
+}

@@ -1,0 +1,35 @@
+/**
+ * Check that all embedded Name references are localizable to this lambda,
+ * and are properly ordered after their corresponding definitions.
+ * <p>
+ * Note that a Name can be local to multiple lambdas, as long as
+ * it possesses the same index in each use site.
+ * This allows Name references to be freely reused to construct
+ * fresh lambdas, without confusion.
+ */
+boolean nameRefsAreLegal() {
+    assert (arity >= 0 && arity <= names.length);
+    assert (result >= -1 && result < names.length);
+    // Do all names possess an index consistent with their local definition order?
+    for (int i = 0; i < arity; i++) {
+        Name n = names[i];
+        assert (n.index() == i) : Arrays.asList(n.index(), i);
+        assert (n.isParam());
+    }
+    // Also, do all local name references
+    for (int i = arity; i < names.length; i++) {
+        Name n = names[i];
+        assert (n.index() == i);
+        for (Object arg : n.arguments) {
+            if (arg instanceof Name) {
+                Name n2 = (Name) arg;
+                int i2 = n2.index;
+                assert (0 <= i2 && i2 < names.length) : n.debugString() + ": 0 <= i2 && i2 < names.length: 0 <= " + i2 + " < " + names.length;
+                assert (names[i2] == n2) : Arrays.asList("-1-", i, "-2-", n.debugString(), "-3-", i2, "-4-", n2.debugString(), "-5-", names[i2].debugString(), "-6-", this);
+                // ref must come after def!
+                assert (i2 < i);
+            }
+        }
+    }
+    return true;
+}

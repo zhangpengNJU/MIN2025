@@ -1,0 +1,22 @@
+/**
+ * Reconstitutes a URI from the given serial stream.
+ *
+ * <p> The {@link java.io.ObjectInputStream#defaultReadObject()} method is
+ * invoked to read the value of the {@code string} field.  The result is
+ * then parsed in the usual way.
+ *
+ * @param  is  The object-input stream from which this object
+ *             is being read
+ */
+private void readObject(ObjectInputStream is) throws ClassNotFoundException, IOException {
+    // Argh
+    port = -1;
+    is.defaultReadObject();
+    try {
+        new Parser(string).parse(false);
+    } catch (URISyntaxException x) {
+        IOException y = new InvalidObjectException("Invalid URI");
+        y.initCause(x);
+        throw y;
+    }
+}

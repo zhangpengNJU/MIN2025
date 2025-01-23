@@ -1,0 +1,8 @@
+static int getParameterSize(Class<?> c) {
+    if (c == Void.TYPE) {
+        return 0;
+    } else if (c == Long.TYPE || c == Double.TYPE) {
+        return 2;
+    }
+    return 1;
+}

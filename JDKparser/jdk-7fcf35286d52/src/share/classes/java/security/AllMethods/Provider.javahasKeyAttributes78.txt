@@ -1,0 +1,32 @@
+/**
+ * Return whether this service has its Supported* properties for
+ * keys defined. Parses the attributes if not yet initialized.
+ */
+private boolean hasKeyAttributes() {
+    Boolean b = hasKeyAttributes;
+    if (b == null) {
+        synchronized (this) {
+            String s;
+            s = getAttribute("SupportedKeyFormats");
+            if (s != null) {
+                supportedFormats = s.split("\\|");
+            }
+            s = getAttribute("SupportedKeyClasses");
+            if (s != null) {
+                String[] classNames = s.split("\\|");
+                List<Class<?>> classList = new ArrayList<>(classNames.length);
+                for (String className : classNames) {
+                    Class<?> clazz = getKeyClass(className);
+                    if (clazz != null) {
+                        classList.add(clazz);
+                    }
+                }
+                supportedClasses = classList.toArray(CLASS0);
+            }
+            boolean bool = (supportedFormats != null) || (supportedClasses != null);
+            b = Boolean.valueOf(bool);
+            hasKeyAttributes = b;
+        }
+    }
+    return b.booleanValue();
+}

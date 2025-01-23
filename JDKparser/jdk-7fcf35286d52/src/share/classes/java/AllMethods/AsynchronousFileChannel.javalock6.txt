@@ -1,0 +1,31 @@
+/**
+ * Acquires an exclusive lock on this channel's file.
+ *
+ * <p> This method initiates an operation to acquire a lock on the given
+ * region of this channel's file. The {@code handler} parameter is a
+ * completion handler that is invoked when the lock is acquired (or the
+ * operation fails). The result passed to the completion handler is the
+ * resulting {@code FileLock}.
+ *
+ * <p> An invocation of this method of the form {@code ch.lock(att,handler)}
+ * behaves in exactly the same way as the invocation
+ * <pre>
+ *     ch.{@link #lock(long,long,boolean,Object,CompletionHandler) lock}(0L, Long.MAX_VALUE, false, att, handler)
+ * </pre>
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  OverlappingFileLockException
+ *          If a lock is already held by this Java virtual machine, or there
+ *          is already a pending attempt to lock a region
+ * @throws  NonWritableChannelException
+ *          If this channel was not opened for writing
+ */
+public final <A> void lock(A attachment, CompletionHandler<FileLock, ? super A> handler) {
+    lock(0L, Long.MAX_VALUE, false, attachment, handler);
+}

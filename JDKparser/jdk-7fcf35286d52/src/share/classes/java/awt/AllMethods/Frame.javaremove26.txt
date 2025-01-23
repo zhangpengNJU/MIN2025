@@ -1,0 +1,26 @@
+/**
+ * Removes the specified menu bar from this frame.
+ * @param    m   the menu component to remove.
+ *           If <code>m</code> is <code>null</code>, then
+ *           no action is taken
+ */
+public void remove(MenuComponent m) {
+    if (m == null) {
+        return;
+    }
+    synchronized (getTreeLock()) {
+        if (m == menuBar) {
+            menuBar = null;
+            FramePeer peer = (FramePeer) this.peer;
+            if (peer != null) {
+                mbManagement = true;
+                invalidateIfValid();
+                peer.setMenuBar(null);
+                m.removeNotify();
+            }
+            m.parent = null;
+        } else {
+            super.remove(m);
+        }
+    }
+}

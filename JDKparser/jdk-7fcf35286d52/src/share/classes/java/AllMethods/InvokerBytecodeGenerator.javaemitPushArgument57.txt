@@ -1,0 +1,5 @@
+private void emitPushArgument(Name name, int paramIndex) {
+    Object arg = name.arguments[paramIndex];
+    Class<?> ptype = name.function.methodType().parameterType(paramIndex);
+    emitPushArgument(ptype, arg);
+}

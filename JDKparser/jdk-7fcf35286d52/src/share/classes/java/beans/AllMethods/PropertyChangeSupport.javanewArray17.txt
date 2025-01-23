@@ -1,0 +1,12 @@
+/**
+ * Creates an array of {@link PropertyChangeListener PropertyChangeListener} objects.
+ * This method uses the same instance of the empty array
+ * when {@code length} equals {@code 0}.
+ *
+ * @param length  the array length
+ * @return        an array with specified length
+ */
+@Override
+protected PropertyChangeListener[] newArray(int length) {
+    return (0 < length) ? new PropertyChangeListener[length] : EMPTY;
+}

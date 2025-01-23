@@ -1,0 +1,13 @@
+private static MethodType unwrapWithNoPrims(MethodType wt) {
+    assert (!wt.hasPrimitives());
+    MethodType uwt = (MethodType) wt.wrapAlt;
+    if (uwt == null) {
+        // fill in lazily
+        uwt = MethodTypeForm.canonicalize(wt, MethodTypeForm.UNWRAP, MethodTypeForm.UNWRAP);
+        if (uwt == null)
+            // type has no wrappers or prims at all
+            uwt = wt;
+        wt.wrapAlt = uwt;
+    }
+    return uwt;
+}

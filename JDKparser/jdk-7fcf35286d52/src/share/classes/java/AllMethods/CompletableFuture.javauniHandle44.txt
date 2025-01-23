@@ -1,0 +1,26 @@
+final <S> boolean uniHandle(CompletableFuture<S> a, BiFunction<? super S, Throwable, ? extends T> f, UniHandle<S, T> c) {
+    Object r;
+    S s;
+    Throwable x;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    if (result == null) {
+        try {
+            if (c != null && !c.claim())
+                return false;
+            if (r instanceof AltResult) {
+                x = ((AltResult) r).ex;
+                s = null;
+            } else {
+                x = null;
+                @SuppressWarnings("unchecked")
+                S ss = (S) r;
+                s = ss;
+            }
+            completeValue(f.apply(s, x));
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

@@ -1,0 +1,23 @@
+/**
+ * Removes the element at the specified position in this Vector.
+ * Shifts any subsequent elements to the left (subtracts one from their
+ * indices).  Returns the element that was removed from the Vector.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the index is out of range
+ *         ({@code index < 0 || index >= size()})
+ * @param index the index of the element to be removed
+ * @return element that was removed
+ * @since 1.2
+ */
+public synchronized E remove(int index) {
+    modCount++;
+    if (index >= elementCount)
+        throw new ArrayIndexOutOfBoundsException(index);
+    E oldValue = elementData(index);
+    int numMoved = elementCount - index - 1;
+    if (numMoved > 0)
+        System.arraycopy(elementData, index + 1, elementData, index, numMoved);
+    // Let gc do its work
+    elementData[--elementCount] = null;
+    return oldValue;
+}

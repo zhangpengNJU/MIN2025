@@ -1,0 +1,19 @@
+/**
+ * Adds the specified container listener to receive container events
+ * from this container.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param    l the container listener
+ *
+ * @see #removeContainerListener
+ * @see #getContainerListeners
+ */
+public synchronized void addContainerListener(ContainerListener l) {
+    if (l == null) {
+        return;
+    }
+    containerListener = AWTEventMulticaster.add(containerListener, l);
+    newEventsOnly = true;
+}

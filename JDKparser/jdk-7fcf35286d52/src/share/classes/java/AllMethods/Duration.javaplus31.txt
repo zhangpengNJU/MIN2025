@@ -1,0 +1,21 @@
+/**
+ * Returns a copy of this duration with the specified duration added.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param secondsToAdd  the seconds to add, positive or negative
+ * @param nanosToAdd  the nanos to add, positive or negative
+ * @return a {@code Duration} based on this duration with the specified seconds added, not null
+ * @throws ArithmeticException if numeric overflow occurs
+ */
+private Duration plus(long secondsToAdd, long nanosToAdd) {
+    if ((secondsToAdd | nanosToAdd) == 0) {
+        return this;
+    }
+    long epochSec = Math.addExact(seconds, secondsToAdd);
+    epochSec = Math.addExact(epochSec, nanosToAdd / NANOS_PER_SECOND);
+    nanosToAdd = nanosToAdd % NANOS_PER_SECOND;
+    // safe int+NANOS_PER_SECOND
+    long nanoAdjustment = nanos + nanosToAdd;
+    return ofSeconds(epochSec, nanoAdjustment);
+}

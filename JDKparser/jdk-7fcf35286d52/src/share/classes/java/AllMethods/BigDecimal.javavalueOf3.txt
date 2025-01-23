@@ -1,0 +1,21 @@
+// Static Factory Methods
+/**
+ * Translates a {@code long} unscaled value and an
+ * {@code int} scale into a {@code BigDecimal}.  This
+ * {@literal "static factory method"} is provided in preference to
+ * a ({@code long}, {@code int}) constructor because it
+ * allows for reuse of frequently used {@code BigDecimal} values..
+ *
+ * @param unscaledVal unscaled value of the {@code BigDecimal}.
+ * @param scale scale of the {@code BigDecimal}.
+ * @return a {@code BigDecimal} whose value is
+ *         <tt>(unscaledVal &times; 10<sup>-scale</sup>)</tt>.
+ */
+public static BigDecimal valueOf(long unscaledVal, int scale) {
+    if (scale == 0)
+        return valueOf(unscaledVal);
+    else if (unscaledVal == 0) {
+        return zeroValueOf(scale);
+    }
+    return new BigDecimal(unscaledVal == INFLATED ? INFLATED_BIGINT : null, unscaledVal, scale, 0);
+}

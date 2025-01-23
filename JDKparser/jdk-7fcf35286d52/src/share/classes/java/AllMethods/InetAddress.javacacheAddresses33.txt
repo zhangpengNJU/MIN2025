@@ -1,0 +1,14 @@
+/*
+     * Cache the given hostname and addresses.
+     */
+private static void cacheAddresses(String hostname, InetAddress[] addresses, boolean success) {
+    hostname = hostname.toLowerCase();
+    synchronized (addressCache) {
+        cacheInitIfNeeded();
+        if (success) {
+            addressCache.put(hostname, addresses);
+        } else {
+            negativeCache.put(hostname, addresses);
+        }
+    }
+}

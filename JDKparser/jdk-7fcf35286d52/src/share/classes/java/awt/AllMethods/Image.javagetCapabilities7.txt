@@ -1,0 +1,34 @@
+/**
+ * Returns an ImageCapabilities object which can be
+ * inquired as to the capabilities of this
+ * Image on the specified GraphicsConfiguration.
+ * This allows programmers to find
+ * out more runtime information on the specific Image
+ * object that they have created.  For example, the user
+ * might create a BufferedImage but the system may have
+ * no video memory left for creating an image of that
+ * size on the given GraphicsConfiguration, so although the object
+ * may be acceleratable in general, it
+ * does not have that capability on this GraphicsConfiguration.
+ * @param gc a <code>GraphicsConfiguration</code> object.  A value of null
+ * for this parameter will result in getting the image capabilities
+ * for the default <code>GraphicsConfiguration</code>.
+ * @return an <code>ImageCapabilities</code> object that contains
+ * the capabilities of this <code>Image</code> on the specified
+ * GraphicsConfiguration.
+ * @see java.awt.image.VolatileImage#getCapabilities()
+ * VolatileImage.getCapabilities()
+ * @since 1.5
+ */
+public ImageCapabilities getCapabilities(GraphicsConfiguration gc) {
+    if (surfaceManager != null) {
+        return surfaceManager.getCapabilities(gc);
+    }
+    // Note: this is just a default object that gets returned in the
+    // absence of any more specific information from a surfaceManager.
+    // Subclasses of Image should either override this method or
+    // make sure that they always have a non-null SurfaceManager
+    // to return an ImageCapabilities object that is appropriate
+    // for their given subclass type.
+    return defaultImageCaps;
+}

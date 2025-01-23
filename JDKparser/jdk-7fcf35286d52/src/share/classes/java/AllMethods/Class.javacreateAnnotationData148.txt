@@ -1,0 +1,26 @@
+private AnnotationData createAnnotationData(int classRedefinedCount) {
+    Map<Class<? extends Annotation>, Annotation> declaredAnnotations = AnnotationParser.parseAnnotations(getRawAnnotations(), getConstantPool(), this);
+    Class<?> superClass = getSuperclass();
+    Map<Class<? extends Annotation>, Annotation> annotations = null;
+    if (superClass != null) {
+        Map<Class<? extends Annotation>, Annotation> superAnnotations = superClass.annotationData().annotations;
+        for (Map.Entry<Class<? extends Annotation>, Annotation> e : superAnnotations.entrySet()) {
+            Class<? extends Annotation> annotationClass = e.getKey();
+            if (AnnotationType.getInstance(annotationClass).isInherited()) {
+                if (annotations == null) {
+                    // lazy construction
+                    annotations = new LinkedHashMap<>((Math.max(declaredAnnotations.size(), Math.min(12, declaredAnnotations.size() + superAnnotations.size())) * 4 + 2) / 3);
+                }
+                annotations.put(annotationClass, e.getValue());
+            }
+        }
+    }
+    if (annotations == null) {
+        // no inherited annotations -> share the Map with declaredAnnotations
+        annotations = declaredAnnotations;
+    } else {
+        // at least one inherited annotation -> declared may override inherited
+        annotations.putAll(declaredAnnotations);
+    }
+    return new AnnotationData(annotations, declaredAnnotations, classRedefinedCount);
+}

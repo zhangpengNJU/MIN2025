@@ -1,0 +1,26 @@
+/**
+ * Returns a pixel value represented as an int in this <CODE>ColorModel</CODE>,
+ * given an array of unnormalized color/alpha components.
+ *
+ * @param components An array of unnormalized color/alpha components.
+ * @param offset An offset into the <CODE>components</CODE> array.
+ *
+ * @return A pixel value represented as an int.
+ *
+ * @throws IllegalArgumentException If there is more than one component
+ * in this <CODE>ColorModel</CODE>.
+ * @throws IllegalArgumentException If this
+ * <CODE>ComponentColorModel</CODE> does not support the unnormalized form
+ */
+public int getDataElement(int[] components, int offset) {
+    if (needScaleInit) {
+        initScale();
+    }
+    if (numComponents == 1) {
+        if (noUnnorm) {
+            throw new IllegalArgumentException("This ColorModel does not support the unnormalized form");
+        }
+        return components[offset + 0];
+    }
+    throw new IllegalArgumentException("This model returns " + numComponents + " elements in the pixel array.");
+}

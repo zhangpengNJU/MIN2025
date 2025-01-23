@@ -1,0 +1,13 @@
+private byte byteAt(int i) {
+    long pb = packedBytes;
+    if (pb == 0) {
+        if (i >= fullBytes.length)
+            return 0;
+        return fullBytes[i];
+    }
+    assert (fullBytes == null);
+    if (i > PACKED_BYTE_MAX_LENGTH)
+        return 0;
+    int pos = (i * PACKED_BYTE_SIZE);
+    return (byte) ((pb >>> pos) & PACKED_BYTE_MASK);
+}

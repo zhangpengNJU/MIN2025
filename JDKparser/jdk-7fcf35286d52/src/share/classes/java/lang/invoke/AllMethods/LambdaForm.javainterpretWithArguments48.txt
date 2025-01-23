@@ -1,0 +1,18 @@
+@Hidden
+@DontInline
+/**
+ * Interpretively invoke this form on the given arguments.
+ */
+Object interpretWithArguments(Object... argumentValues) throws Throwable {
+    if (TRACE_INTERPRETER)
+        return interpretWithArgumentsTracing(argumentValues);
+    checkInvocationCounter();
+    assert (arityCheck(argumentValues));
+    Object[] values = Arrays.copyOf(argumentValues, names.length);
+    for (int i = argumentValues.length; i < values.length; i++) {
+        values[i] = interpretName(names[i], values);
+    }
+    Object rv = (result < 0) ? null : values[result];
+    assert (resultCheck(argumentValues, rv));
+    return rv;
+}

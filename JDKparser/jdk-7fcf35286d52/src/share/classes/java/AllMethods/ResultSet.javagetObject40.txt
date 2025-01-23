@@ -1,0 +1,29 @@
+/**
+ * <p>Gets the value of the designated column in the current row
+ * of this <code>ResultSet</code> object as
+ * an <code>Object</code> in the Java programming language.
+ *
+ * <p>This method will return the value of the given column as a
+ * Java object.  The type of the Java object will be the default
+ * Java object type corresponding to the column's SQL type,
+ * following the mapping for built-in types specified in the JDBC
+ * specification. If the value is an SQL <code>NULL</code>,
+ * the driver returns a Java <code>null</code>.
+ * <P>
+ * This method may also be used to read database-specific
+ * abstract data types.
+ * <P>
+ * In the JDBC 2.0 API, the behavior of the method
+ * <code>getObject</code> is extended to materialize
+ * data of SQL user-defined types.  When a column contains
+ * a structured or distinct value, the behavior of this method is as
+ * if it were a call to: <code>getObject(columnIndex,
+ * this.getStatement().getConnection().getTypeMap())</code>.
+ *
+ * @param columnLabel the label for the column specified with the SQL AS clause.  If the SQL AS clause was not specified, then the label is the name of the column
+ * @return a <code>java.lang.Object</code> holding the column value
+ * @exception SQLException if the columnLabel is not valid;
+ * if a database access error occurs or this method is
+ *            called on a closed result set
+ */
+Object getObject(String columnLabel) throws SQLException;

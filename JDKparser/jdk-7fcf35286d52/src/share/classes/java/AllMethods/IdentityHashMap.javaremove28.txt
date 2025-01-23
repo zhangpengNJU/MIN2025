@@ -1,0 +1,6 @@
+public void remove() {
+    lastReturnedIndex = ((null == lastReturnedEntry) ? -1 : lastReturnedEntry.index);
+    super.remove();
+    lastReturnedEntry.index = lastReturnedIndex;
+    lastReturnedEntry = null;
+}

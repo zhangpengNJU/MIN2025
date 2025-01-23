@@ -1,0 +1,8 @@
+private GraphicsConfiguration initGC(GraphicsConfiguration gc) {
+    GraphicsEnvironment.checkHeadless();
+    if (gc == null) {
+        gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+    }
+    setGraphicsConfiguration(gc);
+    return gc;
+}

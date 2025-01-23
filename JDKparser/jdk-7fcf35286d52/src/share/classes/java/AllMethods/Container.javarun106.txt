@@ -1,0 +1,9 @@
+public void run() {
+    EventDispatchThread dispatchThread = (EventDispatchThread) Thread.currentThread();
+    dispatchThread.pumpEventsForHierarchy(new Conditional() {
+
+        public boolean evaluate() {
+            return ((windowClosingException == null) && (nativeContainer.modalComp != null));
+        }
+    }, Container.this);
+}

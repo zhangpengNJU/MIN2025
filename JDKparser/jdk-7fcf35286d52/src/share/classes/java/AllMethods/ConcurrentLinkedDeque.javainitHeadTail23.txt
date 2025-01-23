@@ -1,0 +1,18 @@
+/**
+ * Initializes head and tail, ensuring invariants hold.
+ */
+private void initHeadTail(Node<E> h, Node<E> t) {
+    if (h == t) {
+        if (h == null)
+            h = t = new Node<E>(null);
+        else {
+            // Avoid edge case of a single Node with non-null item.
+            Node<E> newNode = new Node<E>(null);
+            t.lazySetNext(newNode);
+            newNode.lazySetPrev(t);
+            t = newNode;
+        }
+    }
+    head = h;
+    tail = t;
+}

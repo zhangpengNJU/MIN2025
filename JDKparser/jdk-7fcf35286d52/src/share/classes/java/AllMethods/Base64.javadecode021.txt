@@ -1,0 +1,56 @@
+private int decode0(byte[] src, int sp, int sl, byte[] dst) {
+    int[] base64 = isURL ? fromBase64URL : fromBase64;
+    int dp = 0;
+    int bits = 0;
+    // pos of first byte of 4-byte atom
+    int shiftto = 18;
+    while (sp < sl) {
+        int b = src[sp++] & 0xff;
+        if ((b = base64[b]) < 0) {
+            if (b == -2) {
+                // padding byte '='
+                // =     shiftto==18 unnecessary padding
+                // x=    shiftto==12 a dangling single x
+                // x     to be handled together with non-padding case
+                // xx=   shiftto==6&&sp==sl missing last =
+                // xx=y  shiftto==6 last is not =
+                if (shiftto == 6 && (sp == sl || src[sp++] != '=') || shiftto == 18) {
+                    throw new IllegalArgumentException("Input byte array has wrong 4-byte ending unit");
+                }
+                break;
+            }
+            if (// skip if for rfc2045
+            isMIME)
+                continue;
+            else
+                throw new IllegalArgumentException("Illegal base64 character " + Integer.toString(src[sp - 1], 16));
+        }
+        bits |= (b << shiftto);
+        shiftto -= 6;
+        if (shiftto < 0) {
+            dst[dp++] = (byte) (bits >> 16);
+            dst[dp++] = (byte) (bits >> 8);
+            dst[dp++] = (byte) (bits);
+            shiftto = 18;
+            bits = 0;
+        }
+    }
+    // reached end of byte array or hit padding '=' characters.
+    if (shiftto == 6) {
+        dst[dp++] = (byte) (bits >> 16);
+    } else if (shiftto == 0) {
+        dst[dp++] = (byte) (bits >> 16);
+        dst[dp++] = (byte) (bits >> 8);
+    } else if (shiftto == 12) {
+        // dangling single "x", incorrectly encoded.
+        throw new IllegalArgumentException("Last unit does not have enough valid bits");
+    }
+    // anything left is invalid, if is not MIME.
+    // if MIME, ignore all non-base64 character
+    while (sp < sl) {
+        if (isMIME && base64[src[sp++]] < 0)
+            continue;
+        throw new IllegalArgumentException("Input byte array has incorrect ending byte at " + sp);
+    }
+    return dp;
+}

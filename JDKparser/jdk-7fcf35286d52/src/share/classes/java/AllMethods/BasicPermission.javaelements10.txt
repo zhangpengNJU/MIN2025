@@ -1,0 +1,12 @@
+/**
+ * Returns an enumeration of all the BasicPermission objects in the
+ * container.
+ *
+ * @return an enumeration of all the BasicPermission objects.
+ */
+public Enumeration<Permission> elements() {
+    // Convert Iterator of Map values into an Enumeration
+    synchronized (this) {
+        return Collections.enumeration(perms.values());
+    }
+}

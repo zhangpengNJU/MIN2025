@@ -1,0 +1,26 @@
+private boolean restoreFocus(Window aWindow, Component vetoedComponent, boolean clearOnFailure) {
+    restoreFocusTo = null;
+    Component toFocus = KeyboardFocusManager.getMostRecentFocusOwner(aWindow);
+    if (toFocus != null && toFocus != vetoedComponent) {
+        if (getHeavyweight(aWindow) != getNativeFocusOwner()) {
+            // cannot restore focus synchronously
+            if (!toFocus.isShowing() || !toFocus.canBeFocusOwner()) {
+                toFocus = toFocus.getNextFocusCandidate();
+            }
+            if (toFocus != null && toFocus != vetoedComponent) {
+                if (!toFocus.requestFocus(false, CausedFocusEvent.Cause.ROLLBACK)) {
+                    restoreFocusTo = toFocus;
+                }
+                return true;
+            }
+        } else if (doRestoreFocus(toFocus, vetoedComponent, false)) {
+            return true;
+        }
+    }
+    if (clearOnFailure) {
+        clearGlobalFocusOwnerPriv();
+        return true;
+    } else {
+        return false;
+    }
+}

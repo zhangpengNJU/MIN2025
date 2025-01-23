@@ -1,0 +1,14 @@
+/**
+ * Obtains an ISO zoned date-time from another date-time object.
+ * <p>
+ * This is equivalent to {@link ZonedDateTime#from(TemporalAccessor)}.
+ *
+ * @param temporal  the date-time object to convert, not null
+ * @return the ISO zoned date-time, not null
+ * @throws DateTimeException if unable to create the date-time
+ */
+// override with covariant return type
+@Override
+public ZonedDateTime zonedDateTime(TemporalAccessor temporal) {
+    return ZonedDateTime.from(temporal);
+}

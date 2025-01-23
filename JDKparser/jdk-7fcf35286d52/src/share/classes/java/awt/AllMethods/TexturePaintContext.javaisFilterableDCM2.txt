@@ -1,0 +1,7 @@
+public static boolean isFilterableDCM(ColorModel cm) {
+    if (cm instanceof DirectColorModel) {
+        DirectColorModel dcm = (DirectColorModel) cm;
+        return (isMaskOK(dcm.getAlphaMask(), true) && isMaskOK(dcm.getRedMask(), false) && isMaskOK(dcm.getGreenMask(), false) && isMaskOK(dcm.getBlueMask(), false));
+    }
+    return false;
+}

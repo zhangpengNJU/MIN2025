@@ -1,0 +1,18 @@
+/**
+ * Associates a string representing the specified boolean value with the
+ * specified key in this preference node.  The associated string is
+ * <tt>"true"</tt> if the value is true, and <tt>"false"</tt> if it is
+ * false.  This method is intended for use in conjunction with
+ * {@link #getBoolean}.
+ *
+ * @param key key with which the string form of value is to be associated.
+ * @param value value whose string form is to be associated with key.
+ * @throws NullPointerException if <tt>key</tt> is <tt>null</tt>.
+ * @throws IllegalArgumentException if <tt>key.length()</tt> exceeds
+ *         <tt>MAX_KEY_LENGTH</tt>.
+ * @throws IllegalStateException if this node (or an ancestor) has been
+ *         removed with the {@link #removeNode()} method.
+ * @see #getBoolean(String,boolean)
+ * @see #get(String,String)
+ */
+public abstract void putBoolean(String key, boolean value);

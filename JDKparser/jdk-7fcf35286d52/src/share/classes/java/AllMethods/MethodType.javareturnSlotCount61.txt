@@ -1,0 +1,15 @@
+/**
+ * Reports the number of JVM stack slots required to receive a return value
+ * from a method of this type.
+ * If the {@link #returnType() return type} is void, it will be zero,
+ * else if the return type is long or double, it will be two, else one.
+ * <p>
+ * This method is included for the benefit of applications that must
+ * generate bytecodes that process method handles and invokedynamic.
+ * @return the number of JVM stack slots (0, 1, or 2) for this type's return value
+ * Will be removed for PFD.
+ */
+/*non-public*/
+int returnSlotCount() {
+    return form.returnSlotCount();
+}

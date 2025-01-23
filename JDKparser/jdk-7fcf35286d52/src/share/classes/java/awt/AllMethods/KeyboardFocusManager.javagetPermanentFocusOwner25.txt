@@ -1,0 +1,22 @@
+/**
+ * Returns the permanent focus owner, if the permanent focus owner is in
+ * the same context as the calling thread. The permanent focus owner is
+ * defined as the last Component in an application to receive a permanent
+ * FOCUS_GAINED event. The focus owner and permanent focus owner are
+ * equivalent unless a temporary focus change is currently in effect. In
+ * such a situation, the permanent focus owner will again be the focus
+ * owner when the temporary focus change ends.
+ *
+ * @return the permanent focus owner, or null if the permanent focus owner
+ *         is not a member of the calling thread's context
+ * @see #getGlobalPermanentFocusOwner
+ * @see #setGlobalPermanentFocusOwner
+ */
+public Component getPermanentFocusOwner() {
+    synchronized (KeyboardFocusManager.class) {
+        if (permanentFocusOwner == null) {
+            return null;
+        }
+        return (permanentFocusOwner.appContext == AppContext.getAppContext()) ? permanentFocusOwner : null;
+    }
+}

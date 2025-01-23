@@ -1,0 +1,9 @@
+/**
+ * Gets the minimum X coordinate of the rendering-independent image data.
+ */
+public float getMinX() {
+    if (boundingBox == null) {
+        boundingBox = myCRIF.getBounds2D(paramBlock);
+    }
+    return (float) boundingBox.getMinX();
+}

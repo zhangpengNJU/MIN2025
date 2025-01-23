@@ -1,0 +1,16 @@
+/**
+ * Returns a <code>LineMetrics</code> object created with the
+ * specified arguments.
+ * @param chars an array of characters
+ * @param beginIndex the initial offset of <code>chars</code>
+ * @param limit the end offset of <code>chars</code>
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a <code>LineMetrics</code> object created with the
+ * specified arguments.
+ */
+public LineMetrics getLineMetrics(char[] chars, int beginIndex, int limit, FontRenderContext frc) {
+    FontLineMetrics flm = defaultLineMetrics(frc);
+    int numChars = limit - beginIndex;
+    flm.numchars = (numChars < 0) ? 0 : numChars;
+    return flm;
+}

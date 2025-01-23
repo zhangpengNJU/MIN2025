@@ -1,0 +1,20 @@
+/**
+ *  Utility method for parsing octal escape sequences.
+ */
+private int o() {
+    int n = read();
+    if (((n - '0') | ('7' - n)) >= 0) {
+        int m = read();
+        if (((m - '0') | ('7' - m)) >= 0) {
+            int o = read();
+            if ((((o - '0') | ('7' - o)) >= 0) && (((n - '0') | ('3' - n)) >= 0)) {
+                return (n - '0') * 64 + (m - '0') * 8 + (o - '0');
+            }
+            unread();
+            return (n - '0') * 8 + (m - '0');
+        }
+        unread();
+        return (n - '0');
+    }
+    throw error("Illegal octal escape sequence");
+}

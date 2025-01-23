@@ -1,0 +1,10 @@
+@Override
+public String next() {
+    if (nextLine != null || hasNext()) {
+        String line = nextLine;
+        nextLine = null;
+        return line;
+    } else {
+        throw new NoSuchElementException();
+    }
+}

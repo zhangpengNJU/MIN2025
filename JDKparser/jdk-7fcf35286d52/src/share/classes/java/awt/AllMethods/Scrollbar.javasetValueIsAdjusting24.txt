@@ -1,0 +1,17 @@
+/**
+ * Sets the <code>valueIsAdjusting</code> property.
+ *
+ * @param b new adjustment-in-progress status
+ * @see #getValueIsAdjusting
+ * @since 1.4
+ */
+public void setValueIsAdjusting(boolean b) {
+    boolean oldValue;
+    synchronized (this) {
+        oldValue = isAdjusting;
+        isAdjusting = b;
+    }
+    if ((oldValue != b) && (accessibleContext != null)) {
+        accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, ((oldValue) ? AccessibleState.BUSY : null), ((b) ? AccessibleState.BUSY : null));
+    }
+}

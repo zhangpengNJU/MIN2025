@@ -1,0 +1,23 @@
+/**
+ * Returns the number of bytes that can be read from this input
+ * stream without blocking.
+ *
+ * @return the number of bytes that can be read from this input stream
+ *         without blocking, or {@code 0} if this input stream has been
+ *         closed by invoking its {@link #close()} method, or if the pipe
+ *         is {@link #connect(java.io.PipedOutputStream) unconnected}, or
+ *          <a href="#BROKEN"> <code>broken</code></a>.
+ *
+ * @exception  IOException  if an I/O error occurs.
+ * @since   JDK1.0.2
+ */
+public synchronized int available() throws IOException {
+    if (in < 0)
+        return 0;
+    else if (in == out)
+        return buffer.length;
+    else if (in > out)
+        return in - out;
+    else
+        return in + buffer.length - out;
+}

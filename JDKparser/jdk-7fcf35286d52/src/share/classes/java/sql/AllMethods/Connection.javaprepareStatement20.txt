@@ -1,0 +1,32 @@
+/**
+ * Creates a <code>PreparedStatement</code> object that will generate
+ * <code>ResultSet</code> objects with the given type and concurrency.
+ * This method is the same as the <code>prepareStatement</code> method
+ * above, but it allows the default result set
+ * type and concurrency to be overridden.
+ * The holdability of the created result sets can be determined by
+ * calling {@link #getHoldability}.
+ *
+ * @param sql a <code>String</code> object that is the SQL statement to
+ *            be sent to the database; may contain one or more '?' IN
+ *            parameters
+ * @param resultSetType a result set type; one of
+ *         <code>ResultSet.TYPE_FORWARD_ONLY</code>,
+ *         <code>ResultSet.TYPE_SCROLL_INSENSITIVE</code>, or
+ *         <code>ResultSet.TYPE_SCROLL_SENSITIVE</code>
+ * @param resultSetConcurrency a concurrency type; one of
+ *         <code>ResultSet.CONCUR_READ_ONLY</code> or
+ *         <code>ResultSet.CONCUR_UPDATABLE</code>
+ * @return a new PreparedStatement object containing the
+ * pre-compiled SQL statement that will produce <code>ResultSet</code>
+ * objects with the given type and concurrency
+ * @exception SQLException if a database access error occurs, this
+ * method is called on a closed connection
+ *         or the given parameters are not <code>ResultSet</code>
+ *         constants indicating type and concurrency
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method or this method is not supported for the specified result
+ * set type and result set concurrency.
+ * @since 1.2
+ */
+PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException;

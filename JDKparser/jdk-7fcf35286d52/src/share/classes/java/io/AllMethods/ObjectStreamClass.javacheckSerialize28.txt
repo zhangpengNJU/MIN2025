@@ -1,0 +1,11 @@
+/**
+ * Throws an InvalidClassException if objects whose class is represented by
+ * this descriptor should not be allowed to serialize.  This method does
+ * not apply to serialization of enum constants.
+ */
+void checkSerialize() throws InvalidClassException {
+    requireInitialized();
+    if (serializeEx != null) {
+        throw serializeEx.newInvalidClassException();
+    }
+}

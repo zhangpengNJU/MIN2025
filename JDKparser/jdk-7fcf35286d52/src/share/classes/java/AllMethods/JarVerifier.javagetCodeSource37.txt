@@ -1,0 +1,5 @@
+public CodeSource getCodeSource(URL url, String name) {
+    CodeSigner[] signers;
+    signers = signerMap().get(name);
+    return mapSignersToCodeSource(url, signers);
+}

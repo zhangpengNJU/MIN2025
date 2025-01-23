@@ -1,0 +1,24 @@
+/*
+     * Methods for controlling interrupts to worker threads.
+     */
+/**
+ * If there is a security manager, makes sure caller has
+ * permission to shut down threads in general (see shutdownPerm).
+ * If this passes, additionally makes sure the caller is allowed
+ * to interrupt each worker thread. This might not be true even if
+ * first check passed, if the SecurityManager treats some threads
+ * specially.
+ */
+private void checkShutdownAccess() {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(shutdownPerm);
+        final ReentrantLock mainLock = this.mainLock;
+        mainLock.lock();
+        try {
+            for (Worker w : workers) security.checkAccess(w.thread);
+        } finally {
+            mainLock.unlock();
+        }
+    }
+}

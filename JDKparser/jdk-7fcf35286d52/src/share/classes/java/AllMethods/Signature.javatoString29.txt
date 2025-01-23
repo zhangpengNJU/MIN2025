@@ -1,0 +1,22 @@
+/**
+ * Returns a string representation of this signature object,
+ * providing information that includes the state of the object
+ * and the name of the algorithm used.
+ *
+ * @return a string representation of this signature object.
+ */
+public String toString() {
+    String initState = "";
+    switch(state) {
+        case UNINITIALIZED:
+            initState = "<not initialized>";
+            break;
+        case VERIFY:
+            initState = "<initialized for verifying>";
+            break;
+        case SIGN:
+            initState = "<initialized for signing>";
+            break;
+    }
+    return "Signature object: " + getAlgorithm() + initState;
+}

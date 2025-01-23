@@ -1,0 +1,41 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Long valueLong = context.getValue(field);
+    if (valueLong == null) {
+        return false;
+    }
+    long value = getValue(context, valueLong);
+    DecimalStyle decimalStyle = context.getDecimalStyle();
+    String str = (value == Long.MIN_VALUE ? "9223372036854775808" : Long.toString(Math.abs(value)));
+    if (str.length() > maxWidth) {
+        throw new DateTimeException("Field " + field + " cannot be printed as the value " + value + " exceeds the maximum print width of " + maxWidth);
+    }
+    str = decimalStyle.convertNumberToI18N(str);
+    if (value >= 0) {
+        switch(signStyle) {
+            case EXCEEDS_PAD:
+                if (minWidth < 19 && value >= EXCEED_POINTS[minWidth]) {
+                    buf.append(decimalStyle.getPositiveSign());
+                }
+                break;
+            case ALWAYS:
+                buf.append(decimalStyle.getPositiveSign());
+                break;
+        }
+    } else {
+        switch(signStyle) {
+            case NORMAL:
+            case EXCEEDS_PAD:
+            case ALWAYS:
+                buf.append(decimalStyle.getNegativeSign());
+                break;
+            case NOT_NEGATIVE:
+                throw new DateTimeException("Field " + field + " cannot be printed as the value " + value + " cannot be negative according to the SignStyle");
+        }
+    }
+    for (int i = 0; i < minWidth - str.length(); i++) {
+        buf.append(decimalStyle.getZeroDigit());
+    }
+    buf.append(str);
+    return true;
+}

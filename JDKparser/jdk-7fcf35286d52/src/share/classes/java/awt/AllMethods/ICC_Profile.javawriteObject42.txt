@@ -1,0 +1,50 @@
+/**
+ * Writes default serializable fields to the stream.  Writes a
+ * string and an array of bytes to the stream as additional data.
+ *
+ * @param s stream used for serialization.
+ * @throws IOException
+ *     thrown by <code>ObjectInputStream</code>.
+ * @serialData
+ *     The <code>String</code> is the name of one of
+ *     <code>CS_<var>*</var></code> constants defined in the
+ *     {@link ColorSpace} class if the profile object is a profile
+ *     for a predefined color space (for example
+ *     <code>"CS_sRGB"</code>).  The string is <code>null</code>
+ *     otherwise.
+ *     <p>
+ *     The <code>byte[]</code> array is the profile data for the
+ *     profile.  For predefined color spaces <code>null</code> is
+ *     written instead of the profile data.  If in the future
+ *     versions of Java API new predefined color spaces will be
+ *     added, future versions of this class may choose to write
+ *     for new predefined color spaces not only the color space
+ *     name, but the profile data as well so that older versions
+ *     could still deserialize the object.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.defaultWriteObject();
+    String csName = null;
+    if (this == sRGBprofile) {
+        csName = "CS_sRGB";
+    } else if (this == XYZprofile) {
+        csName = "CS_CIEXYZ";
+    } else if (this == PYCCprofile) {
+        csName = "CS_PYCC";
+    } else if (this == GRAYprofile) {
+        csName = "CS_GRAY";
+    } else if (this == LINEAR_RGBprofile) {
+        csName = "CS_LINEAR_RGB";
+    }
+    // Future versions may choose to write profile data for new
+    // predefined color spaces as well, if any will be introduced,
+    // so that old versions that don't recognize the new CS name
+    // may fall back to constructing profile from the data.
+    byte[] data = null;
+    if (csName == null) {
+        // getData will activate deferred profile if necessary
+        data = getData();
+    }
+    s.writeObject(csName);
+    s.writeObject(data);
+}

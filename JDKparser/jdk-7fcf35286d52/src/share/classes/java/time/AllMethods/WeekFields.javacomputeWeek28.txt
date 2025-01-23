@@ -1,0 +1,11 @@
+/**
+ * Returns the week number computed from the reference day and reference dayOfWeek.
+ *
+ * @param offset the offset to align a date with the start of week
+ *     from {@link #startOfWeekOffset}.
+ * @param day  the day for which to compute the week number
+ * @return the week number where zero is used for a partial week and 1 for the first full week
+ */
+private int computeWeek(int offset, int day) {
+    return ((7 + offset + (day - 1)) / 7);
+}

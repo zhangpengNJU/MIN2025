@@ -1,0 +1,29 @@
+public int read(ByteBuffer dst) throws IOException {
+    int len = dst.remaining();
+    int totalRead = 0;
+    int bytesRead = 0;
+    synchronized (readLock) {
+        while (totalRead < len) {
+            int bytesToRead = Math.min((len - totalRead), TRANSFER_SIZE);
+            if (buf.length < bytesToRead)
+                buf = new byte[bytesToRead];
+            if ((totalRead > 0) && !(in.available() > 0))
+                // block at most once
+                break;
+            try {
+                begin();
+                bytesRead = in.read(buf, 0, bytesToRead);
+            } finally {
+                end(bytesRead > 0);
+            }
+            if (bytesRead < 0)
+                break;
+            else
+                totalRead += bytesRead;
+            dst.put(buf, 0, bytesRead);
+        }
+        if ((bytesRead < 0) && (totalRead == 0))
+            return -1;
+        return totalRead;
+    }
+}

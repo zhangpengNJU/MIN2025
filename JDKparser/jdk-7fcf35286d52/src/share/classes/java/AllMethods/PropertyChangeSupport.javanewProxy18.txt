@@ -1,0 +1,12 @@
+/**
+ * Creates a {@link PropertyChangeListenerProxy PropertyChangeListenerProxy}
+ * object for the specified property.
+ *
+ * @param name      the name of the property to listen on
+ * @param listener  the listener to process events
+ * @return          a {@code PropertyChangeListenerProxy} object
+ */
+@Override
+protected PropertyChangeListener newProxy(String name, PropertyChangeListener listener) {
+    return new PropertyChangeListenerProxy(name, listener);
+}

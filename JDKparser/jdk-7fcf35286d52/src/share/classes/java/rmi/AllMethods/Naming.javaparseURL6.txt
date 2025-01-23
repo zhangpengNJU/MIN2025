@@ -1,0 +1,38 @@
+/**
+ * Dissect Naming URL strings to obtain referenced host, port and
+ * object name.
+ *
+ * @return an object which contains each of the above
+ * components.
+ *
+ * @exception MalformedURLException if given url string is malformed
+ */
+private static ParsedNamingURL parseURL(String str) throws MalformedURLException {
+    try {
+        return intParseURL(str);
+    } catch (URISyntaxException ex) {
+        /* With RFC 3986 URI handling, 'rmi://:<port>' and
+             * '//:<port>' forms will result in a URI syntax exception
+             * Convert the authority to a localhost:<port> form
+             */
+        MalformedURLException mue = new MalformedURLException("invalid URL String: " + str);
+        mue.initCause(ex);
+        int indexSchemeEnd = str.indexOf(':');
+        int indexAuthorityBegin = str.indexOf("//:");
+        if (indexAuthorityBegin < 0) {
+            throw mue;
+        }
+        if ((indexAuthorityBegin == 0) || ((indexSchemeEnd > 0) && (indexAuthorityBegin == indexSchemeEnd + 1))) {
+            int indexHostBegin = indexAuthorityBegin + 2;
+            String newStr = str.substring(0, indexHostBegin) + "localhost" + str.substring(indexHostBegin);
+            try {
+                return intParseURL(newStr);
+            } catch (URISyntaxException inte) {
+                throw mue;
+            } catch (MalformedURLException inte) {
+                throw inte;
+            }
+        }
+        throw mue;
+    }
+}

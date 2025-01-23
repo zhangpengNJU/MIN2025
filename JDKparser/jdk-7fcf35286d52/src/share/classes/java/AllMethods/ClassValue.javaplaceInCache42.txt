@@ -1,0 +1,14 @@
+/**
+ * Store the given entry.  Update cacheLoad, and return any live victim.
+ *  'Gently' means return self rather than dislocating a live victim.
+ */
+private Entry<?> placeInCache(Entry<?>[] cache, int pos, Entry<?> e, boolean gently) {
+    Entry<?> e2 = overwrittenEntry(cache[pos]);
+    if (gently && e2 != null) {
+        // do not overwrite a live entry
+        return e;
+    } else {
+        cache[pos] = e;
+        return e2;
+    }
+}

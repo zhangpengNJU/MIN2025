@@ -1,0 +1,11 @@
+/**
+ * Subtracts two numbers of same length, returning borrow.
+ */
+private static int subN(int[] a, int[] b, int len) {
+    long sum = 0;
+    while (--len >= 0) {
+        sum = (a[len] & LONG_MASK) - (b[len] & LONG_MASK) + (sum >> 32);
+        a[len] = (int) sum;
+    }
+    return (int) (sum >> 32);
+}

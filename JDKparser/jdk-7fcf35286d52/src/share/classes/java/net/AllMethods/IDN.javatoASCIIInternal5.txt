@@ -1,0 +1,71 @@
+// 
+// toASCII operation; should only apply to a single label
+// 
+private static String toASCIIInternal(String label, int flag) {
+    // step 1
+    // Check if the string contains code points outside the ASCII range 0..0x7c.
+    boolean isASCII = isAllASCII(label);
+    StringBuffer dest;
+    // step 2
+    // perform the nameprep operation; flag ALLOW_UNASSIGNED is used here
+    if (!isASCII) {
+        UCharacterIterator iter = UCharacterIterator.getInstance(label);
+        try {
+            dest = namePrep.prepare(iter, flag);
+        } catch (java.text.ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    } else {
+        dest = new StringBuffer(label);
+    }
+    // step 8, move forward to check the smallest number of the code points
+    // the length must be inside 1..63
+    if (dest.length() == 0) {
+        throw new IllegalArgumentException("Empty label is not a legal name");
+    }
+    // step 3
+    // Verify the absence of non-LDH ASCII code points
+    // 0..0x2c, 0x2e..0x2f, 0x3a..0x40, 0x5b..0x60, 0x7b..0x7f
+    // Verify the absence of leading and trailing hyphen
+    boolean useSTD3ASCIIRules = ((flag & USE_STD3_ASCII_RULES) != 0);
+    if (useSTD3ASCIIRules) {
+        for (int i = 0; i < dest.length(); i++) {
+            int c = dest.charAt(i);
+            if (isNonLDHAsciiCodePoint(c)) {
+                throw new IllegalArgumentException("Contains non-LDH ASCII characters");
+            }
+        }
+        if (dest.charAt(0) == '-' || dest.charAt(dest.length() - 1) == '-') {
+            throw new IllegalArgumentException("Has leading or trailing hyphen");
+        }
+    }
+    if (!isASCII) {
+        // step 4
+        // If all code points are inside 0..0x7f, skip to step 8
+        if (!isAllASCII(dest.toString())) {
+            // step 5
+            // verify the sequence does not begin with ACE prefix
+            if (!startsWithACEPrefix(dest)) {
+                // step 6
+                // encode the sequence with punycode
+                try {
+                    dest = Punycode.encode(dest, null);
+                } catch (java.text.ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+                dest = toASCIILower(dest);
+                // step 7
+                // prepend the ACE prefix
+                dest.insert(0, ACE_PREFIX);
+            } else {
+                throw new IllegalArgumentException("The input starts with the ACE Prefix");
+            }
+        }
+    }
+    // step 8
+    // the length must be inside 1..63
+    if (dest.length() > MAX_LABEL_LENGTH) {
+        throw new IllegalArgumentException("The label in the input is too long");
+    }
+    return dest.toString();
+}

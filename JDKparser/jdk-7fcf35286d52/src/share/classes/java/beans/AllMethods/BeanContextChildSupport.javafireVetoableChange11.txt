@@ -1,0 +1,20 @@
+/**
+ * Report a vetoable property update to any registered listeners.
+ * If anyone vetos the change, then fire a new event
+ * reverting everyone to the old value and then rethrow
+ * the PropertyVetoException. <P>
+ *
+ * No event is fired if old and new are equal and non-null.
+ * <P>
+ * @param name The programmatic name of the property that is about to
+ * change
+ *
+ * @param oldValue The old value of the property
+ * @param newValue - The new value of the property
+ *
+ * @throws PropertyVetoException if the recipient wishes the property
+ * change to be rolled back.
+ */
+public void fireVetoableChange(String name, Object oldValue, Object newValue) throws PropertyVetoException {
+    vcSupport.fireVetoableChange(name, oldValue, newValue);
+}

@@ -1,0 +1,25 @@
+/**
+ * Set the global socket factory from which RMI gets sockets (if the
+ * remote object is not associated with a specific client and/or server
+ * socket factory). The RMI socket factory can only be set once. Note: The
+ * RMISocketFactory may only be set if the current security manager allows
+ * setting a socket factory; if disallowed, a SecurityException will be
+ * thrown.
+ * @param fac the socket factory
+ * @exception IOException if the RMI socket factory is already set
+ * @exception  SecurityException  if a security manager exists and its
+ *             <code>checkSetFactory</code> method doesn't allow the operation.
+ * @see #getSocketFactory
+ * @see java.lang.SecurityManager#checkSetFactory()
+ * @since JDK1.1
+ */
+public synchronized static void setSocketFactory(RMISocketFactory fac) throws IOException {
+    if (factory != null) {
+        throw new SocketException("factory already defined");
+    }
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkSetFactory();
+    }
+    factory = fac;
+}

@@ -1,0 +1,4 @@
+@SuppressWarnings("unchecked")
+protected Object clone() {
+    return new Entry<>(hash, key, value, (next == null ? null : (Entry<K, V>) next.clone()));
+}

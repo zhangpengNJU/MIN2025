@@ -1,0 +1,15 @@
+/**
+ * get the assigned combiner from the privileged or inherited context
+ */
+DomainCombiner getAssignedCombiner() {
+    AccessControlContext acc;
+    if (isPrivileged) {
+        acc = privilegedContext;
+    } else {
+        acc = AccessController.getInheritedAccessControlContext();
+    }
+    if (acc != null) {
+        return acc.combiner;
+    }
+    return null;
+}

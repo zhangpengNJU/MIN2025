@@ -1,0 +1,20 @@
+/**
+ * Returns whether the given level of translucency is supported by
+ * this graphics device.
+ *
+ * @param translucencyKind a kind of translucency support
+ * @return whether the given translucency kind is supported
+ *
+ * @since 1.7
+ */
+public boolean isWindowTranslucencySupported(WindowTranslucency translucencyKind) {
+    switch(translucencyKind) {
+        case PERPIXEL_TRANSPARENT:
+            return isWindowShapingSupported();
+        case TRANSLUCENT:
+            return isWindowOpacitySupported();
+        case PERPIXEL_TRANSLUCENT:
+            return isWindowPerpixelTranslucencySupported();
+    }
+    return false;
+}

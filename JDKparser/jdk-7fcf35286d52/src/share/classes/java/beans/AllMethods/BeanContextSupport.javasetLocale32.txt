@@ -1,0 +1,15 @@
+/**
+ * Sets the locale of this BeanContext.
+ * @param newLocale the new locale. This method call will have
+ *        no effect if newLocale is <CODE>null</CODE>.
+ * @throws PropertyVetoException if the new value is rejected
+ */
+public synchronized void setLocale(Locale newLocale) throws PropertyVetoException {
+    if ((locale != null && !locale.equals(newLocale)) && newLocale != null) {
+        Locale old = locale;
+        // throws
+        fireVetoableChange("locale", old, newLocale);
+        locale = newLocale;
+        firePropertyChange("locale", old, newLocale);
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Enumerates all key/value pairs in the specified hashtable.
+ * @param h the hashtable
+ * @throws ClassCastException if any of the property keys
+ *         is not of String type.
+ */
+private synchronized void enumerate(Hashtable<String, Object> h) {
+    if (defaults != null) {
+        defaults.enumerate(h);
+    }
+    for (Enumeration<?> e = keys(); e.hasMoreElements(); ) {
+        String key = (String) e.nextElement();
+        h.put(key, get(key));
+    }
+}

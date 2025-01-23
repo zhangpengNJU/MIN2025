@@ -1,0 +1,11 @@
+static ModalEventFilter createFilterForDialog(Dialog modalDialog) {
+    switch(modalDialog.getModalityType()) {
+        case DOCUMENT_MODAL:
+            return new DocumentModalEventFilter(modalDialog);
+        case APPLICATION_MODAL:
+            return new ApplicationModalEventFilter(modalDialog);
+        case TOOLKIT_MODAL:
+            return new ToolkitModalEventFilter(modalDialog);
+    }
+    return null;
+}

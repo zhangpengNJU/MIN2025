@@ -1,0 +1,33 @@
+/**
+ * Get the package for the specified class.
+ * The class's class loader is used to find the package instance
+ * corresponding to the specified class. If the class loader
+ * is the bootstrap class loader, which may be represented by
+ * {@code null} in some implementations, then the set of packages
+ * loaded by the bootstrap class loader is searched to find the package.
+ * <p>
+ * Packages have attributes for versions and specifications only
+ * if the class loader created the package
+ * instance with the appropriate attributes. Typically those
+ * attributes are defined in the manifests that accompany
+ * the classes.
+ *
+ * @param c the class to get the package of.
+ * @return the package of the class. It may be null if no package
+ *          information is available from the archive or codebase.
+ */
+static Package getPackage(Class<?> c) {
+    String name = c.getName();
+    int i = name.lastIndexOf('.');
+    if (i != -1) {
+        name = name.substring(0, i);
+        ClassLoader cl = c.getClassLoader();
+        if (cl != null) {
+            return cl.getPackage(name);
+        } else {
+            return getSystemPackage(name);
+        }
+    } else {
+        return null;
+    }
+}

@@ -1,0 +1,12 @@
+/**
+ * Decodes a <code>String</code> native for use as a
+ * <code>DataFlavor</code>.
+ *
+ * @param nat the <code>String</code> to decode
+ * @return the decoded <code>DataFlavor</code>, or <code>null</code> if
+ *         nat is not an encoded <code>String</code> native
+ */
+public static DataFlavor decodeDataFlavor(String nat) throws ClassNotFoundException {
+    String retval_str = SystemFlavorMap.decodeJavaMIMEType(nat);
+    return (retval_str != null) ? new DataFlavor(retval_str) : null;
+}

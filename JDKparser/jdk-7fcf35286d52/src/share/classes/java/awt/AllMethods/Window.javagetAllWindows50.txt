@@ -1,0 +1,14 @@
+/*
+     * Returns a list of all displayable Windows, i. e. all the
+     * Windows which peer is not null.
+     *
+     * @see #addNotify
+     * @see #removeNotify
+     */
+static IdentityArrayList<Window> getAllWindows() {
+    synchronized (allWindows) {
+        IdentityArrayList<Window> v = new IdentityArrayList<Window>();
+        v.addAll(allWindows);
+        return v;
+    }
+}

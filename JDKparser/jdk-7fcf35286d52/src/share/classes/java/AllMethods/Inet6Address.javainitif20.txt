@@ -1,0 +1,9 @@
+private void initif(String hostName, byte[] addr, NetworkInterface nif) throws UnknownHostException {
+    int family = -1;
+    holder6.init(addr, nif);
+    if (addr.length == INADDRSZ) {
+        // normal IPv6 address
+        family = IPv6;
+    }
+    holder.init(hostName, family);
+}

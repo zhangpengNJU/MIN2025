@@ -1,0 +1,21 @@
+public DescendingKeySpliterator<K, V> trySplit() {
+    if (est < 0)
+        // force initialization
+        getEstimate();
+    int d = side;
+    TreeMap.Entry<K, V> e = current, f = fence, s = (// empty
+    (e == null || e == f) ? // empty
+    null : // was top
+    (d == 0) ? // was top
+    tree.root : // was left
+    (d < 0) ? // was left
+    e.left : // was right
+    (d > 0 && f != null) ? // was right
+    f.right : null);
+    if (s != null && s != e && s != f && tree.compare(e.key, s.key) > 0) {
+        // e not already past s
+        side = 1;
+        return new DescendingKeySpliterator<>(tree, e, current = s, -1, est >>>= 1, expectedModCount);
+    }
+    return null;
+}

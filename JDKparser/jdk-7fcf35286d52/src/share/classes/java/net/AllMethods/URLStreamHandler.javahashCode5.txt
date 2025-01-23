@@ -1,0 +1,38 @@
+/**
+ * Provides the default hash calculation. May be overidden by handlers for
+ * other protocols that have different requirements for hashCode
+ * calculation.
+ * @param u a URL object
+ * @return an {@code int} suitable for hash table indexing
+ * @since 1.3
+ */
+protected int hashCode(URL u) {
+    int h = 0;
+    // Generate the protocol part.
+    String protocol = u.getProtocol();
+    if (protocol != null)
+        h += protocol.hashCode();
+    // Generate the host part.
+    InetAddress addr = getHostAddress(u);
+    if (addr != null) {
+        h += addr.hashCode();
+    } else {
+        String host = u.getHost();
+        if (host != null)
+            h += host.toLowerCase().hashCode();
+    }
+    // Generate the file part.
+    String file = u.getFile();
+    if (file != null)
+        h += file.hashCode();
+    // Generate the port part.
+    if (u.getPort() == -1)
+        h += getDefaultPort();
+    else
+        h += u.getPort();
+    // Generate the ref part.
+    String ref = u.getRef();
+    if (ref != null)
+        h += ref.hashCode();
+    return h;
+}

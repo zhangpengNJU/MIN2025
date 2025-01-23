@@ -1,0 +1,14 @@
+String instanceName(Object instance) {
+    if (instance == null) {
+        return "null";
+    } else if (instance.getClass() == String.class) {
+        return "\"" + (String) instance + "\"";
+    } else {
+        // Note: there is a minor problem with using the non-caching
+        // NameGenerator method. The return value will not have
+        // specific information about the inner class name. For example,
+        // In 1.4.2 an inner class would be represented as JList$1 now
+        // would be named Class.
+        return NameGenerator.unqualifiedClassName(instance.getClass());
+    }
+}

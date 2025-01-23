@@ -1,0 +1,30 @@
+// DEVIATION: If the normalized path is relative, and if the first
+// segment could be parsed as a scheme name, then prepend a "." segment
+// 
+private static void maybeAddLeadingDot(char[] path, int[] segs) {
+    if (path[0] == '\0')
+        // The path is absolute
+        return;
+    int ns = segs.length;
+    // Index of first segment
+    int f = 0;
+    while (f < ns) {
+        if (segs[f] >= 0)
+            break;
+        f++;
+    }
+    if ((f >= ns) || (f == 0))
+        // The path is empty, or else the original first segment survived,
+        // in which case we already know that no leading "." is needed
+        return;
+    int p = segs[f];
+    while ((p < path.length) && (path[p] != ':') && (path[p] != '\0')) p++;
+    if (p >= path.length || path[p] == '\0')
+        // No colon in first segment, so no "." needed
+        return;
+    // At this point we know that the first segment is unused,
+    // hence we can insert a "." segment at that position
+    path[0] = '.';
+    path[1] = '\0';
+    segs[0] = 0;
+}

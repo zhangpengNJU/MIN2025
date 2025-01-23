@@ -1,0 +1,12 @@
+/**
+ * Helper function to convert a long into a byte array (least significant
+ * byte first).
+ */
+private static byte[] longToByteArray(long l) {
+    byte[] retVal = new byte[8];
+    for (int i = 0; i < 8; i++) {
+        retVal[i] = (byte) l;
+        l >>= 8;
+    }
+    return retVal;
+}

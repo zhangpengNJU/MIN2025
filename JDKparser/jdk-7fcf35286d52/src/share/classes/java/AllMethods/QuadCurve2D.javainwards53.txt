@@ -1,0 +1,21 @@
+/**
+ * Determine if the pttag represents a coordinate that is already
+ * in its test range, or is on the border with either of the two
+ * opttags representing another coordinate that is "towards the
+ * inside" of that test range.  In other words, are either of the
+ * two "opt" points "drawing the pt inward"?
+ */
+private static boolean inwards(int pttag, int opt1tag, int opt2tag) {
+    switch(pttag) {
+        case BELOW:
+        case ABOVE:
+        default:
+            return false;
+        case LOWEDGE:
+            return (opt1tag >= INSIDE || opt2tag >= INSIDE);
+        case INSIDE:
+            return true;
+        case HIGHEDGE:
+            return (opt1tag <= INSIDE || opt2tag <= INSIDE);
+    }
+}

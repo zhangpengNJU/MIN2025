@@ -1,0 +1,9 @@
+void clearGlobalFocusOwnerPriv() {
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+        public Void run() {
+            clearGlobalFocusOwner();
+            return null;
+        }
+    });
+}

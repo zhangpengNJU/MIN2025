@@ -1,0 +1,9 @@
+@Override
+public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+    Objects.requireNonNull(mappingFunction);
+    return m.computeIfAbsent(key, k -> {
+        V value = mappingFunction.apply(k);
+        typeCheck(k, value);
+        return value;
+    });
+}

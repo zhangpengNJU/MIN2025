@@ -1,0 +1,48 @@
+/**
+ * Returns the maximum value for the given calendar field of this
+ * <code>GregorianCalendar</code> instance. The maximum value is
+ * defined as the largest value returned by the {@link
+ * Calendar#get(int) get} method for any possible time value,
+ * taking into consideration the current values of the
+ * {@link Calendar#getFirstDayOfWeek() getFirstDayOfWeek},
+ * {@link Calendar#getMinimalDaysInFirstWeek() getMinimalDaysInFirstWeek},
+ * {@link #getGregorianChange() getGregorianChange} and
+ * {@link Calendar#getTimeZone() getTimeZone} methods.
+ *
+ * @param field the calendar field.
+ * @return the maximum value for the given calendar field.
+ * @see #getMinimum(int)
+ * @see #getGreatestMinimum(int)
+ * @see #getLeastMaximum(int)
+ * @see #getActualMinimum(int)
+ * @see #getActualMaximum(int)
+ */
+@Override
+public int getMaximum(int field) {
+    switch(field) {
+        case MONTH:
+        case DAY_OF_MONTH:
+        case DAY_OF_YEAR:
+        case WEEK_OF_YEAR:
+        case WEEK_OF_MONTH:
+        case DAY_OF_WEEK_IN_MONTH:
+        case YEAR:
+            {
+                // On or after Gregorian 200-3-1, Julian and Gregorian
+                // calendar dates are the same or Gregorian dates are
+                // larger (i.e., there is a "gap") after 300-3-1.
+                if (gregorianCutoverYear > 200) {
+                    break;
+                }
+                // There might be "overlapping" dates.
+                GregorianCalendar gc = (GregorianCalendar) clone();
+                gc.setLenient(true);
+                gc.setTimeInMillis(gregorianCutover);
+                int v1 = gc.getActualMaximum(field);
+                gc.setTimeInMillis(gregorianCutover - 1);
+                int v2 = gc.getActualMaximum(field);
+                return Math.max(MAX_VALUES[field], Math.max(v1, v2));
+            }
+    }
+    return MAX_VALUES[field];
+}

@@ -1,0 +1,14 @@
+/**
+ * Format and publish a <tt>LogRecord</tt>.
+ *
+ * @param  record  description of the log event. A null record is
+ *                 silently ignored and is not published
+ */
+@Override
+public synchronized void publish(LogRecord record) {
+    if (!isLoggable(record)) {
+        return;
+    }
+    super.publish(record);
+    flush();
+}

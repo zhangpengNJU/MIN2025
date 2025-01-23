@@ -1,0 +1,97 @@
+/**
+ * ColorConverts the image data in the source Raster.
+ * If the destination Raster is null, a new Raster will be created.
+ * The number of bands in the source and destination Rasters must
+ * meet the requirements explained above.  The constructor used to
+ * create this ColorConvertOp must have provided enough information
+ * to define both source and destination color spaces.  See above.
+ * Otherwise, an exception is thrown.
+ * @param src the source <code>Raster</code> to be converted
+ * @param dest the destination <code>WritableRaster</code>,
+ *        or <code>null</code>
+ * @return <code>dest</code> color converted from <code>src</code>
+ *         or a new, converted <code>WritableRaster</code>
+ *         if <code>dest</code> is <code>null</code>
+ * @exception IllegalArgumentException if the number of source or
+ *             destination bands is incorrect, the source or destination
+ *             color spaces are undefined, or this op was constructed
+ *             with one of the constructors that applies only to
+ *             operations on BufferedImages.
+ */
+public final WritableRaster filter(Raster src, WritableRaster dest) {
+    if (CSList != null) {
+        /* non-ICC case */
+        return nonICCRasterFilter(src, dest);
+    }
+    int nProfiles = profileList.length;
+    if (nProfiles < 2) {
+        throw new IllegalArgumentException("Source or Destination ColorSpace is undefined");
+    }
+    if (src.getNumBands() != profileList[0].getNumComponents()) {
+        throw new IllegalArgumentException("Numbers of source Raster bands and source color space " + "components do not match");
+    }
+    if (dest == null) {
+        dest = createCompatibleDestRaster(src);
+    } else {
+        if (src.getHeight() != dest.getHeight() || src.getWidth() != dest.getWidth()) {
+            throw new IllegalArgumentException("Width or height of Rasters do not match");
+        }
+        if (dest.getNumBands() != profileList[nProfiles - 1].getNumComponents()) {
+            throw new IllegalArgumentException("Numbers of destination Raster bands and destination " + "color space components do not match");
+        }
+    }
+    /* make a new transform if needed */
+    if (thisRasterTransform == null) {
+        int i1, whichTrans, renderState;
+        ColorTransform[] theTransforms;
+        /* make the transform list */
+        theTransforms = new ColorTransform[nProfiles];
+        /* initialize transform get loop */
+        if (profileList[0].getProfileClass() == ICC_Profile.CLASS_OUTPUT) {
+            /* if first profile is a printer
+                                               render as colorimetric */
+            renderState = ICC_Profile.icRelativeColorimetric;
+        } else {
+            renderState = ICC_Profile.icPerceptual;
+        /* render any other
+                                                           class perceptually */
+        }
+        whichTrans = ColorTransform.In;
+        PCMM mdl = CMSManager.getModule();
+        /* get the transforms from each profile */
+        for (i1 = 0; i1 < nProfiles; i1++) {
+            if (i1 == nProfiles - 1) {
+                /* last profile? */
+                whichTrans = ColorTransform.Out;
+            /* get output transform */
+            } else {
+                /* check for abstract profile */
+                if ((whichTrans == ColorTransform.Simulation) && (profileList[i1].getProfileClass() == ICC_Profile.CLASS_ABSTRACT)) {
+                    renderState = ICC_Profile.icPerceptual;
+                    whichTrans = ColorTransform.In;
+                }
+            }
+            theTransforms[i1] = mdl.createTransform(profileList[i1], renderState, whichTrans);
+            /* get this profile's rendering intent to select transform
+                   from next profile */
+            renderState = getRenderingIntent(profileList[i1]);
+            /* "middle" profiles use simulation transform */
+            whichTrans = ColorTransform.Simulation;
+        }
+        /* make the net transform */
+        thisRasterTransform = mdl.createTransform(theTransforms);
+    }
+    int srcTransferType = src.getTransferType();
+    int dstTransferType = dest.getTransferType();
+    if ((srcTransferType == DataBuffer.TYPE_FLOAT) || (srcTransferType == DataBuffer.TYPE_DOUBLE) || (dstTransferType == DataBuffer.TYPE_FLOAT) || (dstTransferType == DataBuffer.TYPE_DOUBLE)) {
+        if (srcMinVals == null) {
+            getMinMaxValsFromProfiles(profileList[0], profileList[nProfiles - 1]);
+        }
+        /* color convert the raster */
+        thisRasterTransform.colorConvert(src, dest, srcMinVals, srcMaxVals, dstMinVals, dstMaxVals);
+    } else {
+        /* color convert the raster */
+        thisRasterTransform.colorConvert(src, dest);
+    }
+    return dest;
+}

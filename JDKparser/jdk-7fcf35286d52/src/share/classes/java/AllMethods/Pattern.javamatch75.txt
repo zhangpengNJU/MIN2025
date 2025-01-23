@@ -1,0 +1,17 @@
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    if (i > matcher.to - minLength) {
+        matcher.hitEnd = true;
+        return false;
+    }
+    int guard = matcher.to - minLength;
+    for (; i <= guard; i++) {
+        if (next.match(matcher, i, seq)) {
+            matcher.first = i;
+            matcher.groups[0] = matcher.first;
+            matcher.groups[1] = matcher.last;
+            return true;
+        }
+    }
+    matcher.hitEnd = true;
+    return false;
+}

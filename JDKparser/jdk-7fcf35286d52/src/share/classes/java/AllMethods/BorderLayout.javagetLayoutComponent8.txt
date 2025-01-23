@@ -1,0 +1,48 @@
+/**
+ * Returns the component that corresponds to the given constraint location
+ * based on the target <code>Container</code>'s component orientation.
+ * Components added with the relative constraints <code>PAGE_START</code>,
+ * <code>PAGE_END</code>, <code>LINE_START</code>, and <code>LINE_END</code>
+ * take precedence over components added with the explicit constraints
+ * <code>NORTH</code>, <code>SOUTH</code>, <code>WEST</code>, and <code>EAST</code>.
+ * The <code>Container</code>'s component orientation is used to determine the location of components
+ * added with <code>LINE_START</code> and <code>LINE_END</code>.
+ *
+ * @param   constraints     the desired absolute position, one of <code>CENTER</code>,
+ *                          <code>NORTH</code>, <code>SOUTH</code>,
+ *                          <code>EAST</code>, <code>WEST</code>
+ * @param   target     the {@code Container} used to obtain
+ *                     the constraint location based on the target
+ *                     {@code Container}'s component orientation.
+ * @return  the component at the given location, or <code>null</code> if
+ *          the location is empty
+ * @exception   IllegalArgumentException  if the constraint object is
+ *              not one of the five specified constants
+ * @exception   NullPointerException  if the target parameter is null
+ * @see     #addLayoutComponent(java.awt.Component, java.lang.Object)
+ * @since 1.5
+ */
+public Component getLayoutComponent(Container target, Object constraints) {
+    boolean ltr = target.getComponentOrientation().isLeftToRight();
+    Component result = null;
+    if (NORTH.equals(constraints)) {
+        result = (firstLine != null) ? firstLine : north;
+    } else if (SOUTH.equals(constraints)) {
+        result = (lastLine != null) ? lastLine : south;
+    } else if (WEST.equals(constraints)) {
+        result = ltr ? firstItem : lastItem;
+        if (result == null) {
+            result = west;
+        }
+    } else if (EAST.equals(constraints)) {
+        result = ltr ? lastItem : firstItem;
+        if (result == null) {
+            result = east;
+        }
+    } else if (CENTER.equals(constraints)) {
+        result = center;
+    } else {
+        throw new IllegalArgumentException("cannot get component: invalid constraint: " + constraints);
+    }
+    return result;
+}

@@ -1,0 +1,73 @@
+/**
+ * Parses a Unicode character family and returns its representative node.
+ */
+private CharProperty family(boolean singleLetter, boolean maybeComplement) {
+    next();
+    String name;
+    CharProperty node = null;
+    if (singleLetter) {
+        int c = temp[cursor];
+        if (!Character.isSupplementaryCodePoint(c)) {
+            name = String.valueOf((char) c);
+        } else {
+            name = new String(temp, cursor, 1);
+        }
+        read();
+    } else {
+        int i = cursor;
+        mark('}');
+        while (read() != '}') {
+        }
+        mark('\000');
+        int j = cursor;
+        if (j > patternLength)
+            throw error("Unclosed character family");
+        if (i + 1 >= j)
+            throw error("Empty character family");
+        name = new String(temp, i, j - i - 1);
+    }
+    int i = name.indexOf('=');
+    if (i != -1) {
+        // property construct \p{name=value}
+        String value = name.substring(i + 1);
+        name = name.substring(0, i).toLowerCase(Locale.ENGLISH);
+        if ("sc".equals(name) || "script".equals(name)) {
+            node = unicodeScriptPropertyFor(value);
+        } else if ("blk".equals(name) || "block".equals(name)) {
+            node = unicodeBlockPropertyFor(value);
+        } else if ("gc".equals(name) || "general_category".equals(name)) {
+            node = charPropertyNodeFor(value);
+        } else {
+            throw error("Unknown Unicode property {name=<" + name + ">, " + "value=<" + value + ">}");
+        }
+    } else {
+        if (name.startsWith("In")) {
+            // \p{inBlockName}
+            node = unicodeBlockPropertyFor(name.substring(2));
+        } else if (name.startsWith("Is")) {
+            // \p{isGeneralCategory} and \p{isScriptName}
+            name = name.substring(2);
+            UnicodeProp uprop = UnicodeProp.forName(name);
+            if (uprop != null)
+                node = new Utype(uprop);
+            if (node == null)
+                node = CharPropertyNames.charPropertyFor(name);
+            if (node == null)
+                node = unicodeScriptPropertyFor(name);
+        } else {
+            if (has(UNICODE_CHARACTER_CLASS)) {
+                UnicodeProp uprop = UnicodeProp.forPOSIXName(name);
+                if (uprop != null)
+                    node = new Utype(uprop);
+            }
+            if (node == null)
+                node = charPropertyNodeFor(name);
+        }
+    }
+    if (maybeComplement) {
+        if (node instanceof Category || node instanceof Block)
+            hasSupplementary = true;
+        node = node.complement();
+    }
+    return node;
+}

@@ -1,0 +1,6 @@
+private static void filterArgumentChecks(MethodHandle target, int pos, MethodHandle filter) throws RuntimeException {
+    MethodType targetType = target.type();
+    MethodType filterType = filter.type();
+    if (filterType.parameterCount() != 1 || filterType.returnType() != targetType.parameterType(pos))
+        throw newIllegalArgumentException("target and filter types do not match", targetType, filterType);
+}

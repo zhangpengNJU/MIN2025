@@ -1,0 +1,21 @@
+/**
+ * Gives a hint as to the direction in which the rows in this
+ * <code>ResultSet</code> object will be processed.
+ * The initial value is determined by the
+ * <code>Statement</code> object
+ * that produced this <code>ResultSet</code> object.
+ * The fetch direction may be changed at any time.
+ *
+ * @param direction an <code>int</code> specifying the suggested
+ *        fetch direction; one of <code>ResultSet.FETCH_FORWARD</code>,
+ *        <code>ResultSet.FETCH_REVERSE</code>, or
+ *        <code>ResultSet.FETCH_UNKNOWN</code>
+ * @exception SQLException if a database access error occurs; this
+ * method is called on a closed result set or
+ * the result set type is <code>TYPE_FORWARD_ONLY</code> and the fetch
+ * direction is not <code>FETCH_FORWARD</code>
+ * @since 1.2
+ * @see Statement#setFetchDirection
+ * @see #getFetchDirection
+ */
+void setFetchDirection(int direction) throws SQLException;

@@ -1,0 +1,15 @@
+void mixOnHiding(boolean isLightweight) {
+    // We cannot be sure that the peer exists at this point, so we need the argument
+    // to find out whether the hiding component is (well, actually was) a LW or a HW.
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this + "; isLightweight = " + isLightweight);
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        if (isLightweight) {
+            applyCurrentShapeBelowMe();
+        }
+    }
+}

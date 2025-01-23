@@ -1,0 +1,15 @@
+/**
+ * Returns a {@link Rectangle2D} that encloses all of the
+ * bits drawn by this <code>GraphicAttribute</code> relative to the
+ * rendering position.
+ * A graphic may be rendered beyond its origin, ascent, descent,
+ * or advance;  but if it is, this method's implementation must
+ * indicate where the graphic is rendered.
+ * Default bounds is the rectangle (0, -ascent, advance, ascent+descent).
+ * @return a <code>Rectangle2D</code> that encloses all of the bits
+ * rendered by this <code>GraphicAttribute</code>.
+ */
+public Rectangle2D getBounds() {
+    float ascent = getAscent();
+    return new Rectangle2D.Float(0, -ascent, getAdvance(), ascent + getDescent());
+}

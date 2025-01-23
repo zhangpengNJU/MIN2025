@@ -1,0 +1,11 @@
+/**
+ * Returns true if the <code>DataFlavor</code> specified represents
+ * a list of file objects.
+ * @return true if the <code>DataFlavor</code> specified represents
+ *   a List of File objects
+ */
+public boolean isFlavorJavaFileListType() {
+    if (mimeType == null || representationClass == null)
+        return false;
+    return java.util.List.class.isAssignableFrom(representationClass) && mimeType.match(javaFileListFlavor.mimeType);
+}

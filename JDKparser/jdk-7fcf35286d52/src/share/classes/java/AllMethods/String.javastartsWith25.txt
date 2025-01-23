@@ -1,0 +1,34 @@
+/**
+ * Tests if the substring of this string beginning at the
+ * specified index starts with the specified prefix.
+ *
+ * @param   prefix    the prefix.
+ * @param   toffset   where to begin looking in this string.
+ * @return  {@code true} if the character sequence represented by the
+ *          argument is a prefix of the substring of this object starting
+ *          at index {@code toffset}; {@code false} otherwise.
+ *          The result is {@code false} if {@code toffset} is
+ *          negative or greater than the length of this
+ *          {@code String} object; otherwise the result is the same
+ *          as the result of the expression
+ *          <pre>
+ *          this.substring(toffset).startsWith(prefix)
+ *          </pre>
+ */
+public boolean startsWith(String prefix, int toffset) {
+    char[] ta = value;
+    int to = toffset;
+    char[] pa = prefix.value;
+    int po = 0;
+    int pc = prefix.value.length;
+    // Note: toffset might be near -1>>>1.
+    if ((toffset < 0) || (toffset > value.length - pc)) {
+        return false;
+    }
+    while (--pc >= 0) {
+        if (ta[to++] != pa[po++]) {
+            return false;
+        }
+    }
+    return true;
+}

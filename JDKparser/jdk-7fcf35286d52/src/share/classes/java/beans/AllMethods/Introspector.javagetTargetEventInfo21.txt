@@ -1,0 +1,180 @@
+/**
+ * @return An array of EventSetDescriptors describing the kinds of
+ * events fired by the target bean.
+ */
+private EventSetDescriptor[] getTargetEventInfo() throws IntrospectionException {
+    if (events == null) {
+        events = new HashMap<>();
+    }
+    // Check if the bean has its own BeanInfo that will provide
+    // explicit information.
+    EventSetDescriptor[] explicitEvents = null;
+    if (explicitBeanInfo != null) {
+        explicitEvents = explicitBeanInfo.getEventSetDescriptors();
+        int ix = explicitBeanInfo.getDefaultEventIndex();
+        if (ix >= 0 && ix < explicitEvents.length) {
+            defaultEventName = explicitEvents[ix].getName();
+        }
+    }
+    if (explicitEvents == null && superBeanInfo != null) {
+        // We have no explicit BeanInfo events.  Check with our parent.
+        EventSetDescriptor[] supers = superBeanInfo.getEventSetDescriptors();
+        for (int i = 0; i < supers.length; i++) {
+            addEvent(supers[i]);
+        }
+        int ix = superBeanInfo.getDefaultEventIndex();
+        if (ix >= 0 && ix < supers.length) {
+            defaultEventName = supers[ix].getName();
+        }
+    }
+    for (int i = 0; i < additionalBeanInfo.length; i++) {
+        EventSetDescriptor[] additional = additionalBeanInfo[i].getEventSetDescriptors();
+        if (additional != null) {
+            for (int j = 0; j < additional.length; j++) {
+                addEvent(additional[j]);
+            }
+        }
+    }
+    if (explicitEvents != null) {
+        // Add the explicit explicitBeanInfo data to our results.
+        for (int i = 0; i < explicitEvents.length; i++) {
+            addEvent(explicitEvents[i]);
+        }
+    } else {
+        // Apply some reflection to the current class.
+        // Get an array of all the public beans methods at this level
+        Method[] methodList = getPublicDeclaredMethods(beanClass);
+        // Find all suitable "add", "remove" and "get" Listener methods
+        // The name of the listener type is the key for these hashtables
+        // i.e, ActionListener
+        Map<String, Method> adds = null;
+        Map<String, Method> removes = null;
+        Map<String, Method> gets = null;
+        for (int i = 0; i < methodList.length; i++) {
+            Method method = methodList[i];
+            if (method == null) {
+                continue;
+            }
+            // skip static methods.
+            int mods = method.getModifiers();
+            if (Modifier.isStatic(mods)) {
+                continue;
+            }
+            String name = method.getName();
+            // Optimization avoid getParameterTypes
+            if (!name.startsWith(ADD_PREFIX) && !name.startsWith(REMOVE_PREFIX) && !name.startsWith(GET_PREFIX)) {
+                continue;
+            }
+            if (name.startsWith(ADD_PREFIX)) {
+                Class<?> returnType = method.getReturnType();
+                if (returnType == void.class) {
+                    Type[] parameterTypes = method.getGenericParameterTypes();
+                    if (parameterTypes.length == 1) {
+                        Class<?> type = TypeResolver.erase(TypeResolver.resolveInClass(beanClass, parameterTypes[0]));
+                        if (Introspector.isSubclass(type, eventListenerType)) {
+                            String listenerName = name.substring(3);
+                            if (listenerName.length() > 0 && type.getName().endsWith(listenerName)) {
+                                if (adds == null) {
+                                    adds = new HashMap<>();
+                                }
+                                adds.put(listenerName, method);
+                            }
+                        }
+                    }
+                }
+            } else if (name.startsWith(REMOVE_PREFIX)) {
+                Class<?> returnType = method.getReturnType();
+                if (returnType == void.class) {
+                    Type[] parameterTypes = method.getGenericParameterTypes();
+                    if (parameterTypes.length == 1) {
+                        Class<?> type = TypeResolver.erase(TypeResolver.resolveInClass(beanClass, parameterTypes[0]));
+                        if (Introspector.isSubclass(type, eventListenerType)) {
+                            String listenerName = name.substring(6);
+                            if (listenerName.length() > 0 && type.getName().endsWith(listenerName)) {
+                                if (removes == null) {
+                                    removes = new HashMap<>();
+                                }
+                                removes.put(listenerName, method);
+                            }
+                        }
+                    }
+                }
+            } else if (name.startsWith(GET_PREFIX)) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length == 0) {
+                    Class<?> returnType = FeatureDescriptor.getReturnType(beanClass, method);
+                    if (returnType.isArray()) {
+                        Class<?> type = returnType.getComponentType();
+                        if (Introspector.isSubclass(type, eventListenerType)) {
+                            String listenerName = name.substring(3, name.length() - 1);
+                            if (listenerName.length() > 0 && type.getName().endsWith(listenerName)) {
+                                if (gets == null) {
+                                    gets = new HashMap<>();
+                                }
+                                gets.put(listenerName, method);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (adds != null && removes != null) {
+            // Now look for matching addFooListener+removeFooListener pairs.
+            // Bonus if there is a matching getFooListeners method as well.
+            Iterator<String> keys = adds.keySet().iterator();
+            while (keys.hasNext()) {
+                String listenerName = keys.next();
+                // Skip any "add" which doesn't have a matching "remove" or
+                // a listener name that doesn't end with Listener
+                if (removes.get(listenerName) == null || !listenerName.endsWith("Listener")) {
+                    continue;
+                }
+                String eventName = decapitalize(listenerName.substring(0, listenerName.length() - 8));
+                Method addMethod = adds.get(listenerName);
+                Method removeMethod = removes.get(listenerName);
+                Method getMethod = null;
+                if (gets != null) {
+                    getMethod = gets.get(listenerName);
+                }
+                Class<?> argType = FeatureDescriptor.getParameterTypes(beanClass, addMethod)[0];
+                // generate a list of Method objects for each of the target methods:
+                Method[] allMethods = getPublicDeclaredMethods(argType);
+                List<Method> validMethods = new ArrayList<>(allMethods.length);
+                for (int i = 0; i < allMethods.length; i++) {
+                    if (allMethods[i] == null) {
+                        continue;
+                    }
+                    if (isEventHandler(allMethods[i])) {
+                        validMethods.add(allMethods[i]);
+                    }
+                }
+                Method[] methods = validMethods.toArray(new Method[validMethods.size()]);
+                EventSetDescriptor esd = new EventSetDescriptor(eventName, argType, methods, addMethod, removeMethod, getMethod);
+                // If the adder method throws the TooManyListenersException then it
+                // is a Unicast event source.
+                if (throwsException(addMethod, java.util.TooManyListenersException.class)) {
+                    esd.setUnicast(true);
+                }
+                addEvent(esd);
+            }
+        }
+    // if (adds != null ...
+    }
+    EventSetDescriptor[] result;
+    if (events.size() == 0) {
+        result = EMPTY_EVENTSETDESCRIPTORS;
+    } else {
+        // Allocate and populate the result array.
+        result = new EventSetDescriptor[events.size()];
+        result = events.values().toArray(result);
+        // Set the default index.
+        if (defaultEventName != null) {
+            for (int i = 0; i < result.length; i++) {
+                if (defaultEventName.equals(result[i].getName())) {
+                    defaultEventIndex = i;
+                }
+            }
+        }
+    }
+    return result;
+}

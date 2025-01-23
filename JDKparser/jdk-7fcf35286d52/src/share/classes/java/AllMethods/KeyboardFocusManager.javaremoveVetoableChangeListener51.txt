@@ -1,0 +1,21 @@
+/**
+ * Removes a VetoableChangeListener from the listener list. This method
+ * should be used to remove the VetoableChangeListeners that were
+ * registered for all vetoable properties of this class.
+ * <p>
+ * If listener is null, no exception is thrown and no action is performed.
+ *
+ * @param listener the VetoableChangeListener to be removed
+ * @see #addVetoableChangeListener
+ * @see #getVetoableChangeListeners
+ * @see #removeVetoableChangeListener(java.lang.String,java.beans.VetoableChangeListener)
+ */
+public void removeVetoableChangeListener(VetoableChangeListener listener) {
+    if (listener != null) {
+        synchronized (this) {
+            if (vetoableSupport != null) {
+                vetoableSupport.removeVetoableChangeListener(listener);
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+@Override
+public Sink<T> opWrapSink(int flags, Sink<T> sink) {
+    Objects.requireNonNull(sink);
+    // If the input is already naturally sorted and this operation
+    // also naturally sorted then this is a no-op
+    if (StreamOpFlag.SORTED.isKnown(flags) && isNaturalSort)
+        return sink;
+    else if (StreamOpFlag.SIZED.isKnown(flags))
+        return new SizedRefSortingSink<>(sink, comparator);
+    else
+        return new RefSortingSink<>(sink, comparator);
+}

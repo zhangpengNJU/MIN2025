@@ -1,0 +1,25 @@
+/**
+ * Writes representation of a "ordinary" (i.e., not a String, Class,
+ * ObjectStreamClass, array, or enum constant) serializable object to the
+ * stream.
+ */
+private void writeOrdinaryObject(Object obj, ObjectStreamClass desc, boolean unshared) throws IOException {
+    if (extendedDebugInfo) {
+        debugInfoStack.push((depth == 1 ? "root " : "") + "object (class \"" + obj.getClass().getName() + "\", " + obj.toString() + ")");
+    }
+    try {
+        desc.checkSerialize();
+        bout.writeByte(TC_OBJECT);
+        writeClassDesc(desc, false);
+        handles.assign(unshared ? null : obj);
+        if (desc.isExternalizable() && !desc.isProxy()) {
+            writeExternalData((Externalizable) obj);
+        } else {
+            writeSerialData(obj, desc);
+        }
+    } finally {
+        if (extendedDebugInfo) {
+            debugInfoStack.pop();
+        }
+    }
+}

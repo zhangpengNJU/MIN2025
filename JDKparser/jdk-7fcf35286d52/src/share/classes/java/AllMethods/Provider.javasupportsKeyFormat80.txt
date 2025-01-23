@@ -1,0 +1,15 @@
+private boolean supportsKeyFormat(Key key) {
+    if (supportedFormats == null) {
+        return false;
+    }
+    String format = key.getFormat();
+    if (format == null) {
+        return false;
+    }
+    for (String supportedFormat : supportedFormats) {
+        if (supportedFormat.equals(format)) {
+            return true;
+        }
+    }
+    return false;
+}

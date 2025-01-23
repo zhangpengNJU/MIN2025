@@ -1,0 +1,14 @@
+private static Name[] buildEmptyNames(int arity, String basicTypeSignature) {
+    assert (isValidSignature(basicTypeSignature));
+    // skip '_'
+    int resultPos = arity + 1;
+    if (arity < 0 || basicTypeSignature.length() != resultPos + 1)
+        throw new IllegalArgumentException("bad arity for " + basicTypeSignature);
+    int numRes = (basicType(basicTypeSignature.charAt(resultPos)) == V_TYPE ? 0 : 1);
+    Name[] names = arguments(numRes, basicTypeSignature.substring(0, arity));
+    for (int i = 0; i < numRes; i++) {
+        Name zero = new Name(constantZero(basicType(basicTypeSignature.charAt(resultPos + i))));
+        names[arity + i] = zero.newIndex(arity + i);
+    }
+    return names;
+}

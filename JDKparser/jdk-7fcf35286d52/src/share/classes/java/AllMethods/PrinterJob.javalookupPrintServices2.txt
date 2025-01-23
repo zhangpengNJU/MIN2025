@@ -1,0 +1,15 @@
+/**
+ * A convenience method which looks up 2D print services.
+ * Services returned from this method may be installed on
+ * <code>PrinterJob</code>s which support print services.
+ * Calling this method is equivalent to calling
+ * {@link javax.print.PrintServiceLookup#lookupPrintServices(
+ * DocFlavor, AttributeSet)
+ * PrintServiceLookup.lookupPrintServices()}
+ * and specifying a Pageable DocFlavor.
+ * @return a possibly empty array of 2D print services.
+ * @since     1.4
+ */
+public static PrintService[] lookupPrintServices() {
+    return PrintServiceLookup.lookupPrintServices(DocFlavor.SERVICE_FORMATTED.PAGEABLE, null);
+}

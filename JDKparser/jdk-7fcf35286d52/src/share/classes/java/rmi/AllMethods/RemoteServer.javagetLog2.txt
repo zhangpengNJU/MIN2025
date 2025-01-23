@@ -1,0 +1,9 @@
+/**
+ * Returns stream for the RMI call log.
+ * @return the call log
+ * @see #setLog
+ * @since JDK1.1
+ */
+public static java.io.PrintStream getLog() {
+    return (logNull ? null : UnicastServerRef.callLog.getPrintStream());
+}

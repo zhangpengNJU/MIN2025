@@ -1,0 +1,30 @@
+private static int[] subtract(long val, int[] little) {
+    int highWord = (int) (val >>> 32);
+    if (highWord == 0) {
+        int[] result = new int[1];
+        result[0] = (int) (val - (little[0] & LONG_MASK));
+        return result;
+    } else {
+        int[] result = new int[2];
+        if (little.length == 1) {
+            long difference = ((int) val & LONG_MASK) - (little[0] & LONG_MASK);
+            result[1] = (int) difference;
+            // Subtract remainder of longer number while borrow propagates
+            boolean borrow = (difference >> 32 != 0);
+            if (borrow) {
+                result[0] = highWord - 1;
+            } else {
+                // Copy remainder of longer number
+                result[0] = highWord;
+            }
+            return result;
+        } else {
+            // little.length == 2
+            long difference = ((int) val & LONG_MASK) - (little[1] & LONG_MASK);
+            result[1] = (int) difference;
+            difference = (highWord & LONG_MASK) - (little[0] & LONG_MASK) + (difference >> 32);
+            result[0] = (int) difference;
+            return result;
+        }
+    }
+}

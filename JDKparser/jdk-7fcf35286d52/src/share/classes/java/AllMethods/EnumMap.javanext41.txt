@@ -1,0 +1,6 @@
+public Map.Entry<K, V> next() {
+    if (!hasNext())
+        throw new NoSuchElementException();
+    lastReturnedEntry = new Entry(index++);
+    return lastReturnedEntry;
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the mouse listeners
+ * registered on this <code>TrayIcon</code>.
+ *
+ * @return all of the <code>MouseListeners</code> registered on
+ * this <code>TrayIcon</code> or an empty array if no mouse
+ * listeners are currently registered
+ *
+ * @see      #addMouseListener(MouseListener)
+ * @see      #removeMouseListener(MouseListener)
+ * @see      java.awt.event.MouseListener
+ */
+public synchronized MouseListener[] getMouseListeners() {
+    return AWTEventMulticaster.getListeners(mouseListener, MouseListener.class);
+}

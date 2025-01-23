@@ -1,0 +1,13 @@
+/**
+ * Adapt a {@code Sink<Integer> to an {@code IntConsumer}, ideally simply
+ * by casting.
+ */
+private static IntConsumer adapt(Sink<Integer> sink) {
+    if (sink instanceof IntConsumer) {
+        return (IntConsumer) sink;
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(AbstractPipeline.class, "using IntStream.adapt(Sink<Integer> s)");
+        return sink::accept;
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * Deletes a file. This method works in exactly the  manner specified by the
+ * {@link Files#delete} method.
+ *
+ * @param   path
+ *          the path to the file to delete
+ *
+ * @throws  NoSuchFileException
+ *          if the file does not exist <i>(optional specific exception)</i>
+ * @throws  DirectoryNotEmptyException
+ *          if the file is a directory and could not otherwise be deleted
+ *          because the directory is not empty <i>(optional specific
+ *          exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkDelete(String)} method
+ *          is invoked to check delete access to the file
+ */
+public abstract void delete(Path path) throws IOException;

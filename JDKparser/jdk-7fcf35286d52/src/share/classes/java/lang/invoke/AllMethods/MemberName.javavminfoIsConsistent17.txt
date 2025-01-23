@@ -1,0 +1,20 @@
+private boolean vminfoIsConsistent() {
+    byte refKind = getReferenceKind();
+    // else don't call
+    assert (isResolved());
+    Object vminfo = MethodHandleNatives.getMemberVMInfo(this);
+    assert (vminfo instanceof Object[]);
+    long vmindex = (Long) ((Object[]) vminfo)[0];
+    Object vmtarget = ((Object[]) vminfo)[1];
+    if (MethodHandleNatives.refKindIsField(refKind)) {
+        assert (vmindex >= 0) : vmindex + ":" + this;
+        assert (vmtarget instanceof Class);
+    } else {
+        if (MethodHandleNatives.refKindDoesDispatch(refKind))
+            assert (vmindex >= 0) : vmindex + ":" + this;
+        else
+            assert (vmindex < 0) : vmindex;
+        assert (vmtarget instanceof MemberName) : vmtarget + " in " + this;
+    }
+    return true;
+}

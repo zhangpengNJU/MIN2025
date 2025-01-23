@@ -1,0 +1,18 @@
+/**
+ * Determines whether or not two points are equal. Two instances of
+ * <code>Point2D</code> are equal if the values of their
+ * <code>x</code> and <code>y</code> member fields, representing
+ * their position in the coordinate space, are the same.
+ * @param obj an object to be compared with this <code>Point2D</code>
+ * @return <code>true</code> if the object to be compared is
+ *         an instance of <code>Point2D</code> and has
+ *         the same values; <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof Point2D) {
+        Point2D p2d = (Point2D) obj;
+        return (getX() == p2d.getX()) && (getY() == p2d.getY());
+    }
+    return super.equals(obj);
+}

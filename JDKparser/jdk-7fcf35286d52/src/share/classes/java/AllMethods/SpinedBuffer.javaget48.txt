@@ -1,0 +1,9 @@
+public int get(long index) {
+    // Casts to int are safe since the spine array index is the index minus
+    // the prior element count from the current spine
+    int ch = chunkFor(index);
+    if (spineIndex == 0 && ch == 0)
+        return curChunk[(int) index];
+    else
+        return spine[ch][(int) (index - priorElementCount[ch])];
+}

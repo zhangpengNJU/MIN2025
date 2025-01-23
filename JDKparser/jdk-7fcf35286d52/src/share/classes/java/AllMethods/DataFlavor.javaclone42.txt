@@ -1,0 +1,11 @@
+/**
+ * Returns a clone of this <code>DataFlavor</code>.
+ * @return a clone of this <code>DataFlavor</code>
+ */
+public Object clone() throws CloneNotSupportedException {
+    Object newObj = super.clone();
+    if (mimeType != null) {
+        ((DataFlavor) newObj).mimeType = (MimeType) mimeType.clone();
+    }
+    return newObj;
+}

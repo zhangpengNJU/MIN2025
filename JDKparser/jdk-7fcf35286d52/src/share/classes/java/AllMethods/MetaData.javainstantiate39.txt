@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    List<?> list = new ArrayList<>((Collection<?>) oldInstance);
+    return new Expression(oldInstance, Collections.class, "synchronizedCollection", new Object[] { list });
+}

@@ -1,0 +1,8 @@
+/**
+ * Return the same hashCode for similar <code>ActivationDesc</code>s.
+ * @return an integer
+ * @see java.util.Hashtable
+ */
+public int hashCode() {
+    return ((location == null ? 0 : location.hashCode() << 24) ^ (groupID == null ? 0 : groupID.hashCode() << 16) ^ (className == null ? 0 : className.hashCode() << 9) ^ (data == null ? 0 : data.hashCode() << 1) ^ (restart ? 1 : 0));
+}

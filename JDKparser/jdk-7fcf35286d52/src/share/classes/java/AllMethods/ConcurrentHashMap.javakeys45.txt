@@ -1,0 +1,11 @@
+/**
+ * Returns an enumeration of the keys in this table.
+ *
+ * @return an enumeration of the keys in this table
+ * @see #keySet()
+ */
+public Enumeration<K> keys() {
+    Node<K, V>[] t;
+    int f = (t = table) == null ? 0 : t.length;
+    return new KeyIterator<K, V>(t, f, 0, f, this);
+}

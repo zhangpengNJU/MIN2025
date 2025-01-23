@@ -1,0 +1,30 @@
+/**
+ * Tests for equality between the specified object and this
+ * code signer. Two code signers are considered equal if their
+ * signer certificate paths are equal and if their timestamps are equal,
+ * if present in both.
+ *
+ * @param obj the object to test for equality with this object.
+ *
+ * @return true if the objects are considered equal, false otherwise.
+ */
+public boolean equals(Object obj) {
+    if (obj == null || (!(obj instanceof CodeSigner))) {
+        return false;
+    }
+    CodeSigner that = (CodeSigner) obj;
+    if (this == that) {
+        return true;
+    }
+    Timestamp thatTimestamp = that.getTimestamp();
+    if (timestamp == null) {
+        if (thatTimestamp != null) {
+            return false;
+        }
+    } else {
+        if (thatTimestamp == null || (!timestamp.equals(thatTimestamp))) {
+            return false;
+        }
+    }
+    return signerCertPath.equals(that.getSignerCertPath());
+}

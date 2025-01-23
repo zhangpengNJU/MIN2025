@@ -1,0 +1,12 @@
+/**
+ * Closes this piped output stream and releases any system resources
+ * associated with this stream. This stream may no longer be used for
+ * writing bytes.
+ *
+ * @exception  IOException  if an I/O error occurs.
+ */
+public void close() throws IOException {
+    if (sink != null) {
+        sink.receivedLast();
+    }
+}

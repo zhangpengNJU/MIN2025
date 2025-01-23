@@ -1,0 +1,39 @@
+private static List<Locale> getDefaultList(String language, String script, String region, String variant) {
+    List<String> variants = null;
+    if (variant.length() > 0) {
+        variants = new LinkedList<>();
+        int idx = variant.length();
+        while (idx != -1) {
+            variants.add(variant.substring(0, idx));
+            idx = variant.lastIndexOf('_', --idx);
+        }
+    }
+    List<Locale> list = new LinkedList<>();
+    if (variants != null) {
+        for (String v : variants) {
+            list.add(Locale.getInstance(language, script, region, v, null));
+        }
+    }
+    if (region.length() > 0) {
+        list.add(Locale.getInstance(language, script, region, "", null));
+    }
+    if (script.length() > 0) {
+        list.add(Locale.getInstance(language, script, "", "", null));
+        // With script, after truncating variant, region and script,
+        // start over without script.
+        if (variants != null) {
+            for (String v : variants) {
+                list.add(Locale.getInstance(language, "", region, v, null));
+            }
+        }
+        if (region.length() > 0) {
+            list.add(Locale.getInstance(language, "", region, "", null));
+        }
+    }
+    if (language.length() > 0) {
+        list.add(Locale.getInstance(language, "", "", "", null));
+    }
+    // Add root locale at the end
+    list.add(Locale.ROOT);
+    return list;
+}

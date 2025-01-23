@@ -1,0 +1,15 @@
+/**
+ * Completes this builder by creating the formatter.
+ *
+ * @param locale  the locale to use for formatting, not null
+ * @param chrono  the chronology to use, may be null
+ * @return the created formatter, not null
+ */
+private DateTimeFormatter toFormatter(Locale locale, ResolverStyle resolverStyle, Chronology chrono) {
+    Objects.requireNonNull(locale, "locale");
+    while (active.parent != null) {
+        optionalEnd();
+    }
+    CompositePrinterParser pp = new CompositePrinterParser(printerParsers, false);
+    return new DateTimeFormatter(pp, locale, DecimalStyle.STANDARD, resolverStyle, null, chrono, null);
+}

@@ -1,0 +1,10 @@
+/**
+ * @throws StringIndexOutOfBoundsException {@inheritDoc}
+ * @since      1.2
+ */
+@Override
+public synchronized StringBuffer replace(int start, int end, String str) {
+    toStringCache = null;
+    super.replace(start, end, str);
+    return this;
+}

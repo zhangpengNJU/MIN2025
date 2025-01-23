@@ -1,0 +1,20 @@
+// Notes:
+// * must be called inside a synchronized block
+// * if 'start' is < 0, then this function does nothing
+// * if 'end' is < 0, then all KeyEvents from 'start' to the end of the
+// queue will be removed
+private void purgeStampedEvents(long start, long end) {
+    if (start < 0) {
+        return;
+    }
+    for (Iterator<KeyEvent> iter = enqueuedKeyEvents.iterator(); iter.hasNext(); ) {
+        KeyEvent ke = iter.next();
+        long time = ke.getWhen();
+        if (start < time && (end < 0 || time <= end)) {
+            iter.remove();
+        }
+        if (end >= 0 && time > end) {
+            break;
+        }
+    }
+}

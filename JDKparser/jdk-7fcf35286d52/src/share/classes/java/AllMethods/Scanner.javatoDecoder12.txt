@@ -1,0 +1,8 @@
+private static CharsetDecoder toDecoder(String charsetName) {
+    Objects.requireNonNull(charsetName, "charsetName");
+    try {
+        return Charset.forName(charsetName).newDecoder();
+    } catch (IllegalCharsetNameException | UnsupportedCharsetException unused) {
+        throw new IllegalArgumentException(charsetName);
+    }
+}

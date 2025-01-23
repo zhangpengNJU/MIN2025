@@ -1,0 +1,39 @@
+// ------------------------- JDBC 4.2 -----------------------------------
+/**
+ *  Updates the designated column with an {@code Object} value.
+ *
+ *  The updater methods are used to update column values in the
+ *  current row or the insert row.  The updater methods do not
+ *  update the underlying database; instead the {@code updateRow} or
+ *  {@code insertRow} methods are called to update the database.
+ * <p>
+ *  If the second argument is an {@code InputStream} then the stream must contain
+ *  the number of bytes specified by scaleOrLength.  If the second argument is a
+ *  {@code Reader} then the reader must contain the number of characters specified
+ *  by scaleOrLength. If these conditions are not true the driver will generate a
+ *  {@code SQLException} when the statement is executed.
+ * <p>
+ *  The default implementation will throw {@code SQLFeatureNotSupportedException}
+ *
+ *  @param columnIndex the first column is 1, the second is 2, ...
+ *  @param x the new column value
+ *  @param targetSqlType the SQL type to be sent to the database
+ *  @param scaleOrLength for an object of {@code java.math.BigDecimal} ,
+ *           this is the number of digits after the decimal point. For
+ *           Java Object types {@code InputStream} and {@code Reader},
+ *           this is the length
+ *           of the data in the stream or reader.  For all other types,
+ *           this value will be ignored.
+ *  @exception SQLException if the columnIndex is not valid;
+ *  if a database access error occurs;
+ *  the result set concurrency is {@code CONCUR_READ_ONLY}
+ *  or this method is called on a closed result set
+ *  @exception SQLFeatureNotSupportedException if the JDBC driver does not
+ *  support this method; if the JDBC driver does not support the specified targetSqlType
+ *  @see JDBCType
+ *  @see SQLType
+ *  @since 1.8
+ */
+default void updateObject(int columnIndex, Object x, SQLType targetSqlType, int scaleOrLength) throws SQLException {
+    throw new SQLFeatureNotSupportedException("updateObject not implemented");
+}

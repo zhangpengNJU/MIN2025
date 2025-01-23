@@ -1,0 +1,58 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>setBounds(int, int, int, int)</code>.
+ */
+@Deprecated
+public void reshape(int x, int y, int width, int height) {
+    synchronized (getTreeLock()) {
+        try {
+            setBoundsOp(ComponentPeer.SET_BOUNDS);
+            boolean resized = (this.width != width) || (this.height != height);
+            boolean moved = (this.x != x) || (this.y != y);
+            if (!resized && !moved) {
+                return;
+            }
+            int oldX = this.x;
+            int oldY = this.y;
+            int oldWidth = this.width;
+            int oldHeight = this.height;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            if (resized) {
+                isPacked = false;
+            }
+            boolean needNotify = true;
+            mixOnReshaping();
+            if (peer != null) {
+                // LightwightPeer is an empty stub so can skip peer.reshape
+                if (!(peer instanceof LightweightPeer)) {
+                    reshapeNativePeer(x, y, width, height, getBoundsOp());
+                    // Check peer actualy changed coordinates
+                    resized = (oldWidth != this.width) || (oldHeight != this.height);
+                    moved = (oldX != this.x) || (oldY != this.y);
+                    // fix for 5025858: do not send ComponentEvents for toplevel
+                    // windows here as it is done from peer or native code when
+                    // the window is really resized or moved, otherwise some
+                    // events may be sent twice
+                    if (this instanceof Window) {
+                        needNotify = false;
+                    }
+                }
+                if (resized) {
+                    invalidate();
+                }
+                if (parent != null) {
+                    parent.invalidateIfValid();
+                }
+            }
+            if (needNotify) {
+                notifyNewBounds(resized, moved);
+            }
+            repaintParentIfNeeded(oldX, oldY, oldWidth, oldHeight);
+        } finally {
+            setBoundsOp(ComponentPeer.RESET_OPERATION);
+        }
+    }
+}

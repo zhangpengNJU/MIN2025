@@ -1,0 +1,5 @@
+public boolean remove(Object o) {
+    if (!(o instanceof Map.Entry))
+        return false;
+    return s.remove(new AbstractMap.SimpleImmutableEntry<>((Map.Entry<?, ?>) o));
+}

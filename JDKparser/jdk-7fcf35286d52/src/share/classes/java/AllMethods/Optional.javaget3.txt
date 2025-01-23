@@ -1,0 +1,15 @@
+/**
+ * If a value is present in this {@code Optional}, returns the value,
+ * otherwise throws {@code NoSuchElementException}.
+ *
+ * @return the non-null value held by this {@code Optional}
+ * @throws NoSuchElementException if there is no value present
+ *
+ * @see Optional#isPresent()
+ */
+public T get() {
+    if (value == null) {
+        throw new NoSuchElementException("No value present");
+    }
+    return value;
+}

@@ -1,0 +1,23 @@
+/**
+ * Creates a new BandedSampleModel with a subset of the bands of this
+ * BandedSampleModel.  The new BandedSampleModel can be
+ * used with any DataBuffer that the existing BandedSampleModel
+ * can be used with.  The new BandedSampleModel/DataBuffer
+ * combination will represent an image with a subset of the bands
+ * of the original BandedSampleModel/DataBuffer combination.
+ * @throws RasterFormatException if the number of bands is greater than
+ *                               the number of banks in this sample model.
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types
+ */
+public SampleModel createSubsetSampleModel(int[] bands) {
+    if (bands.length > bankIndices.length)
+        throw new RasterFormatException("There are only " + bankIndices.length + " bands");
+    int[] newBankIndices = new int[bands.length];
+    int[] newBandOffsets = new int[bands.length];
+    for (int i = 0; i < bands.length; i++) {
+        newBankIndices[i] = bankIndices[bands[i]];
+        newBandOffsets[i] = bandOffsets[bands[i]];
+    }
+    return new BandedSampleModel(this.dataType, width, height, this.scanlineStride, newBankIndices, newBandOffsets);
+}

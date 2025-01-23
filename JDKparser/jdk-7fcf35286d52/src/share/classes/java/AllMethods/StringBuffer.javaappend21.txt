@@ -1,0 +1,6 @@
+@Override
+public synchronized StringBuffer append(char c) {
+    toStringCache = null;
+    super.append(c);
+    return this;
+}

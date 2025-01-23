@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a copy of this date with the specified number of years added.
+ * <p>
+ * This adds the specified period in years to the date.
+ * In some cases, adding years can cause the resulting date to become invalid.
+ * If this occurs, then other fields, typically the day-of-month, will be adjusted to ensure
+ * that the result is valid. Typically this will select the last valid day of the month.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param yearsToAdd  the years to add, may be negative
+ * @return a date based on this one with the years added, not null
+ * @throws DateTimeException if the result exceeds the supported date range
+ */
+abstract D plusYears(long yearsToAdd);

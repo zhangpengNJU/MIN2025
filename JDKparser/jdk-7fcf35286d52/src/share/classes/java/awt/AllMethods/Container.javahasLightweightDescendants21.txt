@@ -1,0 +1,10 @@
+/**
+ * Checks whether or not this container has lightweight children.
+ * Note: Should be called while holding tree lock
+ * @return true if there is at least one lightweight children in a container, false otherwise
+ * @since 1.7
+ */
+final boolean hasLightweightDescendants() {
+    checkTreeLock();
+    return numOfLWComponents > 0;
+}

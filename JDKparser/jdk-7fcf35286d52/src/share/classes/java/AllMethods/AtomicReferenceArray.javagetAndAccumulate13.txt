@@ -1,0 +1,24 @@
+/**
+ * Atomically updates the element at index {@code i} with the
+ * results of applying the given function to the current and
+ * given values, returning the previous value. The function should
+ * be side-effect-free, since it may be re-applied when attempted
+ * updates fail due to contention among threads.  The function is
+ * applied with the current value at index {@code i} as its first
+ * argument, and the given update as the second argument.
+ *
+ * @param i the index
+ * @param x the update value
+ * @param accumulatorFunction a side-effect-free function of two arguments
+ * @return the previous value
+ * @since 1.8
+ */
+public final E getAndAccumulate(int i, E x, BinaryOperator<E> accumulatorFunction) {
+    long offset = checkedByteOffset(i);
+    E prev, next;
+    do {
+        prev = getRaw(offset);
+        next = accumulatorFunction.apply(prev, x);
+    } while (!compareAndSetRaw(offset, prev, next));
+    return prev;
+}

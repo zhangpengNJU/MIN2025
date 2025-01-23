@@ -1,0 +1,23 @@
+/**
+ * Returns the image as one large tile.  The <code>Raster</code>
+ * returned is a copy of the image data is not updated if the
+ * image is changed.
+ * @return a <code>Raster</code> that is a copy of the image data.
+ * @see #setData(Raster)
+ */
+public Raster getData() {
+    // REMIND : this allocates a whole new tile if raster is a
+    // subtile.  (It only copies in the requested area)
+    // We should do something smarter.
+    int width = raster.getWidth();
+    int height = raster.getHeight();
+    int startX = raster.getMinX();
+    int startY = raster.getMinY();
+    WritableRaster wr = Raster.createWritableRaster(raster.getSampleModel(), new Point(raster.getSampleModelTranslateX(), raster.getSampleModelTranslateY()));
+    Object tdata = null;
+    for (int i = startY; i < startY + height; i++) {
+        tdata = raster.getDataElements(startX, i, width, 1, tdata);
+        wr.setDataElements(startX, i, width, 1, tdata);
+    }
+    return wr;
+}

@@ -1,0 +1,34 @@
+/**
+ * Collects the 2 (currency) or 3 (decimal) fractional digits from passed
+ * {@code number}, starting at {@code startIndex} position
+ * inclusive.  There is no punctuation to set here (no grouping chars).
+ * Updates {@code fastPathData.lastFreeIndex} accordingly.
+ *
+ * @param number  The int value from which we collect digits.
+ * @param digitsBuffer The char array container where digits are stored.
+ * @param startIndex the position from which we start storing digits in
+ *  digitsBuffer.
+ */
+private void collectFractionalDigits(int number, char[] digitsBuffer, int startIndex) {
+    int index = startIndex;
+    char digitOnes = DigitArrays.DigitOnes1000[number];
+    char digitTens = DigitArrays.DigitTens1000[number];
+    if (isCurrencyFormat) {
+        // Currency case. Always collects fractional digits.
+        digitsBuffer[index++] = digitTens;
+        digitsBuffer[index++] = digitOnes;
+    } else if (number != 0) {
+        // Decimal case. Hundreds will always be collected
+        digitsBuffer[index++] = DigitArrays.DigitHundreds1000[number];
+        // Ending zeros won't be collected.
+        if (digitOnes != '0') {
+            digitsBuffer[index++] = digitTens;
+            digitsBuffer[index++] = digitOnes;
+        } else if (digitTens != '0')
+            digitsBuffer[index++] = digitTens;
+    } else
+        // This is decimal pattern and fractional part is zero.
+        // We must remove decimal point from result.
+        index--;
+    fastPathData.lastFreeIndex = index;
+}

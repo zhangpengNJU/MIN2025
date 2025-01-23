@@ -1,0 +1,20 @@
+/**
+ * Returns a string representation of this JobAttributes.
+ *
+ * @return  the string representation.
+ */
+public String toString() {
+    int[][] pageRanges = getPageRanges();
+    String prStr = "[";
+    boolean first = true;
+    for (int i = 0; i < pageRanges.length; i++) {
+        if (first) {
+            first = false;
+        } else {
+            prStr += ",";
+        }
+        prStr += pageRanges[i][0] + ":" + pageRanges[i][1];
+    }
+    prStr += "]";
+    return "copies=" + getCopies() + ",defaultSelection=" + getDefaultSelection() + ",destination=" + getDestination() + ",dialog=" + getDialog() + ",fileName=" + getFileName() + ",fromPage=" + getFromPage() + ",maxPage=" + getMaxPage() + ",minPage=" + getMinPage() + ",multiple-document-handling=" + getMultipleDocumentHandling() + ",page-ranges=" + prStr + ",printer=" + getPrinter() + ",sides=" + getSides() + ",toPage=" + getToPage();
+}

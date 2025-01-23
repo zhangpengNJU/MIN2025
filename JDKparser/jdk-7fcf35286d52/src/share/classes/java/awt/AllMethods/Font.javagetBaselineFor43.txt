@@ -1,0 +1,19 @@
+/**
+ * Returns the baseline appropriate for displaying this character.
+ * <p>
+ * Large fonts can support different writing systems, and each system can
+ * use a different baseline.
+ * The character argument determines the writing system to use. Clients
+ * should not assume all characters use the same baseline.
+ *
+ * @param c a character used to identify the writing system
+ * @return the baseline appropriate for the specified character.
+ * @see LineMetrics#getBaselineOffsets
+ * @see #ROMAN_BASELINE
+ * @see #CENTER_BASELINE
+ * @see #HANGING_BASELINE
+ * @since 1.2
+ */
+public byte getBaselineFor(char c) {
+    return getFont2D().getBaselineFor(c);
+}

@@ -1,0 +1,62 @@
+/**
+ * Throws a <code>SecurityException</code> if the
+ * calling thread is not allowed to define classes in the package
+ * specified by the argument.
+ * <p>
+ * This method is used by the <code>loadClass</code> method of some
+ * class loaders.
+ * <p>
+ * This method first gets a list of restricted packages by
+ * obtaining a comma-separated list from a call to
+ * <code>java.security.Security.getProperty("package.definition")</code>,
+ * and checks to see if <code>pkg</code> starts with or equals
+ * any of the restricted packages. If it does, then
+ * <code>checkPermission</code> gets called with the
+ * <code>RuntimePermission("defineClassInPackage."+pkg)</code>
+ * permission.
+ * <p>
+ * If this method is overridden, then
+ * <code>super.checkPackageDefinition</code> should be called
+ * as the first line in the overridden method.
+ *
+ * @param      pkg   the package name.
+ * @exception  SecurityException  if the calling thread does not have
+ *             permission to define classes in the specified package.
+ * @see        java.lang.ClassLoader#loadClass(java.lang.String, boolean)
+ * @see        java.security.Security#getProperty getProperty
+ * @see        #checkPermission(java.security.Permission) checkPermission
+ */
+public void checkPackageDefinition(String pkg) {
+    if (pkg == null) {
+        throw new NullPointerException("package name can't be null");
+    }
+    String[] pkgs;
+    synchronized (packageDefinitionLock) {
+        /*
+             * Do we need to update our property array?
+             */
+        if (!packageDefinitionValid) {
+            String tmpPropertyStr = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+                public String run() {
+                    return java.security.Security.getProperty("package.definition");
+                }
+            });
+            packageDefinition = getPackages(tmpPropertyStr);
+            packageDefinitionValid = true;
+        }
+        // Using a snapshot of packageDefinition -- don't care if static
+        // field changes afterwards; array contents won't change.
+        pkgs = packageDefinition;
+    }
+    /*
+         * Traverse the list of packages, check for any matches.
+         */
+    for (int i = 0; i < pkgs.length; i++) {
+        if (pkg.startsWith(pkgs[i]) || pkgs[i].equals(pkg + ".")) {
+            checkPermission(new RuntimePermission("defineClassInPackage." + pkg));
+            // No need to continue; only need to check this once
+            break;
+        }
+    }
+}

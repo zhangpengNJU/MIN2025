@@ -1,0 +1,37 @@
+/**
+ * Format a list using given pattern strings.
+ * If either of the patterns is null, then a the list is
+ * formatted by concatenation with the delimiter ','.
+ * @param stringList the list of strings to be formatted.
+ * @param listPattern should create a MessageFormat taking 0-3 arguments
+ * and formatting them into a list.
+ * @param listCompositionPattern should take 2 arguments
+ * and is used by composeList.
+ * @return a string representing the list.
+ */
+private static String formatList(String[] stringList, String listPattern, String listCompositionPattern) {
+    // If we have no list patterns, compose the list in a simple,
+    // non-localized way.
+    if (listPattern == null || listCompositionPattern == null) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < stringList.length; ++i) {
+            if (i > 0) {
+                result.append(',');
+            }
+            result.append(stringList[i]);
+        }
+        return result.toString();
+    }
+    // Compose the list down to three elements if necessary
+    if (stringList.length > 3) {
+        MessageFormat format = new MessageFormat(listCompositionPattern);
+        stringList = composeList(format, stringList);
+    }
+    // Rebuild the argument list with the list length as the first element
+    Object[] args = new Object[stringList.length + 1];
+    System.arraycopy(stringList, 0, args, 1, stringList.length);
+    args[0] = new Integer(stringList.length);
+    // Format it using the pattern in the resource
+    MessageFormat format = new MessageFormat(listPattern);
+    return format.format(args);
+}

@@ -1,0 +1,11 @@
+/**
+ * Exclusively acquires the lock, blocking if necessary
+ * until available.
+ *
+ * @return a stamp that can be used to unlock or convert mode
+ */
+public long writeLock() {
+    // bypass acquireWrite in fully unlocked case only
+    long s, next;
+    return ((((s = state) & ABITS) == 0L && U.compareAndSwapLong(this, STATE, s, next = s + WBIT)) ? next : acquireWrite(false, 0L));
+}

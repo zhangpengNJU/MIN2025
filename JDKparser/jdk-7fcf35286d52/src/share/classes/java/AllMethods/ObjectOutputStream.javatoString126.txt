@@ -1,0 +1,12 @@
+/**
+ * Returns a string representation of this object
+ */
+public String toString() {
+    StringBuilder buffer = new StringBuilder();
+    if (!stack.isEmpty()) {
+        for (int i = stack.size(); i > 0; i--) {
+            buffer.append(stack.get(i - 1) + ((i != 1) ? "\n" : ""));
+        }
+    }
+    return buffer.toString();
+}

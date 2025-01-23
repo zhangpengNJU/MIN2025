@@ -1,0 +1,15 @@
+/**
+ * Returns the ascent of this <code>TextLayout</code>.
+ * The ascent is the distance from the top (right) of the
+ * <code>TextLayout</code> to the baseline.  It is always either
+ * positive or zero.  The ascent is sufficient to
+ * accommodate superscripted text and is the maximum of the sum of the
+ * ascent, offset, and baseline of each glyph.  The ascent is
+ * the maximum ascent from the baseline of all the text in the
+ * TextLayout.  It is in baseline-relative coordinates.
+ * @return the ascent of this <code>TextLayout</code>.
+ */
+public float getAscent() {
+    ensureCache();
+    return lineMetrics.ascent;
+}

@@ -1,0 +1,10 @@
+private synchronized List<CodeSigner[]> getJarCodeSigners() {
+    CodeSigner[] signers;
+    if (jarCodeSigners == null) {
+        HashSet<CodeSigner[]> set = new HashSet<>();
+        set.addAll(signerMap().values());
+        jarCodeSigners = new ArrayList<>();
+        jarCodeSigners.addAll(set);
+    }
+    return jarCodeSigners;
+}

@@ -1,0 +1,10 @@
+/**
+ * Returns a <code>Shape</code> whose interior defines the
+ * stroked outline of a specified <code>Shape</code>.
+ * @param s the <code>Shape</code> boundary be stroked
+ * @return the <code>Shape</code> of the stroked outline.
+ */
+public Shape createStrokedShape(Shape s) {
+    sun.java2d.pipe.RenderingEngine re = sun.java2d.pipe.RenderingEngine.getInstance();
+    return re.createStrokedShape(s, width, cap, join, miterlimit, dash, dash_phase);
+}

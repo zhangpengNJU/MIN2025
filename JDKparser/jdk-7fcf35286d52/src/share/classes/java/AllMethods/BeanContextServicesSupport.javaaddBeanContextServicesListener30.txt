@@ -1,0 +1,18 @@
+/**
+ * ********************************************************************
+ */
+/**
+ * add a BeanContextServicesListener
+ *
+ * @throws NullPointerException if the argument is null
+ */
+public void addBeanContextServicesListener(BeanContextServicesListener bcsl) {
+    if (bcsl == null)
+        throw new NullPointerException("bcsl");
+    synchronized (bcsListeners) {
+        if (bcsListeners.contains(bcsl))
+            return;
+        else
+            bcsListeners.add(bcsl);
+    }
+}

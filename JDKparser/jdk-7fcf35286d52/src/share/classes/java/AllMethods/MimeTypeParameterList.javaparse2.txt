@@ -1,0 +1,109 @@
+// equals()
+/**
+ * A routine for parsing the parameter list out of a String.
+ */
+protected void parse(String rawdata) throws MimeTypeParseException {
+    int length = rawdata.length();
+    if (length > 0) {
+        int currentIndex = skipWhiteSpace(rawdata, 0);
+        int lastIndex = 0;
+        if (currentIndex < length) {
+            char currentChar = rawdata.charAt(currentIndex);
+            while ((currentIndex < length) && (currentChar == ';')) {
+                String name;
+                String value;
+                boolean foundit;
+                // eat the ';'
+                ++currentIndex;
+                // now parse the parameter name
+                // skip whitespace
+                currentIndex = skipWhiteSpace(rawdata, currentIndex);
+                if (currentIndex < length) {
+                    // find the end of the token char run
+                    lastIndex = currentIndex;
+                    currentChar = rawdata.charAt(currentIndex);
+                    while ((currentIndex < length) && isTokenChar(currentChar)) {
+                        ++currentIndex;
+                        currentChar = rawdata.charAt(currentIndex);
+                    }
+                    name = rawdata.substring(lastIndex, currentIndex).toLowerCase();
+                    // now parse the '=' that separates the name from the value
+                    // skip whitespace
+                    currentIndex = skipWhiteSpace(rawdata, currentIndex);
+                    if ((currentIndex < length) && (rawdata.charAt(currentIndex) == '=')) {
+                        // eat it and parse the parameter value
+                        ++currentIndex;
+                        // skip whitespace
+                        currentIndex = skipWhiteSpace(rawdata, currentIndex);
+                        if (currentIndex < length) {
+                            // now find out whether or not we have a quoted value
+                            currentChar = rawdata.charAt(currentIndex);
+                            if (currentChar == '"') {
+                                // yup it's quoted so eat it and capture the quoted string
+                                ++currentIndex;
+                                lastIndex = currentIndex;
+                                if (currentIndex < length) {
+                                    // find the next unescqped quote
+                                    foundit = false;
+                                    while ((currentIndex < length) && !foundit) {
+                                        currentChar = rawdata.charAt(currentIndex);
+                                        if (currentChar == '\\') {
+                                            // found an escape sequence so pass this and the next character
+                                            currentIndex += 2;
+                                        } else if (currentChar == '"') {
+                                            // foundit!
+                                            foundit = true;
+                                        } else {
+                                            ++currentIndex;
+                                        }
+                                    }
+                                    if (currentChar == '"') {
+                                        value = unquote(rawdata.substring(lastIndex, currentIndex));
+                                        // eat the quote
+                                        ++currentIndex;
+                                    } else {
+                                        throw new MimeTypeParseException("Encountered unterminated quoted parameter value.");
+                                    }
+                                } else {
+                                    throw new MimeTypeParseException("Encountered unterminated quoted parameter value.");
+                                }
+                            } else if (isTokenChar(currentChar)) {
+                                // nope it's an ordinary token so it ends with a non-token char
+                                lastIndex = currentIndex;
+                                foundit = false;
+                                while ((currentIndex < length) && !foundit) {
+                                    currentChar = rawdata.charAt(currentIndex);
+                                    if (isTokenChar(currentChar)) {
+                                        ++currentIndex;
+                                    } else {
+                                        foundit = true;
+                                    }
+                                }
+                                value = rawdata.substring(lastIndex, currentIndex);
+                            } else {
+                                // it ain't a value
+                                throw new MimeTypeParseException("Unexpected character encountered at index " + currentIndex);
+                            }
+                            // now put the data into the hashtable
+                            parameters.put(name, value);
+                        } else {
+                            throw new MimeTypeParseException("Couldn't find a value for parameter named " + name);
+                        }
+                    } else {
+                        throw new MimeTypeParseException("Couldn't find the '=' that separates a parameter name from its value.");
+                    }
+                } else {
+                    throw new MimeTypeParseException("Couldn't find parameter name");
+                }
+                // setup the next iteration
+                currentIndex = skipWhiteSpace(rawdata, currentIndex);
+                if (currentIndex < length) {
+                    currentChar = rawdata.charAt(currentIndex);
+                }
+            }
+            if (currentIndex < length) {
+                throw new MimeTypeParseException("More characters encountered in input than expected.");
+            }
+        }
+    }
+}

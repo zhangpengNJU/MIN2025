@@ -1,0 +1,13 @@
+/**
+ * Serializes this <code>DataFlavor</code>.
+ */
+public synchronized void writeExternal(ObjectOutput os) throws IOException {
+    if (mimeType != null) {
+        mimeType.setParameter("humanPresentableName", humanPresentableName);
+        os.writeObject(mimeType);
+        mimeType.removeParameter("humanPresentableName");
+    } else {
+        os.writeObject(null);
+    }
+    os.writeObject(representationClass);
+}

@@ -1,0 +1,9 @@
+/**
+ * Tries to cas nh as new head; if successful, unlink
+ * old head's next node to avoid garbage retention.
+ */
+void advanceHead(QNode h, QNode nh) {
+    if (h == head && UNSAFE.compareAndSwapObject(this, headOffset, h, nh))
+        // forget old next
+        h.next = h;
+}

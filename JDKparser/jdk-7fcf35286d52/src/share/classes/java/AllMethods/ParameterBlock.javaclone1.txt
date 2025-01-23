@@ -1,0 +1,26 @@
+/**
+ * Creates a copy of a <code>ParameterBlock</code>.  The source and parameter
+ * Vectors are cloned, but the actual sources and parameters are
+ * copied by reference.  This allows modifications to the order
+ * and number of sources and parameters in the clone to be invisible
+ * to the original <code>ParameterBlock</code>.  Changes to the shared sources or
+ * parameters themselves will still be visible.
+ *
+ * @return an Object clone of the <code>ParameterBlock</code>.
+ */
+public Object clone() {
+    ParameterBlock theClone;
+    try {
+        theClone = (ParameterBlock) super.clone();
+    } catch (Exception e) {
+        // We can't be here since we implement Cloneable.
+        return null;
+    }
+    if (sources != null) {
+        theClone.setSources((Vector) sources.clone());
+    }
+    if (parameters != null) {
+        theClone.setParameters((Vector) parameters.clone());
+    }
+    return (Object) theClone;
+}

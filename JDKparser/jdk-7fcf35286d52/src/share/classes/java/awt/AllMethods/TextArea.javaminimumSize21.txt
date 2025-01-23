@@ -1,0 +1,10 @@
+/**
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getMinimumSize()</code>.
+ */
+@Deprecated
+public Dimension minimumSize() {
+    synchronized (getTreeLock()) {
+        return ((rows > 0) && (columns > 0)) ? minimumSize(rows, columns) : super.minimumSize();
+    }
+}

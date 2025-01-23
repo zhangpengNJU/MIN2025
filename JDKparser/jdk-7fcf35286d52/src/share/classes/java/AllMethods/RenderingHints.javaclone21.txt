@@ -1,0 +1,20 @@
+/**
+ * Creates a clone of this <code>RenderingHints</code> object
+ * that has the same contents as this <code>RenderingHints</code>
+ * object.
+ * @return a clone of this instance.
+ */
+@SuppressWarnings("unchecked")
+public Object clone() {
+    RenderingHints rh;
+    try {
+        rh = (RenderingHints) super.clone();
+        if (hintmap != null) {
+            rh.hintmap = (HashMap<Object, Object>) hintmap.clone();
+        }
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+    return rh;
+}

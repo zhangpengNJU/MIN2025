@@ -1,0 +1,47 @@
+/**
+ * Returns a shared instance of an <code>AWTKeyStroke</code>,
+ * given a numeric key code and a set of modifiers, specifying
+ * whether the key is activated when it is pressed or released.
+ * <p>
+ * The "virtual key" constants defined in
+ * <code>java.awt.event.KeyEvent</code> can be
+ * used to specify the key code. For example:<ul>
+ * <li><code>java.awt.event.KeyEvent.VK_ENTER</code>
+ * <li><code>java.awt.event.KeyEvent.VK_TAB</code>
+ * <li><code>java.awt.event.KeyEvent.VK_SPACE</code>
+ * </ul>
+ * Alternatively, the key code may be obtained by calling
+ * <code>java.awt.event.KeyEvent.getExtendedKeyCodeForChar</code>.
+ *
+ * The modifiers consist of any combination of:<ul>
+ * <li>java.awt.event.InputEvent.SHIFT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.CTRL_DOWN_MASK
+ * <li>java.awt.event.InputEvent.META_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_DOWN_MASK
+ * </ul>
+ * The old modifiers <ul>
+ * <li>java.awt.event.InputEvent.SHIFT_MASK
+ * <li>java.awt.event.InputEvent.CTRL_MASK
+ * <li>java.awt.event.InputEvent.META_MASK
+ * <li>java.awt.event.InputEvent.ALT_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_MASK
+ * </ul>
+ * also can be used, but they are mapped to _DOWN_ modifiers.
+ *
+ * Since these numbers are all different powers of two, any combination of
+ * them is an integer in which each bit represents a different modifier
+ * key. Use 0 to specify no modifiers.
+ *
+ * @param keyCode an int specifying the numeric code for a keyboard key
+ * @param modifiers a bitwise-ored combination of any modifiers
+ * @param onKeyRelease <code>true</code> if the <code>AWTKeyStroke</code>
+ *        should represent a key release; <code>false</code> otherwise
+ * @return an AWTKeyStroke object for that key
+ *
+ * @see java.awt.event.KeyEvent
+ * @see java.awt.event.InputEvent
+ */
+public static AWTKeyStroke getAWTKeyStroke(int keyCode, int modifiers, boolean onKeyRelease) {
+    return getCachedStroke(KeyEvent.CHAR_UNDEFINED, keyCode, modifiers, onKeyRelease);
+}

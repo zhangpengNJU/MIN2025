@@ -1,0 +1,40 @@
+/**
+ * Returns an image which gets pixel data from the specified URL.
+ * The pixel data referenced by the specified URL must be in one
+ * of the following formats: GIF, JPEG or PNG.
+ * The underlying toolkit attempts to resolve multiple requests
+ * with the same URL to the same returned Image.
+ * <p>
+ * Since the mechanism required to facilitate this sharing of
+ * <code>Image</code> objects may continue to hold onto images
+ * that are no longer in use for an indefinite period of time,
+ * developers are encouraged to implement their own caching of
+ * images by using the {@link #createImage(java.net.URL) createImage}
+ * variant wherever available.
+ * If the image data stored at the specified URL changes,
+ * the <code>Image</code> object returned from this method may
+ * still contain stale information which was fetched from the
+ * URL after a prior call.
+ * Previously loaded image data can be manually discarded by
+ * calling the {@link Image#flush flush} method on the
+ * returned <code>Image</code>.
+ * <p>
+ * This method first checks if there is a security manager installed.
+ * If so, the method calls the security manager's
+ * <code>checkPermission</code> method with the
+ * url.openConnection().getPermission() permission to ensure
+ * that the access to the image is allowed. For compatibility
+ * with pre-1.2 security managers, if the access is denied with
+ * <code>FilePermission</code> or <code>SocketPermission</code>,
+ * the method throws the <code>SecurityException</code>
+ * if the corresponding 1.1-style SecurityManager.checkXXX method
+ * also denies permission.
+ * @param     url   the URL to use in fetching the pixel data.
+ * @return    an image which gets its pixel data from
+ *                         the specified URL.
+ * @throws SecurityException  if a security manager exists and its
+ *                            checkPermission method doesn't allow
+ *                            the operation.
+ * @see #createImage(java.net.URL)
+ */
+public abstract Image getImage(URL url);

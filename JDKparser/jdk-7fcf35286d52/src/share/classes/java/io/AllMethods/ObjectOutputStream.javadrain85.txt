@@ -1,0 +1,14 @@
+/**
+ * Writes all buffered data from this stream to the underlying stream,
+ * but does not flush underlying stream.
+ */
+void drain() throws IOException {
+    if (pos == 0) {
+        return;
+    }
+    if (blkmode) {
+        writeBlockHeader(pos);
+    }
+    out.write(buf, 0, pos);
+    pos = 0;
+}

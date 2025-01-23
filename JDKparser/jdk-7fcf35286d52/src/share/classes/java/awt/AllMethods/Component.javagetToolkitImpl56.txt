@@ -1,0 +1,11 @@
+/*
+     * This is called by the native code, so client code can't
+     * be called on the toolkit thread.
+     */
+final Toolkit getToolkitImpl() {
+    Container parent = this.parent;
+    if (parent != null) {
+        return parent.getToolkitImpl();
+    }
+    return Toolkit.getDefaultToolkit();
+}

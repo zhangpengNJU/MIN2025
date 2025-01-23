@@ -1,0 +1,54 @@
+private void outputStatement(Statement exp, Object outer, boolean isArgument) {
+    Object target = exp.getTarget();
+    String methodName = exp.getMethodName();
+    if (target == null || methodName == null) {
+        throw new NullPointerException((target == null ? "target" : "methodName") + " should not be null");
+    }
+    Object[] args = exp.getArguments();
+    boolean expression = exp.getClass() == Expression.class;
+    Object value = (expression) ? getValue((Expression) exp) : null;
+    String tag = (expression && isArgument) ? "object" : "void";
+    String attributes = "";
+    ValueData d = getValueData(value);
+    // Special cases for targets.
+    if (target == outer) {
+    } else if (target == Array.class && methodName.equals("newInstance")) {
+        tag = "array";
+        attributes = attributes + " class=" + quote(((Class) args[0]).getName());
+        attributes = attributes + " length=" + quote(args[1].toString());
+        args = new Object[] {};
+    } else if (target.getClass() == Class.class) {
+        attributes = attributes + " class=" + quote(((Class) target).getName());
+    } else {
+        d.refs = 2;
+        if (d.name == null) {
+            getValueData(target).refs++;
+            List<Statement> statements = statementList(target);
+            if (!statements.contains(exp)) {
+                statements.add(exp);
+            }
+            outputValue(target, outer, false);
+        }
+        if (expression) {
+            outputValue(value, outer, isArgument);
+        }
+        return;
+    }
+    if (expression && (d.refs > 1)) {
+        String instanceName = nameGenerator.instanceName(value);
+        d.name = instanceName;
+        attributes = attributes + " id=" + quote(instanceName);
+    }
+    // Special cases for methods.
+    if ((!expression && methodName.equals("set") && args.length == 2 && args[0] instanceof Integer) || (expression && methodName.equals("get") && args.length == 1 && args[0] instanceof Integer)) {
+        attributes = attributes + " index=" + quote(args[0].toString());
+        args = (args.length == 1) ? new Object[] {} : new Object[] { args[1] };
+    } else if ((!expression && methodName.startsWith("set") && args.length == 1) || (expression && methodName.startsWith("get") && args.length == 0)) {
+        if (3 < methodName.length()) {
+            attributes = attributes + " property=" + quote(Introspector.decapitalize(methodName.substring(3)));
+        }
+    } else if (!methodName.equals("new") && !methodName.equals("newInstance")) {
+        attributes = attributes + " method=" + quote(methodName);
+    }
+    outputXML(tag, attributes, value, args);
+}

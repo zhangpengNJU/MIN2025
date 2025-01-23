@@ -1,0 +1,11 @@
+private boolean checkLegacy(Object key) {
+    String keyString = (String) key;
+    if (keyString.startsWith("Provider.")) {
+        return false;
+    }
+    legacyChanged = true;
+    if (legacyStrings == null) {
+        legacyStrings = new LinkedHashMap<String, String>();
+    }
+    return true;
+}

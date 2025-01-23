@@ -1,0 +1,32 @@
+// If logger.getUseParentHandlers() returns 'true' and any of the logger's
+// parents have levels or handlers defined, make sure they are instantiated.
+private void processParentHandlers(final Logger logger, final String name) {
+    final LogManager owner = getOwner();
+    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+        @Override
+        public Void run() {
+            if (logger != owner.rootLogger) {
+                boolean useParent = owner.getBooleanProperty(name + ".useParentHandlers", true);
+                if (!useParent) {
+                    logger.setUseParentHandlers(false);
+                }
+            }
+            return null;
+        }
+    });
+    int ix = 1;
+    for (; ; ) {
+        int ix2 = name.indexOf(".", ix);
+        if (ix2 < 0) {
+            break;
+        }
+        String pname = name.substring(0, ix2);
+        if (owner.getProperty(pname + ".level") != null || owner.getProperty(pname + ".handlers") != null) {
+            // This pname has a level/handlers definition.
+            // Make sure it exists.
+            demandLogger(pname, null);
+        }
+        ix = ix2 + 1;
+    }
+}

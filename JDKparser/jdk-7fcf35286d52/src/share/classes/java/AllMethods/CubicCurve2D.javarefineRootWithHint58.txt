@@ -1,0 +1,22 @@
+// use newton's method.
+private static double refineRootWithHint(double[] eqn, double min, double max, double t) {
+    if (!inInterval(t, min, max)) {
+        return t;
+    }
+    double[] deriv = { eqn[1], 2 * eqn[2], 3 * eqn[3] };
+    double origt = t;
+    for (int i = 0; i < 3; i++) {
+        double slope = solveEqn(deriv, 2, t);
+        double y = solveEqn(eqn, 3, t);
+        double delta = -(y / slope);
+        double newt = t + delta;
+        if (slope == 0 || y == 0 || t == newt) {
+            break;
+        }
+        t = newt;
+    }
+    if (within(t, origt, 1000 * ulp(origt)) && inInterval(t, min, max)) {
+        return t;
+    }
+    return origt;
+}

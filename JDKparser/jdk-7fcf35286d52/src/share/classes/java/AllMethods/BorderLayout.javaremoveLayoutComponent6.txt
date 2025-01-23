@@ -1,0 +1,33 @@
+/**
+ * Removes the specified component from this border layout. This
+ * method is called when a container calls its <code>remove</code> or
+ * <code>removeAll</code> methods. Most applications do not call this
+ * method directly.
+ * @param   comp   the component to be removed.
+ * @see     java.awt.Container#remove(java.awt.Component)
+ * @see     java.awt.Container#removeAll()
+ */
+public void removeLayoutComponent(Component comp) {
+    synchronized (comp.getTreeLock()) {
+        if (comp == center) {
+            center = null;
+        } else if (comp == north) {
+            north = null;
+        } else if (comp == south) {
+            south = null;
+        } else if (comp == east) {
+            east = null;
+        } else if (comp == west) {
+            west = null;
+        }
+        if (comp == firstLine) {
+            firstLine = null;
+        } else if (comp == lastLine) {
+            lastLine = null;
+        } else if (comp == firstItem) {
+            firstItem = null;
+        } else if (comp == lastItem) {
+            lastItem = null;
+        }
+    }
+}

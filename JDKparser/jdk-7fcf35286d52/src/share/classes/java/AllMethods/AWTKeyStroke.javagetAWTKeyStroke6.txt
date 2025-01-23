@@ -1,0 +1,43 @@
+/**
+ * Returns a shared instance of an {@code AWTKeyStroke}
+ * that represents a {@code KEY_TYPED} event for the
+ * specified Character object and a set of modifiers. Note
+ * that the first parameter is of type Character rather than
+ * char. This is to avoid inadvertent clashes with
+ * calls to <code>getAWTKeyStroke(int keyCode, int modifiers)</code>.
+ *
+ * The modifiers consist of any combination of following:<ul>
+ * <li>java.awt.event.InputEvent.SHIFT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.CTRL_DOWN_MASK
+ * <li>java.awt.event.InputEvent.META_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_DOWN_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_DOWN_MASK
+ * </ul>
+ * The old modifiers listed below also can be used, but they are
+ * mapped to _DOWN_ modifiers. <ul>
+ * <li>java.awt.event.InputEvent.SHIFT_MASK
+ * <li>java.awt.event.InputEvent.CTRL_MASK
+ * <li>java.awt.event.InputEvent.META_MASK
+ * <li>java.awt.event.InputEvent.ALT_MASK
+ * <li>java.awt.event.InputEvent.ALT_GRAPH_MASK
+ * </ul>
+ * also can be used, but they are mapped to _DOWN_ modifiers.
+ *
+ * Since these numbers are all different powers of two, any combination of
+ * them is an integer in which each bit represents a different modifier
+ * key. Use 0 to specify no modifiers.
+ *
+ * @param keyChar the Character object for a keyboard character
+ * @param modifiers a bitwise-ored combination of any modifiers
+ * @return an <code>AWTKeyStroke</code> object for that key
+ * @throws IllegalArgumentException if <code>keyChar</code> is
+ *       <code>null</code>
+ *
+ * @see java.awt.event.InputEvent
+ */
+public static AWTKeyStroke getAWTKeyStroke(Character keyChar, int modifiers) {
+    if (keyChar == null) {
+        throw new IllegalArgumentException("keyChar cannot be null");
+    }
+    return getCachedStroke(keyChar.charValue(), KeyEvent.VK_UNDEFINED, modifiers, false);
+}

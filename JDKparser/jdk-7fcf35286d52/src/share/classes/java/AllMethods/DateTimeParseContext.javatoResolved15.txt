@@ -1,0 +1,11 @@
+/**
+ * Gets the resolved result of the parse.
+ *
+ * @return the result of the parse, not null
+ */
+TemporalAccessor toResolved(ResolverStyle resolverStyle, Set<TemporalField> resolverFields) {
+    Parsed parsed = currentParsed();
+    parsed.chrono = getEffectiveChronology();
+    parsed.zone = (parsed.zone != null ? parsed.zone : formatter.getZone());
+    return parsed.resolve(resolverStyle, resolverFields);
+}

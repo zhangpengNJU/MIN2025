@@ -1,0 +1,30 @@
+@SuppressWarnings("unchecked")
+public void forEachRemaining(Consumer<? super E> action) {
+    // hoist accesses and checks from loop
+    int i, hi, mc;
+    PriorityQueue<E> q;
+    Object[] a;
+    if (action == null)
+        throw new NullPointerException();
+    if ((q = pq) != null && (a = q.queue) != null) {
+        if ((hi = fence) < 0) {
+            mc = q.modCount;
+            hi = q.size;
+        } else
+            mc = expectedModCount;
+        if ((i = index) >= 0 && (index = hi) <= a.length) {
+            for (E e; ; ++i) {
+                if (i < hi) {
+                    if (// must be CME
+                    (e = (E) a[i]) == null)
+                        break;
+                    action.accept(e);
+                } else if (q.modCount != mc)
+                    break;
+                else
+                    return;
+            }
+        }
+    }
+    throw new ConcurrentModificationException();
+}

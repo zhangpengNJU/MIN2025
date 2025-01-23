@@ -1,0 +1,6 @@
+static void unreserveMemory(long size, int cap) {
+    long cnt = count.decrementAndGet();
+    long reservedMem = reservedMemory.addAndGet(-size);
+    long totalCap = totalCapacity.addAndGet(-cap);
+    assert cnt >= 0 && reservedMem >= 0 && totalCap >= 0;
+}

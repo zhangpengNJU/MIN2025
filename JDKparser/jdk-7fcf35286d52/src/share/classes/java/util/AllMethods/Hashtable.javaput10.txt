@@ -1,0 +1,38 @@
+/**
+ * Maps the specified <code>key</code> to the specified
+ * <code>value</code> in this hashtable. Neither the key nor the
+ * value can be <code>null</code>. <p>
+ *
+ * The value can be retrieved by calling the <code>get</code> method
+ * with a key that is equal to the original key.
+ *
+ * @param      key     the hashtable key
+ * @param      value   the value
+ * @return     the previous value of the specified key in this hashtable,
+ *             or <code>null</code> if it did not have one
+ * @exception  NullPointerException  if the key or value is
+ *               <code>null</code>
+ * @see     Object#equals(Object)
+ * @see     #get(Object)
+ */
+public synchronized V put(K key, V value) {
+    // Make sure the value is not null
+    if (value == null) {
+        throw new NullPointerException();
+    }
+    // Makes sure the key is not already in the hashtable.
+    Entry<?, ?>[] tab = table;
+    int hash = key.hashCode();
+    int index = (hash & 0x7FFFFFFF) % tab.length;
+    @SuppressWarnings("unchecked")
+    Entry<K, V> entry = (Entry<K, V>) tab[index];
+    for (; entry != null; entry = entry.next) {
+        if ((entry.hash == hash) && entry.key.equals(key)) {
+            V old = entry.value;
+            entry.value = value;
+            return old;
+        }
+    }
+    addEntry(hash, key, value, index);
+    return null;
+}

@@ -1,0 +1,26 @@
+/**
+ * Reads eight input bytes and returns
+ * a {@code long} value. Let {@code a-h}
+ * be the first through eighth bytes read.
+ * The value returned is:
+ * <pre>{@code
+ * (((long)(a & 0xff) << 56) |
+ *  ((long)(b & 0xff) << 48) |
+ *  ((long)(c & 0xff) << 40) |
+ *  ((long)(d & 0xff) << 32) |
+ *  ((long)(e & 0xff) << 24) |
+ *  ((long)(f & 0xff) << 16) |
+ *  ((long)(g & 0xff) <<  8) |
+ *  ((long)(h & 0xff)))
+ * }</pre>
+ * <p>
+ * This method is suitable
+ * for reading bytes written by the {@code writeLong}
+ * method of interface {@code DataOutput}.
+ *
+ * @return     the {@code long} value read.
+ * @exception  EOFException  if this stream reaches the end before reading
+ *               all the bytes.
+ * @exception  IOException   if an I/O error occurs.
+ */
+long readLong() throws IOException;

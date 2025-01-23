@@ -1,0 +1,21 @@
+/**
+ * Parses the ID, taking a flag to indicate whether {@code ZoneRulesException}
+ * should be thrown or not, used in deserialization.
+ *
+ * @param zoneId  the time-zone ID, not null
+ * @param checkAvailable  whether to check if the zone ID is available
+ * @return the zone ID, not null
+ * @throws DateTimeException if the ID format is invalid
+ * @throws ZoneRulesException if checking availability and the ID cannot be found
+ */
+static ZoneId of(String zoneId, boolean checkAvailable) {
+    Objects.requireNonNull(zoneId, "zoneId");
+    if (zoneId.length() <= 1 || zoneId.startsWith("+") || zoneId.startsWith("-")) {
+        return ZoneOffset.of(zoneId);
+    } else if (zoneId.startsWith("UTC") || zoneId.startsWith("GMT")) {
+        return ofWithPrefix(zoneId, 3, checkAvailable);
+    } else if (zoneId.startsWith("UT")) {
+        return ofWithPrefix(zoneId, 2, checkAvailable);
+    }
+    return ZoneRegion.ofId(zoneId, checkAvailable);
+}

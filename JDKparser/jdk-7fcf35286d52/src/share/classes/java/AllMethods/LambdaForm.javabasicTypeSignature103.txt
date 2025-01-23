@@ -1,0 +1,11 @@
+public static String basicTypeSignature(MethodType type) {
+    char[] sig = new char[type.parameterCount() + 2];
+    int sigp = 0;
+    for (Class<?> pt : type.parameterList()) {
+        sig[sigp++] = basicTypeChar(pt);
+    }
+    sig[sigp++] = '_';
+    sig[sigp++] = basicTypeChar(type.returnType());
+    assert (sigp == sig.length);
+    return String.valueOf(sig);
+}

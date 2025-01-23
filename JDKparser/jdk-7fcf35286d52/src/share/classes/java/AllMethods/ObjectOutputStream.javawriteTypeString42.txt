@@ -1,0 +1,14 @@
+/**
+ * Writes string without allowing it to be replaced in stream.  Used by
+ * ObjectStreamClass to write class descriptor type strings.
+ */
+void writeTypeString(String str) throws IOException {
+    int handle;
+    if (str == null) {
+        writeNull();
+    } else if ((handle = handles.lookup(str)) != -1) {
+        writeHandle(handle);
+    } else {
+        writeString(str, false);
+    }
+}

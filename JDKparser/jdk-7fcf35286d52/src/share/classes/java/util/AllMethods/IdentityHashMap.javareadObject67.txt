@@ -1,0 +1,23 @@
+/**
+ * Reconstitutes the <tt>IdentityHashMap</tt> instance from a stream (i.e.,
+ * deserializes it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Read in any hidden stuff
+    s.defaultReadObject();
+    // Read in size (number of Mappings)
+    int size = s.readInt();
+    if (size < 0)
+        throw new java.io.StreamCorruptedException("Illegal mappings count: " + size);
+    int cap = capacity(size);
+    SharedSecrets.getJavaOISAccess().checkArray(s, Object[].class, cap);
+    init(cap);
+    // Read the keys and values, and put the mappings in the table
+    for (int i = 0; i < size; i++) {
+        @SuppressWarnings("unchecked")
+        K key = (K) s.readObject();
+        @SuppressWarnings("unchecked")
+        V value = (V) s.readObject();
+        putForCreate(key, value);
+    }
+}

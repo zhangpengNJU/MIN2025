@@ -1,0 +1,49 @@
+/**
+ * Returns a {@code Field} object that reflects the specified declared
+ * field of the class or interface represented by this {@code Class}
+ * object. The {@code name} parameter is a {@code String} that specifies
+ * the simple name of the desired field.
+ *
+ * <p> If this {@code Class} object represents an array type, then this
+ * method does not find the {@code length} field of the array type.
+ *
+ * @param name the name of the field
+ * @return  the {@code Field} object for the specified field in this
+ *          class
+ * @throws  NoSuchFieldException if a field with the specified name is
+ *          not found.
+ * @throws  NullPointerException if {@code name} is {@code null}
+ * @throws  SecurityException
+ *          If a security manager, <i>s</i>, is present and any of the
+ *          following conditions is met:
+ *
+ *          <ul>
+ *
+ *          <li> the caller's class loader is not the same as the
+ *          class loader of this class and invocation of
+ *          {@link SecurityManager#checkPermission
+ *          s.checkPermission} method with
+ *          {@code RuntimePermission("accessDeclaredMembers")}
+ *          denies access to the declared field
+ *
+ *          <li> the caller's class loader is not the same as or an
+ *          ancestor of the class loader for the current class and
+ *          invocation of {@link SecurityManager#checkPackageAccess
+ *          s.checkPackageAccess()} denies access to the package
+ *          of this class
+ *
+ *          </ul>
+ *
+ * @since JDK1.1
+ * @jls 8.2 Class Members
+ * @jls 8.3 Field Declarations
+ */
+@CallerSensitive
+public Field getDeclaredField(String name) throws NoSuchFieldException, SecurityException {
+    checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+    Field field = searchFields(privateGetDeclaredFields(false), name);
+    if (field == null) {
+        throw new NoSuchFieldException(name);
+    }
+    return field;
+}

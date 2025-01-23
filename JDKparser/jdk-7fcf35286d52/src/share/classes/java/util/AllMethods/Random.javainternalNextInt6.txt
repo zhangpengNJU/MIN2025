@@ -1,0 +1,27 @@
+/**
+ * The form of nextInt used by IntStream Spliterators.
+ * For the unbounded case: uses nextInt().
+ * For the bounded case with representable range: uses nextInt(int bound)
+ * For the bounded case with unrepresentable range: uses nextInt()
+ *
+ * @param origin the least value, unless greater than bound
+ * @param bound the upper bound (exclusive), must not equal origin
+ * @return a pseudorandom value
+ */
+final int internalNextInt(int origin, int bound) {
+    if (origin < bound) {
+        int n = bound - origin;
+        if (n > 0) {
+            return nextInt(n) + origin;
+        } else {
+            // range not representable as int
+            int r;
+            do {
+                r = nextInt();
+            } while (r < origin || r >= bound);
+            return r;
+        }
+    } else {
+        return nextInt();
+    }
+}

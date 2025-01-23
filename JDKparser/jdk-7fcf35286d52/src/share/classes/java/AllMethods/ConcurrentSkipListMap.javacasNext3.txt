@@ -1,0 +1,6 @@
+/**
+ * compareAndSet next field
+ */
+boolean casNext(Node<K, V> cmp, Node<K, V> val) {
+    return UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
+}

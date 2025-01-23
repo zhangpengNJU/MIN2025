@@ -1,0 +1,17 @@
+/**
+ * Returns the hash code value for this context. The hash code
+ * is computed by exclusive or-ing the hash code of all the protection
+ * domains in the context together.
+ *
+ * @return a hash code value for this context.
+ */
+public int hashCode() {
+    int hashCode = 0;
+    if (context == null)
+        return hashCode;
+    for (int i = 0; i < context.length; i++) {
+        if (context[i] != null)
+            hashCode ^= context[i].hashCode();
+    }
+    return hashCode;
+}

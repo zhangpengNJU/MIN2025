@@ -1,0 +1,32 @@
+private int enumerate(Thread[] list, int n, boolean recurse) {
+    int ngroupsSnapshot = 0;
+    ThreadGroup[] groupsSnapshot = null;
+    synchronized (this) {
+        if (destroyed) {
+            return 0;
+        }
+        int nt = nthreads;
+        if (nt > list.length - n) {
+            nt = list.length - n;
+        }
+        for (int i = 0; i < nt; i++) {
+            if (threads[i].isAlive()) {
+                list[n++] = threads[i];
+            }
+        }
+        if (recurse) {
+            ngroupsSnapshot = ngroups;
+            if (groups != null) {
+                groupsSnapshot = Arrays.copyOf(groups, ngroupsSnapshot);
+            } else {
+                groupsSnapshot = null;
+            }
+        }
+    }
+    if (recurse) {
+        for (int i = 0; i < ngroupsSnapshot; i++) {
+            n = groupsSnapshot[i].enumerate(list, n, true);
+        }
+    }
+    return n;
+}

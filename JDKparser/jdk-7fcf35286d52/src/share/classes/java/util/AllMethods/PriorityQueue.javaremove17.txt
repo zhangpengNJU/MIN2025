@@ -1,0 +1,21 @@
+public void remove() {
+    if (expectedModCount != modCount)
+        throw new ConcurrentModificationException();
+    if (lastRet != -1) {
+        E moved = PriorityQueue.this.removeAt(lastRet);
+        lastRet = -1;
+        if (moved == null)
+            cursor--;
+        else {
+            if (forgetMeNot == null)
+                forgetMeNot = new ArrayDeque<>();
+            forgetMeNot.add(moved);
+        }
+    } else if (lastRetElt != null) {
+        PriorityQueue.this.removeEq(lastRetElt);
+        lastRetElt = null;
+    } else {
+        throw new IllegalStateException();
+    }
+    expectedModCount = modCount;
+}

@@ -1,0 +1,18 @@
+/**
+ * Creates the socket implementation.
+ *
+ * @param stream a {@code boolean} value : {@code true} for a TCP socket,
+ *               {@code false} for UDP.
+ * @throws IOException if creation fails
+ * @since 1.4
+ */
+void createImpl(boolean stream) throws SocketException {
+    if (impl == null)
+        setImpl();
+    try {
+        impl.create(stream);
+        created = true;
+    } catch (IOException e) {
+        throw new SocketException(e.getMessage());
+    }
+}

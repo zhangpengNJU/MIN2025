@@ -1,0 +1,41 @@
+/**
+ * Parses a backref greedily, taking as many numbers as it
+ * can. The first digit is always treated as a backref, but
+ * multi digit numbers are only treated as a backref if at
+ * least that many backrefs exist at this point in the regex.
+ */
+private Node ref(int refNum) {
+    boolean done = false;
+    while (!done) {
+        int ch = peek();
+        switch(ch) {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                int newRefNum = (refNum * 10) + (ch - '0');
+                // Add another number if it doesn't make a group
+                // that doesn't exist
+                if (capturingGroupCount - 1 < newRefNum) {
+                    done = true;
+                    break;
+                }
+                refNum = newRefNum;
+                read();
+                break;
+            default:
+                done = true;
+                break;
+        }
+    }
+    if (has(CASE_INSENSITIVE))
+        return new CIBackRef(refNum, has(UNICODE_CASE));
+    else
+        return new BackRef(refNum);
+}

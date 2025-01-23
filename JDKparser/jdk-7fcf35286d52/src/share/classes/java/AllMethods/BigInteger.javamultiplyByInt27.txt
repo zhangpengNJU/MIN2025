@@ -1,0 +1,21 @@
+private static BigInteger multiplyByInt(int[] x, int y, int sign) {
+    if (Integer.bitCount(y) == 1) {
+        return new BigInteger(shiftLeft(x, Integer.numberOfTrailingZeros(y)), sign);
+    }
+    int xlen = x.length;
+    int[] rmag = new int[xlen + 1];
+    long carry = 0;
+    long yl = y & LONG_MASK;
+    int rstart = rmag.length - 1;
+    for (int i = xlen - 1; i >= 0; i--) {
+        long product = (x[i] & LONG_MASK) * yl + carry;
+        rmag[rstart--] = (int) product;
+        carry = product >>> 32;
+    }
+    if (carry == 0L) {
+        rmag = java.util.Arrays.copyOfRange(rmag, 1, rmag.length);
+    } else {
+        rmag[rstart] = (int) carry;
+    }
+    return new BigInteger(rmag, sign);
+}

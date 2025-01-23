@@ -1,0 +1,10 @@
+/**
+ * A hash code for this time.
+ *
+ * @return a suitable hash code
+ */
+@Override
+public int hashCode() {
+    long nod = toNanoOfDay();
+    return (int) (nod ^ (nod >>> 32));
+}

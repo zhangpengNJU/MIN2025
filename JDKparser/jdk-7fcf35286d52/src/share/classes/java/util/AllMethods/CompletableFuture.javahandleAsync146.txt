@@ -1,0 +1,3 @@
+public <U> CompletableFuture<U> handleAsync(BiFunction<? super T, Throwable, ? extends U> fn, Executor executor) {
+    return uniHandleStage(screenExecutor(executor), fn);
+}

@@ -1,0 +1,11 @@
+static boolean canBeCalledVirtual(MemberName mem) {
+    assert (mem.isInvocable());
+    Class<?> defc = mem.getDeclaringClass();
+    switch(mem.getName()) {
+        case "checkMemberAccess":
+            return canBeCalledVirtual(mem, java.lang.SecurityManager.class);
+        case "getContextClassLoader":
+            return canBeCalledVirtual(mem, java.lang.Thread.class);
+    }
+    return false;
+}

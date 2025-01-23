@@ -1,0 +1,40 @@
+/**
+ * Introspect on a Java Bean and learn about all its properties,
+ * exposed methods and events, below a given {@code stopClass} point
+ * subject to some control {@code flags}.
+ * <dl>
+ *  <dt>USE_ALL_BEANINFO</dt>
+ *  <dd>Any BeanInfo that can be discovered will be used.</dd>
+ *  <dt>IGNORE_IMMEDIATE_BEANINFO</dt>
+ *  <dd>Any BeanInfo associated with the specified {@code beanClass} will be ignored.</dd>
+ *  <dt>IGNORE_ALL_BEANINFO</dt>
+ *  <dd>Any BeanInfo associated with the specified {@code beanClass}
+ *      or any of its parent classes will be ignored.</dd>
+ * </dl>
+ * Any methods/properties/events in the {@code stopClass}
+ * or in its parent classes will be ignored in the analysis.
+ * <p>
+ * If the BeanInfo class for a Java Bean has been
+ * previously introspected based on the same arguments then
+ * the BeanInfo class is retrieved from the BeanInfo cache.
+ *
+ * @param beanClass  the bean class to be analyzed
+ * @param stopClass  the parent class at which to stop the analysis
+ * @param flags      flags to control the introspection
+ * @return a BeanInfo object describing the target bean
+ * @exception IntrospectionException if an exception occurs during introspection
+ *
+ * @since 1.7
+ */
+public static BeanInfo getBeanInfo(Class<?> beanClass, Class<?> stopClass, int flags) throws IntrospectionException {
+    BeanInfo bi;
+    if (stopClass == null && flags == USE_ALL_BEANINFO) {
+        // Same parameters to take advantage of caching.
+        bi = getBeanInfo(beanClass);
+    } else {
+        bi = (new Introspector(beanClass, stopClass, flags)).getBeanInfo();
+    }
+    return bi;
+// Old behaviour: Make an independent copy of the BeanInfo.
+// return new GenericBeanInfo(bi);
+}

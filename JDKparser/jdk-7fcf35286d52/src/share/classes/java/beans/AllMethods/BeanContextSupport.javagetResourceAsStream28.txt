@@ -1,0 +1,18 @@
+/**
+ * @param name the name of the resource requested.
+ * @param bcc  the child object making the request.
+ *
+ * @return  the requested resource as an InputStream
+ * @throws  NullPointerException if the argument is null
+ */
+public InputStream getResourceAsStream(String name, BeanContextChild bcc) {
+    if (name == null)
+        throw new NullPointerException("name");
+    if (bcc == null)
+        throw new NullPointerException("bcc");
+    if (containsKey(bcc)) {
+        ClassLoader cl = bcc.getClass().getClassLoader();
+        return cl != null ? cl.getResourceAsStream(name) : ClassLoader.getSystemResourceAsStream(name);
+    } else
+        throw new IllegalArgumentException("Not a valid child");
+}

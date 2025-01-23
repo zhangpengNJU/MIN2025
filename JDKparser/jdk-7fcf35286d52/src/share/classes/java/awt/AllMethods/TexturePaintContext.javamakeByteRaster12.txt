@@ -1,0 +1,14 @@
+synchronized static WritableRaster makeByteRaster(Raster srcRas, int w, int h) {
+    if (byteRasRef != null) {
+        WritableRaster wr = (WritableRaster) byteRasRef.get();
+        if (wr != null && wr.getWidth() >= w && wr.getHeight() >= h) {
+            byteRasRef = null;
+            return wr;
+        }
+    }
+    // If we are going to cache this Raster, make it non-tiny
+    if (w <= 32 && h <= 32) {
+        w = h = 32;
+    }
+    return srcRas.createCompatibleWritableRaster(w, h);
+}

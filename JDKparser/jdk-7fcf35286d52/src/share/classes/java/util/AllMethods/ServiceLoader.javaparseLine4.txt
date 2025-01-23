@@ -1,0 +1,29 @@
+// Parse a single line from the given configuration file, adding the name
+// on the line to the names list.
+// 
+private int parseLine(Class<?> service, URL u, BufferedReader r, int lc, List<String> names) throws IOException, ServiceConfigurationError {
+    String ln = r.readLine();
+    if (ln == null) {
+        return -1;
+    }
+    int ci = ln.indexOf('#');
+    if (ci >= 0)
+        ln = ln.substring(0, ci);
+    ln = ln.trim();
+    int n = ln.length();
+    if (n != 0) {
+        if ((ln.indexOf(' ') >= 0) || (ln.indexOf('\t') >= 0))
+            fail(service, u, lc, "Illegal configuration-file syntax");
+        int cp = ln.codePointAt(0);
+        if (!Character.isJavaIdentifierStart(cp))
+            fail(service, u, lc, "Illegal provider-class name: " + ln);
+        for (int i = Character.charCount(cp); i < n; i += Character.charCount(cp)) {
+            cp = ln.codePointAt(i);
+            if (!Character.isJavaIdentifierPart(cp) && (cp != '.'))
+                fail(service, u, lc, "Illegal provider-class name: " + ln);
+        }
+        if (!providers.containsKey(ln) && !names.contains(ln))
+            names.add(ln);
+    }
+    return lc + 1;
+}

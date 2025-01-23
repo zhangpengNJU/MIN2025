@@ -1,0 +1,13 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (-this)},
+ * and whose scale is {@code this.scale()}.
+ *
+ * @return {@code -this}.
+ */
+public BigDecimal negate() {
+    if (intCompact == INFLATED) {
+        return new BigDecimal(intVal.negate(), INFLATED, scale, precision);
+    } else {
+        return valueOf(-intCompact, scale, precision);
+    }
+}

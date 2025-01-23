@@ -1,0 +1,13 @@
+/**
+ * This method implements the classic accept node with
+ * the addition of a check to see if the match occurred
+ * using all of the input.
+ */
+boolean match(Matcher matcher, int i, CharSequence seq) {
+    if (matcher.acceptMode == Matcher.ENDANCHOR && i != matcher.to)
+        return false;
+    matcher.last = i;
+    matcher.groups[0] = matcher.first;
+    matcher.groups[1] = matcher.last;
+    return true;
+}

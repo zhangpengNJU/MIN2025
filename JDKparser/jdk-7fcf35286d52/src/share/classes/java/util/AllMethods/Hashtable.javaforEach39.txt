@@ -1,0 +1,18 @@
+@SuppressWarnings("unchecked")
+@Override
+public synchronized void forEach(BiConsumer<? super K, ? super V> action) {
+    // explicit check required in case
+    Objects.requireNonNull(action);
+    // table is empty.
+    final int expectedModCount = modCount;
+    Entry<?, ?>[] tab = table;
+    for (Entry<?, ?> entry : tab) {
+        while (entry != null) {
+            action.accept((K) entry.key, (V) entry.value);
+            entry = entry.next;
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
+    }
+}

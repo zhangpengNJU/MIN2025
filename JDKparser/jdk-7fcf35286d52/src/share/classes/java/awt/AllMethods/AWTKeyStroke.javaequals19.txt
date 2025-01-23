@@ -1,0 +1,13 @@
+/**
+ * Returns true if this object is identical to the specified object.
+ *
+ * @param anObject the Object to compare this object to
+ * @return true if the objects are identical
+ */
+public final boolean equals(Object anObject) {
+    if (anObject instanceof AWTKeyStroke) {
+        AWTKeyStroke ks = (AWTKeyStroke) anObject;
+        return (ks.keyChar == keyChar && ks.keyCode == keyCode && ks.onKeyRelease == onKeyRelease && ks.modifiers == modifiers);
+    }
+    return false;
+}

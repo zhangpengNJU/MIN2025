@@ -1,0 +1,37 @@
+/**
+ * Rehashes the contents of this map into a new array with a
+ * larger capacity.  This method is called automatically when the
+ * number of keys in this map reaches its threshold.
+ *
+ * If current capacity is MAXIMUM_CAPACITY, this method does not
+ * resize the map, but sets threshold to Integer.MAX_VALUE.
+ * This has the effect of preventing future calls.
+ *
+ * @param newCapacity the new capacity, MUST be a power of two;
+ *        must be greater than current capacity unless current
+ *        capacity is MAXIMUM_CAPACITY (in which case value
+ *        is irrelevant).
+ */
+void resize(int newCapacity) {
+    Entry<K, V>[] oldTable = getTable();
+    int oldCapacity = oldTable.length;
+    if (oldCapacity == MAXIMUM_CAPACITY) {
+        threshold = Integer.MAX_VALUE;
+        return;
+    }
+    Entry<K, V>[] newTable = newTable(newCapacity);
+    transfer(oldTable, newTable);
+    table = newTable;
+    /*
+         * If ignoring null elements and processing ref queue caused massive
+         * shrinkage, then restore old table.  This should be rare, but avoids
+         * unbounded expansion of garbage-filled tables.
+         */
+    if (size >= threshold / 2) {
+        threshold = (int) (newCapacity * loadFactor);
+    } else {
+        expungeStaleEntries();
+        transfer(newTable, oldTable);
+        table = oldTable;
+    }
+}

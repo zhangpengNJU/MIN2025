@@ -1,0 +1,39 @@
+/**
+ * Returns a <code>Map</code> of the specified <code>DataFlavor</code>s to
+ * their most preferred <code>String</code> native. Each native value will
+ * be the same as the first native in the List returned by
+ * <code>getNativesForFlavor</code> for the specified flavor.
+ * <p>
+ * If a specified <code>DataFlavor</code> is previously unknown to the
+ * data transfer subsystem, then invoking this method will establish a
+ * mapping in both directions between the specified <code>DataFlavor</code>
+ * and an encoded version of its MIME type as its native.
+ *
+ * @param flavors an array of <code>DataFlavor</code>s which will be the
+ *        key set of the returned <code>Map</code>. If <code>null</code> is
+ *        specified, a mapping of all <code>DataFlavor</code>s known to the
+ *        data transfer subsystem to their most preferred
+ *        <code>String</code> natives will be returned.
+ * @return a <code>java.util.Map</code> of <code>DataFlavor</code>s to
+ *         <code>String</code> natives
+ *
+ * @see #getNativesForFlavor
+ * @see #encodeDataFlavor
+ */
+@Override
+public synchronized Map<DataFlavor, String> getNativesForFlavors(DataFlavor[] flavors) {
+    // Use getNativesForFlavor to generate extra natives for text flavors
+    // and stringFlavor
+    if (flavors == null) {
+        List<DataFlavor> flavor_list = getFlavorsForNative(null);
+        flavors = new DataFlavor[flavor_list.size()];
+        flavor_list.toArray(flavors);
+    }
+    Map<DataFlavor, String> retval = new HashMap<>(flavors.length, 1.0f);
+    for (DataFlavor flavor : flavors) {
+        List<String> natives = getNativesForFlavor(flavor);
+        String nat = (natives.isEmpty()) ? null : natives.get(0);
+        retval.put(flavor, nat);
+    }
+    return retval;
+}

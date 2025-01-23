@@ -1,0 +1,29 @@
+/**
+ * Constructs and returns a new <code>UID</code> instance by
+ * unmarshalling a binary representation from an
+ * <code>DataInput</code> instance.
+ *
+ * <p>Specifically, this method first invokes the given stream's
+ * {@link DataInput#readInt()} method to read a <code>unique</code> value,
+ * then it invoke's the stream's
+ * {@link DataInput#readLong()} method to read a <code>time</code> value,
+ * then it invoke's the stream's
+ * {@link DataInput#readShort()} method to read a <code>count</code> value,
+ * and then it creates and returns a new <code>UID</code> instance
+ * that contains the <code>unique</code>, <code>time</code>, and
+ * <code>count</code> values that were read from the stream.
+ *
+ * @param   in the <code>DataInput</code> instance to read
+ * <code>UID</code> from
+ *
+ * @return  unmarshalled <code>UID</code> instance
+ *
+ * @throws  IOException if an I/O error occurs while performing
+ * this operation
+ */
+public static UID read(DataInput in) throws IOException {
+    int unique = in.readInt();
+    long time = in.readLong();
+    short count = in.readShort();
+    return new UID(unique, time, count);
+}

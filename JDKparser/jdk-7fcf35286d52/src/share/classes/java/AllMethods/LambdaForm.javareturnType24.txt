@@ -1,0 +1,16 @@
+/**
+ * Invoke this form on the given arguments.
+ */
+// final Object invoke(Object... args) throws Throwable {
+// // NYI: fit this into the fast path?
+// return interpretWithArguments(args);
+// }
+/**
+ * Report the return type.
+ */
+BasicType returnType() {
+    if (result < 0)
+        return V_TYPE;
+    Name n = names[result];
+    return n.type;
+}

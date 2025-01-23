@@ -1,0 +1,8 @@
+private BiFunction<? super K, ? super V, ? extends V> typeCheck(BiFunction<? super K, ? super V, ? extends V> func) {
+    Objects.requireNonNull(func);
+    return (k, v) -> {
+        V newValue = func.apply(k, v);
+        typeCheck(k, newValue);
+        return newValue;
+    };
+}

@@ -1,0 +1,16 @@
+/**
+ * Non-exclusively acquires the lock, blocking if necessary
+ * until available or the current thread is interrupted.
+ * Behavior under interruption matches that specified
+ * for method {@link Lock#lockInterruptibly()}.
+ *
+ * @return a stamp that can be used to unlock or convert mode
+ * @throws InterruptedException if the current thread is interrupted
+ * before acquiring the lock
+ */
+public long readLockInterruptibly() throws InterruptedException {
+    long next;
+    if (!Thread.interrupted() && (next = acquireRead(true, 0L)) != INTERRUPTED)
+        return next;
+    throw new InterruptedException();
+}

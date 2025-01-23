@@ -1,0 +1,14 @@
+/**
+ * Flushes the stream.
+ * @see #checkError()
+ */
+public void flush() {
+    try {
+        synchronized (lock) {
+            ensureOpen();
+            out.flush();
+        }
+    } catch (IOException x) {
+        trouble = true;
+    }
+}

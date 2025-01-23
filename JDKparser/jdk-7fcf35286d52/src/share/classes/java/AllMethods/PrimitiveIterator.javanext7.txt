@@ -1,0 +1,12 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * The default implementation boxes the result of calling
+ * {@link #nextLong()}, and returns that boxed result.
+ */
+@Override
+default Long next() {
+    if (Tripwire.ENABLED)
+        Tripwire.trip(getClass(), "{0} calling PrimitiveIterator.OfLong.nextLong()");
+    return nextLong();
+}

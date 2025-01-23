@@ -1,0 +1,151 @@
+private void init() {
+    // first, we need to check for graphic components on the TOP or BOTTOM baselines.  So
+    // we perform the work that used to be in getMetrics here.
+    float ascent = 0;
+    float descent = 0;
+    float leading = 0;
+    float advance = 0;
+    // ascent + descent must not be less than this value
+    float maxGraphicHeight = 0;
+    float maxGraphicHeightWithLeading = 0;
+    // walk through EGA's
+    TextLineComponent tlc;
+    boolean fitTopAndBottomGraphics = false;
+    isSimple = true;
+    for (int i = 0; i < fComponents.length; i++) {
+        tlc = fComponents[i];
+        isSimple &= tlc.isSimple();
+        CoreMetrics cm = tlc.getCoreMetrics();
+        byte baseline = (byte) cm.baselineIndex;
+        if (baseline >= 0) {
+            float baselineOffset = fBaselineOffsets[baseline];
+            ascent = Math.max(ascent, -baselineOffset + cm.ascent);
+            float gd = baselineOffset + cm.descent;
+            descent = Math.max(descent, gd);
+            leading = Math.max(leading, gd + cm.leading);
+        } else {
+            fitTopAndBottomGraphics = true;
+            float graphicHeight = cm.ascent + cm.descent;
+            float graphicHeightWithLeading = graphicHeight + cm.leading;
+            maxGraphicHeight = Math.max(maxGraphicHeight, graphicHeight);
+            maxGraphicHeightWithLeading = Math.max(maxGraphicHeightWithLeading, graphicHeightWithLeading);
+        }
+    }
+    if (fitTopAndBottomGraphics) {
+        if (maxGraphicHeight > ascent + descent) {
+            descent = maxGraphicHeight - ascent;
+        }
+        if (maxGraphicHeightWithLeading > ascent + leading) {
+            leading = maxGraphicHeightWithLeading - ascent;
+        }
+    }
+    leading -= descent;
+    // we now know enough to compute the locs, but we need the final loc
+    // for the advance before we can create the metrics object
+    if (fitTopAndBottomGraphics) {
+        // we have top or bottom baselines, so expand the baselines array
+        // full offsets are needed by CoreMetrics.effectiveBaselineOffset
+        fBaselineOffsets = new float[] { fBaselineOffsets[0], fBaselineOffsets[1], fBaselineOffsets[2], descent, -ascent };
+    }
+    float x = 0;
+    float y = 0;
+    CoreMetrics pcm = null;
+    boolean needPath = false;
+    locs = new float[fComponents.length * 2 + 2];
+    for (int i = 0, n = 0; i < fComponents.length; ++i, n += 2) {
+        tlc = fComponents[getComponentLogicalIndex(i)];
+        CoreMetrics cm = tlc.getCoreMetrics();
+        if ((pcm != null) && // adjust because of italics
+        (pcm.italicAngle != 0 || cm.italicAngle != 0) && (pcm.italicAngle != cm.italicAngle || pcm.baselineIndex != cm.baselineIndex || pcm.ssOffset != cm.ssOffset)) {
+            // 1) compute the area of overlap - min effective ascent and min effective descent
+            // 2) compute the x positions along italic angle of ascent and descent for left and right
+            // 3) compute maximum left - right, adjust right position by this value
+            // this is a crude form of kerning between textcomponents
+            // note glyphvectors preposition glyphs based on offset,
+            // so tl doesn't need to adjust glyphvector position
+            // 1)
+            float pb = pcm.effectiveBaselineOffset(fBaselineOffsets);
+            float pa = pb - pcm.ascent;
+            float pd = pb + pcm.descent;
+            // pb += pcm.ssOffset;
+            float cb = cm.effectiveBaselineOffset(fBaselineOffsets);
+            float ca = cb - cm.ascent;
+            float cd = cb + cm.descent;
+            // cb += cm.ssOffset;
+            float a = Math.max(pa, ca);
+            float d = Math.min(pd, cd);
+            // 2)
+            float pax = pcm.italicAngle * (pb - a);
+            float pdx = pcm.italicAngle * (pb - d);
+            float cax = cm.italicAngle * (cb - a);
+            float cdx = cm.italicAngle * (cb - d);
+            // 3)
+            float dax = pax - cax;
+            float ddx = pdx - cdx;
+            float dx = Math.max(dax, ddx);
+            x += dx;
+            y = cb;
+        } else {
+            // no italic adjustment for x, but still need to compute y
+            // + cm.ssOffset;
+            y = cm.effectiveBaselineOffset(fBaselineOffsets);
+        }
+        locs[n] = x;
+        locs[n + 1] = y;
+        x += tlc.getAdvance();
+        pcm = cm;
+        needPath |= tlc.getBaselineTransform() != null;
+    }
+    // do we want italic padding at the right of the line?
+    if (pcm.italicAngle != 0) {
+        float pb = pcm.effectiveBaselineOffset(fBaselineOffsets);
+        float pa = pb - pcm.ascent;
+        float pd = pb + pcm.descent;
+        pb += pcm.ssOffset;
+        float d;
+        if (pcm.italicAngle > 0) {
+            d = pb + pcm.ascent;
+        } else {
+            d = pb - pcm.descent;
+        }
+        d *= pcm.italicAngle;
+        x += d;
+    }
+    locs[locs.length - 2] = x;
+    // locs[locs.length - 1] = 0; // final offset is always back on baseline
+    // ok, build fMetrics since we have the final advance
+    advance = x;
+    fMetrics = new TextLineMetrics(ascent, descent, leading, advance);
+    // build path if we need it
+    if (needPath) {
+        isSimple = false;
+        Point2D.Double pt = new Point2D.Double();
+        double tx = 0, ty = 0;
+        SegmentPathBuilder builder = new SegmentPathBuilder();
+        builder.moveTo(locs[0], 0);
+        for (int i = 0, n = 0; i < fComponents.length; ++i, n += 2) {
+            tlc = fComponents[getComponentLogicalIndex(i)];
+            AffineTransform at = tlc.getBaselineTransform();
+            if (at != null && ((at.getType() & AffineTransform.TYPE_TRANSLATION) != 0)) {
+                double dx = at.getTranslateX();
+                double dy = at.getTranslateY();
+                builder.moveTo(tx += dx, ty += dy);
+            }
+            pt.x = locs[n + 2] - locs[n];
+            pt.y = 0;
+            if (at != null) {
+                at.deltaTransform(pt, pt);
+            }
+            builder.lineTo(tx += pt.x, ty += pt.y);
+        }
+        lp = builder.complete();
+        if (lp == null) {
+            // empty path
+            tlc = fComponents[getComponentLogicalIndex(0)];
+            AffineTransform at = tlc.getBaselineTransform();
+            if (at != null) {
+                lp = new EmptyPath(at);
+            }
+        }
+    }
+}

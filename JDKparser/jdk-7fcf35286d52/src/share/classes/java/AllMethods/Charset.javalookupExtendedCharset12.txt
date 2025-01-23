@@ -1,0 +1,4 @@
+private static Charset lookupExtendedCharset(String charsetName) {
+    CharsetProvider ecp = ExtendedProviderHolder.extendedProvider;
+    return (ecp != null) ? ecp.charsetForName(charsetName) : null;
+}

@@ -1,0 +1,20 @@
+/**
+ * Allows the remote reference to clean up (or reuse) the connection.
+ * Done should only be called if the invoke returns successfully
+ * (non-exceptionally) to the stub.
+ *
+ * @since JDK1.1
+ * @deprecated 1.2 style stubs no longer use this method. Instead of
+ * using a sequence of method calls to the remote reference
+ * (<code>newCall</code>, <code>invoke</code>, and <code>done</code>), a
+ * stub uses a single method, <code>invoke(Remote, Method, Object[],
+ * int)</code>, on the remote reference to carry out parameter
+ * marshalling, remote method executing and unmarshalling of the return
+ * value.
+ *
+ * @param call object representing remote call
+ * @throws RemoteException if remote error occurs during call cleanup
+ * @see #invoke(Remote,java.lang.reflect.Method,Object[],long)
+ */
+@Deprecated
+void done(RemoteCall call) throws RemoteException;

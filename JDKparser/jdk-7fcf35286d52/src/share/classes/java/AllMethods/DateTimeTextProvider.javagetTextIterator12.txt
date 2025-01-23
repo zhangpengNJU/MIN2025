@@ -1,0 +1,13 @@
+/**
+ * Gets an iterator of text to field for the specified style for the purpose of parsing.
+ * <p>
+ * The iterator must be returned in order from the longest text to the shortest.
+ *
+ * @param style  the style to get text for, null for all parsable text
+ * @return the iterator of text to field pairs, in order from longest text to shortest text,
+ *  null if the style is not parsable
+ */
+Iterator<Entry<String, Long>> getTextIterator(TextStyle style) {
+    List<Entry<String, Long>> list = parsable.get(style);
+    return list != null ? list.iterator() : null;
+}

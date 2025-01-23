@@ -1,0 +1,33 @@
+public void remove() {
+    // assert lock.getHoldCount() == 0;
+    final ReentrantLock lock = ArrayBlockingQueue.this.lock;
+    lock.lock();
+    try {
+        if (!isDetached())
+            // might update lastRet or detach
+            incorporateDequeues();
+        final int lastRet = this.lastRet;
+        this.lastRet = NONE;
+        if (lastRet >= 0) {
+            if (!isDetached())
+                removeAt(lastRet);
+            else {
+                final E lastItem = this.lastItem;
+                // assert lastItem != null;
+                this.lastItem = null;
+                if (itemAt(lastRet) == lastItem)
+                    removeAt(lastRet);
+            }
+        } else if (lastRet == NONE)
+            throw new IllegalStateException();
+        // else lastRet == REMOVED and the last returned element was
+        // previously asynchronously removed via an operation other
+        // than this.remove(), so nothing to do.
+        if (cursor < 0 && nextIndex < 0)
+            detach();
+    } finally {
+        lock.unlock();
+    // assert lastRet == NONE;
+    // assert lastItem == null;
+    }
+}

@@ -1,0 +1,41 @@
+@Override
+Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
+    return new Sink.ChainedInt<Integer>(sink) {
+
+        // true if cancellationRequested() has been called
+        boolean cancellationRequestedCalled;
+
+        // cache the consumer to avoid creation on every accepted element
+        IntConsumer downstreamAsInt = downstream::accept;
+
+        @Override
+        public void begin(long size) {
+            downstream.begin(-1);
+        }
+
+        @Override
+        public void accept(int t) {
+            try (IntStream result = mapper.apply(t)) {
+                if (result != null) {
+                    if (!cancellationRequestedCalled) {
+                        result.sequential().forEach(downstreamAsInt);
+                    } else {
+                        Spliterator.OfInt s = result.sequential().spliterator();
+                        do {
+                        } while (!downstream.cancellationRequested() && s.tryAdvance(downstreamAsInt));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean cancellationRequested() {
+            // If this method is called then an operation within the stream
+            // pipeline is short-circuiting (see AbstractPipeline.copyInto).
+            // Note that we cannot differentiate between an upstream or
+            // downstream operation
+            cancellationRequestedCalled = true;
+            return downstream.cancellationRequested();
+        }
+    };
+}

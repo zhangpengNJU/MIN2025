@@ -1,0 +1,6 @@
+private void typeCheck(Object key, Object value) {
+    if (key != null && !keyType.isInstance(key))
+        throw new ClassCastException(badKeyMsg(key));
+    if (value != null && !valueType.isInstance(value))
+        throw new ClassCastException(badValueMsg(value));
+}

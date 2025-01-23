@@ -1,0 +1,8 @@
+private static void defRange(String name, final int lower, final int upper) {
+    map.put(name, new CharPropertyFactory() {
+
+        CharProperty make() {
+            return rangeFor(lower, upper);
+        }
+    });
+}

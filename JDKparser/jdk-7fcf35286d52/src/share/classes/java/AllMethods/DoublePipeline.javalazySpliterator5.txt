@@ -1,0 +1,5 @@
+@Override
+@SuppressWarnings("unchecked")
+final Spliterator.OfDouble lazySpliterator(Supplier<? extends Spliterator<Double>> supplier) {
+    return new StreamSpliterators.DelegatingSpliterator.OfDouble((Supplier<Spliterator.OfDouble>) supplier);
+}

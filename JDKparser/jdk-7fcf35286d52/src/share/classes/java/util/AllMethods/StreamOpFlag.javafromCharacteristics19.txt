@@ -1,0 +1,23 @@
+/**
+ * Converts a spliterator characteristic bit set to stream flags.
+ *
+ * @implSpec
+ * If the spliterator is naturally {@code SORTED} (the associated
+ * {@code Comparator} is {@code null}) then the characteristic is converted
+ * to the {@link #SORTED} flag, otherwise the characteristic is not
+ * converted.
+ *
+ * @param spliterator the spliterator from which to obtain characteristic
+ *        bit set.
+ * @return the stream flags.
+ */
+static int fromCharacteristics(Spliterator<?> spliterator) {
+    int characteristics = spliterator.characteristics();
+    if ((characteristics & Spliterator.SORTED) != 0 && spliterator.getComparator() != null) {
+        // Do not propagate the SORTED characteristic if it does not correspond
+        // to a natural sort order
+        return characteristics & SPLITERATOR_CHARACTERISTICS_MASK & ~Spliterator.SORTED;
+    } else {
+        return characteristics & SPLITERATOR_CHARACTERISTICS_MASK;
+    }
+}

@@ -1,0 +1,8 @@
+/*
+     * Wrapper for getComponents() method with a proper synchronization.
+     */
+Component[] getComponentsSync() {
+    synchronized (getTreeLock()) {
+        return getComponents();
+    }
+}

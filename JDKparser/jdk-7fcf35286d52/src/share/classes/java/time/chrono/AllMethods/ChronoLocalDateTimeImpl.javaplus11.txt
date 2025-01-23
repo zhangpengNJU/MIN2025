@@ -1,0 +1,26 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoLocalDateTimeImpl<D> plus(long amountToAdd, TemporalUnit unit) {
+    if (unit instanceof ChronoUnit) {
+        ChronoUnit f = (ChronoUnit) unit;
+        switch(f) {
+            case NANOS:
+                return plusNanos(amountToAdd);
+            case MICROS:
+                return plusDays(amountToAdd / MICROS_PER_DAY).plusNanos((amountToAdd % MICROS_PER_DAY) * 1000);
+            case MILLIS:
+                return plusDays(amountToAdd / MILLIS_PER_DAY).plusNanos((amountToAdd % MILLIS_PER_DAY) * 1000000);
+            case SECONDS:
+                return plusSeconds(amountToAdd);
+            case MINUTES:
+                return plusMinutes(amountToAdd);
+            case HOURS:
+                return plusHours(amountToAdd);
+            // no overflow (256 is multiple of 2)
+            case HALF_DAYS:
+                return plusDays(amountToAdd / 256).plusHours((amountToAdd % 256) * 12);
+        }
+        return with(date.plus(amountToAdd, unit), time);
+    }
+    return ChronoLocalDateTimeImpl.ensureValid(date.getChronology(), unit.addTo(this, amountToAdd));
+}

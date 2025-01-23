@@ -1,0 +1,7 @@
+@Override
+public <T> T doIntersectionPrivilege(PrivilegedAction<T> action, final AccessControlContext stack, final AccessControlContext context) {
+    if (action == null) {
+        throw new NullPointerException();
+    }
+    return AccessController.doPrivileged(action, getCombinedACC(context, stack));
+}

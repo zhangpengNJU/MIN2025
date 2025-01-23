@@ -1,0 +1,12 @@
+/**
+ * Convert the integer to an unsigned number.
+ */
+private static String toUnsignedString0(int val, int shift) {
+    // assert shift > 0 && shift <=5 : "Illegal shift value";
+    int mag = Integer.SIZE - Integer.numberOfLeadingZeros(val);
+    int chars = Math.max(((mag + (shift - 1)) / shift), 1);
+    char[] buf = new char[chars];
+    formatUnsignedInt(val, shift, buf, 0, chars);
+    // Use special constructor which takes over "buf".
+    return new String(buf, true);
+}

@@ -1,0 +1,13 @@
+/**
+ * Gets the PropertyChangeListener
+ * (if any) of the specified child
+ * @param child the specified child
+ * @return the PropertyChangeListener (if any) of the specified child
+ */
+protected static final PropertyChangeListener getChildPropertyChangeListener(Object child) {
+    try {
+        return (PropertyChangeListener) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

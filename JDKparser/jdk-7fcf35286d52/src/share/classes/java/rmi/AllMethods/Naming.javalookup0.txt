@@ -1,0 +1,20 @@
+/**
+ * Returns a reference, a stub, for the remote object associated
+ * with the specified <code>name</code>.
+ *
+ * @param name a name in URL format (without the scheme component)
+ * @return a reference for a remote object
+ * @exception NotBoundException if name is not currently bound
+ * @exception RemoteException if registry could not be contacted
+ * @exception AccessException if this operation is not permitted
+ * @exception MalformedURLException if the name is not an appropriately
+ *  formatted URL
+ * @since JDK1.1
+ */
+public static Remote lookup(String name) throws NotBoundException, java.net.MalformedURLException, RemoteException {
+    ParsedNamingURL parsed = parseURL(name);
+    Registry registry = getRegistry(parsed);
+    if (parsed.name == null)
+        return registry;
+    return registry.lookup(parsed.name);
+}

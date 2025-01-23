@@ -1,0 +1,10 @@
+ChronoLocalDate resolveYD(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    int y = range(YEAR).checkValidIntValue(fieldValues.remove(YEAR), YEAR);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        long days = Math.subtractExact(fieldValues.remove(DAY_OF_YEAR), 1);
+        return dateYearDay(y, 1).plus(days, DAYS);
+    }
+    int doy = range(DAY_OF_YEAR).checkValidIntValue(fieldValues.remove(DAY_OF_YEAR), DAY_OF_YEAR);
+    // smart is same as strict
+    return dateYearDay(y, doy);
+}

@@ -1,0 +1,12 @@
+/**
+ * Fills input buffer with more data to decompress.
+ * @exception IOException if an I/O error has occurred
+ */
+protected void fill() throws IOException {
+    ensureOpen();
+    len = in.read(buf, 0, buf.length);
+    if (len == -1) {
+        throw new EOFException("Unexpected end of ZLIB input stream");
+    }
+    inf.setInput(buf, 0, len);
+}

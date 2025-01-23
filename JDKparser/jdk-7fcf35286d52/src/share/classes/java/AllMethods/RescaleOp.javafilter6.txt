@@ -1,0 +1,87 @@
+/**
+ * Rescales the source BufferedImage.
+ * If the color model in the source image is not the same as that
+ * in the destination image, the pixels will be converted
+ * in the destination.  If the destination image is null,
+ * a BufferedImage will be created with the source ColorModel.
+ * An IllegalArgumentException may be thrown if the number of
+ * scaling factors/offsets in this object does not meet the
+ * restrictions stated in the class comments above, or if the
+ * source image has an IndexColorModel.
+ * @param src the <code>BufferedImage</code> to be filtered
+ * @param dst the destination for the filtering operation
+ *            or <code>null</code>
+ * @return the filtered <code>BufferedImage</code>.
+ * @throws IllegalArgumentException if the <code>ColorModel</code>
+ *         of <code>src</code> is an <code>IndexColorModel</code>,
+ *         or if the number of scaling factors and offsets in this
+ *         <code>RescaleOp</code> do not meet the requirements
+ *         stated in the class comments.
+ */
+public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
+    ColorModel srcCM = src.getColorModel();
+    ColorModel dstCM;
+    int numSrcColorComp = srcCM.getNumColorComponents();
+    int scaleConst = length;
+    if (srcCM instanceof IndexColorModel) {
+        throw new IllegalArgumentException("Rescaling cannot be " + "performed on an indexed image");
+    }
+    if (scaleConst != 1 && scaleConst != numSrcColorComp && scaleConst != srcCM.getNumComponents()) {
+        throw new IllegalArgumentException("Number of scaling constants " + "does not equal the number of" + " of color or color/alpha " + " components");
+    }
+    boolean needToConvert = false;
+    boolean needToDraw = false;
+    // Include alpha
+    if (scaleConst > numSrcColorComp && srcCM.hasAlpha()) {
+        scaleConst = numSrcColorComp + 1;
+    }
+    int width = src.getWidth();
+    int height = src.getHeight();
+    BufferedImage origDst = dst;
+    if (dst == null) {
+        dst = createCompatibleDestImage(src, null);
+        dstCM = srcCM;
+    } else {
+        if (width != dst.getWidth()) {
+            throw new IllegalArgumentException("Src width (" + width + ") not equal to dst width (" + dst.getWidth() + ")");
+        }
+        if (height != dst.getHeight()) {
+            throw new IllegalArgumentException("Src height (" + height + ") not equal to dst height (" + dst.getHeight() + ")");
+        }
+        dstCM = dst.getColorModel();
+        if (srcCM.getColorSpace().getType() != dstCM.getColorSpace().getType()) {
+            needToConvert = true;
+            dst = createCompatibleDestImage(src, null);
+        }
+    }
+    // 
+    // Try to use a native BI rescale operation first
+    // 
+    if (ImagingLib.filter(this, src, dst) == null) {
+        if (src.getRaster().getNumBands() != dst.getRaster().getNumBands()) {
+            needToDraw = true;
+            dst = createCompatibleDestImage(src, null);
+        }
+        // 
+        // Native BI rescale failed - convert to rasters
+        // 
+        WritableRaster srcRaster = src.getRaster();
+        WritableRaster dstRaster = dst.getRaster();
+        // 
+        // Call the raster filter method
+        // 
+        filterRasterImpl(srcRaster, dstRaster, scaleConst, false);
+    }
+    if (needToDraw) {
+        Graphics2D g = origDst.createGraphics();
+        g.setComposite(AlphaComposite.Src);
+        g.drawImage(dst, 0, 0, width, height, null);
+        g.dispose();
+    }
+    if (needToConvert) {
+        // ColorModels are not the same
+        ColorConvertOp ccop = new ColorConvertOp(hints);
+        dst = ccop.filter(dst, origDst);
+    }
+    return dst;
+}

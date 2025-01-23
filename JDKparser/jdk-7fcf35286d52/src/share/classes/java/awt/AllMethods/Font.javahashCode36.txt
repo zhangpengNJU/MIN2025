@@ -1,0 +1,20 @@
+/**
+ * Returns a hashcode for this <code>Font</code>.
+ * @return     a hashcode value for this <code>Font</code>.
+ * @since      JDK1.0
+ */
+public int hashCode() {
+    if (hash == 0) {
+        hash = name.hashCode() ^ style ^ size;
+        /* It is possible many fonts differ only in transform.
+             * So include the transform in the hash calculation.
+             * nonIdentityTx is set whenever there is a transform in
+             * 'values'. The tests for null are required because it can
+             * also be set for other reasons.
+             */
+        if (nonIdentityTx && values != null && values.getTransform() != null) {
+            hash ^= values.getTransform().hashCode();
+        }
+    }
+    return hash;
+}

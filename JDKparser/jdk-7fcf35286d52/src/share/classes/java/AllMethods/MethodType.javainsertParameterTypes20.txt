@@ -1,0 +1,25 @@
+/**
+ * Finds or creates a method type with additional parameter types.
+ * Convenience method for {@link #methodType(java.lang.Class, java.lang.Class[]) methodType}.
+ * @param num    the position (zero-based) of the inserted parameter type(s)
+ * @param ptypesToInsert zero or more new parameter types to insert into the parameter list
+ * @return the same type, except with the selected parameter(s) inserted
+ * @throws IndexOutOfBoundsException if {@code num} is negative or greater than {@code parameterCount()}
+ * @throws IllegalArgumentException if any element of {@code ptypesToInsert} is {@code void.class}
+ *                                  or if the resulting method type would have more than 255 parameter slots
+ * @throws NullPointerException if {@code ptypesToInsert} or any of its elements is null
+ */
+public MethodType insertParameterTypes(int num, Class<?>... ptypesToInsert) {
+    int len = ptypes.length;
+    if (num < 0 || num > len)
+        throw newIndexOutOfBoundsException(num);
+    int ins = checkPtypes(ptypesToInsert);
+    checkSlotCount(parameterSlotCount() + ptypesToInsert.length + ins);
+    int ilen = ptypesToInsert.length;
+    if (ilen == 0)
+        return this;
+    Class<?>[] nptypes = Arrays.copyOfRange(ptypes, 0, len + ilen);
+    System.arraycopy(nptypes, num, nptypes, num + ilen, len - num);
+    System.arraycopy(ptypesToInsert, 0, nptypes, num, ilen);
+    return makeImpl(rtype, nptypes, true);
+}

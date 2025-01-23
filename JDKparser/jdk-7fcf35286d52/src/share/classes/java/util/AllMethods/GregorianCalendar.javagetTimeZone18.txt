@@ -1,0 +1,10 @@
+@Override
+public TimeZone getTimeZone() {
+    TimeZone zone = super.getTimeZone();
+    // To share the zone by CalendarDates
+    gdate.setZone(zone);
+    if (cdate != null && cdate != gdate) {
+        cdate.setZone(zone);
+    }
+    return zone;
+}

@@ -1,0 +1,4 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Field f = (Field) oldInstance;
+    return new Expression(oldInstance, f.getDeclaringClass(), "getField", new Object[] { f.getName() });
+}

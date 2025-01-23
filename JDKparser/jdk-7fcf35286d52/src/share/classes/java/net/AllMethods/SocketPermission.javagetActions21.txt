@@ -1,0 +1,12 @@
+/**
+ * Returns the canonical string representation of the actions.
+ * Always returns present actions in the following order:
+ * connect, listen, accept, resolve.
+ *
+ * @return the canonical string representation of the actions.
+ */
+public String getActions() {
+    if (actions == null)
+        actions = getActions(this.mask);
+    return actions;
+}

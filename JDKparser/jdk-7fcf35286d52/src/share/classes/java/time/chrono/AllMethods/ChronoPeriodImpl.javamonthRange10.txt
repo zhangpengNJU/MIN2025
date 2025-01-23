@@ -1,0 +1,12 @@
+/**
+ * Calculates the range of months.
+ *
+ * @return the month range, -1 if not fixed range
+ */
+private long monthRange() {
+    ValueRange startRange = chrono.range(MONTH_OF_YEAR);
+    if (startRange.isFixed() && startRange.isIntValue()) {
+        return startRange.getMaximum() - startRange.getMinimum() + 1;
+    }
+    return -1;
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns whether the file dialog allows the multiple file selection.
+ *
+ * @return          {@code true} if the file dialog allows the multiple
+ *                  file selection; {@code false} otherwise.
+ * @see #setMultipleMode
+ * @since 1.7
+ */
+public boolean isMultipleMode() {
+    synchronized (getObjectLock()) {
+        return multipleMode;
+    }
+}

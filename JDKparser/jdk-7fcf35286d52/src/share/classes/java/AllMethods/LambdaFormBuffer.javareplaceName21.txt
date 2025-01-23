@@ -1,0 +1,9 @@
+private void replaceName(int pos, Name binding) {
+    assert (inTrans());
+    assert (verifyArity());
+    assert (pos < arity);
+    Name param = names[pos];
+    assert (param.isParam());
+    assert (param.type == binding.type);
+    changeName(pos, binding);
+}

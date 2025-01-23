@@ -1,0 +1,18 @@
+/**
+ * Reads four input bytes and returns an
+ * {@code int} value. Let {@code a-d}
+ * be the first through fourth bytes read. The value returned is:
+ * <pre>{@code
+ * (((a & 0xff) << 24) | ((b & 0xff) << 16) |
+ *  ((c & 0xff) <<  8) | (d & 0xff))
+ * }</pre>
+ * This method is suitable
+ * for reading bytes written by the {@code writeInt}
+ * method of interface {@code DataOutput}.
+ *
+ * @return     the {@code int} value read.
+ * @exception  EOFException  if this stream reaches the end before reading
+ *               all the bytes.
+ * @exception  IOException   if an I/O error occurs.
+ */
+int readInt() throws IOException;

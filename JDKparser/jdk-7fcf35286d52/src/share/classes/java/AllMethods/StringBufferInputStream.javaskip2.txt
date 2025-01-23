@@ -1,0 +1,17 @@
+/**
+ * Skips <code>n</code> bytes of input from this input stream. Fewer
+ * bytes might be skipped if the end of the input stream is reached.
+ *
+ * @param      n   the number of bytes to be skipped.
+ * @return     the actual number of bytes skipped.
+ */
+public synchronized long skip(long n) {
+    if (n < 0) {
+        return 0;
+    }
+    if (n > count - pos) {
+        n = count - pos;
+    }
+    pos += n;
+    return n;
+}

@@ -1,0 +1,12 @@
+CalendarBuilder set(int index, int value) {
+    if (index == ISO_DAY_OF_WEEK) {
+        index = DAY_OF_WEEK;
+        value = toCalendarDayOfWeek(value);
+    }
+    field[index] = nextStamp++;
+    field[MAX_FIELD + index] = value;
+    if (index > maxFieldIndex && index < FIELD_COUNT) {
+        maxFieldIndex = index;
+    }
+    return this;
+}

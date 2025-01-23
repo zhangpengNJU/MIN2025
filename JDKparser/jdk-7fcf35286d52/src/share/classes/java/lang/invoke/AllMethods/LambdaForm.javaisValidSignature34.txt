@@ -1,0 +1,23 @@
+static boolean isValidSignature(String sig) {
+    int arity = sig.indexOf('_');
+    // must be of the form *_*
+    if (arity < 0)
+        return false;
+    int siglen = sig.length();
+    // *_X
+    if (siglen != arity + 2)
+        return false;
+    for (int i = 0; i < siglen; i++) {
+        // skip '_'
+        if (i == arity)
+            continue;
+        char c = sig.charAt(i);
+        if (c == 'V')
+            return (i == siglen - 1 && arity == siglen - 2);
+        // must be [LIJFD]
+        if (!isArgBasicTypeChar(c))
+            return false;
+    }
+    // [LIJFD]*_[LIJFDV]
+    return true;
+}

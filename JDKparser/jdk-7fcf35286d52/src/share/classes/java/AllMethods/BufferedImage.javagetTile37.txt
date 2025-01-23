@@ -1,0 +1,20 @@
+/**
+ * Returns tile (<code>tileX</code>,&nbsp;<code>tileY</code>).  Note
+ * that <code>tileX</code> and <code>tileY</code> are indices
+ * into the tile array, not pixel locations.  The <code>Raster</code>
+ * that is returned is live, which means that it is updated if the
+ * image is changed.
+ * @param tileX the x index of the requested tile in the tile array
+ * @param tileY the y index of the requested tile in the tile array
+ * @return a <code>Raster</code> that is the tile defined by the
+ *          arguments <code>tileX</code> and <code>tileY</code>.
+ * @exception ArrayIndexOutOfBoundsException if both
+ *          <code>tileX</code> and <code>tileY</code> are not
+ *          equal to 0
+ */
+public Raster getTile(int tileX, int tileY) {
+    if (tileX == 0 && tileY == 0) {
+        return raster;
+    }
+    throw new ArrayIndexOutOfBoundsException("BufferedImages only have" + " one tile with index 0,0");
+}

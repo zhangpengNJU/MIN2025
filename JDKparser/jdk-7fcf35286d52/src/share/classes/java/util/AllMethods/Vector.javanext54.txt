@@ -1,0 +1,10 @@
+public E next() {
+    synchronized (Vector.this) {
+        checkForComodification();
+        int i = cursor;
+        if (i >= elementCount)
+            throw new NoSuchElementException();
+        cursor = i + 1;
+        return elementData(lastRet = i);
+    }
+}

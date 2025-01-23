@@ -1,0 +1,16 @@
+/**
+ * Returns the length of the {@code String} representation
+ * of this {@code StringJoiner}. Note that if
+ * no add methods have been called, then the length of the {@code String}
+ * representation (either {@code prefix + suffix} or {@code emptyValue})
+ * will be returned. The value should be equivalent to
+ * {@code toString().length()}.
+ *
+ * @return the length of the current value of {@code StringJoiner}
+ */
+public int length() {
+    // Remember that we never actually append the suffix unless we return
+    // the full (present) value or some sub-string or length of it, so that
+    // we can add on more if we need to.
+    return (value != null ? value.length() + suffix.length() : emptyValue.length());
+}

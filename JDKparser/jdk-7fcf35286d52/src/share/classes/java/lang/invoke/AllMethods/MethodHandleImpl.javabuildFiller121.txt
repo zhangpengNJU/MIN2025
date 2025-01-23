@@ -1,0 +1,34 @@
+private static MethodHandle buildFiller(int nargs) {
+    if (nargs <= LEFT_ARGS)
+        // no args to fill; return the array unchanged
+        return Lazy.MH_arrayIdentity;
+    // we need room for both mh and a in mh.invoke(a, arg*[nargs])
+    final int CHUNK = LEFT_ARGS;
+    int rightLen = nargs % CHUNK;
+    int midLen = nargs - rightLen;
+    if (rightLen == 0) {
+        midLen = nargs - (rightLen = CHUNK);
+        if (FILL_ARRAY_TO_RIGHT[midLen] == null) {
+            // build some precursors from left to right
+            for (int j = LEFT_ARGS % CHUNK; j < midLen; j += CHUNK) if (j > LEFT_ARGS)
+                fillToRight(j);
+        }
+    }
+    if (midLen < LEFT_ARGS)
+        rightLen = nargs - (midLen = LEFT_ARGS);
+    assert (rightLen > 0);
+    // recursive fill
+    MethodHandle midFill = fillToRight(midLen);
+    // [midLen..nargs-1]
+    MethodHandle rightFill = Lazy.FILL_ARRAYS[rightLen].bindTo(midLen);
+    assert (midFill.type().parameterCount() == 1 + midLen - LEFT_ARGS);
+    assert (rightFill.type().parameterCount() == 1 + rightLen);
+    // Combine the two fills:
+    // right(mid(a, x10..x19), x20..x23)
+    // The final product will look like this:
+    // right(mid(newArrayLeft(24, x0..x9), x10..x19), x20..x23)
+    if (midLen == LEFT_ARGS)
+        return rightFill;
+    else
+        return MethodHandles.collectArguments(rightFill, 0, midFill);
+}

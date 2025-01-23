@@ -1,0 +1,14 @@
+/**
+ * Unlinks interior Node p with predecessor trail.
+ */
+void unlink(Node<E> p, Node<E> trail) {
+    // assert isFullyLocked();
+    // p.next is not changed, to allow iterators that are
+    // traversing p to maintain their weak-consistency guarantee.
+    p.item = null;
+    trail.next = p.next;
+    if (last == p)
+        last = trail;
+    if (count.getAndDecrement() == capacity)
+        notFull.signal();
+}

@@ -1,0 +1,15 @@
+public final void dispatch() {
+    KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    DefaultKeyboardFocusManager defaultManager = (manager instanceof DefaultKeyboardFocusManager) ? (DefaultKeyboardFocusManager) manager : null;
+    if (defaultManager != null) {
+        synchronized (defaultManager) {
+            defaultManager.inSendMessage++;
+        }
+    }
+    super.dispatch();
+    if (defaultManager != null) {
+        synchronized (defaultManager) {
+            defaultManager.inSendMessage--;
+        }
+    }
+}

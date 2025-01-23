@@ -1,0 +1,44 @@
+/**
+ * Sets the data for a single pixel in the specified DataBuffer from a
+ * primitive array of type TransferType.  For image data supported by
+ * the Java 2D API, this will be one of DataBuffer.TYPE_BYTE,
+ * DataBuffer.TYPE_USHORT, DataBuffer.TYPE_INT, DataBuffer.TYPE_SHORT,
+ * DataBuffer.TYPE_FLOAT, or DataBuffer.TYPE_DOUBLE.  Data in the array
+ * may be in a packed format, thus increasing efficiency for data
+ * transfers.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * DataBuffer <code>db1</code>, whose storage layout is described by
+ * SampleModel <code>sm1</code>, to DataBuffer <code>db2</code>, whose
+ * storage layout is described by SampleModel <code>sm2</code>.
+ * The transfer will generally be more efficient than using
+ * getPixel/setPixel.
+ * <pre>
+ *       SampleModel sm1, sm2;
+ *       DataBuffer db1, db2;
+ *       sm2.setDataElements(x, y, sm1.getDataElements(x, y, null, db1),
+ *                           db2);
+ * </pre>
+ * Using getDataElements/setDataElements to transfer between two
+ * DataBuffer/SampleModel pairs is legitimate if the SampleModels have
+ * the same number of bands, corresponding bands have the same number of
+ * bits per sample, and the TransferTypes are the same.
+ * <p>
+ * obj must be a primitive array of type TransferType.  Otherwise,
+ * a ClassCastException is thrown.  An
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds, or if obj is not large enough to hold the pixel data.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param obj       A primitive array containing pixel data.
+ * @param data      The DataBuffer containing the image data.
+ * @see #getNumDataElements
+ * @see #getTransferType
+ * @see #getDataElements(int, int, Object, DataBuffer)
+ * @see java.awt.image.DataBuffer
+ *
+ * @throws NullPointerException if data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if obj is too small to hold the input.
+ */
+public abstract void setDataElements(int x, int y, Object obj, DataBuffer data);

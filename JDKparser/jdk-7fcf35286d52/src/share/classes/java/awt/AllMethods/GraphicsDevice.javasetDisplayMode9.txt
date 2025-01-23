@@ -1,0 +1,54 @@
+/**
+ * Sets the display mode of this graphics device. This is only allowed
+ * if {@link #isDisplayChangeSupported()} returns {@code true} and may
+ * require first entering full-screen exclusive mode using
+ * {@link #setFullScreenWindow} providing that full-screen exclusive mode is
+ * supported (i.e., {@link #isFullScreenSupported()} returns
+ * {@code true}).
+ * <p>
+ *
+ * The display mode must be one of the display modes returned by
+ * {@link #getDisplayModes()}, with one exception: passing a display mode
+ * with {@link DisplayMode#REFRESH_RATE_UNKNOWN} refresh rate will result in
+ * selecting a display mode from the list of available display modes with
+ * matching width, height and bit depth.
+ * However, passing a display mode with {@link DisplayMode#BIT_DEPTH_MULTI}
+ * for bit depth is only allowed if such mode exists in the list returned by
+ * {@link #getDisplayModes()}.
+ * <p>
+ * Example code:
+ * <pre><code>
+ * Frame frame;
+ * DisplayMode newDisplayMode;
+ * GraphicsDevice gd;
+ * // create a Frame, select desired DisplayMode from the list of modes
+ * // returned by gd.getDisplayModes() ...
+ *
+ * if (gd.isFullScreenSupported()) {
+ *     gd.setFullScreenWindow(frame);
+ * } else {
+ *    // proceed in non-full-screen mode
+ *    frame.setSize(...);
+ *    frame.setLocation(...);
+ *    frame.setVisible(true);
+ * }
+ *
+ * if (gd.isDisplayChangeSupported()) {
+ *     gd.setDisplayMode(newDisplayMode);
+ * }
+ * </code></pre>
+ *
+ * @param dm The new display mode of this graphics device.
+ * @exception IllegalArgumentException if the <code>DisplayMode</code>
+ * supplied is <code>null</code>, or is not available in the array returned
+ * by <code>getDisplayModes</code>
+ * @exception UnsupportedOperationException if
+ * <code>isDisplayChangeSupported</code> returns <code>false</code>
+ * @see #getDisplayMode
+ * @see #getDisplayModes
+ * @see #isDisplayChangeSupported
+ * @since 1.4
+ */
+public void setDisplayMode(DisplayMode dm) {
+    throw new UnsupportedOperationException("Cannot change display mode");
+}

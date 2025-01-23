@@ -1,0 +1,8 @@
+public final T_SPLITR trySplit() {
+    // Stop splitting when there are no more limit permits
+    if (permits.get() == 0)
+        return null;
+    @SuppressWarnings("unchecked")
+    T_SPLITR split = (T_SPLITR) s.trySplit();
+    return split == null ? null : makeSpliterator(split);
+}

@@ -1,0 +1,11 @@
+/**
+ * {@inheritDoc}
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        synchronized (allWindows) {
+            allWindows.remove(this);
+        }
+        super.removeNotify();
+    }
+}

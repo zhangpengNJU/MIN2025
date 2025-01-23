@@ -1,0 +1,7 @@
+public boolean tryAdvance(Consumer<? super T> action) {
+    if (hasNext()) {
+        action.accept(next());
+        return true;
+    }
+    return false;
+}

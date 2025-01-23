@@ -1,0 +1,50 @@
+/**
+ * Clone and check an argument of the form passed to
+ * setSubjectAlternativeNames and setPathToNames.
+ * Throw an {@code IOException} if the argument is malformed.
+ *
+ * @param names a {@code Collection} with one entry per name.
+ *              Each entry is a {@code List} whose first entry
+ *              is an Integer (the name type, 0-8) and whose second
+ *              entry is a String or a byte array (the name, in
+ *              string or ASN.1 DER encoded form, respectively).
+ *              There can be multiple names of the same type.
+ *              {@code null} is not an acceptable value.
+ * @return a deep copy of the specified {@code Collection}
+ * @throws IOException if a parsing error occurs
+ */
+private static Set<List<?>> cloneAndCheckNames(Collection<List<?>> names) throws IOException {
+    // Copy the Lists and Collection
+    Set<List<?>> namesCopy = new HashSet<List<?>>();
+    for (List<?> o : names) {
+        namesCopy.add(new ArrayList<Object>(o));
+    }
+    // Check the contents of the Lists and clone any byte arrays
+    for (List<?> list : namesCopy) {
+        // See javadoc for parameter "names".
+        @SuppressWarnings("unchecked")
+        List<Object> nameList = (List<Object>) list;
+        if (nameList.size() != 2) {
+            throw new IOException("name list size not 2");
+        }
+        Object o = nameList.get(0);
+        if (!(o instanceof Integer)) {
+            throw new IOException("expected an Integer");
+        }
+        int nameType = ((Integer) o).intValue();
+        if ((nameType < 0) || (nameType > 8)) {
+            throw new IOException("name type not 0-8");
+        }
+        Object nameObject = nameList.get(1);
+        if (!(nameObject instanceof byte[]) && !(nameObject instanceof String)) {
+            if (debug != null) {
+                debug.println("X509CertSelector.cloneAndCheckNames() " + "name not byte array");
+            }
+            throw new IOException("name not byte array or String");
+        }
+        if (nameObject instanceof byte[]) {
+            nameList.set(1, ((byte[]) nameObject).clone());
+        }
+    }
+    return namesCopy;
+}

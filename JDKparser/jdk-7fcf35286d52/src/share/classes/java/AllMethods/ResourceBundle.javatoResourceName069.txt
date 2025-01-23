@@ -1,0 +1,8 @@
+private String toResourceName0(String bundleName, String suffix) {
+    // application protocol check
+    if (bundleName.contains("://")) {
+        return null;
+    } else {
+        return toResourceName(bundleName, suffix);
+    }
+}

@@ -1,0 +1,27 @@
+/*
+     * Writes extra data without EXTT and ZIP64.
+     *
+     * Extra timestamp and ZIP64 data is handled/output separately
+     * in writeLOC and writeCEN.
+     */
+private void writeExtra(byte[] extra) throws IOException {
+    if (extra != null) {
+        int len = extra.length;
+        int off = 0;
+        while (off + 4 <= len) {
+            int tag = get16(extra, off);
+            int sz = get16(extra, off + 2);
+            if (sz < 0 || (off + 4 + sz) > len) {
+                writeBytes(extra, off, len - off);
+                return;
+            }
+            if (tag != EXTID_EXTT && tag != EXTID_ZIP64) {
+                writeBytes(extra, off, sz + 4);
+            }
+            off += (sz + 4);
+        }
+        if (off < len) {
+            writeBytes(extra, off, len - off);
+        }
+    }
+}

@@ -1,0 +1,31 @@
+private void emitReferenceCast(Class<?> cls, Object arg) {
+    // local to write back result
+    Name writeBack = null;
+    if (arg instanceof Name) {
+        Name n = (Name) arg;
+        if (assertStaticType(cls, n))
+            // this cast was already performed
+            return;
+        if (lambdaForm.useCount(n) > 1) {
+            // This guy gets used more than once.
+            writeBack = n;
+        }
+    }
+    if (isStaticallyNameable(cls)) {
+        String sig = getInternalName(cls);
+        mv.visitTypeInsn(Opcodes.CHECKCAST, sig);
+    } else {
+        mv.visitLdcInsn(constantPlaceholder(cls));
+        mv.visitTypeInsn(Opcodes.CHECKCAST, CLS);
+        mv.visitInsn(Opcodes.SWAP);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, MHI, "castReference", CLL_SIG, false);
+        if (Object[].class.isAssignableFrom(cls))
+            mv.visitTypeInsn(Opcodes.CHECKCAST, OBJARY);
+        else if (PROFILE_LEVEL > 0)
+            mv.visitTypeInsn(Opcodes.CHECKCAST, OBJ);
+    }
+    if (writeBack != null) {
+        mv.visitInsn(Opcodes.DUP);
+        emitAstoreInsn(writeBack.index());
+    }
+}

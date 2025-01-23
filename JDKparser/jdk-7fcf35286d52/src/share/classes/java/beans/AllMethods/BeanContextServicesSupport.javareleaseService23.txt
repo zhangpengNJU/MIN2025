@@ -1,0 +1,34 @@
+// release a service reference
+synchronized void releaseService(Object requestor, Object service) {
+    if (serviceRequestors == null)
+        return;
+    Map services = (Map) serviceRequestors.get(requestor);
+    // oops its not there anymore!
+    if (services == null)
+        return;
+    BCSSCServiceRef serviceRef = (BCSSCServiceRef) services.get(service);
+    // oops its not there anymore!
+    if (serviceRef == null)
+        return;
+    BCSSCServiceClassRef serviceClassRef = serviceRef.getServiceClassRef();
+    boolean isDelegated = serviceRef.isDelegated();
+    BeanContextServiceProvider bcsp = isDelegated ? serviceClassRef.getDelegateProvider() : serviceClassRef.getServiceProvider();
+    bcsp.releaseService(BeanContextServicesSupport.this.getBeanContextServicesPeer(), requestor, service);
+    serviceClassRef.releaseRef(isDelegated);
+    serviceClassRef.removeRequestor(requestor);
+    if (serviceRef.release() == 0) {
+        services.remove(service);
+        if (services.isEmpty()) {
+            serviceRequestors.remove(requestor);
+            serviceClassRef.removeRequestor(requestor);
+        }
+        if (serviceRequestors.isEmpty()) {
+            serviceRequestors = null;
+        }
+        if (serviceClassRef.isEmpty()) {
+            serviceClasses.remove(serviceClassRef.getServiceClass());
+        }
+        if (serviceClasses.isEmpty())
+            serviceClasses = null;
+    }
+}

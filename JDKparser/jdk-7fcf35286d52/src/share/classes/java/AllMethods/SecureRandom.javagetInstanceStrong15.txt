@@ -1,0 +1,57 @@
+/**
+ * Returns a {@code SecureRandom} object that was selected by using
+ * the algorithms/providers specified in the {@code
+ * securerandom.strongAlgorithms} {@link Security} property.
+ * <p>
+ * Some situations require strong random values, such as when
+ * creating high-value/long-lived secrets like RSA public/private
+ * keys.  To help guide applications in selecting a suitable strong
+ * {@code SecureRandom} implementation, Java distributions
+ * include a list of known strong {@code SecureRandom}
+ * implementations in the {@code securerandom.strongAlgorithms}
+ * Security property.
+ * <p>
+ * Every implementation of the Java platform is required to
+ * support at least one strong {@code SecureRandom} implementation.
+ *
+ * @return a strong {@code SecureRandom} implementation as indicated
+ * by the {@code securerandom.strongAlgorithms} Security property
+ *
+ * @throws NoSuchAlgorithmException if no algorithm is available
+ *
+ * @see Security#getProperty(String)
+ *
+ * @since 1.8
+ */
+public static SecureRandom getInstanceStrong() throws NoSuchAlgorithmException {
+    String property = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+        @Override
+        public String run() {
+            return Security.getProperty("securerandom.strongAlgorithms");
+        }
+    });
+    if ((property == null) || (property.length() == 0)) {
+        throw new NoSuchAlgorithmException("Null/empty securerandom.strongAlgorithms Security Property");
+    }
+    String remainder = property;
+    while (remainder != null) {
+        Matcher m;
+        if ((m = StrongPatternHolder.pattern.matcher(remainder)).matches()) {
+            String alg = m.group(1);
+            String prov = m.group(3);
+            try {
+                if (prov == null) {
+                    return SecureRandom.getInstance(alg);
+                } else {
+                    return SecureRandom.getInstance(alg, prov);
+                }
+            } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            }
+            remainder = m.group(5);
+        } else {
+            remainder = null;
+        }
+    }
+    throw new NoSuchAlgorithmException("No strong SecureRandom impls available: " + property);
+}

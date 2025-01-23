@@ -1,0 +1,51 @@
+/*
+     * Reads end of deflated entry as well as EXT descriptor if present.
+     */
+private void readEnd(ZipEntry e) throws IOException {
+    int n = inf.getRemaining();
+    if (n > 0) {
+        ((PushbackInputStream) in).unread(buf, len - n, n);
+    }
+    if ((flag & 8) == 8) {
+        /* "Data Descriptor" present */
+        if (inf.getBytesWritten() > ZIP64_MAGICVAL || inf.getBytesRead() > ZIP64_MAGICVAL) {
+            // ZIP64 format
+            readFully(tmpbuf, 0, ZIP64_EXTHDR);
+            long sig = get32(tmpbuf, 0);
+            if (sig != EXTSIG) {
+                // no EXTSIG present
+                e.crc = sig;
+                e.csize = get64(tmpbuf, ZIP64_EXTSIZ - ZIP64_EXTCRC);
+                e.size = get64(tmpbuf, ZIP64_EXTLEN - ZIP64_EXTCRC);
+                ((PushbackInputStream) in).unread(tmpbuf, ZIP64_EXTHDR - ZIP64_EXTCRC - 1, ZIP64_EXTCRC);
+            } else {
+                e.crc = get32(tmpbuf, ZIP64_EXTCRC);
+                e.csize = get64(tmpbuf, ZIP64_EXTSIZ);
+                e.size = get64(tmpbuf, ZIP64_EXTLEN);
+            }
+        } else {
+            readFully(tmpbuf, 0, EXTHDR);
+            long sig = get32(tmpbuf, 0);
+            if (sig != EXTSIG) {
+                // no EXTSIG present
+                e.crc = sig;
+                e.csize = get32(tmpbuf, EXTSIZ - EXTCRC);
+                e.size = get32(tmpbuf, EXTLEN - EXTCRC);
+                ((PushbackInputStream) in).unread(tmpbuf, EXTHDR - EXTCRC - 1, EXTCRC);
+            } else {
+                e.crc = get32(tmpbuf, EXTCRC);
+                e.csize = get32(tmpbuf, EXTSIZ);
+                e.size = get32(tmpbuf, EXTLEN);
+            }
+        }
+    }
+    if (e.size != inf.getBytesWritten()) {
+        throw new ZipException("invalid entry size (expected " + e.size + " but got " + inf.getBytesWritten() + " bytes)");
+    }
+    if (e.csize != inf.getBytesRead()) {
+        throw new ZipException("invalid entry compressed size (expected " + e.csize + " but got " + inf.getBytesRead() + " bytes)");
+    }
+    if (e.crc != crc.getValue()) {
+        throw new ZipException("invalid entry CRC (expected 0x" + Long.toHexString(e.crc) + " but got 0x" + Long.toHexString(crc.getValue()) + ")");
+    }
+}

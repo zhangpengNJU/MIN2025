@@ -1,0 +1,18 @@
+/**
+ * Checks the error status of all of the images.
+ * @return   <code>true</code> if any of the images tracked
+ *                  by this media tracker had an error during
+ *                  loading; <code>false</code> otherwise
+ * @see      java.awt.MediaTracker#isErrorID
+ * @see      java.awt.MediaTracker#getErrorsAny
+ */
+public synchronized boolean isErrorAny() {
+    MediaEntry cur = head;
+    while (cur != null) {
+        if ((cur.getStatus(false, true) & ERRORED) != 0) {
+            return true;
+        }
+        cur = cur.next;
+    }
+    return false;
+}

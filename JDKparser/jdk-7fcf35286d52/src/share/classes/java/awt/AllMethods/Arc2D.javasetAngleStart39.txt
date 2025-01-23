@@ -1,0 +1,15 @@
+/**
+ * Sets the starting angle of this arc to the angle that the
+ * specified point defines relative to the center of this arc.
+ * The angular extent of the arc will remain the same.
+ *
+ * @param p The <CODE>Point2D</CODE> that defines the starting angle.
+ * @see #getAngleStart
+ * @since 1.2
+ */
+public void setAngleStart(Point2D p) {
+    // Bias the dx and dy by the height and width of the oval.
+    double dx = getHeight() * (p.getX() - getCenterX());
+    double dy = getWidth() * (p.getY() - getCenterY());
+    setAngleStart(-Math.toDegrees(Math.atan2(dy, dx)));
+}

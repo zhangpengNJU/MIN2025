@@ -1,0 +1,19 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(8);                  // identifies a ZoneOffset
+ *  int offsetByte = totalSeconds % 900 == 0 ? totalSeconds / 900 : 127;
+ *  out.writeByte(offsetByte);
+ *  if (offsetByte == 127) {
+ *      out.writeInt(totalSeconds);
+ *  }
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.ZONE_OFFSET_TYPE, this);
+}

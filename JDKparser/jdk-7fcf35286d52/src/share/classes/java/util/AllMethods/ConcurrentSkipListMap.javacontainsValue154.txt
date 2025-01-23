@@ -1,0 +1,11 @@
+public boolean containsValue(Object value) {
+    if (value == null)
+        throw new NullPointerException();
+    Comparator<? super K> cmp = m.comparator;
+    for (ConcurrentSkipListMap.Node<K, V> n = loNode(cmp); isBeforeEnd(n, cmp); n = n.next) {
+        V v = n.getValidValue();
+        if (v != null && value.equals(v))
+            return true;
+    }
+    return false;
+}

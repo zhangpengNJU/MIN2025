@@ -1,0 +1,35 @@
+/**
+ * Look up for unmapped values in the expanded character table.
+ *
+ * When the expanding character tables are built by addExpandOrder,
+ * it doesn't know what the final ordering of each character
+ * in the expansion will be.  Instead, it just puts the raw character
+ * code into the table, adding CHARINDEX as a flag.  Now that we've
+ * finished building the mapping table, we can go back and look up
+ * that character to see what its real collation order is and
+ * stick that into the expansion table.  That lets us avoid doing
+ * a two-stage lookup later.
+ */
+private final void commit() {
+    if (expandTable != null) {
+        for (int i = 0; i < expandTable.size(); i++) {
+            int[] valueList = expandTable.elementAt(i);
+            for (int j = 0; j < valueList.length; j++) {
+                int order = valueList[j];
+                if (order < RBCollationTables.EXPANDCHARINDEX && order > CHARINDEX) {
+                    // found a expanding character that isn't filled in yet
+                    int ch = order - CHARINDEX;
+                    // Get the real values for the non-filled entry
+                    int realValue = getCharOrder(ch);
+                    if (realValue == RBCollationTables.UNMAPPED) {
+                        // The real value is still unmapped, maybe it's ignorable
+                        valueList[j] = IGNORABLEMASK & ch;
+                    } else {
+                        // just fill in the value
+                        valueList[j] = realValue;
+                    }
+                }
+            }
+        }
+    }
+}

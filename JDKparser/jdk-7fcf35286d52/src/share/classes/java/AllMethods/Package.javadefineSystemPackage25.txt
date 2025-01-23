@@ -1,0 +1,36 @@
+private static Package defineSystemPackage(final String iname, final String fn) {
+    return AccessController.doPrivileged(new PrivilegedAction<Package>() {
+
+        public Package run() {
+            String name = iname;
+            // Get the cached code source url for the file name
+            URL url = urls.get(fn);
+            if (url == null) {
+                // URL not found, so create one
+                File file = new File(fn);
+                try {
+                    url = ParseUtil.fileToEncodedURL(file);
+                } catch (MalformedURLException e) {
+                }
+                if (url != null) {
+                    urls.put(fn, url);
+                    // If loading a JAR file, then also cache the manifest
+                    if (file.isFile()) {
+                        mans.put(fn, loadManifest(fn));
+                    }
+                }
+            }
+            // Convert to "."-separated package name
+            name = name.substring(0, name.length() - 1).replace('/', '.');
+            Package pkg;
+            Manifest man = mans.get(fn);
+            if (man != null) {
+                pkg = new Package(name, man, url, null);
+            } else {
+                pkg = new Package(name, null, null, null, null, null, null, null, null);
+            }
+            pkgs.put(name, pkg);
+            return pkg;
+        }
+    });
+}

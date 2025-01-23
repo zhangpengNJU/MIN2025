@@ -1,0 +1,191 @@
+/**
+ * Converts calendar field values to the time value (millisecond
+ * offset from the <a href="Calendar.html#Epoch">Epoch</a>).
+ *
+ * @exception IllegalArgumentException if any calendar fields are invalid.
+ */
+@Override
+protected void computeTime() {
+    // In non-lenient mode, perform brief checking of calendar
+    // fields which have been set externally. Through this
+    // checking, the field values are stored in originalFields[]
+    // to see if any of them are normalized later.
+    if (!isLenient()) {
+        if (originalFields == null) {
+            originalFields = new int[FIELD_COUNT];
+        }
+        for (int field = 0; field < FIELD_COUNT; field++) {
+            int value = internalGet(field);
+            if (isExternallySet(field)) {
+                // Quick validation for any out of range values
+                if (value < getMinimum(field) || value > getMaximum(field)) {
+                    throw new IllegalArgumentException(getFieldName(field));
+                }
+            }
+            originalFields[field] = value;
+        }
+    }
+    // Let the super class determine which calendar fields to be
+    // used to calculate the time.
+    int fieldMask = selectFields();
+    // The year defaults to the epoch start. We don't check
+    // fieldMask for YEAR because YEAR is a mandatory field to
+    // determine the date.
+    int year = isSet(YEAR) ? internalGet(YEAR) : EPOCH_YEAR;
+    int era = internalGetEra();
+    if (era == BCE) {
+        year = 1 - year;
+    } else if (era != CE) {
+        // Even in lenient mode we disallow ERA values other than CE & BCE.
+        // (The same normalization rule as add()/roll() could be
+        // applied here in lenient mode. But this checking is kept
+        // unchanged for compatibility as of 1.5.)
+        throw new IllegalArgumentException("Invalid era");
+    }
+    // If year is 0 or negative, we need to set the ERA value later.
+    if (year <= 0 && !isSet(ERA)) {
+        fieldMask |= ERA_MASK;
+        setFieldsComputed(ERA_MASK);
+    }
+    // Calculate the time of day. We rely on the convention that
+    // an UNSET field has 0.
+    long timeOfDay = 0;
+    if (isFieldSet(fieldMask, HOUR_OF_DAY)) {
+        timeOfDay += (long) internalGet(HOUR_OF_DAY);
+    } else {
+        timeOfDay += internalGet(HOUR);
+        // The default value of AM_PM is 0 which designates AM.
+        if (isFieldSet(fieldMask, AM_PM)) {
+            timeOfDay += 12 * internalGet(AM_PM);
+        }
+    }
+    timeOfDay *= 60;
+    timeOfDay += internalGet(MINUTE);
+    timeOfDay *= 60;
+    timeOfDay += internalGet(SECOND);
+    timeOfDay *= 1000;
+    timeOfDay += internalGet(MILLISECOND);
+    // Convert the time of day to the number of days and the
+    // millisecond offset from midnight.
+    long fixedDate = timeOfDay / ONE_DAY;
+    timeOfDay %= ONE_DAY;
+    while (timeOfDay < 0) {
+        timeOfDay += ONE_DAY;
+        --fixedDate;
+    }
+    // Calculate the fixed date since January 1, 1 (Gregorian).
+    calculateFixedDate: {
+        long gfd, jfd;
+        if (year > gregorianCutoverYear && year > gregorianCutoverYearJulian) {
+            gfd = fixedDate + getFixedDate(gcal, year, fieldMask);
+            if (gfd >= gregorianCutoverDate) {
+                fixedDate = gfd;
+                break calculateFixedDate;
+            }
+            jfd = fixedDate + getFixedDate(getJulianCalendarSystem(), year, fieldMask);
+        } else if (year < gregorianCutoverYear && year < gregorianCutoverYearJulian) {
+            jfd = fixedDate + getFixedDate(getJulianCalendarSystem(), year, fieldMask);
+            if (jfd < gregorianCutoverDate) {
+                fixedDate = jfd;
+                break calculateFixedDate;
+            }
+            gfd = jfd;
+        } else {
+            jfd = fixedDate + getFixedDate(getJulianCalendarSystem(), year, fieldMask);
+            gfd = fixedDate + getFixedDate(gcal, year, fieldMask);
+        }
+        // Now we have to determine which calendar date it is.
+        // If the date is relative from the beginning of the year
+        // in the Julian calendar, then use jfd;
+        if (isFieldSet(fieldMask, DAY_OF_YEAR) || isFieldSet(fieldMask, WEEK_OF_YEAR)) {
+            if (gregorianCutoverYear == gregorianCutoverYearJulian) {
+                fixedDate = jfd;
+                break calculateFixedDate;
+            } else if (year == gregorianCutoverYear) {
+                fixedDate = gfd;
+                break calculateFixedDate;
+            }
+        }
+        if (gfd >= gregorianCutoverDate) {
+            if (jfd >= gregorianCutoverDate) {
+                fixedDate = gfd;
+            } else {
+                // The date is in an "overlapping" period. No way
+                // to disambiguate it. Determine it using the
+                // previous date calculation.
+                if (calsys == gcal || calsys == null) {
+                    fixedDate = gfd;
+                } else {
+                    fixedDate = jfd;
+                }
+            }
+        } else {
+            if (jfd < gregorianCutoverDate) {
+                fixedDate = jfd;
+            } else {
+                // The date is in a "missing" period.
+                if (!isLenient()) {
+                    throw new IllegalArgumentException("the specified date doesn't exist");
+                }
+                // Take the Julian date for compatibility, which
+                // will produce a Gregorian date.
+                fixedDate = jfd;
+            }
+        }
+    }
+    // millis represents local wall-clock time in milliseconds.
+    long millis = (fixedDate - EPOCH_OFFSET) * ONE_DAY + timeOfDay;
+    // Compute the time zone offset and DST offset.  There are two potential
+    // ambiguities here.  We'll assume a 2:00 am (wall time) switchover time
+    // for discussion purposes here.
+    // 1. The transition into DST.  Here, a designated time of 2:00 am - 2:59 am
+    // can be in standard or in DST depending.  However, 2:00 am is an invalid
+    // representation (the representation jumps from 1:59:59 am Std to 3:00:00 am DST).
+    // We assume standard time.
+    // 2. The transition out of DST.  Here, a designated time of 1:00 am - 1:59 am
+    // can be in standard or DST.  Both are valid representations (the rep
+    // jumps from 1:59:59 DST to 1:00:00 Std).
+    // Again, we assume standard time.
+    // We use the TimeZone object, unless the user has explicitly set the ZONE_OFFSET
+    // or DST_OFFSET fields; then we use those fields.
+    TimeZone zone = getZone();
+    if (zoneOffsets == null) {
+        zoneOffsets = new int[2];
+    }
+    int tzMask = fieldMask & (ZONE_OFFSET_MASK | DST_OFFSET_MASK);
+    if (tzMask != (ZONE_OFFSET_MASK | DST_OFFSET_MASK)) {
+        if (zone instanceof ZoneInfo) {
+            ((ZoneInfo) zone).getOffsetsByWall(millis, zoneOffsets);
+        } else {
+            int gmtOffset = isFieldSet(fieldMask, ZONE_OFFSET) ? internalGet(ZONE_OFFSET) : zone.getRawOffset();
+            zone.getOffsets(millis - gmtOffset, zoneOffsets);
+        }
+    }
+    if (tzMask != 0) {
+        if (isFieldSet(tzMask, ZONE_OFFSET)) {
+            zoneOffsets[0] = internalGet(ZONE_OFFSET);
+        }
+        if (isFieldSet(tzMask, DST_OFFSET)) {
+            zoneOffsets[1] = internalGet(DST_OFFSET);
+        }
+    }
+    // Adjust the time zone offset values to get the UTC time.
+    millis -= zoneOffsets[0] + zoneOffsets[1];
+    // Set this calendar's time in milliseconds
+    time = millis;
+    int mask = computeFields(fieldMask | getSetStateFields(), tzMask);
+    if (!isLenient()) {
+        for (int field = 0; field < FIELD_COUNT; field++) {
+            if (!isExternallySet(field)) {
+                continue;
+            }
+            if (originalFields[field] != internalGet(field)) {
+                String s = originalFields[field] + " -> " + internalGet(field);
+                // Restore the original field values
+                System.arraycopy(originalFields, 0, fields, 0, fields.length);
+                throw new IllegalArgumentException(getFieldName(field) + ": " + s);
+            }
+        }
+    }
+    setFieldsNormalized(mask);
+}

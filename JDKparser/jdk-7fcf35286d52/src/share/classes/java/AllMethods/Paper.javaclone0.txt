@@ -1,0 +1,21 @@
+/* Instance Methods */
+/**
+ * Creates a copy of this <code>Paper</code> with the same contents
+ * as this <code>Paper</code>.
+ * @return a copy of this <code>Paper</code>.
+ */
+public Object clone() {
+    Paper newPaper;
+    try {
+        /* It's okay to copy the reference to the imageable
+             * area into the clone since we always return a copy
+             * of the imageable area when asked for it.
+             */
+        newPaper = (Paper) super.clone();
+    } catch (CloneNotSupportedException e) {
+        e.printStackTrace();
+        // should never happen.
+        newPaper = null;
+    }
+    return newPaper;
+}

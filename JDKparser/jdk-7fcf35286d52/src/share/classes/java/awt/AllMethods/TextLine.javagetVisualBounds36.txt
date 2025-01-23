@@ -1,0 +1,35 @@
+/**
+ * Return the union of the visual bounds of all the components.
+ * This incorporates the path.  It does not include logical
+ * bounds (used by carets).
+ */
+public Rectangle2D getVisualBounds() {
+    Rectangle2D result = null;
+    for (int i = 0, n = 0; i < fComponents.length; i++, n += 2) {
+        TextLineComponent tlc = fComponents[getComponentLogicalIndex(i)];
+        Rectangle2D r = tlc.getVisualBounds();
+        Point2D.Float pt = new Point2D.Float(locs[n], locs[n + 1]);
+        if (lp == null) {
+            r.setRect(r.getMinX() + pt.x, r.getMinY() + pt.y, r.getWidth(), r.getHeight());
+        } else {
+            lp.pathToPoint(pt, false, pt);
+            AffineTransform at = tlc.getBaselineTransform();
+            if (at != null) {
+                AffineTransform tx = AffineTransform.getTranslateInstance(pt.x - at.getTranslateX(), pt.y - at.getTranslateY());
+                tx.concatenate(at);
+                r = tx.createTransformedShape(r).getBounds2D();
+            } else {
+                r.setRect(r.getMinX() + pt.x, r.getMinY() + pt.y, r.getWidth(), r.getHeight());
+            }
+        }
+        if (result == null) {
+            result = r;
+        } else {
+            result.add(r);
+        }
+    }
+    if (result == null) {
+        result = new Rectangle2D.Float(Float.MAX_VALUE, Float.MAX_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+    }
+    return result;
+}

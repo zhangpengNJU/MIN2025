@@ -1,0 +1,179 @@
+/**
+ * Returns a data element array representation of a pixel in this
+ * <code>ColorModel</code>, given an array of normalized color/alpha
+ * components.  This array can then be passed to the
+ * <code>setDataElements</code> method of a <code>WritableRaster</code>
+ * object.  An <code>ArrayIndexOutOfBoundsException</code> is thrown
+ * if the <code>normComponents</code> array is not large enough to hold
+ * all the color and alpha components (starting at
+ * <code>normOffset</code>).  If the <code>obj</code> variable is
+ * <code>null</code>, a new array will be allocated.  If
+ * <code>obj</code> is not <code>null</code>, it must be a primitive
+ * array of type transferType; otherwise, a
+ * <code>ClassCastException</code> is thrown.  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if
+ * <code>obj</code> is not large enough to hold a pixel value for this
+ * <code>ColorModel</code>.
+ * @param normComponents an array of normalized color and alpha
+ * components
+ * @param normOffset the index into <code>normComponents</code> at which to
+ * begin retrieving color and alpha components
+ * @param obj a primitive data array to hold the returned pixel
+ * @return an <code>Object</code> which is a primitive data array
+ * representation of a pixel
+ * @throws ClassCastException if <code>obj</code>
+ *  is not a primitive array of type <code>transferType</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *  <code>obj</code> is not large enough to hold a pixel value
+ *  for this <code>ColorModel</code> or the <code>normComponents</code>
+ *  array is not large enough to hold all of the color and alpha
+ *  components starting at <code>normOffset</code>
+ * @see WritableRaster#setDataElements
+ * @see SampleModel#setDataElements
+ * @since 1.4
+ */
+public Object getDataElements(float[] normComponents, int normOffset, Object obj) {
+    boolean needAlpha = supportsAlpha && isAlphaPremultiplied;
+    float[] stdNormComponents;
+    if (needScaleInit) {
+        initScale();
+    }
+    if (nonStdScale) {
+        stdNormComponents = new float[numComponents];
+        for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+            stdNormComponents[c] = (normComponents[nc] - compOffset[c]) * compScale[c];
+            // REMIND: need to analyze whether this
+            // clamping is necessary
+            if (stdNormComponents[c] < 0.0f) {
+                stdNormComponents[c] = 0.0f;
+            }
+            if (stdNormComponents[c] > 1.0f) {
+                stdNormComponents[c] = 1.0f;
+            }
+        }
+        if (supportsAlpha) {
+            stdNormComponents[numColorComponents] = normComponents[numColorComponents + normOffset];
+        }
+        normOffset = 0;
+    } else {
+        stdNormComponents = normComponents;
+    }
+    switch(transferType) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] bpixel;
+            if (obj == null) {
+                bpixel = new byte[numComponents];
+            } else {
+                bpixel = (byte[]) obj;
+            }
+            if (needAlpha) {
+                float alpha = stdNormComponents[numColorComponents + normOffset];
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    bpixel[c] = (byte) ((stdNormComponents[nc] * alpha) * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+                bpixel[numColorComponents] = (byte) (alpha * ((float) ((1 << nBits[numColorComponents]) - 1)) + 0.5f);
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    bpixel[c] = (byte) (stdNormComponents[nc] * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+            }
+            return bpixel;
+        case DataBuffer.TYPE_USHORT:
+            short[] uspixel;
+            if (obj == null) {
+                uspixel = new short[numComponents];
+            } else {
+                uspixel = (short[]) obj;
+            }
+            if (needAlpha) {
+                float alpha = stdNormComponents[numColorComponents + normOffset];
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    uspixel[c] = (short) ((stdNormComponents[nc] * alpha) * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+                uspixel[numColorComponents] = (short) (alpha * ((float) ((1 << nBits[numColorComponents]) - 1)) + 0.5f);
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    uspixel[c] = (short) (stdNormComponents[nc] * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+            }
+            return uspixel;
+        case DataBuffer.TYPE_INT:
+            int[] ipixel;
+            if (obj == null) {
+                ipixel = new int[numComponents];
+            } else {
+                ipixel = (int[]) obj;
+            }
+            if (needAlpha) {
+                float alpha = stdNormComponents[numColorComponents + normOffset];
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    ipixel[c] = (int) ((stdNormComponents[nc] * alpha) * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+                ipixel[numColorComponents] = (int) (alpha * ((float) ((1 << nBits[numColorComponents]) - 1)) + 0.5f);
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    ipixel[c] = (int) (stdNormComponents[nc] * ((float) ((1 << nBits[c]) - 1)) + 0.5f);
+                }
+            }
+            return ipixel;
+        case DataBuffer.TYPE_SHORT:
+            short[] spixel;
+            if (obj == null) {
+                spixel = new short[numComponents];
+            } else {
+                spixel = (short[]) obj;
+            }
+            if (needAlpha) {
+                float alpha = stdNormComponents[numColorComponents + normOffset];
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    spixel[c] = (short) (stdNormComponents[nc] * alpha * 32767.0f + 0.5f);
+                }
+                spixel[numColorComponents] = (short) (alpha * 32767.0f + 0.5f);
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    spixel[c] = (short) (stdNormComponents[nc] * 32767.0f + 0.5f);
+                }
+            }
+            return spixel;
+        case DataBuffer.TYPE_FLOAT:
+            float[] fpixel;
+            if (obj == null) {
+                fpixel = new float[numComponents];
+            } else {
+                fpixel = (float[]) obj;
+            }
+            if (needAlpha) {
+                float alpha = normComponents[numColorComponents + normOffset];
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    fpixel[c] = normComponents[nc] * alpha;
+                }
+                fpixel[numColorComponents] = alpha;
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    fpixel[c] = normComponents[nc];
+                }
+            }
+            return fpixel;
+        case DataBuffer.TYPE_DOUBLE:
+            double[] dpixel;
+            if (obj == null) {
+                dpixel = new double[numComponents];
+            } else {
+                dpixel = (double[]) obj;
+            }
+            if (needAlpha) {
+                double alpha = (double) (normComponents[numColorComponents + normOffset]);
+                for (int c = 0, nc = normOffset; c < numColorComponents; c++, nc++) {
+                    dpixel[c] = normComponents[nc] * alpha;
+                }
+                dpixel[numColorComponents] = alpha;
+            } else {
+                for (int c = 0, nc = normOffset; c < numComponents; c++, nc++) {
+                    dpixel[c] = (double) normComponents[nc];
+                }
+            }
+            return dpixel;
+        default:
+            throw new UnsupportedOperationException("This method has not been " + "implemented for transferType " + transferType);
+    }
+}

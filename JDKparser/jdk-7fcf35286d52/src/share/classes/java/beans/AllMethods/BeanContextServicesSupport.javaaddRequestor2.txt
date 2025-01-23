@@ -1,0 +1,7 @@
+// add a requestor and assoc listener
+void addRequestor(Object requestor, BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException {
+    BeanContextServiceRevokedListener cbcsrl = (BeanContextServiceRevokedListener) requestors.get(requestor);
+    if (cbcsrl != null && !cbcsrl.equals(bcsrl))
+        throw new TooManyListenersException();
+    requestors.put(requestor, bcsrl);
+}

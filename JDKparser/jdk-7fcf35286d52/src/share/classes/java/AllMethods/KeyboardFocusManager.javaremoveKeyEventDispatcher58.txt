@@ -1,0 +1,29 @@
+/**
+ * Removes a KeyEventDispatcher which was previously added to this
+ * KeyboardFocusManager's dispatcher chain. This KeyboardFocusManager
+ * cannot itself be removed, unless it was explicitly re-registered via a
+ * call to <code>addKeyEventDispatcher</code>.
+ * <p>
+ * If a null dispatcher is specified, if the specified dispatcher is not
+ * in the dispatcher chain, or if this KeyboardFocusManager is specified
+ * without having been explicitly re-registered, no action is taken and no
+ * exception is thrown.
+ * <p>
+ * In a multithreaded application, {@link KeyEventDispatcher} behaves
+ * the same as other AWT listeners.  See
+ * <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for more details.
+ *
+ * @param dispatcher the KeyEventDispatcher to remove from the dispatcher
+ *        chain
+ * @see #addKeyEventDispatcher
+ */
+public void removeKeyEventDispatcher(KeyEventDispatcher dispatcher) {
+    if (dispatcher != null) {
+        synchronized (this) {
+            if (keyEventDispatchers != null) {
+                keyEventDispatchers.remove(dispatcher);
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+/**
+ * Collects all output elements resulting from applying the pipeline stages
+ * to the source {@code Spliterator} into a {@code Node}.
+ *
+ * @implNote
+ * If the pipeline has no intermediate operations and the source is backed
+ * by a {@code Node} then that {@code Node} will be returned (or flattened
+ * and then returned). This reduces copying for a pipeline consisting of a
+ * stateful operation followed by a terminal operation that returns an
+ * array, such as:
+ * <pre>{@code
+ *     stream.sorted().toArray();
+ * }</pre>
+ *
+ * @param spliterator the source {@code Spliterator}
+ * @param flatten if true and the pipeline is a parallel pipeline then the
+ *        {@code Node} returned will contain no children, otherwise the
+ *        {@code Node} may represent the root in a tree that reflects the
+ *        shape of the computation tree.
+ * @param generator a factory function for array instances
+ * @return the {@code Node} containing all output elements
+ */
+abstract <P_IN> Node<P_OUT> evaluate(Spliterator<P_IN> spliterator, boolean flatten, IntFunction<P_OUT[]> generator);

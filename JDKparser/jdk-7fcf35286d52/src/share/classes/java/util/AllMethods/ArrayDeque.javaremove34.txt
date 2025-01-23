@@ -1,0 +1,10 @@
+public void remove() {
+    if (lastRet < 0)
+        throw new IllegalStateException();
+    if (delete(lastRet)) {
+        // if left-shifted, undo increment in next()
+        cursor = (cursor - 1) & (elements.length - 1);
+        fence = tail;
+    }
+    lastRet = -1;
+}

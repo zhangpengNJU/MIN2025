@@ -1,0 +1,36 @@
+/**
+ * Takes an array a representing a negative 2's-complement number and
+ * returns the minimal (no leading zero bytes) unsigned whose value is -a.
+ */
+private static int[] makePositive(byte[] a) {
+    int keep, k;
+    int byteLength = a.length;
+    // Find first non-sign (0xff) byte of input
+    for (keep = 0; keep < byteLength && a[keep] == -1; keep++) ;
+    /* Allocate output array.  If all non-sign bytes are 0x00, we must
+         * allocate space for one extra output byte. */
+    for (k = keep; k < byteLength && a[k] == 0; k++) ;
+    int extraByte = (k == byteLength) ? 1 : 0;
+    int intLength = ((byteLength - keep + extraByte) + 3) >>> 2;
+    int[] result = new int[intLength];
+    /* Copy one's complement of input into output, leaving extra
+         * byte (if it exists) == 0x00 */
+    int b = byteLength - 1;
+    for (int i = intLength - 1; i >= 0; i--) {
+        result[i] = a[b--] & 0xff;
+        int numBytesToTransfer = Math.min(3, b - keep + 1);
+        if (numBytesToTransfer < 0)
+            numBytesToTransfer = 0;
+        for (int j = 8; j <= 8 * numBytesToTransfer; j += 8) result[i] |= ((a[b--] & 0xff) << j);
+        // Mask indicates which bits must be complemented
+        int mask = -1 >>> (8 * (3 - numBytesToTransfer));
+        result[i] = ~result[i] & mask;
+    }
+    // Add one to one's complement to generate two's complement
+    for (int i = result.length - 1; i >= 0; i--) {
+        result[i] = (int) ((result[i] & LONG_MASK) + 1);
+        if (result[i] != 0)
+            break;
+    }
+    return result;
+}

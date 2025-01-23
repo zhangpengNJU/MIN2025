@@ -1,0 +1,24 @@
+/**
+ * Processes events on this check box menu item.
+ * If the event is an instance of <code>ItemEvent</code>,
+ * this method invokes the <code>processItemEvent</code> method.
+ * If the event is not an item event,
+ * it invokes <code>processEvent</code> on the superclass.
+ * <p>
+ * Check box menu items currently support only item events.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param        e the event
+ * @see          java.awt.event.ItemEvent
+ * @see          #processItemEvent
+ * @since        JDK1.1
+ */
+protected void processEvent(AWTEvent e) {
+    if (e instanceof ItemEvent) {
+        processItemEvent((ItemEvent) e);
+        return;
+    }
+    super.processEvent(e);
+}

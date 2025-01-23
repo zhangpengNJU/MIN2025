@@ -1,0 +1,26 @@
+/**
+ * Guarantees that any node which was unlinked before a call to
+ * this method will be unreachable from tail after it returns.
+ * Does not guarantee to eliminate slack, only that tail will
+ * point to a node that was active while this method was running.
+ */
+private final void updateTail() {
+    // Either tail already points to an active node, or we keep
+    // trying to cas it to the last node until it does.
+    Node<E> t, p, q;
+    restartFromTail: while ((t = tail).item == null && (p = t.next) != null) {
+        for (; ; ) {
+            if ((q = p.next) == null || (q = (p = q).next) == null) {
+                // It is possible that p is NEXT_TERMINATOR,
+                // but if so, the CAS is guaranteed to fail.
+                if (casTail(t, p))
+                    return;
+                else
+                    continue restartFromTail;
+            } else if (t != tail)
+                continue restartFromTail;
+            else
+                p = q;
+        }
+    }
+}

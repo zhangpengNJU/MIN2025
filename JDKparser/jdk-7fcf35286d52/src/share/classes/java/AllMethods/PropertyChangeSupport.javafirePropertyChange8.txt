@@ -1,0 +1,19 @@
+/**
+ * Reports a boolean bound property update to listeners
+ * that have been registered to track updates of
+ * all properties or a property with the specified name.
+ * <p>
+ * No event is fired if old and new values are equal.
+ * <p>
+ * This is merely a convenience wrapper around the more general
+ * {@link #firePropertyChange(String, Object, Object)}  method.
+ *
+ * @param propertyName  the programmatic name of the property that was changed
+ * @param oldValue      the old value of the property
+ * @param newValue      the new value of the property
+ */
+public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+    if (oldValue != newValue) {
+        firePropertyChange(propertyName, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));
+    }
+}

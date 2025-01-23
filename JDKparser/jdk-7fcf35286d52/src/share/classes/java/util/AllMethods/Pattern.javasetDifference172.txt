@@ -1,0 +1,11 @@
+/**
+ * Returns the set difference of two CharProperty nodes.
+ */
+private static CharProperty setDifference(final CharProperty lhs, final CharProperty rhs) {
+    return new CharProperty() {
+
+        boolean isSatisfiedBy(int ch) {
+            return !rhs.isSatisfiedBy(ch) && lhs.isSatisfiedBy(ch);
+        }
+    };
+}

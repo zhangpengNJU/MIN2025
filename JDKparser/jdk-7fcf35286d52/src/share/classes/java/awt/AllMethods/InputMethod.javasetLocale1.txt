@@ -1,0 +1,20 @@
+/**
+ * Attempts to set the input locale. If the input method supports the
+ * desired locale, it changes its behavior to support input for the locale
+ * and returns true.
+ * Otherwise, it returns false and does not change its behavior.
+ * <p>
+ * This method is called
+ * <ul>
+ * <li>by {@link java.awt.im.InputContext#selectInputMethod InputContext.selectInputMethod},
+ * <li>when switching to this input method through the user interface if the user
+ *     specified a locale or if the previously selected input method's
+ *     {@link java.awt.im.spi.InputMethod#getLocale getLocale} method
+ *     returns a non-null value.
+ * </ul>
+ *
+ * @param locale locale to input
+ * @return whether the specified locale is supported
+ * @exception NullPointerException if <code>locale</code> is null
+ */
+public boolean setLocale(Locale locale);

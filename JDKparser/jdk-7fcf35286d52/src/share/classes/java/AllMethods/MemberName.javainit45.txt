@@ -1,0 +1,17 @@
+/**
+ * Initialize a query.   It is not resolved.
+ */
+private void init(Class<?> defClass, String name, Object type, int flags) {
+    // defining class is allowed to be null (for a naked name/type pair)
+    // name.toString();  // null check
+    // type.equals(type);  // null check
+    // fill in fields:
+    this.clazz = defClass;
+    this.name = name;
+    this.type = type;
+    this.flags = flags;
+    assert (testAnyFlags(ALL_KINDS));
+    // nobody should have touched this yet
+    assert (this.resolution == null);
+// assert(referenceKindIsConsistent());  // do this after resolution
+}

@@ -1,0 +1,14 @@
+/**
+ * For a ReducedPrinterParser, fixed width is false if the mode is strict,
+ * otherwise it is set as for NumberPrinterParser.
+ * @param context the context
+ * @return if the field is fixed width
+ * @see DateTimeFormatterBuilder#appendValueReduced(java.time.temporal.TemporalField, int, int, int)
+ */
+@Override
+boolean isFixedWidth(DateTimeParseContext context) {
+    if (context.isStrict() == false) {
+        return false;
+    }
+    return super.isFixedWidth(context);
+}

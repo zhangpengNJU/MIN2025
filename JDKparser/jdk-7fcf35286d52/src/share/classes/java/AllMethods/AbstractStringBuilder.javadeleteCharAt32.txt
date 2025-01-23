@@ -1,0 +1,24 @@
+/**
+ * Removes the {@code char} at the specified position in this
+ * sequence. This sequence is shortened by one {@code char}.
+ *
+ * <p>Note: If the character at the given index is a supplementary
+ * character, this method does not remove the entire character. If
+ * correct handling of supplementary characters is required,
+ * determine the number of {@code char}s to remove by calling
+ * {@code Character.charCount(thisSequence.codePointAt(index))},
+ * where {@code thisSequence} is this sequence.
+ *
+ * @param       index  Index of {@code char} to remove
+ * @return      This object.
+ * @throws      StringIndexOutOfBoundsException  if the {@code index}
+ *              is negative or greater than or equal to
+ *              {@code length()}.
+ */
+public AbstractStringBuilder deleteCharAt(int index) {
+    if ((index < 0) || (index >= count))
+        throw new StringIndexOutOfBoundsException(index);
+    System.arraycopy(value, index + 1, value, index, count - index - 1);
+    count--;
+    return this;
+}

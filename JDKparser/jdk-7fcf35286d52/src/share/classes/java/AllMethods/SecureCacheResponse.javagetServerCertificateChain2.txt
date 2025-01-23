@@ -1,0 +1,14 @@
+/**
+ * Returns the server's certificate chain, which was established as
+ * part of defining the session in the original connection that
+ * retrieved the network resource, from cache.  Note: This method
+ * can be used only when using certificate-based cipher suites;
+ * using it with non-certificate-based cipher suites, such as
+ * Kerberos, will throw an SSLPeerUnverifiedException.
+ *
+ * @return an immutable List of Certificate representing the server's
+ *         certificate chain.
+ * @throws SSLPeerUnverifiedException if the peer is not verified.
+ * @see #getPeerPrincipal()
+ */
+public abstract List<Certificate> getServerCertificateChain() throws SSLPeerUnverifiedException;

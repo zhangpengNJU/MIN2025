@@ -1,0 +1,23 @@
+/**
+ *  Adds a character and its designated order into the collation table.
+ */
+private final void addOrder(int ch, int anOrder) {
+    // See if the char already has an order in the mapping table
+    int order = mapping.elementAt(ch);
+    if (order >= RBCollationTables.CONTRACTCHARINDEX) {
+        // There's already an entry for this character that points to a contracting
+        // character table.  Instead of adding the character directly to the mapping
+        // table, we must add it to the contract table instead.
+        int length = 1;
+        if (Character.isSupplementaryCodePoint(ch)) {
+            length = Character.toChars(ch, keyBuf, 0);
+        } else {
+            keyBuf[0] = (char) ch;
+        }
+        addContractOrder(new String(keyBuf, 0, length), anOrder);
+    } else {
+        // add the entry to the mapping table,
+        // the same later entry replaces the previous one
+        mapping.setElementAt(ch, anOrder);
+    }
+}

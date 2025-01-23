@@ -1,0 +1,10 @@
+private void init(GraphicsDevice screen) throws AWTException {
+    checkRobotAllowed();
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    if (toolkit instanceof ComponentFactory) {
+        peer = ((ComponentFactory) toolkit).createRobot(this, screen);
+        disposer = new RobotDisposer(peer);
+        sun.java2d.Disposer.addRecord(anchor, disposer);
+    }
+    initLegalButtonMask();
+}

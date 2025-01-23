@@ -1,0 +1,14 @@
+/**
+ * Resolves the offset into this zoned date-time for the with methods.
+ * <p>
+ * This typically ignores the offset, unless it can be used to switch offset in a DST overlap.
+ *
+ * @param offset  the offset, not null
+ * @return the zoned date-time, not null
+ */
+private ZonedDateTime resolveOffset(ZoneOffset offset) {
+    if (offset.equals(this.offset) == false && zone.getRules().isValidOffset(dateTime, offset)) {
+        return new ZonedDateTime(dateTime, offset, zone);
+    }
+    return this;
+}

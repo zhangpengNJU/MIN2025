@@ -1,0 +1,14 @@
+/**
+ * Returns the multiplicative inverse of val mod 2^64.  Assumes val is odd.
+ */
+static long inverseMod64(long val) {
+    // Newton's iteration!
+    long t = val;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    t *= 2 - val * t;
+    assert (t * val == 1);
+    return t;
+}

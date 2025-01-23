@@ -1,0 +1,16 @@
+static double mod(double num, double den) {
+    num = num % den;
+    if (num < 0) {
+        num += den;
+        if (num >= den) {
+            // For very small negative numerators, the answer might
+            // be such a tiny bit less than den that the difference
+            // is smaller than the mantissa of a double allows and
+            // the result would then be rounded to den.  If that is
+            // the case then we map that number to 0 as the nearest
+            // modulus representation.
+            num = 0;
+        }
+    }
+    return num;
+}

@@ -1,0 +1,24 @@
+/**
+ * Renders the text of the specified iterator applying its attributes
+ * in accordance with the specification of the {@link TextAttribute} class.
+ * <p>
+ * The baseline of the first character is at position
+ * (<i>x</i>,&nbsp;<i>y</i>) in User Space.
+ * For characters in script systems such as Hebrew and Arabic,
+ * the glyphs can be rendered from right to left, in which case the
+ * coordinate supplied is the location of the leftmost character
+ * on the baseline.
+ * @param iterator the iterator whose text is to be rendered
+ * @param x the x coordinate where the iterator's text is to be
+ * rendered
+ * @param y the y coordinate where the iterator's text is to be
+ * rendered
+ * @throws NullPointerException if <code>iterator</code> is
+ *         <code>null</code>
+ * @see #setPaint
+ * @see java.awt.Graphics#setColor
+ * @see #setTransform
+ * @see #setComposite
+ * @see #setClip
+ */
+public abstract void drawString(AttributedCharacterIterator iterator, float x, float y);

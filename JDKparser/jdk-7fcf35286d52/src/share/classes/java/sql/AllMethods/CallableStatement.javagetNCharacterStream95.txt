@@ -1,0 +1,19 @@
+/**
+ * Retrieves the value of the designated parameter as a
+ * <code>java.io.Reader</code> object in the Java programming language.
+ * It is intended for use when
+ * accessing  <code>NCHAR</code>,<code>NVARCHAR</code>
+ * and <code>LONGNVARCHAR</code> parameters.
+ *
+ * @return a <code>java.io.Reader</code> object that contains the parameter
+ * value; if the value is SQL <code>NULL</code>, the value returned is
+ * <code>null</code> in the Java programming language.
+ * @param parameterIndex the first parameter is 1, the second is 2, ...
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+java.io.Reader getNCharacterStream(int parameterIndex) throws SQLException;

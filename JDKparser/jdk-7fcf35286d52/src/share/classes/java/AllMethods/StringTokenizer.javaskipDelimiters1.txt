@@ -1,0 +1,25 @@
+/**
+ * Skips delimiters starting from the specified position. If retDelims
+ * is false, returns the index of the first non-delimiter character at or
+ * after startPos. If retDelims is true, startPos is returned.
+ */
+private int skipDelimiters(int startPos) {
+    if (delimiters == null)
+        throw new NullPointerException();
+    int position = startPos;
+    while (!retDelims && position < maxPosition) {
+        if (!hasSurrogates) {
+            char c = str.charAt(position);
+            if ((c > maxDelimCodePoint) || (delimiters.indexOf(c) < 0))
+                break;
+            position++;
+        } else {
+            int c = str.codePointAt(position);
+            if ((c > maxDelimCodePoint) || !isDelimiter(c)) {
+                break;
+            }
+            position += Character.charCount(c);
+        }
+    }
+    return position;
+}

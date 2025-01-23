@@ -1,0 +1,9 @@
+/**
+ * Sets current barrier generation as broken and wakes up everyone.
+ * Called only while holding lock.
+ */
+private void breakBarrier() {
+    generation.broken = true;
+    count = parties;
+    trip.signalAll();
+}

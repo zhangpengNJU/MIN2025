@@ -1,0 +1,21 @@
+/**
+ * Returns a string describing the parse error.  The resulting string
+ * consists of the reason string followed by a colon character
+ * ({@code ':'}), a space, and the input string.  If the error index is
+ * defined then the string {@code " at index "} followed by the index, in
+ * decimal, is inserted after the reason string and before the colon
+ * character.
+ *
+ * @return  A string describing the parse error
+ */
+public String getMessage() {
+    StringBuffer sb = new StringBuffer();
+    sb.append(getReason());
+    if (index > -1) {
+        sb.append(" at index ");
+        sb.append(index);
+    }
+    sb.append(": ");
+    sb.append(input);
+    return sb.toString();
+}

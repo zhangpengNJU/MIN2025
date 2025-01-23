@@ -1,0 +1,12 @@
+private TextLine makeTextLineOnRange(int startPos, int limitPos) {
+    int[] charsLtoV = null;
+    byte[] charLevels = null;
+    if (fBidi != null) {
+        Bidi lineBidi = fBidi.createLineBidi(startPos, limitPos);
+        charLevels = BidiUtils.getLevels(lineBidi);
+        int[] charsVtoL = BidiUtils.createVisualToLogicalMap(charLevels);
+        charsLtoV = BidiUtils.createInverseMap(charsVtoL);
+    }
+    TextLineComponent[] components = makeComponentsOnRange(startPos, limitPos);
+    return new TextLine(fFrc, components, fBaselineOffsets, fChars, startPos, limitPos, charsLtoV, charLevels, fIsDirectionLTR);
+}

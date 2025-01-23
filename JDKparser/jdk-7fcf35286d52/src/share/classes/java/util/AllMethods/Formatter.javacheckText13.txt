@@ -1,0 +1,9 @@
+private static void checkText(String s, int start, int end) {
+    for (int i = start; i < end; i++) {
+        // Any '%' found in the region starts an invalid format specifier.
+        if (s.charAt(i) == '%') {
+            char c = (i == end - 1) ? '%' : s.charAt(i + 1);
+            throw new UnknownFormatConversionException(String.valueOf(c));
+        }
+    }
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns whether this MenuShortcut is the same as another:
+ * equality is defined to mean that both MenuShortcuts use the same key
+ * and both either use or don't use the SHIFT key.
+ * @param obj the Object to compare with this.
+ * @return <code>true</code> if this MenuShortcut is the same as another,
+ * <code>false</code> otherwise.
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof MenuShortcut) {
+        return equals((MenuShortcut) obj);
+    }
+    return false;
+}

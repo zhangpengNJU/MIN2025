@@ -1,0 +1,27 @@
+/**
+ * Compares this <code>ImageGraphicAttribute</code> to the specified
+ * <code>ImageGraphicAttribute</code>.
+ * @param rhs the <code>ImageGraphicAttribute</code> to compare for
+ * equality
+ * @return <code>true</code> if this
+ * <code>ImageGraphicAttribute</code> equals <code>rhs</code>;
+ * <code>false</code> otherwise.
+ */
+public boolean equals(ImageGraphicAttribute rhs) {
+    if (rhs == null) {
+        return false;
+    }
+    if (this == rhs) {
+        return true;
+    }
+    if (fOriginX != rhs.fOriginX || fOriginY != rhs.fOriginY) {
+        return false;
+    }
+    if (getAlignment() != rhs.getAlignment()) {
+        return false;
+    }
+    if (!fImage.equals(rhs.fImage)) {
+        return false;
+    }
+    return true;
+}

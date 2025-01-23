@@ -1,0 +1,14 @@
+/**
+ * Writes a byte to the uncompressed output stream.
+ *
+ * @param b a single byte of compressed data to decompress and write to
+ * the output stream
+ * @throws IOException if an I/O error occurs or this stream is already
+ * closed
+ * @throws ZipException if a compression (ZIP) format error occurs
+ */
+public void write(int b) throws IOException {
+    // Write a single byte of data
+    wbuf[0] = (byte) b;
+    write(wbuf, 0, 1);
+}

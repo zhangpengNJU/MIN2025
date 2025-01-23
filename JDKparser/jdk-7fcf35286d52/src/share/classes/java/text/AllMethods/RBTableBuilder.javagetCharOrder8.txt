@@ -1,0 +1,9 @@
+private final int getCharOrder(int ch) {
+    int order = mapping.elementAt(ch);
+    if (order >= RBCollationTables.CONTRACTCHARINDEX) {
+        Vector<EntryPair> groupList = getContractValuesImpl(order - RBCollationTables.CONTRACTCHARINDEX);
+        EntryPair pair = groupList.firstElement();
+        order = pair.value;
+    }
+    return order;
+}

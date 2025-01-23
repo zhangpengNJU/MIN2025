@@ -1,0 +1,14 @@
+// Due to subtle deadlock issues getUserContext() no longer
+// calls addLocalLogger(rootLogger);
+// Therefore - we need to add the default loggers later on.
+// Checks that the context is properly initialized
+// This is necessary before calling e.g. find(name)
+// or getLoggerNames()
+// 
+private void ensureInitialized() {
+    if (requiresDefaultLoggers()) {
+        // Ensure that the root and global loggers are set.
+        ensureDefaultLogger(getRootLogger());
+        ensureDefaultLogger(getGlobalLogger());
+    }
+}

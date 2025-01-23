@@ -1,0 +1,62 @@
+/**
+ * <code>writeObject</code> for custom serialization.
+ *
+ * <p>This method writes this object's serialized form for
+ * this class as follows:
+ *
+ * <p>The <code>writeObject</code> method is invoked on
+ * <code>out</code> passing this object's unique identifier
+ * (a {@link java.rmi.server.UID UID} instance) as the argument.
+ *
+ * <p>Next, the {@link
+ * java.rmi.server.RemoteRef#getRefClass(java.io.ObjectOutput)
+ * getRefClass} method is invoked on the activator's
+ * <code>RemoteRef</code> instance to obtain its external ref
+ * type name.  Next, the <code>writeUTF</code> method is
+ * invoked on <code>out</code> with the value returned by
+ * <code>getRefClass</code>, and then the
+ * <code>writeExternal</code> method is invoked on the
+ * <code>RemoteRef</code> instance passing <code>out</code>
+ * as the argument.
+ *
+ * @serialData The serialized data for this class comprises a
+ * <code>java.rmi.server.UID</code> (written with
+ * <code>ObjectOutput.writeObject</code>) followed by the
+ * external ref type name of the activator's
+ * <code>RemoteRef</code> instance (a string written with
+ * <code>ObjectOutput.writeUTF</code>), followed by the
+ * external form of the <code>RemoteRef</code> instance as
+ * written by its <code>writeExternal</code> method.
+ *
+ * <p>The external ref type name of the
+ * <code>RemoteRef</Code> instance is
+ * determined using the definitions of external ref type
+ * names specified in the {@link java.rmi.server.RemoteObject
+ * RemoteObject} <code>writeObject</code> method
+ * <b>serialData</b> specification.  Similarly, the data
+ * written by the <code>writeExternal</code> method and read
+ * by the <code>readExternal</code> method of
+ * <code>RemoteRef</code> implementation classes
+ * corresponding to each of the defined external ref type
+ * names is specified in the {@link
+ * java.rmi.server.RemoteObject RemoteObject}
+ * <code>writeObject</code> method <b>serialData</b>
+ * specification.
+ */
+private void writeObject(ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    out.writeObject(uid);
+    RemoteRef ref;
+    if (activator instanceof RemoteObject) {
+        ref = ((RemoteObject) activator).getRef();
+    } else if (Proxy.isProxyClass(activator.getClass())) {
+        InvocationHandler handler = Proxy.getInvocationHandler(activator);
+        if (!(handler instanceof RemoteObjectInvocationHandler)) {
+            throw new InvalidObjectException("unexpected invocation handler");
+        }
+        ref = ((RemoteObjectInvocationHandler) handler).getRef();
+    } else {
+        throw new InvalidObjectException("unexpected activator type");
+    }
+    out.writeUTF(ref.getRefClass(out));
+    ref.writeExternal(out);
+}

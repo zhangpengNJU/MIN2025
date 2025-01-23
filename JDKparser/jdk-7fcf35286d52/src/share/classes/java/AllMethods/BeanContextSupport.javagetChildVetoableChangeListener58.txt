@@ -1,0 +1,13 @@
+/**
+ * Gets the VetoableChangeListener
+ * (if any) of the specified child
+ * @param child the specified child
+ * @return the VetoableChangeListener (if any) of the specified child
+ */
+protected static final VetoableChangeListener getChildVetoableChangeListener(Object child) {
+    try {
+        return (VetoableChangeListener) child;
+    } catch (ClassCastException cce) {
+        return null;
+    }
+}

@@ -1,0 +1,34 @@
+/**
+ * Looks up providers, and returns the property (and its associated
+ * provider) mapping the key, if any.
+ * The order in which the providers are looked up is the
+ * provider-preference order, as specificed in the security
+ * properties file.
+ */
+private static ProviderProperty getProviderProperty(String key) {
+    ProviderProperty entry = null;
+    List<Provider> providers = Providers.getProviderList().providers();
+    for (int i = 0; i < providers.size(); i++) {
+        String matchKey = null;
+        Provider prov = providers.get(i);
+        String prop = prov.getProperty(key);
+        if (prop == null) {
+            // Is there a match if we do a case-insensitive property name
+            // comparison? Let's try ...
+            for (Enumeration<Object> e = prov.keys(); e.hasMoreElements() && prop == null; ) {
+                matchKey = (String) e.nextElement();
+                if (key.equalsIgnoreCase(matchKey)) {
+                    prop = prov.getProperty(matchKey);
+                    break;
+                }
+            }
+        }
+        if (prop != null) {
+            ProviderProperty newEntry = new ProviderProperty();
+            newEntry.className = prop;
+            newEntry.provider = prov;
+            return newEntry;
+        }
+    }
+    return entry;
+}

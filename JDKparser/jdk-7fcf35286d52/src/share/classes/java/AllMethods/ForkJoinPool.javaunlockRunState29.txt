@@ -1,0 +1,17 @@
+/**
+ * Unlocks and sets runState to newRunState.
+ *
+ * @param oldRunState a value returned from lockRunState
+ * @param newRunState the next value (must have lock bit clear).
+ */
+private void unlockRunState(int oldRunState, int newRunState) {
+    if (!U.compareAndSwapInt(this, RUNSTATE, oldRunState, newRunState)) {
+        Object lock = stealCounter;
+        // clears RSIGNAL bit
+        runState = newRunState;
+        if (lock != null)
+            synchronized (lock) {
+                lock.notifyAll();
+            }
+    }
+}

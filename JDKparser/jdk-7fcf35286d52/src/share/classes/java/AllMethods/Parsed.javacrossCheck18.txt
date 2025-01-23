@@ -1,0 +1,14 @@
+// -----------------------------------------------------------------------
+private void crossCheck() {
+    // only cross-check date, time and date-time
+    // avoid object creation if possible
+    if (date != null) {
+        crossCheck(date);
+    }
+    if (time != null) {
+        crossCheck(time);
+        if (date != null && fieldValues.size() > 0) {
+            crossCheck(date.atTime(time));
+        }
+    }
+}

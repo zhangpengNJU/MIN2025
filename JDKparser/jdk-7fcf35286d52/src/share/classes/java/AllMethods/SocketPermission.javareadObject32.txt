@@ -1,0 +1,13 @@
+/*
+     * Reads in a Vector of SocketPermissions and saves them in the perms field.
+     */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Don't call in.defaultReadObject()
+    // Read in serialized fields
+    ObjectInputStream.GetField gfields = in.readFields();
+    // Get the one we want
+    @SuppressWarnings("unchecked")
+    Vector<SocketPermission> permissions = (Vector<SocketPermission>) gfields.get("permissions", null);
+    perms = new ArrayList<SocketPermission>(permissions.size());
+    perms.addAll(permissions);
+}

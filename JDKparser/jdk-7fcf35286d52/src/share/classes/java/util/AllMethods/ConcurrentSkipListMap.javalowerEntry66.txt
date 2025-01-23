@@ -1,0 +1,13 @@
+/* ---------------- Relational operations -------------- */
+/**
+ * Returns a key-value mapping associated with the greatest key
+ * strictly less than the given key, or {@code null} if there is
+ * no such key. The returned entry does <em>not</em> support the
+ * {@code Entry.setValue} method.
+ *
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if the specified key is null
+ */
+public Map.Entry<K, V> lowerEntry(K key) {
+    return getNear(key, LT);
+}

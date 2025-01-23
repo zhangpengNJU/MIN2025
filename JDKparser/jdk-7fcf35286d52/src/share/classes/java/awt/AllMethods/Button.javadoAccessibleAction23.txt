@@ -1,0 +1,15 @@
+/**
+ * Perform the specified Action on the object
+ *
+ * @param i zero-based index of actions
+ * @return true if the the action was performed; else false.
+ */
+public boolean doAccessibleAction(int i) {
+    if (i == 0) {
+        // Simulate a button click
+        Toolkit.getEventQueue().postEvent(new ActionEvent(Button.this, ActionEvent.ACTION_PERFORMED, Button.this.getActionCommand()));
+        return true;
+    } else {
+        return false;
+    }
+}

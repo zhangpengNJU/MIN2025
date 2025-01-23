@@ -1,0 +1,13 @@
+/**
+ * Prints an integer and then terminates the line.  This method behaves as
+ * though it invokes <code>{@link #print(int)}</code> and then <code>{@link
+ * #println()}</code>.
+ *
+ * @param x the <code>int</code> value to be printed
+ */
+public void println(int x) {
+    synchronized (lock) {
+        print(x);
+        println();
+    }
+}

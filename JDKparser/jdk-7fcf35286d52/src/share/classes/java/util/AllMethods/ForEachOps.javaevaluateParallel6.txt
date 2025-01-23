@@ -1,0 +1,8 @@
+@Override
+public <S> Void evaluateParallel(PipelineHelper<T> helper, Spliterator<S> spliterator) {
+    if (ordered)
+        new ForEachOrderedTask<>(helper, spliterator, this).invoke();
+    else
+        new ForEachTask<>(helper, spliterator, helper.wrapSink(this)).invoke();
+    return null;
+}

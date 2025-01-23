@@ -1,0 +1,27 @@
+/**
+ * Override the dimensions of the source image and pass the dimensions
+ * of the new scaled size to the ImageConsumer.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ImageConsumer
+ */
+public void setDimensions(int w, int h) {
+    srcWidth = w;
+    srcHeight = h;
+    if (destWidth < 0) {
+        if (destHeight < 0) {
+            destWidth = srcWidth;
+            destHeight = srcHeight;
+        } else {
+            destWidth = srcWidth * destHeight / srcHeight;
+        }
+    } else if (destHeight < 0) {
+        destHeight = srcHeight * destWidth / srcWidth;
+    }
+    consumer.setDimensions(destWidth, destHeight);
+}

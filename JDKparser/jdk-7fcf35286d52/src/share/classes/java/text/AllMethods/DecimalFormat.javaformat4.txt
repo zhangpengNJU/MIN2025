@@ -1,0 +1,59 @@
+/**
+ * Format a long to produce a string.
+ * @param number    The long to format
+ * @param result    where the text is to be appended
+ * @param delegate notified of locations of sub fields
+ * @return The formatted number string
+ * @exception        ArithmeticException if rounding is needed with rounding
+ *                   mode being set to RoundingMode.UNNECESSARY
+ * @see java.text.FieldPosition
+ */
+private StringBuffer format(long number, StringBuffer result, FieldDelegate delegate) {
+    boolean isNegative = (number < 0);
+    if (isNegative) {
+        number = -number;
+    }
+    // In general, long values always represent real finite numbers, so
+    // we don't have to check for +/- Infinity or NaN.  However, there
+    // is one case we have to be careful of:  The multiplier can push
+    // a number near MIN_VALUE or MAX_VALUE outside the legal range.  We
+    // check for this before multiplying, and if it happens we use
+    // BigInteger instead.
+    boolean useBigInteger = false;
+    if (number < 0) {
+        // This can only happen if number == Long.MIN_VALUE.
+        if (multiplier != 0) {
+            useBigInteger = true;
+        }
+    } else if (multiplier != 1 && multiplier != 0) {
+        long cutoff = Long.MAX_VALUE / multiplier;
+        if (cutoff < 0) {
+            cutoff = -cutoff;
+        }
+        useBigInteger = (number > cutoff);
+    }
+    if (useBigInteger) {
+        if (isNegative) {
+            number = -number;
+        }
+        BigInteger bigIntegerValue = BigInteger.valueOf(number);
+        return format(bigIntegerValue, result, delegate, true);
+    }
+    number *= multiplier;
+    if (number == 0) {
+        isNegative = false;
+    } else {
+        if (multiplier < 0) {
+            number = -number;
+            isNegative = !isNegative;
+        }
+    }
+    synchronized (digitList) {
+        int maxIntDigits = super.getMaximumIntegerDigits();
+        int minIntDigits = super.getMinimumIntegerDigits();
+        int maxFraDigits = super.getMaximumFractionDigits();
+        int minFraDigits = super.getMinimumFractionDigits();
+        digitList.set(isNegative, number, useExponentialNotation ? maxIntDigits + maxFraDigits : 0);
+        return subformat(result, delegate, isNegative, true, maxIntDigits, minIntDigits, maxFraDigits, minFraDigits);
+    }
+}

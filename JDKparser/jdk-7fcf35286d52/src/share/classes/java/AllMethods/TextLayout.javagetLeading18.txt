@@ -1,0 +1,25 @@
+/**
+ * Returns the leading of the <code>TextLayout</code>.
+ * The leading is the suggested interline spacing for this
+ * <code>TextLayout</code>.  This is in baseline-relative
+ * coordinates.
+ * <p>
+ * The leading is computed from the leading, descent, and baseline
+ * of all glyphvectors in the <code>TextLayout</code>.  The algorithm
+ * is roughly as follows:
+ * <blockquote><pre>
+ * maxD = 0;
+ * maxDL = 0;
+ * for (GlyphVector g in all glyphvectors) {
+ *    maxD = max(maxD, g.getDescent() + offsets[g.getBaseline()]);
+ *    maxDL = max(maxDL, g.getDescent() + g.getLeading() +
+ *                       offsets[g.getBaseline()]);
+ * }
+ * return maxDL - maxD;
+ * </pre></blockquote>
+ * @return the leading of this <code>TextLayout</code>.
+ */
+public float getLeading() {
+    ensureCache();
+    return lineMetrics.leading;
+}

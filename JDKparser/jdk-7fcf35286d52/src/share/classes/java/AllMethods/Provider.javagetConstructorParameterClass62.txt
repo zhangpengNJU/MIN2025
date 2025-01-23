@@ -1,0 +1,8 @@
+Class<?> getConstructorParameterClass() throws ClassNotFoundException {
+    Class<?> clazz = constructorParameterClass;
+    if (clazz == null) {
+        clazz = Class.forName(constructorParameterClassName);
+        constructorParameterClass = clazz;
+    }
+    return clazz;
+}

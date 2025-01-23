@@ -1,0 +1,112 @@
+private boolean authenticate(byte method, InputStream in, BufferedOutputStream out, long deadlineMillis) throws IOException {
+    // No Authentication required. We're done then!
+    if (method == NO_AUTH)
+        return true;
+    /**
+     * User/Password authentication. Try, in that order :
+     * - The application provided Authenticator, if any
+     * - the user.name & no password (backward compatibility behavior).
+     */
+    if (method == USER_PASSW) {
+        String userName;
+        String password = null;
+        final InetAddress addr = InetAddress.getByName(server);
+        PasswordAuthentication pw = java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<PasswordAuthentication>() {
+
+            public PasswordAuthentication run() {
+                return Authenticator.requestPasswordAuthentication(server, addr, serverPort, "SOCKS5", "SOCKS authentication", null);
+            }
+        });
+        if (pw != null) {
+            userName = pw.getUserName();
+            password = new String(pw.getPassword());
+        } else {
+            userName = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("user.name"));
+        }
+        if (userName == null)
+            return false;
+        out.write(1);
+        out.write(userName.length());
+        try {
+            out.write(userName.getBytes("ISO-8859-1"));
+        } catch (java.io.UnsupportedEncodingException uee) {
+            assert false;
+        }
+        if (password != null) {
+            out.write(password.length());
+            try {
+                out.write(password.getBytes("ISO-8859-1"));
+            } catch (java.io.UnsupportedEncodingException uee) {
+                assert false;
+            }
+        } else
+            out.write(0);
+        out.flush();
+        byte[] data = new byte[2];
+        int i = readSocksReply(in, data, deadlineMillis);
+        if (i != 2 || data[1] != 0) {
+            /* RFC 1929 specifies that the connection MUST be closed if
+                   authentication fails */
+            out.close();
+            in.close();
+            return false;
+        }
+        /* Authentication succeeded */
+        return true;
+    }
+    /**
+     * GSSAPI authentication mechanism.
+     * Unfortunately the RFC seems out of sync with the Reference
+     * implementation. I'll leave this in for future completion.
+     */
+    // if (method == GSSAPI) {
+    // try {
+    // GSSManager manager = GSSManager.getInstance();
+    // GSSName name = manager.createName("SERVICE:socks@"+server,
+    // null);
+    // GSSContext context = manager.createContext(name, null, null,
+    // GSSContext.DEFAULT_LIFETIME);
+    // context.requestMutualAuth(true);
+    // context.requestReplayDet(true);
+    // context.requestSequenceDet(true);
+    // context.requestCredDeleg(true);
+    // byte []inToken = new byte[0];
+    // while (!context.isEstablished()) {
+    // byte[] outToken
+    // = context.initSecContext(inToken, 0, inToken.length);
+    // // send the output token if generated
+    // if (outToken != null) {
+    // out.write(1);
+    // out.write(1);
+    // out.writeShort(outToken.length);
+    // out.write(outToken);
+    // out.flush();
+    // data = new byte[2];
+    // i = readSocksReply(in, data, deadlineMillis);
+    // if (i != 2 || data[1] == 0xff) {
+    // in.close();
+    // out.close();
+    // return false;
+    // }
+    // i = readSocksReply(in, data, deadlineMillis);
+    // int len = 0;
+    // len = ((int)data[0] & 0xff) << 8;
+    // len += data[1];
+    // data = new byte[len];
+    // i = readSocksReply(in, data, deadlineMillis);
+    // if (i == len)
+    // return true;
+    // in.close();
+    // out.close();
+    // }
+    // }
+    // } catch (GSSException e) {
+    // /* RFC 1961 states that if Context initialisation fails the connection
+    // MUST be closed */
+    // e.printStackTrace();
+    // in.close();
+    // out.close();
+    // }
+    // }
+    return false;
+}

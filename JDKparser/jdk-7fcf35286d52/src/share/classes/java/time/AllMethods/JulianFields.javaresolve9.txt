@@ -1,0 +1,11 @@
+// -----------------------------------------------------------------------
+@Override
+public ChronoLocalDate resolve(Map<TemporalField, Long> fieldValues, TemporalAccessor partialTemporal, ResolverStyle resolverStyle) {
+    long value = fieldValues.remove(this);
+    Chronology chrono = Chronology.from(partialTemporal);
+    if (resolverStyle == ResolverStyle.LENIENT) {
+        return chrono.dateEpochDay(Math.subtractExact(value, offset));
+    }
+    range().checkValidValue(value, this);
+    return chrono.dateEpochDay(value - offset);
+}

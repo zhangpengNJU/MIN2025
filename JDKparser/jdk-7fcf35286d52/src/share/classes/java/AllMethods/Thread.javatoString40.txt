@@ -1,0 +1,14 @@
+/**
+ * Returns a string representation of this thread, including the
+ * thread's name, priority, and thread group.
+ *
+ * @return  a string representation of this thread.
+ */
+public String toString() {
+    ThreadGroup group = getThreadGroup();
+    if (group != null) {
+        return "Thread[" + getName() + "," + getPriority() + "," + group.getName() + "]";
+    } else {
+        return "Thread[" + getName() + "," + getPriority() + "," + "" + "]";
+    }
+}

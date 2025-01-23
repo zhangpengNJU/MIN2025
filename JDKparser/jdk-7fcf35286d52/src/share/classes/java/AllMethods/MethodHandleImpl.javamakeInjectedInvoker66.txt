@@ -1,0 +1,34 @@
+private static MethodHandle makeInjectedInvoker(Class<?> hostClass) {
+    Class<?> bcc = UNSAFE.defineAnonymousClass(hostClass, T_BYTES, null);
+    if (hostClass.getClassLoader() != bcc.getClassLoader())
+        throw new InternalError(hostClass.getName() + " (CL)");
+    try {
+        if (hostClass.getProtectionDomain() != bcc.getProtectionDomain())
+            throw new InternalError(hostClass.getName() + " (PD)");
+    } catch (SecurityException ex) {
+    // Self-check was blocked by security manager.  This is OK.
+    // In fact the whole try body could be turned into an assertion.
+    }
+    try {
+        MethodHandle init = IMPL_LOOKUP.findStatic(bcc, "init", MethodType.methodType(void.class));
+        // force initialization of the class
+        init.invokeExact();
+    } catch (Throwable ex) {
+        throw uncaughtException(ex);
+    }
+    MethodHandle bccInvoker;
+    try {
+        MethodType invokerMT = MethodType.methodType(Object.class, MethodHandle.class, Object[].class);
+        bccInvoker = IMPL_LOOKUP.findStatic(bcc, "invoke_V", invokerMT);
+    } catch (ReflectiveOperationException ex) {
+        throw uncaughtException(ex);
+    }
+    // Test the invoker, to ensure that it really injects into the right place.
+    try {
+        MethodHandle vamh = prepareForInvoker(MH_checkCallerClass);
+        Object ok = bccInvoker.invokeExact(vamh, new Object[] { hostClass, bcc });
+    } catch (Throwable ex) {
+        throw new InternalError(ex);
+    }
+    return bccInvoker;
+}

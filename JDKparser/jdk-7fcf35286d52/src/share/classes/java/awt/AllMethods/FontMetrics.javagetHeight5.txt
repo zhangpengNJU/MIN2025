@@ -1,0 +1,16 @@
+/**
+ * Gets the standard height of a line of text in this font.  This
+ * is the distance between the baseline of adjacent lines of text.
+ * It is the sum of the leading + ascent + descent. Due to rounding
+ * this may not be the same as getAscent() + getDescent() + getLeading().
+ * There is no guarantee that lines of text spaced at this distance are
+ * disjoint; such lines may overlap if some characters overshoot
+ * either the standard ascent or the standard descent metric.
+ * @return    the standard height of the font.
+ * @see       #getLeading()
+ * @see       #getAscent()
+ * @see       #getDescent()
+ */
+public int getHeight() {
+    return getLeading() + getAscent() + getDescent();
+}

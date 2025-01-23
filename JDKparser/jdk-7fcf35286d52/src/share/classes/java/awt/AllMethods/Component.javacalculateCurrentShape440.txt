@@ -1,0 +1,37 @@
+private Region calculateCurrentShape() {
+    checkTreeLock();
+    Region s = getNormalShape();
+    if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+        mixingLog.fine("this = " + this + "; normalShape=" + s);
+    }
+    if (getContainer() != null) {
+        Component comp = this;
+        Container cont = comp.getContainer();
+        while (cont != null) {
+            for (int index = comp.getSiblingIndexAbove(); index != -1; --index) {
+                /* It is assumed that:
+                     *
+                     *    getComponent(getContainer().getComponentZOrder(comp)) == comp
+                     *
+                     * The assumption has been made according to the current
+                     * implementation of the Container class.
+                     */
+                Component c = cont.getComponent(index);
+                if (c.isLightweight() && c.isShowing()) {
+                    s = s.getDifference(c.getOpaqueShape());
+                }
+            }
+            if (cont.isLightweight()) {
+                s = s.getIntersection(cont.getNormalShape());
+            } else {
+                break;
+            }
+            comp = cont;
+            cont = cont.getContainer();
+        }
+    }
+    if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+        mixingLog.fine("currentShape=" + s);
+    }
+    return s;
+}

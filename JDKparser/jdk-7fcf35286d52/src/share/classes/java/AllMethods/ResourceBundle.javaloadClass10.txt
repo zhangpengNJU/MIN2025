@@ -1,0 +1,6 @@
+public Class<?> loadClass(String name) throws ClassNotFoundException {
+    if (loader != null) {
+        return loader.loadClass(name);
+    }
+    return Class.forName(name);
+}

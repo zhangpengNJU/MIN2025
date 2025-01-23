@@ -1,0 +1,25 @@
+/**
+ * Returns the logical bounds of the specified <code>String</code> in
+ * the specified <code>FontRenderContext</code>.  The logical bounds
+ * contains the origin, ascent, advance, and height, which includes
+ * the leading.  The logical bounds does not always enclose all the
+ * text.  For example, in some languages and in some fonts, accent
+ * marks can be positioned above the ascent or below the descent.
+ * To obtain a visual bounding box, which encloses all the text,
+ * use the {@link TextLayout#getBounds() getBounds} method of
+ * <code>TextLayout</code>.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.Font class notes}).
+ * @param str the specified <code>String</code>
+ * @param frc the specified <code>FontRenderContext</code>
+ * @return a {@link Rectangle2D} that is the bounding box of the
+ * specified <code>String</code> in the specified
+ * <code>FontRenderContext</code>.
+ * @see FontRenderContext
+ * @see Font#createGlyphVector
+ * @since 1.2
+ */
+public Rectangle2D getStringBounds(String str, FontRenderContext frc) {
+    char[] array = str.toCharArray();
+    return getStringBounds(array, 0, array.length, frc);
+}

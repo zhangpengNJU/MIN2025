@@ -1,0 +1,12 @@
+/**
+ * Looks for an explicit BeanInfo class that corresponds to the Class.
+ * First it looks in the existing package that the Class is defined in,
+ * then it checks to see if the class is its own BeanInfo. Finally,
+ * the BeanInfo search path is prepended to the class and searched.
+ *
+ * @param beanClass  the class type of the bean
+ * @return Instance of an explicit BeanInfo class or null if one isn't found.
+ */
+private static BeanInfo findExplicitBeanInfo(Class<?> beanClass) {
+    return ThreadGroupContext.getContext().getBeanInfoFinder().find(beanClass);
+}

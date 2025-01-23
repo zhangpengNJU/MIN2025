@@ -1,0 +1,9 @@
+/**
+ * @param key the key
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if the specified key is null
+ */
+public K higherKey(K key) {
+    Node<K, V> n = findNear(key, GT, comparator);
+    return (n == null) ? null : n.key;
+}

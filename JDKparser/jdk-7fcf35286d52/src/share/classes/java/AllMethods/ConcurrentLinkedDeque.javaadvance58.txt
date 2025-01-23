@@ -1,0 +1,22 @@
+/**
+ * Sets nextNode and nextItem to next valid node, or to null
+ * if no such.
+ */
+private void advance() {
+    lastRet = nextNode;
+    Node<E> p = (nextNode == null) ? startNode() : nextNode(nextNode);
+    for (; ; p = nextNode(p)) {
+        if (p == null) {
+            // p might be active end or TERMINATOR node; both are OK
+            nextNode = null;
+            nextItem = null;
+            break;
+        }
+        E item = p.item;
+        if (item != null) {
+            nextNode = p;
+            nextItem = item;
+            break;
+        }
+    }
+}

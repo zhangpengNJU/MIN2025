@@ -1,0 +1,31 @@
+/**
+ * Processes container events occurring on this container by
+ * dispatching them to any registered ContainerListener objects.
+ * NOTE: This method will not be called unless container events
+ * are enabled for this component; this happens when one of the
+ * following occurs:
+ * <ul>
+ * <li>A ContainerListener object is registered via
+ *     <code>addContainerListener</code>
+ * <li>Container events are enabled via <code>enableEvents</code>
+ * </ul>
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the container event
+ * @see Component#enableEvents
+ */
+protected void processContainerEvent(ContainerEvent e) {
+    ContainerListener listener = containerListener;
+    if (listener != null) {
+        switch(e.getID()) {
+            case ContainerEvent.COMPONENT_ADDED:
+                listener.componentAdded(e);
+                break;
+            case ContainerEvent.COMPONENT_REMOVED:
+                listener.componentRemoved(e);
+                break;
+        }
+    }
+}

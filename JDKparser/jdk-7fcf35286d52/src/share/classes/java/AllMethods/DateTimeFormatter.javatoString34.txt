@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------
+/**
+ * Returns a description of the underlying formatters.
+ *
+ * @return a description of this formatter, not null
+ */
+@Override
+public String toString() {
+    String pattern = printerParser.toString();
+    pattern = pattern.startsWith("[") ? pattern : pattern.substring(1, pattern.length() - 1);
+    return pattern;
+// TODO: Fix tests to not depend on toString()
+// return "DateTimeFormatter[" + locale +
+// (chrono != null ? "," + chrono : "") +
+// (zone != null ? "," + zone : "") +
+// pattern + "]";
+}

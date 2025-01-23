@@ -1,0 +1,9 @@
+@Override
+public void setOption(int opt, Object val) throws SocketException {
+    super.setOption(opt, val);
+    if (external_address != null)
+        // we're connected, just return
+        return;
+    // store options so that they can be re-applied to the impl after connect
+    optionsMap.put(opt, val);
+}

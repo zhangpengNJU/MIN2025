@@ -1,0 +1,21 @@
+/**
+ *  Executes the given SQL statement, which returns a single
+ *  <code>ResultSet</code> object.
+ * <p>
+ *  <strong>Note:</strong>This method cannot be called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>.
+ *  @param sql an SQL statement to be sent to the database, typically a
+ *         static SQL <code>SELECT</code> statement
+ *  @return a <code>ResultSet</code> object that contains the data produced
+ *          by the given query; never <code>null</code>
+ *  @exception SQLException if a database access error occurs,
+ *  this method is called on a closed <code>Statement</code>, the given
+ *             SQL statement produces anything other than a single
+ *             <code>ResultSet</code> object, the method is called on a
+ *  <code>PreparedStatement</code> or <code>CallableStatement</code>
+ *  @throws SQLTimeoutException when the driver has determined that the
+ *  timeout value that was specified by the {@code setQueryTimeout}
+ *  method has been exceeded and has at least attempted to cancel
+ *  the currently running {@code Statement}
+ */
+ResultSet executeQuery(String sql) throws SQLException;

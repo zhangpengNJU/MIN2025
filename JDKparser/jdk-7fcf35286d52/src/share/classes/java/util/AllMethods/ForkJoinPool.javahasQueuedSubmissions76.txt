@@ -1,0 +1,17 @@
+/**
+ * Returns {@code true} if there are any tasks submitted to this
+ * pool that have not yet begun executing.
+ *
+ * @return {@code true} if there are any queued submissions
+ */
+public boolean hasQueuedSubmissions() {
+    WorkQueue[] ws;
+    WorkQueue w;
+    if ((ws = workQueues) != null) {
+        for (int i = 0; i < ws.length; i += 2) {
+            if ((w = ws[i]) != null && !w.isEmpty())
+                return true;
+        }
+    }
+    return false;
+}

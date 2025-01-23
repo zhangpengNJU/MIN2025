@@ -1,0 +1,9 @@
+private Object implComputeIfPresent(Object key, BiFunction<? super Object, ? super Object, ? extends Object> remappingFunction) {
+    if (key instanceof String) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.computeIfPresent((String) key, (BiFunction<? super String, ? super String, ? extends String>) remappingFunction);
+    }
+    return super.computeIfPresent(key, remappingFunction);
+}

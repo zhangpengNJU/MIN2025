@@ -1,0 +1,12 @@
+/**
+ * Squares the contents of the int array x. The result is placed into the
+ * int array z.  The contents of x are not changed.
+ */
+private static final int[] squareToLen(int[] x, int len, int[] z) {
+    int zlen = len << 1;
+    if (z == null || z.length < zlen)
+        z = new int[zlen];
+    // Execute checks before calling intrinsified method.
+    implSquareToLenChecks(x, len, z, zlen);
+    return implSquareToLen(x, len, z, zlen);
+}

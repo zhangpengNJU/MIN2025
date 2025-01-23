@@ -1,0 +1,13 @@
+/**
+ * Atomically sets the field of the given object managed by this updater
+ * to the given updated value if the current value {@code ==} the
+ * expected value. This method is guaranteed to be atomic with respect to
+ * other calls to {@code compareAndSet} and {@code set}, but not
+ * necessarily with respect to other changes in the field.
+ *
+ * @param obj An object whose field to conditionally set
+ * @param expect the expected value
+ * @param update the new value
+ * @return {@code true} if successful
+ */
+public abstract boolean compareAndSet(T obj, V expect, V update);

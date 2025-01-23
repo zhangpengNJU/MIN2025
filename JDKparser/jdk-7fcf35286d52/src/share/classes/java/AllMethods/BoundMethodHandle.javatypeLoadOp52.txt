@@ -1,0 +1,16 @@
+private static int typeLoadOp(char t) {
+    switch(t) {
+        case 'L':
+            return ALOAD;
+        case 'I':
+            return ILOAD;
+        case 'J':
+            return LLOAD;
+        case 'F':
+            return FLOAD;
+        case 'D':
+            return DLOAD;
+        default:
+            throw newInternalError("unrecognized type " + t);
+    }
+}

@@ -1,0 +1,30 @@
+/**
+ * Returns all of the <tt>Packages</tt> defined by this class loader and
+ * its ancestors.
+ *
+ * @return  The array of <tt>Package</tt> objects defined by this
+ *          <tt>ClassLoader</tt>
+ *
+ * @since  1.2
+ */
+protected Package[] getPackages() {
+    Map<String, Package> map;
+    synchronized (packages) {
+        map = new HashMap<>(packages);
+    }
+    Package[] pkgs;
+    if (parent != null) {
+        pkgs = parent.getPackages();
+    } else {
+        pkgs = Package.getSystemPackages();
+    }
+    if (pkgs != null) {
+        for (int i = 0; i < pkgs.length; i++) {
+            String pkgName = pkgs[i].getName();
+            if (map.get(pkgName) == null) {
+                map.put(pkgName, pkgs[i]);
+            }
+        }
+    }
+    return map.values().toArray(new Package[map.size()]);
+}

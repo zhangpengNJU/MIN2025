@@ -1,0 +1,15 @@
+/**
+ * Constructs a GenericBeanInfo class from the state of the Introspector
+ */
+private BeanInfo getBeanInfo() throws IntrospectionException {
+    // the evaluation order here is import, as we evaluate the
+    // event sets and locate PropertyChangeListeners before we
+    // look for properties.
+    BeanDescriptor bd = getTargetBeanDescriptor();
+    MethodDescriptor[] mds = getTargetMethodInfo();
+    EventSetDescriptor[] esds = getTargetEventInfo();
+    PropertyDescriptor[] pds = getTargetPropertyInfo();
+    int defaultEvent = getTargetDefaultEventIndex();
+    int defaultProperty = getTargetDefaultPropertyIndex();
+    return new GenericBeanInfo(bd, esds, defaultEvent, pds, defaultProperty, mds, explicitBeanInfo);
+}

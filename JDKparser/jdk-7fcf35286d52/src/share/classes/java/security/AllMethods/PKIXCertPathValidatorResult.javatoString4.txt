@@ -1,0 +1,16 @@
+/**
+ * Return a printable representation of this
+ * {@code PKIXCertPathValidatorResult}.
+ *
+ * @return a {@code String} describing the contents of this
+ *         {@code PKIXCertPathValidatorResult}
+ */
+public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("PKIXCertPathValidatorResult: [\n");
+    sb.append("  Trust Anchor: " + trustAnchor.toString() + "\n");
+    sb.append("  Policy Tree: " + String.valueOf(policyTree) + "\n");
+    sb.append("  Subject Public Key: " + subjectPublicKey + "\n");
+    sb.append("]");
+    return sb.toString();
+}

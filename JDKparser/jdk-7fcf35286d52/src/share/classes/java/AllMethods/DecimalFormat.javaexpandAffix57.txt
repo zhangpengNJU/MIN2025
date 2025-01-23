@@ -1,0 +1,77 @@
+/**
+ * Expand an affix pattern into an array of FieldPositions describing
+ * how the pattern would be expanded.
+ * All characters in the
+ * pattern are literal unless prefixed by QUOTE.  The following characters
+ * after QUOTE are recognized: PATTERN_PERCENT, PATTERN_PER_MILLE,
+ * PATTERN_MINUS, and CURRENCY_SIGN.  If CURRENCY_SIGN is doubled (QUOTE +
+ * CURRENCY_SIGN + CURRENCY_SIGN), it is interpreted as an ISO 4217
+ * currency code.  Any other character after a QUOTE represents itself.
+ * QUOTE must be followed by another character; QUOTE may not occur by
+ * itself at the end of the pattern.
+ *
+ * @param pattern the non-null, possibly empty pattern
+ * @return FieldPosition array of the resulting fields.
+ */
+private FieldPosition[] expandAffix(String pattern) {
+    ArrayList<FieldPosition> positions = null;
+    int stringIndex = 0;
+    for (int i = 0; i < pattern.length(); ) {
+        char c = pattern.charAt(i++);
+        if (c == QUOTE) {
+            int field = -1;
+            Format.Field fieldID = null;
+            c = pattern.charAt(i++);
+            switch(c) {
+                case CURRENCY_SIGN:
+                    String string;
+                    if (i < pattern.length() && pattern.charAt(i) == CURRENCY_SIGN) {
+                        ++i;
+                        string = symbols.getInternationalCurrencySymbol();
+                    } else {
+                        string = symbols.getCurrencySymbol();
+                    }
+                    if (string.length() > 0) {
+                        if (positions == null) {
+                            positions = new ArrayList<>(2);
+                        }
+                        FieldPosition fp = new FieldPosition(Field.CURRENCY);
+                        fp.setBeginIndex(stringIndex);
+                        fp.setEndIndex(stringIndex + string.length());
+                        positions.add(fp);
+                        stringIndex += string.length();
+                    }
+                    continue;
+                case PATTERN_PERCENT:
+                    c = symbols.getPercent();
+                    field = -1;
+                    fieldID = Field.PERCENT;
+                    break;
+                case PATTERN_PER_MILLE:
+                    c = symbols.getPerMill();
+                    field = -1;
+                    fieldID = Field.PERMILLE;
+                    break;
+                case PATTERN_MINUS:
+                    c = symbols.getMinusSign();
+                    field = -1;
+                    fieldID = Field.SIGN;
+                    break;
+            }
+            if (fieldID != null) {
+                if (positions == null) {
+                    positions = new ArrayList<>(2);
+                }
+                FieldPosition fp = new FieldPosition(fieldID, field);
+                fp.setBeginIndex(stringIndex);
+                fp.setEndIndex(stringIndex + 1);
+                positions.add(fp);
+            }
+        }
+        stringIndex++;
+    }
+    if (positions != null) {
+        return positions.toArray(EmptyFieldPositionArray);
+    }
+    return EmptyFieldPositionArray;
+}

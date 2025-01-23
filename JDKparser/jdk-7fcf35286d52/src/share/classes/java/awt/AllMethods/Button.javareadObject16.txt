@@ -1,0 +1,29 @@
+/**
+ * Reads the <code>ObjectInputStream</code> and if
+ * it isn't <code>null</code> adds a listener to
+ * receive action events fired by the button.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ * @exception HeadlessException if
+ *   <code>GraphicsEnvironment.isHeadless</code> returns
+ *   <code>true</code>
+ * @serial
+ * @see #removeActionListener(ActionListener)
+ * @see #addActionListener(ActionListener)
+ * @see java.awt.GraphicsEnvironment#isHeadless
+ * @see #writeObject(ObjectOutputStream)
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+    s.defaultReadObject();
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (actionListenerK == key)
+            addActionListener((ActionListener) (s.readObject()));
+        else
+            // skip value for unrecognized key
+            s.readObject();
+    }
+}

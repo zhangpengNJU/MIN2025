@@ -1,0 +1,9 @@
+/**
+ * Reconstitutes the instance from a stream (that is, deserializes it).
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    s.defaultReadObject();
+    readHolds = new ThreadLocalHoldCounter();
+    // reset to unlocked state
+    setState(0);
+}

@@ -1,0 +1,9 @@
+/**
+ * readObject is called to restore the state of the FilePermission from
+ * a stream.
+ */
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    // Read in the actions, then restore everything else by calling init.
+    s.defaultReadObject();
+    init(getMask(actions));
+}

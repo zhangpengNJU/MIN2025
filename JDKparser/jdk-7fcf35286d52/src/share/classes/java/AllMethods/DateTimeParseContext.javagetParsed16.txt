@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------
+/**
+ * Gets the first value that was parsed for the specified field.
+ * <p>
+ * This searches the results of the parse, returning the first value found
+ * for the specified field. No attempt is made to derive a value.
+ * The field may have an out of range value.
+ * For example, the day-of-month might be set to 50, or the hour to 1000.
+ *
+ * @param field  the field to query from the map, null returns null
+ * @return the value mapped to the specified field, null if field was not parsed
+ */
+Long getParsed(TemporalField field) {
+    return currentParsed().fieldValues.get(field);
+}

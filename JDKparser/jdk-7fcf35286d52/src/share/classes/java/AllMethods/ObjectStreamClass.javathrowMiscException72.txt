@@ -1,0 +1,16 @@
+/**
+ * Convenience method for throwing an exception that is either a
+ * RuntimeException, Error, or of some unexpected type (in which case it is
+ * wrapped inside an IOException).
+ */
+private static void throwMiscException(Throwable th) throws IOException {
+    if (th instanceof RuntimeException) {
+        throw (RuntimeException) th;
+    } else if (th instanceof Error) {
+        throw (Error) th;
+    } else {
+        IOException ex = new IOException("unexpected exception type");
+        ex.initCause(th);
+        throw ex;
+    }
+}

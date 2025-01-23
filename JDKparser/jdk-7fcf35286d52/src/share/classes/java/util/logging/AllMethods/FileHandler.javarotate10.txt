@@ -1,0 +1,26 @@
+/**
+ * Rotate the set of output files
+ */
+private synchronized void rotate() {
+    Level oldLevel = getLevel();
+    setLevel(Level.OFF);
+    super.close();
+    for (int i = count - 2; i >= 0; i--) {
+        File f1 = files[i];
+        File f2 = files[i + 1];
+        if (f1.exists()) {
+            if (f2.exists()) {
+                f2.delete();
+            }
+            f1.renameTo(f2);
+        }
+    }
+    try {
+        open(files[0], false);
+    } catch (IOException ix) {
+        // We don't want to throw an exception here, but we
+        // report the exception to any registered ErrorManager.
+        reportError(null, ix, ErrorManager.OPEN_FAILURE);
+    }
+    setLevel(oldLevel);
+}

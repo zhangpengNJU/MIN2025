@@ -1,0 +1,17 @@
+/**
+ * {@inheritDoc}
+ */
+public void draw(Graphics2D graphics, float x, float y) {
+    // translating graphics to draw Shape !!!
+    graphics.translate((int) x, (int) y);
+    try {
+        if (fStroke == STROKE) {
+            // REMIND: set stroke to correct size
+            graphics.draw(fShape);
+        } else {
+            graphics.fill(fShape);
+        }
+    } finally {
+        graphics.translate(-(int) x, -(int) y);
+    }
+}

@@ -1,0 +1,67 @@
+/**
+ * Initializes this DateFormatSymbols with the locale data. This method uses
+ * a cached DateFormatSymbols instance for the given locale if available. If
+ * there's no cached one, this method creates an uninitialized instance and
+ * populates its fields from the resource bundle for the locale, and caches
+ * the instance. Note: zoneStrings isn't initialized in this method.
+ */
+private void initializeData(Locale locale) {
+    SoftReference<DateFormatSymbols> ref = cachedInstances.get(locale);
+    DateFormatSymbols dfs;
+    if (ref == null || (dfs = ref.get()) == null) {
+        if (ref != null) {
+            // Remove the empty SoftReference
+            cachedInstances.remove(locale, ref);
+        }
+        dfs = new DateFormatSymbols(false);
+        // Initialize the fields from the ResourceBundle for locale.
+        LocaleProviderAdapter adapter = LocaleProviderAdapter.getAdapter(DateFormatSymbolsProvider.class, locale);
+        // Avoid any potential recursions
+        if (!(adapter instanceof ResourceBundleBasedAdapter)) {
+            adapter = LocaleProviderAdapter.getResourceBundleBased();
+        }
+        ResourceBundle resource = ((ResourceBundleBasedAdapter) adapter).getLocaleData().getDateFormatData(locale);
+        dfs.locale = locale;
+        // JRE and CLDR use different keys
+        // JRE: Eras, short.Eras and narrow.Eras
+        // CLDR: long.Eras, Eras and narrow.Eras
+        if (resource.containsKey("Eras")) {
+            dfs.eras = resource.getStringArray("Eras");
+        } else if (resource.containsKey("long.Eras")) {
+            dfs.eras = resource.getStringArray("long.Eras");
+        } else if (resource.containsKey("short.Eras")) {
+            dfs.eras = resource.getStringArray("short.Eras");
+        }
+        dfs.months = resource.getStringArray("MonthNames");
+        dfs.shortMonths = resource.getStringArray("MonthAbbreviations");
+        dfs.ampms = resource.getStringArray("AmPmMarkers");
+        dfs.localPatternChars = resource.getString("DateTimePatternChars");
+        // Day of week names are stored in a 1-based array.
+        dfs.weekdays = toOneBasedArray(resource.getStringArray("DayNames"));
+        dfs.shortWeekdays = toOneBasedArray(resource.getStringArray("DayAbbreviations"));
+        // Put dfs in the cache
+        ref = new SoftReference<>(dfs);
+        SoftReference<DateFormatSymbols> x = cachedInstances.putIfAbsent(locale, ref);
+        if (x != null) {
+            DateFormatSymbols y = x.get();
+            if (y == null) {
+                // Replace the empty SoftReference with ref.
+                cachedInstances.replace(locale, x, ref);
+            } else {
+                ref = x;
+                dfs = y;
+            }
+        }
+        // If the bundle's locale isn't the target locale, put another cache
+        // entry for the bundle's locale.
+        Locale bundleLocale = resource.getLocale();
+        if (!bundleLocale.equals(locale)) {
+            SoftReference<DateFormatSymbols> z = cachedInstances.putIfAbsent(bundleLocale, ref);
+            if (z != null && z.get() == null) {
+                cachedInstances.replace(bundleLocale, z, ref);
+            }
+        }
+    }
+    // Copy the field values from dfs to this instance.
+    copyMembers(dfs, this);
+}

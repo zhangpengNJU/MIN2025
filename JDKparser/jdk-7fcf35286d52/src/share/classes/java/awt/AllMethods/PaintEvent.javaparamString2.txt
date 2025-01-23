@@ -1,0 +1,14 @@
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case PAINT:
+            typeStr = "PAINT";
+            break;
+        case UPDATE:
+            typeStr = "UPDATE";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr + ",updateRect=" + (updateRect != null ? updateRect.toString() : "null");
+}

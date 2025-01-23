@@ -1,0 +1,16 @@
+/**
+ * {@inheritDoc}
+ *
+ * @param style {@inheritDoc}
+ * @param locale {@inheritDoc}
+ */
+@Override
+public String getDisplayName(TextStyle style, Locale locale) {
+    // If this JapaneseEra is a supplemental one, obtain the name from
+    // the era definition.
+    if (getValue() > N_ERA_CONSTANTS - ERA_OFFSET) {
+        Objects.requireNonNull(locale, "locale");
+        return style.asNormal() == TextStyle.NARROW ? getAbbreviation() : getName();
+    }
+    return new DateTimeFormatterBuilder().appendText(ERA, style).toFormatter(locale).withChronology(JapaneseChronology.INSTANCE).format(this == MEIJI ? MEIJI_6_ISODATE : since);
+}

@@ -1,0 +1,23 @@
+// parse those flags which may be provided by users
+private static Flags parse(char c) {
+    switch(c) {
+        case '-':
+            return LEFT_JUSTIFY;
+        case '#':
+            return ALTERNATE;
+        case '+':
+            return PLUS;
+        case ' ':
+            return LEADING_SPACE;
+        case '0':
+            return ZERO_PAD;
+        case ',':
+            return GROUP;
+        case '(':
+            return PARENTHESES;
+        case '<':
+            return PREVIOUS;
+        default:
+            throw new UnknownFormatFlagsException(String.valueOf(c));
+    }
+}

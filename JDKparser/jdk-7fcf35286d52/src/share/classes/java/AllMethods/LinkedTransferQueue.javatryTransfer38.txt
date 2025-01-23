@@ -1,0 +1,13 @@
+/**
+ * Transfers the element to a waiting consumer immediately, if possible.
+ *
+ * <p>More precisely, transfers the specified element immediately
+ * if there exists a consumer already waiting to receive it (in
+ * {@link #take} or timed {@link #poll(long,TimeUnit) poll}),
+ * otherwise returning {@code false} without enqueuing the element.
+ *
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean tryTransfer(E e) {
+    return xfer(e, true, NOW, 0) == null;
+}

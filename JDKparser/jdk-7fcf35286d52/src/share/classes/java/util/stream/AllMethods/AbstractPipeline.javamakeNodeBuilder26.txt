@@ -1,0 +1,17 @@
+/**
+ * Make a node builder compatible with this stream shape.
+ *
+ * @param exactSizeIfKnown if {@literal >=0}, then a node builder will be
+ * created that has a fixed capacity of at most sizeIfKnown elements. If
+ * {@literal < 0}, then the node builder has an unfixed capacity. A fixed
+ * capacity node builder will throw exceptions if an element is added after
+ * builder has reached capacity, or is built before the builder has reached
+ * capacity.
+ *
+ * @param generator the array generator to be used to create instances of a
+ * T[] array. For implementations supporting primitive nodes, this parameter
+ * may be ignored.
+ * @return a node builder
+ */
+@Override
+abstract Node.Builder<E_OUT> makeNodeBuilder(long exactSizeIfKnown, IntFunction<E_OUT[]> generator);

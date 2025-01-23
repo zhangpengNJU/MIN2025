@@ -1,0 +1,23 @@
+/**
+ * Sets old modifiers by the new ones.
+ */
+private void setOldModifiers() {
+    if ((modifiers & SHIFT_DOWN_MASK) != 0) {
+        modifiers |= SHIFT_MASK;
+    }
+    if ((modifiers & ALT_DOWN_MASK) != 0) {
+        modifiers |= ALT_MASK;
+    }
+    if ((modifiers & CTRL_DOWN_MASK) != 0) {
+        modifiers |= CTRL_MASK;
+    }
+    if ((modifiers & META_DOWN_MASK) != 0) {
+        modifiers |= META_MASK;
+    }
+    if ((modifiers & ALT_GRAPH_DOWN_MASK) != 0) {
+        modifiers |= ALT_GRAPH_MASK;
+    }
+    if ((modifiers & BUTTON1_DOWN_MASK) != 0) {
+        modifiers |= BUTTON1_MASK;
+    }
+}

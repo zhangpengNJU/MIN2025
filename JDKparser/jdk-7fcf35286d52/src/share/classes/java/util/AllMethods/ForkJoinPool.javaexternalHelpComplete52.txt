@@ -1,0 +1,9 @@
+/**
+ * Performs helpComplete for an external submitter.
+ */
+final int externalHelpComplete(CountedCompleter<?> task, int maxTasks) {
+    WorkQueue[] ws;
+    int n;
+    int r = ThreadLocalRandom.getProbe();
+    return ((ws = workQueues) == null || (n = ws.length) == 0) ? 0 : helpComplete(ws[(n - 1) & r & SQMASK], task, maxTasks);
+}

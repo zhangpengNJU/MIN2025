@@ -1,0 +1,39 @@
+/**
+ * Perform contextual shaping.
+ * Synchronized to protect caches used in getContextKey.
+ */
+private synchronized void shapeContextually(char[] text, int start, int count, int ctxKey) {
+    // if we don't support this context, then don't shape
+    if ((mask & (1 << ctxKey)) == 0) {
+        ctxKey = EUROPEAN_KEY;
+    }
+    int lastkey = ctxKey;
+    int base = bases[ctxKey];
+    // Ethiopic doesn't use decimal zero
+    char minDigit = ctxKey == ETHIOPIC_KEY ? '1' : '0';
+    synchronized (NumericShaper.class) {
+        for (int i = start, e = start + count; i < e; ++i) {
+            char c = text[i];
+            if (c >= minDigit && c <= '\u0039') {
+                text[i] = (char) (c + base);
+            }
+            if (isStrongDirectional(c)) {
+                int newkey = getContextKey(c);
+                if (newkey != lastkey) {
+                    lastkey = newkey;
+                    ctxKey = newkey;
+                    if (((mask & EASTERN_ARABIC) != 0) && (ctxKey == ARABIC_KEY || ctxKey == EASTERN_ARABIC_KEY)) {
+                        ctxKey = EASTERN_ARABIC_KEY;
+                    } else if (((mask & ARABIC) != 0) && (ctxKey == ARABIC_KEY || ctxKey == EASTERN_ARABIC_KEY)) {
+                        ctxKey = ARABIC_KEY;
+                    } else if ((mask & (1 << ctxKey)) == 0) {
+                        ctxKey = EUROPEAN_KEY;
+                    }
+                    base = bases[ctxKey];
+                    // Ethiopic doesn't use decimal zero
+                    minDigit = ctxKey == ETHIOPIC_KEY ? '1' : '0';
+                }
+            }
+        }
+    }
+}

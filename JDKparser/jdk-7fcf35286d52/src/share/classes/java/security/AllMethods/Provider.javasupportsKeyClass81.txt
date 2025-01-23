@@ -1,0 +1,12 @@
+private boolean supportsKeyClass(Key key) {
+    if (supportedClasses == null) {
+        return false;
+    }
+    Class<?> keyClass = key.getClass();
+    for (Class<?> clazz : supportedClasses) {
+        if (clazz.isAssignableFrom(keyClass)) {
+            return true;
+        }
+    }
+    return false;
+}

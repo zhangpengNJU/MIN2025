@@ -1,0 +1,91 @@
+/**
+ * ********************************************************************
+ */
+/**
+ * Adds/nests a child within this <tt>BeanContext</tt>.
+ * <p>
+ * Invoked as a side effect of java.beans.Beans.instantiate().
+ * If the child object is not valid for adding then this method
+ * throws an IllegalStateException.
+ * </p>
+ *
+ * @param targetChild The child objects to nest
+ * within this <tt>BeanContext</tt>
+ * @return true if the child was added successfully.
+ * @see #validatePendingAdd
+ */
+public boolean add(Object targetChild) {
+    if (targetChild == null)
+        throw new IllegalArgumentException();
+    // The specification requires that we do nothing if the child
+    // is already nested herein.
+    // test before locking
+    if (children.containsKey(targetChild))
+        return false;
+    synchronized (BeanContext.globalHierarchyLock) {
+        // check again
+        if (children.containsKey(targetChild))
+            return false;
+        if (!validatePendingAdd(targetChild)) {
+            throw new IllegalStateException();
+        }
+        // The specification requires that we invoke setBeanContext() on the
+        // newly added child if it implements the java.beans.beancontext.BeanContextChild interface
+        BeanContextChild cbcc = getChildBeanContextChild(targetChild);
+        BeanContextChild bccp = null;
+        synchronized (targetChild) {
+            if (targetChild instanceof BeanContextProxy) {
+                bccp = ((BeanContextProxy) targetChild).getBeanContextProxy();
+                if (bccp == null)
+                    throw new NullPointerException("BeanContextPeer.getBeanContextProxy()");
+            }
+            BCSChild bcsc = createBCSChild(targetChild, bccp);
+            BCSChild pbcsc = null;
+            synchronized (children) {
+                children.put(targetChild, bcsc);
+                if (bccp != null)
+                    children.put(bccp, pbcsc = createBCSChild(bccp, targetChild));
+            }
+            if (cbcc != null)
+                synchronized (cbcc) {
+                    try {
+                        cbcc.setBeanContext(getBeanContextPeer());
+                    } catch (PropertyVetoException pve) {
+                        synchronized (children) {
+                            children.remove(targetChild);
+                            if (bccp != null)
+                                children.remove(bccp);
+                        }
+                        throw new IllegalStateException();
+                    }
+                    cbcc.addPropertyChangeListener("beanContext", childPCL);
+                    cbcc.addVetoableChangeListener("beanContext", childVCL);
+                }
+            Visibility v = getChildVisibility(targetChild);
+            if (v != null) {
+                if (okToUseGui)
+                    v.okToUseGui();
+                else
+                    v.dontUseGui();
+            }
+            if (getChildSerializable(targetChild) != null)
+                serializable++;
+            childJustAddedHook(targetChild, bcsc);
+            if (bccp != null) {
+                v = getChildVisibility(bccp);
+                if (v != null) {
+                    if (okToUseGui)
+                        v.okToUseGui();
+                    else
+                        v.dontUseGui();
+                }
+                if (getChildSerializable(bccp) != null)
+                    serializable++;
+                childJustAddedHook(bccp, pbcsc);
+            }
+        }
+        // The specification requires that we fire a notification of the change
+        fireChildrenAdded(new BeanContextMembershipEvent(getBeanContextPeer(), bccp == null ? new Object[] { targetChild } : new Object[] { targetChild, bccp }));
+    }
+    return true;
+}

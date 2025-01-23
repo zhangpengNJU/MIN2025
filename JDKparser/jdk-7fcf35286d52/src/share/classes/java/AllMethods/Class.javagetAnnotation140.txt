@@ -1,0 +1,9 @@
+/**
+ * @throws NullPointerException {@inheritDoc}
+ * @since 1.5
+ */
+@SuppressWarnings("unchecked")
+public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+    Objects.requireNonNull(annotationClass);
+    return (A) annotationData().annotations.get(annotationClass);
+}

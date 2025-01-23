@@ -1,0 +1,28 @@
+// If we implement equals() we must also implement hashCode
+public int hashCode() {
+    int hash = 0;
+    hash = width;
+    hash <<= 8;
+    hash ^= height;
+    hash <<= 8;
+    hash ^= numBands;
+    hash <<= 8;
+    hash ^= dataType;
+    hash <<= 8;
+    for (int i = 0; i < bandOffsets.length; i++) {
+        hash ^= bandOffsets[i];
+        hash <<= 8;
+    }
+    for (int i = 0; i < bankIndices.length; i++) {
+        hash ^= bankIndices[i];
+        hash <<= 8;
+    }
+    hash ^= numBands;
+    hash <<= 8;
+    hash ^= numBanks;
+    hash <<= 8;
+    hash ^= scanlineStride;
+    hash <<= 8;
+    hash ^= pixelStride;
+    return hash;
+}

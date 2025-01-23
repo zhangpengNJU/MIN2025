@@ -1,0 +1,9 @@
+private Object implRemove(Object key) {
+    if (key instanceof String) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.remove((String) key);
+    }
+    return super.remove(key);
+}

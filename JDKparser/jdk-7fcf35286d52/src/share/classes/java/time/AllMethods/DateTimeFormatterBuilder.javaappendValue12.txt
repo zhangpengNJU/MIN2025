@@ -1,0 +1,40 @@
+/**
+ * Appends a fixed or variable width printer-parser handling adjacent value mode.
+ * If a PrinterParser is not active then the new PrinterParser becomes
+ * the active PrinterParser.
+ * Otherwise, the active PrinterParser is modified depending on the new PrinterParser.
+ * If the new PrinterParser is fixed width and has sign style {@code NOT_NEGATIVE}
+ * then its width is added to the active PP and
+ * the new PrinterParser is forced to be fixed width.
+ * If the new PrinterParser is variable width, the active PrinterParser is changed
+ * to be fixed width and the new PrinterParser becomes the active PP.
+ *
+ * @param pp  the printer-parser, not null
+ * @return this, for chaining, not null
+ */
+private DateTimeFormatterBuilder appendValue(NumberPrinterParser pp) {
+    if (active.valueParserIndex >= 0) {
+        final int activeValueParser = active.valueParserIndex;
+        // adjacent parsing mode, update setting in previous parsers
+        NumberPrinterParser basePP = (NumberPrinterParser) active.printerParsers.get(activeValueParser);
+        if (pp.minWidth == pp.maxWidth && pp.signStyle == SignStyle.NOT_NEGATIVE) {
+            // Append the width to the subsequentWidth of the active parser
+            basePP = basePP.withSubsequentWidth(pp.maxWidth);
+            // Append the new parser as a fixed width
+            appendInternal(pp.withFixedWidth());
+            // Retain the previous active parser
+            active.valueParserIndex = activeValueParser;
+        } else {
+            // Modify the active parser to be fixed width
+            basePP = basePP.withFixedWidth();
+            // The new parser becomes the mew active parser
+            active.valueParserIndex = appendInternal(pp);
+        }
+        // Replace the modified parser with the updated one
+        active.printerParsers.set(activeValueParser, basePP);
+    } else {
+        // The new Parser becomes the active parser
+        active.valueParserIndex = appendInternal(pp);
+    }
+    return this;
+}

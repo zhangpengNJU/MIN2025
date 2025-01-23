@@ -1,0 +1,11 @@
+/**
+ * Checks the given index against the limit, throwing an {@link
+ * IndexOutOfBoundsException} if it is not smaller than the limit
+ * or is smaller than zero.
+ */
+final int checkIndex(int i) {
+    // package-private
+    if ((i < 0) || (i >= limit))
+        throw new IndexOutOfBoundsException();
+    return i;
+}

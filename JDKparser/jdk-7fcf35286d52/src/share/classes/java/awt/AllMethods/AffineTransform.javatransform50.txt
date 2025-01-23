@@ -1,0 +1,80 @@
+/**
+ * Transforms an array of point objects by this transform.
+ * If any element of the <code>ptDst</code> array is
+ * <code>null</code>, a new <code>Point2D</code> object is allocated
+ * and stored into that element before storing the results of the
+ * transformation.
+ * <p>
+ * Note that this method does not take any precautions to
+ * avoid problems caused by storing results into <code>Point2D</code>
+ * objects that will be used as the source for calculations
+ * further down the source array.
+ * This method does guarantee that if a specified <code>Point2D</code>
+ * object is both the source and destination for the same single point
+ * transform operation then the results will not be stored until
+ * the calculations are complete to avoid storing the results on
+ * top of the operands.
+ * If, however, the destination <code>Point2D</code> object for one
+ * operation is the same object as the source <code>Point2D</code>
+ * object for another operation further down the source array then
+ * the original coordinates in that point are overwritten before
+ * they can be converted.
+ * @param ptSrc the array containing the source point objects
+ * @param ptDst the array into which the transform point objects are
+ * returned
+ * @param srcOff the offset to the first point object to be
+ * transformed in the source array
+ * @param dstOff the offset to the location of the first
+ * transformed point object that is stored in the destination array
+ * @param numPts the number of point objects to be transformed
+ * @since 1.2
+ */
+public void transform(Point2D[] ptSrc, int srcOff, Point2D[] ptDst, int dstOff, int numPts) {
+    int state = this.state;
+    while (--numPts >= 0) {
+        // Copy source coords into local variables in case src == dst
+        Point2D src = ptSrc[srcOff++];
+        double x = src.getX();
+        double y = src.getY();
+        Point2D dst = ptDst[dstOff++];
+        if (dst == null) {
+            if (src instanceof Point2D.Double) {
+                dst = new Point2D.Double();
+            } else {
+                dst = new Point2D.Float();
+            }
+            ptDst[dstOff - 1] = dst;
+        }
+        switch(state) {
+            default:
+                stateError();
+                /* NOTREACHED */
+                return;
+            case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+                dst.setLocation(x * m00 + y * m01 + m02, x * m10 + y * m11 + m12);
+                break;
+            case (APPLY_SHEAR | APPLY_SCALE):
+                dst.setLocation(x * m00 + y * m01, x * m10 + y * m11);
+                break;
+            case (APPLY_SHEAR | APPLY_TRANSLATE):
+                dst.setLocation(y * m01 + m02, x * m10 + m12);
+                break;
+            case (APPLY_SHEAR):
+                dst.setLocation(y * m01, x * m10);
+                break;
+            case (APPLY_SCALE | APPLY_TRANSLATE):
+                dst.setLocation(x * m00 + m02, y * m11 + m12);
+                break;
+            case (APPLY_SCALE):
+                dst.setLocation(x * m00, y * m11);
+                break;
+            case (APPLY_TRANSLATE):
+                dst.setLocation(x + m02, y + m12);
+                break;
+            case (APPLY_IDENTITY):
+                dst.setLocation(x, y);
+                break;
+        }
+    }
+/* NOTREACHED */
+}

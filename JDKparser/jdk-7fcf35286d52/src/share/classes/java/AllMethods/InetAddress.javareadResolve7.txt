@@ -1,0 +1,12 @@
+/**
+ * Replaces the de-serialized object with an Inet4Address object.
+ *
+ * @return the alternate object to the de-serialized object.
+ *
+ * @throws ObjectStreamException if a new object replacing this
+ * object could not be created
+ */
+private Object readResolve() throws ObjectStreamException {
+    // will replace the deserialized 'this' object
+    return new Inet4Address(holder().getHostName(), holder().getAddress());
+}

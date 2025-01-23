@@ -1,0 +1,33 @@
+/**
+ * Tests if the interior of the <code>Shape</code> entirely contains the
+ * specified <code>Rectangle2D</code>.
+ * The {@code Shape.contains()} method allows a {@code Shape}
+ * implementation to conservatively return {@code false} when:
+ * <ul>
+ * <li>
+ * the <code>intersect</code> method returns <code>true</code> and
+ * <li>
+ * the calculations to determine whether or not the
+ * <code>Shape</code> entirely contains the <code>Rectangle2D</code>
+ * are prohibitively expensive.
+ * </ul>
+ * This means that for some {@code Shapes} this method might
+ * return {@code false} even though the {@code Shape} contains
+ * the {@code Rectangle2D}.
+ * The {@link java.awt.geom.Area Area} class performs
+ * more accurate geometric computations than most
+ * {@code Shape} objects and therefore can be used if a more precise
+ * answer is required.
+ *
+ * @param r The specified <code>Rectangle2D</code>
+ * @return <code>true</code> if the interior of the <code>Shape</code>
+ *          entirely contains the <code>Rectangle2D</code>;
+ *          <code>false</code> otherwise or, if the <code>Shape</code>
+ *          contains the <code>Rectangle2D</code> and the
+ *          <code>intersects</code> method returns <code>true</code>
+ *          and the containment calculations would be too expensive to
+ *          perform.
+ * @see #contains(double, double, double, double)
+ * @since 1.2
+ */
+public boolean contains(Rectangle2D r);

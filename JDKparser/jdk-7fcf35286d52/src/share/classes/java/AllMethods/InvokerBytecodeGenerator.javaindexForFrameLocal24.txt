@@ -1,0 +1,7 @@
+private int indexForFrameLocal(int frameLocal) {
+    for (int i = 0; i < localsMap.length; i++) {
+        if (localsMap[i] == frameLocal && localTypes[i] != V_TYPE)
+            return i;
+    }
+    return -1;
+}

@@ -1,0 +1,14 @@
+private boolean match(String cname, String hname) {
+    String a = cname.toLowerCase();
+    String b = hname.toLowerCase();
+    if (a.startsWith(b) && ((a.length() == b.length()) || (a.charAt(b.length()) == '.'))) {
+        return true;
+    }
+    if (cdomain == null) {
+        cdomain = RegisteredDomain.from(a).map(RegisteredDomain::name).orElse(a);
+    }
+    if (hdomain == null) {
+        hdomain = RegisteredDomain.from(b).map(RegisteredDomain::name).orElse(b);
+    }
+    return cdomain.length() != 0 && hdomain.length() != 0 && cdomain.equals(hdomain);
+}

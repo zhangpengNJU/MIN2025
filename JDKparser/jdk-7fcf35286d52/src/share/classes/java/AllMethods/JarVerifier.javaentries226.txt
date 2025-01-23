@@ -1,0 +1,49 @@
+/*
+     * Like entries() but screens out internal JAR mechanism entries
+     * and includes signed entries with no ZIP data.
+     */
+public Enumeration<JarEntry> entries2(final JarFile jar, Enumeration<? extends ZipEntry> e) {
+    final Map<String, CodeSigner[]> map = new HashMap<>();
+    map.putAll(signerMap());
+    final Enumeration<? extends ZipEntry> enum_ = e;
+    return new Enumeration<JarEntry>() {
+
+        Enumeration<String> signers = null;
+
+        JarEntry entry;
+
+        public boolean hasMoreElements() {
+            if (entry != null) {
+                return true;
+            }
+            while (enum_.hasMoreElements()) {
+                ZipEntry ze = enum_.nextElement();
+                if (JarVerifier.isSigningRelated(ze.getName())) {
+                    continue;
+                }
+                entry = jar.newEntry(ze);
+                return true;
+            }
+            if (signers == null) {
+                signers = Collections.enumeration(map.keySet());
+            }
+            while (signers.hasMoreElements()) {
+                String name = signers.nextElement();
+                entry = jar.newEntry(new ZipEntry(name));
+                return true;
+            }
+            // Any map entries left?
+            return false;
+        }
+
+        public JarEntry nextElement() {
+            if (hasMoreElements()) {
+                JarEntry je = entry;
+                map.remove(je.getName());
+                entry = null;
+                return je;
+            }
+            throw new NoSuchElementException();
+        }
+    };
+}

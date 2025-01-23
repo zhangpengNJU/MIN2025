@@ -1,0 +1,10 @@
+Object[] cpPatches(byte[] classFile) {
+    int size = getConstantPoolSize(classFile);
+    Object[] res = new Object[size];
+    for (CpPatch p : cpPatches.values()) {
+        if (p.index >= size)
+            throw new InternalError("in cpool[" + size + "]: " + p + "\n" + Arrays.toString(Arrays.copyOf(classFile, 20)));
+        res[p.index] = p.value;
+    }
+    return res;
+}

@@ -1,0 +1,7 @@
+boolean isModalExcluded(Dialog.ModalExclusionType exclusionType) {
+    if ((modalExclusionType != null) && modalExclusionType.compareTo(exclusionType) >= 0) {
+        return true;
+    }
+    Window owner = getOwner_NoClientCode();
+    return (owner != null) && owner.isModalExcluded(exclusionType);
+}

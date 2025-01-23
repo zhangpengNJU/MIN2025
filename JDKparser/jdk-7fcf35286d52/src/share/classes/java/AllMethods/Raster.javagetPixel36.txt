@@ -1,0 +1,17 @@
+/**
+ * Returns the samples in an array of float for the
+ * specified pixel.
+ * An ArrayIndexOutOfBoundsException may be thrown
+ * if the coordinates are not in bounds.  However, explicit bounds
+ * checking is not guaranteed.
+ * @param x The X coordinate of the pixel location
+ * @param y The Y coordinate of the pixel location
+ * @param fArray An optionally preallocated float array
+ * @return the samples for the specified pixel.
+ *
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are not
+ * in bounds, or if fArray is too small to hold the output.
+ */
+public float[] getPixel(int x, int y, float[] fArray) {
+    return sampleModel.getPixel(x - sampleModelTranslateX, y - sampleModelTranslateY, fArray, dataBuffer);
+}

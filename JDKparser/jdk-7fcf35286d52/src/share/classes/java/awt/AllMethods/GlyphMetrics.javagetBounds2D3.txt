@@ -1,0 +1,9 @@
+/**
+ * Returns the bounds of the glyph. This is the bounding box of the glyph outline.
+ * Because of rasterization and pixel alignment effects, it does not necessarily
+ * enclose the pixels that are affected when rendering the glyph.
+ * @return a {@link Rectangle2D} that is the bounds of the glyph.
+ */
+public Rectangle2D getBounds2D() {
+    return new Rectangle2D.Float(bounds.x, bounds.y, bounds.width, bounds.height);
+}

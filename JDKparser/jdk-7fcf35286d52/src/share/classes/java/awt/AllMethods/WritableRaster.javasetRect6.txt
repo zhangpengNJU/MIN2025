@@ -1,0 +1,42 @@
+/**
+ * Copies pixels from Raster srcRaster to this WritableRaster.  Each pixel
+ * in srcRaster is copied to the same x,y address in this raster, unless
+ * the address falls outside the bounds of this raster.  srcRaster
+ * must have the same number of bands as this WritableRaster.  The
+ * copy is a simple copy of source samples to the corresponding destination
+ * samples.
+ * <p>
+ * If all samples of both source and destination Rasters are of
+ * integral type and less than or equal to 32 bits in size, then calling
+ * this method is equivalent to executing the following code for all
+ * <code>x,y</code> addresses valid in both Rasters.
+ * <pre>{@code
+ *       Raster srcRaster;
+ *       WritableRaster dstRaster;
+ *       for (int b = 0; b < srcRaster.getNumBands(); b++) {
+ *           dstRaster.setSample(x, y, b, srcRaster.getSample(x, y, b));
+ *       }
+ * }</pre>
+ * Thus, when copying an integral type source to an integral type
+ * destination, if the source sample size is greater than the destination
+ * sample size for a particular band, the high order bits of the source
+ * sample are truncated.  If the source sample size is less than the
+ * destination size for a particular band, the high order bits of the
+ * destination are zero-extended or sign-extended depending on whether
+ * srcRaster's SampleModel treats the sample as a signed or unsigned
+ * quantity.
+ * <p>
+ * When copying a float or double source to an integral type destination,
+ * each source sample is cast to the destination type.  When copying an
+ * integral type source to a float or double destination, the source
+ * is first converted to a 32-bit int (if necessary), using the above
+ * rules for integral types, and then the int is cast to float or
+ * double.
+ * <p>
+ * @param srcRaster  The  Raster from which to copy pixels.
+ *
+ * @throws NullPointerException if srcRaster is null.
+ */
+public void setRect(Raster srcRaster) {
+    setRect(0, 0, srcRaster);
+}

@@ -1,0 +1,16 @@
+/**
+ * Returns the width that would be occupied by a vertical
+ * scrollbar, which is independent of whether it is currently
+ * displayed by the scroll pane or not.
+ * @return the width of a vertical scrollbar in pixels
+ */
+public int getVScrollbarWidth() {
+    int w = 0;
+    if (scrollbarDisplayPolicy != SCROLLBARS_NEVER) {
+        ScrollPanePeer peer = (ScrollPanePeer) this.peer;
+        if (peer != null) {
+            w = peer.getVScrollbarWidth();
+        }
+    }
+    return w;
+}

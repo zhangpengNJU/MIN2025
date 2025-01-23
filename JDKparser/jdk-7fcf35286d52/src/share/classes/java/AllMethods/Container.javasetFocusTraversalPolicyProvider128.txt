@@ -1,0 +1,22 @@
+/**
+ * Sets whether this container will be used to provide focus
+ * traversal policy. Container with this property as
+ * <code>true</code> will be used to acquire focus traversal policy
+ * instead of closest focus cycle root ancestor.
+ * @param provider indicates whether this container will be used to
+ *                provide focus traversal policy
+ * @see #setFocusTraversalPolicy
+ * @see #getFocusTraversalPolicy
+ * @see #isFocusTraversalPolicyProvider
+ * @since 1.5
+ * @beaninfo
+ *        bound: true
+ */
+public final void setFocusTraversalPolicyProvider(boolean provider) {
+    boolean oldProvider;
+    synchronized (this) {
+        oldProvider = focusTraversalPolicyProvider;
+        focusTraversalPolicyProvider = provider;
+    }
+    firePropertyChange("focusTraversalPolicyProvider", oldProvider, provider);
+}

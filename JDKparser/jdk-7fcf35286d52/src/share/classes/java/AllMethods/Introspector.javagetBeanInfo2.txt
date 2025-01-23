@@ -1,0 +1,18 @@
+/**
+ * Introspect on a Java bean and learn all about its properties, exposed
+ * methods, below a given "stop" point.
+ * <p>
+ * If the BeanInfo class for a Java Bean has been previously Introspected
+ * based on the same arguments, then the BeanInfo class is retrieved
+ * from the BeanInfo cache.
+ * @return the BeanInfo for the bean
+ * @param beanClass The bean class to be analyzed.
+ * @param stopClass The baseclass at which to stop the analysis.  Any
+ *    methods/properties/events in the stopClass or in its baseclasses
+ *    will be ignored in the analysis.
+ * @exception IntrospectionException if an exception occurs during
+ *              introspection.
+ */
+public static BeanInfo getBeanInfo(Class<?> beanClass, Class<?> stopClass) throws IntrospectionException {
+    return getBeanInfo(beanClass, stopClass, USE_ALL_BEANINFO);
+}

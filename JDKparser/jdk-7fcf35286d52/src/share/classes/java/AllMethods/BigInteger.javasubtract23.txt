@@ -1,0 +1,20 @@
+/**
+ * Returns a BigInteger whose value is {@code (this - val)}.
+ *
+ * @param  val value to be subtracted from this BigInteger.
+ * @return {@code this - val}
+ */
+public BigInteger subtract(BigInteger val) {
+    if (val.signum == 0)
+        return this;
+    if (signum == 0)
+        return val.negate();
+    if (val.signum != signum)
+        return new BigInteger(add(mag, val.mag), signum);
+    int cmp = compareMagnitude(val);
+    if (cmp == 0)
+        return ZERO;
+    int[] resultMag = (cmp > 0 ? subtract(mag, val.mag) : subtract(val.mag, mag));
+    resultMag = trustedStripLeadingZeroInts(resultMag);
+    return new BigInteger(resultMag, cmp == signum ? 1 : -1);
+}

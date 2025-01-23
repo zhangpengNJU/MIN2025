@@ -1,0 +1,30 @@
+public boolean hasNext() {
+    if (nextElement != null || emptyElementCount > 0)
+        return true;
+    if (current == input.length())
+        return false;
+    // Consume the next matching element
+    // Count sequence of matching empty elements
+    while (matcher.find()) {
+        nextElement = input.subSequence(current, matcher.start()).toString();
+        current = matcher.end();
+        if (!nextElement.isEmpty()) {
+            return true;
+        } else if (current > 0) {
+            // no empty leading substring for zero-width
+            // match at the beginning of the input
+            emptyElementCount++;
+        }
+    }
+    // Consume last matching element
+    nextElement = input.subSequence(current, input.length()).toString();
+    current = input.length();
+    if (!nextElement.isEmpty()) {
+        return true;
+    } else {
+        // Ignore a terminal sequence of matching empty elements
+        emptyElementCount = 0;
+        nextElement = null;
+        return false;
+    }
+}

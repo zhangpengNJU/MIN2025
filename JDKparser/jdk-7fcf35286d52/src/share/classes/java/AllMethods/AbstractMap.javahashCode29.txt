@@ -1,0 +1,24 @@
+/**
+ * Returns the hash code value for this map.  The hash code of a map is
+ * defined to be the sum of the hash codes of each entry in the map's
+ * <tt>entrySet()</tt> view.  This ensures that <tt>m1.equals(m2)</tt>
+ * implies that <tt>m1.hashCode()==m2.hashCode()</tt> for any two maps
+ * <tt>m1</tt> and <tt>m2</tt>, as required by the general contract of
+ * {@link Object#hashCode}.
+ *
+ * @implSpec
+ * This implementation iterates over <tt>entrySet()</tt>, calling
+ * {@link Map.Entry#hashCode hashCode()} on each element (entry) in the
+ * set, and adding up the results.
+ *
+ * @return the hash code value for this map
+ * @see Map.Entry#hashCode()
+ * @see Object#equals(Object)
+ * @see Set#equals(Object)
+ */
+public int hashCode() {
+    int h = 0;
+    Iterator<Entry<K, V>> i = entrySet().iterator();
+    while (i.hasNext()) h += i.next().hashCode();
+    return h;
+}

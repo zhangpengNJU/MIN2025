@@ -1,0 +1,28 @@
+/**
+ * Inserts the specified {@code CharSequence} into this sequence.
+ * <p>
+ * The characters of the {@code CharSequence} argument are inserted,
+ * in order, into this sequence at the indicated offset, moving up
+ * any characters originally above that position and increasing the length
+ * of this sequence by the length of the argument s.
+ * <p>
+ * The result of this method is exactly the same as if it were an
+ * invocation of this object's
+ * {@link #insert(int,CharSequence,int,int) insert}(dstOffset, s, 0, s.length())
+ * method.
+ *
+ * <p>If {@code s} is {@code null}, then the four characters
+ * {@code "null"} are inserted into this sequence.
+ *
+ * @param      dstOffset   the offset.
+ * @param      s the sequence to be inserted
+ * @return     a reference to this object.
+ * @throws     IndexOutOfBoundsException  if the offset is invalid.
+ */
+public AbstractStringBuilder insert(int dstOffset, CharSequence s) {
+    if (s == null)
+        s = "null";
+    if (s instanceof String)
+        return this.insert(dstOffset, (String) s);
+    return this.insert(dstOffset, s, 0, s.length());
+}

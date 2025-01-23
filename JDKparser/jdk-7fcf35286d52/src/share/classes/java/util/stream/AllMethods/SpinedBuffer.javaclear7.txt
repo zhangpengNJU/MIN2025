@@ -1,0 +1,13 @@
+@Override
+public void clear() {
+    if (spine != null) {
+        curChunk = spine[0];
+        for (int i = 0; i < curChunk.length; i++) curChunk[i] = null;
+        spine = null;
+        priorElementCount = null;
+    } else {
+        for (int i = 0; i < elementIndex; i++) curChunk[i] = null;
+    }
+    elementIndex = 0;
+    spineIndex = 0;
+}

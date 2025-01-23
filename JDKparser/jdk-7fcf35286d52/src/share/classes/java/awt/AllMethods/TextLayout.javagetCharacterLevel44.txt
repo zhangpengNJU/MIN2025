@@ -1,0 +1,18 @@
+/**
+ * Returns the level of the character at <code>index</code>.
+ * Indices -1 and <code>characterCount</code> are assigned the base
+ * level of this <code>TextLayout</code>.
+ * @param index the index of the character from which to get the level
+ * @return the level of the character at the specified index.
+ */
+public byte getCharacterLevel(int index) {
+    // hmm, allow indices at endpoints?  For now, yes.
+    if (index < -1 || index > characterCount) {
+        throw new IllegalArgumentException("Index is out of range in getCharacterLevel.");
+    }
+    ensureCache();
+    if (index == -1 || index == characterCount) {
+        return (byte) (textLine.isDirectionLTR() ? 0 : 1);
+    }
+    return textLine.getCharLevel(index);
+}

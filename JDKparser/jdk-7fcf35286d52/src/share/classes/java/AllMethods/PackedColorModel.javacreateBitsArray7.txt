@@ -1,0 +1,18 @@
+private final static int[] createBitsArray(int[] colorMaskArray, int alphaMask) {
+    int numColors = colorMaskArray.length;
+    int numAlpha = (alphaMask == 0 ? 0 : 1);
+    int[] arr = new int[numColors + numAlpha];
+    for (int i = 0; i < numColors; i++) {
+        arr[i] = countBits(colorMaskArray[i]);
+        if (arr[i] < 0) {
+            throw new IllegalArgumentException("Noncontiguous color mask (" + Integer.toHexString(colorMaskArray[i]) + "at index " + i);
+        }
+    }
+    if (alphaMask != 0) {
+        arr[numColors] = countBits(alphaMask);
+        if (arr[numColors] < 0) {
+            throw new IllegalArgumentException("Noncontiguous alpha mask (" + Integer.toHexString(alphaMask));
+        }
+    }
+    return arr;
+}

@@ -1,0 +1,28 @@
+@Override
+public int parse(DateTimeParseContext context, CharSequence parseText, int position) {
+    int length = parseText.length();
+    if (position < 0 || position > length) {
+        throw new IndexOutOfBoundsException();
+    }
+    TextStyle style = (context.isStrict() ? textStyle : null);
+    Chronology chrono = context.getEffectiveChronology();
+    Iterator<Entry<String, Long>> it;
+    if (chrono == null || chrono == IsoChronology.INSTANCE) {
+        it = provider.getTextIterator(field, style, context.getLocale());
+    } else {
+        it = provider.getTextIterator(chrono, field, style, context.getLocale());
+    }
+    if (it != null) {
+        while (it.hasNext()) {
+            Entry<String, Long> entry = it.next();
+            String itText = entry.getKey();
+            if (context.subSequenceEquals(itText, 0, parseText, position, itText.length())) {
+                return context.setParsedField(field, entry.getValue(), position, position + itText.length());
+            }
+        }
+        if (context.isStrict()) {
+            return ~position;
+        }
+    }
+    return numberPrinterParser().parse(context, parseText, position);
+}

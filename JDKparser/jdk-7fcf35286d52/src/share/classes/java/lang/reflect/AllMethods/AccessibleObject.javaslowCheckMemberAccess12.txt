@@ -1,0 +1,12 @@
+// Keep all this slow stuff out of line:
+void slowCheckMemberAccess(Class<?> caller, Class<?> clazz, Object obj, int modifiers, Class<?> targetClass) throws IllegalAccessException {
+    Reflection.ensureMemberAccess(caller, clazz, obj, modifiers);
+    // Success: Update the cache.
+    Object cache = ((targetClass == clazz) ? caller : new Class<?>[] { caller, targetClass });
+    // Note:  The two cache elements are not volatile,
+    // but they are effectively final.  The Java memory model
+    // guarantees that the initializing stores for the cache
+    // elements will occur before the volatile write.
+    // write volatile
+    securityCheckCache = cache;
+}

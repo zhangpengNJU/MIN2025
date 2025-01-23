@@ -1,0 +1,25 @@
+/**
+ * Reads in object handle, sets passHandle to the read handle, and returns
+ * object associated with the handle.
+ */
+private Object readHandle(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_REFERENCE) {
+        throw new InternalError();
+    }
+    passHandle = bin.readInt() - baseWireHandle;
+    if (passHandle < 0 || passHandle >= handles.size()) {
+        throw new StreamCorruptedException(String.format("invalid handle value: %08X", passHandle + baseWireHandle));
+    }
+    if (unshared) {
+        // REMIND: what type of exception to throw here?
+        throw new InvalidObjectException("cannot read back reference as unshared");
+    }
+    Object obj = handles.lookupObject(passHandle);
+    if (obj == unsharedMarker) {
+        // REMIND: what type of exception to throw here?
+        throw new InvalidObjectException("cannot read back reference to unshared object");
+    }
+    // just a check for number of references, depth, no class
+    filterCheck(null, -1);
+    return obj;
+}

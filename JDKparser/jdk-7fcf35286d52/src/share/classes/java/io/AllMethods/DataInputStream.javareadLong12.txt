@@ -1,0 +1,21 @@
+/**
+ * See the general contract of the <code>readLong</code>
+ * method of <code>DataInput</code>.
+ * <p>
+ * Bytes
+ * for this operation are read from the contained
+ * input stream.
+ *
+ * @return     the next eight bytes of this input stream, interpreted as a
+ *             <code>long</code>.
+ * @exception  EOFException  if this input stream reaches the end before
+ *               reading eight bytes.
+ * @exception  IOException   the stream has been closed and the contained
+ *             input stream does not support reading after close, or
+ *             another I/O error occurs.
+ * @see        java.io.FilterInputStream#in
+ */
+public final long readLong() throws IOException {
+    readFully(readBuffer, 0, 8);
+    return (((long) readBuffer[0] << 56) + ((long) (readBuffer[1] & 255) << 48) + ((long) (readBuffer[2] & 255) << 40) + ((long) (readBuffer[3] & 255) << 32) + ((long) (readBuffer[4] & 255) << 24) + ((readBuffer[5] & 255) << 16) + ((readBuffer[6] & 255) << 8) + ((readBuffer[7] & 255) << 0));
+}

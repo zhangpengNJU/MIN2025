@@ -1,0 +1,51 @@
+/**
+ * Called whenever an interior remove (not at takeIndex) occurred.
+ *
+ * @return true if this iterator should be unlinked from itrs
+ */
+boolean removedAt(int removedIndex) {
+    // assert lock.getHoldCount() == 1;
+    if (isDetached())
+        return true;
+    final int cycles = itrs.cycles;
+    final int takeIndex = ArrayBlockingQueue.this.takeIndex;
+    final int prevCycles = this.prevCycles;
+    final int prevTakeIndex = this.prevTakeIndex;
+    final int len = items.length;
+    int cycleDiff = cycles - prevCycles;
+    if (removedIndex < takeIndex)
+        cycleDiff++;
+    final int removedDistance = (cycleDiff * len) + (removedIndex - prevTakeIndex);
+    // assert removedDistance >= 0;
+    int cursor = this.cursor;
+    if (cursor >= 0) {
+        int x = distance(cursor, prevTakeIndex, len);
+        if (x == removedDistance) {
+            if (cursor == putIndex)
+                this.cursor = cursor = NONE;
+        } else if (x > removedDistance) {
+            // assert cursor != prevTakeIndex;
+            this.cursor = cursor = dec(cursor);
+        }
+    }
+    int lastRet = this.lastRet;
+    if (lastRet >= 0) {
+        int x = distance(lastRet, prevTakeIndex, len);
+        if (x == removedDistance)
+            this.lastRet = lastRet = REMOVED;
+        else if (x > removedDistance)
+            this.lastRet = lastRet = dec(lastRet);
+    }
+    int nextIndex = this.nextIndex;
+    if (nextIndex >= 0) {
+        int x = distance(nextIndex, prevTakeIndex, len);
+        if (x == removedDistance)
+            this.nextIndex = nextIndex = REMOVED;
+        else if (x > removedDistance)
+            this.nextIndex = nextIndex = dec(nextIndex);
+    } else if (cursor < 0 && nextIndex < 0 && lastRet < 0) {
+        this.prevTakeIndex = DETACHED;
+        return true;
+    }
+    return false;
+}

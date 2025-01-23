@@ -1,0 +1,9 @@
+// Tells whether default loggers are required in this context.
+// If true, the default loggers will be lazily added.
+final boolean requiresDefaultLoggers() {
+    final boolean requiresDefaultLoggers = (getOwner() == manager);
+    if (requiresDefaultLoggers) {
+        getOwner().ensureLogManagerInitialized();
+    }
+    return requiresDefaultLoggers;
+}

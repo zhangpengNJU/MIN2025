@@ -1,0 +1,25 @@
+public boolean tryAdvance(Consumer<? super K> action) {
+    int hi;
+    if (action == null)
+        throw new NullPointerException();
+    WeakHashMap.Entry<K, V>[] tab = map.table;
+    if (tab.length >= (hi = getFence()) && index >= 0) {
+        while (current != null || index < hi) {
+            if (current == null)
+                current = tab[index++];
+            else {
+                Object x = current.get();
+                current = current.next;
+                if (x != null) {
+                    @SuppressWarnings("unchecked")
+                    K k = (K) WeakHashMap.unmaskNull(x);
+                    action.accept(k);
+                    if (map.modCount != expectedModCount)
+                        throw new ConcurrentModificationException();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

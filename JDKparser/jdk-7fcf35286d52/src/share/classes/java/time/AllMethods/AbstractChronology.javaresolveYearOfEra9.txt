@@ -1,0 +1,38 @@
+ChronoLocalDate resolveYearOfEra(Map<TemporalField, Long> fieldValues, ResolverStyle resolverStyle) {
+    Long yoeLong = fieldValues.remove(YEAR_OF_ERA);
+    if (yoeLong != null) {
+        Long eraLong = fieldValues.remove(ERA);
+        int yoe;
+        if (resolverStyle != ResolverStyle.LENIENT) {
+            yoe = range(YEAR_OF_ERA).checkValidIntValue(yoeLong, YEAR_OF_ERA);
+        } else {
+            yoe = Math.toIntExact(yoeLong);
+        }
+        if (eraLong != null) {
+            Era eraObj = eraOf(range(ERA).checkValidIntValue(eraLong, ERA));
+            addFieldValue(fieldValues, YEAR, prolepticYear(eraObj, yoe));
+        } else {
+            if (fieldValues.containsKey(YEAR)) {
+                int year = range(YEAR).checkValidIntValue(fieldValues.get(YEAR), YEAR);
+                ChronoLocalDate chronoDate = dateYearDay(year, 1);
+                addFieldValue(fieldValues, YEAR, prolepticYear(chronoDate.getEra(), yoe));
+            } else if (resolverStyle == ResolverStyle.STRICT) {
+                // do not invent era if strict
+                // reinstate the field removed earlier, no cross-check issues
+                fieldValues.put(YEAR_OF_ERA, yoeLong);
+            } else {
+                List<Era> eras = eras();
+                if (eras.isEmpty()) {
+                    addFieldValue(fieldValues, YEAR, yoe);
+                } else {
+                    Era eraObj = eras.get(eras.size() - 1);
+                    addFieldValue(fieldValues, YEAR, prolepticYear(eraObj, yoe));
+                }
+            }
+        }
+    } else if (fieldValues.containsKey(ERA)) {
+        // always validated
+        range(ERA).checkValidValue(fieldValues.get(ERA), ERA);
+    }
+    return null;
+}

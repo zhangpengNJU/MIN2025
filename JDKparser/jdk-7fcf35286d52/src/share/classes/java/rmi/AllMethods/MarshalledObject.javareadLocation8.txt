@@ -1,0 +1,8 @@
+/**
+ * Overrides MarshalInputStream.readLocation to return locations from
+ * the stream we were given, or <code>null</code> if we were given a
+ * <code>null</code> location stream.
+ */
+protected Object readLocation() throws IOException, ClassNotFoundException {
+    return (locIn == null ? null : locIn.readObject());
+}

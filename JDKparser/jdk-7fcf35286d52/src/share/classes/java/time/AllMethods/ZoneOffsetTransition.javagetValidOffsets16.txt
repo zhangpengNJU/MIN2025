@@ -1,0 +1,13 @@
+/**
+ * Gets the valid offsets during this transition.
+ * <p>
+ * A gap will return an empty list, while an overlap will return both offsets.
+ *
+ * @return the list of valid offsets
+ */
+List<ZoneOffset> getValidOffsets() {
+    if (isGap()) {
+        return Collections.emptyList();
+    }
+    return Arrays.asList(getOffsetBefore(), getOffsetAfter());
+}

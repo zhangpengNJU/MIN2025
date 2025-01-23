@@ -1,0 +1,15 @@
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("CalendarBuilder:[");
+    for (int i = 0; i < field.length; i++) {
+        if (isSet(i)) {
+            sb.append(i).append('=').append(field[MAX_FIELD + i]).append(',');
+        }
+    }
+    int lastIndex = sb.length() - 1;
+    if (sb.charAt(lastIndex) == ',') {
+        sb.setLength(lastIndex);
+    }
+    sb.append(']');
+    return sb.toString();
+}

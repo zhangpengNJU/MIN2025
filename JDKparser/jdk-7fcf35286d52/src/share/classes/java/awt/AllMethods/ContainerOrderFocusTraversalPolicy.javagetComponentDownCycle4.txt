@@ -1,0 +1,29 @@
+/*
+     * Checks if a new focus cycle takes place and returns a Component to traverse focus to.
+     * @param comp a possible focus cycle root or policy provider
+     * @param traversalDirection the direction of the traversal
+     * @return a Component to traverse focus to if {@code comp} is a root or provider
+     *         and implicit down-cycle is set, otherwise {@code null}
+     */
+private Component getComponentDownCycle(Component comp, int traversalDirection) {
+    Component retComp = null;
+    if (comp instanceof Container) {
+        Container cont = (Container) comp;
+        if (cont.isFocusCycleRoot()) {
+            if (getImplicitDownCycleTraversal()) {
+                retComp = cont.getFocusTraversalPolicy().getDefaultComponent(cont);
+                if (retComp != null && log.isLoggable(PlatformLogger.Level.FINE)) {
+                    log.fine("### Transfered focus down-cycle to " + retComp + " in the focus cycle root " + cont);
+                }
+            } else {
+                return null;
+            }
+        } else if (cont.isFocusTraversalPolicyProvider()) {
+            retComp = (traversalDirection == FORWARD_TRAVERSAL ? cont.getFocusTraversalPolicy().getDefaultComponent(cont) : cont.getFocusTraversalPolicy().getLastComponent(cont));
+            if (retComp != null && log.isLoggable(PlatformLogger.Level.FINE)) {
+                log.fine("### Transfered focus to " + retComp + " in the FTP provider " + cont);
+            }
+        }
+    }
+    return retComp;
+}

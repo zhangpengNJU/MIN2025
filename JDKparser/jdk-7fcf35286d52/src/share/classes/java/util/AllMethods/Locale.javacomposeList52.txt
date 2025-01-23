@@ -1,0 +1,22 @@
+/**
+ * Given a list of strings, return a list shortened to three elements.
+ * Shorten it by applying the given format to the first two elements
+ * recursively.
+ * @param format a format which takes two arguments
+ * @param list a list of strings
+ * @return if the list is three elements or shorter, the same list;
+ * otherwise, a new list of three elements.
+ */
+private static String[] composeList(MessageFormat format, String[] list) {
+    if (list.length <= 3)
+        return list;
+    // Use the given format to compose the first two elements into one
+    String[] listItems = { list[0], list[1] };
+    String newItem = format.format(listItems);
+    // Form a new list one element shorter
+    String[] newList = new String[list.length - 1];
+    System.arraycopy(list, 2, newList, 1, newList.length - 1);
+    newList[0] = newItem;
+    // Recurse
+    return composeList(format, newList);
+}

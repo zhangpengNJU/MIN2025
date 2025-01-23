@@ -1,0 +1,23 @@
+/**
+ * Test whether that address is reachable. Best effort is made by the
+ * implementation to try to reach the host, but firewalls and server
+ * configuration may block requests resulting in a unreachable status
+ * while some specific ports may be accessible.
+ * A typical implementation will use ICMP ECHO REQUESTs if the
+ * privilege can be obtained, otherwise it will try to establish
+ * a TCP connection on port 7 (Echo) of the destination host.
+ * <p>
+ * The timeout value, in milliseconds, indicates the maximum amount of time
+ * the try should take. If the operation times out before getting an
+ * answer, the host is deemed unreachable. A negative value will result
+ * in an IllegalArgumentException being thrown.
+ *
+ * @param   timeout the time, in milliseconds, before the call aborts
+ * @return a {@code boolean} indicating if the address is reachable.
+ * @throws IOException if a network error occurs
+ * @throws  IllegalArgumentException if {@code timeout} is negative.
+ * @since 1.5
+ */
+public boolean isReachable(int timeout) throws IOException {
+    return isReachable(null, 0, timeout);
+}

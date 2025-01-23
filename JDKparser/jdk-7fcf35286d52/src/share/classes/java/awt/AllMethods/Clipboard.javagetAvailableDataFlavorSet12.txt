@@ -1,0 +1,20 @@
+/**
+ * Returns a set of <code>DataFlavor</code>s currently available
+ * on this clipboard.
+ *
+ * @return a set of <code>DataFlavor</code>s currently available
+ *         on this clipboard
+ *
+ * @since 1.5
+ */
+private Set<DataFlavor> getAvailableDataFlavorSet() {
+    Set<DataFlavor> set = new HashSet<>();
+    Transferable contents = getContents(null);
+    if (contents != null) {
+        DataFlavor[] flavors = contents.getTransferDataFlavors();
+        if (flavors != null) {
+            set.addAll(Arrays.asList(flavors));
+        }
+    }
+    return set;
+}

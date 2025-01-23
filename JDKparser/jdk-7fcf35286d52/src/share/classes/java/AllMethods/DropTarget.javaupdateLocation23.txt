@@ -1,0 +1,16 @@
+/**
+ * cause autoscroll to occur
+ * <P>
+ * @param newLocn the <code>Point</code>
+ */
+protected synchronized void updateLocation(Point newLocn) {
+    prev = locn;
+    locn = newLocn;
+    if (Math.abs(locn.x - prev.x) > hysteresis || Math.abs(locn.y - prev.y) > hysteresis) {
+        if (timer.isRunning())
+            timer.stop();
+    } else {
+        if (!timer.isRunning())
+            timer.start();
+    }
+}

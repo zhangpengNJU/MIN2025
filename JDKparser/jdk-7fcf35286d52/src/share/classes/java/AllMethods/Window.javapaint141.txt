@@ -1,0 +1,21 @@
+/**
+ * {@inheritDoc}
+ *
+ * @since 1.7
+ */
+@Override
+public void paint(Graphics g) {
+    if (!isOpaque()) {
+        Graphics gg = g.create();
+        try {
+            if (gg instanceof Graphics2D) {
+                gg.setColor(getBackground());
+                ((Graphics2D) gg).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+                gg.fillRect(0, 0, getWidth(), getHeight());
+            }
+        } finally {
+            gg.dispose();
+        }
+    }
+    super.paint(g);
+}

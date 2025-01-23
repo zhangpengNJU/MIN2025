@@ -1,0 +1,9 @@
+private void ensureInitialized() {
+    if (checkInitialized(member)) {
+        // The coast is clear.  Delete the <clinit> barrier.
+        if (member.isField())
+            updateForm(preparedFieldLambdaForm(member));
+        else
+            updateForm(preparedLambdaForm(member));
+    }
+}

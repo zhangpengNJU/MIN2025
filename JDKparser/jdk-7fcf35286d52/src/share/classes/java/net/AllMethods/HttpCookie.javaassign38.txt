@@ -1,0 +1,9 @@
+public void assign(HttpCookie cookie, String attrName, String attrValue) {
+    try {
+        long maxage = Long.parseLong(attrValue);
+        if (cookie.getMaxAge() == MAX_AGE_UNSPECIFIED)
+            cookie.setMaxAge(maxage);
+    } catch (NumberFormatException ignored) {
+        throw new IllegalArgumentException("Illegal cookie max-age attribute");
+    }
+}

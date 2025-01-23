@@ -1,0 +1,14 @@
+/**
+ * Sets the requested data array element in the specified bank to
+ * the given <code>int</code>.
+ *
+ * @param bank The bank number.
+ * @param i The desired data array element.
+ * @param val The value to be set.
+ * @see #getElem(int)
+ * @see #getElem(int, int)
+ */
+public void setElem(int bank, int i, int val) {
+    bankdata[bank][i + offsets[bank]] = (float) val;
+    theTrackable.markDirty();
+}

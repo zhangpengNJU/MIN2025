@@ -1,0 +1,74 @@
+/**
+ * Returns an array of all of the color/alpha components in unnormalized
+ * form, given a normalized component array.  Unnormalized components
+ * are unsigned integral values between 0 and 2<sup>n</sup> - 1, where
+ * n is the number of bits for a particular component.  Normalized
+ * components are float values between a per component minimum and
+ * maximum specified by the <code>ColorSpace</code> object for this
+ * <code>ColorModel</code>.  An <code>IllegalArgumentException</code>
+ * will be thrown if color component values for this
+ * <code>ColorModel</code> are not conveniently representable in the
+ * unnormalized form.  If the
+ * <code>components</code> array is <code>null</code>, a new array
+ * will be allocated.  The <code>components</code> array will
+ * be returned.  Color/alpha components are stored in the
+ * <code>components</code> array starting at <code>offset</code> (even
+ * if the array is allocated by this method). An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if the
+ * <code>components</code> array is not <code>null</code> and is not
+ * large enough to hold all the color and alpha
+ * components (starting at <code>offset</code>).  An
+ * <code>IllegalArgumentException</code> is thrown if the
+ * <code>normComponents</code> array is not large enough to hold
+ * all the color and alpha components starting at
+ * <code>normOffset</code>.
+ * @param normComponents an array containing normalized components
+ * @param normOffset the offset into the <code>normComponents</code>
+ * array at which to start retrieving normalized components
+ * @param components an array that receives the components from
+ * <code>normComponents</code>
+ * @param offset the index into <code>components</code> at which to
+ * begin storing normalized components from
+ * <code>normComponents</code>
+ * @return an array containing unnormalized color and alpha
+ * components.
+ * @throws IllegalArgumentException If the component values for this
+ * <CODE>ColorModel</CODE> are not conveniently representable in the
+ * unnormalized form.
+ * @throws IllegalArgumentException if the length of
+ *          <code>normComponents</code> minus <code>normOffset</code>
+ *          is less than <code>numComponents</code>
+ * @throws UnsupportedOperationException if the
+ *          constructor of this <code>ColorModel</code> called the
+ *          <code>super(bits)</code> constructor, but did not
+ *          override this method.  See the constructor,
+ *          {@link #ColorModel(int)}.
+ */
+public int[] getUnnormalizedComponents(float[] normComponents, int normOffset, int[] components, int offset) {
+    // Make sure that someone isn't using a custom color model
+    // that called the super(bits) constructor.
+    if (colorSpace == null) {
+        throw new UnsupportedOperationException("This method is not supported " + "by this color model.");
+    }
+    if (nBits == null) {
+        throw new UnsupportedOperationException("This method is not supported.  " + "Unable to determine #bits per " + "component.");
+    }
+    if ((normComponents.length - normOffset) < numComponents) {
+        throw new IllegalArgumentException("Incorrect number of components.  Expecting " + numComponents);
+    }
+    if (components == null) {
+        components = new int[offset + numComponents];
+    }
+    if (supportsAlpha && isAlphaPremultiplied) {
+        float normAlpha = normComponents[normOffset + numColorComponents];
+        for (int i = 0; i < numColorComponents; i++) {
+            components[offset + i] = (int) (normComponents[normOffset + i] * ((1 << nBits[i]) - 1) * normAlpha + 0.5f);
+        }
+        components[offset + numColorComponents] = (int) (normAlpha * ((1 << nBits[numColorComponents]) - 1) + 0.5f);
+    } else {
+        for (int i = 0; i < numComponents; i++) {
+            components[offset + i] = (int) (normComponents[normOffset + i] * ((1 << nBits[i]) - 1) + 0.5f);
+        }
+    }
+    return components;
+}

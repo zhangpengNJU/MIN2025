@@ -1,0 +1,12 @@
+/* Common private utility method used to bounds check the byte array
+     * and requested offset & length values used by the String(byte[],..)
+     * constructors.
+     */
+private static void checkBounds(byte[] bytes, int offset, int length) {
+    if (length < 0)
+        throw new StringIndexOutOfBoundsException(length);
+    if (offset < 0)
+        throw new StringIndexOutOfBoundsException(offset);
+    if (offset > bytes.length - length)
+        throw new StringIndexOutOfBoundsException(offset + length);
+}

@@ -1,0 +1,13 @@
+/**
+ * Calls down to the VM to fill in the fields.  This method is
+ * synchronized to avoid racing calls.
+ */
+private void expandFromVM() {
+    if (type != null) {
+        return;
+    }
+    if (!isResolved()) {
+        return;
+    }
+    MethodHandleNatives.expand(this);
+}

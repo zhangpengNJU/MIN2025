@@ -1,0 +1,13 @@
+/**
+ * Atomically sets to the given value and returns the previous value.
+ *
+ * @param newValue the new value
+ * @return the previous value
+ */
+public final boolean getAndSet(boolean newValue) {
+    boolean prev;
+    do {
+        prev = get();
+    } while (!compareAndSet(prev, newValue));
+    return prev;
+}

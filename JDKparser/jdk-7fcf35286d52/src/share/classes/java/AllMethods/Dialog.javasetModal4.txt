@@ -1,0 +1,27 @@
+/**
+ * Specifies whether this dialog should be modal.
+ * <p>
+ * This method is obsolete and is kept for backwards compatibility only.
+ * Use {@link #setModalityType setModalityType()} instead.
+ * <p>
+ * Note: changing modality of the visible dialog may have no effect
+ * until it is hidden and then shown again.
+ *
+ * @param modal specifies whether dialog blocks input to other windows
+ *     when shown; calling to <code>setModal(true)</code> is equivalent to
+ *     <code>setModalityType(Dialog.DEFAULT_MODALITY_TYPE)</code>, and
+ *     calling to <code>setModal(false)</code> is equvivalent to
+ *     <code>setModalityType(Dialog.ModalityType.MODELESS)</code>
+ *
+ * @see       java.awt.Dialog#DEFAULT_MODALITY_TYPE
+ * @see       java.awt.Dialog.ModalityType#MODELESS
+ * @see       java.awt.Dialog#isModal
+ * @see       java.awt.Dialog#getModalityType
+ * @see       java.awt.Dialog#setModalityType
+ *
+ * @since     1.1
+ */
+public void setModal(boolean modal) {
+    this.modal = modal;
+    setModalityType(modal ? DEFAULT_MODALITY_TYPE : ModalityType.MODELESS);
+}

@@ -1,0 +1,22 @@
+/**
+ * Generate the constructor for the class
+ */
+private void generateConstructor() {
+    // Generate constructor
+    MethodVisitor ctor = cw.visitMethod(ACC_PRIVATE, NAME_CTOR, constructorType.toMethodDescriptorString(), null, null);
+    ctor.visitCode();
+    ctor.visitVarInsn(ALOAD, 0);
+    ctor.visitMethodInsn(INVOKESPECIAL, JAVA_LANG_OBJECT, NAME_CTOR, METHOD_DESCRIPTOR_VOID, false);
+    int parameterCount = invokedType.parameterCount();
+    for (int i = 0, lvIndex = 0; i < parameterCount; i++) {
+        ctor.visitVarInsn(ALOAD, 0);
+        Class<?> argType = invokedType.parameterType(i);
+        ctor.visitVarInsn(getLoadOpcode(argType), lvIndex + 1);
+        lvIndex += getParameterSize(argType);
+        ctor.visitFieldInsn(PUTFIELD, lambdaClassName, argNames[i], argDescs[i]);
+    }
+    ctor.visitInsn(RETURN);
+    // Maxs computed by ClassWriter.COMPUTE_MAXS, these arguments ignored
+    ctor.visitMaxs(-1, -1);
+    ctor.visitEnd();
+}

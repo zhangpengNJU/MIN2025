@@ -1,0 +1,9 @@
+/**
+ * {@inheritDoc}
+ * @throws DateTimeException {@inheritDoc}
+ * @throws ArithmeticException {@inheritDoc}
+ */
+@Override
+default ChronoLocalDate plus(TemporalAmount amount) {
+    return ChronoLocalDateImpl.ensureValid(getChronology(), Temporal.super.plus(amount));
+}

@@ -1,0 +1,9 @@
+public JarEntry nextElement() {
+    if (hasMoreElements()) {
+        JarEntry je = entry;
+        map.remove(je.getName());
+        entry = null;
+        return je;
+    }
+    throw new NoSuchElementException();
+}

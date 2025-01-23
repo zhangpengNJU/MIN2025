@@ -1,0 +1,6 @@
+private static Pattern separatorPattern() {
+    Pattern sp = separatorPattern;
+    if (sp == null)
+        separatorPattern = sp = Pattern.compile(LINE_SEPARATOR_PATTERN);
+    return sp;
+}

@@ -1,0 +1,23 @@
+/**
+ * Returns the permanent focus owner, even if the calling thread is in a
+ * different context than the permanent focus owner. The permanent focus
+ * owner is defined as the last Component in an application to receive a
+ * permanent FOCUS_GAINED event. The focus owner and permanent focus owner
+ * are equivalent unless a temporary focus change is currently in effect.
+ * In such a situation, the permanent focus owner will again be the focus
+ * owner when the temporary focus change ends.
+ *
+ * @return the permanent focus owner
+ * @see #getPermanentFocusOwner
+ * @see #setGlobalPermanentFocusOwner
+ * @throws SecurityException if this KeyboardFocusManager is not the
+ *         current KeyboardFocusManager for the calling thread's context
+ *         and if the calling thread does not have "replaceKeyboardFocusManager"
+ *         permission
+ */
+protected Component getGlobalPermanentFocusOwner() throws SecurityException {
+    synchronized (KeyboardFocusManager.class) {
+        checkKFMSecurity();
+        return permanentFocusOwner;
+    }
+}

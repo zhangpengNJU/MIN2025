@@ -1,0 +1,23 @@
+/**
+ * Removes the specified <code>FlavorListener</code> so that it no longer
+ * receives <code>FlavorEvent</code>s from this <code>Clipboard</code>.
+ * This method performs no function, nor does it throw an exception, if
+ * the listener specified by the argument was not previously added to this
+ * <code>Clipboard</code>.
+ * If <code>listener</code> is <code>null</code>, no exception
+ * is thrown and no action is performed.
+ *
+ * @param listener the listener to be removed
+ *
+ * @see #addFlavorListener
+ * @see #getFlavorListeners
+ * @see FlavorListener
+ * @see FlavorEvent
+ * @since 1.5
+ */
+public synchronized void removeFlavorListener(FlavorListener listener) {
+    if (listener == null || flavorListeners == null) {
+        return;
+    }
+    flavorListeners.remove(listener);
+}

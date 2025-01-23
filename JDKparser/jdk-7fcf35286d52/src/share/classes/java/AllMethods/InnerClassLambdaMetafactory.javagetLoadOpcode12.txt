@@ -1,0 +1,6 @@
+static int getLoadOpcode(Class<?> c) {
+    if (c == Void.TYPE) {
+        throw new InternalError("Unexpected void type of load opcode");
+    }
+    return ILOAD + getOpcodeOffset(c);
+}

@@ -1,0 +1,13 @@
+public MemberName asSpecial() {
+    switch(getReferenceKind()) {
+        case REF_invokeSpecial:
+            return this;
+        case REF_invokeVirtual:
+            return clone().changeReferenceKind(REF_invokeSpecial, REF_invokeVirtual);
+        case REF_invokeInterface:
+            return clone().changeReferenceKind(REF_invokeSpecial, REF_invokeInterface);
+        case REF_newInvokeSpecial:
+            return clone().changeReferenceKind(REF_invokeSpecial, REF_newInvokeSpecial);
+    }
+    throw new IllegalArgumentException(this.toString());
+}

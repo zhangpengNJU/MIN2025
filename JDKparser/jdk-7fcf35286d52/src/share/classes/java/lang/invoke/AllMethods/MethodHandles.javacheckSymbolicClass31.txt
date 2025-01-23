@@ -1,0 +1,7 @@
+void checkSymbolicClass(Class<?> refc) throws IllegalAccessException {
+    // NPE
+    refc.getClass();
+    Class<?> caller = lookupClassOrNull();
+    if (caller != null && !VerifyAccess.isClassAccessible(refc, caller, allowedModes))
+        throw new MemberName(refc).makeAccessException("symbolic reference class is not public", this);
+}

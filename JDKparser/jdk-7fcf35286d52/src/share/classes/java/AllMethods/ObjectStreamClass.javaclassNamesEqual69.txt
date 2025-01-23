@@ -1,0 +1,9 @@
+/**
+ * Compares class names for equality, ignoring package names.  Returns true
+ * if class names equal, false otherwise.
+ */
+private static boolean classNamesEqual(String name1, String name2) {
+    name1 = name1.substring(name1.lastIndexOf('.') + 1);
+    name2 = name2.substring(name2.lastIndexOf('.') + 1);
+    return name1.equals(name2);
+}

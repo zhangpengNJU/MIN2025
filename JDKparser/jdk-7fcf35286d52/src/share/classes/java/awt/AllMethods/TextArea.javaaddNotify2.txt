@@ -1,0 +1,12 @@
+/**
+ * Creates the <code>TextArea</code>'s peer.  The peer allows us to modify
+ * the appearance of the <code>TextArea</code> without changing any of its
+ * functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createTextArea(this);
+        super.addNotify();
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Makes this Frame undisplayable by removing its connection
+ * to its native screen resource. Making a Frame undisplayable
+ * will cause any of its children to be made undisplayable.
+ * This method is called by the toolkit internally and should
+ * not be called directly by programs.
+ * @see Component#isDisplayable
+ * @see #addNotify
+ */
+public void removeNotify() {
+    synchronized (getTreeLock()) {
+        FramePeer peer = (FramePeer) this.peer;
+        if (peer != null) {
+            // get the latest Frame state before disposing
+            getState();
+            if (menuBar != null) {
+                mbManagement = true;
+                peer.setMenuBar(null);
+                menuBar.removeNotify();
+            }
+        }
+        super.removeNotify();
+    }
+}

@@ -1,0 +1,5 @@
+float computeFunction(TextLine line, int componentIndex, int indexInArray) {
+    int vi = line.getComponentVisualIndex(componentIndex);
+    TextLineComponent tlc = line.fComponents[componentIndex];
+    return line.locs[vi * 2] + tlc.getCharX(indexInArray);
+}

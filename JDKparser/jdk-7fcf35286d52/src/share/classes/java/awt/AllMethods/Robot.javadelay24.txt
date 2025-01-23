@@ -1,0 +1,16 @@
+/**
+ * Sleeps for the specified time.
+ * To catch any <code>InterruptedException</code>s that occur,
+ * <code>Thread.sleep()</code> may be used instead.
+ * @param   ms      time to sleep in milliseconds
+ * @throws  IllegalArgumentException if <code>ms</code> is not between 0 and 60,000 milliseconds inclusive
+ * @see     java.lang.Thread#sleep
+ */
+public synchronized void delay(int ms) {
+    checkDelayArgument(ms);
+    try {
+        Thread.sleep(ms);
+    } catch (InterruptedException ite) {
+        ite.printStackTrace();
+    }
+}

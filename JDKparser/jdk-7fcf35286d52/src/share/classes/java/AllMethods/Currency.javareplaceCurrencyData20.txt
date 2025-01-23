@@ -1,0 +1,59 @@
+/**
+ * Replaces currency data found in the currencydata.properties file
+ *
+ * @param pattern regex pattern for the properties
+ * @param ctry country code
+ * @param curdata currency data.  This is a comma separated string that
+ *    consists of "three-letter alphabet code", "three-digit numeric code",
+ *    and "one-digit (0-9) default fraction digit".
+ *    For example, "JPZ,392,0".
+ *    An optional UTC date can be appended to the string (comma separated)
+ *    to allow a currency change take effect after date specified.
+ *    For example, "JP=JPZ,999,0,2014-01-01T00:00:00" has no effect unless
+ *    UTC time is past 1st January 2014 00:00:00 GMT.
+ */
+private static void replaceCurrencyData(Pattern pattern, String ctry, String curdata) {
+    if (ctry.length() != 2) {
+        // ignore invalid country code
+        info("currency.properties entry for " + ctry + " is ignored because of the invalid country code.", null);
+        return;
+    }
+    Matcher m = pattern.matcher(curdata);
+    if (!m.find() || (m.group(4) == null && countOccurrences(curdata, ',') >= 3)) {
+        // format is not recognized.  ignore the data
+        // if group(4) date string is null and we've 4 values, bad date value
+        info("currency.properties entry for " + ctry + " ignored because the value format is not recognized.", null);
+        return;
+    }
+    try {
+        if (m.group(4) != null && !isPastCutoverDate(m.group(4))) {
+            info("currency.properties entry for " + ctry + " ignored since cutover date has not passed :" + curdata, null);
+            return;
+        }
+    } catch (ParseException ex) {
+        info("currency.properties entry for " + ctry + " ignored since exception encountered :" + ex.getMessage(), null);
+        return;
+    }
+    String code = m.group(1);
+    int numeric = Integer.parseInt(m.group(2));
+    int entry = numeric << NUMERIC_CODE_SHIFT;
+    int fraction = Integer.parseInt(m.group(3));
+    if (fraction > SIMPLE_CASE_COUNTRY_MAX_DEFAULT_DIGITS) {
+        info("currency.properties entry for " + ctry + " ignored since the fraction is more than " + SIMPLE_CASE_COUNTRY_MAX_DEFAULT_DIGITS + ":" + curdata, null);
+        return;
+    }
+    int index;
+    for (index = 0; index < scOldCurrencies.length; index++) {
+        if (scOldCurrencies[index].equals(code)) {
+            break;
+        }
+    }
+    if (index == scOldCurrencies.length) {
+        // simple case
+        entry |= (fraction << SIMPLE_CASE_COUNTRY_DEFAULT_DIGITS_SHIFT) | (code.charAt(2) - 'A');
+    } else {
+        // special case
+        entry |= SPECIAL_CASE_COUNTRY_MASK | (index + SPECIAL_CASE_COUNTRY_INDEX_DELTA);
+    }
+    setMainTableEntry(ctry.charAt(0), ctry.charAt(1), entry);
+}

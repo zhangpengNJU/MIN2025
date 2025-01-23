@@ -1,0 +1,17 @@
+/**
+ * Returns the next live successor of p, or null if no such.
+ *
+ * Unlike other traversal methods, iterators need to handle both:
+ * - dequeued nodes (p.next == p)
+ * - (possibly multiple) interior removed nodes (p.item == null)
+ */
+private Node<E> nextNode(Node<E> p) {
+    for (; ; ) {
+        Node<E> s = p.next;
+        if (s == p)
+            return head.next;
+        if (s == null || s.item != null)
+            return s;
+        p = s;
+    }
+}

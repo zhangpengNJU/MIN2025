@@ -1,0 +1,42 @@
+/**
+ * Writes the "body" (i.e., the UTF representation minus the 2-byte or
+ * 8-byte length header) of the UTF encoding for the given string.
+ */
+private void writeUTFBody(String s) throws IOException {
+    int limit = MAX_BLOCK_SIZE - 3;
+    int len = s.length();
+    for (int off = 0; off < len; ) {
+        int csize = Math.min(len - off, CHAR_BUF_SIZE);
+        s.getChars(off, off + csize, cbuf, 0);
+        for (int cpos = 0; cpos < csize; cpos++) {
+            char c = cbuf[cpos];
+            if (pos <= limit) {
+                if (c <= 0x007F && c != 0) {
+                    buf[pos++] = (byte) c;
+                } else if (c > 0x07FF) {
+                    buf[pos + 2] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                    buf[pos + 1] = (byte) (0x80 | ((c >> 6) & 0x3F));
+                    buf[pos + 0] = (byte) (0xE0 | ((c >> 12) & 0x0F));
+                    pos += 3;
+                } else {
+                    buf[pos + 1] = (byte) (0x80 | ((c >> 0) & 0x3F));
+                    buf[pos + 0] = (byte) (0xC0 | ((c >> 6) & 0x1F));
+                    pos += 2;
+                }
+            } else {
+                // write one byte at a time to normalize block
+                if (c <= 0x007F && c != 0) {
+                    write(c);
+                } else if (c > 0x07FF) {
+                    write(0xE0 | ((c >> 12) & 0x0F));
+                    write(0x80 | ((c >> 6) & 0x3F));
+                    write(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    write(0xC0 | ((c >> 6) & 0x1F));
+                    write(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+        }
+        off += csize;
+    }
+}

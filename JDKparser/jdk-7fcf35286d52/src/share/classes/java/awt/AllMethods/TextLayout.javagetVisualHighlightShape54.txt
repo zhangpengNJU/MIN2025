@@ -1,0 +1,13 @@
+/**
+ * Returns a <code>Shape</code> enclosing the visual selection in the
+ * specified range, extended to the bounds.  This method is a
+ * convenience overload of <code>getVisualHighlightShape</code> that
+ * uses the natural bounds of this <code>TextLayout</code>.
+ * @param firstEndpoint one end of the visual selection
+ * @param secondEndpoint the other end of the visual selection
+ * @return a <code>Shape</code> enclosing the selection.  This is
+ *     in standard coordinates.
+ */
+public Shape getVisualHighlightShape(TextHitInfo firstEndpoint, TextHitInfo secondEndpoint) {
+    return getVisualHighlightShape(firstEndpoint, secondEndpoint, getNaturalBounds());
+}

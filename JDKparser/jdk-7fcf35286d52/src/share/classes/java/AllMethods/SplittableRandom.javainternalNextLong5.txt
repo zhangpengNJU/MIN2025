@@ -1,0 +1,61 @@
+/*
+     * Internal versions of nextX methods used by streams, as well as
+     * the public nextX(origin, bound) methods.  These exist mainly to
+     * avoid the need for multiple versions of stream spliterators
+     * across the different exported forms of streams.
+     */
+/**
+ * The form of nextLong used by LongStream Spliterators.  If
+ * origin is greater than bound, acts as unbounded form of
+ * nextLong, else as bounded form.
+ *
+ * @param origin the least value, unless greater than bound
+ * @param bound the upper bound (exclusive), must not equal origin
+ * @return a pseudorandom value
+ */
+final long internalNextLong(long origin, long bound) {
+    /*
+         * Four Cases:
+         *
+         * 1. If the arguments indicate unbounded form, act as
+         * nextLong().
+         *
+         * 2. If the range is an exact power of two, apply the
+         * associated bit mask.
+         *
+         * 3. If the range is positive, loop to avoid potential bias
+         * when the implicit nextLong() bound (2<sup>64</sup>) is not
+         * evenly divisible by the range. The loop rejects candidates
+         * computed from otherwise over-represented values.  The
+         * expected number of iterations under an ideal generator
+         * varies from 1 to 2, depending on the bound. The loop itself
+         * takes an unlovable form. Because the first candidate is
+         * already available, we need a break-in-the-middle
+         * construction, which is concisely but cryptically performed
+         * within the while-condition of a body-less for loop.
+         *
+         * 4. Otherwise, the range cannot be represented as a positive
+         * long.  The loop repeatedly generates unbounded longs until
+         * obtaining a candidate meeting constraints (with an expected
+         * number of iterations of less than two).
+         */
+    long r = mix64(nextSeed());
+    if (origin < bound) {
+        long n = bound - origin, m = n - 1;
+        if (// power of two
+        (n & m) == 0L)
+            r = (r & m) + origin;
+        else if (n > 0L) {
+            // reject over-represented candidates
+            for (// ensure nonnegative
+            long u = r >>> 1; // rejection check
+            u + m - (r = u % n) < 0L; // retry
+            u = mix64(nextSeed()) >>> 1) ;
+            r += origin;
+        } else {
+            // range not representable as long
+            while (r < origin || r >= bound) r = mix64(nextSeed());
+        }
+    }
+    return r;
+}

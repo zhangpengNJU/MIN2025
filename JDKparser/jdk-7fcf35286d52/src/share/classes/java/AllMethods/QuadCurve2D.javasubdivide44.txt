@@ -1,0 +1,34 @@
+/**
+ * Subdivides the quadratic curve specified by the <code>src</code>
+ * parameter and stores the resulting two subdivided curves into the
+ * <code>left</code> and <code>right</code> curve parameters.
+ * Either or both of the <code>left</code> and <code>right</code>
+ * objects can be the same as the <code>src</code> object or
+ * <code>null</code>.
+ * @param src the quadratic curve to be subdivided
+ * @param left the <code>QuadCurve2D</code> object for storing the
+ *          left or first half of the subdivided curve
+ * @param right the <code>QuadCurve2D</code> object for storing the
+ *          right or second half of the subdivided curve
+ * @since 1.2
+ */
+public static void subdivide(QuadCurve2D src, QuadCurve2D left, QuadCurve2D right) {
+    double x1 = src.getX1();
+    double y1 = src.getY1();
+    double ctrlx = src.getCtrlX();
+    double ctrly = src.getCtrlY();
+    double x2 = src.getX2();
+    double y2 = src.getY2();
+    double ctrlx1 = (x1 + ctrlx) / 2.0;
+    double ctrly1 = (y1 + ctrly) / 2.0;
+    double ctrlx2 = (x2 + ctrlx) / 2.0;
+    double ctrly2 = (y2 + ctrly) / 2.0;
+    ctrlx = (ctrlx1 + ctrlx2) / 2.0;
+    ctrly = (ctrly1 + ctrly2) / 2.0;
+    if (left != null) {
+        left.setCurve(x1, y1, ctrlx1, ctrly1, ctrlx, ctrly);
+    }
+    if (right != null) {
+        right.setCurve(ctrlx, ctrly, ctrlx2, ctrly2, x2, y2);
+    }
+}

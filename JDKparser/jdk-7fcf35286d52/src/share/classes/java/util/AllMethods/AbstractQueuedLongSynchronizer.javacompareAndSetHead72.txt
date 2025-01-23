@@ -1,0 +1,6 @@
+/**
+ * CAS head field. Used only by enq.
+ */
+private final boolean compareAndSetHead(Node update) {
+    return unsafe.compareAndSwapObject(this, headOffset, null, update);
+}

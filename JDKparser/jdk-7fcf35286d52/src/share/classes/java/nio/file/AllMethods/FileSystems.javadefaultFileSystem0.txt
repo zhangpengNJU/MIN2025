@@ -1,0 +1,12 @@
+// returns default file system
+private static FileSystem defaultFileSystem() {
+    // load default provider
+    FileSystemProvider provider = AccessController.doPrivileged(new PrivilegedAction<FileSystemProvider>() {
+
+        public FileSystemProvider run() {
+            return getDefaultProvider();
+        }
+    });
+    // return file system
+    return provider.getFileSystem(URI.create("file:///"));
+}

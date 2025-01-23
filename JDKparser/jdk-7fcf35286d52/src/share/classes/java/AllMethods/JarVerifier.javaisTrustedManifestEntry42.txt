@@ -1,0 +1,19 @@
+/**
+ * Returns whether the name is trusted. Used by
+ * {@link Manifest#getTrustedAttributes(String)}.
+ */
+boolean isTrustedManifestEntry(String name) {
+    // How many signers? MANIFEST.MF is always verified
+    CodeSigner[] forMan = verifiedSigners.get(manifestName);
+    if (forMan == null) {
+        return true;
+    }
+    // Check sigFileSigners first, because we are mainly dealing with
+    // non-file entries which will stay in sigFileSigners forever.
+    CodeSigner[] forName = sigFileSigners.get(name);
+    if (forName == null) {
+        forName = verifiedSigners.get(name);
+    }
+    // Returns trusted if all signers sign the entry
+    return forName != null && forName.length == forMan.length;
+}

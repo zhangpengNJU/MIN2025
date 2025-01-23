@@ -1,0 +1,12 @@
+private void updateCheckConflict(ChronoLocalDate cld) {
+    if (date != null) {
+        if (cld != null && date.equals(cld) == false) {
+            throw new DateTimeException("Conflict found: Fields resolved to two different dates: " + date + " " + cld);
+        }
+    } else if (cld != null) {
+        if (chrono.equals(cld.getChronology()) == false) {
+            throw new DateTimeException("ChronoLocalDate must use the effective parsed chronology: " + chrono);
+        }
+        date = cld;
+    }
+}

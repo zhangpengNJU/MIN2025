@@ -1,0 +1,9 @@
+/**
+ * Returns true if the attributes specified in last and attrs differ.
+ */
+private static <K, V> boolean mapsDiffer(Map<K, V> last, Map<K, V> attrs) {
+    if (last == null) {
+        return (attrs != null && attrs.size() > 0);
+    }
+    return (!last.equals(attrs));
+}

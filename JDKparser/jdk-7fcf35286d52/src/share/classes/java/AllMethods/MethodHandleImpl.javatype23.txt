@@ -1,0 +1,9 @@
+static MethodType type(Class<?> arrayClass, boolean isSetter) {
+    Class<?> elemClass = arrayClass.getComponentType();
+    Class<?> arrayArgClass = arrayClass;
+    if (!elemClass.isPrimitive()) {
+        arrayArgClass = Object[].class;
+        elemClass = Object.class;
+    }
+    return !isSetter ? MethodType.methodType(elemClass, arrayArgClass, int.class) : MethodType.methodType(void.class, arrayArgClass, int.class, elemClass);
+}

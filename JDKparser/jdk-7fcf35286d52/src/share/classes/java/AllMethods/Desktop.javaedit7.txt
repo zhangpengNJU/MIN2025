@@ -1,0 +1,31 @@
+/**
+ * Launches the associated editor application and opens a file for
+ * editing.
+ *
+ * @param file the file to be opened for editing
+ * @throws NullPointerException if the specified file is {@code null}
+ * @throws IllegalArgumentException if the specified file doesn't
+ * exist
+ * @throws UnsupportedOperationException if the current platform
+ * does not support the {@link Desktop.Action#EDIT} action
+ * @throws IOException if the specified file has no associated
+ * editor, or the associated application fails to be launched
+ * @throws SecurityException if a security manager exists and its
+ * {@link java.lang.SecurityManager#checkRead(java.lang.String)}
+ * method denies read access to the file, or {@link
+ * java.lang.SecurityManager#checkWrite(java.lang.String)} method
+ * denies write access to the file, or it denies the
+ * <code>AWTPermission("showWindowWithoutWarningBanner")</code>
+ * permission, or the calling thread is not allowed to create a
+ * subprocess
+ * @see java.awt.AWTPermission
+ */
+public void edit(File file) throws IOException {
+    file = new File(file.getPath());
+    checkAWTPermission();
+    checkExec();
+    checkActionSupport(Action.EDIT);
+    file.canWrite();
+    checkFileValidation(file);
+    peer.edit(file);
+}

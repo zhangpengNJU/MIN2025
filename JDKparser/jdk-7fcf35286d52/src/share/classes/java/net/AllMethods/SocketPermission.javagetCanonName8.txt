@@ -1,0 +1,26 @@
+/**
+ * attempt to get the fully qualified domain name
+ */
+void getCanonName() throws UnknownHostException {
+    if (cname != null || invalid || untrusted)
+        return;
+    // attempt to get the canonical name
+    try {
+        // first get the IP addresses if we don't have them yet
+        // this is because we need the IP address to then get
+        // FQDN.
+        if (addresses == null) {
+            getIP();
+        }
+        // we have to do this check, otherwise we might not
+        // get the fully qualified domain name
+        if (init_with_ip) {
+            cname = addresses[0].getHostName(false).toLowerCase();
+        } else {
+            cname = InetAddress.getByName(addresses[0].getHostAddress()).getHostName(false).toLowerCase();
+        }
+    } catch (UnknownHostException uhe) {
+        invalid = true;
+        throw uhe;
+    }
+}

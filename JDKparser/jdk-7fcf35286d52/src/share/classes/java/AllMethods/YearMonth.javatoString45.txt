@@ -1,0 +1,23 @@
+// -----------------------------------------------------------------------
+/**
+ * Outputs this year-month as a {@code String}, such as {@code 2007-12}.
+ * <p>
+ * The output will be in the format {@code uuuu-MM}:
+ *
+ * @return a string representation of this year-month, not null
+ */
+@Override
+public String toString() {
+    int absYear = Math.abs(year);
+    StringBuilder buf = new StringBuilder(9);
+    if (absYear < 1000) {
+        if (year < 0) {
+            buf.append(year - 10000).deleteCharAt(1);
+        } else {
+            buf.append(year + 10000).deleteCharAt(0);
+        }
+    } else {
+        buf.append(year);
+    }
+    return buf.append(month < 10 ? "-0" : "-").append(month).toString();
+}

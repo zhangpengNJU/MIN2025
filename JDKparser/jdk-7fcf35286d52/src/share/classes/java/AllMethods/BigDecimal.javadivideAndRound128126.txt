@@ -1,0 +1,94 @@
+/*
+     * divideAndRound 128-bit value by long divisor.
+     * returns null if quotient can't fit into long value;
+     * Specialized version of Knuth's division
+     */
+private static BigDecimal divideAndRound128(final long dividendHi, final long dividendLo, long divisor, int sign, int scale, int roundingMode, int preferredScale) {
+    if (dividendHi >= divisor) {
+        return null;
+    }
+    final int shift = Long.numberOfLeadingZeros(divisor);
+    divisor <<= shift;
+    final long v1 = divisor >>> 32;
+    final long v0 = divisor & LONG_MASK;
+    long tmp = dividendLo << shift;
+    long u1 = tmp >>> 32;
+    long u0 = tmp & LONG_MASK;
+    tmp = (dividendHi << shift) | (dividendLo >>> 64 - shift);
+    long u2 = tmp & LONG_MASK;
+    long q1, r_tmp;
+    if (v1 == 1) {
+        q1 = tmp;
+        r_tmp = 0;
+    } else if (tmp >= 0) {
+        q1 = tmp / v1;
+        r_tmp = tmp - q1 * v1;
+    } else {
+        long[] rq = divRemNegativeLong(tmp, v1);
+        q1 = rq[1];
+        r_tmp = rq[0];
+    }
+    while (q1 >= DIV_NUM_BASE || unsignedLongCompare(q1 * v0, make64(r_tmp, u1))) {
+        q1--;
+        r_tmp += v1;
+        if (r_tmp >= DIV_NUM_BASE)
+            break;
+    }
+    tmp = mulsub(u2, u1, v1, v0, q1);
+    u1 = tmp & LONG_MASK;
+    long q0;
+    if (v1 == 1) {
+        q0 = tmp;
+        r_tmp = 0;
+    } else if (tmp >= 0) {
+        q0 = tmp / v1;
+        r_tmp = tmp - q0 * v1;
+    } else {
+        long[] rq = divRemNegativeLong(tmp, v1);
+        q0 = rq[1];
+        r_tmp = rq[0];
+    }
+    while (q0 >= DIV_NUM_BASE || unsignedLongCompare(q0 * v0, make64(r_tmp, u0))) {
+        q0--;
+        r_tmp += v1;
+        if (r_tmp >= DIV_NUM_BASE)
+            break;
+    }
+    if ((int) q1 < 0) {
+        // result (which is positive and unsigned here)
+        // can't fit into long due to sign bit is used for value
+        MutableBigInteger mq = new MutableBigInteger(new int[] { (int) q1, (int) q0 });
+        if (roundingMode == ROUND_DOWN && scale == preferredScale) {
+            return mq.toBigDecimal(sign, scale);
+        }
+        long r = mulsub(u1, u0, v1, v0, q0) >>> shift;
+        if (r != 0) {
+            if (needIncrement(divisor >>> shift, roundingMode, sign, mq, r)) {
+                mq.add(MutableBigInteger.ONE);
+            }
+            return mq.toBigDecimal(sign, scale);
+        } else {
+            if (preferredScale != scale) {
+                BigInteger intVal = mq.toBigInteger(sign);
+                return createAndStripZerosToMatchScale(intVal, scale, preferredScale);
+            } else {
+                return mq.toBigDecimal(sign, scale);
+            }
+        }
+    }
+    long q = make64(q1, q0);
+    q *= sign;
+    if (roundingMode == ROUND_DOWN && scale == preferredScale)
+        return valueOf(q, scale);
+    long r = mulsub(u1, u0, v1, v0, q0) >>> shift;
+    if (r != 0) {
+        boolean increment = needIncrement(divisor >>> shift, roundingMode, sign, q, r);
+        return valueOf((increment ? q + sign : q), scale);
+    } else {
+        if (preferredScale != scale) {
+            return createAndStripZerosToMatchScale(q, scale, preferredScale);
+        } else {
+            return valueOf(q, scale);
+        }
+    }
+}

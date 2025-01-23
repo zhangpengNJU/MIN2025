@@ -1,0 +1,9 @@
+public E peekFirst() {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        return (first == null) ? null : first.item;
+    } finally {
+        lock.unlock();
+    }
+}

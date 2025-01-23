@@ -1,0 +1,27 @@
+private CharProperty bitsOrSingle(BitClass bits, int ch) {
+    /* Bits can only handle codepoints in [u+0000-u+00ff] range.
+           Use "single" node instead of bits when dealing with unicode
+           case folding for codepoints listed below.
+           (1)Uppercase out of range: u+00ff, u+00b5
+              toUpperCase(u+00ff) -> u+0178
+              toUpperCase(u+00b5) -> u+039c
+           (2)LatinSmallLetterLongS u+17f
+              toUpperCase(u+017f) -> u+0053
+           (3)LatinSmallLetterDotlessI u+131
+              toUpperCase(u+0131) -> u+0049
+           (4)LatinCapitalLetterIWithDotAbove u+0130
+              toLowerCase(u+0130) -> u+0069
+           (5)KelvinSign u+212a
+              toLowerCase(u+212a) ==> u+006B
+           (6)AngstromSign u+212b
+              toLowerCase(u+212b) ==> u+00e5
+        */
+    int d;
+    if (ch < 256 && !(has(CASE_INSENSITIVE) && has(UNICODE_CASE) && (ch == 0xff || ch == 0xb5 || ch == 0x49 || // I and i
+    ch == 0x69 || ch == 0x53 || // S and s
+    ch == 0x73 || ch == 0x4b || // K and k
+    ch == 0x6b || ch == 0xc5 || // A+ring
+    ch == 0xe5)))
+        return bits.add(ch, flags());
+    return newSingle(ch);
+}

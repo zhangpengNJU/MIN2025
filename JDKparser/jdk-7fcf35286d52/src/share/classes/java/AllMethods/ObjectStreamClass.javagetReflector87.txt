@@ -1,0 +1,62 @@
+/**
+ * Matches given set of serializable fields with serializable fields
+ * described by the given local class descriptor, and returns a
+ * FieldReflector instance capable of setting/getting values from the
+ * subset of fields that match (non-matching fields are treated as filler,
+ * for which get operations return default values and set operations
+ * discard given values).  Throws InvalidClassException if unresolvable
+ * type conflicts exist between the two sets of fields.
+ */
+private static FieldReflector getReflector(ObjectStreamField[] fields, ObjectStreamClass localDesc) throws InvalidClassException {
+    // class irrelevant if no fields
+    Class<?> cl = (localDesc != null && fields.length > 0) ? localDesc.cl : null;
+    processQueue(Caches.reflectorsQueue, Caches.reflectors);
+    FieldReflectorKey key = new FieldReflectorKey(cl, fields, Caches.reflectorsQueue);
+    Reference<?> ref = Caches.reflectors.get(key);
+    Object entry = null;
+    if (ref != null) {
+        entry = ref.get();
+    }
+    EntryFuture future = null;
+    if (entry == null) {
+        EntryFuture newEntry = new EntryFuture();
+        Reference<?> newRef = new SoftReference<>(newEntry);
+        do {
+            if (ref != null) {
+                Caches.reflectors.remove(key, ref);
+            }
+            ref = Caches.reflectors.putIfAbsent(key, newRef);
+            if (ref != null) {
+                entry = ref.get();
+            }
+        } while (ref != null && entry == null);
+        if (entry == null) {
+            future = newEntry;
+        }
+    }
+    if (entry instanceof FieldReflector) {
+        // check common case first
+        return (FieldReflector) entry;
+    } else if (entry instanceof EntryFuture) {
+        entry = ((EntryFuture) entry).get();
+    } else if (entry == null) {
+        try {
+            entry = new FieldReflector(matchFields(fields, localDesc));
+        } catch (Throwable th) {
+            entry = th;
+        }
+        future.set(entry);
+        Caches.reflectors.put(key, new SoftReference<Object>(entry));
+    }
+    if (entry instanceof FieldReflector) {
+        return (FieldReflector) entry;
+    } else if (entry instanceof InvalidClassException) {
+        throw (InvalidClassException) entry;
+    } else if (entry instanceof RuntimeException) {
+        throw (RuntimeException) entry;
+    } else if (entry instanceof Error) {
+        throw (Error) entry;
+    } else {
+        throw new InternalError("unexpected entry: " + entry);
+    }
+}

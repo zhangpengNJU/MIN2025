@@ -1,0 +1,13 @@
+/**
+ * Queries whether this task is canceled.  A task is considered canceled if
+ * it or any of its parents have been canceled.
+ *
+ * @return {@code true} if this task or any parent is canceled.
+ */
+protected boolean taskCanceled() {
+    boolean cancel = canceled;
+    if (!cancel) {
+        for (K parent = getParent(); !cancel && parent != null; parent = parent.getParent()) cancel = parent.canceled;
+    }
+    return cancel;
+}

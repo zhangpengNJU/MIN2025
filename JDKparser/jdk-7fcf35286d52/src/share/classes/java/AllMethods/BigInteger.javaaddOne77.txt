@@ -1,0 +1,22 @@
+/**
+ * Add one word to the number a mlen words into a. Return the resulting
+ * carry.
+ */
+static int addOne(int[] a, int offset, int mlen, int carry) {
+    offset = a.length - 1 - mlen - offset;
+    long t = (a[offset] & LONG_MASK) + (carry & LONG_MASK);
+    a[offset] = (int) t;
+    if ((t >>> 32) == 0)
+        return 0;
+    while (--mlen >= 0) {
+        if (--offset < 0) {
+            // Carry out of number
+            return 1;
+        } else {
+            a[offset]++;
+            if (a[offset] != 0)
+                return 0;
+        }
+    }
+    return 1;
+}

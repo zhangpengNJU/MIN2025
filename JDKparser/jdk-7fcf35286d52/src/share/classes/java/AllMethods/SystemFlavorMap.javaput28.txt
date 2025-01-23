@@ -1,0 +1,6 @@
+public void put(K key, LinkedHashSet<V> value) {
+    if (cache == null) {
+        cache = new HashMap<>(1);
+    }
+    cache.put(key, new SoftReference<>(value));
+}

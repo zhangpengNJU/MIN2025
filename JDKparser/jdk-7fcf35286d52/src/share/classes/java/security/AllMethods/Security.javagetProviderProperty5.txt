@@ -1,0 +1,18 @@
+/**
+ * Returns the property (if any) mapping the key for the given provider.
+ */
+private static String getProviderProperty(String key, Provider provider) {
+    String prop = provider.getProperty(key);
+    if (prop == null) {
+        // Is there a match if we do a case-insensitive property name
+        // comparison? Let's try ...
+        for (Enumeration<Object> e = provider.keys(); e.hasMoreElements() && prop == null; ) {
+            String matchKey = (String) e.nextElement();
+            if (key.equalsIgnoreCase(matchKey)) {
+                prop = provider.getProperty(matchKey);
+                break;
+            }
+        }
+    }
+    return prop;
+}

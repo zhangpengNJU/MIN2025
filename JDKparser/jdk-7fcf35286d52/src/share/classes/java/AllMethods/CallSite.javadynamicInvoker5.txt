@@ -1,0 +1,15 @@
+/**
+ * Produces a method handle equivalent to an invokedynamic instruction
+ * which has been linked to this call site.
+ * <p>
+ * This method is equivalent to the following code:
+ * <blockquote><pre>{@code
+ * MethodHandle getTarget, invoker, result;
+ * getTarget = MethodHandles.publicLookup().bind(this, "getTarget", MethodType.methodType(MethodHandle.class));
+ * invoker = MethodHandles.exactInvoker(this.type());
+ * result = MethodHandles.foldArguments(invoker, getTarget)
+ * }</pre></blockquote>
+ *
+ * @return a method handle which always invokes this call site's current target
+ */
+public abstract MethodHandle dynamicInvoker();

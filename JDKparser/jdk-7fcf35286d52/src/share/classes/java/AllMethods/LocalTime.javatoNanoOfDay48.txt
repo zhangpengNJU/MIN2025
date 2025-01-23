@@ -1,0 +1,13 @@
+/**
+ * Extracts the time as nanos of day,
+ * from {@code 0} to {@code 24 * 60 * 60 * 1,000,000,000 - 1}.
+ *
+ * @return the nano of day equivalent to this time
+ */
+public long toNanoOfDay() {
+    long total = hour * NANOS_PER_HOUR;
+    total += minute * NANOS_PER_MINUTE;
+    total += second * NANOS_PER_SECOND;
+    total += nano;
+    return total;
+}

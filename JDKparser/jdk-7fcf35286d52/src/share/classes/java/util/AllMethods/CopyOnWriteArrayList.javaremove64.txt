@@ -1,0 +1,14 @@
+public E remove(int index) {
+    final ReentrantLock lock = l.lock;
+    lock.lock();
+    try {
+        rangeCheck(index);
+        checkForComodification();
+        E result = l.remove(index + offset);
+        expectedArray = l.getArray();
+        size--;
+        return result;
+    } finally {
+        lock.unlock();
+    }
+}

@@ -1,0 +1,5 @@
+private static boolean inRange(int bitset) {
+    // incoming values must fit in *unsigned* byte
+    assert ((bitset & 0xFF) == bitset);
+    return ((bitset & ~PACKED_BYTE_MASK) == 0);
+}

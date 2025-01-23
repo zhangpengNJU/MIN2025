@@ -1,0 +1,42 @@
+private static NameService createNSProvider(String provider) {
+    if (provider == null)
+        return null;
+    NameService nameService = null;
+    if (provider.equals("default")) {
+        // initialize the default name service
+        nameService = new NameService() {
+
+            public InetAddress[] lookupAllHostAddr(String host) throws UnknownHostException {
+                return impl.lookupAllHostAddr(host);
+            }
+
+            public String getHostByAddr(byte[] addr) throws UnknownHostException {
+                return impl.getHostByAddr(addr);
+            }
+        };
+    } else {
+        final String providerName = provider;
+        try {
+            nameService = java.security.AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<NameService>() {
+
+                public NameService run() {
+                    Iterator<NameServiceDescriptor> itr = ServiceLoader.load(NameServiceDescriptor.class).iterator();
+                    while (itr.hasNext()) {
+                        NameServiceDescriptor nsd = itr.next();
+                        if (providerName.equalsIgnoreCase(nsd.getType() + "," + nsd.getProviderName())) {
+                            try {
+                                return nsd.createNameService();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                System.err.println("Cannot create name service:" + providerName + ": " + e);
+                            }
+                        }
+                    }
+                    return null;
+                }
+            });
+        } catch (java.security.PrivilegedActionException e) {
+        }
+    }
+    return nameService;
+}

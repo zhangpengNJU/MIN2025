@@ -1,0 +1,28 @@
+/**
+ * Create a private, writable copy of names.
+ *  Preserve the original copy, for reference.
+ */
+void startEdit() {
+    assert (verifyArity());
+    int oc = ownedCount();
+    // no nested transactions
+    assert (!inTrans());
+    flags |= F_TRANS;
+    Name[] oldNames = names;
+    Name[] ownBuffer = (oc == 2 ? originalNames : null);
+    assert (ownBuffer != oldNames);
+    if (ownBuffer != null && ownBuffer.length >= length) {
+        names = copyNamesInto(ownBuffer);
+    } else {
+        // make a new buffer to hold the names
+        final int SLOP = 2;
+        names = Arrays.copyOf(oldNames, Math.max(length + SLOP, oldNames.length));
+        if (oc < 2)
+            ++flags;
+        assert (ownedCount() == oc + 1);
+    }
+    originalNames = oldNames;
+    assert (originalNames != names);
+    firstChange = length;
+    assert (inTrans());
+}

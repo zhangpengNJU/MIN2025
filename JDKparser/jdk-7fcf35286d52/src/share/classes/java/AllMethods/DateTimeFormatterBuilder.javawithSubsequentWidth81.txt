@@ -1,0 +1,10 @@
+/**
+ * Returns a new instance with an updated subsequent width.
+ *
+ * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
+ * @return a new updated printer-parser, not null
+ */
+@Override
+ReducedPrinterParser withSubsequentWidth(int subsequentWidth) {
+    return new ReducedPrinterParser(field, minWidth, maxWidth, baseValue, baseDate, this.subsequentWidth + subsequentWidth);
+}

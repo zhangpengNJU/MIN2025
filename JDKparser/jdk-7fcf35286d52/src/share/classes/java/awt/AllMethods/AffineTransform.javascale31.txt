@@ -1,0 +1,64 @@
+/**
+ * Concatenates this transform with a scaling transformation.
+ * This is equivalent to calling concatenate(S), where S is an
+ * <code>AffineTransform</code> represented by the following matrix:
+ * <pre>
+ *          [   sx   0    0   ]
+ *          [   0    sy   0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param sx the factor by which coordinates are scaled along the
+ * X axis direction
+ * @param sy the factor by which coordinates are scaled along the
+ * Y axis direction
+ * @since 1.2
+ */
+@SuppressWarnings("fallthrough")
+public void scale(double sx, double sy) {
+    int state = this.state;
+    switch(state) {
+        default:
+            stateError();
+        /* NOTREACHED */
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SHEAR | APPLY_SCALE):
+            m00 *= sx;
+            m11 *= sy;
+        /* NOBREAK */
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            m01 *= sy;
+            m10 *= sx;
+            if (m01 == 0 && m10 == 0) {
+                state &= APPLY_TRANSLATE;
+                if (m00 == 1.0 && m11 == 1.0) {
+                    this.type = (state == APPLY_IDENTITY ? TYPE_IDENTITY : TYPE_TRANSLATION);
+                } else {
+                    state |= APPLY_SCALE;
+                    this.type = TYPE_UNKNOWN;
+                }
+                this.state = state;
+            }
+            return;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            m00 *= sx;
+            m11 *= sy;
+            if (m00 == 1.0 && m11 == 1.0) {
+                this.state = (state &= APPLY_TRANSLATE);
+                this.type = (state == APPLY_IDENTITY ? TYPE_IDENTITY : TYPE_TRANSLATION);
+            } else {
+                this.type = TYPE_UNKNOWN;
+            }
+            return;
+        case (APPLY_TRANSLATE):
+        case (APPLY_IDENTITY):
+            m00 = sx;
+            m11 = sy;
+            if (sx != 1.0 || sy != 1.0) {
+                this.state = state | APPLY_SCALE;
+                this.type = TYPE_UNKNOWN;
+            }
+            return;
+    }
+}

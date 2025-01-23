@@ -1,0 +1,26 @@
+final <S> boolean uniAccept(CompletableFuture<S> a, Consumer<? super S> f, UniAccept<S> c) {
+    Object r;
+    Throwable x;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    tryComplete: if (result == null) {
+        if (r instanceof AltResult) {
+            if ((x = ((AltResult) r).ex) != null) {
+                completeThrowable(x, r);
+                break tryComplete;
+            }
+            r = null;
+        }
+        try {
+            if (c != null && !c.claim())
+                return false;
+            @SuppressWarnings("unchecked")
+            S s = (S) r;
+            f.accept(s);
+            completeNull();
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

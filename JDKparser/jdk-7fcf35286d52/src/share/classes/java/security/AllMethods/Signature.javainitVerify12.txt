@@ -1,0 +1,17 @@
+/**
+ * Initializes this object for verification. If this method is called
+ * again with a different argument, it negates the effect
+ * of this call.
+ *
+ * @param publicKey the public key of the identity whose signature is
+ * going to be verified.
+ *
+ * @exception InvalidKeyException if the key is invalid.
+ */
+public final void initVerify(PublicKey publicKey) throws InvalidKeyException {
+    engineInitVerify(publicKey);
+    state = VERIFY;
+    if (!skipDebug && pdebug != null) {
+        pdebug.println("Signature." + algorithm + " verification algorithm from: " + getProviderName());
+    }
+}

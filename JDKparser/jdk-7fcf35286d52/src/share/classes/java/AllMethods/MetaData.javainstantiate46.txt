@@ -1,0 +1,5 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Object type = MetaData.getPrivateFieldValue(oldInstance, "java.util.Collections$CheckedCollection.type");
+    List<?> list = new ArrayList<>((Collection<?>) oldInstance);
+    return new Expression(oldInstance, Collections.class, "checkedCollection", new Object[] { list, type });
+}

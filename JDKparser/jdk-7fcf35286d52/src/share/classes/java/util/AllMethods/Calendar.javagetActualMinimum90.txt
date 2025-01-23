@@ -1,0 +1,46 @@
+/**
+ * Returns the minimum value that the specified calendar field
+ * could have, given the time value of this <code>Calendar</code>.
+ *
+ * <p>The default implementation of this method uses an iterative
+ * algorithm to determine the actual minimum value for the
+ * calendar field. Subclasses should, if possible, override this
+ * with a more efficient implementation - in many cases, they can
+ * simply return <code>getMinimum()</code>.
+ *
+ * @param field the calendar field
+ * @return the minimum of the given calendar field for the time
+ * value of this <code>Calendar</code>
+ * @see #getMinimum(int)
+ * @see #getMaximum(int)
+ * @see #getGreatestMinimum(int)
+ * @see #getLeastMaximum(int)
+ * @see #getActualMaximum(int)
+ * @since 1.2
+ */
+public int getActualMinimum(int field) {
+    int fieldValue = getGreatestMinimum(field);
+    int endValue = getMinimum(field);
+    // if we know that the minimum value is always the same, just return it
+    if (fieldValue == endValue) {
+        return fieldValue;
+    }
+    // clone the calendar so we don't mess with the real one, and set it to
+    // accept anything for the field values
+    Calendar work = (Calendar) this.clone();
+    work.setLenient(true);
+    // now try each value from getLeastMaximum() to getMaximum() one by one until
+    // we get a value that normalizes to another value.  The last value that
+    // normalizes to itself is the actual minimum for the current date
+    int result = fieldValue;
+    do {
+        work.set(field, fieldValue);
+        if (work.get(field) != fieldValue) {
+            break;
+        } else {
+            result = fieldValue;
+            fieldValue--;
+        }
+    } while (fieldValue >= endValue);
+    return result;
+}

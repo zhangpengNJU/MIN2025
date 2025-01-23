@@ -1,0 +1,5 @@
+private void centerVertically(GridBagConstraints cons, Rectangle r, int cellHeight) {
+    if (!cons.isVerticallyResizable()) {
+        r.y += Math.max(0, (cellHeight - cons.insets.top - cons.insets.bottom - cons.minHeight - cons.ipady) / 2);
+    }
+}

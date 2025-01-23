@@ -1,0 +1,49 @@
+/**
+ * <code>readObject</code> for custom serialization.
+ *
+ * <p>This method reads this object's serialized form for this
+ * class as follows:
+ *
+ * <p>The <code>readObject</code> method is invoked on
+ * <code>in</code> to read this object's unique identifier
+ * (a {@link java.rmi.server.UID UID} instance).
+ *
+ * <p>Next, the <code>readUTF</code> method is invoked on
+ * <code>in</code> to read the external ref type name of the
+ * <code>RemoteRef</code> instance for this object's
+ * activator.  Next, the <code>RemoteRef</code>
+ * instance is created of an implementation-specific class
+ * corresponding to the external ref type name (returned by
+ * <code>readUTF</code>), and the <code>readExternal</code>
+ * method is invoked on that <code>RemoteRef</code> instance
+ * to read the external form corresponding to the external
+ * ref type name.
+ *
+ * <p>Note: If the external ref type name is
+ * <code>"UnicastRef"</code>, <code>"UnicastServerRef"</code>,
+ * <code>"UnicastRef2"</code>, <code>"UnicastServerRef2"</code>,
+ * or <code>"ActivatableRef"</code>, a corresponding
+ * implementation-specific class must be found, and its
+ * <code>readExternal</code> method must read the serial data
+ * for that external ref type name as specified to be written
+ * in the <b>serialData</b> documentation for this class.
+ * If the external ref type name is any other string (of non-zero
+ * length), a <code>ClassNotFoundException</code> will be thrown,
+ * unless the implementation provides an implementation-specific
+ * class corresponding to that external ref type name, in which
+ * case the <code>RemoteRef</code> will be an instance of
+ * that implementation-specific class.
+ */
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    uid = (UID) in.readObject();
+    try {
+        Class<? extends RemoteRef> refClass = Class.forName(RemoteRef.packagePrefix + "." + in.readUTF()).asSubclass(RemoteRef.class);
+        RemoteRef ref = refClass.newInstance();
+        ref.readExternal(in);
+        activator = (Activator) Proxy.newProxyInstance(null, new Class<?>[] { Activator.class }, new RemoteObjectInvocationHandler(ref));
+    } catch (InstantiationException e) {
+        throw (IOException) new InvalidObjectException("Unable to create remote reference").initCause(e);
+    } catch (IllegalAccessException e) {
+        throw (IOException) new InvalidObjectException("Unable to create remote reference").initCause(e);
+    }
+}

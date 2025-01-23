@@ -1,0 +1,43 @@
+/**
+ * Sets old modifiers by the new ones.
+ */
+private void setOldModifiers() {
+    if (id == MOUSE_PRESSED || id == MOUSE_RELEASED || id == MOUSE_CLICKED) {
+        switch(button) {
+            case BUTTON1:
+                modifiers |= BUTTON1_MASK;
+                break;
+            case BUTTON2:
+                modifiers |= BUTTON2_MASK;
+                break;
+            case BUTTON3:
+                modifiers |= BUTTON3_MASK;
+                break;
+        }
+    } else {
+        if ((modifiers & BUTTON1_DOWN_MASK) != 0) {
+            modifiers |= BUTTON1_MASK;
+        }
+        if ((modifiers & BUTTON2_DOWN_MASK) != 0) {
+            modifiers |= BUTTON2_MASK;
+        }
+        if ((modifiers & BUTTON3_DOWN_MASK) != 0) {
+            modifiers |= BUTTON3_MASK;
+        }
+    }
+    if ((modifiers & ALT_DOWN_MASK) != 0) {
+        modifiers |= ALT_MASK;
+    }
+    if ((modifiers & META_DOWN_MASK) != 0) {
+        modifiers |= META_MASK;
+    }
+    if ((modifiers & SHIFT_DOWN_MASK) != 0) {
+        modifiers |= SHIFT_MASK;
+    }
+    if ((modifiers & CTRL_DOWN_MASK) != 0) {
+        modifiers |= CTRL_MASK;
+    }
+    if ((modifiers & ALT_GRAPH_DOWN_MASK) != 0) {
+        modifiers |= ALT_GRAPH_MASK;
+    }
+}

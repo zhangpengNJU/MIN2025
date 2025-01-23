@@ -1,0 +1,6 @@
+public URL getResource(String name) {
+    if (loader != null) {
+        return loader.getResource(name);
+    }
+    return ClassLoader.getSystemResource(name);
+}

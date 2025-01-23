@@ -1,0 +1,38 @@
+/**
+ * Converts the digits in the text that occur between {@code
+ * start} and {@code start + count}, using the provided {@code
+ * context}. {@code Context} is ignored if the shaper is not a
+ * contextual shaper.
+ *
+ * @param text  a {@code char} array
+ * @param start the index into {@code text} to start converting
+ * @param count the number of {@code char}s in {@code text}
+ *              to convert
+ * @param context the context to which to convert the characters,
+ *                such as {@code NumericShaper.Range.EUROPEAN}
+ * @throws IndexOutOfBoundsException
+ *         if {@code start} or {@code start + count} is out of bounds
+ * @throws NullPointerException
+ *         if {@code text} or {@code context} is null
+ * @since 1.7
+ */
+public void shape(char[] text, int start, int count, Range context) {
+    checkParams(text, start, count);
+    if (context == null) {
+        throw new NullPointerException("context is null");
+    }
+    if (isContextual()) {
+        if (rangeSet != null) {
+            shapeContextually(text, start, count, context);
+        } else {
+            int key = Range.toRangeIndex(context);
+            if (key >= 0) {
+                shapeContextually(text, start, count, key);
+            } else {
+                shapeContextually(text, start, count, shapingRange);
+            }
+        }
+    } else {
+        shapeNonContextually(text, start, count);
+    }
+}

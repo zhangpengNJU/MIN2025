@@ -1,0 +1,75 @@
+/**
+ * Returns a concurrent {@code Collector} implementing a cascaded "group by"
+ * operation on input elements of type {@code T}, grouping elements
+ * according to a classification function, and then performing a reduction
+ * operation on the values associated with a given key using the specified
+ * downstream {@code Collector}.  The {@code ConcurrentMap} produced by the
+ * Collector is created with the supplied factory function.
+ *
+ * <p>This is a {@link Collector.Characteristics#CONCURRENT concurrent} and
+ * {@link Collector.Characteristics#UNORDERED unordered} Collector.
+ *
+ * <p>The classification function maps elements to some key type {@code K}.
+ * The downstream collector operates on elements of type {@code T} and
+ * produces a result of type {@code D}. The resulting collector produces a
+ * {@code Map<K, D>}.
+ *
+ * <p>For example, to compute the set of last names of people in each city,
+ * where the city names are sorted:
+ * <pre>{@code
+ *     ConcurrentMap<City, Set<String>> namesByCity
+ *         = people.stream().collect(groupingBy(Person::getCity, ConcurrentSkipListMap::new,
+ *                                              mapping(Person::getLastName, toSet())));
+ * }</pre>
+ *
+ * @param <T> the type of the input elements
+ * @param <K> the type of the keys
+ * @param <A> the intermediate accumulation type of the downstream collector
+ * @param <D> the result type of the downstream reduction
+ * @param <M> the type of the resulting {@code ConcurrentMap}
+ * @param classifier a classifier function mapping input elements to keys
+ * @param downstream a {@code Collector} implementing the downstream reduction
+ * @param mapFactory a function which, when called, produces a new empty
+ *                   {@code ConcurrentMap} of the desired type
+ * @return a concurrent, unordered {@code Collector} implementing the cascaded group-by operation
+ *
+ * @see #groupingByConcurrent(Function)
+ * @see #groupingByConcurrent(Function, Collector)
+ * @see #groupingBy(Function, Supplier, Collector)
+ */
+public static <T, K, A, D, M extends ConcurrentMap<K, D>> Collector<T, ?, M> groupingByConcurrent(Function<? super T, ? extends K> classifier, Supplier<M> mapFactory, Collector<? super T, A, D> downstream) {
+    Supplier<A> downstreamSupplier = downstream.supplier();
+    BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
+    BinaryOperator<ConcurrentMap<K, A>> merger = Collectors.<K, A, ConcurrentMap<K, A>>mapMerger(downstream.combiner());
+    @SuppressWarnings("unchecked")
+    Supplier<ConcurrentMap<K, A>> mangledFactory = (Supplier<ConcurrentMap<K, A>>) mapFactory;
+    BiConsumer<ConcurrentMap<K, A>, T> accumulator;
+    if (downstream.characteristics().contains(Collector.Characteristics.CONCURRENT)) {
+        accumulator = (m, t) -> {
+            K key = Objects.requireNonNull(classifier.apply(t), "element cannot be mapped to a null key");
+            A resultContainer = m.computeIfAbsent(key, k -> downstreamSupplier.get());
+            downstreamAccumulator.accept(resultContainer, t);
+        };
+    } else {
+        accumulator = (m, t) -> {
+            K key = Objects.requireNonNull(classifier.apply(t), "element cannot be mapped to a null key");
+            A resultContainer = m.computeIfAbsent(key, k -> downstreamSupplier.get());
+            synchronized (resultContainer) {
+                downstreamAccumulator.accept(resultContainer, t);
+            }
+        };
+    }
+    if (downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+        return new CollectorImpl<>(mangledFactory, accumulator, merger, CH_CONCURRENT_ID);
+    } else {
+        @SuppressWarnings("unchecked")
+        Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
+        Function<ConcurrentMap<K, A>, M> finisher = intermediate -> {
+            intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
+            @SuppressWarnings("unchecked")
+            M castResult = (M) intermediate;
+            return castResult;
+        };
+        return new CollectorImpl<>(mangledFactory, accumulator, merger, finisher, CH_CONCURRENT_NOID);
+    }
+}

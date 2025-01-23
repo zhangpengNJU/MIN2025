@@ -1,0 +1,12 @@
+public void interrupt(Thread target) {
+    synchronized (closeLock) {
+        if (!open)
+            return;
+        open = false;
+        interrupted = target;
+        try {
+            AbstractInterruptibleChannel.this.implCloseChannel();
+        } catch (IOException x) {
+        }
+    }
+}

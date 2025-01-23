@@ -1,0 +1,38 @@
+/**
+ * Returns an array of unnormalized color/alpha components for a
+ * specified pixel in this <code>ColorModel</code>.  The pixel value
+ * is specified as an int.  If the <code>components</code> array is <code>null</code>,
+ * a new array is allocated that contains
+ * <code>offset + getNumComponents()</code> elements.
+ * The <code>components</code> array is returned,
+ * with the alpha component included
+ * only if <code>hasAlpha</code> returns true.
+ * Color/alpha components are stored in the <code>components</code> array starting
+ * at <code>offset</code> even if the array is allocated by this method.
+ * An <code>ArrayIndexOutOfBoundsException</code>
+ * is thrown if  the <code>components</code> array is not <code>null</code> and is
+ * not large enough to hold all the color and alpha components
+ * starting at <code>offset</code>.
+ * @param pixel the specified pixel
+ * @param components the array to receive the color and alpha
+ * components of the specified pixel
+ * @param offset the offset into the <code>components</code> array at
+ * which to start storing the color and alpha components
+ * @return an array containing the color and alpha components of the
+ * specified pixel starting at the specified offset.
+ * @see ColorModel#hasAlpha
+ * @see ColorModel#getNumComponents
+ */
+public int[] getComponents(int pixel, int[] components, int offset) {
+    if (components == null) {
+        components = new int[offset + numComponents];
+    }
+    // REMIND: Needs to change if different color space
+    components[offset + 0] = getRed(pixel);
+    components[offset + 1] = getGreen(pixel);
+    components[offset + 2] = getBlue(pixel);
+    if (supportsAlpha && (components.length - offset) > 3) {
+        components[offset + 3] = getAlpha(pixel);
+    }
+    return components;
+}

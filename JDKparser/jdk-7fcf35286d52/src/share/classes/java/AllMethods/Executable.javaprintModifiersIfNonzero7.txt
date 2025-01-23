@@ -1,0 +1,15 @@
+void printModifiersIfNonzero(StringBuilder sb, int mask, boolean isDefault) {
+    int mod = getModifiers() & mask;
+    if (mod != 0 && !isDefault) {
+        sb.append(Modifier.toString(mod)).append(' ');
+    } else {
+        int access_mod = mod & Modifier.ACCESS_MODIFIERS;
+        if (access_mod != 0)
+            sb.append(Modifier.toString(access_mod)).append(' ');
+        if (isDefault)
+            sb.append("default ");
+        mod = (mod & ~Modifier.ACCESS_MODIFIERS);
+        if (mod != 0)
+            sb.append(Modifier.toString(mod)).append(' ');
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Determines the minimum size of the <code>parent</code> container
+ * using this grid bag layout.
+ * <p>
+ * Most applications do not call this method directly.
+ * @param     parent   the container in which to do the layout
+ * @see       java.awt.Container#doLayout
+ * @return the minimum size of the <code>parent</code> container
+ */
+public Dimension minimumLayoutSize(Container parent) {
+    GridBagLayoutInfo info = getLayoutInfo(parent, MINSIZE);
+    return getMinSize(parent, info);
+}

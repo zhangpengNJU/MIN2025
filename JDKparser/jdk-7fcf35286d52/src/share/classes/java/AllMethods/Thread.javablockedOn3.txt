@@ -1,0 +1,7 @@
+/* Set the blocker field; invoked via sun.misc.SharedSecrets from java.nio code
+     */
+void blockedOn(Interruptible b) {
+    synchronized (blockerLock) {
+        blocker = b;
+    }
+}

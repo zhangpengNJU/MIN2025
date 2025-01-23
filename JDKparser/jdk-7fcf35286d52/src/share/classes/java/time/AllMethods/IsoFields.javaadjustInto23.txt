@@ -1,0 +1,8 @@
+@SuppressWarnings("unchecked")
+@Override
+public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+    // calls getFrom() to check if supported
+    // lenient range
+    range().checkValidValue(newValue, this);
+    return (R) temporal.plus(Math.subtractExact(newValue, getFrom(temporal)), WEEKS);
+}

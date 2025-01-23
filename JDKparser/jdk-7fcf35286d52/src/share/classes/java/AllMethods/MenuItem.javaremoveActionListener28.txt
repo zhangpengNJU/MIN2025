@@ -1,0 +1,20 @@
+/**
+ * Removes the specified action listener so it no longer receives
+ * action events from this menu item.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param      l the action listener.
+ * @see        #addActionListener
+ * @see        #getActionListeners
+ * @see        java.awt.event.ActionEvent
+ * @see        java.awt.event.ActionListener
+ * @since      JDK1.1
+ */
+public synchronized void removeActionListener(ActionListener l) {
+    if (l == null) {
+        return;
+    }
+    actionListener = AWTEventMulticaster.remove(actionListener, l);
+}

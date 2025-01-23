@@ -1,0 +1,35 @@
+/**
+ * Returns a <code>Set</code> of the keys contained <em>only</em>
+ * in this <code>ResourceBundle</code>.
+ *
+ * <p>The default implementation returns a <code>Set</code> of the
+ * keys returned by the {@link #getKeys() getKeys} method except
+ * for the ones for which the {@link #handleGetObject(String)
+ * handleGetObject} method returns <code>null</code>. Once the
+ * <code>Set</code> has been created, the value is kept in this
+ * <code>ResourceBundle</code> in order to avoid producing the
+ * same <code>Set</code> in subsequent calls. Subclasses can
+ * override this method for faster handling.
+ *
+ * @return a <code>Set</code> of the keys contained only in this
+ *        <code>ResourceBundle</code>
+ * @since 1.6
+ */
+protected Set<String> handleKeySet() {
+    if (keySet == null) {
+        synchronized (this) {
+            if (keySet == null) {
+                Set<String> keys = new HashSet<>();
+                Enumeration<String> enumKeys = getKeys();
+                while (enumKeys.hasMoreElements()) {
+                    String key = enumKeys.nextElement();
+                    if (handleGetObject(key) != null) {
+                        keys.add(key);
+                    }
+                }
+                keySet = keys;
+            }
+        }
+    }
+    return keySet;
+}

@@ -1,0 +1,26 @@
+/**
+ * Deletes a file.
+ *
+ * <p> Unlike the {@link Files#delete delete()} method, this method does
+ * not first examine the file to determine if the file is a directory.
+ * Whether a directory is deleted by this method is system dependent and
+ * therefore not specified. If the file is a symbolic link, then the link
+ * itself, not the final target of the link, is deleted. When the
+ * parameter is a relative path then the file to delete is relative to
+ * this open directory.
+ *
+ * @param   path
+ *          the path of the file to delete
+ *
+ * @throws  ClosedDirectoryStreamException
+ *          if the directory stream is closed
+ * @throws  NoSuchFileException
+ *          if the file does not exist <i>(optional specific exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkDelete(String) checkDelete}
+ *          method is invoked to check delete access to the file
+ */
+void deleteFile(T path) throws IOException;

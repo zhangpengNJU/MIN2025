@@ -1,0 +1,17 @@
+/**
+ * Create a compatible WritableRaster with the specified size, a new
+ * SampleModel, and a new initialized DataBuffer.
+ * @param w the specified width of the new <code>WritableRaster</code>
+ * @param h the specified height of the new <code>WritableRaster</code>
+ * @return a compatible <code>WritableRaster</code> with the specified
+ *         size and a new sample model and data buffer.
+ * @exception RasterFormatException if the width or height is less than
+ *                               or equal to zero.
+ */
+public WritableRaster createCompatibleWritableRaster(int w, int h) {
+    if (w <= 0 || h <= 0) {
+        throw new RasterFormatException("negative " + ((w <= 0) ? "width" : "height"));
+    }
+    SampleModel sm = sampleModel.createCompatibleSampleModel(w, h);
+    return new SunWritableRaster(sm, new Point(0, 0));
+}

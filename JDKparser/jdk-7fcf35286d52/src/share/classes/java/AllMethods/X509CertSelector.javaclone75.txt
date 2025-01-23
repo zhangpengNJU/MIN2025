@@ -1,0 +1,23 @@
+/**
+ * Returns a copy of this object.
+ *
+ * @return the copy
+ */
+public Object clone() {
+    try {
+        X509CertSelector copy = (X509CertSelector) super.clone();
+        // Must clone these because addPathToName et al. modify them
+        if (subjectAlternativeNames != null) {
+            copy.subjectAlternativeNames = cloneSet(subjectAlternativeNames);
+            copy.subjectAlternativeGeneralNames = cloneSet(subjectAlternativeGeneralNames);
+        }
+        if (pathToGeneralNames != null) {
+            copy.pathToNames = cloneSet(pathToNames);
+            copy.pathToGeneralNames = cloneSet(pathToGeneralNames);
+        }
+        return copy;
+    } catch (CloneNotSupportedException e) {
+        /* Cannot happen */
+        throw new InternalError(e.toString(), e);
+    }
+}

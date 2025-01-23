@@ -1,0 +1,29 @@
+/**
+ * Returns the highest minimum value for the given calendar field
+ * of this <code>GregorianCalendar</code> instance. The highest
+ * minimum value is defined as the largest value returned by
+ * {@link #getActualMinimum(int)} for any possible time value,
+ * taking into consideration the current values of the
+ * {@link Calendar#getFirstDayOfWeek() getFirstDayOfWeek},
+ * {@link Calendar#getMinimalDaysInFirstWeek() getMinimalDaysInFirstWeek},
+ * {@link #getGregorianChange() getGregorianChange} and
+ * {@link Calendar#getTimeZone() getTimeZone} methods.
+ *
+ * @param field the calendar field.
+ * @return the highest minimum value for the given calendar field.
+ * @see #getMinimum(int)
+ * @see #getMaximum(int)
+ * @see #getLeastMaximum(int)
+ * @see #getActualMinimum(int)
+ * @see #getActualMaximum(int)
+ */
+@Override
+public int getGreatestMinimum(int field) {
+    if (field == DAY_OF_MONTH) {
+        BaseCalendar.Date d = getGregorianCutoverDate();
+        long mon1 = getFixedDateMonth1(d, gregorianCutoverDate);
+        d = getCalendarDate(mon1);
+        return Math.max(MIN_VALUES[field], d.getDayOfMonth());
+    }
+    return MIN_VALUES[field];
+}

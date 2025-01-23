@@ -1,0 +1,13 @@
+/**
+ * Closes the current subpath by drawing a straight line back to
+ * the coordinates of the last {@code moveTo}.  If the path is already
+ * closed then this method has no effect.
+ *
+ * @since 1.6
+ */
+public final synchronized void closePath() {
+    if (numTypes == 0 || pointTypes[numTypes - 1] != SEG_CLOSE) {
+        needRoom(true, 0);
+        pointTypes[numTypes++] = SEG_CLOSE;
+    }
+}

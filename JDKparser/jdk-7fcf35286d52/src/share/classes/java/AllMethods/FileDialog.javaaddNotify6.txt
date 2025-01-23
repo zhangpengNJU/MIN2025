@@ -1,0 +1,14 @@
+/**
+ * Creates the file dialog's peer.  The peer allows us to change the look
+ * of the file dialog without changing its functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (parent != null && parent.getPeer() == null) {
+            parent.addNotify();
+        }
+        if (peer == null)
+            peer = getToolkit().createFileDialog(this);
+        super.addNotify();
+    }
+}

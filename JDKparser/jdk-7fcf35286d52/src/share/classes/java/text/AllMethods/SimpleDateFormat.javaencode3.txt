@@ -1,0 +1,15 @@
+/**
+ * Encodes the given tag and length and puts encoded char(s) into buffer.
+ */
+private static void encode(int tag, int length, StringBuilder buffer) {
+    if (tag == PATTERN_ISO_ZONE && length >= 4) {
+        throw new IllegalArgumentException("invalid ISO 8601 format: length=" + length);
+    }
+    if (length < 255) {
+        buffer.append((char) (tag << 8 | length));
+    } else {
+        buffer.append((char) ((tag << 8) | 0xff));
+        buffer.append((char) (length >>> 16));
+        buffer.append((char) (length & 0xffff));
+    }
+}

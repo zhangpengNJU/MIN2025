@@ -1,0 +1,22 @@
+/**
+ * Convert a ProtectionDomain to a String.
+ */
+@Override
+public String toString() {
+    String pals = "<no principals>";
+    if (principals != null && principals.length > 0) {
+        StringBuilder palBuf = new StringBuilder("(principals ");
+        for (int i = 0; i < principals.length; i++) {
+            palBuf.append(principals[i].getClass().getName() + " \"" + principals[i].getName() + "\"");
+            if (i < principals.length - 1)
+                palBuf.append(",\n");
+            else
+                palBuf.append(")\n");
+        }
+        pals = palBuf.toString();
+    }
+    // Check if policy is set; we don't want to load
+    // the policy prematurely here
+    PermissionCollection pc = Policy.isSet() && seeAllp() ? mergePermissions() : getPermissions();
+    return "ProtectionDomain " + " " + codesource + "\n" + " " + classloader + "\n" + " " + pals + "\n" + " " + pc + "\n";
+}

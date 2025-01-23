@@ -1,0 +1,21 @@
+public boolean tryAdvance(Consumer<? super Map.Entry<K, V>> action) {
+    int hi;
+    if (action == null)
+        throw new NullPointerException();
+    Node<K, V>[] tab = map.table;
+    if (tab != null && tab.length >= (hi = getFence()) && index >= 0) {
+        while (current != null || index < hi) {
+            if (current == null)
+                current = tab[index++];
+            else {
+                Node<K, V> e = current;
+                current = current.next;
+                action.accept(e);
+                if (map.modCount != expectedModCount)
+                    throw new ConcurrentModificationException();
+                return true;
+            }
+        }
+    }
+    return false;
+}

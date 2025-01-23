@@ -1,0 +1,23 @@
+/**
+ *  Returns the value of the client info property specified by name.  This
+ *  method may return null if the specified client info property has not
+ *  been set and does not have a default value.  This method will also
+ *  return null if the specified client info property name is not supported
+ *  by the driver.
+ *  <p>
+ *  Applications may use the <code>DatabaseMetaData.getClientInfoProperties</code>
+ *  method to determine the client info properties supported by the driver.
+ *  <p>
+ *  @param name          The name of the client info property to retrieve
+ *  <p>
+ *  @return                      The value of the client info property specified
+ *  <p>
+ *  @throws SQLException         if the database server returns an error when
+ *                                                       fetching the client info value from the database
+ * or this method is called on a closed connection
+ *  <p>
+ *  @since 1.6
+ *
+ *  @see java.sql.DatabaseMetaData#getClientInfoProperties
+ */
+String getClientInfo(String name) throws SQLException;

@@ -1,0 +1,9 @@
+/**
+ * Appends a "sorted" operation to the provided stream.
+ *
+ * @param <T> the type of both input and output elements
+ * @param upstream a reference stream with element type T
+ */
+static <T> IntStream makeInt(AbstractPipeline<?, Integer, ?> upstream) {
+    return new OfInt(upstream);
+}

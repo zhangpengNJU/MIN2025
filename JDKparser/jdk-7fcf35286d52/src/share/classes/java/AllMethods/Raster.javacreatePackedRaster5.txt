@@ -1,0 +1,47 @@
+/**
+ * Creates a Raster based on a SinglePixelPackedSampleModel with
+ * the specified data type, width, height, and band masks.
+ * The number of bands is inferred from bandMasks.length.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  If location is null, (0, 0) will be used.
+ * The dataType parameter should be one of the enumerated values
+ * defined in the DataBuffer class.
+ *
+ * <p> The only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,
+ * and TYPE_INT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param bandMasks an array containing an entry for each band
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height, and band masks.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types, which are
+ *         <code>DataBuffer.TYPE_BYTE</code>,
+ *         <code>DataBuffer.TYPE_USHORT</code>
+ *         or <code>DataBuffer.TYPE_INT</code>
+ */
+public static WritableRaster createPackedRaster(int dataType, int w, int h, int[] bandMasks, Point location) {
+    DataBuffer d;
+    switch(dataType) {
+        case DataBuffer.TYPE_BYTE:
+            d = new DataBufferByte(w * h);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            d = new DataBufferUShort(w * h);
+            break;
+        case DataBuffer.TYPE_INT:
+            d = new DataBufferInt(w * h);
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported data type " + dataType);
+    }
+    return createPackedRaster(d, w, h, w, bandMasks, location);
+}

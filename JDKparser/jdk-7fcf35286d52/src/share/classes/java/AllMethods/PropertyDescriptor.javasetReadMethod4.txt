@@ -1,0 +1,18 @@
+/**
+ * Sets the method that should be used to read the property value.
+ *
+ * @param readMethod The new read method.
+ * @throws IntrospectionException if the read method is invalid
+ */
+public synchronized void setReadMethod(Method readMethod) throws IntrospectionException {
+    this.readMethodRef.set(readMethod);
+    if (readMethod == null) {
+        readMethodName = null;
+        return;
+    }
+    // The property type is determined by the read method.
+    setPropertyType(findPropertyType(readMethod, this.writeMethodRef.get()));
+    setClass0(readMethod.getDeclaringClass());
+    readMethodName = readMethod.getName();
+    setTransient(readMethod.getAnnotation(Transient.class));
+}

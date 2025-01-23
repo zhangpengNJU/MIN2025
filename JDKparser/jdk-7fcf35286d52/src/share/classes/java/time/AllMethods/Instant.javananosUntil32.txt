@@ -1,0 +1,5 @@
+private long nanosUntil(Instant end) {
+    long secsDiff = Math.subtractExact(end.seconds, seconds);
+    long totalNanos = Math.multiplyExact(secsDiff, NANOS_PER_SECOND);
+    return Math.addExact(totalNanos, end.nanos - nanos);
+}

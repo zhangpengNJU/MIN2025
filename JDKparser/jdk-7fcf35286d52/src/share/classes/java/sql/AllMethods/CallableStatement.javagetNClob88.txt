@@ -1,0 +1,19 @@
+/**
+ * Retrieves the value of the designated JDBC <code>NCLOB</code> parameter as a
+ * <code>java.sql.NClob</code> object in the Java programming language.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2, and
+ * so on
+ * @return the parameter value as a <code>NClob</code> object in the
+ * Java programming language.  If the value was SQL <code>NULL</code>, the
+ * value <code>null</code> is returned.
+ * @exception SQLException if the parameterIndex is not valid;
+ * if the driver does not support national
+ *         character sets;  if the driver can detect that a data conversion
+ *  error could occur; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+NClob getNClob(int parameterIndex) throws SQLException;

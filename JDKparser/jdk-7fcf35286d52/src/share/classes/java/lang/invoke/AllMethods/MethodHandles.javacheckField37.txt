@@ -1,0 +1,11 @@
+void checkField(byte refKind, Class<?> refc, MemberName m) throws IllegalAccessException {
+    boolean wantStatic = !MethodHandleNatives.refKindHasReceiver(refKind);
+    String message;
+    if (wantStatic != m.isStatic())
+        message = wantStatic ? "expected a static field" : "expected a non-static field";
+    else {
+        checkAccess(refKind, refc, m);
+        return;
+    }
+    throw m.makeAccessException(message, this);
+}

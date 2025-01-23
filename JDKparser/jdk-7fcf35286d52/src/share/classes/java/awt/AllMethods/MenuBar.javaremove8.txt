@@ -1,0 +1,22 @@
+/**
+ * Removes the menu located at the specified
+ * index from this menu bar.
+ * @param        index   the position of the menu to be removed.
+ * @see          java.awt.MenuBar#add(java.awt.Menu)
+ */
+public void remove(final int index) {
+    synchronized (getTreeLock()) {
+        Menu m = getMenu(index);
+        menus.removeElementAt(index);
+        MenuBarPeer peer = (MenuBarPeer) this.peer;
+        if (peer != null) {
+            peer.delMenu(index);
+            m.removeNotify();
+            m.parent = null;
+        }
+        if (helpMenu == m) {
+            helpMenu = null;
+            m.isHelpMenu = false;
+        }
+    }
+}

@@ -1,0 +1,6 @@
+/**
+ * compareAndSet value field
+ */
+boolean casValue(Object cmp, Object val) {
+    return UNSAFE.compareAndSwapObject(this, valueOffset, cmp, val);
+}

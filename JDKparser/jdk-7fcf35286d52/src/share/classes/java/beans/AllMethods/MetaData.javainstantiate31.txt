@@ -1,0 +1,5 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Map<?, ?> map = (Map<?, ?>) oldInstance;
+    Object key = map.keySet().iterator().next();
+    return new Expression(oldInstance, Collections.class, "singletonMap", new Object[] { key, map.get(key) });
+}

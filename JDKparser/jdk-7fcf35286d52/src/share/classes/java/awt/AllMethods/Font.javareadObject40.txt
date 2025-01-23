@@ -1,0 +1,40 @@
+/**
+ * Reads the <code>ObjectInputStream</code>.
+ * Unrecognized keys or values will be ignored.
+ *
+ * @param s the <code>ObjectInputStream</code> to read
+ * @serial
+ * @see #writeObject(java.io.ObjectOutputStream)
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.lang.ClassNotFoundException, java.io.IOException {
+    s.defaultReadObject();
+    if (pointSize == 0) {
+        pointSize = (float) size;
+    }
+    // Handle fRequestedAttributes.
+    // in 1.5, we always streamed out the font values plus
+    // TRANSFORM, SUPERSCRIPT, and WIDTH, regardless of whether the
+    // values were default or not.  In 1.6 we only stream out
+    // defined values.  So, 1.6 streams in from a 1.5 stream,
+    // it check each of these values and 'undefines' it if the
+    // value is the default.
+    if (fRequestedAttributes != null) {
+        try {
+            // init
+            values = getAttributeValues();
+            AttributeValues extras = AttributeValues.fromSerializableHashtable(fRequestedAttributes);
+            if (!AttributeValues.is16Hashtable(fRequestedAttributes)) {
+                // if legacy stream, undefine these
+                extras.unsetDefault();
+            }
+            values = getAttributeValues().merge(extras);
+            this.nonIdentityTx = values.anyNonDefault(EXTRA_MASK);
+            this.hasLayoutAttributes = values.anyNonDefault(LAYOUT_MASK);
+        } catch (Throwable t) {
+            throw new IOException(t);
+        } finally {
+            // don't need it any more
+            fRequestedAttributes = null;
+        }
+    }
+}

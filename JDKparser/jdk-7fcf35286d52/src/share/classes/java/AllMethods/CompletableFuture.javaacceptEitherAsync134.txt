@@ -1,0 +1,3 @@
+public CompletableFuture<Void> acceptEitherAsync(CompletionStage<? extends T> other, Consumer<? super T> action, Executor executor) {
+    return orAcceptStage(screenExecutor(executor), other, action);
+}

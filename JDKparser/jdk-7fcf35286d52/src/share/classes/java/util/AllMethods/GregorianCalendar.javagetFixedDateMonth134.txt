@@ -1,0 +1,34 @@
+/**
+ * Returns the fixed date of the first date of the month (usually
+ * the 1st of the month) before the specified date.
+ *
+ * @param date the date for which the first day of the month is
+ * calculated. The date has to be in the cut-over year (Gregorian
+ * or Julian).
+ * @param fixedDate the fixed date representation of the date
+ */
+private long getFixedDateMonth1(BaseCalendar.Date date, long fixedDate) {
+    assert date.getNormalizedYear() == gregorianCutoverYear || date.getNormalizedYear() == gregorianCutoverYearJulian;
+    BaseCalendar.Date gCutover = getGregorianCutoverDate();
+    if (gCutover.getMonth() == BaseCalendar.JANUARY && gCutover.getDayOfMonth() == 1) {
+        // The cutover happened on January 1.
+        return fixedDate - date.getDayOfMonth() + 1;
+    }
+    long fixedDateMonth1;
+    // The cutover happened sometime during the year.
+    if (date.getMonth() == gCutover.getMonth()) {
+        // The cutover happened in the month.
+        BaseCalendar.Date jLastDate = getLastJulianDate();
+        if (gregorianCutoverYear == gregorianCutoverYearJulian && gCutover.getMonth() == jLastDate.getMonth()) {
+            // The "gap" fits in the same month.
+            fixedDateMonth1 = jcal.getFixedDate(date.getNormalizedYear(), date.getMonth(), 1, null);
+        } else {
+            // Use the cutover date as the first day of the month.
+            fixedDateMonth1 = gregorianCutoverDate;
+        }
+    } else {
+        // The cutover happened before the month.
+        fixedDateMonth1 = fixedDate - date.getDayOfMonth() + 1;
+    }
+    return fixedDateMonth1;
+}

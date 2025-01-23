@@ -1,0 +1,21 @@
+/**
+ * Returns, but does not unschedule or execute, a task queued by
+ * the current thread but not yet executed, if one is immediately
+ * available. There is no guarantee that this task will actually
+ * be polled or executed next. Conversely, this method may return
+ * null even if a task exists but cannot be accessed without
+ * contention with other threads.  This method is designed
+ * primarily to support extensions, and is unlikely to be useful
+ * otherwise.
+ *
+ * @return the next task, or {@code null} if none are available
+ */
+protected static ForkJoinTask<?> peekNextLocalTask() {
+    Thread t;
+    ForkJoinPool.WorkQueue q;
+    if ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread)
+        q = ((ForkJoinWorkerThread) t).workQueue;
+    else
+        q = ForkJoinPool.commonSubmitterQueue();
+    return (q == null) ? null : q.peek();
+}

@@ -1,0 +1,22 @@
+/**
+ * Creates a new strategy for multi-buffering on this component.
+ * Multi-buffering is useful for rendering performance.  This method
+ * attempts to create the best strategy available with the number of
+ * buffers supplied.  It will always create a <code>BufferStrategy</code>
+ * with that number of buffers.
+ * A page-flipping strategy is attempted first, then a blitting strategy
+ * using accelerated buffers.  Finally, an unaccelerated blitting
+ * strategy is used.
+ * <p>
+ * Each time this method is called,
+ * the existing buffer strategy for this component is discarded.
+ * @param numBuffers number of buffers to create, including the front buffer
+ * @exception IllegalArgumentException if numBuffers is less than 1.
+ * @exception IllegalStateException if the component is not displayable
+ * @see #isDisplayable
+ * @see #getBufferStrategy
+ * @since 1.4
+ */
+public void createBufferStrategy(int numBuffers) {
+    super.createBufferStrategy(numBuffers);
+}

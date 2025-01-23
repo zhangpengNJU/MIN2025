@@ -1,0 +1,14 @@
+/**
+ * Note an entry that is about to be overwritten.
+ *  If it is not live, quietly replace it by null.
+ *  If it is an actual null, increment cacheLoad,
+ *  because the caller is going to store something
+ *  in its place.
+ */
+private <T> Entry<T> overwrittenEntry(Entry<T> e2) {
+    if (e2 == null)
+        cacheLoad += 1;
+    else if (e2.isLive())
+        return e2;
+    return null;
+}

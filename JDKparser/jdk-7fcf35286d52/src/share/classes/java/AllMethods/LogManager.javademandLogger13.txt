@@ -1,0 +1,39 @@
+// Find or create a specified logger instance. If a logger has
+// already been created with the given name it is returned.
+// Otherwise a new logger instance is created and registered
+// in the LogManager global namespace.
+// This method will always return a non-null Logger object.
+// Synchronization is not required here. All synchronization for
+// adding a new Logger object is handled by addLogger().
+// 
+// This method must delegate to the LogManager implementation to
+// add a new Logger or return the one that has been added previously
+// as a LogManager subclass may override the addLogger, getLogger,
+// readConfiguration, and other methods.
+Logger demandLogger(String name, String resourceBundleName, Class<?> caller) {
+    Logger result = getLogger(name);
+    if (result == null) {
+        // only allocate the new logger once
+        Logger newLogger = new Logger(name, resourceBundleName, caller, this, false);
+        do {
+            if (addLogger(newLogger)) {
+                // We successfully added the new Logger that we
+                // created above so return it without refetching.
+                return newLogger;
+            }
+            // We didn't add the new Logger that we created above
+            // because another thread added a Logger with the same
+            // name after our null check above and before our call
+            // to addLogger(). We have to refetch the Logger because
+            // addLogger() returns a boolean instead of the Logger
+            // reference itself. However, if the thread that created
+            // the other Logger is not holding a strong reference to
+            // the other Logger, then it is possible for the other
+            // Logger to be GC'ed after we saw it in addLogger() and
+            // before we can refetch it. If it has been GC'ed then
+            // we'll just loop around and try again.
+            result = getLogger(name);
+        } while (result == null);
+    }
+    return result;
+}

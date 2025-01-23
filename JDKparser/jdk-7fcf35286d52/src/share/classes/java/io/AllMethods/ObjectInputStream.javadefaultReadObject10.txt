@@ -1,0 +1,35 @@
+/**
+ * Read the non-static and non-transient fields of the current class from
+ * this stream.  This may only be called from the readObject method of the
+ * class being deserialized. It will throw the NotActiveException if it is
+ * called otherwise.
+ *
+ * @throws  ClassNotFoundException if the class of a serialized object
+ *          could not be found.
+ * @throws  IOException if an I/O error occurs.
+ * @throws  NotActiveException if the stream is not currently reading
+ *          objects.
+ */
+public void defaultReadObject() throws IOException, ClassNotFoundException {
+    SerialCallbackContext ctx = curContext;
+    if (ctx == null) {
+        throw new NotActiveException("not in call to readObject");
+    }
+    Object curObj = ctx.getObj();
+    ObjectStreamClass curDesc = ctx.getDesc();
+    bin.setBlockDataMode(false);
+    defaultReadFields(curObj, curDesc);
+    bin.setBlockDataMode(true);
+    if (!curDesc.hasWriteObjectData()) {
+        /*
+             * Fix for 4360508: since stream does not contain terminating
+             * TC_ENDBLOCKDATA tag, set flag so that reading code elsewhere
+             * knows to simulate end-of-custom-data behavior.
+             */
+        defaultDataEnd = true;
+    }
+    ClassNotFoundException ex = handles.lookupException(passHandle);
+    if (ex != null) {
+        throw ex;
+    }
+}

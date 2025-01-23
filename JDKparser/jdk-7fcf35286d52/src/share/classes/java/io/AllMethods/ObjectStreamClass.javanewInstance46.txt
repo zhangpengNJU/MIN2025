@@ -1,0 +1,49 @@
+/**
+ * Creates a new instance of the represented class.  If the class is
+ * externalizable, invokes its public no-arg constructor; otherwise, if the
+ * class is serializable, invokes the no-arg constructor of the first
+ * non-serializable superclass.  Throws UnsupportedOperationException if
+ * this class descriptor is not associated with a class, if the associated
+ * class is non-serializable or if the appropriate no-arg constructor is
+ * inaccessible/unavailable.
+ */
+Object newInstance() throws InstantiationException, InvocationTargetException, UnsupportedOperationException {
+    requireInitialized();
+    if (cons != null) {
+        try {
+            if (domains == null || domains.length == 0) {
+                return cons.newInstance();
+            } else {
+                JavaSecurityAccess jsa = SharedSecrets.getJavaSecurityAccess();
+                PrivilegedAction<?> pea = () -> {
+                    try {
+                        return cons.newInstance();
+                    } catch (InstantiationException | InvocationTargetException | IllegalAccessException x) {
+                        throw new UndeclaredThrowableException(x);
+                    }
+                };
+                // Can't use PrivilegedExceptionAction with jsa
+                try {
+                    return jsa.doIntersectionPrivilege(pea, AccessController.getContext(), new AccessControlContext(domains));
+                } catch (UndeclaredThrowableException x) {
+                    Throwable cause = x.getCause();
+                    if (cause instanceof InstantiationException)
+                        throw (InstantiationException) cause;
+                    if (cause instanceof InvocationTargetException)
+                        throw (InvocationTargetException) cause;
+                    if (cause instanceof IllegalAccessException)
+                        throw (IllegalAccessException) cause;
+                    // not supposed to happen
+                    throw x;
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            // should not occur, as access checks have been suppressed
+            throw new InternalError(ex);
+        } catch (InstantiationError err) {
+            throw (InstantiationException) new InstantiationException().initCause(err);
+        }
+    } else {
+        throw new UnsupportedOperationException();
+    }
+}

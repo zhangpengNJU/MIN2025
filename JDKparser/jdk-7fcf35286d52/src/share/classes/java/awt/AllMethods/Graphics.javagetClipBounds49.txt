@@ -1,0 +1,31 @@
+/**
+ * Returns the bounding rectangle of the current clipping area.
+ * The coordinates in the rectangle are relative to the coordinate
+ * system origin of this graphics context.  This method differs
+ * from {@link #getClipBounds() getClipBounds} in that an existing
+ * rectangle is used instead of allocating a new one.
+ * This method refers to the user clip, which is independent of the
+ * clipping associated with device bounds and window visibility.
+ *  If no clip has previously been set, or if the clip has been
+ * cleared using <code>setClip(null)</code>, this method returns the
+ * specified <code>Rectangle</code>.
+ * @param  r    the rectangle where the current clipping area is
+ *              copied to.  Any current values in this rectangle are
+ *              overwritten.
+ * @return      the bounding rectangle of the current clipping area.
+ */
+public Rectangle getClipBounds(Rectangle r) {
+    // Note, this implementation is not very efficient.
+    // Subclasses should override this method and avoid
+    // the allocation overhead of getClipBounds().
+    Rectangle clipRect = getClipBounds();
+    if (clipRect != null) {
+        r.x = clipRect.x;
+        r.y = clipRect.y;
+        r.width = clipRect.width;
+        r.height = clipRect.height;
+    } else if (r == null) {
+        throw new NullPointerException("null rectangle parameter");
+    }
+    return r;
+}

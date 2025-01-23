@@ -1,0 +1,32 @@
+/**
+ * Acquire permission to skip or process elements.  The caller must
+ * first acquire the elements, then consult this method for guidance
+ * as to what to do with the data.
+ *
+ * <p>We use an {@code AtomicLong} to atomically maintain a counter,
+ * which is initialized as skip+limit if we are limiting, or skip only
+ * if we are not limiting.  The user should consult the method
+ * {@code checkPermits()} before acquiring data elements.
+ *
+ * @param numElements the number of elements the caller has in hand
+ * @return the number of elements that should be processed; any
+ * remaining elements should be discarded.
+ */
+protected final long acquirePermits(long numElements) {
+    long remainingPermits;
+    long grabbing;
+    // permits never increase, and don't decrease below zero
+    assert numElements > 0;
+    do {
+        remainingPermits = permits.get();
+        if (remainingPermits == 0)
+            return unlimited ? numElements : 0;
+        grabbing = Math.min(remainingPermits, numElements);
+    } while (grabbing > 0 && !permits.compareAndSet(remainingPermits, remainingPermits - grabbing));
+    if (unlimited)
+        return Math.max(numElements - grabbing, 0);
+    else if (remainingPermits > skipThreshold)
+        return Math.max(grabbing - (remainingPermits - skipThreshold), 0);
+    else
+        return grabbing;
+}

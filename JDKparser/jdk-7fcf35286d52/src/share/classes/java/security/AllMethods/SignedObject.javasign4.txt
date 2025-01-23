@@ -1,0 +1,17 @@
+/*
+     * Signs the encapsulated object with the given signing key, using the
+     * designated signature engine.
+     *
+     * @param signingKey the private key for signing.
+     * @param signingEngine the signature signing engine.
+     *
+     * @exception InvalidKeyException if the key is invalid.
+     * @exception SignatureException if signing fails.
+     */
+private void sign(PrivateKey signingKey, Signature signingEngine) throws InvalidKeyException, SignatureException {
+    // initialize the signing engine
+    signingEngine.initSign(signingKey);
+    signingEngine.update(this.content.clone());
+    this.signature = signingEngine.sign().clone();
+    this.thealgorithm = signingEngine.getAlgorithm();
+}

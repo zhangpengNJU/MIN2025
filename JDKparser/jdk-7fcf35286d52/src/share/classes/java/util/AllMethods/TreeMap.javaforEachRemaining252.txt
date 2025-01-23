@@ -1,0 +1,22 @@
+public void forEachRemaining(Consumer<? super K> action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (est < 0)
+        // force initialization
+        getEstimate();
+    TreeMap.Entry<K, V> f = fence, e, p, pr;
+    if ((e = current) != null && e != f) {
+        // exhaust
+        current = f;
+        do {
+            action.accept(e.key);
+            if ((p = e.left) != null) {
+                while ((pr = p.right) != null) p = pr;
+            } else {
+                while ((p = e.parent) != null && e == p.left) e = p;
+            }
+        } while ((e = p) != null && e != f);
+        if (tree.modCount != expectedModCount)
+            throw new ConcurrentModificationException();
+    }
+}

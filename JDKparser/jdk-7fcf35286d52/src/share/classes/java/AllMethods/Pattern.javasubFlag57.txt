@@ -1,0 +1,38 @@
+@SuppressWarnings("fallthrough")
+private /**
+ * Parses the second part of inlined match flags and turns off
+ * flags appropriately.
+ */
+void subFlag() {
+    int ch = peek();
+    for (; ; ) {
+        switch(ch) {
+            case 'i':
+                flags &= ~CASE_INSENSITIVE;
+                break;
+            case 'm':
+                flags &= ~MULTILINE;
+                break;
+            case 's':
+                flags &= ~DOTALL;
+                break;
+            case 'd':
+                flags &= ~UNIX_LINES;
+                break;
+            case 'u':
+                flags &= ~UNICODE_CASE;
+                break;
+            case 'c':
+                flags &= ~CANON_EQ;
+                break;
+            case 'x':
+                flags &= ~COMMENTS;
+                break;
+            case 'U':
+                flags &= ~(UNICODE_CHARACTER_CLASS | UNICODE_CASE);
+            default:
+                return;
+        }
+        ch = next();
+    }
+}

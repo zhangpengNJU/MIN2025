@@ -1,0 +1,7 @@
+@Override
+public JapaneseDate date(TemporalAccessor temporal) {
+    if (temporal instanceof JapaneseDate) {
+        return (JapaneseDate) temporal;
+    }
+    return new JapaneseDate(LocalDate.from(temporal));
+}

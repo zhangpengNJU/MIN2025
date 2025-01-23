@@ -1,0 +1,16 @@
+/**
+ * Enables or disables input method support for this text component. If input
+ * method support is enabled and the text component also processes key events,
+ * incoming events are offered to the current input method and will only be
+ * processed by the component or dispatched to its listeners if the input method
+ * does not consume them. Whether and how input method support for this text
+ * component is enabled or disabled by default is implementation dependent.
+ *
+ * @param enable true to enable, false to disable
+ * @see #processKeyEvent
+ * @since 1.2
+ */
+public void enableInputMethods(boolean enable) {
+    checkForEnableIM = false;
+    super.enableInputMethods(enable);
+}

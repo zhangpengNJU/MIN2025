@@ -1,0 +1,22 @@
+/**
+ * Add a PropertyChangeListener to the listener list.
+ * The listener is registered for all properties.
+ * The same listener object may be added more than once, and will be called
+ * as many times as it is added.
+ * If <code>listener</code> is null, no exception is thrown and no action
+ * is taken.
+ *
+ * @param listener  The PropertyChangeListener to be added
+ */
+public void addPropertyChangeListener(PropertyChangeListener listener) {
+    if (listener == null) {
+        return;
+    }
+    if (listener instanceof PropertyChangeListenerProxy) {
+        PropertyChangeListenerProxy proxy = (PropertyChangeListenerProxy) listener;
+        // Call two argument add method.
+        addPropertyChangeListener(proxy.getPropertyName(), proxy.getListener());
+    } else {
+        this.map.add(null, listener);
+    }
+}

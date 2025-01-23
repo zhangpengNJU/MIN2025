@@ -1,0 +1,11 @@
+private PaintEvent mergePaintEvents(PaintEvent a, PaintEvent b) {
+    Rectangle aRect = a.getUpdateRect();
+    Rectangle bRect = b.getUpdateRect();
+    if (bRect.contains(aRect)) {
+        return b;
+    }
+    if (aRect.contains(bRect)) {
+        return a;
+    }
+    return null;
+}

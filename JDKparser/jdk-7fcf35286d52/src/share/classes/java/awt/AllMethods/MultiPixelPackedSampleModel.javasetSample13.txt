@@ -1,0 +1,28 @@
+/**
+ * Sets a sample in the specified band for the pixel located at
+ * (x,&nbsp;y) in the <code>DataBuffer</code> using an
+ * <code>int</code> for input.
+ * An <code>ArrayIndexOutOfBoundsException</code> is thrown if the
+ * coordinates are not in bounds.
+ * @param x the X coordinate of the specified pixel
+ * @param y the Y coordinate of the specified pixel
+ * @param b the band to return, which is assumed to be 0
+ * @param s the input sample as an <code>int</code>
+ * @param data the <code>DataBuffer</code> where image data is stored
+ * @exception ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds.
+ * @see #getSample(int, int, int, DataBuffer)
+ */
+public void setSample(int x, int y, int b, int s, DataBuffer data) {
+    // 'b' must be 0
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height) || (b != 0)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int bitnum = dataBitOffset + x * pixelBitStride;
+    int index = y * scanlineStride + (bitnum / dataElementSize);
+    int shift = dataElementSize - (bitnum & (dataElementSize - 1)) - pixelBitStride;
+    int element = data.getElem(index);
+    element &= ~(bitMask << shift);
+    element |= (s & bitMask) << shift;
+    data.setElem(index, element);
+}

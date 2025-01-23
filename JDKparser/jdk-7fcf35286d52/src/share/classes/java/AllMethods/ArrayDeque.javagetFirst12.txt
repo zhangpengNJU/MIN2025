@@ -1,0 +1,10 @@
+/**
+ * @throws NoSuchElementException {@inheritDoc}
+ */
+public E getFirst() {
+    @SuppressWarnings("unchecked")
+    E result = (E) elements[head];
+    if (result == null)
+        throw new NoSuchElementException();
+    return result;
+}

@@ -1,0 +1,15 @@
+/**
+ * Flush any buffered messages.
+ */
+@Override
+public synchronized void flush() {
+    if (writer != null) {
+        try {
+            writer.flush();
+        } catch (Exception ex) {
+            // We don't want to throw an exception here, but we
+            // report the exception to any registered ErrorManager.
+            reportError(null, ex, ErrorManager.FLUSH_FAILURE);
+        }
+    }
+}

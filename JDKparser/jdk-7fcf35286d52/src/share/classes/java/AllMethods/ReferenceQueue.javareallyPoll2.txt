@@ -1,0 +1,17 @@
+private Reference<? extends T> reallyPoll() {
+    /* Must hold lock */
+    Reference<? extends T> r = head;
+    if (r != null) {
+        @SuppressWarnings("unchecked")
+        Reference<? extends T> rn = r.next;
+        head = (rn == r) ? null : rn;
+        r.queue = NULL;
+        r.next = r;
+        queueLength--;
+        if (r instanceof FinalReference) {
+            sun.misc.VM.addFinalRefCount(-1);
+        }
+        return r;
+    }
+    return null;
+}

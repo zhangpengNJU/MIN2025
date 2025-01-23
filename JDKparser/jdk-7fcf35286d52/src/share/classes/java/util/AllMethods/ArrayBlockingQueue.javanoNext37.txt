@@ -1,0 +1,22 @@
+private void noNext() {
+    final ReentrantLock lock = ArrayBlockingQueue.this.lock;
+    lock.lock();
+    try {
+        // assert cursor == NONE;
+        // assert nextIndex == NONE;
+        if (!isDetached()) {
+            // assert lastRet >= 0;
+            // might update lastRet
+            incorporateDequeues();
+            if (lastRet >= 0) {
+                lastItem = itemAt(lastRet);
+                // assert lastItem != null;
+                detach();
+            }
+        }
+    // assert isDetached();
+    // assert lastRet < 0 ^ lastItem != null;
+    } finally {
+        lock.unlock();
+    }
+}

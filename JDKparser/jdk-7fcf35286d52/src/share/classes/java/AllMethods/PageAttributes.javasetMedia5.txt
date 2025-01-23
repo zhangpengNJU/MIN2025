@@ -1,0 +1,19 @@
+/**
+ * Specifies the desired paper size for pages using these attributes. The
+ * actual paper size will be determined by the limitations of the target
+ * printer. If an exact match cannot be found, an implementation will
+ * choose the closest possible match. Not specifying this attribute is
+ * equivalent to specifying the default size for the default locale. The
+ * default size for locales in the United States and Canada is
+ * MediaType.NA_LETTER. The default size for all other locales is
+ * MediaType.ISO_A4.
+ *
+ * @param   media one of the constant fields of the MediaType class.
+ * @throws  IllegalArgumentException if media is null.
+ */
+public void setMedia(MediaType media) {
+    if (media == null) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "media");
+    }
+    this.media = media;
+}

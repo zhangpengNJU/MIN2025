@@ -1,0 +1,17 @@
+/**
+ * Enumerates all key/value pairs in the specified hashtable
+ * and omits the property if the key or value is not a string.
+ * @param h the hashtable
+ */
+private synchronized void enumerateStringProperties(Hashtable<String, String> h) {
+    if (defaults != null) {
+        defaults.enumerateStringProperties(h);
+    }
+    for (Enumeration<?> e = keys(); e.hasMoreElements(); ) {
+        Object k = e.nextElement();
+        Object v = get(k);
+        if (k instanceof String && v instanceof String) {
+            h.put((String) k, (String) v);
+        }
+    }
+}

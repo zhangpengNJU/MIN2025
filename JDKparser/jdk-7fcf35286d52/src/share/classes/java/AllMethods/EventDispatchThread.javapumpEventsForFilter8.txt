@@ -1,0 +1,8 @@
+void pumpEventsForFilter(int id, Conditional cond, EventFilter filter) {
+    addEventFilter(filter);
+    doDispatch = true;
+    while (doDispatch && !isInterrupted() && cond.evaluate()) {
+        pumpOneEventForFilters(id);
+    }
+    removeEventFilter(filter);
+}

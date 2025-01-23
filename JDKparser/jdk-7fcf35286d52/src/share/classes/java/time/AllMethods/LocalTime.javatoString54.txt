@@ -1,0 +1,40 @@
+// -----------------------------------------------------------------------
+/**
+ * Outputs this time as a {@code String}, such as {@code 10:15}.
+ * <p>
+ * The output will be one of the following ISO-8601 formats:
+ * <ul>
+ * <li>{@code HH:mm}</li>
+ * <li>{@code HH:mm:ss}</li>
+ * <li>{@code HH:mm:ss.SSS}</li>
+ * <li>{@code HH:mm:ss.SSSSSS}</li>
+ * <li>{@code HH:mm:ss.SSSSSSSSS}</li>
+ * </ul>
+ * The format used will be the shortest that outputs the full value of
+ * the time where the omitted parts are implied to be zero.
+ *
+ * @return a string representation of this time, not null
+ */
+@Override
+public String toString() {
+    StringBuilder buf = new StringBuilder(18);
+    int hourValue = hour;
+    int minuteValue = minute;
+    int secondValue = second;
+    int nanoValue = nano;
+    buf.append(hourValue < 10 ? "0" : "").append(hourValue).append(minuteValue < 10 ? ":0" : ":").append(minuteValue);
+    if (secondValue > 0 || nanoValue > 0) {
+        buf.append(secondValue < 10 ? ":0" : ":").append(secondValue);
+        if (nanoValue > 0) {
+            buf.append('.');
+            if (nanoValue % 1000_000 == 0) {
+                buf.append(Integer.toString((nanoValue / 1000_000) + 1000).substring(1));
+            } else if (nanoValue % 1000 == 0) {
+                buf.append(Integer.toString((nanoValue / 1000) + 1000_000).substring(1));
+            } else {
+                buf.append(Integer.toString((nanoValue) + 1000_000_000).substring(1));
+            }
+        }
+    }
+    return buf.toString();
+}

@@ -1,0 +1,11 @@
+/**
+ * Returns the day of year for the requested HijrahYear and month.
+ *
+ * @param prolepticYear the Hijrah year
+ * @param month the Hijrah month
+ * @return the day of year for the start of the month of the year
+ */
+private int yearMonthToDayOfYear(int prolepticYear, int month) {
+    int epochMonthFirst = yearToEpochMonth(prolepticYear);
+    return epochMonthToEpochDay(epochMonthFirst + month) - epochMonthToEpochDay(epochMonthFirst);
+}

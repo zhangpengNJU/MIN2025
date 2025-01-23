@@ -1,0 +1,29 @@
+/**
+ * Retrieves the 6 specifiable values in the 3x3 affine transformation
+ * matrix and places them into an array of double precisions values.
+ * The values are stored in the array as
+ * {&nbsp;m00&nbsp;m10&nbsp;m01&nbsp;m11&nbsp;m02&nbsp;m12&nbsp;}.
+ * An array of 4 doubles can also be specified, in which case only the
+ * first four elements representing the non-transform
+ * parts of the array are retrieved and the values are stored into
+ * the array as {&nbsp;m00&nbsp;m10&nbsp;m01&nbsp;m11&nbsp;}
+ * @param flatmatrix the double array used to store the returned
+ * values.
+ * @see #getScaleX
+ * @see #getScaleY
+ * @see #getShearX
+ * @see #getShearY
+ * @see #getTranslateX
+ * @see #getTranslateY
+ * @since 1.2
+ */
+public void getMatrix(double[] flatmatrix) {
+    flatmatrix[0] = m00;
+    flatmatrix[1] = m10;
+    flatmatrix[2] = m01;
+    flatmatrix[3] = m11;
+    if (flatmatrix.length > 5) {
+        flatmatrix[4] = m02;
+        flatmatrix[5] = m12;
+    }
+}

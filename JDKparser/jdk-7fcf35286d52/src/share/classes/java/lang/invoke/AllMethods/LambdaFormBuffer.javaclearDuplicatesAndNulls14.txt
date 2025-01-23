@@ -1,0 +1,33 @@
+/**
+ * Replace duplicate names by nulls, and remove all nulls.
+ */
+private void clearDuplicatesAndNulls() {
+    if (dups != null) {
+        // Remove duplicates.
+        assert (ownedCount() >= 1);
+        for (Name dup : dups) {
+            for (int i = firstChange; i < length; i++) {
+                if (names[i] == dup && originalNames[i] != dup) {
+                    names[i] = null;
+                    assert (Arrays.asList(names).contains(dup));
+                    // kill only one dup
+                    break;
+                }
+            }
+        }
+        dups.clear();
+    }
+    // Now that we are done with originalNames, remove "killed" names.
+    int oldLength = length;
+    for (int i = firstChange; i < length; i++) {
+        if (names[i] == null) {
+            System.arraycopy(names, i + 1, names, i, (--length - i));
+            // restart loop at this position
+            --i;
+        }
+    }
+    if (length < oldLength) {
+        Arrays.fill(names, length, oldLength, null);
+    }
+    assert (!Arrays.asList(names).subList(0, length).contains(null));
+}

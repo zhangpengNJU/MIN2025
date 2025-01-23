@@ -1,0 +1,27 @@
+/**
+ * Paints the container. This forwards the paint to any lightweight
+ * components that are children of this container. If this method is
+ * reimplemented, super.paint(g) should be called so that lightweight
+ * components are properly rendered. If a child component is entirely
+ * clipped by the current clipping setting in g, paint() will not be
+ * forwarded to that child.
+ *
+ * @param g the specified Graphics window
+ * @see   Component#update(Graphics)
+ */
+public void paint(Graphics g) {
+    if (isShowing()) {
+        synchronized (getObjectLock()) {
+            if (printing) {
+                if (printingThreads.contains(Thread.currentThread())) {
+                    return;
+                }
+            }
+        }
+        // The container is showing on screen and
+        // this paint() is not called from print().
+        // Paint self and forward the paint to lightweight subcomponents.
+        // super.paint(); -- Don't bother, since it's a NOP.
+        GraphicsCallback.PaintCallback.getInstance().runComponents(getComponentsSync(), g, GraphicsCallback.LIGHTWEIGHTS);
+    }
+}

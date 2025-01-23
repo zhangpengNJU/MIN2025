@@ -1,0 +1,12 @@
+public Field run() {
+    Field field = null;
+    try {
+        field = KeyEvent.class.getDeclaredField("isProxyActive");
+        if (field != null) {
+            field.setAccessible(true);
+        }
+    } catch (NoSuchFieldException nsf) {
+        assert (false);
+    }
+    return field;
+}

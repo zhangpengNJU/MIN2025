@@ -1,0 +1,6 @@
+private static MemberName[] newMemberBuffer(int length) {
+    MemberName[] buf = new MemberName[length];
+    // fill the buffer with dummy structs for the JVM to fill in
+    for (int i = 0; i < length; i++) buf[i] = new MemberName();
+    return buf;
+}

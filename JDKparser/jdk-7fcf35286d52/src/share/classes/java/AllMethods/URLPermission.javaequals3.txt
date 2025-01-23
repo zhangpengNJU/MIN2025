@@ -1,0 +1,24 @@
+/**
+ * Returns true if, this.getActions().equals(p.getActions())
+ * and p's url equals this's url.  Returns false otherwise.
+ */
+public boolean equals(Object p) {
+    if (!(p instanceof URLPermission)) {
+        return false;
+    }
+    URLPermission that = (URLPermission) p;
+    if (!this.scheme.equals(that.scheme)) {
+        return false;
+    }
+    if (!this.getActions().equals(that.getActions())) {
+        return false;
+    }
+    if (!this.authority.equals(that.authority)) {
+        return false;
+    }
+    if (this.path != null) {
+        return this.path.equals(that.path);
+    } else {
+        return that.path == null;
+    }
+}

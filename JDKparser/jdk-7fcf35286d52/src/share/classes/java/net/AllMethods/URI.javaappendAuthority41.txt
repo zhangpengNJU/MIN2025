@@ -1,0 +1,40 @@
+private void appendAuthority(StringBuffer sb, String authority, String userInfo, String host, int port) {
+    if (host != null) {
+        sb.append("//");
+        if (userInfo != null) {
+            sb.append(quote(userInfo, L_USERINFO, H_USERINFO));
+            sb.append('@');
+        }
+        boolean needBrackets = ((host.indexOf(':') >= 0) && !host.startsWith("[") && !host.endsWith("]"));
+        if (needBrackets)
+            sb.append('[');
+        sb.append(host);
+        if (needBrackets)
+            sb.append(']');
+        if (port != -1) {
+            sb.append(':');
+            sb.append(port);
+        }
+    } else if (authority != null) {
+        sb.append("//");
+        if (authority.startsWith("[")) {
+            // authority should (but may not) contain an embedded IPv6 address
+            int end = authority.indexOf("]");
+            String doquote = authority, dontquote = "";
+            if (end != -1 && authority.indexOf(":") != -1) {
+                // the authority contains an IPv6 address
+                if (end == authority.length()) {
+                    dontquote = authority;
+                    doquote = "";
+                } else {
+                    dontquote = authority.substring(0, end + 1);
+                    doquote = authority.substring(end + 1);
+                }
+            }
+            sb.append(dontquote);
+            sb.append(quote(doquote, L_REG_NAME | L_SERVER, H_REG_NAME | H_SERVER));
+        } else {
+            sb.append(quote(authority, L_REG_NAME | L_SERVER, H_REG_NAME | H_SERVER));
+        }
+    }
+}

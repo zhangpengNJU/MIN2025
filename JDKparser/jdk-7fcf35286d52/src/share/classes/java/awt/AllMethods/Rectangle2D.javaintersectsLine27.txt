@@ -1,0 +1,44 @@
+/**
+ * Tests if the specified line segment intersects the interior of this
+ * <code>Rectangle2D</code>.
+ *
+ * @param x1 the X coordinate of the start point of the specified
+ *           line segment
+ * @param y1 the Y coordinate of the start point of the specified
+ *           line segment
+ * @param x2 the X coordinate of the end point of the specified
+ *           line segment
+ * @param y2 the Y coordinate of the end point of the specified
+ *           line segment
+ * @return <code>true</code> if the specified line segment intersects
+ * the interior of this <code>Rectangle2D</code>; <code>false</code>
+ * otherwise.
+ * @since 1.2
+ */
+public boolean intersectsLine(double x1, double y1, double x2, double y2) {
+    int out1, out2;
+    if ((out2 = outcode(x2, y2)) == 0) {
+        return true;
+    }
+    while ((out1 = outcode(x1, y1)) != 0) {
+        if ((out1 & out2) != 0) {
+            return false;
+        }
+        if ((out1 & (OUT_LEFT | OUT_RIGHT)) != 0) {
+            double x = getX();
+            if ((out1 & OUT_RIGHT) != 0) {
+                x += getWidth();
+            }
+            y1 = y1 + (x - x1) * (y2 - y1) / (x2 - x1);
+            x1 = x;
+        } else {
+            double y = getY();
+            if ((out1 & OUT_BOTTOM) != 0) {
+                y += getHeight();
+            }
+            x1 = x1 + (y - y1) * (x2 - x1) / (y2 - y1);
+            y1 = y;
+        }
+    }
+    return true;
+}

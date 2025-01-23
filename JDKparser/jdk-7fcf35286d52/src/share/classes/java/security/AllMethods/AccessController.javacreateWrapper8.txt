@@ -1,0 +1,13 @@
+/**
+ * Create a wrapper to contain the limited privilege scope data.
+ */
+private static AccessControlContext createWrapper(DomainCombiner combiner, Class<?> caller, AccessControlContext parent, AccessControlContext context, Permission[] perms) {
+    ProtectionDomain callerPD = getCallerPD(caller);
+    // check if caller is authorized to create context
+    if (context != null && !context.isAuthorized() && System.getSecurityManager() != null && !callerPD.impliesCreateAccessControlContext()) {
+        ProtectionDomain nullPD = new ProtectionDomain(null, null);
+        return new AccessControlContext(new ProtectionDomain[] { nullPD });
+    } else {
+        return new AccessControlContext(callerPD, combiner, parent, context, perms);
+    }
+}

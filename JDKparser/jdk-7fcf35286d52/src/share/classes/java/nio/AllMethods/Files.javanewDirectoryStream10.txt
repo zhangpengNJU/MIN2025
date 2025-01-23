@@ -1,0 +1,60 @@
+/**
+ * Opens a directory, returning a {@link DirectoryStream} to iterate over
+ * the entries in the directory. The elements returned by the directory
+ * stream's {@link DirectoryStream#iterator iterator} are of type {@code
+ * Path}, each one representing an entry in the directory. The {@code Path}
+ * objects are obtained as if by {@link Path#resolve(Path) resolving} the
+ * name of the directory entry against {@code dir}. The entries returned by
+ * the iterator are filtered by the given {@link DirectoryStream.Filter
+ * filter}.
+ *
+ * <p> When not using the try-with-resources construct, then directory
+ * stream's {@code close} method should be invoked after iteration is
+ * completed so as to free any resources held for the open directory.
+ *
+ * <p> Where the filter terminates due to an uncaught error or runtime
+ * exception then it is propagated to the {@link Iterator#hasNext()
+ * hasNext} or {@link Iterator#next() next} method. Where an {@code
+ * IOException} is thrown, it results in the {@code hasNext} or {@code
+ * next} method throwing a {@link DirectoryIteratorException} with the
+ * {@code IOException} as the cause.
+ *
+ * <p> When an implementation supports operations on entries in the
+ * directory that execute in a race-free manner then the returned directory
+ * stream is a {@link SecureDirectoryStream}.
+ *
+ * <p> <b>Usage Example:</b>
+ * Suppose we want to iterate over the files in a directory that are
+ * larger than 8K.
+ * <pre>
+ *     DirectoryStream.Filter&lt;Path&gt; filter = new DirectoryStream.Filter&lt;Path&gt;() {
+ *         public boolean accept(Path file) throws IOException {
+ *             return (Files.size(file) &gt; 8192L);
+ *         }
+ *     };
+ *     Path dir = ...
+ *     try (DirectoryStream&lt;Path&gt; stream = Files.newDirectoryStream(dir, filter)) {
+ *         :
+ *     }
+ * </pre>
+ *
+ * @param   dir
+ *          the path to the directory
+ * @param   filter
+ *          the directory stream filter
+ *
+ * @return  a new and open {@code DirectoryStream} object
+ *
+ * @throws  NotDirectoryException
+ *          if the file could not otherwise be opened because it is not
+ *          a directory <i>(optional specific exception)</i>
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default provider, and a security manager is
+ *          installed, the {@link SecurityManager#checkRead(String) checkRead}
+ *          method is invoked to check read access to the directory.
+ */
+public static DirectoryStream<Path> newDirectoryStream(Path dir, DirectoryStream.Filter<? super Path> filter) throws IOException {
+    return provider(dir).newDirectoryStream(dir, filter);
+}

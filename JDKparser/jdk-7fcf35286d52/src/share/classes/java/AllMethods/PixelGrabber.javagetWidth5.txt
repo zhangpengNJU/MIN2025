@@ -1,0 +1,12 @@
+/**
+ * Get the width of the pixel buffer (after adjusting for image width).
+ * If no width was specified for the rectangle of pixels to grab then
+ * then this information will only be available after the image has
+ * delivered the dimensions.
+ * @return the final width used for the pixel buffer or -1 if the width
+ * is not yet known
+ * @see #getStatus
+ */
+public synchronized int getWidth() {
+    return (dstW < 0) ? -1 : dstW;
+}

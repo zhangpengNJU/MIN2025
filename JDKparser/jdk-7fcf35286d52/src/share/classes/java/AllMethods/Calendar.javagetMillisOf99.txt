@@ -1,0 +1,8 @@
+private static long getMillisOf(Calendar calendar) {
+    if (calendar.isTimeSet) {
+        return calendar.time;
+    }
+    Calendar cal = (Calendar) calendar.clone();
+    cal.setLenient(true);
+    return cal.getTimeInMillis();
+}

@@ -1,0 +1,23 @@
+/* match on basic constraints */
+private boolean matchBasicConstraints(X509Certificate xcert) {
+    if (basicConstraints == -1) {
+        return true;
+    }
+    int maxPathLen = xcert.getBasicConstraints();
+    if (basicConstraints == -2) {
+        if (maxPathLen != -1) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: not an EE cert");
+            }
+            return false;
+        }
+    } else {
+        if (maxPathLen < basicConstraints) {
+            if (debug != null) {
+                debug.println("X509CertSelector.match: cert's maxPathLen " + "is less than the min maxPathLen set by " + "basicConstraints. " + "(" + maxPathLen + " < " + basicConstraints + ")");
+            }
+            return false;
+        }
+    }
+    return true;
+}

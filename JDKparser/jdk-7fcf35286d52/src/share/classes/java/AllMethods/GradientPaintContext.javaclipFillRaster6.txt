@@ -1,0 +1,25 @@
+void clipFillRaster(int[] pixels, int off, int adjust, int w, int h, double rowrel, double dx, double dy) {
+    while (--h >= 0) {
+        double colrel = rowrel;
+        int j = w;
+        if (colrel <= 0.0) {
+            int rgb = interp[0];
+            do {
+                pixels[off++] = rgb;
+                colrel += dx;
+            } while (--j > 0 && colrel <= 0.0);
+        }
+        while (colrel < 1.0 && --j >= 0) {
+            pixels[off++] = interp[(int) (colrel * 256)];
+            colrel += dx;
+        }
+        if (j > 0) {
+            int rgb = interp[256];
+            do {
+                pixels[off++] = rgb;
+            } while (--j > 0);
+        }
+        off += adjust;
+        rowrel += dy;
+    }
+}

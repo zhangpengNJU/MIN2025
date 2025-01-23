@@ -1,0 +1,19 @@
+/**
+ * Returns a capacity at least as large as the given minimum capacity.
+ * Returns the current capacity increased by the same amount + 2 if
+ * that suffices.
+ * Will not return a capacity greater than {@code MAX_ARRAY_SIZE}
+ * unless the given minimum capacity is greater than that.
+ *
+ * @param  minCapacity the desired minimum capacity
+ * @throws OutOfMemoryError if minCapacity is less than zero or
+ *         greater than Integer.MAX_VALUE
+ */
+private int newCapacity(int minCapacity) {
+    // overflow-conscious code
+    int newCapacity = (value.length << 1) + 2;
+    if (newCapacity - minCapacity < 0) {
+        newCapacity = minCapacity;
+    }
+    return (newCapacity <= 0 || MAX_ARRAY_SIZE - newCapacity < 0) ? hugeCapacity(minCapacity) : newCapacity;
+}

@@ -1,0 +1,20 @@
+private void remove() {
+    synchronized (lock) {
+        if (unfinalized == this) {
+            if (this.next != null) {
+                unfinalized = this.next;
+            } else {
+                unfinalized = this.prev;
+            }
+        }
+        if (this.next != null) {
+            this.next.prev = this.prev;
+        }
+        if (this.prev != null) {
+            this.prev.next = this.next;
+        }
+        this.next = this;
+        /* Indicates that this has been finalized */
+        this.prev = this;
+    }
+}

@@ -1,0 +1,28 @@
+private boolean matchExcluded(GeneralSubtrees excluded) {
+    /*
+         * Enumerate through excluded and compare each entry
+         * to all pathToNames. If any pathToName is within any of the
+         * subtrees listed in excluded, return false.
+         */
+    for (Iterator<GeneralSubtree> t = excluded.iterator(); t.hasNext(); ) {
+        GeneralSubtree tree = t.next();
+        GeneralNameInterface excludedName = tree.getName().getName();
+        Iterator<GeneralNameInterface> i = pathToGeneralNames.iterator();
+        while (i.hasNext()) {
+            GeneralNameInterface pathToName = i.next();
+            if (excludedName.getType() == pathToName.getType()) {
+                switch(pathToName.constrains(excludedName)) {
+                    case GeneralNameInterface.NAME_WIDENS:
+                    case GeneralNameInterface.NAME_MATCH:
+                        if (debug != null) {
+                            debug.println("X509CertSelector.match: name constraints " + "inhibit path to specified name");
+                            debug.println("X509CertSelector.match: excluded name: " + pathToName);
+                        }
+                        return false;
+                    default:
+                }
+            }
+        }
+    }
+    return true;
+}

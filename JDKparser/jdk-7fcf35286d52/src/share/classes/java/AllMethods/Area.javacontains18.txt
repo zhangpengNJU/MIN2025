@@ -1,0 +1,16 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y) {
+    if (!getCachedBounds().contains(x, y)) {
+        return false;
+    }
+    Enumeration enum_ = curves.elements();
+    int crossings = 0;
+    while (enum_.hasMoreElements()) {
+        Curve c = (Curve) enum_.nextElement();
+        crossings += c.crossingsFor(x, y);
+    }
+    return ((crossings & 1) == 1);
+}

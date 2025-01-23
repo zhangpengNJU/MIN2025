@@ -1,0 +1,19 @@
+/**
+ * Resolves lagged phase propagation from root if necessary.
+ * Reconciliation normally occurs when root has advanced but
+ * subphasers have not yet done so, in which case they must finish
+ * their own advance by setting unarrived to parties (or if
+ * parties is zero, resetting to unregistered EMPTY state).
+ *
+ * @return reconciled state
+ */
+private long reconcileState() {
+    final Phaser root = this.root;
+    long s = state;
+    if (root != this) {
+        int phase, p;
+        // CAS to root phase with current parties, tripping unarrived
+        while ((phase = (int) (root.state >>> PHASE_SHIFT)) != (int) (s >>> PHASE_SHIFT) && !UNSAFE.compareAndSwapLong(this, stateOffset, s, s = (((long) phase << PHASE_SHIFT) | ((phase < 0) ? (s & COUNTS_MASK) : (((p = (int) s >>> PARTIES_SHIFT) == 0) ? EMPTY : ((s & PARTIES_MASK) | p)))))) s = state;
+    }
+    return s;
+}

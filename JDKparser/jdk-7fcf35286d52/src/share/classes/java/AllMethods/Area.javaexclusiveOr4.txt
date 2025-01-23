@@ -1,0 +1,33 @@
+/**
+ * Sets the shape of this <code>Area</code> to be the combined area
+ * of its current shape and the shape of the specified <code>Area</code>,
+ * minus their intersection.
+ * The resulting shape of this <code>Area</code> will include
+ * only areas that were contained in either this <code>Area</code>
+ * or in the specified <code>Area</code>, but not in both.
+ * <pre>
+ *     // Example:
+ *     Area a1 = new Area([triangle 0,0 =&gt; 8,0 =&gt; 0,8]);
+ *     Area a2 = new Area([triangle 0,0 =&gt; 8,0 =&gt; 8,8]);
+ *     a1.exclusiveOr(a2);
+ *
+ *        a1(before)    xor        a2         =     a1(after)
+ *
+ *     ################     ################
+ *     ##############         ##############     ##            ##
+ *     ############             ############     ####        ####
+ *     ##########                 ##########     ######    ######
+ *     ########                     ########     ################
+ *     ######                         ######     ######    ######
+ *     ####                             ####     ####        ####
+ *     ##                                 ##     ##            ##
+ * </pre>
+ * @param   rhs  the <code>Area</code> to be exclusive ORed with this
+ *          <code>Area</code>.
+ * @throws NullPointerException if <code>rhs</code> is null
+ * @since 1.2
+ */
+public void exclusiveOr(Area rhs) {
+    curves = new AreaOp.XorOp().calculate(this.curves, rhs.curves);
+    invalidateBounds();
+}

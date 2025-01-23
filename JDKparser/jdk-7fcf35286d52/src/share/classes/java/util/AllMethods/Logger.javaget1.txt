@@ -1,0 +1,9 @@
+static LoggerBundle get(String name, ResourceBundle bundle) {
+    if (name == null && bundle == null) {
+        return NO_RESOURCE_BUNDLE;
+    } else if (SYSTEM_LOGGER_RB_NAME.equals(name) && bundle == null) {
+        return SYSTEM_BUNDLE;
+    } else {
+        return new LoggerBundle(name, bundle);
+    }
+}

@@ -1,0 +1,7 @@
+public boolean equals(Object o) {
+    if ((o == null) || !(o instanceof MultiPixelPackedSampleModel)) {
+        return false;
+    }
+    MultiPixelPackedSampleModel that = (MultiPixelPackedSampleModel) o;
+    return this.width == that.width && this.height == that.height && this.numBands == that.numBands && this.dataType == that.dataType && this.pixelBitStride == that.pixelBitStride && this.bitMask == that.bitMask && this.pixelsPerDataElement == that.pixelsPerDataElement && this.dataElementSize == that.dataElementSize && this.dataBitOffset == that.dataBitOffset && this.scanlineStride == that.scanlineStride;
+}

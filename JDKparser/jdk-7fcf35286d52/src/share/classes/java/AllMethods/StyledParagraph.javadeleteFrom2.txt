@@ -1,0 +1,11 @@
+/**
+ * Adjust indices in starts to reflect a deletion after deleteAt.
+ * Any index in starts greater than deleteAt will be increased by 1.
+ * It is the caller's responsibility to make sure that no 0-length
+ * runs result.
+ */
+private static void deleteFrom(int deleteAt, int[] starts, int numStarts) {
+    while (starts[--numStarts] > deleteAt) {
+        starts[numStarts] -= 1;
+    }
+}

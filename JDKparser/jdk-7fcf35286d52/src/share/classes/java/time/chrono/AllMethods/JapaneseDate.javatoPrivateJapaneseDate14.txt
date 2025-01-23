@@ -1,0 +1,17 @@
+/**
+ * Returns a {@code LocalGregorianCalendar.Date} converted from the given {@code isoDate}.
+ *
+ * @param isoDate  the local date, not null
+ * @return a {@code LocalGregorianCalendar.Date}, not null
+ */
+private static LocalGregorianCalendar.Date toPrivateJapaneseDate(LocalDate isoDate) {
+    LocalGregorianCalendar.Date jdate = JapaneseChronology.JCAL.newCalendarDate(null);
+    sun.util.calendar.Era sunEra = JapaneseEra.privateEraFrom(isoDate);
+    int year = isoDate.getYear();
+    if (sunEra != null) {
+        year -= sunEra.getSinceDate().getYear() - 1;
+    }
+    jdate.setEra(sunEra).setYear(year).setMonth(isoDate.getMonthValue()).setDayOfMonth(isoDate.getDayOfMonth());
+    JapaneseChronology.JCAL.normalize(jdate);
+    return jdate;
+}

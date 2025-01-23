@@ -1,0 +1,34 @@
+/**
+ * Returns an array of all the listeners that were added to the
+ * VetoableChangeSupport object with addVetoableChangeListener().
+ * <p>
+ * If some listeners have been added with a named property, then
+ * the returned array will be a mixture of VetoableChangeListeners
+ * and <code>VetoableChangeListenerProxy</code>s. If the calling
+ * method is interested in distinguishing the listeners then it must
+ * test each element to see if it's a
+ * <code>VetoableChangeListenerProxy</code>, perform the cast, and examine
+ * the parameter.
+ *
+ * <pre>{@code
+ * VetoableChangeListener[] listeners = bean.getVetoableChangeListeners();
+ * for (int i = 0; i < listeners.length; i++) {
+ *        if (listeners[i] instanceof VetoableChangeListenerProxy) {
+ *     VetoableChangeListenerProxy proxy =
+ *                    (VetoableChangeListenerProxy)listeners[i];
+ *     if (proxy.getPropertyName().equals("foo")) {
+ *       // proxy is a VetoableChangeListener which was associated
+ *       // with the property named "foo"
+ *     }
+ *   }
+ * }
+ * }</pre>
+ *
+ * @see VetoableChangeListenerProxy
+ * @return all of the <code>VetoableChangeListeners</code> added or an
+ *         empty array if no listeners have been added
+ * @since 1.4
+ */
+public VetoableChangeListener[] getVetoableChangeListeners() {
+    return this.map.getListeners();
+}

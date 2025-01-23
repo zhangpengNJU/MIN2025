@@ -1,0 +1,69 @@
+/**
+ * Ensures there is a run break at offset, returning the index of
+ * the run. If this results in splitting a run, two things can happen:
+ * <ul>
+ * <li>If copyAttrs is true, the attributes from the existing run
+ *     will be placed in both of the newly created runs.
+ * <li>If copyAttrs is false, the attributes from the existing run
+ * will NOT be copied to the run to the right (>= offset) of the break,
+ * but will exist on the run to the left (< offset).
+ * </ul>
+ */
+private final int ensureRunBreak(int offset, boolean copyAttrs) {
+    if (offset == length()) {
+        return runCount;
+    }
+    // search for the run index where this offset should be
+    int runIndex = 0;
+    while (runIndex < runCount && runStarts[runIndex] < offset) {
+        runIndex++;
+    }
+    // if the offset is at a run start already, we're done
+    if (runIndex < runCount && runStarts[runIndex] == offset) {
+        return runIndex;
+    }
+    // we'll have to break up a run
+    // first, make sure we have enough space in our arrays
+    if (runCount == runArraySize) {
+        int newArraySize = runArraySize + ARRAY_SIZE_INCREMENT;
+        int[] newRunStarts = new int[newArraySize];
+        @SuppressWarnings("unchecked")
+        Vector<Attribute>[] newRunAttributes = (Vector<Attribute>[]) new Vector<?>[newArraySize];
+        @SuppressWarnings("unchecked")
+        Vector<Object>[] newRunAttributeValues = (Vector<Object>[]) new Vector<?>[newArraySize];
+        for (int i = 0; i < runArraySize; i++) {
+            newRunStarts[i] = runStarts[i];
+            newRunAttributes[i] = runAttributes[i];
+            newRunAttributeValues[i] = runAttributeValues[i];
+        }
+        runStarts = newRunStarts;
+        runAttributes = newRunAttributes;
+        runAttributeValues = newRunAttributeValues;
+        runArraySize = newArraySize;
+    }
+    // make copies of the attribute information of the old run that the new one used to be part of
+    // use temporary variables so things remain consistent in case of an exception
+    Vector<Attribute> newRunAttributes = null;
+    Vector<Object> newRunAttributeValues = null;
+    if (copyAttrs) {
+        Vector<Attribute> oldRunAttributes = runAttributes[runIndex - 1];
+        Vector<Object> oldRunAttributeValues = runAttributeValues[runIndex - 1];
+        if (oldRunAttributes != null) {
+            newRunAttributes = new Vector<>(oldRunAttributes);
+        }
+        if (oldRunAttributeValues != null) {
+            newRunAttributeValues = new Vector<>(oldRunAttributeValues);
+        }
+    }
+    // now actually break up the run
+    runCount++;
+    for (int i = runCount - 1; i > runIndex; i--) {
+        runStarts[i] = runStarts[i - 1];
+        runAttributes[i] = runAttributes[i - 1];
+        runAttributeValues[i] = runAttributeValues[i - 1];
+    }
+    runStarts[runIndex] = offset;
+    runAttributes[runIndex] = newRunAttributes;
+    runAttributeValues[runIndex] = newRunAttributeValues;
+    return runIndex;
+}

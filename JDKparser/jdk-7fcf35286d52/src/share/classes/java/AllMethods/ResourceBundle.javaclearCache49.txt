@@ -1,0 +1,11 @@
+/**
+ * Removes all resource bundles from the cache that have been loaded
+ * using the caller's class loader.
+ *
+ * @since 1.6
+ * @see ResourceBundle.Control#getTimeToLive(String,Locale)
+ */
+@CallerSensitive
+public static final void clearCache() {
+    clearCache(getLoader(Reflection.getCallerClass()));
+}

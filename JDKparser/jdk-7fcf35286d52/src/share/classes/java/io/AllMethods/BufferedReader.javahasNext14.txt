@@ -1,0 +1,13 @@
+@Override
+public boolean hasNext() {
+    if (nextLine != null) {
+        return true;
+    } else {
+        try {
+            nextLine = readLine();
+            return (nextLine != null);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+}

@@ -1,0 +1,23 @@
+/**
+ * Finds the appropriate transition array for the given year.
+ *
+ * @param year  the year, not null
+ * @return the transition array, not null
+ */
+private ZoneOffsetTransition[] findTransitionArray(int year) {
+    // should use Year class, but this saves a class load
+    Integer yearObj = year;
+    ZoneOffsetTransition[] transArray = lastRulesCache.get(yearObj);
+    if (transArray != null) {
+        return transArray;
+    }
+    ZoneOffsetTransitionRule[] ruleArray = lastRules;
+    transArray = new ZoneOffsetTransition[ruleArray.length];
+    for (int i = 0; i < ruleArray.length; i++) {
+        transArray[i] = ruleArray[i].createTransition(year);
+    }
+    if (year < LAST_CACHED_YEAR) {
+        lastRulesCache.putIfAbsent(yearObj, transArray);
+    }
+    return transArray;
+}

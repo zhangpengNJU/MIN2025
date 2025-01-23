@@ -1,0 +1,19 @@
+// Scan forward from the given start position.  Stop at the first char
+// in the err string (in which case -1 is returned), or the first char
+// in the stop string (in which case the index of the preceding char is
+// returned), or the end of the input string (in which case the length
+// of the input string is returned).  May return the start position if
+// nothing matches.
+// 
+private int scan(int start, int end, String err, String stop) {
+    int p = start;
+    while (p < end) {
+        char c = charAt(p);
+        if (err.indexOf(c) >= 0)
+            return -1;
+        if (stop.indexOf(c) >= 0)
+            break;
+        p++;
+    }
+    return p;
+}

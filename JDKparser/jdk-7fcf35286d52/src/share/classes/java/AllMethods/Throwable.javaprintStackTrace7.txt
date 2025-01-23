@@ -1,0 +1,18 @@
+private void printStackTrace(PrintStreamOrWriter s) {
+    // Guard against malicious overrides of Throwable.equals by
+    // using a Set with identity equality semantics.
+    Set<Throwable> dejaVu = Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+    dejaVu.add(this);
+    synchronized (s.lock()) {
+        // Print our stack trace
+        s.println(this);
+        StackTraceElement[] trace = getOurStackTrace();
+        for (StackTraceElement traceElement : trace) s.println("\tat " + traceElement);
+        // Print suppressed exceptions, if any
+        for (Throwable se : getSuppressed()) se.printEnclosedStackTrace(s, trace, SUPPRESSED_CAPTION, "\t", dejaVu);
+        // Print cause, if any
+        Throwable ourCause = getCause();
+        if (ourCause != null)
+            ourCause.printEnclosedStackTrace(s, trace, CAUSE_CAPTION, "", dejaVu);
+    }
+}

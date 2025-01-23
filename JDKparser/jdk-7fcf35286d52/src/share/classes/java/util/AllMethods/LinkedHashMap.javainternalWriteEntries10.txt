@@ -1,0 +1,6 @@
+void internalWriteEntries(java.io.ObjectOutputStream s) throws IOException {
+    for (LinkedHashMap.Entry<K, V> e = head; e != null; e = e.after) {
+        s.writeObject(e.key);
+        s.writeObject(e.value);
+    }
+}

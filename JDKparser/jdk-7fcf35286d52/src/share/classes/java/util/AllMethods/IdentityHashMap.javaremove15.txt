@@ -1,0 +1,31 @@
+/**
+ * Removes the mapping for this key from this map if present.
+ *
+ * @param key key whose mapping is to be removed from the map
+ * @return the previous value associated with <tt>key</tt>, or
+ *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+ *         (A <tt>null</tt> return can also indicate that the map
+ *         previously associated <tt>null</tt> with <tt>key</tt>.)
+ */
+public V remove(Object key) {
+    Object k = maskNull(key);
+    Object[] tab = table;
+    int len = tab.length;
+    int i = hash(k, len);
+    while (true) {
+        Object item = tab[i];
+        if (item == k) {
+            modCount++;
+            size--;
+            @SuppressWarnings("unchecked")
+            V oldValue = (V) tab[i + 1];
+            tab[i + 1] = null;
+            tab[i] = null;
+            closeDeletion(i);
+            return oldValue;
+        }
+        if (item == null)
+            return null;
+        i = nextKeyIndex(i, len);
+    }
+}

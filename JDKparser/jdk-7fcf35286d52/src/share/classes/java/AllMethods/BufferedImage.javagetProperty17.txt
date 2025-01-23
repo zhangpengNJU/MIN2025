@@ -1,0 +1,20 @@
+/**
+ * Returns a property of the image by name.
+ * @param name the property name
+ * @return an <code>Object</code> that is the property referred to by
+ *          the specified <code>name</code>.
+ * @throws NullPointerException if the property name is null.
+ */
+public Object getProperty(String name) {
+    if (name == null) {
+        throw new NullPointerException("null property name is not allowed");
+    }
+    if (properties == null) {
+        return java.awt.Image.UndefinedProperty;
+    }
+    Object o = properties.get(name);
+    if (o == null) {
+        o = java.awt.Image.UndefinedProperty;
+    }
+    return o;
+}

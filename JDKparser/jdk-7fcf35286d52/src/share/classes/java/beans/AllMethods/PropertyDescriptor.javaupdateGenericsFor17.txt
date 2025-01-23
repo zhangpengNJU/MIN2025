@@ -1,0 +1,8 @@
+void updateGenericsFor(Class<?> type) {
+    setClass0(type);
+    try {
+        setPropertyType(findPropertyType(this.readMethodRef.get(), this.writeMethodRef.get()));
+    } catch (IntrospectionException exception) {
+        setPropertyType(null);
+    }
+}

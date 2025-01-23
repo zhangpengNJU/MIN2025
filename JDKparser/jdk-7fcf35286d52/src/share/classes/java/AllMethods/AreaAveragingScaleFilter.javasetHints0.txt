@@ -1,0 +1,16 @@
+/**
+ * Detect if the data is being delivered with the necessary hints
+ * to allow the averaging algorithm to do its work.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose
+ * pixels are being filtered.  Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ImageConsumer#setHints
+ */
+public void setHints(int hints) {
+    passthrough = ((hints & neededHints) != neededHints);
+    super.setHints(hints);
+}

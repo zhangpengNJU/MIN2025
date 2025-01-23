@@ -1,0 +1,33 @@
+/**
+ * Sets the system properties to the <code>Properties</code>
+ * argument.
+ * <p>
+ * First, if there is a security manager, its
+ * <code>checkPropertiesAccess</code> method is called with no
+ * arguments. This may result in a security exception.
+ * <p>
+ * The argument becomes the current set of system properties for use
+ * by the {@link #getProperty(String)} method. If the argument is
+ * <code>null</code>, then the current set of system properties is
+ * forgotten.
+ *
+ * @param      props   the new system properties.
+ * @exception  SecurityException  if a security manager exists and its
+ *             <code>checkPropertiesAccess</code> method doesn't allow access
+ *              to the system properties.
+ * @see        #getProperties
+ * @see        java.util.Properties
+ * @see        java.lang.SecurityException
+ * @see        java.lang.SecurityManager#checkPropertiesAccess()
+ */
+public static void setProperties(Properties props) {
+    SecurityManager sm = getSecurityManager();
+    if (sm != null) {
+        sm.checkPropertiesAccess();
+    }
+    if (props == null) {
+        props = new Properties();
+        initProperties(props);
+    }
+    System.props = props;
+}

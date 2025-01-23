@@ -1,0 +1,12 @@
+/**
+ * Returns a shaper for the provided unicode range.  All
+ * Latin-1 (EUROPEAN) digits are converted
+ * to the corresponding decimal unicode digits.
+ * @param singleRange the specified Unicode range
+ * @return a non-contextual numeric shaper
+ * @throws IllegalArgumentException if the range is not a single range
+ */
+public static NumericShaper getShaper(int singleRange) {
+    int key = getKeyFromMask(singleRange);
+    return new NumericShaper(key, singleRange);
+}

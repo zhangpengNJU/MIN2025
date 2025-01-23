@@ -1,0 +1,14 @@
+/**
+ * Creates a new prefix parsing tree.
+ *
+ * @param keys  a set of strings to build the prefix parsing tree, not null
+ * @param context  the parse context
+ * @return the tree, not null
+ */
+public static PrefixTree newTree(Set<String> keys, DateTimeParseContext context) {
+    PrefixTree tree = newTree(context);
+    for (String k : keys) {
+        tree.add0(k, k);
+    }
+    return tree;
+}

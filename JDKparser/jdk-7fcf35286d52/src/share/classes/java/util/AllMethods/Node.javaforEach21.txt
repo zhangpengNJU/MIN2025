@@ -1,0 +1,18 @@
+/**
+ * {@inheritDoc}
+ *
+ * @param consumer a {@code Consumer} that is to be invoked with each
+ *        element in this {@code Node}.  If this is an
+ *        {@code IntConsumer}, it is cast to {@code IntConsumer} so the
+ *        elements may be processed without boxing.
+ */
+@Override
+default void forEach(Consumer<? super Integer> consumer) {
+    if (consumer instanceof IntConsumer) {
+        forEach((IntConsumer) consumer);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling Node.OfInt.forEachRemaining(Consumer)");
+        spliterator().forEachRemaining(consumer);
+    }
+}

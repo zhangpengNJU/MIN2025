@@ -1,0 +1,92 @@
+// External operations
+/**
+ * Full version of externalPush, handling uncommon cases, as well
+ * as performing secondary initialization upon the first
+ * submission of the first task to the pool.  It also detects
+ * first submission by an external thread and creates a new shared
+ * queue if the one at index if empty or contended.
+ *
+ * @param task the task. Caller must ensure non-null.
+ */
+private void externalSubmit(ForkJoinTask<?> task) {
+    // initialize caller's probe
+    int r;
+    if ((r = ThreadLocalRandom.getProbe()) == 0) {
+        ThreadLocalRandom.localInit();
+        r = ThreadLocalRandom.getProbe();
+    }
+    for (; ; ) {
+        WorkQueue[] ws;
+        WorkQueue q;
+        int rs, m, k;
+        boolean move = false;
+        if ((rs = runState) < 0) {
+            // help terminate
+            tryTerminate(false, false);
+            throw new RejectedExecutionException();
+        } else if (// initialize
+        (rs & STARTED) == 0 || ((ws = workQueues) == null || (m = ws.length - 1) < 0)) {
+            int ns = 0;
+            rs = lockRunState();
+            try {
+                if ((rs & STARTED) == 0) {
+                    U.compareAndSwapObject(this, STEALCOUNTER, null, new AtomicLong());
+                    // create workQueues array with size a power of two
+                    // ensure at least 2 slots
+                    int p = config & SMASK;
+                    int n = (p > 1) ? p - 1 : 1;
+                    n |= n >>> 1;
+                    n |= n >>> 2;
+                    n |= n >>> 4;
+                    n |= n >>> 8;
+                    n |= n >>> 16;
+                    n = (n + 1) << 1;
+                    workQueues = new WorkQueue[n];
+                    ns = STARTED;
+                }
+            } finally {
+                unlockRunState(rs, (rs & ~RSLOCK) | ns);
+            }
+        } else if ((q = ws[k = r & m & SQMASK]) != null) {
+            if (q.qlock == 0 && U.compareAndSwapInt(q, QLOCK, 0, 1)) {
+                ForkJoinTask<?>[] a = q.array;
+                int s = q.top;
+                // initial submission or resizing
+                boolean submitted = false;
+                try {
+                    // locked version of push
+                    if ((a != null && a.length > s + 1 - q.base) || (a = q.growArray()) != null) {
+                        int j = (((a.length - 1) & s) << ASHIFT) + ABASE;
+                        U.putOrderedObject(a, j, task);
+                        U.putOrderedInt(q, QTOP, s + 1);
+                        submitted = true;
+                    }
+                } finally {
+                    U.compareAndSwapInt(q, QLOCK, 1, 0);
+                }
+                if (submitted) {
+                    signalWork(ws, q);
+                    return;
+                }
+            }
+            // move on failure
+            move = true;
+        } else if (((rs = runState) & RSLOCK) == 0) {
+            // create new queue
+            q = new WorkQueue(this, null);
+            q.hint = r;
+            q.config = k | SHARED_QUEUE;
+            q.scanState = INACTIVE;
+            // publish index
+            rs = lockRunState();
+            if (rs > 0 && (ws = workQueues) != null && k < ws.length && ws[k] == null)
+                // else terminated
+                ws[k] = q;
+            unlockRunState(rs, rs & ~RSLOCK);
+        } else
+            // move if busy
+            move = true;
+        if (move)
+            r = ThreadLocalRandom.advanceProbe(r);
+    }
+}

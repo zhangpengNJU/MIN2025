@@ -1,0 +1,7 @@
+@SuppressWarnings("overloads")
+public void forEach(T_CONS consumer) {
+    // completed chunks, if any
+    for (int j = 0; j < spineIndex; j++) arrayForEach(spine[j], 0, arrayLength(spine[j]), consumer);
+    // current chunk
+    arrayForEach(curChunk, 0, elementIndex, consumer);
+}

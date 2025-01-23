@@ -1,0 +1,38 @@
+/**
+ * Updates the data to be signed or verified using the specified
+ * ByteBuffer. Processes the {@code data.remaining()} bytes
+ * starting at at {@code data.position()}.
+ * Upon return, the buffer's position will be equal to its limit;
+ * its limit will not have changed.
+ *
+ * @param input the ByteBuffer
+ * @since 1.5
+ */
+protected void engineUpdate(ByteBuffer input) {
+    if (input.hasRemaining() == false) {
+        return;
+    }
+    try {
+        if (input.hasArray()) {
+            byte[] b = input.array();
+            int ofs = input.arrayOffset();
+            int pos = input.position();
+            int lim = input.limit();
+            engineUpdate(b, ofs + pos, lim - pos);
+            input.position(lim);
+        } else {
+            int len = input.remaining();
+            byte[] b = new byte[JCAUtil.getTempArraySize(len)];
+            while (len > 0) {
+                int chunk = Math.min(len, b.length);
+                input.get(b, 0, chunk);
+                engineUpdate(b, 0, chunk);
+                len -= chunk;
+            }
+        }
+    } catch (SignatureException e) {
+        // is specified to only occur when the engine is not initialized
+        // this case should never occur as it is caught in Signature.java
+        throw new ProviderException("update() failed", e);
+    }
+}

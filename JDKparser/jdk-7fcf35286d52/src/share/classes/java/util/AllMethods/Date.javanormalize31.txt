@@ -1,0 +1,21 @@
+private final BaseCalendar.Date normalize() {
+    if (cdate == null) {
+        BaseCalendar cal = getCalendarSystem(fastTime);
+        cdate = (BaseCalendar.Date) cal.getCalendarDate(fastTime, TimeZone.getDefaultRef());
+        return cdate;
+    }
+    // Normalize cdate with the TimeZone in cdate first. This is
+    // required for the compatible behavior.
+    if (!cdate.isNormalized()) {
+        cdate = normalize(cdate);
+    }
+    // If the default TimeZone has changed, then recalculate the
+    // fields with the new TimeZone.
+    TimeZone tz = TimeZone.getDefaultRef();
+    if (tz != cdate.getZone()) {
+        cdate.setZone(tz);
+        CalendarSystem cal = getCalendarSystem(cdate);
+        cal.getCalendarDate(fastTime, cdate);
+    }
+    return cdate;
+}

@@ -1,0 +1,19 @@
+@Override
+protected ZoneRules provideRules(String zoneId, boolean forCaching) {
+    // forCaching flag is ignored because this is not a dynamic provider
+    Object obj = regionToRules.get(zoneId);
+    if (obj == null) {
+        throw new ZoneRulesException("Unknown time-zone ID: " + zoneId);
+    }
+    try {
+        if (obj instanceof byte[]) {
+            byte[] bytes = (byte[]) obj;
+            DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
+            obj = Ser.read(dis);
+            regionToRules.put(zoneId, obj);
+        }
+        return (ZoneRules) obj;
+    } catch (Exception ex) {
+        throw new ZoneRulesException("Invalid binary time-zone data: TZDB:" + zoneId + ", version: " + versionId, ex);
+    }
+}

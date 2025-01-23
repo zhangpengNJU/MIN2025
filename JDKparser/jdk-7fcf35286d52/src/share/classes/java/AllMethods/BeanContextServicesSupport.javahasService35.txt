@@ -1,0 +1,18 @@
+/**
+ * has a service, which may be delegated
+ */
+public synchronized boolean hasService(Class serviceClass) {
+    if (serviceClass == null)
+        throw new NullPointerException("serviceClass");
+    synchronized (BeanContext.globalHierarchyLock) {
+        if (services.containsKey(serviceClass))
+            return true;
+        BeanContextServices bcs = null;
+        try {
+            bcs = (BeanContextServices) getBeanContext();
+        } catch (ClassCastException cce) {
+            return false;
+        }
+        return bcs == null ? false : bcs.hasService(serviceClass);
+    }
+}

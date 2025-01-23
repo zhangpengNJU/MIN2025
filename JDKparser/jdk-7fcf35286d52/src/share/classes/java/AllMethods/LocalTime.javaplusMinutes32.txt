@@ -1,0 +1,24 @@
+/**
+ * Returns a copy of this {@code LocalTime} with the specified number of minutes added.
+ * <p>
+ * This adds the specified number of minutes to this time, returning a new time.
+ * The calculation wraps around midnight.
+ * <p>
+ * This instance is immutable and unaffected by this method call.
+ *
+ * @param minutesToAdd  the minutes to add, may be negative
+ * @return a {@code LocalTime} based on this time with the minutes added, not null
+ */
+public LocalTime plusMinutes(long minutesToAdd) {
+    if (minutesToAdd == 0) {
+        return this;
+    }
+    int mofd = hour * MINUTES_PER_HOUR + minute;
+    int newMofd = ((int) (minutesToAdd % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+    if (mofd == newMofd) {
+        return this;
+    }
+    int newHour = newMofd / MINUTES_PER_HOUR;
+    int newMinute = newMofd % MINUTES_PER_HOUR;
+    return create(newHour, newMinute, second, nano);
+}

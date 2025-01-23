@@ -1,0 +1,12 @@
+/**
+ * get the available DataFlavors of the
+ * <code>Transferable</code> operand of this operation.
+ * <P>
+ * @return a <code>DataFlavor[]</code> containing the
+ * supported <code>DataFlavor</code>s of the
+ * <code>Transferable</code> operand.
+ */
+protected DataFlavor[] getCurrentDataFlavors() {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    return peer != null ? peer.getTransferDataFlavors() : new DataFlavor[0];
+}

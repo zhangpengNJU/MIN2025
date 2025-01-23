@@ -1,0 +1,13 @@
+/**
+ * Sets the designated parameter to the given Java array of bytes.  The driver converts
+ * this to an SQL <code>VARBINARY</code> or <code>LONGVARBINARY</code>
+ * (depending on the argument's size relative to the driver's limits on
+ * <code>VARBINARY</code> values) when it sends it to the database.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2, ...
+ * @param x the parameter value
+ * @exception SQLException if parameterIndex does not correspond to a parameter
+ * marker in the SQL statement; if a database access error occurs or
+ * this method is called on a closed <code>PreparedStatement</code>
+ */
+void setBytes(int parameterIndex, byte[] x) throws SQLException;

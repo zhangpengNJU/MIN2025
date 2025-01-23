@@ -1,0 +1,32 @@
+/**
+ * Inserts the specified element into this priority queue.
+ * As the queue is unbounded, this method will never return {@code false}.
+ *
+ * @param e the element to add
+ * @return {@code true} (as specified by {@link Queue#offer})
+ * @throws ClassCastException if the specified element cannot be compared
+ *         with elements currently in the priority queue according to the
+ *         priority queue's ordering
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean offer(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    int n, cap;
+    Object[] array;
+    while ((n = size) >= (cap = (array = queue).length)) tryGrow(array, cap);
+    try {
+        Comparator<? super E> cmp = comparator;
+        if (cmp == null)
+            siftUpComparable(n, e, array);
+        else
+            siftUpUsingComparator(n, e, array, cmp);
+        size = n + 1;
+        notEmpty.signal();
+    } finally {
+        lock.unlock();
+    }
+    return true;
+}

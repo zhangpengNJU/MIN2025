@@ -1,0 +1,17 @@
+/**
+ * Returns the component at the specified index.
+ *
+ * <p>This method is identical in functionality to the {@link #get(int)}
+ * method (which is part of the {@link List} interface).
+ *
+ * @param      index   an index into this vector
+ * @return     the component at the specified index
+ * @throws ArrayIndexOutOfBoundsException if the index is out of range
+ *         ({@code index < 0 || index >= size()})
+ */
+public synchronized E elementAt(int index) {
+    if (index >= elementCount) {
+        throw new ArrayIndexOutOfBoundsException(index + " >= " + elementCount);
+    }
+    return elementData(index);
+}

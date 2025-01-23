@@ -1,0 +1,15 @@
+/**
+ * Write a portion of an array of characters.
+ *
+ * @param  cbuf  Array of characters
+ * @param  off   Offset from which to start writing characters
+ * @param  len   Number of characters to write
+ */
+public void write(char[] cbuf, int off, int len) {
+    if ((off < 0) || (off > cbuf.length) || (len < 0) || ((off + len) > cbuf.length) || ((off + len) < 0)) {
+        throw new IndexOutOfBoundsException();
+    } else if (len == 0) {
+        return;
+    }
+    buf.append(cbuf, off, len);
+}

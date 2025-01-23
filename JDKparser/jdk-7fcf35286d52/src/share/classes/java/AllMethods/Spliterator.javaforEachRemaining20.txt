@@ -1,0 +1,20 @@
+/**
+ * {@inheritDoc}
+ * @implSpec
+ * If the action is an instance of {@code LongConsumer} then it is cast
+ * to {@code LongConsumer} and passed to
+ * {@link #forEachRemaining(java.util.function.LongConsumer)}; otherwise
+ * the action is adapted to an instance of {@code LongConsumer}, by
+ * boxing the argument of {@code LongConsumer}, and then passed to
+ * {@link #forEachRemaining(java.util.function.LongConsumer)}.
+ */
+@Override
+default void forEachRemaining(Consumer<? super Long> action) {
+    if (action instanceof LongConsumer) {
+        forEachRemaining((LongConsumer) action);
+    } else {
+        if (Tripwire.ENABLED)
+            Tripwire.trip(getClass(), "{0} calling Spliterator.OfLong.forEachRemaining((LongConsumer) action::accept)");
+        forEachRemaining((LongConsumer) action::accept);
+    }
+}

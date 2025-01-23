@@ -1,0 +1,7 @@
+@Override
+protected InetAddress getInetAddress() {
+    if (external_address != null)
+        return external_address.getAddress();
+    else
+        return super.getInetAddress();
+}

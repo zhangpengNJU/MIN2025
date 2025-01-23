@@ -1,0 +1,11 @@
+/**
+ * Adds an ImageConsumer to the list of consumers interested in
+ * data for this image.
+ *
+ * @param ic an ImageConsumer to be added to the interest list.
+ */
+public synchronized void addConsumer(ImageConsumer ic) {
+    if (!ics.contains(ic)) {
+        ics.addElement(ic);
+    }
+}

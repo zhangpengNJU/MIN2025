@@ -1,0 +1,37 @@
+/**
+ * Returns true if the specified object represents an annotation
+ * that is logically equivalent to this one.  In other words,
+ * returns true if the specified object is an instance of the same
+ * annotation type as this instance, all of whose members are equal
+ * to the corresponding member of this annotation, as defined below:
+ * <ul>
+ *    <li>Two corresponding primitive typed members whose values are
+ *    <tt>x</tt> and <tt>y</tt> are considered equal if <tt>x == y</tt>,
+ *    unless their type is <tt>float</tt> or <tt>double</tt>.
+ *
+ *    <li>Two corresponding <tt>float</tt> members whose values
+ *    are <tt>x</tt> and <tt>y</tt> are considered equal if
+ *    <tt>Float.valueOf(x).equals(Float.valueOf(y))</tt>.
+ *    (Unlike the <tt>==</tt> operator, NaN is considered equal
+ *    to itself, and <tt>0.0f</tt> unequal to <tt>-0.0f</tt>.)
+ *
+ *    <li>Two corresponding <tt>double</tt> members whose values
+ *    are <tt>x</tt> and <tt>y</tt> are considered equal if
+ *    <tt>Double.valueOf(x).equals(Double.valueOf(y))</tt>.
+ *    (Unlike the <tt>==</tt> operator, NaN is considered equal
+ *    to itself, and <tt>0.0</tt> unequal to <tt>-0.0</tt>.)
+ *
+ *    <li>Two corresponding <tt>String</tt>, <tt>Class</tt>, enum, or
+ *    annotation typed members whose values are <tt>x</tt> and <tt>y</tt>
+ *    are considered equal if <tt>x.equals(y)</tt>.  (Note that this
+ *    definition is recursive for annotation typed members.)
+ *
+ *    <li>Two corresponding array typed members <tt>x</tt> and <tt>y</tt>
+ *    are considered equal if <tt>Arrays.equals(x, y)</tt>, for the
+ *    appropriate overloading of {@link java.util.Arrays#equals}.
+ * </ul>
+ *
+ * @return true if the specified object represents an annotation
+ *     that is logically equivalent to this one, otherwise false
+ */
+boolean equals(Object obj);

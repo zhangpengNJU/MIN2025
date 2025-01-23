@@ -1,0 +1,48 @@
+/**
+ * Steals and runs a task in the same CC computation as the
+ * given task if one exists and can be taken without
+ * contention. Otherwise returns a checksum/control value for
+ * use by method helpComplete.
+ *
+ * @return 1 if successful, 2 if retryable (lost to another
+ * stealer), -1 if non-empty but no matching task found, else
+ * the base index, forced negative.
+ */
+final int pollAndExecCC(CountedCompleter<?> task) {
+    int b, h;
+    ForkJoinTask<?>[] a;
+    Object o;
+    if ((b = base) - top >= 0 || (a = array) == null)
+        // to sense movement on re-poll
+        h = b | Integer.MIN_VALUE;
+    else {
+        long j = (((a.length - 1) & b) << ASHIFT) + ABASE;
+        if ((o = U.getObjectVolatile(a, j)) == null)
+            // retryable
+            h = 2;
+        else if (!(o instanceof CountedCompleter))
+            // unmatchable
+            h = -1;
+        else {
+            CountedCompleter<?> t = (CountedCompleter<?>) o;
+            for (CountedCompleter<?> r = t; ; ) {
+                if (r == task) {
+                    if (base == b && U.compareAndSwapObject(a, j, t, null)) {
+                        base = b + 1;
+                        t.doExec();
+                        // success
+                        h = 1;
+                    } else
+                        // lost CAS
+                        h = 2;
+                    break;
+                } else if ((r = r.completer) == null) {
+                    // unmatched
+                    h = -1;
+                    break;
+                }
+            }
+        }
+    }
+    return h;
+}

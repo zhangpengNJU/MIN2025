@@ -1,0 +1,33 @@
+/**
+ * Marks given handle as finished, meaning that no new dependencies
+ * will be marked for handle.  Calls to the assign and finish methods
+ * must occur in LIFO order.
+ */
+void finish(int handle) {
+    int end;
+    if (lowDep < 0) {
+        // no pending unknowns, only resolve current handle
+        end = handle + 1;
+    } else if (lowDep >= handle) {
+        // pending unknowns now clearable, resolve all upward handles
+        end = size;
+        lowDep = -1;
+    } else {
+        // unresolved backrefs present, can't resolve anything yet
+        return;
+    }
+    // change STATUS_UNKNOWN -> STATUS_OK in selected span of handles
+    for (int i = handle; i < end; i++) {
+        switch(status[i]) {
+            case STATUS_UNKNOWN:
+                status[i] = STATUS_OK;
+                deps[i] = null;
+                break;
+            case STATUS_OK:
+            case STATUS_EXCEPTION:
+                break;
+            default:
+                throw new InternalError();
+        }
+    }
+}

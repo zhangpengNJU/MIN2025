@@ -1,0 +1,35 @@
+/**
+ * Initializes the key pair generator with the given parameter
+ * set and source of randomness.
+ *
+ * <p>This concrete method has been added to this previously-defined
+ * abstract class.
+ * This method calls the KeyPairGeneratorSpi {@link
+ * KeyPairGeneratorSpi#initialize(
+ * java.security.spec.AlgorithmParameterSpec,
+ * java.security.SecureRandom) initialize} method,
+ * passing it {@code params} and {@code random}.
+ * That {@code initialize}
+ * method always throws an
+ * UnsupportedOperationException if it is not overridden by the provider.
+ *
+ * @param params the parameter set used to generate the keys.
+ * @param random the source of randomness.
+ *
+ * @exception InvalidAlgorithmParameterException if the given parameters
+ * are inappropriate for this key pair generator.
+ *
+ * @since 1.2
+ */
+public void initialize(AlgorithmParameterSpec params, SecureRandom random) throws InvalidAlgorithmParameterException {
+// This does nothing, because either
+// 1. the implementation object returned by getInstance() is an
+// instance of KeyPairGenerator which has its own
+// initialize(params, random) method, so the application would
+// be calling that method directly, or
+// 2. the implementation returned by getInstance() is an instance
+// of Delegate, in which case initialize(params, random) is
+// overridden to call the corresponding SPI method.
+// (This is a special case, because the API and SPI method have the
+// same name.)
+}

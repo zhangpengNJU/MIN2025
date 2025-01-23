@@ -1,0 +1,11 @@
+public boolean tryAdvance(Consumer<? super E> action) {
+    if (action == null)
+        throw new NullPointerException();
+    if (getFence() > index && index >= 0) {
+        @SuppressWarnings("unchecked")
+        E e = (E) array[index++];
+        action.accept(e);
+        return true;
+    }
+    return false;
+}

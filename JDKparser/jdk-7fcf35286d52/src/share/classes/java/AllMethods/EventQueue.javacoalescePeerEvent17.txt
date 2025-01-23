@@ -1,0 +1,17 @@
+private boolean coalescePeerEvent(PeerEvent e) {
+    EventQueueItem[] cache = ((Component) e.getSource()).eventCache;
+    if (cache == null) {
+        return false;
+    }
+    int index = eventToCacheIndex(e);
+    if (index != -1 && cache[index] != null) {
+        e = e.coalesceEvents((PeerEvent) cache[index].event);
+        if (e != null) {
+            cache[index].event = e;
+            return true;
+        } else {
+            cache[index] = null;
+        }
+    }
+    return false;
+}

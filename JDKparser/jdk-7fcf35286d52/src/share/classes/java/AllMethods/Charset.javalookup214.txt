@@ -1,0 +1,16 @@
+private static Charset lookup2(String charsetName) {
+    Object[] a;
+    if ((a = cache2) != null && charsetName.equals(a[0])) {
+        cache2 = cache1;
+        cache1 = a;
+        return (Charset) a[1];
+    }
+    Charset cs;
+    if ((cs = standardProvider.charsetForName(charsetName)) != null || (cs = lookupExtendedCharset(charsetName)) != null || (cs = lookupViaProviders(charsetName)) != null) {
+        cache(charsetName, cs);
+        return cs;
+    }
+    /* Only need to check the name if we didn't find a charset for it */
+    checkName(charsetName);
+    return null;
+}

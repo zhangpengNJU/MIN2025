@@ -1,0 +1,39 @@
+/**
+ * Check and see if this ProtectionDomain implies the permissions
+ * expressed in the Permission object.
+ * <p>
+ * The set of permissions evaluated is a function of whether the
+ * ProtectionDomain was constructed with a static set of permissions
+ * or it was bound to a dynamically mapped set of permissions.
+ * <p>
+ * If the ProtectionDomain was constructed to a
+ * {@link #ProtectionDomain(CodeSource, PermissionCollection)
+ * statically bound} PermissionCollection then the permission will
+ * only be checked against the PermissionCollection supplied at
+ * construction.
+ * <p>
+ * However, if the ProtectionDomain was constructed with
+ * the constructor variant which supports
+ * {@link #ProtectionDomain(CodeSource, PermissionCollection,
+ * ClassLoader, java.security.Principal[]) dynamically binding}
+ * permissions, then the permission will be checked against the
+ * combination of the PermissionCollection supplied at construction and
+ * the current Policy binding.
+ * <p>
+ *
+ * @param permission the Permission object to check.
+ *
+ * @return true if "permission" is implicit to this ProtectionDomain.
+ */
+public boolean implies(Permission permission) {
+    if (hasAllPerm) {
+        // internal permission collection already has AllPermission -
+        // no need to go to policy
+        return true;
+    }
+    if (!staticPermissions && Policy.getPolicyNoCheck().implies(this, permission))
+        return true;
+    if (permissions != null)
+        return permissions.implies(permission);
+    return false;
+}

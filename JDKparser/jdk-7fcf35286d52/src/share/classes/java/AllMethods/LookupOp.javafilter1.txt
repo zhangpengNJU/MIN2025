@@ -1,0 +1,87 @@
+/**
+ * Performs a lookup operation on a <code>BufferedImage</code>.
+ * If the color model in the source image is not the same as that
+ * in the destination image, the pixels will be converted
+ * in the destination.  If the destination image is <code>null</code>,
+ * a <code>BufferedImage</code> will be created with an appropriate
+ * <code>ColorModel</code>.  An <code>IllegalArgumentException</code>
+ * might be thrown if the number of arrays in the
+ * <code>LookupTable</code> does not meet the restrictions
+ * stated in the class comment above, or if the source image
+ * has an <code>IndexColorModel</code>.
+ * @param src the <code>BufferedImage</code> to be filtered
+ * @param dst the <code>BufferedImage</code> in which to
+ *            store the results of the filter operation
+ * @return the filtered <code>BufferedImage</code>.
+ * @throws IllegalArgumentException if the number of arrays in the
+ *         <code>LookupTable</code> does not meet the restrictions
+ *         described in the class comments, or if the source image
+ *         has an <code>IndexColorModel</code>.
+ */
+public final BufferedImage filter(BufferedImage src, BufferedImage dst) {
+    ColorModel srcCM = src.getColorModel();
+    int numBands = srcCM.getNumColorComponents();
+    ColorModel dstCM;
+    if (srcCM instanceof IndexColorModel) {
+        throw new IllegalArgumentException("LookupOp cannot be " + "performed on an indexed image");
+    }
+    int numComponents = ltable.getNumComponents();
+    if (numComponents != 1 && numComponents != srcCM.getNumComponents() && numComponents != srcCM.getNumColorComponents()) {
+        throw new IllegalArgumentException("Number of arrays in the " + " lookup table (" + numComponents + " is not compatible with the " + " src image: " + src);
+    }
+    boolean needToConvert = false;
+    int width = src.getWidth();
+    int height = src.getHeight();
+    if (dst == null) {
+        dst = createCompatibleDestImage(src, null);
+        dstCM = srcCM;
+    } else {
+        if (width != dst.getWidth()) {
+            throw new IllegalArgumentException("Src width (" + width + ") not equal to dst width (" + dst.getWidth() + ")");
+        }
+        if (height != dst.getHeight()) {
+            throw new IllegalArgumentException("Src height (" + height + ") not equal to dst height (" + dst.getHeight() + ")");
+        }
+        dstCM = dst.getColorModel();
+        if (srcCM.getColorSpace().getType() != dstCM.getColorSpace().getType()) {
+            needToConvert = true;
+            dst = createCompatibleDestImage(src, null);
+        }
+    }
+    BufferedImage origDst = dst;
+    if (ImagingLib.filter(this, src, dst) == null) {
+        // Do it the slow way
+        WritableRaster srcRaster = src.getRaster();
+        WritableRaster dstRaster = dst.getRaster();
+        if (srcCM.hasAlpha()) {
+            if (numBands - 1 == numComponents || numComponents == 1) {
+                int minx = srcRaster.getMinX();
+                int miny = srcRaster.getMinY();
+                int[] bands = new int[numBands - 1];
+                for (int i = 0; i < numBands - 1; i++) {
+                    bands[i] = i;
+                }
+                srcRaster = srcRaster.createWritableChild(minx, miny, srcRaster.getWidth(), srcRaster.getHeight(), minx, miny, bands);
+            }
+        }
+        if (dstCM.hasAlpha()) {
+            int dstNumBands = dstRaster.getNumBands();
+            if (dstNumBands - 1 == numComponents || numComponents == 1) {
+                int minx = dstRaster.getMinX();
+                int miny = dstRaster.getMinY();
+                int[] bands = new int[numBands - 1];
+                for (int i = 0; i < numBands - 1; i++) {
+                    bands[i] = i;
+                }
+                dstRaster = dstRaster.createWritableChild(minx, miny, dstRaster.getWidth(), dstRaster.getHeight(), minx, miny, bands);
+            }
+        }
+        filter(srcRaster, dstRaster);
+    }
+    if (needToConvert) {
+        // ColorModels are not the same
+        ColorConvertOp ccop = new ColorConvertOp(hints);
+        ccop.filter(dst, origDst);
+    }
+    return origDst;
+}

@@ -1,0 +1,9 @@
+private Object implComputeIfAbsent(Object key, Function<? super Object, ? extends Object> mappingFunction) {
+    if (key instanceof String) {
+        if (!checkLegacy(key)) {
+            return null;
+        }
+        legacyStrings.computeIfAbsent((String) key, (Function<? super String, ? extends String>) mappingFunction);
+    }
+    return super.computeIfAbsent(key, mappingFunction);
+}

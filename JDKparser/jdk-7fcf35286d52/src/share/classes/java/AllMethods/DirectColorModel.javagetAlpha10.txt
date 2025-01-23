@@ -1,0 +1,16 @@
+/**
+ * Returns the alpha component for the specified pixel, scaled
+ * from 0 to 255.  The pixel value is specified as an <code>int</code>.
+ * @param pixel the specified pixel
+ * @return the value of the alpha component of <code>pixel</code>
+ *         from 0 to 255.
+ */
+final public int getAlpha(int pixel) {
+    if (!supportsAlpha)
+        return 255;
+    int a = ((pixel & maskArray[3]) >>> maskOffsets[3]);
+    if (scaleFactors[3] != 1.0f) {
+        a = (int) (a * scaleFactors[3] + 0.5f);
+    }
+    return a;
+}

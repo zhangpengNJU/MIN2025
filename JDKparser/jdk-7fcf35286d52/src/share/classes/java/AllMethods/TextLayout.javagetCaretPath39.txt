@@ -1,0 +1,94 @@
+/**
+ * Return an array of four floats corresponding the endpoints of the caret
+ * x0, y0, x1, y1.
+ *
+ * This creates a line along the slope of the caret intersecting the
+ * baseline at the caret
+ * position, and extending from ascent above the baseline to descent below
+ * it.
+ */
+private double[] getCaretPath(int caret, Rectangle2D bounds, boolean clipToBounds) {
+    float[] info = getCaretInfo(caret, bounds, null);
+    double pos = info[0];
+    double slope = info[1];
+    double x0, y0, x1, y1;
+    // values are there to make compiler happy
+    double x2 = -3141.59, y2 = -2.7;
+    double left = bounds.getX();
+    double right = left + bounds.getWidth();
+    double top = bounds.getY();
+    double bottom = top + bounds.getHeight();
+    boolean threePoints = false;
+    if (isVerticalLine) {
+        if (slope >= 0) {
+            x0 = left;
+            x1 = right;
+        } else {
+            x1 = left;
+            x0 = right;
+        }
+        y0 = pos + x0 * slope;
+        y1 = pos + x1 * slope;
+        // y0 <= y1, always
+        if (clipToBounds) {
+            if (y0 < top) {
+                if (slope <= 0 || y1 <= top) {
+                    y0 = y1 = top;
+                } else {
+                    threePoints = true;
+                    y0 = top;
+                    y2 = top;
+                    x2 = x1 + (top - y1) / slope;
+                    if (y1 > bottom) {
+                        y1 = bottom;
+                    }
+                }
+            } else if (y1 > bottom) {
+                if (slope >= 0 || y0 >= bottom) {
+                    y0 = y1 = bottom;
+                } else {
+                    threePoints = true;
+                    y1 = bottom;
+                    y2 = bottom;
+                    x2 = x0 + (bottom - x1) / slope;
+                }
+            }
+        }
+    } else {
+        if (slope >= 0) {
+            y0 = bottom;
+            y1 = top;
+        } else {
+            y1 = bottom;
+            y0 = top;
+        }
+        x0 = pos - y0 * slope;
+        x1 = pos - y1 * slope;
+        // x0 <= x1, always
+        if (clipToBounds) {
+            if (x0 < left) {
+                if (slope <= 0 || x1 <= left) {
+                    x0 = x1 = left;
+                } else {
+                    threePoints = true;
+                    x0 = left;
+                    x2 = left;
+                    y2 = y1 - (left - x1) / slope;
+                    if (x1 > right) {
+                        x1 = right;
+                    }
+                }
+            } else if (x1 > right) {
+                if (slope >= 0 || x0 >= right) {
+                    x0 = x1 = right;
+                } else {
+                    threePoints = true;
+                    x1 = right;
+                    x2 = right;
+                    y2 = y0 - (right - x0) / slope;
+                }
+            }
+        }
+    }
+    return threePoints ? new double[] { x0, y0, x2, y2, x1, y1 } : new double[] { x0, y0, x1, y1 };
+}

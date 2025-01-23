@@ -1,0 +1,12 @@
+public boolean hasMoreElements() {
+    Entry<?, ?> e = entry;
+    int i = index;
+    Entry<?, ?>[] t = table;
+    /* Use locals for faster loop iteration */
+    while (e == null && i > 0) {
+        e = t[--i];
+    }
+    entry = e;
+    index = i;
+    return e != null;
+}

@@ -1,0 +1,17 @@
+/**
+ * Constructs an {@link AclEntry} from the components of this builder.
+ * The type and who components are required to have been set in order
+ * to construct an {@code AclEntry}.
+ *
+ * @return  a new ACL entry
+ *
+ * @throws  IllegalStateException
+ *          if the type or who component have not been set
+ */
+public AclEntry build() {
+    if (type == null)
+        throw new IllegalStateException("Missing type component");
+    if (who == null)
+        throw new IllegalStateException("Missing who component");
+    return new AclEntry(type, who, perms, flags);
+}

@@ -1,0 +1,7 @@
+public Object clone() {
+    JapaneseImperialCalendar other = (JapaneseImperialCalendar) super.clone();
+    other.jdate = (LocalGregorianCalendar.Date) jdate.clone();
+    other.originalFields = null;
+    other.zoneOffsets = null;
+    return other;
+}

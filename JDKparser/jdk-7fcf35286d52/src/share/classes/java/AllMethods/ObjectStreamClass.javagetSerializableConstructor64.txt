@@ -1,0 +1,26 @@
+/**
+ * Returns subclass-accessible no-arg constructor of first non-serializable
+ * superclass, or null if none found.  Access checks are disabled on the
+ * returned constructor (if any).
+ */
+private static Constructor<?> getSerializableConstructor(Class<?> cl) {
+    Class<?> initCl = cl;
+    while (Serializable.class.isAssignableFrom(initCl)) {
+        Class<?> prev = initCl;
+        if ((initCl = initCl.getSuperclass()) == null || (!disableSerialConstructorChecks && !superHasAccessibleConstructor(prev))) {
+            return null;
+        }
+    }
+    try {
+        Constructor<?> cons = initCl.getDeclaredConstructor((Class<?>[]) null);
+        int mods = cons.getModifiers();
+        if ((mods & Modifier.PRIVATE) != 0 || ((mods & (Modifier.PUBLIC | Modifier.PROTECTED)) == 0 && !packageEquals(cl, initCl))) {
+            return null;
+        }
+        cons = reflFactory.newConstructorForSerialization(cl, cons);
+        cons.setAccessible(true);
+        return cons;
+    } catch (NoSuchMethodException ex) {
+        return null;
+    }
+}

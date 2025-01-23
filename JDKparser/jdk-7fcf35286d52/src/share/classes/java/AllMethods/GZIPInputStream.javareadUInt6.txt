@@ -1,0 +1,7 @@
+/*
+     * Reads unsigned integer in Intel byte order.
+     */
+private long readUInt(InputStream in) throws IOException {
+    long s = readUShort(in);
+    return ((long) readUShort(in) << 16) | s;
+}

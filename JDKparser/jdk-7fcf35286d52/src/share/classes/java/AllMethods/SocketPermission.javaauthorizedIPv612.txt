@@ -1,0 +1,29 @@
+private boolean authorizedIPv6(String cname, byte[] addr) {
+    String authHost = "";
+    InetAddress auth;
+    try {
+        StringBuffer sb = new StringBuffer(39);
+        for (int i = 15; i >= 0; i--) {
+            sb.append(Integer.toHexString(((addr[i]) & 0x0f)));
+            sb.append('.');
+            sb.append(Integer.toHexString(((addr[i] >> 4) & 0x0f)));
+            sb.append('.');
+        }
+        authHost = "auth." + sb.toString() + "IP6.ARPA";
+        // auth = InetAddress.getAllByName0(authHost, false)[0];
+        authHost = hostname + '.' + authHost;
+        auth = InetAddress.getAllByName0(authHost, false)[0];
+        if (auth.equals(InetAddress.getByAddress(addr)))
+            return true;
+        Debug debug = getDebug();
+        if (debug != null && Debug.isOn("failure")) {
+            debug.println("socket access restriction: IP address of " + auth + " != " + InetAddress.getByAddress(addr));
+        }
+    } catch (UnknownHostException uhe) {
+        Debug debug = getDebug();
+        if (debug != null && Debug.isOn("failure")) {
+            debug.println("socket access restriction: forward lookup failed for " + authHost);
+        }
+    }
+    return false;
+}

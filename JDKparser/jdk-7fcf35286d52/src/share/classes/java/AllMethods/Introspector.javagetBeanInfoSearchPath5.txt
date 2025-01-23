@@ -1,0 +1,12 @@
+/**
+ * Gets the list of package names that will be used for
+ *          finding BeanInfo classes.
+ *
+ * @return  The array of package names that will be searched in
+ *          order to find BeanInfo classes. The default value
+ *          for this array is implementation-dependent; e.g.
+ *          Sun implementation initially sets to {"sun.beans.infos"}.
+ */
+public static String[] getBeanInfoSearchPath() {
+    return ThreadGroupContext.getContext().getBeanInfoFinder().getPackages();
+}

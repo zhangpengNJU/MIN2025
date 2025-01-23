@@ -1,0 +1,14 @@
+// -------------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code HijrahDate} from the Hijrah proleptic year,
+ * month-of-year and day-of-month.
+ *
+ * @param prolepticYear  the proleptic year to represent in the Hijrah calendar
+ * @param monthOfYear  the month-of-year to represent, from 1 to 12
+ * @param dayOfMonth  the day-of-month to represent, from 1 to 30
+ * @return the Hijrah date, never null
+ * @throws DateTimeException if the value of any field is out of range
+ */
+static HijrahDate of(HijrahChronology chrono, int prolepticYear, int monthOfYear, int dayOfMonth) {
+    return new HijrahDate(chrono, prolepticYear, monthOfYear, dayOfMonth);
+}

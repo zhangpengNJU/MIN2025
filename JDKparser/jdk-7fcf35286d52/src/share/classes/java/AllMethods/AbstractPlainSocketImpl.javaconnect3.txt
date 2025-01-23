@@ -1,0 +1,18 @@
+/**
+ * Creates a socket and connects it to the specified address on
+ * the specified port.
+ * @param address the address
+ * @param port the specified port
+ */
+protected void connect(InetAddress address, int port) throws IOException {
+    this.port = port;
+    this.address = address;
+    try {
+        connectToAddress(address, port, timeout);
+        return;
+    } catch (IOException e) {
+        // everything failed
+        close();
+        throw e;
+    }
+}

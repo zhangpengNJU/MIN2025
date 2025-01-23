@@ -1,0 +1,8 @@
+@Override
+public ResourceBundle run() {
+    try {
+        return ResourceBundle.getBundle(SYSTEM_LOGGER_RB_NAME, locale);
+    } catch (MissingResourceException e) {
+        throw new InternalError(e.toString());
+    }
+}

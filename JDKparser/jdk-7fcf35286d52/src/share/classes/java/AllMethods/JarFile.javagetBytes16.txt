@@ -1,0 +1,17 @@
+/*
+     * Reads all the bytes for a given entry. Used to process the
+     * META-INF files.
+     */
+private byte[] getBytes(ZipEntry ze) throws IOException {
+    try (InputStream is = super.getInputStream(ze)) {
+        long uncompressedSize = ze.getSize();
+        if (uncompressedSize > MAX_ARRAY_SIZE) {
+            throw new IOException("Unsupported size: " + uncompressedSize);
+        }
+        int len = (int) uncompressedSize;
+        byte[] b = IOUtils.readAllBytes(is);
+        if (len != -1 && b.length != len)
+            throw new EOFException("Expected:" + len + ", read:" + b.length);
+        return b;
+    }
+}

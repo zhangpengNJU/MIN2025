@@ -1,0 +1,22 @@
+/**
+ * Replaces text between the indicated start and end positions
+ * with the specified replacement text.  The text at the end
+ * position will not be replaced.  The text at the start
+ * position will be replaced (unless the start position is the
+ * same as the end position).
+ * The text position is zero-based.  The inserted substring may be
+ * of a different length than the text it replaces.
+ * <p>Note that passing <code>null</code> or inconsistent
+ * parameters is invalid and will result in unspecified
+ * behavior.
+ *
+ * @param     str      the non-<code>null</code> text to use as
+ *                     the replacement
+ * @param     start    the start position
+ * @param     end      the end position
+ * @see       java.awt.TextArea#insert
+ * @since     JDK1.1
+ */
+public void replaceRange(String str, int start, int end) {
+    replaceText(str, start, end);
+}

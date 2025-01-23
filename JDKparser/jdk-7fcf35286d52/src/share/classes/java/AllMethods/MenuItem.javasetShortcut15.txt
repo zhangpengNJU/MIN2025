@@ -1,0 +1,16 @@
+/**
+ * Set the <code>MenuShortcut</code> object associated with this
+ * menu item. If a menu shortcut is already associated with
+ * this menu item, it is replaced.
+ * @param       s  the menu shortcut to associate
+ *                           with this menu item.
+ * @see         java.awt.MenuItem#getShortcut
+ * @since       JDK1.1
+ */
+public void setShortcut(MenuShortcut s) {
+    shortcut = s;
+    MenuItemPeer peer = (MenuItemPeer) this.peer;
+    if (peer != null) {
+        peer.setLabel(label);
+    }
+}

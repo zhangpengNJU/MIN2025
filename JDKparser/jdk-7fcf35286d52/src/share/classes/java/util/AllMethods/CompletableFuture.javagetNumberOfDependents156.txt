@@ -1,0 +1,13 @@
+/**
+ * Returns the estimated number of CompletableFutures whose
+ * completions are awaiting completion of this CompletableFuture.
+ * This method is designed for use in monitoring system state, not
+ * for synchronization control.
+ *
+ * @return the number of dependent CompletableFutures
+ */
+public int getNumberOfDependents() {
+    int count = 0;
+    for (Completion p = stack; p != null; p = p.next) ++count;
+    return count;
+}

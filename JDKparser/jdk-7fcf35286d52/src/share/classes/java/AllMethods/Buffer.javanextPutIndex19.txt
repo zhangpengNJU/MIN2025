@@ -1,0 +1,15 @@
+/**
+ * Checks the current position against the limit, throwing a {@link
+ * BufferOverflowException} if it is not smaller than the limit, and then
+ * increments the position.
+ *
+ * @return  The current position value, before it is incremented
+ */
+final int nextPutIndex() {
+    // package-private
+    int p = position;
+    if (p >= limit)
+        throw new BufferOverflowException();
+    position = p + 1;
+    return p;
+}

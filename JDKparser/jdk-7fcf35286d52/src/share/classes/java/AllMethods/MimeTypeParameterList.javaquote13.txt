@@ -1,0 +1,29 @@
+/**
+ * A routine that knows how and when to quote and escape the given value.
+ */
+private static String quote(String value) {
+    boolean needsQuotes = false;
+    // check to see if we actually have to quote this thing
+    int length = value.length();
+    for (int i = 0; (i < length) && !needsQuotes; ++i) {
+        needsQuotes = !isTokenChar(value.charAt(i));
+    }
+    if (needsQuotes) {
+        StringBuilder buffer = new StringBuilder((int) (length * 1.5));
+        // add the initial quote
+        buffer.append('"');
+        // add the properly escaped text
+        for (int i = 0; i < length; ++i) {
+            char c = value.charAt(i);
+            if ((c == '\\') || (c == '"')) {
+                buffer.append('\\');
+            }
+            buffer.append(c);
+        }
+        // add the closing quote
+        buffer.append('"');
+        return buffer.toString();
+    } else {
+        return value;
+    }
+}

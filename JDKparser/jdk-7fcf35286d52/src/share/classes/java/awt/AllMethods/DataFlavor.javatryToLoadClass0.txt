@@ -1,0 +1,36 @@
+/**
+ * Tries to load a class from: the bootstrap loader, the system loader,
+ * the context loader (if one is present) and finally the loader specified.
+ *
+ * @param className the name of the class to be loaded
+ * @param fallback the fallback loader
+ * @return the class loaded
+ * @exception ClassNotFoundException if class is not found
+ */
+protected final static Class<?> tryToLoadClass(String className, ClassLoader fallback) throws ClassNotFoundException {
+    ReflectUtil.checkPackageAccess(className);
+    try {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(GET_CLASSLOADER_PERMISSION);
+        }
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        try {
+            // bootstrap class loader and system class loader if present
+            return Class.forName(className, true, loader);
+        } catch (ClassNotFoundException exception) {
+            // thread context class loader if and only if present
+            loader = Thread.currentThread().getContextClassLoader();
+            if (loader != null) {
+                try {
+                    return Class.forName(className, true, loader);
+                } catch (ClassNotFoundException e) {
+                // fallback to user's class loader
+                }
+            }
+        }
+    } catch (SecurityException exception) {
+    // ignore secured class loaders
+    }
+    return Class.forName(className, true, fallback);
+}

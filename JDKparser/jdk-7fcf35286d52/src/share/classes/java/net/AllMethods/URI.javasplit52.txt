@@ -1,0 +1,45 @@
+// Split the given path into segments, replacing slashes with nulls and
+// filling in the given segment-index array.
+// 
+// Preconditions:
+// segs.length == Number of segments in path
+// 
+// Postconditions:
+// All slashes in path replaced by '\0'
+// segs[i] == Index of first char in segment i (0 <= i < segs.length)
+// 
+static private void split(char[] path, int[] segs) {
+    // Index of last char in path
+    int end = path.length - 1;
+    // Index of next char in path
+    int p = 0;
+    // Index of current segment
+    int i = 0;
+    // Skip initial slashes
+    while (p <= end) {
+        if (path[p] != '/')
+            break;
+        path[p] = '\0';
+        p++;
+    }
+    while (p <= end) {
+        // Note start of segment
+        segs[i++] = p++;
+        // Find beginning of next segment
+        while (p <= end) {
+            if (path[p++] != '/')
+                continue;
+            path[p - 1] = '\0';
+            // Skip redundant slashes
+            while (p <= end) {
+                if (path[p] != '/')
+                    break;
+                path[p++] = '\0';
+            }
+            break;
+        }
+    }
+    if (i != segs.length)
+        // ASSERT
+        throw new InternalError();
+}

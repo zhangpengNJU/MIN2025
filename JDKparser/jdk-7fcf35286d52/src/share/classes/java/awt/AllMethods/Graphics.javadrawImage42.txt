@@ -1,0 +1,51 @@
+/**
+ * Draws as much of the specified area of the specified image as is
+ * currently available, scaling it on the fly to fit inside the
+ * specified area of the destination drawable surface. Transparent pixels
+ * do not affect whatever pixels are already there.
+ * <p>
+ * This method returns immediately in all cases, even if the
+ * image area to be drawn has not yet been scaled, dithered, and converted
+ * for the current output device.
+ * If the current output representation is not yet complete then
+ * <code>drawImage</code> returns <code>false</code>. As more of
+ * the image becomes available, the process that loads the image notifies
+ * the specified image observer.
+ * <p>
+ * This method always uses the unscaled version of the image
+ * to render the scaled rectangle and performs the required
+ * scaling on the fly. It does not use a cached, scaled version
+ * of the image for this operation. Scaling of the image from source
+ * to destination is performed such that the first coordinate
+ * of the source rectangle is mapped to the first coordinate of
+ * the destination rectangle, and the second source coordinate is
+ * mapped to the second destination coordinate. The subimage is
+ * scaled and flipped as needed to preserve those mappings.
+ * @param       img the specified image to be drawn. This method does
+ *                  nothing if <code>img</code> is null.
+ * @param       dx1 the <i>x</i> coordinate of the first corner of the
+ *                    destination rectangle.
+ * @param       dy1 the <i>y</i> coordinate of the first corner of the
+ *                    destination rectangle.
+ * @param       dx2 the <i>x</i> coordinate of the second corner of the
+ *                    destination rectangle.
+ * @param       dy2 the <i>y</i> coordinate of the second corner of the
+ *                    destination rectangle.
+ * @param       sx1 the <i>x</i> coordinate of the first corner of the
+ *                    source rectangle.
+ * @param       sy1 the <i>y</i> coordinate of the first corner of the
+ *                    source rectangle.
+ * @param       sx2 the <i>x</i> coordinate of the second corner of the
+ *                    source rectangle.
+ * @param       sy2 the <i>y</i> coordinate of the second corner of the
+ *                    source rectangle.
+ * @param       observer object to be notified as more of the image is
+ *                    scaled and converted.
+ * @return   <code>false</code> if the image pixels are still changing;
+ *           <code>true</code> otherwise.
+ * @see         java.awt.Image
+ * @see         java.awt.image.ImageObserver
+ * @see         java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int, int, int, int, int)
+ * @since       JDK1.1
+ */
+public abstract boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer);

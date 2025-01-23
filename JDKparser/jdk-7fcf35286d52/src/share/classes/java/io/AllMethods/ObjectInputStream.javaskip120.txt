@@ -1,0 +1,23 @@
+public long skip(long len) throws IOException {
+    long remain = len;
+    while (remain > 0) {
+        if (blkmode) {
+            if (pos == end) {
+                refill();
+            }
+            if (end < 0) {
+                break;
+            }
+            int nread = (int) Math.min(remain, end - pos);
+            remain -= nread;
+            pos += nread;
+        } else {
+            int nread = (int) Math.min(remain, MAX_BLOCK_SIZE);
+            if ((nread = in.read(buf, 0, nread)) < 0) {
+                break;
+            }
+            remain -= nread;
+        }
+    }
+    return len - remain;
+}

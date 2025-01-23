@@ -1,0 +1,31 @@
+/**
+ * Determines if the character (Unicode code point) is
+ * permissible as the first character in a Java identifier.
+ * <p>
+ * A character may start a Java identifier if and only if
+ * one of the following conditions is true:
+ * <ul>
+ * <li> {@link #isLetter(int) isLetter(codePoint)}
+ *      returns {@code true}
+ * <li> {@link #getType(int) getType(codePoint)}
+ *      returns {@code LETTER_NUMBER}
+ * <li> the referenced character is a currency symbol (such as {@code '$'})
+ * <li> the referenced character is a connecting punctuation character
+ *      (such as {@code '_'}).
+ * </ul>
+ *
+ * These conditions are tested against the character information from version
+ * 6.2 of the Unicode Standard.
+ *
+ * @param   codePoint the character (Unicode code point) to be tested.
+ * @return  {@code true} if the character may start a Java identifier;
+ *          {@code false} otherwise.
+ * @see     Character#isJavaIdentifierPart(int)
+ * @see     Character#isLetter(int)
+ * @see     Character#isUnicodeIdentifierStart(int)
+ * @see     javax.lang.model.SourceVersion#isIdentifier(CharSequence)
+ * @since   1.5
+ */
+public static boolean isJavaIdentifierStart(int codePoint) {
+    return CharacterData.of(codePoint).isJavaIdentifierStart(codePoint);
+}

@@ -1,0 +1,118 @@
+public ListIterator<E> listIterator(final int index) {
+    checkForComodification();
+    rangeCheckForAdd(index);
+    final int offset = this.offset;
+    return new ListIterator<E>() {
+
+        int cursor = index;
+
+        int lastRet = -1;
+
+        int expectedModCount = ArrayList.this.modCount;
+
+        public boolean hasNext() {
+            return cursor != SubList.this.size;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E next() {
+            checkForComodification();
+            int i = cursor;
+            if (i >= SubList.this.size)
+                throw new NoSuchElementException();
+            Object[] elementData = ArrayList.this.elementData;
+            if (offset + i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i + 1;
+            return (E) elementData[offset + (lastRet = i)];
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E previous() {
+            checkForComodification();
+            int i = cursor - 1;
+            if (i < 0)
+                throw new NoSuchElementException();
+            Object[] elementData = ArrayList.this.elementData;
+            if (offset + i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i;
+            return (E) elementData[offset + (lastRet = i)];
+        }
+
+        @SuppressWarnings("unchecked")
+        public void forEachRemaining(Consumer<? super E> consumer) {
+            Objects.requireNonNull(consumer);
+            final int size = SubList.this.size;
+            int i = cursor;
+            if (i >= size) {
+                return;
+            }
+            final Object[] elementData = ArrayList.this.elementData;
+            if (offset + i >= elementData.length) {
+                throw new ConcurrentModificationException();
+            }
+            while (i != size && modCount == expectedModCount) {
+                consumer.accept((E) elementData[offset + (i++)]);
+            }
+            // update once at end of iteration to reduce heap write traffic
+            lastRet = cursor = i;
+            checkForComodification();
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+            try {
+                SubList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+                expectedModCount = ArrayList.this.modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void set(E e) {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+            try {
+                ArrayList.this.set(offset + lastRet, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void add(E e) {
+            checkForComodification();
+            try {
+                int i = cursor;
+                SubList.this.add(i, e);
+                cursor = i + 1;
+                lastRet = -1;
+                expectedModCount = ArrayList.this.modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        final void checkForComodification() {
+            if (expectedModCount != ArrayList.this.modCount)
+                throw new ConcurrentModificationException();
+        }
+    };
+}

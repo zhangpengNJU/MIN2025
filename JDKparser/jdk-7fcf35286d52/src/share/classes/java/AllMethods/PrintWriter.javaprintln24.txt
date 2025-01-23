@@ -1,0 +1,13 @@
+/**
+ * Prints a character and then terminates the line.  This method behaves as
+ * though it invokes <code>{@link #print(char)}</code> and then <code>{@link
+ * #println()}</code>.
+ *
+ * @param x the <code>char</code> value to be printed
+ */
+public void println(char x) {
+    synchronized (lock) {
+        print(x);
+        println();
+    }
+}

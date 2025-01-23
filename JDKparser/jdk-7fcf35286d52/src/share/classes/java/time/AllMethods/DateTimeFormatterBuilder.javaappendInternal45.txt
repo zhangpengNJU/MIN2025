@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+/**
+ * Appends a printer and/or parser to the internal list handling padding.
+ *
+ * @param pp  the printer-parser to add, not null
+ * @return the index into the active parsers list
+ */
+private int appendInternal(DateTimePrinterParser pp) {
+    Objects.requireNonNull(pp, "pp");
+    if (active.padNextWidth > 0) {
+        if (pp != null) {
+            pp = new PadPrinterParserDecorator(pp, active.padNextWidth, active.padNextChar);
+        }
+        active.padNextWidth = 0;
+        active.padNextChar = 0;
+    }
+    active.printerParsers.add(pp);
+    active.valueParserIndex = -1;
+    return active.printerParsers.size() - 1;
+}

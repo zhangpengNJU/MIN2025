@@ -1,0 +1,12 @@
+@Override
+float[] cloneCoordsFloat(AffineTransform at) {
+    // trim arrays:
+    float[] ret;
+    if (at == null) {
+        ret = Arrays.copyOf(floatCoords, numCoords);
+    } else {
+        ret = new float[numCoords];
+        at.transform(floatCoords, 0, ret, 0, numCoords / 2);
+    }
+    return ret;
+}

@@ -1,0 +1,13 @@
+/**
+ * Constructs a {@code TerminalOp} that perform an action for every element
+ * of a {@code LongStream}.
+ *
+ * @param action the {@code LongConsumer} that receives all elements of a
+ *        stream
+ * @param ordered whether an ordered traversal is requested
+ * @return the {@code TerminalOp} instance
+ */
+public static TerminalOp<Long, Void> makeLong(LongConsumer action, boolean ordered) {
+    Objects.requireNonNull(action);
+    return new ForEachOp.OfLong(action, ordered);
+}

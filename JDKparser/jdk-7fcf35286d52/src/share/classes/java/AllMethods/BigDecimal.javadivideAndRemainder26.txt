@@ -1,0 +1,27 @@
+/**
+ * Returns a two-element {@code BigDecimal} array containing the
+ * result of {@code divideToIntegralValue} followed by the result of
+ * {@code remainder} on the two operands.
+ *
+ * <p>Note that if both the integer quotient and remainder are
+ * needed, this method is faster than using the
+ * {@code divideToIntegralValue} and {@code remainder} methods
+ * separately because the division need only be carried out once.
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided,
+ *         and the remainder computed.
+ * @return a two element {@code BigDecimal} array: the quotient
+ *         (the result of {@code divideToIntegralValue}) is the initial element
+ *         and the remainder is the final element.
+ * @throws ArithmeticException if {@code divisor==0}
+ * @see    #divideToIntegralValue(java.math.BigDecimal, java.math.MathContext)
+ * @see    #remainder(java.math.BigDecimal, java.math.MathContext)
+ * @since  1.5
+ */
+public BigDecimal[] divideAndRemainder(BigDecimal divisor) {
+    // we use the identity  x = i * y + r to determine r
+    BigDecimal[] result = new BigDecimal[2];
+    result[0] = this.divideToIntegralValue(divisor);
+    result[1] = this.subtract(result[0].multiply(divisor));
+    return result;
+}

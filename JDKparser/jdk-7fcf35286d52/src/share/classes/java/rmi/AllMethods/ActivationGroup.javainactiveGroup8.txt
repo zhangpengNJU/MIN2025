@@ -1,0 +1,18 @@
+/**
+ * This protected method is necessary for subclasses to
+ * make the <code>inactiveGroup</code> callback to the group's
+ * monitor. The call is simply forwarded to the group's
+ * <code>ActivationMonitor</code>. Also, the current group
+ * for the VM is set to null.
+ *
+ * @exception UnknownGroupException if group is not registered
+ * @exception RemoteException if call informing monitor fails
+ * @since 1.2
+ */
+protected void inactiveGroup() throws UnknownGroupException, RemoteException {
+    try {
+        getMonitor().inactiveGroup(groupID, incarnation);
+    } finally {
+        destroyGroup();
+    }
+}

@@ -1,0 +1,37 @@
+/**
+ * Gets the local address to which the socket is bound.
+ *
+ * <p>If there is a security manager, its
+ * {@code checkConnect} method is first called
+ * with the host address and {@code -1}
+ * as its arguments to see if the operation is allowed.
+ *
+ * @see SecurityManager#checkConnect
+ * @return  the local address to which the socket is bound,
+ *          {@code null} if the socket is closed, or
+ *          an {@code InetAddress} representing
+ *          {@link InetAddress#isAnyLocalAddress wildcard}
+ *          address if either the socket is not bound, or
+ *          the security manager {@code checkConnect}
+ *          method does not allow the operation
+ * @since   1.1
+ */
+public InetAddress getLocalAddress() {
+    if (isClosed())
+        return null;
+    InetAddress in = null;
+    try {
+        in = (InetAddress) getImpl().getOption(SocketOptions.SO_BINDADDR);
+        if (in.isAnyLocalAddress()) {
+            in = InetAddress.anyLocalAddress();
+        }
+        SecurityManager s = System.getSecurityManager();
+        if (s != null) {
+            s.checkConnect(in.getHostAddress(), -1);
+        }
+    } catch (Exception e) {
+        // "0.0.0.0"
+        in = InetAddress.anyLocalAddress();
+    }
+    return in;
+}

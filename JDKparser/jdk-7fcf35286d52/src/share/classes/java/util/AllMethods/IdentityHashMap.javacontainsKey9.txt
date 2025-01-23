@@ -1,0 +1,23 @@
+/**
+ * Tests whether the specified object reference is a key in this identity
+ * hash map.
+ *
+ * @param   key   possible key
+ * @return  <code>true</code> if the specified object reference is a key
+ *          in this map
+ * @see     #containsValue(Object)
+ */
+public boolean containsKey(Object key) {
+    Object k = maskNull(key);
+    Object[] tab = table;
+    int len = tab.length;
+    int i = hash(k, len);
+    while (true) {
+        Object item = tab[i];
+        if (item == k)
+            return true;
+        if (item == null)
+            return false;
+        i = nextKeyIndex(i, len);
+    }
+}

@@ -1,0 +1,75 @@
+/**
+ * Inverse transforms the specified <code>ptSrc</code> and stores the
+ * result in <code>ptDst</code>.
+ * If <code>ptDst</code> is <code>null</code>, a new
+ * <code>Point2D</code> object is allocated and then the result of the
+ * transform is stored in this object.
+ * In either case, <code>ptDst</code>, which contains the transformed
+ * point, is returned for convenience.
+ * If <code>ptSrc</code> and <code>ptDst</code> are the same
+ * object, the input point is correctly overwritten with the
+ * transformed point.
+ * @param ptSrc the point to be inverse transformed
+ * @param ptDst the resulting transformed point
+ * @return <code>ptDst</code>, which contains the result of the
+ * inverse transform.
+ * @exception NoninvertibleTransformException  if the matrix cannot be
+ *                                         inverted.
+ * @since 1.2
+ */
+@SuppressWarnings("fallthrough")
+public Point2D inverseTransform(Point2D ptSrc, Point2D ptDst) throws NoninvertibleTransformException {
+    if (ptDst == null) {
+        if (ptSrc instanceof Point2D.Double) {
+            ptDst = new Point2D.Double();
+        } else {
+            ptDst = new Point2D.Float();
+        }
+    }
+    // Copy source coords into local variables in case src == dst
+    double x = ptSrc.getX();
+    double y = ptSrc.getY();
+    switch(state) {
+        default:
+            stateError();
+        /* NOTREACHED */
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+            x -= m02;
+            y -= m12;
+        /* NOBREAK */
+        case (APPLY_SHEAR | APPLY_SCALE):
+            double det = m00 * m11 - m01 * m10;
+            if (Math.abs(det) <= Double.MIN_VALUE) {
+                throw new NoninvertibleTransformException("Determinant is " + det);
+            }
+            ptDst.setLocation((x * m11 - y * m01) / det, (y * m00 - x * m10) / det);
+            return ptDst;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+            x -= m02;
+            y -= m12;
+        /* NOBREAK */
+        case (APPLY_SHEAR):
+            if (m01 == 0.0 || m10 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            ptDst.setLocation(y / m10, x / m01);
+            return ptDst;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+            x -= m02;
+            y -= m12;
+        /* NOBREAK */
+        case (APPLY_SCALE):
+            if (m00 == 0.0 || m11 == 0.0) {
+                throw new NoninvertibleTransformException("Determinant is 0");
+            }
+            ptDst.setLocation(x / m00, y / m11);
+            return ptDst;
+        case (APPLY_TRANSLATE):
+            ptDst.setLocation(x - m02, y - m12);
+            return ptDst;
+        case (APPLY_IDENTITY):
+            ptDst.setLocation(x, y);
+            return ptDst;
+    }
+/* NOTREACHED */
+}

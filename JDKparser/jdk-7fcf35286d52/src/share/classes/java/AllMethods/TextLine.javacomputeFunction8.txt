@@ -1,0 +1,7 @@
+float computeFunction(TextLine line, int componentIndex, int indexInArray) {
+    TextLineComponent tlc = line.fComponents[componentIndex];
+    float charPos = tlc.getCharY(indexInArray);
+    // charPos is relative to the component - adjust for
+    // baseline
+    return charPos + line.getComponentShift(componentIndex);
+}

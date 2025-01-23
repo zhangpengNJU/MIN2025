@@ -1,0 +1,19 @@
+/**
+ * Set the activation descriptor, <code>desc</code> for the object with
+ * the activation identifier, <code>id</code>. The change will take
+ * effect upon subsequent activation of the object.
+ *
+ * @param id the activation identifier for the activatable object
+ * @param desc the activation descriptor for the activatable object
+ * @exception UnknownGroupException the group associated with
+ * <code>desc</code> is not a registered group
+ * @exception UnknownObjectException the activation <code>id</code>
+ * is not registered
+ * @exception ActivationException for general failure (e.g., unable
+ * to update log)
+ * @exception RemoteException if remote call fails
+ * @return the previous value of the activation descriptor
+ * @see #getActivationDesc
+ * @since 1.2
+ */
+public ActivationDesc setActivationDesc(ActivationID id, ActivationDesc desc) throws ActivationException, UnknownObjectException, UnknownGroupException, RemoteException;

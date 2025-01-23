@@ -1,0 +1,12 @@
+/**
+ * Produces a {@link Node} describing a {@link Collection}.
+ * <p>
+ * The node will hold a reference to the collection and will not make a copy.
+ *
+ * @param <T> the type of elements held by the node
+ * @param c the collection
+ * @return a node holding a collection
+ */
+static <T> Node<T> node(Collection<T> c) {
+    return new CollectionNode<>(c);
+}

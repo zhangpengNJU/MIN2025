@@ -1,0 +1,19 @@
+/**
+ * Returns a byte array corresponding to the data of this ICC_Profile.
+ * @return A byte array that contains the profile data.
+ * @see #setData(int, byte[])
+ */
+public byte[] getData() {
+    int profileSize;
+    byte[] profileData;
+    if (ProfileDeferralMgr.deferring) {
+        ProfileDeferralMgr.activateProfiles();
+    }
+    PCMM mdl = CMSManager.getModule();
+    /* get the number of bytes needed for this profile */
+    profileSize = mdl.getProfileSize(cmmProfile);
+    profileData = new byte[profileSize];
+    /* get the data for the profile */
+    mdl.getProfileData(cmmProfile, profileData);
+    return profileData;
+}

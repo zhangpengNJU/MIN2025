@@ -1,0 +1,5 @@
+protected Expression instantiate(Object oldInstance, Encoder out) {
+    Insets insets = (Insets) oldInstance;
+    Object[] args = new Object[] { insets.top, insets.left, insets.bottom, insets.right };
+    return new Expression(insets, insets.getClass(), "new", args);
+}

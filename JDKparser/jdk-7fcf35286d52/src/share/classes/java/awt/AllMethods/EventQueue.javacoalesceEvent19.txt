@@ -1,0 +1,19 @@
+private boolean coalesceEvent(AWTEvent e, int priority) {
+    if (!(e.getSource() instanceof Component)) {
+        return false;
+    }
+    if (e instanceof PeerEvent) {
+        return coalescePeerEvent((PeerEvent) e);
+    }
+    // The worst case
+    if (((Component) e.getSource()).isCoalescingEnabled() && coalesceOtherEvent(e, priority)) {
+        return true;
+    }
+    if (e instanceof PaintEvent) {
+        return coalescePaintEvent((PaintEvent) e);
+    }
+    if (e instanceof MouseEvent) {
+        return coalesceMouseEvent((MouseEvent) e);
+    }
+    return false;
+}

@@ -1,0 +1,6 @@
+boolean isSatisfiedBy(int ch) {
+    if (inRange(lower, ch, upper))
+        return true;
+    int up = Character.toUpperCase(ch);
+    return inRange(lower, up, upper) || inRange(lower, Character.toLowerCase(up), upper);
+}

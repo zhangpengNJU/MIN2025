@@ -1,0 +1,11 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public boolean contains(double x, double y, double w, double h) {
+    if (npoints <= 0 || !getBoundingBox().intersects(x, y, w, h)) {
+        return false;
+    }
+    Crossings cross = getCrossings(x, y, x + w, y + h);
+    return (cross != null && cross.covers(y, y + h));
+}

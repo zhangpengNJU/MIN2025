@@ -1,0 +1,7 @@
+static synchronized void add(String file) {
+    if (files == null) {
+        // DeleteOnExitHook is running. Too late to add a file
+        throw new IllegalStateException("Shutdown in progress");
+    }
+    files.add(file);
+}

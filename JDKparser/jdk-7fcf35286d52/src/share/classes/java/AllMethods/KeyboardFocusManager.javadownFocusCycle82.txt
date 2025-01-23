@@ -1,0 +1,15 @@
+/**
+ * Moves the focus down one focus traversal cycle from the current focus
+ * owner, if and only if the current focus owner is a Container that is a
+ * focus cycle root. Typically, the focus owner is set to the current focus
+ * owner's default Component to focus, and the current focus cycle root is
+ * set to the current focus owner. If the current focus owner is not a
+ * Container that is a focus cycle root, then no focus traversal operation
+ * occurs.
+ */
+public final void downFocusCycle() {
+    Component focusOwner = getFocusOwner();
+    if (focusOwner instanceof Container) {
+        downFocusCycle((Container) focusOwner);
+    }
+}

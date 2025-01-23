@@ -1,0 +1,42 @@
+/**
+ * Returns a Source for reading the XML value designated by this SQLXML instance.
+ * Sources are used as inputs to XML parsers and XSLT transformers.
+ * <p>
+ * Sources for XML parsers will have namespace processing on by default.
+ * The systemID of the Source is implementation dependent.
+ * <p>
+ * The SQL XML object becomes not readable when this method is called and
+ * may also become not writable depending on implementation.
+ * <p>
+ * Note that SAX is a callback architecture, so a returned
+ * SAXSource should then be set with a content handler that will
+ * receive the SAX events from parsing.  The content handler
+ * will receive callbacks based on the contents of the XML.
+ * <pre>
+ *   SAXSource saxSource = sqlxml.getSource(SAXSource.class);
+ *   XMLReader xmlReader = saxSource.getXMLReader();
+ *   xmlReader.setContentHandler(myHandler);
+ *   xmlReader.parse(saxSource.getInputSource());
+ * </pre>
+ *
+ * @param <T> the type of the class modeled by this Class object
+ * @param sourceClass The class of the source, or null.
+ * If the class is null, a vendor specific Source implementation will be returned.
+ * The following classes are supported at a minimum:
+ * <pre>
+ *   javax.xml.transform.dom.DOMSource - returns a DOMSource
+ *   javax.xml.transform.sax.SAXSource - returns a SAXSource
+ *   javax.xml.transform.stax.StAXSource - returns a StAXSource
+ *   javax.xml.transform.stream.StreamSource - returns a StreamSource
+ * </pre>
+ * @return a Source for reading the XML value.
+ * @throws SQLException if there is an error processing the XML value
+ *   or if this feature is not supported.
+ *   The getCause() method of the exception may provide a more detailed exception, for example,
+ *   if an XML parser exception occurs.
+ *   An exception is thrown if the state is not readable.
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @since 1.6
+ */
+<T extends Source> T getSource(Class<T> sourceClass) throws SQLException;

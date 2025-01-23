@@ -1,0 +1,13 @@
+// Reference-based node methods
+/**
+ * Produces a {@link Node} describing an array.
+ *
+ * <p>The node will hold a reference to the array and will not make a copy.
+ *
+ * @param <T> the type of elements held by the node
+ * @param array the array
+ * @return a node holding an array
+ */
+static <T> Node<T> node(T[] array) {
+    return new ArrayNode<>(array);
+}

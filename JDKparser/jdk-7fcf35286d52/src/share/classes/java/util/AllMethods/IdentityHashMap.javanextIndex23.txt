@@ -1,0 +1,10 @@
+protected int nextIndex() {
+    if (modCount != expectedModCount)
+        throw new ConcurrentModificationException();
+    if (!indexValid && !hasNext())
+        throw new NoSuchElementException();
+    indexValid = false;
+    lastReturnedIndex = index;
+    index += 2;
+    return lastReturnedIndex;
+}

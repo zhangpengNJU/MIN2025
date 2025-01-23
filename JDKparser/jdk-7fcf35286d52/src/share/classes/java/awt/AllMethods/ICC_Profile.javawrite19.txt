@@ -1,0 +1,18 @@
+/**
+ * Write this ICC_Profile to a file.
+ *
+ * @param fileName The file to write the profile data to.
+ *
+ * @exception IOException If the file cannot be opened for writing
+ * or an I/O error occurs while writing to the file.
+ */
+public void write(String fileName) throws IOException {
+    FileOutputStream outputFile;
+    byte[] profileData;
+    profileData = getData();
+    /* this will activate deferred
+                                    profiles if necessary */
+    outputFile = new FileOutputStream(fileName);
+    outputFile.write(profileData);
+    outputFile.close();
+}

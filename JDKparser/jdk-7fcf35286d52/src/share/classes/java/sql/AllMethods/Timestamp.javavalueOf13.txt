@@ -1,0 +1,17 @@
+/**
+ * Obtains an instance of {@code Timestamp} from a {@code LocalDateTime}
+ * object, with the same year, month, day of month, hours, minutes,
+ * seconds and nanos date-time value as the provided {@code LocalDateTime}.
+ * <p>
+ * The provided {@code LocalDateTime} is interpreted as the local
+ * date-time in the local time zone.
+ *
+ * @param dateTime a {@code LocalDateTime} to convert
+ * @return a {@code Timestamp} object
+ * @exception NullPointerException if {@code dateTime} is null.
+ * @since 1.8
+ */
+@SuppressWarnings("deprecation")
+public static Timestamp valueOf(LocalDateTime dateTime) {
+    return new Timestamp(dateTime.getYear() - 1900, dateTime.getMonthValue() - 1, dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.getNano());
+}

@@ -1,0 +1,11 @@
+void internArguments() {
+    @SuppressWarnings("LocalVariableHidesMemberVariable")
+    Object[] arguments = this.arguments;
+    for (int j = 0; j < arguments.length; j++) {
+        if (arguments[j] instanceof Name) {
+            Name n = (Name) arguments[j];
+            if (n.isParam() && n.index < INTERNED_ARGUMENT_LIMIT)
+                arguments[j] = internArgument(n);
+        }
+    }
+}

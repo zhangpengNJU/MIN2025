@@ -1,0 +1,3 @@
+public <U> CompletableFuture<Void> thenAcceptBothAsync(CompletionStage<? extends U> other, BiConsumer<? super T, ? super U> action, Executor executor) {
+    return biAcceptStage(screenExecutor(executor), other, action);
+}

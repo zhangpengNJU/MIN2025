@@ -1,0 +1,18 @@
+/**
+ * Returns the output stream connected to the normal input of the
+ * subprocess.  Output to the stream is piped into the standard
+ * input of the process represented by this {@code Process} object.
+ *
+ * <p>If the standard input of the subprocess has been redirected using
+ * {@link ProcessBuilder#redirectInput(Redirect)
+ * ProcessBuilder.redirectInput}
+ * then this method will return a
+ * <a href="ProcessBuilder.html#redirect-input">null output stream</a>.
+ *
+ * <p>Implementation note: It is a good idea for the returned
+ * output stream to be buffered.
+ *
+ * @return the output stream connected to the normal input of the
+ *         subprocess
+ */
+public abstract OutputStream getOutputStream();

@@ -1,0 +1,22 @@
+// -----------------------------------------------------------------------
+/**
+ * Checks if this range is equal to another range.
+ * <p>
+ * The comparison is based on the four values, minimum, largest minimum,
+ * smallest maximum and maximum.
+ * Only objects of type {@code ValueRange} are compared, other types return false.
+ *
+ * @param obj  the object to check, null returns false
+ * @return true if this is equal to the other range
+ */
+@Override
+public boolean equals(Object obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj instanceof ValueRange) {
+        ValueRange other = (ValueRange) obj;
+        return minSmallest == other.minSmallest && minLargest == other.minLargest && maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
+    }
+    return false;
+}

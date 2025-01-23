@@ -1,0 +1,38 @@
+/**
+ * Creates a Raster based on a BandedSampleModel with the
+ * specified data type, width, height, and number of bands.
+ *
+ * <p> The upper left corner of the Raster is given by the
+ * location argument.  If location is null, (0, 0) will be used.
+ * The dataType parameter should be one of the enumerated values
+ * defined in the DataBuffer class.
+ *
+ * <p> The only dataTypes supported currently are TYPE_BYTE, TYPE_USHORT,
+ * and TYPE_INT.
+ * @param dataType  the data type for storing samples
+ * @param w         the width in pixels of the image data
+ * @param h         the height in pixels of the image data
+ * @param bands     the number of bands
+ * @param location  the upper-left corner of the <code>Raster</code>
+ * @return a WritableRaster object with the specified data type,
+ *         width, height and number of bands.
+ * @throws RasterFormatException if <code>w</code> or <code>h</code>
+ *         is less than or equal to zero, or computing either
+ *         <code>location.x + w</code> or
+ *         <code>location.y + h</code> results in integer
+ *         overflow
+ * @throws ArrayIndexOutOfBoundsException if <code>bands</code>
+ *         is less than 1
+ */
+public static WritableRaster createBandedRaster(int dataType, int w, int h, int bands, Point location) {
+    if (bands < 1) {
+        throw new ArrayIndexOutOfBoundsException("Number of bands (" + bands + ") must" + " be greater than 0");
+    }
+    int[] bankIndices = new int[bands];
+    int[] bandOffsets = new int[bands];
+    for (int i = 0; i < bands; i++) {
+        bankIndices[i] = i;
+        bandOffsets[i] = 0;
+    }
+    return createBandedRaster(dataType, w, h, w, bankIndices, bandOffsets, location);
+}

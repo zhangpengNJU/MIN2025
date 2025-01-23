@@ -1,0 +1,27 @@
+/**
+ * Returns the distance from a point to a line segment.
+ * The distance measured is the distance between the specified
+ * point and the closest point between the specified end points.
+ * If the specified point intersects the line segment in between the
+ * end points, this method returns 0.0.
+ *
+ * @param x1 the X coordinate of the start point of the
+ *           specified line segment
+ * @param y1 the Y coordinate of the start point of the
+ *           specified line segment
+ * @param x2 the X coordinate of the end point of the
+ *           specified line segment
+ * @param y2 the Y coordinate of the end point of the
+ *           specified line segment
+ * @param px the X coordinate of the specified point being
+ *           measured against the specified line segment
+ * @param py the Y coordinate of the specified point being
+ *           measured against the specified line segment
+ * @return a double value that is the distance from the specified point
+ *                          to the specified line segment.
+ * @see #ptLineDist(double, double, double, double, double, double)
+ * @since 1.2
+ */
+public static double ptSegDist(double x1, double y1, double x2, double y2, double px, double py) {
+    return Math.sqrt(ptSegDistSq(x1, y1, x2, y2, px, py));
+}

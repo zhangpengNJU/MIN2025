@@ -1,0 +1,25 @@
+/**
+ *  Notify the DropTarget that it has been disassociated from a Component
+ *
+ * *********************************************************************
+ *  This method is usually called from java.awt.Component.removeNotify() of
+ *  the Component associated with this DropTarget to notify the DropTarget
+ *  that a ComponentPeer has been disassociated with that Component.
+ *
+ *  Calling this method, other than to notify this DropTarget of the
+ *  disassociation of the ComponentPeer from the Component may result in
+ *  a malfunction of the DnD system.
+ * *********************************************************************
+ *  <P>
+ *  @param peer The Peer of the Component we are being disassociated from!
+ */
+public void removeNotify(ComponentPeer peer) {
+    if (nativePeer != null)
+        ((DropTargetPeer) nativePeer).removeDropTarget(this);
+    componentPeer = nativePeer = null;
+    synchronized (this) {
+        if (isDraggingInside) {
+            dragExit(new DropTargetEvent(getDropTargetContext()));
+        }
+    }
+}

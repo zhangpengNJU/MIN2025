@@ -1,0 +1,13 @@
+// / --------
+// / Cache management.
+// / --------
+// Statics do not need synchronization.
+/**
+ * Load the cache entry at the given (hashed) location.
+ */
+static Entry<?> loadFromCache(Entry<?>[] cache, int i) {
+    // non-racing cache.length : constant
+    // racing cache[i & (mask)] : null <=> Entry
+    return cache[i & (cache.length - 1)];
+// invariant:  returned value is null or well-constructed (ready to match)
+}

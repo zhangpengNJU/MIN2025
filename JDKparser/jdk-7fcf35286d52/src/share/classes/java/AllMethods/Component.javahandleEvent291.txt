@@ -1,0 +1,34 @@
+/**
+ * @deprecated As of JDK version 1.1
+ * replaced by processEvent(AWTEvent).
+ */
+@Deprecated
+public boolean handleEvent(Event evt) {
+    switch(evt.id) {
+        case Event.MOUSE_ENTER:
+            return mouseEnter(evt, evt.x, evt.y);
+        case Event.MOUSE_EXIT:
+            return mouseExit(evt, evt.x, evt.y);
+        case Event.MOUSE_MOVE:
+            return mouseMove(evt, evt.x, evt.y);
+        case Event.MOUSE_DOWN:
+            return mouseDown(evt, evt.x, evt.y);
+        case Event.MOUSE_DRAG:
+            return mouseDrag(evt, evt.x, evt.y);
+        case Event.MOUSE_UP:
+            return mouseUp(evt, evt.x, evt.y);
+        case Event.KEY_PRESS:
+        case Event.KEY_ACTION:
+            return keyDown(evt, evt.key);
+        case Event.KEY_RELEASE:
+        case Event.KEY_ACTION_RELEASE:
+            return keyUp(evt, evt.key);
+        case Event.ACTION_EVENT:
+            return action(evt, evt.arg);
+        case Event.GOT_FOCUS:
+            return gotFocus(evt, evt.arg);
+        case Event.LOST_FOCUS:
+            return lostFocus(evt, evt.arg);
+    }
+    return false;
+}

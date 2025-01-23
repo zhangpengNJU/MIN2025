@@ -1,0 +1,29 @@
+/**
+ * Returns the coordinates and type of the current path segment in
+ * the iteration.
+ * The return value is the path segment type:
+ * SEG_MOVETO, SEG_LINETO, or SEG_CLOSE.
+ * A <code>float</code> array of length 2 must be passed in and
+ * can be used to store the coordinates of the point(s).
+ * Each point is stored as a pair of <code>float</code> x,&nbsp;y
+ * coordinates.  SEG_MOVETO and SEG_LINETO types return one
+ * point, and SEG_CLOSE does not return any points.
+ * @param coords a <code>float</code> array that specifies the
+ * coordinates of the point(s)
+ * @return an integer representing the type and coordinates of the
+ *              current path segment.
+ * @see PathIterator#SEG_MOVETO
+ * @see PathIterator#SEG_LINETO
+ * @see PathIterator#SEG_CLOSE
+ */
+public int currentSegment(float[] coords) {
+    if (index >= poly.npoints) {
+        return SEG_CLOSE;
+    }
+    coords[0] = poly.xpoints[index];
+    coords[1] = poly.ypoints[index];
+    if (transform != null) {
+        transform.transform(coords, 0, coords, 0, 1);
+    }
+    return (index == 0 ? SEG_MOVETO : SEG_LINETO);
+}

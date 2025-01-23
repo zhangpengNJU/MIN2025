@@ -1,0 +1,33 @@
+private List<String> normalizeHeaders(String headers) {
+    List<String> l = new ArrayList<>();
+    StringBuilder b = new StringBuilder();
+    boolean capitalizeNext = true;
+    for (int i = 0; i < headers.length(); i++) {
+        char c = headers.charAt(i);
+        if (c >= 'a' && c <= 'z') {
+            if (capitalizeNext) {
+                c += 'A' - 'a';
+                capitalizeNext = false;
+            }
+            b.append(c);
+        } else if (c == ' ' || c == '\t') {
+            throw new IllegalArgumentException("White space not allowed in headers: \"" + headers + "\"");
+        } else if (c == '-') {
+            capitalizeNext = true;
+            b.append(c);
+        } else if (c == ',') {
+            String s = b.toString();
+            if (s.length() > 0)
+                l.add(s);
+            b = new StringBuilder();
+            capitalizeNext = true;
+        } else {
+            capitalizeNext = false;
+            b.append(c);
+        }
+    }
+    String s = b.toString();
+    if (s.length() > 0)
+        l.add(s);
+    return l;
+}

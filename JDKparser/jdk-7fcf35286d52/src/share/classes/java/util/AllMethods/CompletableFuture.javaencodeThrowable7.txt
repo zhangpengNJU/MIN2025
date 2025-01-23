@@ -1,0 +1,7 @@
+/**
+ * Returns the encoding of the given (non-null) exception as a
+ * wrapped CompletionException unless it is one already.
+ */
+static AltResult encodeThrowable(Throwable x) {
+    return new AltResult((x instanceof CompletionException) ? x : new CompletionException(x));
+}

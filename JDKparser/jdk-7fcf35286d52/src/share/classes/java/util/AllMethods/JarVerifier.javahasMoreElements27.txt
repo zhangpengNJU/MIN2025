@@ -1,0 +1,23 @@
+public boolean hasMoreElements() {
+    if (entry != null) {
+        return true;
+    }
+    while (enum_.hasMoreElements()) {
+        ZipEntry ze = enum_.nextElement();
+        if (JarVerifier.isSigningRelated(ze.getName())) {
+            continue;
+        }
+        entry = jar.newEntry(ze);
+        return true;
+    }
+    if (signers == null) {
+        signers = Collections.enumeration(map.keySet());
+    }
+    while (signers.hasMoreElements()) {
+        String name = signers.nextElement();
+        entry = jar.newEntry(new ZipEntry(name));
+        return true;
+    }
+    // Any map entries left?
+    return false;
+}

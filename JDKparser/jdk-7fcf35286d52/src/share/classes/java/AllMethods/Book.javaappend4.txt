@@ -1,0 +1,12 @@
+/**
+ * Appends a single page to the end of this <code>Book</code>.
+ * @param painter   the <code>Printable</code> instance that
+ *                  renders the page
+ * @param page      the size and orientation of the page
+ * @throws NullPointerException
+ *          If the <code>painter</code> or <code>page</code>
+ *          argument is <code>null</code>
+ */
+public void append(Printable painter, PageFormat page) {
+    mPages.addElement(new BookPage(painter, page));
+}

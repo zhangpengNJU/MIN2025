@@ -1,0 +1,15 @@
+/**
+ * Returns a BigInteger whose value is {@code (this & ~val)}.  This
+ * method, which is equivalent to {@code and(val.not())}, is provided as
+ * a convenience for masking operations.  (This method returns a negative
+ * BigInteger if and only if {@code this} is negative and {@code val} is
+ * positive.)
+ *
+ * @param val value to be complemented and AND'ed with this BigInteger.
+ * @return {@code this & ~val}
+ */
+public BigInteger andNot(BigInteger val) {
+    int[] result = new int[Math.max(intLength(), val.intLength())];
+    for (int i = 0; i < result.length; i++) result[i] = (getInt(result.length - i - 1) & ~val.getInt(result.length - i - 1));
+    return valueOf(result);
+}

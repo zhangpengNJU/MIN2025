@@ -1,0 +1,6 @@
+private FontRenderContext myFRC(Graphics context) {
+    if (context instanceof Graphics2D) {
+        return ((Graphics2D) context).getFontRenderContext();
+    }
+    return DEFAULT_FRC;
+}

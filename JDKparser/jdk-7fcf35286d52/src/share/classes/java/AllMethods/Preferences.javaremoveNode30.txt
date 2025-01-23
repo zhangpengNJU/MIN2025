@@ -1,0 +1,31 @@
+/**
+ * Removes this preference node and all of its descendants, invalidating
+ * any preferences contained in the removed nodes.  Once a node has been
+ * removed, attempting any method other than {@link #name()},
+ * {@link #absolutePath()}, {@link #isUserNode()}, {@link #flush()} or
+ * {@link #node(String) nodeExists("")} on the corresponding
+ * <tt>Preferences</tt> instance will fail with an
+ * <tt>IllegalStateException</tt>.  (The methods defined on {@link Object}
+ * can still be invoked on a node after it has been removed; they will not
+ * throw <tt>IllegalStateException</tt>.)
+ *
+ * <p>The removal is not guaranteed to be persistent until the
+ * <tt>flush</tt> method is called on this node (or an ancestor).
+ *
+ * <p>If this implementation supports <i>stored defaults</i>, removing a
+ * node exposes any stored defaults at or below this node.  Thus, a
+ * subsequent call to <tt>nodeExists</tt> on this node's path name may
+ * return <tt>true</tt>, and a subsequent call to <tt>node</tt> on this
+ * path name may return a (different) <tt>Preferences</tt> instance
+ * representing a non-empty collection of preferences and/or children.
+ *
+ * @throws BackingStoreException if this operation cannot be completed
+ *         due to a failure in the backing store, or inability to
+ *         communicate with it.
+ * @throws IllegalStateException if this node (or an ancestor) has already
+ *         been removed with the {@link #removeNode()} method.
+ * @throws UnsupportedOperationException if this method is invoked on
+ *         the root node.
+ * @see #flush()
+ */
+public abstract void removeNode() throws BackingStoreException;

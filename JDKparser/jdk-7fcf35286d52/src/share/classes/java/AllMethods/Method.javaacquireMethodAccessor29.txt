@@ -1,0 +1,19 @@
+// NOTE that there is no synchronization used here. It is correct
+// (though not efficient) to generate more than one MethodAccessor
+// for a given Method. However, avoiding synchronization will
+// probably make the implementation more scalable.
+private MethodAccessor acquireMethodAccessor() {
+    // First check to see if one has been created yet, and take it
+    // if so
+    MethodAccessor tmp = null;
+    if (root != null)
+        tmp = root.getMethodAccessor();
+    if (tmp != null) {
+        methodAccessor = tmp;
+    } else {
+        // Otherwise fabricate one and propagate it up to the root
+        tmp = reflectionFactory.newMethodAccessor(this);
+        setMethodAccessor(tmp);
+    }
+    return tmp;
+}

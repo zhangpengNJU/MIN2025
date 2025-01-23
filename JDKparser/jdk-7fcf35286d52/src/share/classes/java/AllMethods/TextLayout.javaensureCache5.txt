@@ -1,0 +1,10 @@
+/*
+     * A utility to rebuild the ascent/descent/leading/advance cache.
+     * You'll need to call this if you clone and mutate (like justification,
+     * editing methods do)
+     */
+private void ensureCache() {
+    if (!cacheIsValid) {
+        buildCache();
+    }
+}

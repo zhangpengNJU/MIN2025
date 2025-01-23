@@ -1,0 +1,8 @@
+/**
+ * Determines if the specified year (normalized) is the Gregorian
+ * cutover year. This object must have been normalized.
+ */
+private boolean isCutoverYear(int normalizedYear) {
+    int cutoverYear = (calsys == gcal) ? gregorianCutoverYear : gregorianCutoverYearJulian;
+    return normalizedYear == cutoverYear;
+}

@@ -1,0 +1,15 @@
+// views
+/**
+ * Returns a plain {@link Lock} view of this StampedLock in which
+ * the {@link Lock#lock} method is mapped to {@link #readLock},
+ * and similarly for other methods. The returned Lock does not
+ * support a {@link Condition}; method {@link
+ * Lock#newCondition()} throws {@code
+ * UnsupportedOperationException}.
+ *
+ * @return the lock
+ */
+public Lock asReadLock() {
+    ReadLockView v;
+    return ((v = readLockView) != null ? v : (readLockView = new ReadLockView()));
+}

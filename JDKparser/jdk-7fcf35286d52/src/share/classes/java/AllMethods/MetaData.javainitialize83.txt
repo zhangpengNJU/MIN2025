@@ -1,0 +1,9 @@
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    super.initialize(type, oldInstance, newInstance, out);
+    if (getHashtable(newInstance).isEmpty()) {
+        for (Map.Entry<?, ?> entry : getHashtable(oldInstance).entrySet()) {
+            Object[] args = { entry.getKey(), entry.getValue() };
+            invokeStatement(oldInstance, "addLayoutComponent", args, out);
+        }
+    }
+}

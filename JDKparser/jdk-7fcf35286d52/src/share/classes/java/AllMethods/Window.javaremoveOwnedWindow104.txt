@@ -1,0 +1,7 @@
+void removeOwnedWindow(WeakReference<Window> weakWindow) {
+    if (weakWindow != null) {
+        // synchronized block not required since removeElement is
+        // already synchronized
+        ownedWindowList.removeElement(weakWindow);
+    }
+}

@@ -1,0 +1,10 @@
+public E take() throws InterruptedException {
+    final ReentrantLock lock = this.lock;
+    lock.lockInterruptibly();
+    try {
+        while (count == 0) notEmpty.await();
+        return dequeue();
+    } finally {
+        lock.unlock();
+    }
+}

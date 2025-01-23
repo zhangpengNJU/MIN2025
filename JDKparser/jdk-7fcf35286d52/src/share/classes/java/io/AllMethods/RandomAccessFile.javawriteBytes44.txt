@@ -1,0 +1,16 @@
+/**
+ * Writes the string to the file as a sequence of bytes. Each
+ * character in the string is written out, in sequence, by discarding
+ * its high eight bits. The write starts at the current position of
+ * the file pointer.
+ *
+ * @param      s   a string of bytes to be written.
+ * @exception  IOException  if an I/O error occurs.
+ */
+@SuppressWarnings("deprecation")
+public final void writeBytes(String s) throws IOException {
+    int len = s.length();
+    byte[] b = new byte[len];
+    s.getBytes(0, len, b, 0);
+    writeBytes(b, 0, len);
+}

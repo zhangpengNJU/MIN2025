@@ -1,0 +1,48 @@
+/**
+ * Adds a <code>TrayIcon</code> to the <code>SystemTray</code>.
+ * The tray icon becomes visible in the system tray once it is
+ * added.  The order in which icons are displayed in a tray is not
+ * specified - it is platform and implementation-dependent.
+ *
+ * <p> All icons added by the application are automatically
+ * removed from the <code>SystemTray</code> upon application exit
+ * and also when the desktop system tray becomes unavailable.
+ *
+ * @param trayIcon the <code>TrayIcon</code> to be added
+ * @throws NullPointerException if <code>trayIcon</code> is
+ * <code>null</code>
+ * @throws IllegalArgumentException if the same instance of
+ * a <code>TrayIcon</code> is added more than once
+ * @throws AWTException if the desktop system tray is missing
+ * @see #remove(TrayIcon)
+ * @see #getSystemTray
+ * @see TrayIcon
+ * @see java.awt.Image
+ */
+public void add(TrayIcon trayIcon) throws AWTException {
+    if (trayIcon == null) {
+        throw new NullPointerException("adding null TrayIcon");
+    }
+    TrayIcon[] oldArray = null, newArray = null;
+    Vector<TrayIcon> icons = null;
+    synchronized (this) {
+        oldArray = systemTray.getTrayIcons();
+        icons = (Vector<TrayIcon>) AppContext.getAppContext().get(TrayIcon.class);
+        if (icons == null) {
+            icons = new Vector<TrayIcon>(3);
+            AppContext.getAppContext().put(TrayIcon.class, icons);
+        } else if (icons.contains(trayIcon)) {
+            throw new IllegalArgumentException("adding TrayIcon that is already added");
+        }
+        icons.add(trayIcon);
+        newArray = systemTray.getTrayIcons();
+        trayIcon.setID(++currentIconID);
+    }
+    try {
+        trayIcon.addNotify();
+    } catch (AWTException e) {
+        icons.remove(trayIcon);
+        throw e;
+    }
+    firePropertyChange("trayIcons", oldArray, newArray);
+}

@@ -1,0 +1,41 @@
+/**
+ * Constructs a relative path between this path and a given path.
+ *
+ * <p> Relativization is the inverse of {@link #resolve(Path) resolution}.
+ * This method attempts to construct a {@link #isAbsolute relative} path
+ * that when {@link #resolve(Path) resolved} against this path, yields a
+ * path that locates the same file as the given path. For example, on UNIX,
+ * if this path is {@code "/a/b"} and the given path is {@code "/a/b/c/d"}
+ * then the resulting relative path would be {@code "c/d"}. Where this
+ * path and the given path do not have a {@link #getRoot root} component,
+ * then a relative path can be constructed. A relative path cannot be
+ * constructed if only one of the paths have a root component. Where both
+ * paths have a root component then it is implementation dependent if a
+ * relative path can be constructed. If this path and the given path are
+ * {@link #equals equal} then an <i>empty path</i> is returned.
+ *
+ * <p> For any two {@link #normalize normalized} paths <i>p</i> and
+ * <i>q</i>, where <i>q</i> does not have a root component,
+ * <blockquote>
+ *   <i>p</i><tt>.relativize(</tt><i>p</i><tt>.resolve(</tt><i>q</i><tt>)).equals(</tt><i>q</i><tt>)</tt>
+ * </blockquote>
+ *
+ * <p> When symbolic links are supported, then whether the resulting path,
+ * when resolved against this path, yields a path that can be used to locate
+ * the {@link Files#isSameFile same} file as {@code other} is implementation
+ * dependent. For example, if this path is  {@code "/a/b"} and the given
+ * path is {@code "/a/x"} then the resulting relative path may be {@code
+ * "../x"}. If {@code "b"} is a symbolic link then is implementation
+ * dependent if {@code "a/b/../x"} would locate the same file as {@code "/a/x"}.
+ *
+ * @param   other
+ *          the path to relativize against this path
+ *
+ * @return  the resulting relative path, or an empty path if both paths are
+ *          equal
+ *
+ * @throws  IllegalArgumentException
+ *          if {@code other} is not a {@code Path} that can be relativized
+ *          against this path
+ */
+Path relativize(Path other);

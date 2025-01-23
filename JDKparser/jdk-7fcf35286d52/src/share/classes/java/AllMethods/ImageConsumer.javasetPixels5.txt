@@ -1,0 +1,24 @@
+/**
+ * The pixels of the image are delivered using one or more calls
+ * to the setPixels method.  Each call specifies the location and
+ * size of the rectangle of source pixels that are contained in
+ * the array of pixels.  The specified ColorModel object should
+ * be used to convert the pixels into their corresponding color
+ * and alpha components.  Pixel (m,n) is stored in the pixels array
+ * at index (n * scansize + m + off).  The pixels delivered using
+ * this method are all stored as ints.
+ * this method are all stored as ints.
+ * @param x the X coordinate of the upper-left corner of the
+ *        area of pixels to be set
+ * @param y the Y coordinate of the upper-left corner of the
+ *        area of pixels to be set
+ * @param w the width of the area of pixels
+ * @param h the height of the area of pixels
+ * @param model the specified <code>ColorModel</code>
+ * @param pixels the array of pixels
+ * @param off the offset into the <code>pixels</code> array
+ * @param scansize the distance from one row of pixels to the next in
+ * the <code>pixels</code> array
+ * @see ColorModel
+ */
+void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize);

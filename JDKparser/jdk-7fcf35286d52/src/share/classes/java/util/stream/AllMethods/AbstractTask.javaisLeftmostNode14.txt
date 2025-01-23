@@ -1,0 +1,18 @@
+/**
+ * Returns whether this node is a "leftmost" node -- whether the path from
+ * the root to this node involves only traversing leftmost child links.  For
+ * a leaf node, this means it is the first leaf node in the encounter order.
+ *
+ * @return {@code true} if this node is a "leftmost" node
+ */
+protected boolean isLeftmostNode() {
+    @SuppressWarnings("unchecked")
+    K node = (K) this;
+    while (node != null) {
+        K parent = node.getParent();
+        if (parent != null && parent.leftChild != node)
+            return false;
+        node = parent;
+    }
+    return true;
+}

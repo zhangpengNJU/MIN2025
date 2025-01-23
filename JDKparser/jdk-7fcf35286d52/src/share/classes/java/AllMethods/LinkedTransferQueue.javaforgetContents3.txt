@@ -1,0 +1,13 @@
+/**
+ * Sets item to self and waiter to null, to avoid garbage
+ * retention after matching or cancelling. Uses relaxed writes
+ * because order is already constrained in the only calling
+ * contexts: item is forgotten only after volatile/atomic
+ * mechanics that extract items.  Similarly, clearing waiter
+ * follows either CAS or return from park (if ever parked;
+ * else we don't care).
+ */
+final void forgetContents() {
+    UNSAFE.putObject(this, itemOffset, this);
+    UNSAFE.putObject(this, waiterOffset, null);
+}

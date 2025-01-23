@@ -1,0 +1,19 @@
+/**
+ * Compares this {@code PKCS12Attribute} and a specified object for
+ * equality.
+ *
+ * @param obj the comparison object
+ *
+ * @return true if {@code obj} is a {@code PKCS12Attribute} and
+ * their DER encodings are equal.
+ */
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (!(obj instanceof PKCS12Attribute)) {
+        return false;
+    }
+    return Arrays.equals(encoded, ((PKCS12Attribute) obj).getEncoded());
+}

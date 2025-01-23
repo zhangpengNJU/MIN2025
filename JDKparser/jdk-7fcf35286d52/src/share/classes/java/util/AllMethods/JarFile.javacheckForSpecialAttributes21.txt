@@ -1,0 +1,17 @@
+/**
+ * On first invocation, check if the JAR file has the Class-Path
+ * attribute. A no-op on subsequent calls.
+ */
+private void checkForSpecialAttributes() throws IOException {
+    if (hasCheckedSpecialAttributes)
+        return;
+    if (!isKnownNotToHaveSpecialAttributes()) {
+        JarEntry manEntry = getManEntry();
+        if (manEntry != null) {
+            byte[] b = getBytes(manEntry);
+            if (match(CLASSPATH_CHARS, b, CLASSPATH_LASTOCC, CLASSPATH_OPTOSFT))
+                hasClassPathAttribute = true;
+        }
+    }
+    hasCheckedSpecialAttributes = true;
+}

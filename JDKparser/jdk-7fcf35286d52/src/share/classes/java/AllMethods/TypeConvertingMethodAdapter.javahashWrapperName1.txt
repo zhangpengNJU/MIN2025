@@ -1,0 +1,11 @@
+/**
+ * Class name to Wrapper hash, derived from Wrapper.hashWrap()
+ * @param xn
+ * @return The hash code 0-15
+ */
+private static int hashWrapperName(String xn) {
+    if (xn.length() < 3) {
+        return 0;
+    }
+    return (3 * xn.charAt(1) + xn.charAt(2)) % 16;
+}

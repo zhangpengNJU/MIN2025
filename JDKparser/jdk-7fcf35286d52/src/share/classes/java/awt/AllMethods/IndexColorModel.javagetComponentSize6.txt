@@ -1,0 +1,19 @@
+/**
+ * Returns an array of the number of bits for each color/alpha component.
+ * The array contains the color components in the order red, green,
+ * blue, followed by the alpha component, if present.
+ * @return an array containing the number of bits of each color
+ *         and alpha component of this <code>IndexColorModel</code>
+ */
+public int[] getComponentSize() {
+    if (nBits == null) {
+        if (supportsAlpha) {
+            nBits = new int[4];
+            nBits[3] = 8;
+        } else {
+            nBits = new int[3];
+        }
+        nBits[0] = nBits[1] = nBits[2] = 8;
+    }
+    return nBits.clone();
+}

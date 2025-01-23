@@ -1,0 +1,57 @@
+/**
+ * Returns the value of the field represented by this {@code Field}, on
+ * the specified object. The value is automatically wrapped in an
+ * object if it has a primitive type.
+ *
+ * <p>The underlying field's value is obtained as follows:
+ *
+ * <p>If the underlying field is a static field, the {@code obj} argument
+ * is ignored; it may be null.
+ *
+ * <p>Otherwise, the underlying field is an instance field.  If the
+ * specified {@code obj} argument is null, the method throws a
+ * {@code NullPointerException}. If the specified object is not an
+ * instance of the class or interface declaring the underlying
+ * field, the method throws an {@code IllegalArgumentException}.
+ *
+ * <p>If this {@code Field} object is enforcing Java language access control, and
+ * the underlying field is inaccessible, the method throws an
+ * {@code IllegalAccessException}.
+ * If the underlying field is static, the class that declared the
+ * field is initialized if it has not already been initialized.
+ *
+ * <p>Otherwise, the value is retrieved from the underlying instance
+ * or static field.  If the field has a primitive type, the value
+ * is wrapped in an object before being returned, otherwise it is
+ * returned as is.
+ *
+ * <p>If the field is hidden in the type of {@code obj},
+ * the field's value is obtained according to the preceding rules.
+ *
+ * @param obj object from which the represented field's value is
+ * to be extracted
+ * @return the value of the represented field in object
+ * {@code obj}; primitive values are wrapped in an appropriate
+ * object before being returned
+ *
+ * @exception IllegalAccessException    if this {@code Field} object
+ *              is enforcing Java language access control and the underlying
+ *              field is inaccessible.
+ * @exception IllegalArgumentException  if the specified object is not an
+ *              instance of the class or interface declaring the underlying
+ *              field (or a subclass or implementor thereof).
+ * @exception NullPointerException      if the specified object is null
+ *              and the field is an instance field.
+ * @exception ExceptionInInitializerError if the initialization provoked
+ *              by this method fails.
+ */
+@CallerSensitive
+public Object get(Object obj) throws IllegalArgumentException, IllegalAccessException {
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class<?> caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, obj, modifiers);
+        }
+    }
+    return getFieldAccessor(obj).get(obj);
+}

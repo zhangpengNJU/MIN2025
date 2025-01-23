@@ -1,0 +1,26 @@
+/**
+ * Converts the character (Unicode code point) argument to titlecase using case mapping
+ * information from the UnicodeData file. If a character has no
+ * explicit titlecase mapping and is not itself a titlecase char
+ * according to UnicodeData, then the uppercase mapping is
+ * returned as an equivalent titlecase mapping. If the
+ * character argument is already a titlecase
+ * character, the same character value will be
+ * returned.
+ *
+ * <p>Note that
+ * {@code Character.isTitleCase(Character.toTitleCase(codePoint))}
+ * does not always return {@code true} for some ranges of
+ * characters.
+ *
+ * @param   codePoint   the character (Unicode code point) to be converted.
+ * @return  the titlecase equivalent of the character, if any;
+ *          otherwise, the character itself.
+ * @see     Character#isTitleCase(int)
+ * @see     Character#toLowerCase(int)
+ * @see     Character#toUpperCase(int)
+ * @since   1.5
+ */
+public static int toTitleCase(int codePoint) {
+    return CharacterData.of(codePoint).toTitleCase(codePoint);
+}

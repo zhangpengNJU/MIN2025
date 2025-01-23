@@ -1,0 +1,40 @@
+/**
+ * Convert a hit to a point in standard coordinates.  The point is
+ * on the baseline of the character at the leading or trailing
+ * edge of the character, as appropriate.  If the path is
+ * broken at the side of the character represented by the hit, the
+ * point will be adjacent to the character.
+ * @param hit the hit to check.  This must be a valid hit on
+ * the TextLayout.
+ * @param point the returned point. The point is in standard
+ *     coordinates.
+ * @throws IllegalArgumentException if the hit is not valid for the
+ * TextLayout.
+ * @throws NullPointerException if hit or point is null.
+ * @since 1.6
+ */
+public void hitToPoint(TextHitInfo hit, Point2D point) {
+    if (hit == null || point == null) {
+        throw new NullPointerException((hit == null ? "hit" : "point") + " can't be null");
+    }
+    ensureCache();
+    checkTextHit(hit);
+    float adv = 0;
+    float off = 0;
+    int ix = hit.getCharIndex();
+    boolean leading = hit.isLeadingEdge();
+    boolean ltr;
+    if (ix == -1 || ix == textLine.characterCount()) {
+        ltr = textLine.isDirectionLTR();
+        adv = (ltr == (ix == -1)) ? 0 : lineMetrics.advance;
+    } else {
+        ltr = textLine.isCharLTR(ix);
+        adv = textLine.getCharLinePosition(ix, leading);
+        off = textLine.getCharYPosition(ix);
+    }
+    point.setLocation(adv, off);
+    LayoutPath lp = textLine.getLayoutPath();
+    if (lp != null) {
+        lp.pathToPoint(point, ltr != leading, point);
+    }
+}

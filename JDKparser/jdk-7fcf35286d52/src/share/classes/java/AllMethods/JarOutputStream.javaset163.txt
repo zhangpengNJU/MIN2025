@@ -1,0 +1,8 @@
+/*
+     * Sets 16-bit value at specified offset. The bytes are assumed to
+     * be in Intel (little-endian) byte order.
+     */
+private static void set16(byte[] b, int off, int value) {
+    b[off + 0] = (byte) value;
+    b[off + 1] = (byte) (value >> 8);
+}

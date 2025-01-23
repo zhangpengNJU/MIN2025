@@ -1,0 +1,19 @@
+/**
+ * Decode the name constraints and clone them if not null.
+ */
+private void setNameConstraints(byte[] bytes) {
+    if (bytes == null) {
+        ncBytes = null;
+        nc = null;
+    } else {
+        ncBytes = bytes.clone();
+        // validate DER encoding
+        try {
+            nc = new NameConstraintsExtension(Boolean.FALSE, bytes);
+        } catch (IOException ioe) {
+            IllegalArgumentException iae = new IllegalArgumentException(ioe.getMessage());
+            iae.initCause(ioe);
+            throw iae;
+        }
+    }
+}

@@ -1,0 +1,10 @@
+// No need to synchronize; caller should sync on object as required
+public Permission nextElement() {
+    // hasMoreElements will update permset to the next permset
+    // with something in it...
+    if (hasMoreElements()) {
+        return permset.nextElement();
+    } else {
+        throw new NoSuchElementException("PermissionsEnumerator");
+    }
+}

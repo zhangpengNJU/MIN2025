@@ -1,0 +1,12 @@
+/**
+ * Sets the method that should be used to read an indexed property value.
+ *
+ * @param readMethod The new indexed read method.
+ * @throws IntrospectionException if an exception occurs during
+ * introspection.
+ */
+public synchronized void setIndexedReadMethod(Method readMethod) throws IntrospectionException {
+    // the indexed property type is set by the reader.
+    setIndexedPropertyType(findIndexedPropertyType(readMethod, this.indexedWriteMethodRef.get()));
+    setIndexedReadMethod0(readMethod);
+}

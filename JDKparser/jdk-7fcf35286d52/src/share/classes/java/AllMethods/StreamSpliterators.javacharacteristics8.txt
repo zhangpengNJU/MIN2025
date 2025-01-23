@@ -1,0 +1,17 @@
+@Override
+public final int characteristics() {
+    init();
+    // Get the characteristics from the pipeline
+    int c = StreamOpFlag.toCharacteristics(StreamOpFlag.toStreamFlags(ph.getStreamAndOpFlags()));
+    // Mask off the size and uniform characteristics and replace with
+    // those of the spliterator
+    // Note that a non-uniform spliterator can change from something
+    // with an exact size to an estimate for a sub-split, for example
+    // with HashSet where the size is known at the top level spliterator
+    // but for sub-splits only an estimate is known
+    if ((c & Spliterator.SIZED) != 0) {
+        c &= ~(Spliterator.SIZED | Spliterator.SUBSIZED);
+        c |= (spliterator.characteristics() & (Spliterator.SIZED | Spliterator.SUBSIZED));
+    }
+    return c;
+}

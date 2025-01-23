@@ -1,0 +1,14 @@
+/**
+ * {@inheritDoc}
+ * @since 1.2
+ */
+public Rectangle2D createIntersection(Rectangle2D r) {
+    Rectangle2D dest;
+    if (r instanceof Float) {
+        dest = new Rectangle2D.Float();
+    } else {
+        dest = new Rectangle2D.Double();
+    }
+    Rectangle2D.intersect(this, r, dest);
+    return dest;
+}

@@ -1,0 +1,7 @@
+/**
+ * Generate customized bytecode for a given LambdaForm.
+ */
+static MemberName generateCustomizedCode(LambdaForm form, MethodType invokerType) {
+    InvokerBytecodeGenerator g = new InvokerBytecodeGenerator("MH", form, invokerType);
+    return g.loadMethod(g.generateCustomizedCodeBytes());
+}

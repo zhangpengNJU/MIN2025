@@ -1,0 +1,21 @@
+/**
+ * Returns a method handle which always delegates either to the target or the fallback.
+ * The method handle will delegate to the target exactly as long as the switch point is valid.
+ * After that, it will permanently delegate to the fallback.
+ * <p>
+ * The target and fallback must be of exactly the same method type,
+ * and the resulting combined method handle will also be of this type.
+ *
+ * @param target the method handle selected by the switch point as long as it is valid
+ * @param fallback the method handle selected by the switch point after it is invalidated
+ * @return a combined method handle which always calls either the target or fallback
+ * @throws NullPointerException if either argument is null
+ * @throws IllegalArgumentException if the two method types do not match
+ * @see MethodHandles#guardWithTest
+ */
+public MethodHandle guardWithTest(MethodHandle target, MethodHandle fallback) {
+    if (mcs.getTarget() == K_false)
+        // already invalid
+        return fallback;
+    return MethodHandles.guardWithTest(mcsInvoker, target, fallback);
+}

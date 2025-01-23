@@ -1,0 +1,23 @@
+/**
+ * Returns 0 if the arguments are identical and {@code
+ * c.compare(a, b)} otherwise.
+ * Consequently, if both arguments are {@code null} 0
+ * is returned.
+ *
+ * <p>Note that if one of the arguments is {@code null}, a {@code
+ * NullPointerException} may or may not be thrown depending on
+ * what ordering policy, if any, the {@link Comparator Comparator}
+ * chooses to have for {@code null} values.
+ *
+ * @param <T> the type of the objects being compared
+ * @param a an object
+ * @param b an object to be compared with {@code a}
+ * @param c the {@code Comparator} to compare the first two arguments
+ * @return 0 if the arguments are identical and {@code
+ * c.compare(a, b)} otherwise.
+ * @see Comparable
+ * @see Comparator
+ */
+public static <T> int compare(T a, T b, Comparator<? super T> c) {
+    return (a == b) ? 0 : c.compare(a, b);
+}

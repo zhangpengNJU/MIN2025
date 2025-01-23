@@ -1,0 +1,9 @@
+/*non-public*/
+boolean viewAsTypeChecks(MethodType newType, boolean strict) {
+    if (strict) {
+        assert (type().isViewableAs(newType, true)) : Arrays.asList(this, newType);
+    } else {
+        assert (type().basicType().isViewableAs(newType.basicType(), true)) : Arrays.asList(this, newType);
+    }
+    return true;
+}

@@ -1,0 +1,9 @@
+/**
+ * Returns a copy of the wrapped transform.
+ * @return a <code>AffineTransform</code> that is a copy of the wrapped
+ * transform of this <code>TransformAttribute</code>.
+ */
+public AffineTransform getTransform() {
+    AffineTransform at = transform;
+    return (at == null) ? new AffineTransform() : new AffineTransform(at);
+}

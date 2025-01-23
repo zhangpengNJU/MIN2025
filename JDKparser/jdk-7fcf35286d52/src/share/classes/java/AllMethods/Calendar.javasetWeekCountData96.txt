@@ -1,0 +1,19 @@
+/**
+ * Both firstDayOfWeek and minimalDaysInFirstWeek are locale-dependent.
+ * They are used to figure out the week count for a specific date for
+ * a given locale. These must be set when a Calendar is constructed.
+ * @param desiredLocale the given locale.
+ */
+private void setWeekCountData(Locale desiredLocale) {
+    /* try to get the Locale data from the cache */
+    int[] data = cachedLocaleData.get(desiredLocale);
+    if (data == null) {
+        /* cache miss */
+        data = new int[2];
+        data[0] = CalendarDataUtility.retrieveFirstDayOfWeek(desiredLocale);
+        data[1] = CalendarDataUtility.retrieveMinimalDaysInFirstWeek(desiredLocale);
+        cachedLocaleData.putIfAbsent(desiredLocale, data);
+    }
+    firstDayOfWeek = data[0];
+    minimalDaysInFirstWeek = data[1];
+}

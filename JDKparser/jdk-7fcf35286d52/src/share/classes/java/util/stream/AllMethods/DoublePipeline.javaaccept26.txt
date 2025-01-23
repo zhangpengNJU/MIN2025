@@ -1,0 +1,14 @@
+@Override
+public void accept(double t) {
+    try (DoubleStream result = mapper.apply(t)) {
+        if (result != null) {
+            if (!cancellationRequestedCalled) {
+                result.sequential().forEach(downstreamAsDouble);
+            } else {
+                Spliterator.OfDouble s = result.sequential().spliterator();
+                do {
+                } while (!downstream.cancellationRequested() && s.tryAdvance(downstreamAsDouble));
+            }
+        }
+    }
+}

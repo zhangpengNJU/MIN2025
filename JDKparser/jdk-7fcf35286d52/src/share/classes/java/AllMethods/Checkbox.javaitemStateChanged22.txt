@@ -1,0 +1,14 @@
+/**
+ * Fire accessible property change events when the state of the
+ * toggle button changes.
+ */
+public void itemStateChanged(ItemEvent e) {
+    Checkbox cb = (Checkbox) e.getSource();
+    if (Checkbox.this.accessibleContext != null) {
+        if (cb.getState()) {
+            Checkbox.this.accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, null, AccessibleState.CHECKED);
+        } else {
+            Checkbox.this.accessibleContext.firePropertyChange(AccessibleContext.ACCESSIBLE_STATE_PROPERTY, AccessibleState.CHECKED, null);
+        }
+    }
+}

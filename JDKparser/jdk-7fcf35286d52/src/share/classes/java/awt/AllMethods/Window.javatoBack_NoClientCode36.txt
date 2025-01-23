@@ -1,0 +1,16 @@
+// This functionality is implemented in a final package-private method
+// to insure that it cannot be overridden by client subclasses.
+final void toBack_NoClientCode() {
+    if (isAlwaysOnTop()) {
+        try {
+            setAlwaysOnTop(false);
+        } catch (SecurityException e) {
+        }
+    }
+    if (visible) {
+        WindowPeer peer = (WindowPeer) this.peer;
+        if (peer != null) {
+            peer.toBack();
+        }
+    }
+}

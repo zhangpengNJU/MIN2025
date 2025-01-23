@@ -1,0 +1,19 @@
+/**
+ * Retrieves the value of the designated JDBC <code>DATALINK</code> parameter as a
+ * <code>java.net.URL</code> object.
+ *
+ * @param parameterIndex the first parameter is 1, the second is 2,...
+ * @return a <code>java.net.URL</code> object that represents the
+ *         JDBC <code>DATALINK</code> value used as the designated
+ *         parameter
+ * @exception SQLException if the parameterIndex is not valid;
+ * if a database access error occurs,
+ * this method is called on a closed <code>CallableStatement</code>,
+ *            or if the URL being returned is
+ *            not a valid URL on the Java platform
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #setURL
+ * @since 1.4
+ */
+java.net.URL getURL(int parameterIndex) throws SQLException;

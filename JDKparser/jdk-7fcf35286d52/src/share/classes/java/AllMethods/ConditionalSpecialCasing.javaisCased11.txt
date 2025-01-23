@@ -1,0 +1,48 @@
+/**
+ * Examines whether a character is 'cased'.
+ *
+ * A character C is defined to be 'cased' if and only if at least one of
+ * following are true for C: uppercase==true, or lowercase==true, or
+ * general_category==titlecase_letter.
+ *
+ * The uppercase and lowercase property values are specified in the data
+ * file DerivedCoreProperties.txt in the Unicode Character Database.
+ */
+private static boolean isCased(int ch) {
+    int type = Character.getType(ch);
+    if (type == Character.LOWERCASE_LETTER || type == Character.UPPERCASE_LETTER || type == Character.TITLECASE_LETTER) {
+        return true;
+    } else {
+        // Check for Other_Lowercase and Other_Uppercase
+        // 
+        if ((ch >= 0x02B0) && (ch <= 0x02B8)) {
+            // MODIFIER LETTER SMALL H..MODIFIER LETTER SMALL Y
+            return true;
+        } else if ((ch >= 0x02C0) && (ch <= 0x02C1)) {
+            // MODIFIER LETTER GLOTTAL STOP..MODIFIER LETTER REVERSED GLOTTAL STOP
+            return true;
+        } else if ((ch >= 0x02E0) && (ch <= 0x02E4)) {
+            // MODIFIER LETTER SMALL GAMMA..MODIFIER LETTER SMALL REVERSED GLOTTAL STOP
+            return true;
+        } else if (ch == 0x0345) {
+            // COMBINING GREEK YPOGEGRAMMENI
+            return true;
+        } else if (ch == 0x037A) {
+            // GREEK YPOGEGRAMMENI
+            return true;
+        } else if ((ch >= 0x1D2C) && (ch <= 0x1D61)) {
+            // MODIFIER LETTER CAPITAL A..MODIFIER LETTER SMALL CHI
+            return true;
+        } else if ((ch >= 0x2160) && (ch <= 0x217F)) {
+            // ROMAN NUMERAL ONE..ROMAN NUMERAL ONE THOUSAND
+            // SMALL ROMAN NUMERAL ONE..SMALL ROMAN NUMERAL ONE THOUSAND
+            return true;
+        } else if ((ch >= 0x24B6) && (ch <= 0x24E9)) {
+            // CIRCLED LATIN CAPITAL LETTER A..CIRCLED LATIN CAPITAL LETTER Z
+            // CIRCLED LATIN SMALL LETTER A..CIRCLED LATIN SMALL LETTER Z
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

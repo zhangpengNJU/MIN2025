@@ -1,0 +1,11 @@
+/**
+ * Determines if there is any supplementary character or unpaired
+ * surrogate in the specified range.
+ */
+private boolean findSupplementary(int start, int end) {
+    for (int i = start; i < end; i++) {
+        if (isSupplementary(temp[i]))
+            return true;
+    }
+    return false;
+}

@@ -1,0 +1,26 @@
+/**
+ * Returns a {@code MutableBigInteger} containing {@code blockLength} ints from
+ * {@code this} number, starting at {@code index*blockLength}.<br/>
+ * Used by Burnikel-Ziegler division.
+ * @param index the block index
+ * @param numBlocks the total number of blocks in {@code this} number
+ * @param blockLength length of one block in units of 32 bits
+ * @return
+ */
+private MutableBigInteger getBlock(int index, int numBlocks, int blockLength) {
+    int blockStart = index * blockLength;
+    if (blockStart >= intLen) {
+        return new MutableBigInteger();
+    }
+    int blockEnd;
+    if (index == numBlocks - 1) {
+        blockEnd = intLen;
+    } else {
+        blockEnd = (index + 1) * blockLength;
+    }
+    if (blockEnd > intLen) {
+        return new MutableBigInteger();
+    }
+    int[] newVal = Arrays.copyOfRange(value, offset + intLen - blockEnd, offset + intLen - blockStart);
+    return new MutableBigInteger(newVal);
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns the hash code of this HTTP cookie. The result is the sum of
+ * hash code value of three significant components of this cookie: name,
+ * domain, and path. That is, the hash code is the value of the expression:
+ * <blockquote>
+ * getName().toLowerCase().hashCode()<br>
+ * + getDomain().toLowerCase().hashCode()<br>
+ * + getPath().hashCode()
+ * </blockquote>
+ *
+ * @return  this HTTP cookie's hash code
+ */
+@Override
+public int hashCode() {
+    int h1 = name.toLowerCase().hashCode();
+    int h2 = (domain != null) ? domain.toLowerCase().hashCode() : 0;
+    int h3 = (path != null) ? path.hashCode() : 0;
+    return h1 + h2 + h3;
+}

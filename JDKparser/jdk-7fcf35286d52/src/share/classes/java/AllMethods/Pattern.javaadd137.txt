@@ -1,0 +1,8 @@
+void add(Node node) {
+    if (size >= atoms.length) {
+        Node[] tmp = new Node[atoms.length * 2];
+        System.arraycopy(atoms, 0, tmp, 0, atoms.length);
+        atoms = tmp;
+    }
+    atoms[size++] = node;
+}

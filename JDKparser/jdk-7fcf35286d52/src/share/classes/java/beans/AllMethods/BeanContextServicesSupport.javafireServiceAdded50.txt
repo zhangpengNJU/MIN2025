@@ -1,0 +1,8 @@
+/**
+ * Fires a <tt>BeanContextServiceEvent</tt> notifying of a new service.
+ * @param serviceClass the service class
+ */
+protected final void fireServiceAdded(Class serviceClass) {
+    BeanContextServiceAvailableEvent bcssae = new BeanContextServiceAvailableEvent(getBeanContextServicesPeer(), serviceClass);
+    fireServiceAdded(bcssae);
+}

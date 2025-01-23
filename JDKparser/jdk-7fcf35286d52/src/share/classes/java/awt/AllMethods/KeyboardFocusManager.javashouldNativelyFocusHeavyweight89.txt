@@ -1,0 +1,117 @@
+/**
+ * Indicates whether the native implementation should proceed with a
+ * pending, native focus request. Before changing the focus at the native
+ * level, the AWT implementation should always call this function for
+ * permission. This function will reject the request if a duplicate request
+ * preceded it, or if the specified heavyweight Component already owns the
+ * focus and no native focus changes are pending. Otherwise, the request
+ * will be approved and the focus request list will be updated so that,
+ * if necessary, the proper descendant will be focused when the
+ * corresponding FOCUS_GAINED event on the heavyweight is received.
+ *
+ * An implementation must ensure that calls to this method and native
+ * focus changes are atomic. If this is not guaranteed, then the ordering
+ * of the focus request list may be incorrect, leading to errors in the
+ * type-ahead mechanism. Typically this is accomplished by only calling
+ * this function from the native event pumping thread, or by holding a
+ * global, native lock during invocation.
+ */
+static int shouldNativelyFocusHeavyweight(Component heavyweight, Component descendant, boolean temporary, boolean focusedWindowChangeAllowed, long time, CausedFocusEvent.Cause cause) {
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        if (heavyweight == null) {
+            log.fine("Assertion (heavyweight != null) failed");
+        }
+        if (time == 0) {
+            log.fine("Assertion (time != 0) failed");
+        }
+    }
+    if (descendant == null) {
+        // Focus transfers from a lightweight child back to the
+        // heavyweight Container should be treated like lightweight
+        // focus transfers.
+        descendant = heavyweight;
+    }
+    KeyboardFocusManager manager = getCurrentKeyboardFocusManager(SunToolkit.targetToAppContext(descendant));
+    KeyboardFocusManager thisManager = getCurrentKeyboardFocusManager();
+    Component currentFocusOwner = thisManager.getGlobalFocusOwner();
+    Component nativeFocusOwner = thisManager.getNativeFocusOwner();
+    Window nativeFocusedWindow = thisManager.getNativeFocusedWindow();
+    if (focusLog.isLoggable(PlatformLogger.Level.FINER)) {
+        focusLog.finer("SNFH for {0} in {1}", String.valueOf(descendant), String.valueOf(heavyweight));
+    }
+    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+        focusLog.finest("0. Current focus owner {0}", String.valueOf(currentFocusOwner));
+        focusLog.finest("0. Native focus owner {0}", String.valueOf(nativeFocusOwner));
+        focusLog.finest("0. Native focused window {0}", String.valueOf(nativeFocusedWindow));
+    }
+    synchronized (heavyweightRequests) {
+        HeavyweightFocusRequest hwFocusRequest = getLastHWRequest();
+        if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+            focusLog.finest("Request {0}", String.valueOf(hwFocusRequest));
+        }
+        if (hwFocusRequest == null && heavyweight == nativeFocusOwner && heavyweight.getContainingWindow() == nativeFocusedWindow) {
+            if (descendant == currentFocusOwner) {
+                // Redundant request.
+                if (focusLog.isLoggable(PlatformLogger.Level.FINEST))
+                    focusLog.finest("1. SNFH_FAILURE for {0}", String.valueOf(descendant));
+                return SNFH_FAILURE;
+            }
+            // 'heavyweight' owns the native focus and there are no pending
+            // requests. 'heavyweight' must be a Container and
+            // 'descendant' must not be the focus owner. Otherwise,
+            // we would never have gotten this far.
+            manager.enqueueKeyEvents(time, descendant);
+            hwFocusRequest = new HeavyweightFocusRequest(heavyweight, descendant, temporary, cause);
+            heavyweightRequests.add(hwFocusRequest);
+            if (currentFocusOwner != null) {
+                FocusEvent currentFocusOwnerEvent = new CausedFocusEvent(currentFocusOwner, FocusEvent.FOCUS_LOST, temporary, descendant, cause);
+                // Fix 5028014. Rolled out.
+                // SunToolkit.postPriorityEvent(currentFocusOwnerEvent);
+                SunToolkit.postEvent(currentFocusOwner.appContext, currentFocusOwnerEvent);
+            }
+            FocusEvent newFocusOwnerEvent = new CausedFocusEvent(descendant, FocusEvent.FOCUS_GAINED, temporary, currentFocusOwner, cause);
+            // Fix 5028014. Rolled out.
+            // SunToolkit.postPriorityEvent(newFocusOwnerEvent);
+            SunToolkit.postEvent(descendant.appContext, newFocusOwnerEvent);
+            if (focusLog.isLoggable(PlatformLogger.Level.FINEST))
+                focusLog.finest("2. SNFH_HANDLED for {0}", String.valueOf(descendant));
+            return SNFH_SUCCESS_HANDLED;
+        } else if (hwFocusRequest != null && hwFocusRequest.heavyweight == heavyweight) {
+            // 'heavyweight' doesn't have the native focus right now, but
+            // if all pending requests were completed, it would. Add
+            // descendant to the heavyweight's list of pending
+            // lightweight focus transfers.
+            if (hwFocusRequest.addLightweightRequest(descendant, temporary, cause)) {
+                manager.enqueueKeyEvents(time, descendant);
+            }
+            if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+                focusLog.finest("3. SNFH_HANDLED for lightweight" + descendant + " in " + heavyweight);
+            }
+            return SNFH_SUCCESS_HANDLED;
+        } else {
+            if (!focusedWindowChangeAllowed) {
+                // For purposes of computing oldFocusedWindow, we should look at
+                // the second to last HeavyweightFocusRequest on the queue iff the
+                // last HeavyweightFocusRequest is CLEAR_GLOBAL_FOCUS_OWNER. If
+                // there is no second to last HeavyweightFocusRequest, null is an
+                // acceptable value.
+                if (hwFocusRequest == HeavyweightFocusRequest.CLEAR_GLOBAL_FOCUS_OWNER) {
+                    int size = heavyweightRequests.size();
+                    hwFocusRequest = (HeavyweightFocusRequest) ((size >= 2) ? heavyweightRequests.get(size - 2) : null);
+                }
+                if (focusedWindowChanged(heavyweight, (hwFocusRequest != null) ? hwFocusRequest.heavyweight : nativeFocusedWindow)) {
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+                        focusLog.finest("4. SNFH_FAILURE for " + descendant);
+                    }
+                    return SNFH_FAILURE;
+                }
+            }
+            manager.enqueueKeyEvents(time, descendant);
+            heavyweightRequests.add(new HeavyweightFocusRequest(heavyweight, descendant, temporary, cause));
+            if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
+                focusLog.finest("5. SNFH_PROCEED for " + descendant);
+            }
+            return SNFH_SUCCESS_PROCEED;
+        }
+    }
+}

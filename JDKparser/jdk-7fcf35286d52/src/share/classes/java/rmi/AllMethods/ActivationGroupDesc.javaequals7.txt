@@ -1,0 +1,16 @@
+/**
+ * Compares two command environments for content equality.
+ *
+ * @param       obj     the Object to compare with
+ * @return      true if these Objects are equal; false otherwise.
+ * @see         java.util.Hashtable
+ * @since 1.2
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof CommandEnvironment) {
+        CommandEnvironment env = (CommandEnvironment) obj;
+        return ((command == null ? env.command == null : command.equals(env.command)) && Arrays.equals(options, env.options));
+    } else {
+        return false;
+    }
+}

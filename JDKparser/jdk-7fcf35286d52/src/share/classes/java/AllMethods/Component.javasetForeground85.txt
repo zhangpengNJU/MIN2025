@@ -1,0 +1,23 @@
+/**
+ * Sets the foreground color of this component.
+ * @param c the color to become this component's
+ *          foreground color; if this parameter is <code>null</code>
+ *          then this component will inherit
+ *          the foreground color of its parent
+ * @see #getForeground
+ * @since JDK1.0
+ */
+public void setForeground(Color c) {
+    Color oldColor = foreground;
+    ComponentPeer peer = this.peer;
+    foreground = c;
+    if (peer != null) {
+        c = getForeground();
+        if (c != null) {
+            peer.setForeground(c);
+        }
+    }
+    // This is a bound property, so report the change to
+    // any registered listeners.  (Cheap if there are none.)
+    firePropertyChange("foreground", oldColor, c);
+}

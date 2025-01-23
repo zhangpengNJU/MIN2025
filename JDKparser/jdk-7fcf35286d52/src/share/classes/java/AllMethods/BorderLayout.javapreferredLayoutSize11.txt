@@ -1,0 +1,51 @@
+/**
+ * Determines the preferred size of the <code>target</code>
+ * container using this layout manager, based on the components
+ * in the container.
+ * <p>
+ * Most applications do not call this method directly. This method
+ * is called when a container calls its <code>getPreferredSize</code>
+ * method.
+ * @param   target   the container in which to do the layout.
+ * @return  the preferred dimensions to lay out the subcomponents
+ *          of the specified container.
+ * @see     java.awt.Container
+ * @see     java.awt.BorderLayout#minimumLayoutSize
+ * @see     java.awt.Container#getPreferredSize()
+ */
+public Dimension preferredLayoutSize(Container target) {
+    synchronized (target.getTreeLock()) {
+        Dimension dim = new Dimension(0, 0);
+        boolean ltr = target.getComponentOrientation().isLeftToRight();
+        Component c = null;
+        if ((c = getChild(EAST, ltr)) != null) {
+            Dimension d = c.getPreferredSize();
+            dim.width += d.width + hgap;
+            dim.height = Math.max(d.height, dim.height);
+        }
+        if ((c = getChild(WEST, ltr)) != null) {
+            Dimension d = c.getPreferredSize();
+            dim.width += d.width + hgap;
+            dim.height = Math.max(d.height, dim.height);
+        }
+        if ((c = getChild(CENTER, ltr)) != null) {
+            Dimension d = c.getPreferredSize();
+            dim.width += d.width;
+            dim.height = Math.max(d.height, dim.height);
+        }
+        if ((c = getChild(NORTH, ltr)) != null) {
+            Dimension d = c.getPreferredSize();
+            dim.width = Math.max(d.width, dim.width);
+            dim.height += d.height + vgap;
+        }
+        if ((c = getChild(SOUTH, ltr)) != null) {
+            Dimension d = c.getPreferredSize();
+            dim.width = Math.max(d.width, dim.width);
+            dim.height += d.height + vgap;
+        }
+        Insets insets = target.getInsets();
+        dim.width += insets.left + insets.right;
+        dim.height += insets.top + insets.bottom;
+        return dim;
+    }
+}

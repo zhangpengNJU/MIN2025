@@ -1,0 +1,5 @@
+public SortedSet<E> tailSet(E fromElement) {
+    synchronized (mutex) {
+        return new SynchronizedSortedSet<>(ss.tailSet(fromElement), mutex);
+    }
+}

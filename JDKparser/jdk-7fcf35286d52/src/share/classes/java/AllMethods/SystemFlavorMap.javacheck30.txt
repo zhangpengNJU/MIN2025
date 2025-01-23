@@ -1,0 +1,9 @@
+public LinkedHashSet<V> check(K key) {
+    if (cache == null)
+        return null;
+    SoftReference<LinkedHashSet<V>> ref = cache.get(key);
+    if (ref != null) {
+        return ref.get();
+    }
+    return null;
+}

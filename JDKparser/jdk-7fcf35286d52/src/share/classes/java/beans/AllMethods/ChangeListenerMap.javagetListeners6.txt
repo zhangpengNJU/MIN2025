@@ -1,0 +1,26 @@
+/**
+ * Returns all listeners in the map.
+ *
+ * @return an array of all listeners
+ */
+public final synchronized L[] getListeners() {
+    if (this.map == null) {
+        return newArray(0);
+    }
+    List<L> list = new ArrayList<>();
+    L[] listeners = this.map.get(null);
+    if (listeners != null) {
+        for (L listener : listeners) {
+            list.add(listener);
+        }
+    }
+    for (Entry<String, L[]> entry : this.map.entrySet()) {
+        String name = entry.getKey();
+        if (name != null) {
+            for (L listener : entry.getValue()) {
+                list.add(newProxy(name, listener));
+            }
+        }
+    }
+    return list.toArray(newArray(list.size()));
+}

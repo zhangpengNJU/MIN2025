@@ -1,0 +1,13 @@
+/**
+ * Returns a clone of this object.
+ * @return a clone of this object
+ */
+public Object clone() {
+    MimeType newObj = null;
+    try {
+        newObj = (MimeType) super.clone();
+    } catch (CloneNotSupportedException cannotHappen) {
+    }
+    newObj.parameters = (MimeTypeParameterList) parameters.clone();
+    return newObj;
+}

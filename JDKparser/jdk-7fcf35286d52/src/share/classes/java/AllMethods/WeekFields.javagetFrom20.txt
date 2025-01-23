@@ -1,0 +1,19 @@
+@Override
+public long getFrom(TemporalAccessor temporal) {
+    if (rangeUnit == WEEKS) {
+        // day-of-week
+        return localizedDayOfWeek(temporal);
+    } else if (rangeUnit == MONTHS) {
+        // week-of-month
+        return localizedWeekOfMonth(temporal);
+    } else if (rangeUnit == YEARS) {
+        // week-of-year
+        return localizedWeekOfYear(temporal);
+    } else if (rangeUnit == WEEK_BASED_YEARS) {
+        return localizedWeekOfWeekBasedYear(temporal);
+    } else if (rangeUnit == FOREVER) {
+        return localizedWeekBasedYear(temporal);
+    } else {
+        throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
+    }
+}

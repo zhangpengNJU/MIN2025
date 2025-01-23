@@ -1,0 +1,19 @@
+/**
+ * Updates the value of the archive attribute.
+ *
+ * <p> It is implementation specific if the attribute can be updated as an
+ * atomic operation with respect to other file system operations. An
+ * implementation may, for example, require to read the existing value of
+ * the DOS attribute in order to update this attribute.
+ *
+ * @param   value
+ *          the new value of the attribute
+ *
+ * @throws  IOException
+ *          if an I/O error occurs
+ * @throws  SecurityException
+ *          In the case of the default, and a security manager is installed,
+ *          its  {@link SecurityManager#checkWrite(String) checkWrite} method
+ *          is invoked to check write access to the file
+ */
+void setArchive(boolean value) throws IOException;

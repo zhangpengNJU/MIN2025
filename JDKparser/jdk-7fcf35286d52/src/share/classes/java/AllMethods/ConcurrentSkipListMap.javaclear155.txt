@@ -1,0 +1,7 @@
+public void clear() {
+    Comparator<? super K> cmp = m.comparator;
+    for (ConcurrentSkipListMap.Node<K, V> n = loNode(cmp); isBeforeEnd(n, cmp); n = n.next) {
+        if (n.getValidValue() != null)
+            m.remove(n.key);
+    }
+}

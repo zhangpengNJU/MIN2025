@@ -1,0 +1,18 @@
+/**
+ * Returns the exact output size of the portion of the output resulting from
+ * applying the pipeline stages described by this {@code PipelineHelper} to
+ * the portion of the input described by the provided
+ * {@code Spliterator}, if known.  If not known or known infinite, will
+ * return {@code -1}.
+ *
+ * @apiNote
+ * The exact output size is known if the {@code Spliterator} has the
+ * {@code SIZED} characteristic, and the operation flags
+ * {@link StreamOpFlag#SIZED} is known on the combined stream and operation
+ * flags.
+ *
+ * @param spliterator the spliterator describing the relevant portion of the
+ *        source data
+ * @return the exact size if known, or -1 if infinite or unknown
+ */
+abstract <P_IN> long exactOutputSizeIfKnown(Spliterator<P_IN> spliterator);

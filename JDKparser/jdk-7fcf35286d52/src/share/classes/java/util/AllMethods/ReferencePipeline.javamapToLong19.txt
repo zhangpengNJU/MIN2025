@@ -1,0 +1,17 @@
+@Override
+public final LongStream mapToLong(ToLongFunction<? super P_OUT> mapper) {
+    Objects.requireNonNull(mapper);
+    return new LongPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
+
+        @Override
+        Sink<P_OUT> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedReference<P_OUT, Long>(sink) {
+
+                @Override
+                public void accept(P_OUT u) {
+                    downstream.accept(mapper.applyAsLong(u));
+                }
+            };
+        }
+    };
+}

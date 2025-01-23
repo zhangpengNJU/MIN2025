@@ -1,0 +1,8 @@
+private void checkCharacter() {
+    if (precision != -1)
+        throw new IllegalFormatPrecisionException(precision);
+    checkBadFlags(Flags.ALTERNATE, Flags.PLUS, Flags.LEADING_SPACE, Flags.ZERO_PAD, Flags.GROUP, Flags.PARENTHESES);
+    // '-' requires a width
+    if (width == -1 && f.contains(Flags.LEFT_JUSTIFY))
+        throw new MissingFormatWidthException(toString());
+}

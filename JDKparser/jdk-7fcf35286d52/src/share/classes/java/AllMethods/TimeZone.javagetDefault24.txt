@@ -1,0 +1,25 @@
+/**
+ * Gets the default {@code TimeZone} of the Java virtual machine. If the
+ * cached default {@code TimeZone} is available, its clone is returned.
+ * Otherwise, the method takes the following steps to determine the default
+ * time zone.
+ *
+ * <ul>
+ * <li>Use the {@code user.timezone} property value as the default
+ * time zone ID if it's available.</li>
+ * <li>Detect the platform time zone ID. The source of the
+ * platform time zone and ID mapping may vary with implementation.</li>
+ * <li>Use {@code GMT} as the last resort if the given or detected
+ * time zone ID is unknown.</li>
+ * </ul>
+ *
+ * <p>The default {@code TimeZone} created from the ID is cached,
+ * and its clone is returned. The {@code user.timezone} property
+ * value is set to the ID upon return.
+ *
+ * @return the default {@code TimeZone}
+ * @see #setDefault(TimeZone)
+ */
+public static TimeZone getDefault() {
+    return (TimeZone) getDefaultRef().clone();
+}

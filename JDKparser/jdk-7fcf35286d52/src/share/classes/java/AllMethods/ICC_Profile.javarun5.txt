@@ -1,0 +1,9 @@
+public ICC_Profile run() {
+    ICC_Profile p = null;
+    try {
+        p = getInstance(name);
+    } catch (IOException ex) {
+        throw new IllegalArgumentException("Can't load standard profile: " + name);
+    }
+    return p;
+}

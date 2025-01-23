@@ -1,0 +1,18 @@
+/**
+ * This method is used for division by long.
+ * Specialized version of the method sulsub.
+ * dh is a high part of the divisor, dl is a low part
+ */
+private int mulsubLong(int[] q, int dh, int dl, int x, int offset) {
+    long xLong = x & LONG_MASK;
+    offset += 2;
+    long product = (dl & LONG_MASK) * xLong;
+    long difference = q[offset] - product;
+    q[offset--] = (int) difference;
+    long carry = (product >>> 32) + (((difference & LONG_MASK) > (((~(int) product) & LONG_MASK))) ? 1 : 0);
+    product = (dh & LONG_MASK) * xLong + carry;
+    difference = q[offset] - product;
+    q[offset--] = (int) difference;
+    carry = (product >>> 32) + (((difference & LONG_MASK) > (((~(int) product) & LONG_MASK))) ? 1 : 0);
+    return (int) carry;
+}

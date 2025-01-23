@@ -1,0 +1,14 @@
+/**
+ * Join the multicast group.
+ * @param mcastaddr multicast address to join.
+ * @param netIf specifies the local interface to receive multicast
+ *        datagram packets
+ * @throws  IllegalArgumentException if mcastaddr is null or is a
+ *          SocketAddress subclass not supported by this socket
+ * @since 1.4
+ */
+protected void joinGroup(SocketAddress mcastaddr, NetworkInterface netIf) throws IOException {
+    if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        throw new IllegalArgumentException("Unsupported address type");
+    join(((InetSocketAddress) mcastaddr).getAddress(), netIf);
+}

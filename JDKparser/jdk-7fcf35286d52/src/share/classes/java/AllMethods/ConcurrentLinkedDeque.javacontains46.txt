@@ -1,0 +1,17 @@
+/**
+ * Returns {@code true} if this deque contains at least one
+ * element {@code e} such that {@code o.equals(e)}.
+ *
+ * @param o element whose presence in this deque is to be tested
+ * @return {@code true} if this deque contains the specified element
+ */
+public boolean contains(Object o) {
+    if (o == null)
+        return false;
+    for (Node<E> p = first(); p != null; p = succ(p)) {
+        E item = p.item;
+        if (item != null && o.equals(item))
+            return true;
+    }
+    return false;
+}

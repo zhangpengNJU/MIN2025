@@ -1,0 +1,17 @@
+/**
+ * Process mouse wheel events that are delivered to this
+ * <code>ScrollPane</code> by scrolling an appropriate amount.
+ * <p>Note that if the event parameter is <code>null</code>
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e  the mouse wheel event
+ * @since 1.4
+ */
+protected void processMouseWheelEvent(MouseWheelEvent e) {
+    if (isWheelScrollingEnabled()) {
+        ScrollPaneWheelScroller.handleWheelScrolling(this, e);
+        e.consume();
+    }
+    super.processMouseWheelEvent(e);
+}

@@ -1,0 +1,16 @@
+/**
+ * Format a BigInteger to produce a string.
+ * @param number    The BigInteger to format
+ * @param result    where the text is to be appended
+ * @param fieldPosition    On input: an alignment field, if desired.
+ * On output: the offsets of the alignment field.
+ * @return The formatted number string
+ * @exception        ArithmeticException if rounding is needed with rounding
+ *                   mode being set to RoundingMode.UNNECESSARY
+ * @see java.text.FieldPosition
+ */
+private StringBuffer format(BigInteger number, StringBuffer result, FieldPosition fieldPosition) {
+    fieldPosition.setBeginIndex(0);
+    fieldPosition.setEndIndex(0);
+    return format(number, result, fieldPosition.getFieldDelegate(), false);
+}

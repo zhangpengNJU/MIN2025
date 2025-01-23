@@ -1,0 +1,44 @@
+/**
+ * Reads {@code len}
+ * bytes from
+ * an input stream.
+ * <p>
+ * This method
+ * blocks until one of the following conditions
+ * occurs:
+ * <ul>
+ * <li>{@code len} bytes
+ * of input data are available, in which case
+ * a normal return is made.
+ *
+ * <li>End of file
+ * is detected, in which case an {@code EOFException}
+ * is thrown.
+ *
+ * <li>An I/O error occurs, in
+ * which case an {@code IOException} other
+ * than {@code EOFException} is thrown.
+ * </ul>
+ * <p>
+ * If {@code b} is {@code null},
+ * a {@code NullPointerException} is thrown.
+ * If {@code off} is negative, or {@code len}
+ * is negative, or {@code off+len} is
+ * greater than the length of the array {@code b},
+ * then an {@code IndexOutOfBoundsException}
+ * is thrown.
+ * If {@code len} is zero,
+ * then no bytes are read. Otherwise, the first
+ * byte read is stored into element {@code b[off]},
+ * the next one into {@code b[off+1]},
+ * and so on. The number of bytes read is,
+ * at most, equal to {@code len}.
+ *
+ * @param     b   the buffer into which the data is read.
+ * @param off  an int specifying the offset into the data.
+ * @param len  an int specifying the number of bytes to read.
+ * @exception  EOFException  if this stream reaches the end before reading
+ *               all the bytes.
+ * @exception  IOException   if an I/O error occurs.
+ */
+void readFully(byte[] b, int off, int len) throws IOException;

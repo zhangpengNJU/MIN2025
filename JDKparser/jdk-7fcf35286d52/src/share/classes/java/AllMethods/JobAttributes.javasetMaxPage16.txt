@@ -1,0 +1,16 @@
+/**
+ * Specifies the maximum value the user can specify as the last page to
+ * be printed for jobs using these attributes. Not specifying this
+ * attribute is equivalent to specifying <code>Integer.MAX_VALUE</code>.
+ *
+ * @param   maxPage an integer greater than zero and greater than or equal
+ *          to <i>minPage</i>
+ * @throws  IllegalArgumentException if one or more of the above
+ *          conditions is violated
+ */
+public void setMaxPage(int maxPage) {
+    if (maxPage <= 0 || maxPage < minPage) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "maxPage");
+    }
+    this.maxPage = maxPage;
+}

@@ -1,0 +1,17 @@
+/**
+ * Sets a pixel in  the DataBuffer using an int array of samples for input.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param iArray    The input samples in an int array.
+ * @param data      The DataBuffer containing the image data.
+ * @see #getPixel(int, int, int[], DataBuffer)
+ *
+ * @throws NullPointerException if iArray or data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if iArray is too small to hold the input.
+ */
+public void setPixel(int x, int y, int[] iArray, DataBuffer data) {
+    for (int i = 0; i < numBands; i++) setSample(x, y, i, iArray[i], data);
+}

@@ -1,0 +1,42 @@
+// -- asynchronous operations --
+/**
+ * Connects this channel.
+ *
+ * <p> This method initiates an operation to connect this channel. The
+ * {@code handler} parameter is a completion handler that is invoked when
+ * the connection is successfully established or connection cannot be
+ * established. If the connection cannot be established then the channel is
+ * closed.
+ *
+ * <p> This method performs exactly the same security checks as the {@link
+ * java.net.Socket} class.  That is, if a security manager has been
+ * installed then this method verifies that its {@link
+ * java.lang.SecurityManager#checkConnect checkConnect} method permits
+ * connecting to the address and port number of the given remote endpoint.
+ *
+ * @param   <A>
+ *          The type of the attachment
+ * @param   remote
+ *          The remote address to which this channel is to be connected
+ * @param   attachment
+ *          The object to attach to the I/O operation; can be {@code null}
+ * @param   handler
+ *          The handler for consuming the result
+ *
+ * @throws  UnresolvedAddressException
+ *          If the given remote address is not fully resolved
+ * @throws  UnsupportedAddressTypeException
+ *          If the type of the given remote address is not supported
+ * @throws  AlreadyConnectedException
+ *          If this channel is already connected
+ * @throws  ConnectionPendingException
+ *          If a connection operation is already in progress on this channel
+ * @throws  ShutdownChannelGroupException
+ *          If the channel group has terminated
+ * @throws  SecurityException
+ *          If a security manager has been installed
+ *          and it does not permit access to the given remote endpoint
+ *
+ * @see #getRemoteAddress
+ */
+public abstract <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler);

@@ -1,0 +1,25 @@
+/**
+ * Attempts to write to stream fatal IOException that has caused
+ * serialization to abort.
+ */
+private void writeFatalException(IOException ex) throws IOException {
+    /*
+         * Note: the serialization specification states that if a second
+         * IOException occurs while attempting to serialize the original fatal
+         * exception to the stream, then a StreamCorruptedException should be
+         * thrown (section 2.1).  However, due to a bug in previous
+         * implementations of serialization, StreamCorruptedExceptions were
+         * rarely (if ever) actually thrown--the "root" exceptions from
+         * underlying streams were thrown instead.  This historical behavior is
+         * followed here for consistency.
+         */
+    clear();
+    boolean oldMode = bout.setBlockDataMode(false);
+    try {
+        bout.writeByte(TC_EXCEPTION);
+        writeObject0(ex, false);
+        clear();
+    } finally {
+        bout.setBlockDataMode(oldMode);
+    }
+}

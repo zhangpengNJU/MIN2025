@@ -1,0 +1,6 @@
+static Name[] arguments(int extra, MethodType types) {
+    int length = types.parameterCount();
+    Name[] names = new Name[length + extra];
+    for (int i = 0; i < length; i++) names[i] = argument(i, basicType(types.parameterType(i)));
+    return names;
+}

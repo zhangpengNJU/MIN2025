@@ -1,0 +1,18 @@
+/**
+ * Updates the target method of this call site, as a volatile variable.
+ * The type of the new target must agree with the type of the old target.
+ * <p>
+ * The interactions with memory are the same as of a write to a volatile field.
+ * In particular, any threads is guaranteed to see the updated target
+ * the next time it calls {@code getTarget}.
+ * @param newTarget the new target
+ * @throws NullPointerException if the proposed new target is null
+ * @throws WrongMethodTypeException if the proposed new target
+ *         has a method type that differs from the previous target
+ * @see #getTarget
+ */
+@Override
+public void setTarget(MethodHandle newTarget) {
+    checkTargetChange(getTargetVolatile(), newTarget);
+    setTargetVolatile(newTarget);
+}

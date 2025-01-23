@@ -1,0 +1,35 @@
+/**
+ * Returns the hash code value for this Map as per the definition in the
+ * Map interface.
+ *
+ * @see Map#hashCode()
+ * @since 1.2
+ */
+public synchronized int hashCode() {
+    /*
+         * This code detects the recursion caused by computing the hash code
+         * of a self-referential hash table and prevents the stack overflow
+         * that would otherwise result.  This allows certain 1.1-era
+         * applets with self-referential hash tables to work.  This code
+         * abuses the loadFactor field to do double-duty as a hashCode
+         * in progress flag, so as not to worsen the space performance.
+         * A negative load factor indicates that hash code computation is
+         * in progress.
+         */
+    int h = 0;
+    if (count == 0 || loadFactor < 0)
+        // Returns zero
+        return h;
+    // Mark hashCode computation in progress
+    loadFactor = -loadFactor;
+    Entry<?, ?>[] tab = table;
+    for (Entry<?, ?> entry : tab) {
+        while (entry != null) {
+            h += entry.hashCode();
+            entry = entry.next;
+        }
+    }
+    // Mark hashCode computation complete
+    loadFactor = -loadFactor;
+    return h;
+}

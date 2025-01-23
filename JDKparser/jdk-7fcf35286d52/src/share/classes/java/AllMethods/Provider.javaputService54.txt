@@ -1,0 +1,55 @@
+/**
+ * Add a service. If a service of the same type with the same algorithm
+ * name exists and it was added using {@link #putService putService()},
+ * it is replaced by the new service.
+ * This method also places information about this service
+ * in the provider's Hashtable values in the format described in the
+ * <a href="../../../technotes/guides/security/crypto/CryptoSpec.html">
+ * Java Cryptography Architecture API Specification &amp; Reference </a>.
+ *
+ * <p>Also, if there is a security manager, its
+ * {@code checkSecurityAccess} method is called with the string
+ * {@code "putProviderProperty."+name}, where {@code name} is
+ * the provider name, to see if it's ok to set this provider's property
+ * values. If the default implementation of {@code checkSecurityAccess}
+ * is used (that is, that method is not overriden), then this results in
+ * a call to the security manager's {@code checkPermission} method with
+ * a {@code SecurityPermission("putProviderProperty."+name)}
+ * permission.
+ *
+ * @param s the Service to add
+ *
+ * @throws SecurityException
+ *      if a security manager exists and its {@link
+ *      java.lang.SecurityManager#checkSecurityAccess} method denies
+ *      access to set property values.
+ * @throws NullPointerException if s is null
+ *
+ * @since 1.5
+ */
+protected synchronized void putService(Service s) {
+    check("putProviderProperty." + name);
+    if (debug != null) {
+        debug.println(name + ".putService(): " + s);
+    }
+    if (s == null) {
+        throw new NullPointerException();
+    }
+    if (s.getProvider() != this) {
+        throw new IllegalArgumentException("service.getProvider() must match this Provider object");
+    }
+    if (serviceMap == null) {
+        serviceMap = new LinkedHashMap<ServiceKey, Service>();
+    }
+    servicesChanged = true;
+    String type = s.getType();
+    String algorithm = s.getAlgorithm();
+    ServiceKey key = new ServiceKey(type, algorithm, true);
+    // remove existing service
+    implRemoveService(serviceMap.get(key));
+    serviceMap.put(key, s);
+    for (String alias : s.getAliases()) {
+        serviceMap.put(new ServiceKey(type, alias, true), s);
+    }
+    putPropertyStrings(s);
+}

@@ -1,0 +1,33 @@
+/**
+ * Creates a socket and connects it to the specified address on
+ * the specified port.
+ * @param address the address
+ * @param timeout the timeout value in milliseconds, or zero for no timeout.
+ * @throws IOException if connection fails
+ * @throws  IllegalArgumentException if address is null or is a
+ *          SocketAddress subclass not supported by this socket
+ * @since 1.4
+ */
+protected void connect(SocketAddress address, int timeout) throws IOException {
+    boolean connected = false;
+    try {
+        if (address == null || !(address instanceof InetSocketAddress))
+            throw new IllegalArgumentException("unsupported address type");
+        InetSocketAddress addr = (InetSocketAddress) address;
+        if (addr.isUnresolved())
+            throw new UnknownHostException(addr.getHostName());
+        this.port = addr.getPort();
+        this.address = addr.getAddress();
+        connectToAddress(this.address, port, timeout);
+        connected = true;
+    } finally {
+        if (!connected) {
+            try {
+                close();
+            } catch (IOException ioe) {
+            /* Do nothing. If connect threw an exception then
+                       it will be passed up the call stack */
+            }
+        }
+    }
+}

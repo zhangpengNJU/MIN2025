@@ -1,0 +1,20 @@
+/**
+ * Intersects the current clip with the specified rectangle.
+ * The resulting clipping area is the intersection of the current
+ * clipping area and the specified rectangle.  If there is no
+ * current clipping area, either because the clip has never been
+ * set, or the clip has been cleared using <code>setClip(null)</code>,
+ * the specified rectangle becomes the new clip.
+ * This method sets the user clip, which is independent of the
+ * clipping associated with device bounds and window visibility.
+ * This method can only be used to make the current clip smaller.
+ * To set the current clip larger, use any of the setClip methods.
+ * Rendering operations have no effect outside of the clipping area.
+ * @param x the x coordinate of the rectangle to intersect the clip with
+ * @param y the y coordinate of the rectangle to intersect the clip with
+ * @param width the width of the rectangle to intersect the clip with
+ * @param height the height of the rectangle to intersect the clip with
+ * @see #setClip(int, int, int, int)
+ * @see #setClip(Shape)
+ */
+public abstract void clipRect(int x, int y, int width, int height);

@@ -1,0 +1,51 @@
+/**
+ * Returns the String before a given index.
+ *
+ * @param part the AccessibleText.CHARACTER, AccessibleText.WORD,
+ *   or AccessibleText.SENTENCE to retrieve
+ * @param index an index within the text &gt;= 0
+ * @return the letter, word, or sentence, null for an invalid index
+ *  or part
+ */
+public String getBeforeIndex(int part, int index) {
+    if (index < 0 || index > TextComponent.this.getText().length() - 1) {
+        return null;
+    }
+    switch(part) {
+        case AccessibleText.CHARACTER:
+            if (index == 0) {
+                return null;
+            }
+            return TextComponent.this.getText().substring(index - 1, index);
+        case AccessibleText.WORD:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator words = BreakIterator.getWordInstance();
+                words.setText(s);
+                int end = findWordLimit(index, words, PREVIOUS, s);
+                if (end == BreakIterator.DONE) {
+                    return null;
+                }
+                int start = words.preceding(end);
+                if (start == BreakIterator.DONE) {
+                    return null;
+                }
+                return s.substring(start, end);
+            }
+        case AccessibleText.SENTENCE:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator sentence = BreakIterator.getSentenceInstance();
+                sentence.setText(s);
+                int end = sentence.following(index);
+                end = sentence.previous();
+                int start = sentence.previous();
+                if (start == BreakIterator.DONE) {
+                    return null;
+                }
+                return s.substring(start, end);
+            }
+        default:
+            return null;
+    }
+}

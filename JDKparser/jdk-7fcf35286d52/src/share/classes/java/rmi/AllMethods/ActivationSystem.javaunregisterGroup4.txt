@@ -1,0 +1,15 @@
+/**
+ * Remove the activation group. An activation group makes this call back
+ * to inform the activator that the group should be removed (destroyed).
+ * If this call completes successfully, objects can no longer be
+ * registered or activated within the group. All information of the
+ * group and its associated objects is removed from the system.
+ *
+ * @param id the activation group's identifier
+ * @exception ActivationException if unregister fails (e.g., database
+ * update failure, etc).
+ * @exception UnknownGroupException if group is not registered
+ * @exception RemoteException if remote call fails
+ * @since 1.2
+ */
+public void unregisterGroup(ActivationGroupID id) throws ActivationException, UnknownGroupException, RemoteException;

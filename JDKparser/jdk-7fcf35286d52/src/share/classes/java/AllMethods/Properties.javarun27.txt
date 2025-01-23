@@ -1,0 +1,10 @@
+public XmlPropertiesProvider run() {
+    ClassLoader cl = ClassLoader.getSystemClassLoader();
+    XmlPropertiesProvider provider = loadProviderFromProperty(cl);
+    if (provider != null)
+        return provider;
+    provider = loadProviderAsService(cl);
+    if (provider != null)
+        return provider;
+    return new jdk.internal.util.xml.BasicXmlPropertiesProvider();
+}

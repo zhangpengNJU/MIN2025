@@ -1,0 +1,14 @@
+/**
+ * Retrieves the guarded object, or throws an exception if access
+ * to the guarded object is denied by the guard.
+ *
+ * @return the guarded object.
+ *
+ * @exception SecurityException if access to the guarded object is
+ * denied.
+ */
+public Object getObject() throws SecurityException {
+    if (guard != null)
+        guard.checkGuard(object);
+    return object;
+}

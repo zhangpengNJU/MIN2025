@@ -1,0 +1,13 @@
+/**
+ * Returns an enumeration of all the SocketPermission objects in the
+ * container.
+ *
+ * @return an enumeration of all the SocketPermission objects.
+ */
+@SuppressWarnings("unchecked")
+public Enumeration<Permission> elements() {
+    // Convert Iterator into Enumeration
+    synchronized (this) {
+        return Collections.enumeration((List<Permission>) (List) perms);
+    }
+}

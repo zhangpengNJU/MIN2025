@@ -1,0 +1,13 @@
+public void forEachRemaining(LongConsumer consumer) {
+    if (consumer == null)
+        throw new NullPointerException();
+    long i = index, f = fence;
+    if (i < f) {
+        index = f;
+        long o = origin, b = bound;
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
+        do {
+            consumer.accept(rng.internalNextLong(o, b));
+        } while (++i < f);
+    }
+}

@@ -1,0 +1,55 @@
+private void deserializeResources(ObjectInputStream s) throws ClassNotFoundException, IOException, HeadlessException {
+    if (windowSerializedDataVersion < 2) {
+        // Translate old-style focus tracking to new model. For 1.4 and
+        // later releases, we'll rely on the Window's initial focusable
+        // Component.
+        if (focusMgr != null) {
+            if (focusMgr.focusOwner != null) {
+                KeyboardFocusManager.setMostRecentFocusOwner(this, focusMgr.focusOwner);
+            }
+        }
+        // This field is non-transient and relies on default serialization.
+        // However, the default value is insufficient, so we need to set
+        // it explicitly for object data streams prior to 1.4.
+        focusableWindowState = true;
+    }
+    Object keyOrNull;
+    while (null != (keyOrNull = s.readObject())) {
+        String key = ((String) keyOrNull).intern();
+        if (windowListenerK == key) {
+            addWindowListener((WindowListener) (s.readObject()));
+        } else if (windowFocusListenerK == key) {
+            addWindowFocusListener((WindowFocusListener) (s.readObject()));
+        } else if (windowStateListenerK == key) {
+            addWindowStateListener((WindowStateListener) (s.readObject()));
+        } else
+            // skip value for unrecognized key
+            s.readObject();
+    }
+    try {
+        while (null != (keyOrNull = s.readObject())) {
+            String key = ((String) keyOrNull).intern();
+            if (ownedWindowK == key)
+                connectOwnedWindow((Window) s.readObject());
+            else
+                // skip value for unrecognized key
+                s.readObject();
+        }
+        // read icons
+        // Throws OptionalDataException
+        Object obj = s.readObject();
+        // for pre1.6 objects.
+        // Frame.readObject() assumes
+        icons = new ArrayList<Image>();
+        // pre1.6 version if icons is null.
+        while (obj != null) {
+            if (obj instanceof Image) {
+                icons.add((Image) obj);
+            }
+            obj = s.readObject();
+        }
+    } catch (OptionalDataException e) {
+    // 1.1 serialized form
+    // ownedWindowList will be updated by Frame.readObject
+    }
+}

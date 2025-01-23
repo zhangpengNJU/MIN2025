@@ -1,0 +1,40 @@
+private boolean add0(String k, String v) {
+    k = toKey(k);
+    int prefixLen = prefixLength(k);
+    if (prefixLen == key.length()) {
+        if (prefixLen < k.length()) {
+            // down the tree
+            String subKey = k.substring(prefixLen);
+            PrefixTree c = child;
+            while (c != null) {
+                if (isEqual(c.c0, subKey.charAt(0))) {
+                    return c.add0(subKey, v);
+                }
+                c = c.sibling;
+            }
+            // add the node as the child of the current node
+            c = newNode(subKey, v, null);
+            c.sibling = child;
+            child = c;
+            return true;
+        }
+        // have an existing <key, value> already, overwrite it
+        // if (value != null) {
+        // return false;
+        // }
+        value = v;
+        return true;
+    }
+    // split the existing node
+    PrefixTree n1 = newNode(key.substring(prefixLen), value, child);
+    key = k.substring(0, prefixLen);
+    child = n1;
+    if (prefixLen < k.length()) {
+        PrefixTree n2 = newNode(k.substring(prefixLen), v, null);
+        child.sibling = n2;
+        value = null;
+    } else {
+        value = v;
+    }
+    return true;
+}

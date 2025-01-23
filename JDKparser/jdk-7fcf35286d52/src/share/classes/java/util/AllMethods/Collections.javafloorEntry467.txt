@@ -1,0 +1,4 @@
+public Entry<K, V> floorEntry(K key) {
+    Entry<K, V> floor = nm.floorEntry(key);
+    return (null != floor) ? new CheckedMap.CheckedEntrySet.CheckedEntry<>(floor, valueType) : null;
+}

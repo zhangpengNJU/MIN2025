@@ -1,0 +1,26 @@
+/**
+ * Returns a string representation of this <code>FlowLayout</code>
+ * object and its values.
+ * @return     a string representation of this layout
+ */
+public String toString() {
+    String str = "";
+    switch(align) {
+        case LEFT:
+            str = ",align=left";
+            break;
+        case CENTER:
+            str = ",align=center";
+            break;
+        case RIGHT:
+            str = ",align=right";
+            break;
+        case LEADING:
+            str = ",align=leading";
+            break;
+        case TRAILING:
+            str = ",align=trailing";
+            break;
+    }
+    return getClass().getName() + "[hgap=" + hgap + ",vgap=" + vgap + str + "]";
+}

@@ -1,0 +1,16 @@
+/**
+ * Resolves the parameter types of the method.
+ *
+ * @param base    the class that contains the method in the hierarchy
+ * @param method  the object that represents the method
+ * @return an array of classes identifying the parameter types of the method
+ *
+ * @see Method#getGenericParameterTypes
+ * @see Method#getParameterTypes
+ */
+static Class<?>[] getParameterTypes(Class<?> base, Method method) {
+    if (base == null) {
+        base = method.getDeclaringClass();
+    }
+    return TypeResolver.erase(TypeResolver.resolveInClass(base, method.getGenericParameterTypes()));
+}

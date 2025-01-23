@@ -1,0 +1,10 @@
+public boolean imageUpdate(Image img, int infoflags, int x, int y, int w, int h) {
+    if (cancelled) {
+        return false;
+    }
+    int s = parseflags(infoflags);
+    if (s != 0 && s != status) {
+        setStatus(s);
+    }
+    return ((status & LOADING) != 0);
+}

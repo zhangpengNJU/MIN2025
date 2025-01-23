@@ -1,0 +1,23 @@
+/**
+ * Remove the remote object, obj, from the RMI runtime. If
+ * successful, the object can no longer accept incoming RMI calls.
+ * If the force parameter is true, the object is forcibly unexported
+ * even if there are pending calls to the remote object or the
+ * remote object still has calls in progress.  If the force
+ * parameter is false, the object is only unexported if there are
+ * no pending or in progress calls to the object.
+ *
+ * @param obj the remote object to be unexported
+ * @param force if true, unexports the object even if there are
+ * pending or in-progress calls; if false, only unexports the object
+ * if there are no pending or in-progress calls
+ * @return true if operation is successful, false otherwise
+ * @exception NoSuchObjectException if the remote object is not
+ * currently exported
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static boolean unexportObject(Remote obj, boolean force) throws NoSuchObjectException {
+    return sun.rmi.transport.ObjectTable.unexportObject(obj, force);
+}

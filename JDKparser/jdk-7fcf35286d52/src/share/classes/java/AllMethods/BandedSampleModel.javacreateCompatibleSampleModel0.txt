@@ -1,0 +1,28 @@
+/**
+ * Creates a new BandedSampleModel with the specified
+ * width and height.  The new BandedSampleModel will have the same
+ * number of bands, storage data type, and bank indices
+ * as this BandedSampleModel.  The band offsets will be compressed
+ * such that the offset between bands will be w*pixelStride and
+ * the minimum of all of the band offsets is zero.
+ * @param w the width of the resulting <code>BandedSampleModel</code>
+ * @param h the height of the resulting <code>BandedSampleModel</code>
+ * @return a new <code>BandedSampleModel</code> with the specified
+ *         width and height.
+ * @throws IllegalArgumentException if <code>w</code> or
+ *         <code>h</code> equals either
+ *         <code>Integer.MAX_VALUE</code> or
+ *         <code>Integer.MIN_VALUE</code>
+ * @throws IllegalArgumentException if <code>dataType</code> is not
+ *         one of the supported data types
+ */
+public SampleModel createCompatibleSampleModel(int w, int h) {
+    int[] bandOffs;
+    if (numBanks == 1) {
+        bandOffs = orderBands(bandOffsets, w * h);
+    } else {
+        bandOffs = new int[bandOffsets.length];
+    }
+    SampleModel sampleModel = new BandedSampleModel(dataType, w, h, w, bankIndices, bandOffs);
+    return sampleModel;
+}

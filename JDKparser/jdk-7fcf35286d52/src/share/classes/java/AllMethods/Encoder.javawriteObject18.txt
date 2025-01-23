@@ -1,0 +1,8 @@
+private Object writeObject1(Object oldInstance) {
+    Object o = get(oldInstance);
+    if (o == null) {
+        writeObject(oldInstance);
+        o = get(oldInstance);
+    }
+    return o;
+}

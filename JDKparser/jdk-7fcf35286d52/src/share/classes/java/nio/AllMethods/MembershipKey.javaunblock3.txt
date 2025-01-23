@@ -1,0 +1,14 @@
+/**
+ * Unblock multicast datagrams from the given source address that was
+ * previously blocked using the {@link #block(InetAddress) block} method.
+ *
+ * @param   source
+ *          The source address to unblock
+ *
+ * @return  This membership key
+ *
+ * @throws  IllegalStateException
+ *          If the given source address is not currently blocked or the
+ *          membership key is no longer valid
+ */
+public abstract MembershipKey unblock(InetAddress source);

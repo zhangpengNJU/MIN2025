@@ -1,0 +1,26 @@
+/**
+ * Prints a listing of this container to the specified output
+ * stream. The listing starts at the specified indentation.
+ * <p>
+ * The immediate children of the container are printed with
+ * an indentation of <code>indent+1</code>.  The children
+ * of those children are printed at <code>indent+2</code>
+ * and so on.
+ *
+ * @param    out      a print stream
+ * @param    indent   the number of spaces to indent
+ * @throws   NullPointerException if {@code out} is {@code null}
+ * @see      Component#list(java.io.PrintStream, int)
+ * @since    JDK1.0
+ */
+public void list(PrintStream out, int indent) {
+    super.list(out, indent);
+    synchronized (getTreeLock()) {
+        for (int i = 0; i < component.size(); i++) {
+            Component comp = component.get(i);
+            if (comp != null) {
+                comp.list(out, indent + 1);
+            }
+        }
+    }
+}

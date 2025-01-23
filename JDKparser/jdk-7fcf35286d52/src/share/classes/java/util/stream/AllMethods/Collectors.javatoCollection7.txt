@@ -1,0 +1,18 @@
+/**
+ * Returns a {@code Collector} that accumulates the input elements into a
+ * new {@code Collection}, in encounter order.  The {@code Collection} is
+ * created by the provided factory.
+ *
+ * @param <T> the type of the input elements
+ * @param <C> the type of the resulting {@code Collection}
+ * @param collectionFactory a {@code Supplier} which returns a new, empty
+ * {@code Collection} of the appropriate type
+ * @return a {@code Collector} which collects all the input elements into a
+ * {@code Collection}, in encounter order
+ */
+public static <T, C extends Collection<T>> Collector<T, ?, C> toCollection(Supplier<C> collectionFactory) {
+    return new CollectorImpl<>(collectionFactory, Collection<T>::add, (r1, r2) -> {
+        r1.addAll(r2);
+        return r1;
+    }, CH_ID);
+}

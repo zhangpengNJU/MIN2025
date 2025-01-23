@@ -1,0 +1,14 @@
+/**
+ * Inserts the specified element at the tail of this queue.
+ * As the queue is unbounded, this method will never block or
+ * return {@code false}.
+ *
+ * @return {@code true} (as specified by
+ *  {@link java.util.concurrent.BlockingQueue#offer(Object,long,TimeUnit)
+ *  BlockingQueue.offer})
+ * @throws NullPointerException if the specified element is null
+ */
+public boolean offer(E e, long timeout, TimeUnit unit) {
+    xfer(e, true, ASYNC, 0);
+    return true;
+}

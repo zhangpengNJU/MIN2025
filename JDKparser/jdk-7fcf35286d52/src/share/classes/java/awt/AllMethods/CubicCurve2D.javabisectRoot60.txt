@@ -1,0 +1,18 @@
+private static double bisectRoot(double[] eqn, double x0, double xe) {
+    double fx0 = solveEqn(eqn, 3, x0);
+    double m = x0 + (xe - x0) / 2;
+    while (m != x0 && m != xe) {
+        double fm = solveEqn(eqn, 3, m);
+        if (fm == 0) {
+            return m;
+        }
+        if (oppositeSigns(fx0, fm)) {
+            xe = m;
+        } else {
+            fx0 = fm;
+            x0 = m;
+        }
+        m = x0 + (xe - x0) / 2;
+    }
+    return m;
+}

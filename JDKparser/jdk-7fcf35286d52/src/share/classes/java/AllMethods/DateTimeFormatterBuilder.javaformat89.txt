@@ -1,0 +1,19 @@
+@Override
+public boolean format(DateTimePrintContext context, StringBuilder buf) {
+    Long value = context.getValue(field);
+    if (value == null) {
+        return false;
+    }
+    String text;
+    Chronology chrono = context.getTemporal().query(TemporalQueries.chronology());
+    if (chrono == null || chrono == IsoChronology.INSTANCE) {
+        text = provider.getText(field, value, textStyle, context.getLocale());
+    } else {
+        text = provider.getText(chrono, field, value, textStyle, context.getLocale());
+    }
+    if (text == null) {
+        return numberPrinterParser().format(context, buf);
+    }
+    buf.append(text);
+    return true;
+}

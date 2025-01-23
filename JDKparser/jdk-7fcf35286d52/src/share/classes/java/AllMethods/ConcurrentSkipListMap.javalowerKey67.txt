@@ -1,0 +1,8 @@
+/**
+ * @throws ClassCastException {@inheritDoc}
+ * @throws NullPointerException if the specified key is null
+ */
+public K lowerKey(K key) {
+    Node<K, V> n = findNear(key, LT, comparator);
+    return (n == null) ? null : n.key;
+}

@@ -1,0 +1,4 @@
+public RandomLongsSpliterator trySplit() {
+    long i = index, m = (i + fence) >>> 1;
+    return (m <= i) ? null : new RandomLongsSpliterator(i, index = m, origin, bound);
+}

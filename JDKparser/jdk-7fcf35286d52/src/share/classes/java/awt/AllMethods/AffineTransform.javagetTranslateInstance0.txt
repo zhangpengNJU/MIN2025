@@ -1,0 +1,21 @@
+/**
+ * Returns a transform representing a translation transformation.
+ * The matrix representing the returned transform is:
+ * <pre>
+ *          [   1    0    tx  ]
+ *          [   0    1    ty  ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param tx the distance by which coordinates are translated in the
+ * X axis direction
+ * @param ty the distance by which coordinates are translated in the
+ * Y axis direction
+ * @return an <code>AffineTransform</code> object that represents a
+ *  translation transformation, created with the specified vector.
+ * @since 1.2
+ */
+public static AffineTransform getTranslateInstance(double tx, double ty) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToTranslation(tx, ty);
+    return Tx;
+}

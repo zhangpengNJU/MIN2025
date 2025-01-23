@@ -1,0 +1,22 @@
+/**
+ * Returns a cursor object with the specified predefined type.
+ *
+ * @param type the type of predefined cursor
+ * @return the specified predefined cursor
+ * @throws IllegalArgumentException if the specified cursor type is
+ *         invalid
+ */
+static public Cursor getPredefinedCursor(int type) {
+    if (type < Cursor.DEFAULT_CURSOR || type > Cursor.MOVE_CURSOR) {
+        throw new IllegalArgumentException("illegal cursor type");
+    }
+    Cursor c = predefinedPrivate[type];
+    if (c == null) {
+        predefinedPrivate[type] = c = new Cursor(type);
+    }
+    // fill 'predefined' array for backwards compatibility.
+    if (predefined[type] == null) {
+        predefined[type] = c;
+    }
+    return c;
+}

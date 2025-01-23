@@ -1,0 +1,11 @@
+private boolean removeMapping(Object key, Object value) {
+    if (!isValidKey(key))
+        return false;
+    int index = ((Enum<?>) key).ordinal();
+    if (maskNull(value).equals(vals[index])) {
+        vals[index] = null;
+        size--;
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,14 @@
+protected boolean engineVerify(byte[] sigBytes) throws SignatureException {
+    try {
+        byte[] out = cipher.doFinal(sigBytes);
+        byte[] dataBytes = data.toByteArray();
+        data.reset();
+        return MessageDigest.isEqual(out, dataBytes);
+    } catch (BadPaddingException e) {
+        // e.g. wrong public key used
+        // return false rather than throwing exception
+        return false;
+    } catch (IllegalBlockSizeException e) {
+        throw new SignatureException("doFinal() failed", e);
+    }
+}

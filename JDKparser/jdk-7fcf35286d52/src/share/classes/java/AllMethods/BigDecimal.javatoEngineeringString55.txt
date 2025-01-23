@@ -1,0 +1,27 @@
+/**
+ * Returns a string representation of this {@code BigDecimal},
+ * using engineering notation if an exponent is needed.
+ *
+ * <p>Returns a string that represents the {@code BigDecimal} as
+ * described in the {@link #toString()} method, except that if
+ * exponential notation is used, the power of ten is adjusted to
+ * be a multiple of three (engineering notation) such that the
+ * integer part of nonzero values will be in the range 1 through
+ * 999.  If exponential notation is used for zero values, a
+ * decimal point and one or two fractional zero digits are used so
+ * that the scale of the zero value is preserved.  Note that
+ * unlike the output of {@link #toString()}, the output of this
+ * method is <em>not</em> guaranteed to recover the same [integer,
+ * scale] pair of this {@code BigDecimal} if the output string is
+ * converting back to a {@code BigDecimal} using the {@linkplain
+ * #BigDecimal(String) string constructor}.  The result of this method meets
+ * the weaker constraint of always producing a numerically equal
+ * result from applying the string constructor to the method's output.
+ *
+ * @return string representation of this {@code BigDecimal}, using
+ *         engineering notation if an exponent is needed.
+ * @since  1.5
+ */
+public String toEngineeringString() {
+    return layoutChars(false);
+}

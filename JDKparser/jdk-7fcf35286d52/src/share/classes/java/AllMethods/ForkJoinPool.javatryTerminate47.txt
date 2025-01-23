@@ -1,0 +1,122 @@
+// Termination
+/**
+ * Possibly initiates and/or completes termination.
+ *
+ * @param now if true, unconditionally terminate, else only
+ * if no work and no active workers
+ * @param enable if true, enable shutdown when next possible
+ * @return true if now terminating or terminated
+ */
+private boolean tryTerminate(boolean now, boolean enable) {
+    int rs;
+    if (// cannot shut down
+    this == common)
+        return false;
+    if ((rs = runState) >= 0) {
+        if (!enable)
+            return false;
+        // enter SHUTDOWN phase
+        rs = lockRunState();
+        unlockRunState(rs, (rs & ~RSLOCK) | SHUTDOWN);
+    }
+    if ((rs & STOP) == 0) {
+        if (!now) {
+            // check quiescence
+            for (long oldSum = 0L; ; ) {
+                // repeat until stable
+                WorkQueue[] ws;
+                WorkQueue w;
+                int m, b;
+                long c;
+                long checkSum = ctl;
+                if ((int) (checkSum >> AC_SHIFT) + (config & SMASK) > 0)
+                    // still active workers
+                    return false;
+                if ((ws = workQueues) == null || (m = ws.length - 1) <= 0)
+                    // check queues
+                    break;
+                for (int i = 0; i <= m; ++i) {
+                    if ((w = ws[i]) != null) {
+                        if ((b = w.base) != w.top || w.scanState >= 0 || w.currentSteal != null) {
+                            tryRelease(c = ctl, ws[m & (int) c], AC_UNIT);
+                            // arrange for recheck
+                            return false;
+                        }
+                        checkSum += b;
+                        if ((i & 1) == 0)
+                            // try to disable external
+                            w.qlock = -1;
+                    }
+                }
+                if (oldSum == (oldSum = checkSum))
+                    break;
+            }
+        }
+        if ((runState & STOP) == 0) {
+            // enter STOP phase
+            rs = lockRunState();
+            unlockRunState(rs, (rs & ~RSLOCK) | STOP);
+        }
+    }
+    // 3 passes to help terminate
+    int pass = 0;
+    for (long oldSum = 0L; ; ) {
+        // or until done or stable
+        WorkQueue[] ws;
+        WorkQueue w;
+        ForkJoinWorkerThread wt;
+        int m;
+        long checkSum = ctl;
+        if ((short) (checkSum >>> TC_SHIFT) + (config & SMASK) <= 0 || (ws = workQueues) == null || (m = ws.length - 1) <= 0) {
+            if ((runState & TERMINATED) == 0) {
+                // done
+                rs = lockRunState();
+                unlockRunState(rs, (rs & ~RSLOCK) | TERMINATED);
+                // for awaitTermination
+                synchronized (this) {
+                    notifyAll();
+                }
+            }
+            break;
+        }
+        for (int i = 0; i <= m; ++i) {
+            if ((w = ws[i]) != null) {
+                checkSum += w.base;
+                // try to disable
+                w.qlock = -1;
+                if (pass > 0) {
+                    // clear queue
+                    w.cancelAll();
+                    if (pass > 1 && (wt = w.owner) != null) {
+                        if (!wt.isInterrupted()) {
+                            try {
+                                // unblock join
+                                wt.interrupt();
+                            } catch (Throwable ignore) {
+                            }
+                        }
+                        if (w.scanState < 0)
+                            // wake up
+                            U.unpark(wt);
+                    }
+                }
+            }
+        }
+        if (checkSum != oldSum) {
+            // unstable
+            oldSum = checkSum;
+            pass = 0;
+        } else if (// can't further help
+        pass > 3 && pass > m)
+            break;
+        else if (++pass > 1) {
+            // try to dequeue
+            // bound attempts
+            long c;
+            // bound attempts
+            int j = 0, sp;
+            while (j++ <= m && (sp = (int) (c = ctl)) != 0) tryRelease(c, ws[sp & m], AC_UNIT);
+        }
+    }
+    return true;
+}

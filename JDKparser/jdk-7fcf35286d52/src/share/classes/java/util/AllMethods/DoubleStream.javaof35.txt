@@ -1,0 +1,9 @@
+/**
+ * Returns a sequential {@code DoubleStream} containing a single element.
+ *
+ * @param t the single element
+ * @return a singleton sequential stream
+ */
+public static DoubleStream of(double t) {
+    return StreamSupport.doubleStream(new Streams.DoubleStreamBuilderImpl(t), false);
+}

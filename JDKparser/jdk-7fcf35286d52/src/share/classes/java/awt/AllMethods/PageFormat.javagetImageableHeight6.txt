@@ -1,0 +1,15 @@
+/**
+ * Return the height, in 1/72nds of an inch, of the imageable
+ * area of the page. This method takes into account the orientation
+ * of the page.
+ * @return the height of the page.
+ */
+public double getImageableHeight() {
+    double height;
+    if (getOrientation() == PORTRAIT) {
+        height = mPaper.getImageableHeight();
+    } else {
+        height = mPaper.getImageableWidth();
+    }
+    return height;
+}

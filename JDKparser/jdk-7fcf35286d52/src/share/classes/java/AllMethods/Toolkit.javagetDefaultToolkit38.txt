@@ -1,0 +1,67 @@
+/**
+ * Gets the default toolkit.
+ * <p>
+ * If a system property named <code>"java.awt.headless"</code> is set
+ * to <code>true</code> then the headless implementation
+ * of <code>Toolkit</code> is used.
+ * <p>
+ * If there is no <code>"java.awt.headless"</code> or it is set to
+ * <code>false</code> and there is a system property named
+ * <code>"awt.toolkit"</code>,
+ * that property is treated as the name of a class that is a subclass
+ * of <code>Toolkit</code>;
+ * otherwise the default platform-specific implementation of
+ * <code>Toolkit</code> is used.
+ * <p>
+ * Also loads additional classes into the VM, using the property
+ * 'assistive_technologies' specified in the Sun reference
+ * implementation by a line in the 'accessibility.properties'
+ * file.  The form is "assistive_technologies=..." where
+ * the "..." is a comma-separated list of assistive technology
+ * classes to load.  Each class is loaded in the order given
+ * and a single instance of each is created using
+ * Class.forName(class).newInstance().  This is done just after
+ * the AWT toolkit is created.  All errors are handled via an
+ * AWTError exception.
+ * @return    the default toolkit.
+ * @exception  AWTError  if a toolkit could not be found, or
+ *                 if one could not be accessed or instantiated.
+ */
+public static synchronized Toolkit getDefaultToolkit() {
+    if (toolkit == null) {
+        java.security.AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+
+            public Void run() {
+                Class<?> cls = null;
+                String nm = System.getProperty("awt.toolkit");
+                try {
+                    cls = Class.forName(nm);
+                } catch (ClassNotFoundException e) {
+                    ClassLoader cl = ClassLoader.getSystemClassLoader();
+                    if (cl != null) {
+                        try {
+                            cls = cl.loadClass(nm);
+                        } catch (final ClassNotFoundException ignored) {
+                            throw new AWTError("Toolkit not found: " + nm);
+                        }
+                    }
+                }
+                try {
+                    if (cls != null) {
+                        toolkit = (Toolkit) cls.newInstance();
+                        if (GraphicsEnvironment.isHeadless()) {
+                            toolkit = new HeadlessToolkit(toolkit);
+                        }
+                    }
+                } catch (final InstantiationException ignored) {
+                    throw new AWTError("Could not instantiate Toolkit: " + nm);
+                } catch (final IllegalAccessException ignored) {
+                    throw new AWTError("Could not access Toolkit: " + nm);
+                }
+                return null;
+            }
+        });
+        loadAssistiveTechnologies();
+    }
+    return toolkit;
+}

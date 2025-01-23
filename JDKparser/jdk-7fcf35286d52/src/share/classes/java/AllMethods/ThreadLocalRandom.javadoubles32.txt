@@ -1,0 +1,14 @@
+/**
+ * Returns an effectively unlimited stream of pseudorandom {@code
+ * double} values, each between zero (inclusive) and one
+ * (exclusive).
+ *
+ * @implNote This method is implemented to be equivalent to {@code
+ * doubles(Long.MAX_VALUE)}.
+ *
+ * @return a stream of pseudorandom {@code double} values
+ * @since 1.8
+ */
+public DoubleStream doubles() {
+    return StreamSupport.doubleStream(new RandomDoublesSpliterator(0L, Long.MAX_VALUE, Double.MAX_VALUE, 0.0), false);
+}

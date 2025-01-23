@@ -1,0 +1,33 @@
+/**
+ * Registers the parameter named
+ * <code>parameterName</code> to be of JDBC type
+ * <code>sqlType</code>.  All OUT parameters must be registered
+ * before a stored procedure is executed.
+ * <p>
+ * The JDBC type specified by <code>sqlType</code> for an OUT
+ * parameter determines the Java type that must be used
+ * in the <code>get</code> method to read the value of that parameter.
+ * <p>
+ * This version of <code>registerOutParameter</code> should be
+ * used when the parameter is of JDBC type <code>NUMERIC</code>
+ * or <code>DECIMAL</code>.
+ *
+ * @param parameterName the name of the parameter
+ * @param sqlType SQL type code defined by <code>java.sql.Types</code>.
+ * @param scale the desired number of digits to the right of the
+ * decimal point.  It must be greater than or equal to zero.
+ * @exception SQLException if parameterName does not correspond to a named
+ * parameter; if a database access error occurs or
+ * this method is called on a closed <code>CallableStatement</code>
+ * @exception SQLFeatureNotSupportedException if <code>sqlType</code> is
+ * a <code>ARRAY</code>, <code>BLOB</code>, <code>CLOB</code>,
+ * <code>DATALINK</code>, <code>JAVA_OBJECT</code>, <code>NCHAR</code>,
+ * <code>NCLOB</code>, <code>NVARCHAR</code>, <code>LONGNVARCHAR</code>,
+ *  <code>REF</code>, <code>ROWID</code>, <code>SQLXML</code>
+ * or  <code>STRUCT</code> data type and the JDBC driver does not support
+ * this data type or if the JDBC driver does not support
+ * this method
+ * @since 1.4
+ * @see Types
+ */
+void registerOutParameter(String parameterName, int sqlType, int scale) throws SQLException;

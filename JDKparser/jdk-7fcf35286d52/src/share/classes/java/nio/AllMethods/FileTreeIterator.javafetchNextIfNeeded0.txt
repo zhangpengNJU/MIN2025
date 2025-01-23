@@ -1,0 +1,16 @@
+private void fetchNextIfNeeded() {
+    if (next == null) {
+        FileTreeWalker.Event ev = walker.next();
+        while (ev != null) {
+            IOException ioe = ev.ioeException();
+            if (ioe != null)
+                throw new UncheckedIOException(ioe);
+            // END_DIRECTORY events are ignored
+            if (ev.type() != FileTreeWalker.EventType.END_DIRECTORY) {
+                next = ev;
+                return;
+            }
+            ev = walker.next();
+        }
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Returns an enumeration of all the Permission objects in all the
+ * PermissionCollections in this Permissions object.
+ *
+ * @return an enumeration of all the Permissions.
+ */
+public Enumeration<Permission> elements() {
+    // go through each Permissions in the hash table
+    // and call their elements() function.
+    synchronized (this) {
+        return new PermissionsEnumerator(permsMap.values().iterator());
+    }
+}

@@ -1,0 +1,11 @@
+public boolean tryAdvance(LongConsumer consumer) {
+    if (consumer == null)
+        throw new NullPointerException();
+    long i = index, f = fence;
+    if (i < f) {
+        consumer.accept(rng.internalNextLong(origin, bound));
+        index = i + 1;
+        return true;
+    }
+    return false;
+}

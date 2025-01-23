@@ -1,0 +1,16 @@
+private void convertToRGB() {
+    int size = width * height;
+    int[] newpixels = new int[size];
+    if (bytePixels != null) {
+        for (int i = 0; i < size; i++) {
+            newpixels[i] = this.model.getRGB(bytePixels[i] & 0xff);
+        }
+    } else if (intPixels != null) {
+        for (int i = 0; i < size; i++) {
+            newpixels[i] = this.model.getRGB(intPixels[i]);
+        }
+    }
+    bytePixels = null;
+    intPixels = newpixels;
+    this.model = ColorModel.getRGBdefault();
+}

@@ -1,0 +1,19 @@
+/**
+ * Sets new list of listeners for the specified property.
+ *
+ * @param name       the name of the property
+ * @param listeners  new list of listeners
+ */
+public final void set(String name, L[] listeners) {
+    if (listeners != null) {
+        if (this.map == null) {
+            this.map = new HashMap<>();
+        }
+        this.map.put(name, listeners);
+    } else if (this.map != null) {
+        this.map.remove(name);
+        if (this.map.isEmpty()) {
+            this.map = null;
+        }
+    }
+}

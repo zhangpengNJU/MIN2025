@@ -1,0 +1,10 @@
+/* ----------------- primitive data input methods ------------------ */
+/*
+         * The following methods are equivalent to their counterparts in
+         * DataInputStream, except that they interpret data block boundaries
+         * and read the requested data from within data blocks when in block
+         * data mode.
+         */
+public void readFully(byte[] b) throws IOException {
+    readFully(b, 0, b.length, false);
+}

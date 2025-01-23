@@ -1,0 +1,23 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final boolean contains(double x, double y) {
+    if (x * 0.0 + y * 0.0 == 0.0) {
+        /* N * 0.0 is 0.0 only if N is finite.
+             * Here we know that both x and y are finite.
+             */
+        if (numTypes < 2) {
+            return false;
+        }
+        int mask = (windingRule == WIND_NON_ZERO ? -1 : 1);
+        return ((pointCrossings(x, y) & mask) != 0);
+    } else {
+        /* Either x or y was infinite or NaN.
+             * A NaN always produces a negative response to any test
+             * and Infinity values cannot be "inside" any path so
+             * they should return false as well.
+             */
+        return false;
+    }
+}

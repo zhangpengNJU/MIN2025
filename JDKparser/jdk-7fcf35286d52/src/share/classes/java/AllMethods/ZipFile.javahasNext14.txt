@@ -1,0 +1,6 @@
+public boolean hasNext() {
+    synchronized (ZipFile.this) {
+        ensureOpen();
+        return i < total;
+    }
+}

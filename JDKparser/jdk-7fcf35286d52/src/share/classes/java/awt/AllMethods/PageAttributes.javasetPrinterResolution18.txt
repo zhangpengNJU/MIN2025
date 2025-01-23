@@ -1,0 +1,34 @@
+/**
+ * Specifies the desired print resolution for pages using these attributes.
+ * The actual resolution will be determined by the limitations of the
+ * implementation and the target printer. Index 0 of the array specifies
+ * the cross feed direction resolution (typically the horizontal
+ * resolution). Index 1 of the array specifies the feed direction
+ * resolution (typically the vertical resolution). Index 2 of the array
+ * specifies whether the resolutions are in dots per inch or dots per
+ * centimeter. <code>3</code> denotes dots per inch. <code>4</code>
+ * denotes dots per centimeter. Note that the 1.1 printing implementation
+ * (Toolkit.getPrintJob) requires that the feed and cross feed resolutions
+ * be the same. Not specifying the property is equivalent to calling
+ * setPrinterResolution(72).
+ *
+ * @param   printerResolution an integer array of 3 elements. The first
+ *          element must be greater than 0. The second element must be
+ *          must be greater than 0. The third element must be either
+ *          <code>3</code> or <code>4</code>.
+ * @throws  IllegalArgumentException if one or more of the above
+ *          conditions is violated.
+ */
+public void setPrinterResolution(int[] printerResolution) {
+    if (printerResolution == null || printerResolution.length != 3 || printerResolution[0] <= 0 || printerResolution[1] <= 0 || (printerResolution[2] != 3 && printerResolution[2] != 4)) {
+        throw new IllegalArgumentException("Invalid value for attribute " + "printerResolution");
+    }
+    // Store a copy because otherwise client code could circumvent the
+    // the checks made above by holding a reference to the array and
+    // modifying it after calling setPrinterResolution.
+    int[] copy = new int[3];
+    copy[0] = printerResolution[0];
+    copy[1] = printerResolution[1];
+    copy[2] = printerResolution[2];
+    this.printerResolution = copy;
+}

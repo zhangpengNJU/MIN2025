@@ -1,0 +1,31 @@
+/**
+ * Connects this piped writer to a receiver. If this object
+ * is already connected to some other piped reader, an
+ * <code>IOException</code> is thrown.
+ * <p>
+ * If <code>snk</code> is an unconnected piped reader and
+ * <code>src</code> is an unconnected piped writer, they may
+ * be connected by either the call:
+ * <blockquote><pre>
+ * src.connect(snk)</pre></blockquote>
+ * or the call:
+ * <blockquote><pre>
+ * snk.connect(src)</pre></blockquote>
+ * The two calls have the same effect.
+ *
+ * @param      snk   the piped reader to connect to.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public synchronized void connect(PipedReader snk) throws IOException {
+    if (snk == null) {
+        throw new NullPointerException();
+    } else if (sink != null || snk.connected) {
+        throw new IOException("Already connected");
+    } else if (snk.closedByReader || closed) {
+        throw new IOException("Pipe closed");
+    }
+    sink = snk;
+    snk.in = -1;
+    snk.out = 0;
+    snk.connected = true;
+}

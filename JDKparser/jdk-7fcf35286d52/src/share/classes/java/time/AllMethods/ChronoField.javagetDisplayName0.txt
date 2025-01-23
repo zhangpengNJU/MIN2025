@@ -1,0 +1,11 @@
+@Override
+public String getDisplayName(Locale locale) {
+    Objects.requireNonNull(locale, "locale");
+    if (displayNameKey == null) {
+        return name;
+    }
+    LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased().getLocaleResources(locale);
+    ResourceBundle rb = lr.getJavaTimeFormatData();
+    String key = "field." + displayNameKey;
+    return rb.containsKey(key) ? rb.getString(key) : name;
+}

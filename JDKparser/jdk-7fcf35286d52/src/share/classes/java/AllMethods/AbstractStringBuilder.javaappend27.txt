@@ -1,0 +1,24 @@
+/**
+ * Appends the string representation of the {@code long}
+ * argument to this sequence.
+ * <p>
+ * The overall effect is exactly as if the argument were converted
+ * to a string by the method {@link String#valueOf(long)},
+ * and the characters of that string were then
+ * {@link #append(String) appended} to this character sequence.
+ *
+ * @param   l   a {@code long}.
+ * @return  a reference to this object.
+ */
+public AbstractStringBuilder append(long l) {
+    if (l == Long.MIN_VALUE) {
+        append("-9223372036854775808");
+        return this;
+    }
+    int appendedLength = (l < 0) ? Long.stringSize(-l) + 1 : Long.stringSize(l);
+    int spaceNeeded = count + appendedLength;
+    ensureCapacityInternal(spaceNeeded);
+    Long.getChars(l, spaceNeeded, value);
+    count = spaceNeeded;
+    return this;
+}

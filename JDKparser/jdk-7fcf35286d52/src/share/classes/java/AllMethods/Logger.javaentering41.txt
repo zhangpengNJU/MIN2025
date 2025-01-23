@@ -1,0 +1,16 @@
+// ======================================================================
+// Start of convenience methods for logging method entries and returns.
+// ======================================================================
+/**
+ * Log a method entry.
+ * <p>
+ * This is a convenience method that can be used to log entry
+ * to a method.  A LogRecord with message "ENTRY", log level
+ * FINER, and the given sourceMethod and sourceClass is logged.
+ * <p>
+ * @param   sourceClass    name of class that issued the logging request
+ * @param   sourceMethod   name of method that is being entered
+ */
+public void entering(String sourceClass, String sourceMethod) {
+    logp(Level.FINER, sourceClass, sourceMethod, "ENTRY");
+}

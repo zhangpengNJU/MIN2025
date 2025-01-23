@@ -1,0 +1,17 @@
+/**
+ * Put the string properties for this Service in this Provider's
+ * Hashtable.
+ */
+private void putPropertyStrings(Service s) {
+    String type = s.getType();
+    String algorithm = s.getAlgorithm();
+    // use super() to avoid permission check and other processing
+    super.put(type + "." + algorithm, s.getClassName());
+    for (String alias : s.getAliases()) {
+        super.put(ALIAS_PREFIX + type + "." + alias, algorithm);
+    }
+    for (Map.Entry<UString, String> entry : s.attributes.entrySet()) {
+        String key = type + "." + algorithm + " " + entry.getKey();
+        super.put(key, entry.getValue());
+    }
+}

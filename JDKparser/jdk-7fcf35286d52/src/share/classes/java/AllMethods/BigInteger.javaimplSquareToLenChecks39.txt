@@ -1,0 +1,20 @@
+/**
+ * Parameters validation.
+ */
+private static void implSquareToLenChecks(int[] x, int len, int[] z, int zlen) throws RuntimeException {
+    if (len < 1) {
+        throw new IllegalArgumentException("invalid input length: " + len);
+    }
+    if (len > x.length) {
+        throw new IllegalArgumentException("input length out of bound: " + len + " > " + x.length);
+    }
+    if (len * 2 > z.length) {
+        throw new IllegalArgumentException("input length out of bound: " + (len * 2) + " > " + z.length);
+    }
+    if (zlen < 1) {
+        throw new IllegalArgumentException("invalid input length: " + zlen);
+    }
+    if (zlen > z.length) {
+        throw new IllegalArgumentException("input length out of bound: " + len + " > " + z.length);
+    }
+}

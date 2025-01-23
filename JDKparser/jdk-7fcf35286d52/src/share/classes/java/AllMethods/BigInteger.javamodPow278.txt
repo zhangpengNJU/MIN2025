@@ -1,0 +1,23 @@
+/**
+ * Returns a BigInteger whose value is (this ** exponent) mod (2**p)
+ */
+private BigInteger modPow2(BigInteger exponent, int p) {
+    /*
+         * Perform exponentiation using repeated squaring trick, chopping off
+         * high order bits as indicated by modulus.
+         */
+    BigInteger result = ONE;
+    BigInteger baseToPow2 = this.mod2(p);
+    int expOffset = 0;
+    int limit = exponent.bitLength();
+    if (this.testBit(0))
+        limit = (p - 1) < limit ? (p - 1) : limit;
+    while (expOffset < limit) {
+        if (exponent.testBit(expOffset))
+            result = result.multiply(baseToPow2).mod2(p);
+        expOffset++;
+        if (expOffset < limit)
+            baseToPow2 = baseToPow2.square().mod2(p);
+    }
+    return result;
+}

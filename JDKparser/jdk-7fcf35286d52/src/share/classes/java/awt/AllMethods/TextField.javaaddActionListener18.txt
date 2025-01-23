@@ -1,0 +1,20 @@
+/**
+ * Adds the specified action listener to receive
+ * action events from this text field.
+ * If l is null, no exception is thrown and no action is performed.
+ * <p>Refer to <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for details on AWT's threading model.
+ *
+ * @param      l the action listener.
+ * @see        #removeActionListener
+ * @see        #getActionListeners
+ * @see        java.awt.event.ActionListener
+ * @since      JDK1.1
+ */
+public synchronized void addActionListener(ActionListener l) {
+    if (l == null) {
+        return;
+    }
+    actionListener = AWTEventMulticaster.add(actionListener, l);
+    newEventsOnly = true;
+}

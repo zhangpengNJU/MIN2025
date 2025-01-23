@@ -1,0 +1,12 @@
+/**
+ * Returns the thread keep-alive time, which is the amount of time
+ * that threads in excess of the core pool size may remain
+ * idle before being terminated.
+ *
+ * @param unit the desired time unit of the result
+ * @return the time limit
+ * @see #setKeepAliveTime(long, TimeUnit)
+ */
+public long getKeepAliveTime(TimeUnit unit) {
+    return unit.convert(keepAliveTime, TimeUnit.NANOSECONDS);
+}

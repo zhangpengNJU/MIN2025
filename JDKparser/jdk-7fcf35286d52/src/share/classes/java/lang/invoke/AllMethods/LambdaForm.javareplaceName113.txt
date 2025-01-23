@@ -1,0 +1,22 @@
+Name replaceName(Name oldName, Name newName) {
+    // FIXME: use replaceNames uniformly
+    if (oldName == newName)
+        return this;
+    @SuppressWarnings("LocalVariableHidesMemberVariable")
+    Object[] arguments = this.arguments;
+    if (arguments == null)
+        return this;
+    boolean replaced = false;
+    for (int j = 0; j < arguments.length; j++) {
+        if (arguments[j] == oldName) {
+            if (!replaced) {
+                replaced = true;
+                arguments = arguments.clone();
+            }
+            arguments[j] = newName;
+        }
+    }
+    if (!replaced)
+        return this;
+    return new Name(function, arguments);
+}

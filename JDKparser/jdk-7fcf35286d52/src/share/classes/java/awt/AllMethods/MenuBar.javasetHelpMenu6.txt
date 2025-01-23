@@ -1,0 +1,31 @@
+/**
+ * Sets the specified menu to be this menu bar's help menu.
+ * If this menu bar has an existing help menu, the old help menu is
+ * removed from the menu bar, and replaced with the specified menu.
+ * @param m    the menu to be set as the help menu
+ */
+public void setHelpMenu(final Menu m) {
+    synchronized (getTreeLock()) {
+        if (helpMenu == m) {
+            return;
+        }
+        if (helpMenu != null) {
+            remove(helpMenu);
+        }
+        helpMenu = m;
+        if (m != null) {
+            if (m.parent != this) {
+                add(m);
+            }
+            m.isHelpMenu = true;
+            m.parent = this;
+            MenuBarPeer peer = (MenuBarPeer) this.peer;
+            if (peer != null) {
+                if (m.peer == null) {
+                    m.addNotify();
+                }
+                peer.addHelpMenu(m);
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+final boolean uniExceptionally(CompletableFuture<T> a, Function<? super Throwable, ? extends T> f, UniExceptionally<T> c) {
+    Object r;
+    Throwable x;
+    if (a == null || (r = a.result) == null || f == null)
+        return false;
+    if (result == null) {
+        try {
+            if (r instanceof AltResult && (x = ((AltResult) r).ex) != null) {
+                if (c != null && !c.claim())
+                    return false;
+                completeValue(f.apply(x));
+            } else
+                internalComplete(r);
+        } catch (Throwable ex) {
+            completeThrowable(ex);
+        }
+    }
+    return true;
+}

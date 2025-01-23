@@ -1,0 +1,79 @@
+// this version provides extra info in the float array
+// the first two values are as above
+// the next four values are the endpoints of the caret, as computed
+// using the hit character's offset (baseline + ssoffset) and
+// natural ascent and descent.
+// these  values are trimmed to the bounds where required to fit,
+// but otherwise independent of it.
+private float[] getCaretInfoTestInternal(TextHitInfo hit, Rectangle2D bounds) {
+    ensureCache();
+    checkTextHit(hit);
+    float[] info = new float[6];
+    // get old data first
+    getCaretInfo(hitToCaret(hit), bounds, info);
+    // then add our new data
+    double iangle, ixbase, p1x, p1y, p2x, p2y;
+    int charix = hit.getCharIndex();
+    boolean lead = hit.isLeadingEdge();
+    boolean ltr = textLine.isDirectionLTR();
+    boolean horiz = !isVertical();
+    if (charix == -1 || charix == characterCount) {
+        // !!! note: want non-shifted, baseline ascent and descent here!
+        // TextLine should return appropriate line metrics object for these values
+        TextLineMetrics m = textLine.getMetrics();
+        boolean low = ltr == (charix == -1);
+        iangle = 0;
+        if (horiz) {
+            p1x = p2x = low ? 0 : m.advance;
+            p1y = -m.ascent;
+            p2y = m.descent;
+        } else {
+            p1y = p2y = low ? 0 : m.advance;
+            p1x = m.descent;
+            p2x = m.ascent;
+        }
+    } else {
+        CoreMetrics thiscm = textLine.getCoreMetricsAt(charix);
+        iangle = thiscm.italicAngle;
+        ixbase = textLine.getCharLinePosition(charix, lead);
+        if (thiscm.baselineIndex < 0) {
+            // this is a graphic, no italics, use entire line height for caret
+            TextLineMetrics m = textLine.getMetrics();
+            if (horiz) {
+                p1x = p2x = ixbase;
+                if (thiscm.baselineIndex == GraphicAttribute.TOP_ALIGNMENT) {
+                    p1y = -m.ascent;
+                    p2y = p1y + thiscm.height;
+                } else {
+                    p2y = m.descent;
+                    p1y = p2y - thiscm.height;
+                }
+            } else {
+                p1y = p2y = ixbase;
+                p1x = m.descent;
+                p2x = m.ascent;
+            // !!! top/bottom adjustment not implemented for vertical
+            }
+        } else {
+            float bo = baselineOffsets[thiscm.baselineIndex];
+            if (horiz) {
+                ixbase += iangle * thiscm.ssOffset;
+                p1x = ixbase + iangle * thiscm.ascent;
+                p2x = ixbase - iangle * thiscm.descent;
+                p1y = bo - thiscm.ascent;
+                p2y = bo + thiscm.descent;
+            } else {
+                ixbase -= iangle * thiscm.ssOffset;
+                p1y = ixbase + iangle * thiscm.ascent;
+                p2y = ixbase - iangle * thiscm.descent;
+                p1x = bo + thiscm.ascent;
+                p2x = bo + thiscm.descent;
+            }
+        }
+    }
+    info[2] = (float) p1x;
+    info[3] = (float) p1y;
+    info[4] = (float) p2x;
+    info[5] = (float) p2y;
+    return info;
+}

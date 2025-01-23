@@ -1,0 +1,16 @@
+private static int eventToCacheIndex(AWTEvent e) {
+    switch(e.getID()) {
+        case PaintEvent.PAINT:
+            return PAINT;
+        case PaintEvent.UPDATE:
+            return UPDATE;
+        case MouseEvent.MOUSE_MOVED:
+            return MOVE;
+        case MouseEvent.MOUSE_DRAGGED:
+            // Return -1 for SunDropTargetEvent since they are usually synchronous
+            // and we don't want to skip them by coalescing with MouseEvent or other drag events
+            return e instanceof SunDropTargetEvent ? -1 : DRAG;
+        default:
+            return e instanceof PeerEvent ? PEER : -1;
+    }
+}

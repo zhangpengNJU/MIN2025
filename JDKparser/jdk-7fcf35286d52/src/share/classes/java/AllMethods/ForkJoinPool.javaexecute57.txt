@@ -1,0 +1,13 @@
+/**
+ * Arranges for (asynchronous) execution of the given task.
+ *
+ * @param task the task
+ * @throws NullPointerException if the task is null
+ * @throws RejectedExecutionException if the task cannot be
+ *         scheduled for execution
+ */
+public void execute(ForkJoinTask<?> task) {
+    if (task == null)
+        throw new NullPointerException();
+    externalPush(task);
+}

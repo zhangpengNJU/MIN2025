@@ -1,0 +1,26 @@
+/**
+ * {@inheritDoc}
+ * <p>
+ * The {@code r.width} or {@code r.height} values
+ * will be automatically enlarged if either is less than
+ * the minimum size as specified by previous call to
+ * {@code setMinimumSize}.
+ * <p>
+ * The method changes the geometry-related data. Therefore,
+ * the native windowing system may ignore such requests, or it may modify
+ * the requested data, so that the {@code Window} object is placed and sized
+ * in a way that corresponds closely to the desktop settings.
+ *
+ * @see #getBounds
+ * @see #setLocation(int, int)
+ * @see #setLocation(Point)
+ * @see #setSize(int, int)
+ * @see #setSize(Dimension)
+ * @see #setMinimumSize
+ * @see #setLocationByPlatform
+ * @see #isLocationByPlatform
+ * @since 1.6
+ */
+public void setBounds(Rectangle r) {
+    setBounds(r.x, r.y, r.width, r.height);
+}

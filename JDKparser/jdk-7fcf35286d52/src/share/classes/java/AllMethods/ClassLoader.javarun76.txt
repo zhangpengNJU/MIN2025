@@ -1,0 +1,10 @@
+public ClassLoader run() throws Exception {
+    String cls = System.getProperty("java.system.class.loader");
+    if (cls == null) {
+        return parent;
+    }
+    Constructor<?> ctor = Class.forName(cls, true, parent).getDeclaredConstructor(new Class<?>[] { ClassLoader.class });
+    ClassLoader sys = (ClassLoader) ctor.newInstance(new Object[] { parent });
+    Thread.currentThread().setContextClassLoader(sys);
+    return sys;
+}

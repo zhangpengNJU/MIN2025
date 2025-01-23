@@ -1,0 +1,10 @@
+/**
+ * Produce the message and include the message from the nested
+ * exception, if there is one.
+ */
+public String getMessage() {
+    if (detail == null)
+        return super.getMessage();
+    else
+        return super.getMessage() + "; " + detail.toString();
+}

@@ -1,0 +1,33 @@
+/**
+ * Returns the string representation of this ACL entry.
+ *
+ * @return  the string representation of this entry
+ */
+@Override
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    // who
+    sb.append(who.getName());
+    sb.append(':');
+    // permissions
+    for (AclEntryPermission perm : perms) {
+        sb.append(perm.name());
+        sb.append('/');
+    }
+    // drop final slash
+    sb.setLength(sb.length() - 1);
+    sb.append(':');
+    // flags
+    if (!flags.isEmpty()) {
+        for (AclEntryFlag flag : flags) {
+            sb.append(flag.name());
+            sb.append('/');
+        }
+        // drop final slash
+        sb.setLength(sb.length() - 1);
+        sb.append(':');
+    }
+    // type
+    sb.append(type.name());
+    return sb.toString();
+}

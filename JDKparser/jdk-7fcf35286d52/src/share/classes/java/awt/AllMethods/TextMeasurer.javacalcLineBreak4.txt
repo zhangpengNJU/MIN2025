@@ -1,0 +1,39 @@
+private int calcLineBreak(final int pos, final float maxAdvance) {
+    // either of these statements removes the bug:
+    // generateComponents(0, fChars.length);
+    // generateComponents(pos, fChars.length);
+    int startPos = pos;
+    float width = maxAdvance;
+    int tlcIndex;
+    int tlcStart = fComponentStart;
+    for (tlcIndex = 0; tlcIndex < fComponents.length; tlcIndex++) {
+        int gaLimit = tlcStart + fComponents[tlcIndex].getNumCharacters();
+        if (gaLimit > startPos) {
+            break;
+        } else {
+            tlcStart = gaLimit;
+        }
+    }
+    // tlcStart is now the start of the tlc at tlcIndex
+    for (; tlcIndex < fComponents.length; tlcIndex++) {
+        TextLineComponent tlc = fComponents[tlcIndex];
+        int numCharsInGa = tlc.getNumCharacters();
+        int lineBreak = tlc.getLineBreakIndex(startPos - tlcStart, width);
+        if (lineBreak == numCharsInGa && tlcIndex < fComponents.length) {
+            width -= tlc.getAdvanceBetween(startPos - tlcStart, lineBreak);
+            tlcStart += numCharsInGa;
+            startPos = tlcStart;
+        } else {
+            return tlcStart + lineBreak;
+        }
+    }
+    if (fComponentLimit < fChars.length) {
+        // format more text and try again
+        // if (haveLayoutWindow) {
+        // outOfWindow++;
+        // }
+        generateComponents(pos, fChars.length);
+        return calcLineBreak(pos, maxAdvance);
+    }
+    return fChars.length;
+}

@@ -1,0 +1,41 @@
+private void print(long value, Locale l) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    if (c == Conversion.DECIMAL_INTEGER) {
+        boolean neg = value < 0;
+        char[] va;
+        if (value < 0)
+            va = Long.toString(value, 10).substring(1).toCharArray();
+        else
+            va = Long.toString(value, 10).toCharArray();
+        // leading sign indicator
+        leadingSign(sb, neg);
+        // the value
+        localizedMagnitude(sb, va, f, adjustWidth(width, f, neg), l);
+        // trailing sign indicator
+        trailingSign(sb, neg);
+    } else if (c == Conversion.OCTAL_INTEGER) {
+        checkBadFlags(Flags.PARENTHESES, Flags.LEADING_SPACE, Flags.PLUS);
+        String s = Long.toOctalString(value);
+        int len = (f.contains(Flags.ALTERNATE) ? s.length() + 1 : s.length());
+        // apply ALTERNATE (radix indicator for octal) before ZERO_PAD
+        if (f.contains(Flags.ALTERNATE))
+            sb.append('0');
+        if (f.contains(Flags.ZERO_PAD))
+            for (int i = 0; i < width - len; i++) sb.append('0');
+        sb.append(s);
+    } else if (c == Conversion.HEXADECIMAL_INTEGER) {
+        checkBadFlags(Flags.PARENTHESES, Flags.LEADING_SPACE, Flags.PLUS);
+        String s = Long.toHexString(value);
+        int len = (f.contains(Flags.ALTERNATE) ? s.length() + 2 : s.length());
+        // apply ALTERNATE (radix indicator for hex) before ZERO_PAD
+        if (f.contains(Flags.ALTERNATE))
+            sb.append(f.contains(Flags.UPPERCASE) ? "0X" : "0x");
+        if (f.contains(Flags.ZERO_PAD))
+            for (int i = 0; i < width - len; i++) sb.append('0');
+        if (f.contains(Flags.UPPERCASE))
+            s = s.toUpperCase();
+        sb.append(s);
+    }
+    // justify based on width
+    a.append(justify(sb.toString()));
+}

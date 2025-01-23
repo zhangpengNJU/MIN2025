@@ -1,0 +1,55 @@
+/**
+ * Sets the data for a single pixel in the specified DataBuffer from a
+ * primitive array of type TransferType.  For a
+ * SinglePixelPackedSampleModel, only the first element of the array
+ * will hold valid data, and the type of the array must be the same as
+ * the storage data type of the SinglePixelPackedSampleModel.
+ * <p>
+ * The following code illustrates transferring data for one pixel from
+ * DataBuffer <code>db1</code>, whose storage layout is described by
+ * SinglePixelPackedSampleModel <code>sppsm1</code>,
+ * to DataBuffer <code>db2</code>, whose storage layout is described by
+ * SinglePixelPackedSampleModel <code>sppsm2</code>.
+ * The transfer will generally be more efficient than using
+ * getPixel/setPixel.
+ * <pre>
+ *       SinglePixelPackedSampleModel sppsm1, sppsm2;
+ *       DataBufferInt db1, db2;
+ *       sppsm2.setDataElements(x, y, sppsm1.getDataElements(x, y, null,
+ *                              db1), db2);
+ * </pre>
+ * Using getDataElements/setDataElements to transfer between two
+ * DataBuffer/SampleModel pairs is legitimate if the SampleModels have
+ * the same number of bands, corresponding bands have the same number of
+ * bits per sample, and the TransferTypes are the same.
+ * <p>
+ * obj must be a primitive array of type TransferType.  Otherwise,
+ * a ClassCastException is thrown.  An
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds, or if obj is not large enough to hold the pixel data.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param obj       A primitive array containing pixel data.
+ * @param data      The DataBuffer containing the image data.
+ * @see #getDataElements(int, int, Object, DataBuffer)
+ */
+public void setDataElements(int x, int y, Object obj, DataBuffer data) {
+    if ((x < 0) || (y < 0) || (x >= width) || (y >= height)) {
+        throw new ArrayIndexOutOfBoundsException("Coordinate out of bounds!");
+    }
+    int type = getTransferType();
+    switch(type) {
+        case DataBuffer.TYPE_BYTE:
+            byte[] barray = (byte[]) obj;
+            data.setElem(y * scanlineStride + x, ((int) barray[0]) & 0xff);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            short[] sarray = (short[]) obj;
+            data.setElem(y * scanlineStride + x, ((int) sarray[0]) & 0xffff);
+            break;
+        case DataBuffer.TYPE_INT:
+            int[] iarray = (int[]) obj;
+            data.setElem(y * scanlineStride + x, iarray[0]);
+            break;
+    }
+}

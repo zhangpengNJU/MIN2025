@@ -1,0 +1,18 @@
+/**
+ * Protected convenience method to report an error to this Handler's
+ * ErrorManager.  Note that this method retrieves and uses the ErrorManager
+ * without doing a security check.  It can therefore be used in
+ * environments where the caller may be non-privileged.
+ *
+ * @param msg    a descriptive string (may be null)
+ * @param ex     an exception (may be null)
+ * @param code   an error code defined in ErrorManager
+ */
+protected void reportError(String msg, Exception ex, int code) {
+    try {
+        errorManager.error(msg, ex, code);
+    } catch (Exception ex2) {
+        System.err.println("Handler.reportError caught:");
+        ex2.printStackTrace();
+    }
+}

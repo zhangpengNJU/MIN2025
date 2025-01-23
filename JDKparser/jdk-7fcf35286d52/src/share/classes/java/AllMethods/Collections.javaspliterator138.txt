@@ -1,0 +1,4 @@
+@SuppressWarnings("unchecked")
+public Spliterator<Entry<K, V>> spliterator() {
+    return new UnmodifiableEntrySetSpliterator<>((Spliterator<Map.Entry<K, V>>) c.spliterator());
+}

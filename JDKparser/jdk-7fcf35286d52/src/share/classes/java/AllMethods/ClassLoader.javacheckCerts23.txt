@@ -1,0 +1,22 @@
+private void checkCerts(String name, CodeSource cs) {
+    int i = name.lastIndexOf('.');
+    String pname = (i == -1) ? "" : name.substring(0, i);
+    Certificate[] certs = null;
+    if (cs != null) {
+        certs = cs.getCertificates();
+    }
+    Certificate[] pcerts = null;
+    if (parallelLockMap == null) {
+        synchronized (this) {
+            pcerts = package2certs.get(pname);
+            if (pcerts == null) {
+                package2certs.put(pname, (certs == null ? nocerts : certs));
+            }
+        }
+    } else {
+        pcerts = ((ConcurrentHashMap<String, Certificate[]>) package2certs).putIfAbsent(pname, (certs == null ? nocerts : certs));
+    }
+    if (pcerts != null && !compareCerts(pcerts, certs)) {
+        throw new SecurityException("class \"" + name + "\"'s signer information does not match signer information of other classes in the same package");
+    }
+}

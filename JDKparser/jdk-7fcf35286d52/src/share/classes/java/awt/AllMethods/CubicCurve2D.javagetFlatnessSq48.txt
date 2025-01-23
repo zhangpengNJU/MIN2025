@@ -1,0 +1,16 @@
+/**
+ * Returns the square of the flatness of the cubic curve specified
+ * by the control points stored in the indicated array at the
+ * indicated index. The flatness is the maximum distance
+ * of a control point from the line connecting the end points.
+ * @param coords an array containing coordinates
+ * @param offset the index of <code>coords</code> from which to begin
+ *          getting the end points and control points of the curve
+ * @return the square of the flatness of the <code>CubicCurve2D</code>
+ *          specified by the coordinates in <code>coords</code> at
+ *          the specified offset.
+ * @since 1.2
+ */
+public static double getFlatnessSq(double[] coords, int offset) {
+    return getFlatnessSq(coords[offset + 0], coords[offset + 1], coords[offset + 2], coords[offset + 3], coords[offset + 4], coords[offset + 5], coords[offset + 6], coords[offset + 7]);
+}

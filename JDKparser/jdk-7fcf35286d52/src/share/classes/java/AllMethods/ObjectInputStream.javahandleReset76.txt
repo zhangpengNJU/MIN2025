@@ -1,0 +1,11 @@
+/**
+ * If recursion depth is 0, clears internal data structures; otherwise,
+ * throws a StreamCorruptedException.  This method is called when a
+ * TC_RESET typecode is encountered.
+ */
+private void handleReset() throws StreamCorruptedException {
+    if (depth > 0) {
+        throw new StreamCorruptedException("unexpected reset; recursion depth: " + depth);
+    }
+    clear();
+}

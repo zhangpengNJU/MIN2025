@@ -1,0 +1,34 @@
+/**
+ * Writes a sequence of bytes to this channel from the given buffers.
+ *
+ * <p> An invocation of this method of the form <tt>c.write(srcs)</tt>
+ * behaves in exactly the same manner as the invocation
+ *
+ * <blockquote><pre>
+ * c.write(srcs, 0, srcs.length);</pre></blockquote>
+ *
+ * @param  srcs
+ *         The buffers from which bytes are to be retrieved
+ *
+ * @return  The number of bytes written, possibly zero
+ *
+ * @throws  NonWritableChannelException
+ *          If this channel was not opened for writing
+ *
+ * @throws  ClosedChannelException
+ *          If this channel is closed
+ *
+ * @throws  AsynchronousCloseException
+ *          If another thread closes this channel
+ *          while the write operation is in progress
+ *
+ * @throws  ClosedByInterruptException
+ *          If another thread interrupts the current thread
+ *          while the write operation is in progress, thereby
+ *          closing the channel and setting the current thread's
+ *          interrupt status
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public long write(ByteBuffer[] srcs) throws IOException;

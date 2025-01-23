@@ -1,0 +1,13 @@
+// -----------------------------------------------------------------------
+@Override
+public long until(Temporal endExclusive, TemporalUnit unit) {
+    Objects.requireNonNull(endExclusive, "endExclusive");
+    @SuppressWarnings("unchecked")
+    ChronoZonedDateTime<D> end = (ChronoZonedDateTime<D>) getChronology().zonedDateTime(endExclusive);
+    if (unit instanceof ChronoUnit) {
+        end = end.withZoneSameInstant(offset);
+        return dateTime.until(end.toLocalDateTime(), unit);
+    }
+    Objects.requireNonNull(unit, "unit");
+    return unit.between(this, end);
+}

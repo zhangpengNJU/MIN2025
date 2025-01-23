@@ -1,0 +1,4 @@
+public Entry<K, V> lowerEntry(K key) {
+    Entry<K, V> lower = nm.lowerEntry(key);
+    return (null != lower) ? new CheckedMap.CheckedEntrySet.CheckedEntry<>(lower, valueType) : null;
+}

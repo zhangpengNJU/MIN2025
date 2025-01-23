@@ -1,0 +1,41 @@
+/**
+ * Given that first probe was a collision, retry at nearby locations.
+ */
+static <T> Entry<T> probeBackupLocations(Entry<?>[] cache, ClassValue<T> classValue) {
+    if (PROBE_LIMIT <= 0)
+        return null;
+    // Probe the cache carefully, in a range of slots.
+    int mask = (cache.length - 1);
+    int home = (classValue.hashCodeForCache & mask);
+    // victim, if we find the real guy
+    Entry<?> e2 = cache[home];
+    if (e2 == null) {
+        // if nobody is at home, no need to search nearby
+        return null;
+    }
+    // assume !classValue.match(e2), but do not assert, because of races
+    int pos2 = -1;
+    for (int i = home + 1; i < home + PROBE_LIMIT; i++) {
+        Entry<?> e = cache[i & mask];
+        if (e == null) {
+            // only search within non-null runs
+            break;
+        }
+        if (classValue.match(e)) {
+            // relocate colliding entry e2 (from cache[home]) to first empty slot
+            cache[home] = e;
+            if (pos2 >= 0) {
+                cache[i & mask] = Entry.DEAD_ENTRY;
+            } else {
+                pos2 = i;
+            }
+            cache[pos2 & mask] = ((entryDislocation(cache, pos2, e2) < PROBE_LIMIT) ? // put e2 here if it fits
+            e2 : Entry.DEAD_ENTRY);
+            return classValue.castEntry(e);
+        }
+        // Remember first empty slot, if any:
+        if (!e.isLive() && pos2 < 0)
+            pos2 = i;
+    }
+    return null;
+}

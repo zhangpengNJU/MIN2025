@@ -1,0 +1,24 @@
+/**
+ * Returns the unsigned remainder from dividing the first argument
+ * by the second where each argument and the result is interpreted
+ * as an unsigned value.
+ *
+ * @param dividend the value to be divided
+ * @param divisor the value doing the dividing
+ * @return the unsigned remainder of the first argument divided by
+ * the second argument
+ * @see #divideUnsigned
+ * @since 1.8
+ */
+public static long remainderUnsigned(long dividend, long divisor) {
+    if (dividend > 0 && divisor > 0) {
+        // signed comparisons
+        return dividend % divisor;
+    } else {
+        if (// Avoid explicit check for 0 divisor
+        compareUnsigned(dividend, divisor) < 0)
+            return dividend;
+        else
+            return toUnsignedBigInteger(dividend).remainder(toUnsignedBigInteger(divisor)).longValue();
+    }
+}

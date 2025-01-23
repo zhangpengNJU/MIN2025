@@ -1,0 +1,62 @@
+/**
+ * Reconstitutes this object from a stream (i.e., deserialize it).
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    final ObjectInputStream input = stream;
+    input.defaultReadObject();
+    stamp = new int[FIELD_COUNT];
+    // Starting with version 2 (not implemented yet), we expect that
+    // fields[], isSet[], isTimeSet, and areFieldsSet may not be
+    // streamed out anymore.  We expect 'time' to be correct.
+    if (serialVersionOnStream >= 2) {
+        isTimeSet = true;
+        if (fields == null) {
+            fields = new int[FIELD_COUNT];
+        }
+        if (isSet == null) {
+            isSet = new boolean[FIELD_COUNT];
+        }
+    } else if (serialVersionOnStream >= 0) {
+        for (int i = 0; i < FIELD_COUNT; ++i) {
+            stamp[i] = isSet[i] ? COMPUTED : UNSET;
+        }
+    }
+    serialVersionOnStream = currentSerialVersion;
+    // If there's a ZoneInfo object, use it for zone.
+    ZoneInfo zi = null;
+    try {
+        zi = AccessController.doPrivileged(new PrivilegedExceptionAction<ZoneInfo>() {
+
+            @Override
+            public ZoneInfo run() throws Exception {
+                return (ZoneInfo) input.readObject();
+            }
+        }, CalendarAccessControlContext.INSTANCE);
+    } catch (PrivilegedActionException pae) {
+        Exception e = pae.getException();
+        if (!(e instanceof OptionalDataException)) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else if (e instanceof IOException) {
+                throw (IOException) e;
+            } else if (e instanceof ClassNotFoundException) {
+                throw (ClassNotFoundException) e;
+            }
+            throw new RuntimeException(e);
+        }
+    }
+    if (zi != null) {
+        zone = zi;
+    }
+    // If the deserialized object has a SimpleTimeZone, try to
+    // replace it with a ZoneInfo equivalent (as of 1.4) in order
+    // to be compatible with the SimpleTimeZone-based
+    // implementation as much as possible.
+    if (zone instanceof SimpleTimeZone) {
+        String id = zone.getID();
+        TimeZone tz = TimeZone.getTimeZone(id);
+        if (tz != null && tz.hasSameRules(zone) && tz.getID().equals(id)) {
+            zone = tz;
+        }
+    }
+}

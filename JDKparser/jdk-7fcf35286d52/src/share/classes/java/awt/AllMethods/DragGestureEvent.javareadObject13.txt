@@ -1,0 +1,54 @@
+/**
+ * Deserializes this <code>DragGestureEvent</code>. This method first
+ * performs default deserialization for all non-<code>transient</code>
+ * fields. An attempt is then made to deserialize this object's
+ * <code>List</code> of gesture events as well. This is first attempted
+ * by deserializing the field <code>events</code>, because, in releases
+ * prior to 1.4, a non-<code>transient</code> field of this name stored the
+ * <code>List</code> of gesture events. If this fails, the next object in
+ * the stream is used instead. If the resulting <code>List</code> is
+ * <code>null</code>, this object's <code>List</code> of gesture events
+ * is set to an empty <code>List</code>.
+ *
+ * @since 1.4
+ */
+private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
+    ObjectInputStream.GetField f = s.readFields();
+    DragSource newDragSource = (DragSource) f.get("dragSource", null);
+    if (newDragSource == null) {
+        throw new InvalidObjectException("null DragSource");
+    }
+    dragSource = newDragSource;
+    Component newComponent = (Component) f.get("component", null);
+    if (newComponent == null) {
+        throw new InvalidObjectException("null component");
+    }
+    component = newComponent;
+    Point newOrigin = (Point) f.get("origin", null);
+    if (newOrigin == null) {
+        throw new InvalidObjectException("null origin");
+    }
+    origin = newOrigin;
+    int newAction = f.get("action", 0);
+    if (newAction != DnDConstants.ACTION_COPY && newAction != DnDConstants.ACTION_MOVE && newAction != DnDConstants.ACTION_LINK) {
+        throw new InvalidObjectException("bad action");
+    }
+    action = newAction;
+    // Pre-1.4 support. 'events' was previously non-transient
+    List newEvents;
+    try {
+        newEvents = (List) f.get("events", null);
+    } catch (IllegalArgumentException e) {
+        // 1.4-compatible byte stream. 'events' was written explicitly
+        newEvents = (List) s.readObject();
+    }
+    // Implementation assumes 'events' is never null.
+    if (newEvents != null && newEvents.isEmpty()) {
+        // Constructor treats empty events list as invalid value
+        // Throw exception if serialized list is empty
+        throw new InvalidObjectException("empty list of events");
+    } else if (newEvents == null) {
+        newEvents = Collections.emptyList();
+    }
+    events = newEvents;
+}

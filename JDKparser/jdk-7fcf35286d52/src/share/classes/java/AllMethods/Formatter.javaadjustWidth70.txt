@@ -1,0 +1,6 @@
+private int adjustWidth(int width, Flags f, boolean neg) {
+    int newW = width;
+    if (newW != -1 && neg && f.contains(Flags.PARENTHESES))
+        newW--;
+    return newW;
+}

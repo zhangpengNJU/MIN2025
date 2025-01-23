@@ -1,0 +1,17 @@
+/**
+ * Returns the address of the endpoint this socket is bound to.
+ *
+ * @return a {@code SocketAddress} representing the local endpoint of this
+ *         socket, or {@code null} if it is closed or not bound yet.
+ * @see #getLocalAddress()
+ * @see #getLocalPort()
+ * @see #bind(SocketAddress)
+ * @since 1.4
+ */
+public SocketAddress getLocalSocketAddress() {
+    if (isClosed())
+        return null;
+    if (!isBound())
+        return null;
+    return new InetSocketAddress(getLocalAddress(), getLocalPort());
+}

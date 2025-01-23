@@ -1,0 +1,13 @@
+LambdaForm filterArgumentForm(int pos, BasicType newType) {
+    Transform key = Transform.of(Transform.Kind.FILTER_ARG, pos, newType.ordinal());
+    LambdaForm form = getInCache(key);
+    if (form != null) {
+        assert (form.arity == lambdaForm.arity);
+        assert (form.parameterType(pos) == newType);
+        return form;
+    }
+    BasicType oldType = lambdaForm.parameterType(pos);
+    MethodType filterType = MethodType.methodType(oldType.basicTypeClass(), newType.basicTypeClass());
+    form = makeArgumentCombinationForm(pos, filterType, false, false);
+    return putInCache(key, form);
+}

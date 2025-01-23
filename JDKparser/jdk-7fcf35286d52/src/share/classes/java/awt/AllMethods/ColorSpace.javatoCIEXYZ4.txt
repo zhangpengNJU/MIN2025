@@ -1,0 +1,25 @@
+/**
+ * Transforms a color value assumed to be in this ColorSpace
+ * into the CS_CIEXYZ conversion color space.
+ * <p>
+ * This method transforms color values using relative colorimetry,
+ * as defined by the International Color Consortium standard.  This
+ * means that the XYZ values returned by this method are represented
+ * relative to the D50 white point of the CS_CIEXYZ color space.
+ * This representation is useful in a two-step color conversion
+ * process in which colors are transformed from an input color
+ * space to CS_CIEXYZ and then to an output color space.  This
+ * representation is not the same as the XYZ values that would
+ * be measured from the given color value by a colorimeter.
+ * A further transformation is necessary to compute the XYZ values
+ * that would be measured using current CIE recommended practices.
+ * See the {@link ICC_ColorSpace#toCIEXYZ(float[]) toCIEXYZ} method of
+ * <code>ICC_ColorSpace</code> for further information.
+ * <p>
+ * @param colorvalue a float array with length of at least the number
+ *        of components in this ColorSpace
+ * @return a float array of length 3
+ * @throws ArrayIndexOutOfBoundsException if array length is not
+ *         at least the number of components in this ColorSpace.
+ */
+public abstract float[] toCIEXYZ(float[] colorvalue);

@@ -1,0 +1,9 @@
+private synchronized int statusAll(boolean load, boolean verify) {
+    MediaEntry cur = head;
+    int status = 0;
+    while (cur != null) {
+        status = status | cur.getStatus(load, verify);
+        cur = cur.next;
+    }
+    return status;
+}

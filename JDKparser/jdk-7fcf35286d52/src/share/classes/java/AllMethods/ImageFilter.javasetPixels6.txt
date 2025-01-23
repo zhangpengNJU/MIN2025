@@ -1,0 +1,14 @@
+/**
+ * Filters the information provided in the setPixels method of the
+ * ImageConsumer interface which takes an array of integers.
+ * <p>
+ * Note: This method is intended to be called by the ImageProducer
+ * of the Image whose pixels are being filtered.  Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ImageConsumer#setPixels
+ */
+public void setPixels(int x, int y, int w, int h, ColorModel model, int[] pixels, int off, int scansize) {
+    consumer.setPixels(x, y, w, h, model, pixels, off, scansize);
+}

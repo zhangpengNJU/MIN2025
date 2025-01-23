@@ -1,0 +1,13 @@
+/**
+ * <p>
+ * Subclasses can override this method to insert their own subclass
+ * of Child without having to override add() or the other Collection
+ * methods that add children to the set.
+ * </p>
+ *
+ * @param targetChild the child to create the Child on behalf of
+ * @param peer        the peer if the targetChild and peer are related by BeanContextProxy
+ */
+protected BCSChild createBCSChild(Object targetChild, Object peer) {
+    return new BCSSChild(targetChild, peer);
+}

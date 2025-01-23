@@ -1,0 +1,15 @@
+// The following method is called by the private method
+// <code>updateSystemColors</code> in <code>SystemColor</code>.
+/**
+ * Fills in the integer array that is supplied as an argument
+ * with the current system color values.
+ *
+ * @param     systemColors an integer array.
+ * @exception HeadlessException if GraphicsEnvironment.isHeadless()
+ * returns true
+ * @see       java.awt.GraphicsEnvironment#isHeadless
+ * @since     JDK1.1
+ */
+protected void loadSystemColors(int[] systemColors) throws HeadlessException {
+    GraphicsEnvironment.checkHeadless();
+}

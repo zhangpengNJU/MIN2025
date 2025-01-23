@@ -1,0 +1,10 @@
+private static int[] montgomerySquare(int[] a, int[] n, int len, long inv, int[] product) {
+    implMontgomeryMultiplyChecks(a, a, n, len, product);
+    if (len > MONTGOMERY_INTRINSIC_THRESHOLD) {
+        // Very long argument: do not use an intrinsic
+        product = squareToLen(a, len, product);
+        return montReduce(product, n, len, (int) inv);
+    } else {
+        return implMontgomerySquare(a, n, len, inv, materialize(product, len));
+    }
+}

@@ -1,0 +1,74 @@
+/**
+ * Returns true if two CodeSource's have the "same" location.
+ *
+ * @param that CodeSource to compare against
+ */
+private boolean matchLocation(CodeSource that) {
+    if (location == null)
+        return true;
+    if ((that == null) || (that.location == null))
+        return false;
+    if (location.equals(that.location))
+        return true;
+    if (!location.getProtocol().equalsIgnoreCase(that.location.getProtocol()))
+        return false;
+    int thisPort = location.getPort();
+    if (thisPort != -1) {
+        int thatPort = that.location.getPort();
+        int port = thatPort != -1 ? thatPort : that.location.getDefaultPort();
+        if (thisPort != port)
+            return false;
+    }
+    if (location.getFile().endsWith("/-")) {
+        // Matches the directory and (recursively) all files
+        // and subdirectories contained in that directory.
+        // For example, "/a/b/-" implies anything that starts with
+        // "/a/b/"
+        String thisPath = location.getFile().substring(0, location.getFile().length() - 1);
+        if (!that.location.getFile().startsWith(thisPath))
+            return false;
+    } else if (location.getFile().endsWith("/*")) {
+        // Matches the directory and all the files contained in that
+        // directory.
+        // For example, "/a/b/*" implies anything that starts with
+        // "/a/b/" but has no further slashes
+        int last = that.location.getFile().lastIndexOf('/');
+        if (last == -1)
+            return false;
+        String thisPath = location.getFile().substring(0, location.getFile().length() - 1);
+        String thatPath = that.location.getFile().substring(0, last + 1);
+        if (!thatPath.equals(thisPath))
+            return false;
+    } else {
+        // Exact matches only.
+        // For example, "/a/b" and "/a/b/" both imply "/a/b/"
+        if ((!that.location.getFile().equals(location.getFile())) && (!that.location.getFile().equals(location.getFile() + "/"))) {
+            return false;
+        }
+    }
+    if (location.getRef() != null && !location.getRef().equals(that.location.getRef())) {
+        return false;
+    }
+    String thisHost = location.getHost();
+    String thatHost = that.location.getHost();
+    if (thisHost != null) {
+        if (("".equals(thisHost) || "localhost".equals(thisHost)) && ("".equals(thatHost) || "localhost".equals(thatHost))) {
+        // ok
+        } else if (!thisHost.equals(thatHost)) {
+            if (thatHost == null) {
+                return false;
+            }
+            if (this.sp == null) {
+                this.sp = new SocketPermission(thisHost, "resolve");
+            }
+            if (that.sp == null) {
+                that.sp = new SocketPermission(thatHost, "resolve");
+            }
+            if (!this.sp.implies(that.sp)) {
+                return false;
+            }
+        }
+    }
+    // everything matches
+    return true;
+}

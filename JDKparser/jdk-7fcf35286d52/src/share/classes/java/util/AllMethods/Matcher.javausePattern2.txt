@@ -1,0 +1,28 @@
+/**
+ * Changes the <tt>Pattern</tt> that this <tt>Matcher</tt> uses to
+ * find matches with.
+ *
+ * <p> This method causes this matcher to lose information
+ * about the groups of the last match that occurred. The
+ * matcher's position in the input is maintained and its
+ * last append position is unaffected.</p>
+ *
+ * @param  newPattern
+ *         The new pattern used by this matcher
+ * @return  This matcher
+ * @throws  IllegalArgumentException
+ *          If newPattern is <tt>null</tt>
+ * @since 1.5
+ */
+public Matcher usePattern(Pattern newPattern) {
+    if (newPattern == null)
+        throw new IllegalArgumentException("Pattern cannot be null");
+    parentPattern = newPattern;
+    // Reallocate state storage
+    int parentGroupCount = Math.max(newPattern.capturingGroupCount, 10);
+    groups = new int[parentGroupCount * 2];
+    locals = new int[newPattern.localCount];
+    for (int i = 0; i < groups.length; i++) groups[i] = -1;
+    for (int i = 0; i < locals.length; i++) locals[i] = -1;
+    return this;
+}

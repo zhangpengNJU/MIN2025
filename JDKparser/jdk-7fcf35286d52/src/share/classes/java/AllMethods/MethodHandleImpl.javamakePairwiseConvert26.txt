@@ -1,0 +1,20 @@
+/**
+ * Create a JVM-level adapter method handle to conform the given method
+ * handle to the similar newType, using only pairwise argument conversions.
+ * For each argument, convert incoming argument to the exact type needed.
+ * The argument conversions allowed are casting, boxing and unboxing,
+ * integral widening or narrowing, and floating point widening or narrowing.
+ * @param srcType required call type
+ * @param target original method handle
+ * @param strict if true, only asType conversions are allowed; if false, explicitCastArguments conversions allowed
+ * @param monobox if true, unboxing conversions are assumed to be exactly typed (Integer to int only, not long or double)
+ * @return an adapter to the original handle with the desired new type,
+ *          or the original target if the types are already identical
+ *          or null if the adaptation cannot be made
+ */
+static MethodHandle makePairwiseConvert(MethodHandle target, MethodType srcType, boolean strict, boolean monobox) {
+    MethodType dstType = target.type();
+    if (srcType == dstType)
+        return target;
+    return makePairwiseConvertByEditor(target, srcType, strict, monobox);
+}

@@ -1,0 +1,6 @@
+private static void check(String directive) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkSecurityAccess(directive);
+    }
+}

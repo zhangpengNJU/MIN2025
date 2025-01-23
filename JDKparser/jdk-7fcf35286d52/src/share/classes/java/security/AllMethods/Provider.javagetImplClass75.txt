@@ -1,0 +1,22 @@
+// return the implementation Class object for this service
+private Class<?> getImplClass() throws NoSuchAlgorithmException {
+    try {
+        Reference<Class<?>> ref = classRef;
+        Class<?> clazz = (ref == null) ? null : ref.get();
+        if (clazz == null) {
+            ClassLoader cl = provider.getClass().getClassLoader();
+            if (cl == null) {
+                clazz = Class.forName(className);
+            } else {
+                clazz = cl.loadClass(className);
+            }
+            if (!Modifier.isPublic(clazz.getModifiers())) {
+                throw new NoSuchAlgorithmException("class configured for " + type + " (provider: " + provider.getName() + ") is not public.");
+            }
+            classRef = new WeakReference<Class<?>>(clazz);
+        }
+        return clazz;
+    } catch (ClassNotFoundException e) {
+        throw new NoSuchAlgorithmException("class configured for " + type + " (provider: " + provider.getName() + ") cannot be found.", e);
+    }
+}

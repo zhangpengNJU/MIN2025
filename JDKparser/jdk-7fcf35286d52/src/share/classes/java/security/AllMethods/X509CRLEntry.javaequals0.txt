@@ -1,0 +1,28 @@
+/**
+ * Compares this CRL entry for equality with the given
+ * object. If the {@code other} object is an
+ * {@code instanceof} {@code X509CRLEntry}, then
+ * its encoded form (the inner SEQUENCE) is retrieved and compared
+ * with the encoded form of this CRL entry.
+ *
+ * @param other the object to test for equality with this CRL entry.
+ * @return true iff the encoded forms of the two CRL entries
+ * match, false otherwise.
+ */
+public boolean equals(Object other) {
+    if (this == other)
+        return true;
+    if (!(other instanceof X509CRLEntry))
+        return false;
+    try {
+        byte[] thisCRLEntry = this.getEncoded();
+        byte[] otherCRLEntry = ((X509CRLEntry) other).getEncoded();
+        if (thisCRLEntry.length != otherCRLEntry.length)
+            return false;
+        for (int i = 0; i < thisCRLEntry.length; i++) if (thisCRLEntry[i] != otherCRLEntry[i])
+            return false;
+    } catch (CRLException ce) {
+        return false;
+    }
+    return true;
+}

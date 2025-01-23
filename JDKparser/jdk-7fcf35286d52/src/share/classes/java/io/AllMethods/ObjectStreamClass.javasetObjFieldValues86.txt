@@ -1,0 +1,32 @@
+/**
+ * Sets the serializable object fields of object obj using values from
+ * array vals starting at offset 0.  The caller is responsible for
+ * ensuring that obj is of the proper type; however, attempts to set a
+ * field with a value of the wrong type will trigger an appropriate
+ * ClassCastException.
+ */
+void setObjFieldValues(Object obj, Object[] vals) {
+    if (obj == null) {
+        throw new NullPointerException();
+    }
+    for (int i = numPrimFields; i < fields.length; i++) {
+        long key = writeKeys[i];
+        if (key == Unsafe.INVALID_FIELD_OFFSET) {
+            // discard value
+            continue;
+        }
+        switch(typeCodes[i]) {
+            case 'L':
+            case '[':
+                Object val = vals[offsets[i]];
+                if (val != null && !types[i - numPrimFields].isInstance(val)) {
+                    Field f = fields[i].getField();
+                    throw new ClassCastException("cannot assign instance of " + val.getClass().getName() + " to field " + f.getDeclaringClass().getName() + "." + f.getName() + " of type " + f.getType().getName() + " in instance of " + obj.getClass().getName());
+                }
+                unsafe.putObject(obj, key, val);
+                break;
+            default:
+                throw new InternalError();
+        }
+    }
+}

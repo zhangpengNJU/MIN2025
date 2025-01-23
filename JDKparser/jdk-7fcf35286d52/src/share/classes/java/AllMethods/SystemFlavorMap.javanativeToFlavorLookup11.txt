@@ -1,0 +1,48 @@
+/**
+ * Semantically equivalent to 'nativeToFlavor.get(nat)'. This method
+ * handles the case where 'nat' is not found in 'nativeToFlavor'. In that
+ * case, a new DataFlavor is synthesized, stored, and returned, if and
+ * only if the specified native is encoded as a Java MIME type.
+ */
+private LinkedHashSet<DataFlavor> nativeToFlavorLookup(String nat) {
+    LinkedHashSet<DataFlavor> flavors = getNativeToFlavor().get(nat);
+    if (nat != null && !disabledMappingGenerationKeys.contains(nat)) {
+        DataTransferer transferer = DataTransferer.getInstance();
+        if (transferer != null) {
+            LinkedHashSet<DataFlavor> platformFlavors = transferer.getPlatformMappingsForNative(nat);
+            if (!platformFlavors.isEmpty()) {
+                if (flavors != null) {
+                    // Prepending the platform-specific mappings ensures
+                    // that the flavors added with
+                    // addFlavorForUnencodedNative() are at the end of
+                    // list.
+                    platformFlavors.addAll(flavors);
+                }
+                flavors = platformFlavors;
+            }
+        }
+    }
+    if (flavors == null && isJavaMIMEType(nat)) {
+        String decoded = decodeJavaMIMEType(nat);
+        DataFlavor flavor = null;
+        try {
+            flavor = new DataFlavor(decoded);
+        } catch (Exception e) {
+            System.err.println("Exception \"" + e.getClass().getName() + ": " + e.getMessage() + "\"while constructing DataFlavor for: " + decoded);
+        }
+        if (flavor != null) {
+            flavors = new LinkedHashSet<>(1);
+            getNativeToFlavor().put(nat, flavors);
+            flavors.add(flavor);
+            flavorsForNativeCache.remove(nat);
+            LinkedHashSet<String> natives = getFlavorToNative().get(flavor);
+            if (natives == null) {
+                natives = new LinkedHashSet<>(1);
+                getFlavorToNative().put(flavor, natives);
+            }
+            natives.add(nat);
+            nativesForFlavorCache.remove(flavor);
+        }
+    }
+    return (flavors != null) ? flavors : new LinkedHashSet<>(0);
+}

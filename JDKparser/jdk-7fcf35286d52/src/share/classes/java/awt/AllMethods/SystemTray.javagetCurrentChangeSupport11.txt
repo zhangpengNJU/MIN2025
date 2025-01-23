@@ -1,0 +1,14 @@
+/**
+ * Returns the current PropertyChangeSupport instance for the
+ * calling thread's context.
+ *
+ * @return this thread's context's PropertyChangeSupport
+ */
+private synchronized PropertyChangeSupport getCurrentChangeSupport() {
+    PropertyChangeSupport changeSupport = (PropertyChangeSupport) AppContext.getAppContext().get(SystemTray.class);
+    if (changeSupport == null) {
+        changeSupport = new PropertyChangeSupport(this);
+        AppContext.getAppContext().put(SystemTray.class, changeSupport);
+    }
+    return changeSupport;
+}

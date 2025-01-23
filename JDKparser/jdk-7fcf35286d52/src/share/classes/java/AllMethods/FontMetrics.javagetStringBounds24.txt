@@ -1,0 +1,18 @@
+/**
+ * Returns the bounds of the characters indexed in the specified
+ * <code>CharacterIterator</code> in the
+ * specified <code>Graphics</code> context.
+ * <p>Note: The returned bounds is in baseline-relative coordinates
+ * (see {@link java.awt.FontMetrics class notes}).
+ * @param ci the specified <code>CharacterIterator</code>
+ * @param beginIndex the initial offset in <code>ci</code>
+ * @param limit the end index of <code>ci</code>
+ * @param context the specified <code>Graphics</code> context
+ * @return a <code>Rectangle2D</code> that is the bounding box of the
+ * characters indexed in the specified <code>CharacterIterator</code>
+ * in the specified <code>Graphics</code> context.
+ * @see java.awt.Font#getStringBounds(CharacterIterator, int, int, FontRenderContext)
+ */
+public Rectangle2D getStringBounds(CharacterIterator ci, int beginIndex, int limit, Graphics context) {
+    return font.getStringBounds(ci, beginIndex, limit, myFRC(context));
+}

@@ -1,0 +1,21 @@
+/**
+ * Ensure that the buffer has at least capacity to hold the target size
+ */
+@SuppressWarnings("unchecked")
+protected final void ensureCapacity(long targetSize) {
+    long capacity = capacity();
+    if (targetSize > capacity) {
+        inflateSpine();
+        for (int i = spineIndex + 1; targetSize > capacity; i++) {
+            if (i >= spine.length) {
+                int newSpineSize = spine.length * 2;
+                spine = Arrays.copyOf(spine, newSpineSize);
+                priorElementCount = Arrays.copyOf(priorElementCount, newSpineSize);
+            }
+            int nextChunkSize = chunkSize(i);
+            spine[i] = (E[]) new Object[nextChunkSize];
+            priorElementCount[i] = priorElementCount[i - 1] + spine[i - 1].length;
+            capacity += nextChunkSize;
+        }
+    }
+}

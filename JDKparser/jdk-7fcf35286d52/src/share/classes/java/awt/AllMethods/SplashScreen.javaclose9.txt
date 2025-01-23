@@ -1,0 +1,14 @@
+/**
+ * Hides the splash screen, closes the window, and releases all associated
+ * resources.
+ *
+ * @throws IllegalStateException if the splash screen has already been closed
+ */
+public void close() throws IllegalStateException {
+    synchronized (SplashScreen.class) {
+        checkVisible();
+        _close(splashPtr);
+        image = null;
+        SplashScreen.markClosed();
+    }
+}

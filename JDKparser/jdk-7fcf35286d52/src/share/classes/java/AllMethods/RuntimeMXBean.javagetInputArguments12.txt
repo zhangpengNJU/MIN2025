@@ -1,0 +1,28 @@
+/**
+ * Returns the input arguments passed to the Java virtual machine
+ * which does not include the arguments to the <tt>main</tt> method.
+ * This method returns an empty list if there is no input argument
+ * to the Java virtual machine.
+ * <p>
+ * Some Java virtual machine implementations may take input arguments
+ * from multiple different sources: for examples, arguments passed from
+ * the application that launches the Java virtual machine such as
+ * the 'java' command, environment variables, configuration files, etc.
+ * <p>
+ * Typically, not all command-line options to the 'java' command
+ * are passed to the Java virtual machine.
+ * Thus, the returned input arguments may not
+ * include all command-line options.
+ *
+ * <p>
+ * <b>MBeanServer access</b>:<br>
+ * The mapped type of {@code List<String>} is <tt>String[]</tt>.
+ *
+ * @return a list of <tt>String</tt> objects; each element
+ * is an argument passed to the Java virtual machine.
+ *
+ * @throws  java.lang.SecurityException
+ *     if a security manager exists and the caller does not have
+ *     ManagementPermission("monitor").
+ */
+public java.util.List<String> getInputArguments();

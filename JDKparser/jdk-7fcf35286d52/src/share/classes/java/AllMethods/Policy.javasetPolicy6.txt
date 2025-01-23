@@ -1,0 +1,27 @@
+/**
+ * Sets the system-wide Policy object. This method first calls
+ * {@code SecurityManager.checkPermission} with a
+ * {@code SecurityPermission("setPolicy")}
+ * permission to ensure it's ok to set the Policy.
+ *
+ * @param p the new system Policy object.
+ *
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        {@code checkPermission} method doesn't allow
+ *        setting the Policy.
+ *
+ * @see SecurityManager#checkPermission(Permission)
+ * @see #getPolicy()
+ */
+public static void setPolicy(Policy p) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null)
+        sm.checkPermission(new SecurityPermission("setPolicy"));
+    if (p != null) {
+        initPolicy(p);
+    }
+    synchronized (Policy.class) {
+        policy.set(new PolicyInfo(p, p != null));
+    }
+}

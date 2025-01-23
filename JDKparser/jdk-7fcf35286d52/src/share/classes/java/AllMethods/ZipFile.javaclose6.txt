@@ -1,0 +1,13 @@
+public void close() throws IOException {
+    if (closeRequested)
+        return;
+    closeRequested = true;
+    super.close();
+    Inflater inf;
+    synchronized (streams) {
+        inf = streams.remove(this);
+    }
+    if (inf != null) {
+        releaseInflater(inf);
+    }
+}

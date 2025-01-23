@@ -1,0 +1,30 @@
+// -----------------------------------------------------------------------
+/**
+ * Obtains an instance of {@code ZonedDateTime} strictly validating the
+ * combination of local date-time, offset and zone ID.
+ * <p>
+ * This creates a zoned date-time ensuring that the offset is valid for the
+ * local date-time according to the rules of the specified zone.
+ * If the offset is invalid, an exception is thrown.
+ *
+ * @param localDateTime  the local date-time, not null
+ * @param offset  the zone offset, not null
+ * @param zone  the time-zone, not null
+ * @return the zoned date-time, not null
+ */
+public static ZonedDateTime ofStrict(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
+    Objects.requireNonNull(localDateTime, "localDateTime");
+    Objects.requireNonNull(offset, "offset");
+    Objects.requireNonNull(zone, "zone");
+    ZoneRules rules = zone.getRules();
+    if (rules.isValidOffset(localDateTime, offset) == false) {
+        ZoneOffsetTransition trans = rules.getTransition(localDateTime);
+        if (trans != null && trans.isGap()) {
+            // error message says daylight savings for simplicity
+            // even though there are other kinds of gaps
+            throw new DateTimeException("LocalDateTime '" + localDateTime + "' does not exist in zone '" + zone + "' due to a gap in the local time-line, typically caused by daylight savings");
+        }
+        throw new DateTimeException("ZoneOffset '" + offset + "' is not valid for LocalDateTime '" + localDateTime + "' in zone '" + zone + "'");
+    }
+    return new ZonedDateTime(localDateTime, offset, zone);
+}

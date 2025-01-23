@@ -1,0 +1,56 @@
+private FontLineMetrics defaultLineMetrics(FontRenderContext frc) {
+    FontLineMetrics flm = null;
+    if (flmref == null || (flm = flmref.get()) == null || !flm.frc.equals(frc)) {
+        /* The device transform in the frc is not used in obtaining line
+             * metrics, although it probably should be: REMIND find why not?
+             * The font transform is used but its applied in getFontMetrics, so
+             * just pass identity here
+             */
+        float[] metrics = new float[8];
+        getFont2D().getFontMetrics(this, identityTx, frc.getAntiAliasingHint(), frc.getFractionalMetricsHint(), metrics);
+        float ascent = metrics[0];
+        float descent = metrics[1];
+        float leading = metrics[2];
+        float ssOffset = 0;
+        if (values != null && values.getSuperscript() != 0) {
+            ssOffset = (float) getTransform().getTranslateY();
+            ascent -= ssOffset;
+            descent += ssOffset;
+        }
+        float height = ascent + descent + leading;
+        // need real index, assumes roman for everything
+        int baselineIndex = 0;
+        // need real baselines eventually
+        float[] baselineOffsets = { 0, (descent / 2f - ascent) / 2f, -ascent };
+        float strikethroughOffset = metrics[4];
+        float strikethroughThickness = metrics[5];
+        float underlineOffset = metrics[6];
+        float underlineThickness = metrics[7];
+        float italicAngle = getItalicAngle(frc);
+        if (isTransformed()) {
+            // extract rotation
+            AffineTransform ctx = values.getCharTransform();
+            if (ctx != null) {
+                Point2D.Float pt = new Point2D.Float();
+                pt.setLocation(0, strikethroughOffset);
+                ctx.deltaTransform(pt, pt);
+                strikethroughOffset = pt.y;
+                pt.setLocation(0, strikethroughThickness);
+                ctx.deltaTransform(pt, pt);
+                strikethroughThickness = pt.y;
+                pt.setLocation(0, underlineOffset);
+                ctx.deltaTransform(pt, pt);
+                underlineOffset = pt.y;
+                pt.setLocation(0, underlineThickness);
+                ctx.deltaTransform(pt, pt);
+                underlineThickness = pt.y;
+            }
+        }
+        strikethroughOffset += ssOffset;
+        underlineOffset += ssOffset;
+        CoreMetrics cm = new CoreMetrics(ascent, descent, leading, height, baselineIndex, baselineOffsets, strikethroughOffset, strikethroughThickness, underlineOffset, underlineThickness, ssOffset, italicAngle);
+        flm = new FontLineMetrics(0, cm, frc);
+        flmref = new SoftReference<FontLineMetrics>(flm);
+    }
+    return (FontLineMetrics) flm.clone();
+}

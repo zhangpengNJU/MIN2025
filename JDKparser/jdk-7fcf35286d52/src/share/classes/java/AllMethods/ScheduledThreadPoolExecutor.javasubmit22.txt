@@ -1,0 +1,7 @@
+/**
+ * @throws RejectedExecutionException {@inheritDoc}
+ * @throws NullPointerException       {@inheritDoc}
+ */
+public <T> Future<T> submit(Runnable task, T result) {
+    return schedule(Executors.callable(task, result), 0, NANOSECONDS);
+}

@@ -1,0 +1,20 @@
+/**
+ * Initialize this object for signing. If this method is called
+ * again with different arguments, it negates the effect
+ * of this call.
+ *
+ * @param privateKey the private key of the identity whose signature
+ * is going to be generated.
+ * @param params the parameters used for generating signature.
+ * @param random the source of randomness for this signature.
+ *
+ * @exception InvalidKeyException if the key is invalid.
+ * @exception InvalidAlgorithmParameterException if the params is invalid
+ */
+final void initSign(PrivateKey privateKey, AlgorithmParameterSpec params, SecureRandom random) throws InvalidKeyException, InvalidAlgorithmParameterException {
+    engineInitSign(privateKey, params, random);
+    state = SIGN;
+    if (!skipDebug && pdebug != null) {
+        pdebug.println("Signature." + algorithm + " signing algorithm from: " + getProviderName());
+    }
+}

@@ -1,0 +1,45 @@
+@Override
+public final LongStream flatMapToLong(Function<? super P_OUT, ? extends LongStream> mapper) {
+    Objects.requireNonNull(mapper);
+    // We can do better than this, by polling cancellationRequested when stream is infinite
+    return new LongPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE, StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
+
+        @Override
+        Sink<P_OUT> opWrapSink(int flags, Sink<Long> sink) {
+            return new Sink.ChainedReference<P_OUT, Long>(sink) {
+
+                // true if cancellationRequested() has been called
+                boolean cancellationRequestedCalled;
+
+                // cache the consumer to avoid creation on every accepted element
+                LongConsumer downstreamAsLong = downstream::accept;
+
+                @Override
+                public void begin(long size) {
+                    downstream.begin(-1);
+                }
+
+                @Override
+                public void accept(P_OUT u) {
+                    try (LongStream result = mapper.apply(u)) {
+                        if (result != null) {
+                            if (!cancellationRequestedCalled) {
+                                result.sequential().forEach(downstreamAsLong);
+                            } else {
+                                Spliterator.OfLong s = result.sequential().spliterator();
+                                do {
+                                } while (!downstream.cancellationRequested() && s.tryAdvance(downstreamAsLong));
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public boolean cancellationRequested() {
+                    cancellationRequestedCalled = true;
+                    return downstream.cancellationRequested();
+                }
+            };
+        }
+    };
+}

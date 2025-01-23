@@ -1,0 +1,17 @@
+/*
+     * Computes M+1 where M is an upper bound for all the roots in of eqn.
+     * See: http://en.wikipedia.org/wiki/Sturm%27s_theorem#Applications.
+     * The above link doesn't contain a proof, but I [dlila] proved it myself
+     * so the result is reliable. The proof isn't difficult, but it's a bit
+     * long to include here.
+     * Precondition: eqn must represent a cubic polynomial
+     */
+private static double getRootUpperBound(double[] eqn) {
+    double d = eqn[3];
+    double a = eqn[2];
+    double b = eqn[1];
+    double c = eqn[0];
+    double M = 1 + max(max(abs(a), abs(b)), abs(c)) / abs(d);
+    M += ulp(M) + 1;
+    return M;
+}

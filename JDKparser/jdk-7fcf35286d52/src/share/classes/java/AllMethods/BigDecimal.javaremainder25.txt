@@ -1,0 +1,28 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this %
+ * divisor)}, with rounding according to the context settings.
+ * The {@code MathContext} settings affect the implicit divide
+ * used to compute the remainder.  The remainder computation
+ * itself is by definition exact.  Therefore, the remainder may
+ * contain more than {@code mc.getPrecision()} digits.
+ *
+ * <p>The remainder is given by
+ * {@code this.subtract(this.divideToIntegralValue(divisor,
+ * mc).multiply(divisor))}.  Note that this is not the modulo
+ * operation (the result can be negative).
+ *
+ * @param  divisor value by which this {@code BigDecimal} is to be divided.
+ * @param  mc the context to use.
+ * @return {@code this % divisor}, rounded as necessary.
+ * @throws ArithmeticException if {@code divisor==0}
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}, or {@code mc.precision}
+ *         {@literal >} 0 and the result of {@code this.divideToIntgralValue(divisor)} would
+ *         require a precision of more than {@code mc.precision} digits.
+ * @see    #divideToIntegralValue(java.math.BigDecimal, java.math.MathContext)
+ * @since  1.5
+ */
+public BigDecimal remainder(BigDecimal divisor, MathContext mc) {
+    BigDecimal[] divrem = this.divideAndRemainder(divisor, mc);
+    return divrem[1];
+}

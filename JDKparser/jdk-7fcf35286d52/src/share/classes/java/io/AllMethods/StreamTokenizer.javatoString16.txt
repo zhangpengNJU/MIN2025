@@ -1,0 +1,53 @@
+/**
+ * Returns the string representation of the current stream token and
+ * the line number it occurs on.
+ *
+ * <p>The precise string returned is unspecified, although the following
+ * example can be considered typical:
+ *
+ * <blockquote><pre>Token['a'], line 10</pre></blockquote>
+ *
+ * @return  a string representation of the token
+ * @see     java.io.StreamTokenizer#nval
+ * @see     java.io.StreamTokenizer#sval
+ * @see     java.io.StreamTokenizer#ttype
+ */
+public String toString() {
+    String ret;
+    switch(ttype) {
+        case TT_EOF:
+            ret = "EOF";
+            break;
+        case TT_EOL:
+            ret = "EOL";
+            break;
+        case TT_WORD:
+            ret = sval;
+            break;
+        case TT_NUMBER:
+            ret = "n=" + nval;
+            break;
+        case TT_NOTHING:
+            ret = "NOTHING";
+            break;
+        default:
+            {
+                /*
+                 * ttype is the first character of either a quoted string or
+                 * is an ordinary character. ttype can definitely not be less
+                 * than 0, since those are reserved values used in the previous
+                 * case statements
+                 */
+                if (ttype < 256 && ((ctype[ttype] & CT_QUOTE) != 0)) {
+                    ret = sval;
+                    break;
+                }
+                char[] s = new char[3];
+                s[0] = s[2] = '\'';
+                s[1] = (char) ttype;
+                ret = new String(s);
+                break;
+            }
+    }
+    return "Token[" + ret + "], line " + LINENO;
+}

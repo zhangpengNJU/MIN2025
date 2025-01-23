@@ -1,0 +1,15 @@
+public boolean caretAtOffsetIsValid(int offset) {
+    if (offset < 0) {
+        throw new IllegalArgumentException("Negative offset.");
+    }
+    int tlcStart = 0;
+    for (int i = 0; i < fComponents.length; i++) {
+        int tlcLimit = tlcStart + fComponents[i].getNumCharacters();
+        if (tlcLimit > offset) {
+            return fComponents[i].caretAtOffsetIsValid(offset - tlcStart);
+        } else {
+            tlcStart = tlcLimit;
+        }
+    }
+    throw new IllegalArgumentException("logicalIndex too large.");
+}

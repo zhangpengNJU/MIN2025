@@ -1,0 +1,17 @@
+/**
+ * Closes this selector.
+ *
+ * <p> This method is invoked by the {@link #close close} method in order
+ * to perform the actual work of closing the selector.  This method is only
+ * invoked if the selector has not yet been closed, and it is never invoked
+ * more than once.
+ *
+ * <p> An implementation of this method must arrange for any other thread
+ * that is blocked in a selection operation upon this selector to return
+ * immediately as if by invoking the {@link
+ * java.nio.channels.Selector#wakeup wakeup} method. </p>
+ *
+ * @throws  IOException
+ *          If an I/O error occurs while closing the selector
+ */
+protected abstract void implCloseSelector() throws IOException;

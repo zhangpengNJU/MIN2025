@@ -1,0 +1,33 @@
+// Recalculate the effective level for this node and
+// recursively for our children.
+private void updateEffectiveLevel() {
+    // assert Thread.holdsLock(treeLock);
+    // Figure out our current effective level.
+    int newLevelValue;
+    if (levelObject != null) {
+        newLevelValue = levelObject.intValue();
+    } else {
+        if (parent != null) {
+            newLevelValue = parent.levelValue;
+        } else {
+            // This may happen during initialization.
+            newLevelValue = Level.INFO.intValue();
+        }
+    }
+    // If our effective value hasn't changed, we're done.
+    if (levelValue == newLevelValue) {
+        return;
+    }
+    levelValue = newLevelValue;
+    // System.err.println("effective level: \"" + getName() + "\" := " + level);
+    // Recursively update the level on each of our kids.
+    if (kids != null) {
+        for (int i = 0; i < kids.size(); i++) {
+            LogManager.LoggerWeakRef ref = kids.get(i);
+            Logger kid = ref.get();
+            if (kid != null) {
+                kid.updateEffectiveLevel();
+            }
+        }
+    }
+}

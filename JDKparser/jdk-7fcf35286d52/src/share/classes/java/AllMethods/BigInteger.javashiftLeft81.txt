@@ -1,0 +1,24 @@
+// Shift Operations
+/**
+ * Returns a BigInteger whose value is {@code (this << n)}.
+ * The shift distance, {@code n}, may be negative, in which case
+ * this method performs a right shift.
+ * (Computes <tt>floor(this * 2<sup>n</sup>)</tt>.)
+ *
+ * @param  n shift distance, in bits.
+ * @return {@code this << n}
+ * @see #shiftRight
+ */
+public BigInteger shiftLeft(int n) {
+    if (signum == 0)
+        return ZERO;
+    if (n > 0) {
+        return new BigInteger(shiftLeft(mag, n), signum);
+    } else if (n == 0) {
+        return this;
+    } else {
+        // Possible int overflow in (-n) is not a trouble,
+        // because shiftRightImpl considers its argument unsigned
+        return shiftRightImpl(-n);
+    }
+}

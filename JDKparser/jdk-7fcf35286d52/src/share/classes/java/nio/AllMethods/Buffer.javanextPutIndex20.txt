@@ -1,0 +1,8 @@
+final int nextPutIndex(int nb) {
+    // package-private
+    int p = position;
+    if (limit - p < nb)
+        throw new BufferOverflowException();
+    position = p + nb;
+    return p;
+}

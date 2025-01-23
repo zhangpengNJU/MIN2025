@@ -1,0 +1,7 @@
+private static boolean isPastCutoverDate(String s) throws ParseException {
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT);
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+    format.setLenient(false);
+    long time = format.parse(s.trim()).getTime();
+    return System.currentTimeMillis() > time;
+}

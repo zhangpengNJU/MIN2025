@@ -1,0 +1,24 @@
+/**
+ * Returns the value contained by this EntryFuture, blocking if
+ * necessary until a value is set.
+ */
+synchronized Object get() {
+    boolean interrupted = false;
+    while (entry == unset) {
+        try {
+            wait();
+        } catch (InterruptedException ex) {
+            interrupted = true;
+        }
+    }
+    if (interrupted) {
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+            public Void run() {
+                Thread.currentThread().interrupt();
+                return null;
+            }
+        });
+    }
+    return entry;
+}

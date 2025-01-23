@@ -1,0 +1,29 @@
+@Override
+public <T extends Member> T reflectAs(Class<T> expected, Lookup lookup) {
+    if (member.isMethodHandleInvoke() && !member.isVarargs()) {
+        // This member is an instance of a signature-polymorphic method, which cannot be reflected
+        // A method handle invoker can come in either of two forms:
+        // A generic placeholder (present in the source code, and varargs)
+        // and a signature-polymorphic instance (synthetic and not varargs).
+        // For more information see comments on {@link MethodHandleNatives#linkMethod}.
+        throw new IllegalArgumentException("cannot reflect signature polymorphic method");
+    }
+    Member mem = AccessController.doPrivileged(new PrivilegedAction<Member>() {
+
+        public Member run() {
+            try {
+                return reflectUnchecked();
+            } catch (ReflectiveOperationException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+        }
+    });
+    try {
+        Class<?> defc = getDeclaringClass();
+        byte refKind = (byte) getReferenceKind();
+        lookup.checkAccess(refKind, defc, convertToMemberName(refKind, mem));
+    } catch (IllegalAccessException ex) {
+        throw new IllegalArgumentException(ex);
+    }
+    return expected.cast(mem);
+}

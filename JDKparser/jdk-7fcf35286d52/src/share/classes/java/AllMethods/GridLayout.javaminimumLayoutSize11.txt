@@ -1,0 +1,46 @@
+/**
+ * Determines the minimum size of the container argument using this
+ * grid layout.
+ * <p>
+ * The minimum width of a grid layout is the largest minimum width
+ * of all of the components in the container times the number of columns,
+ * plus the horizontal padding times the number of columns minus one,
+ * plus the left and right insets of the target container.
+ * <p>
+ * The minimum height of a grid layout is the largest minimum height
+ * of all of the components in the container times the number of rows,
+ * plus the vertical padding times the number of rows minus one, plus
+ * the top and bottom insets of the target container.
+ *
+ * @param       parent   the container in which to do the layout
+ * @return      the minimum dimensions needed to lay out the
+ *                      subcomponents of the specified container
+ * @see         java.awt.GridLayout#preferredLayoutSize
+ * @see         java.awt.Container#doLayout
+ */
+public Dimension minimumLayoutSize(Container parent) {
+    synchronized (parent.getTreeLock()) {
+        Insets insets = parent.getInsets();
+        int ncomponents = parent.getComponentCount();
+        int nrows = rows;
+        int ncols = cols;
+        if (nrows > 0) {
+            ncols = (ncomponents + nrows - 1) / nrows;
+        } else {
+            nrows = (ncomponents + ncols - 1) / ncols;
+        }
+        int w = 0;
+        int h = 0;
+        for (int i = 0; i < ncomponents; i++) {
+            Component comp = parent.getComponent(i);
+            Dimension d = comp.getMinimumSize();
+            if (w < d.width) {
+                w = d.width;
+            }
+            if (h < d.height) {
+                h = d.height;
+            }
+        }
+        return new Dimension(insets.left + insets.right + ncols * w + (ncols - 1) * hgap, insets.top + insets.bottom + nrows * h + (nrows - 1) * vgap);
+    }
+}

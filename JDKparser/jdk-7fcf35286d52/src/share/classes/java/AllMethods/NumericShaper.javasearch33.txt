@@ -1,0 +1,19 @@
+/**
+ * fast binary search over subrange of array.
+ */
+private static int search(int value, int[] array, int start, int length) {
+    int power = 1 << getHighBit(length);
+    int extra = length - power;
+    int probe = power;
+    int index = start;
+    if (value >= array[index + extra]) {
+        index += extra;
+    }
+    while (probe > 1) {
+        probe >>= 1;
+        if (value >= array[index + probe]) {
+            index += probe;
+        }
+    }
+    return index;
+}

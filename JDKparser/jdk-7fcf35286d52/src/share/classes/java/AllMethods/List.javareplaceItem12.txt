@@ -1,0 +1,12 @@
+/**
+ * Replaces the item at the specified index in the scrolling list
+ * with the new string.
+ * @param       newValue   a new string to replace an existing item
+ * @param       index      the position of the item to replace
+ * @exception ArrayIndexOutOfBoundsException if <code>index</code>
+ *          is out of range
+ */
+public synchronized void replaceItem(String newValue, int index) {
+    remove(index);
+    add(newValue, index);
+}

@@ -1,0 +1,8 @@
+private int incCursor(int index) {
+    // assert lock.getHoldCount() == 1;
+    if (++index == items.length)
+        index = 0;
+    if (index == putIndex)
+        index = NONE;
+    return index;
+}

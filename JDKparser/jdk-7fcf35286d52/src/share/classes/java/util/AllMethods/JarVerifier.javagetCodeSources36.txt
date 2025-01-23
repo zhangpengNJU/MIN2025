@@ -1,0 +1,4 @@
+public synchronized CodeSource[] getCodeSources(JarFile jar, URL url) {
+    boolean hasUnsigned = unsignedEntryNames(jar).hasMoreElements();
+    return mapSignersToCodeSources(url, getJarCodeSigners(), hasUnsigned);
+}

@@ -1,0 +1,62 @@
+// inner class AccessibleAWTContainer
+/**
+ * Returns the <code>Accessible</code> child contained at the local
+ * coordinate <code>Point</code>, if one exists.  Otherwise
+ * returns <code>null</code>.
+ *
+ * @param p the point defining the top-left corner of the
+ *    <code>Accessible</code>, given in the coordinate space
+ *    of the object's parent
+ * @return the <code>Accessible</code> at the specified location,
+ *    if it exists; otherwise <code>null</code>
+ */
+Accessible getAccessibleAt(Point p) {
+    synchronized (getTreeLock()) {
+        if (this instanceof Accessible) {
+            Accessible a = (Accessible) this;
+            AccessibleContext ac = a.getAccessibleContext();
+            if (ac != null) {
+                AccessibleComponent acmp;
+                Point location;
+                int nchildren = ac.getAccessibleChildrenCount();
+                for (int i = 0; i < nchildren; i++) {
+                    a = ac.getAccessibleChild(i);
+                    if ((a != null)) {
+                        ac = a.getAccessibleContext();
+                        if (ac != null) {
+                            acmp = ac.getAccessibleComponent();
+                            if ((acmp != null) && (acmp.isShowing())) {
+                                location = acmp.getLocation();
+                                Point np = new Point(p.x - location.x, p.y - location.y);
+                                if (acmp.contains(np)) {
+                                    return a;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return (Accessible) this;
+        } else {
+            Component ret = this;
+            if (!this.contains(p.x, p.y)) {
+                ret = null;
+            } else {
+                int ncomponents = this.getComponentCount();
+                for (int i = 0; i < ncomponents; i++) {
+                    Component comp = this.getComponent(i);
+                    if ((comp != null) && comp.isShowing()) {
+                        Point location = comp.getLocation();
+                        if (comp.contains(p.x - location.x, p.y - location.y)) {
+                            ret = comp;
+                        }
+                    }
+                }
+            }
+            if (ret instanceof Accessible) {
+                return (Accessible) ret;
+            }
+        }
+        return null;
+    }
+}

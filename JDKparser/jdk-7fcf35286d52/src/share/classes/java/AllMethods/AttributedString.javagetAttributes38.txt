@@ -1,0 +1,8 @@
+public Map<Attribute, Object> getAttributes() {
+    if (runAttributes == null || currentRunIndex == -1 || runAttributes[currentRunIndex] == null) {
+        // ??? would be nice to return null, but current spec doesn't allow it
+        // returning Hashtable saves AttributeMap from dealing with emptiness
+        return new Hashtable<>();
+    }
+    return new AttributeMap(currentRunIndex, beginIndex, endIndex);
+}

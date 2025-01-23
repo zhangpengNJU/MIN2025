@@ -1,0 +1,16 @@
+/**
+ * Saves the state of this {@code LinkedList} instance to a stream
+ * (that is, serializes it).
+ *
+ * @serialData The size of the list (the number of elements it
+ *             contains) is emitted (int), followed by all of its
+ *             elements (each an Object) in the proper order.
+ */
+private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    // Write out any hidden serialization magic
+    s.defaultWriteObject();
+    // Write out size
+    s.writeInt(size);
+    // Write out all elements in the proper order.
+    for (Node<E> x = first; x != null; x = x.next) s.writeObject(x.item);
+}

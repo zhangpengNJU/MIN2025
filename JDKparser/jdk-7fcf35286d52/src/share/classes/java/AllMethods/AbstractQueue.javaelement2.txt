@@ -1,0 +1,18 @@
+/**
+ * Retrieves, but does not remove, the head of this queue.  This method
+ * differs from {@link #peek peek} only in that it throws an exception if
+ * this queue is empty.
+ *
+ * <p>This implementation returns the result of <tt>peek</tt>
+ * unless the queue is empty.
+ *
+ * @return the head of this queue
+ * @throws NoSuchElementException if this queue is empty
+ */
+public E element() {
+    E x = peek();
+    if (x != null)
+        return x;
+    else
+        throw new NoSuchElementException();
+}

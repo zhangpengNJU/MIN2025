@@ -1,0 +1,13 @@
+private static boolean isDriverAllowed(Driver driver, ClassLoader classLoader) {
+    boolean result = false;
+    if (driver != null) {
+        Class<?> aClass = null;
+        try {
+            aClass = Class.forName(driver.getClass().getName(), true, classLoader);
+        } catch (Exception ex) {
+            result = false;
+        }
+        result = (aClass == driver.getClass()) ? true : false;
+    }
+    return result;
+}

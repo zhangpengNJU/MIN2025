@@ -1,0 +1,23 @@
+// ----------------------------------------------------------------------
+/**
+ * Adds a listener for the value change.
+ * When the property editor changes its value
+ * it should fire a {@link PropertyChangeEvent}
+ * on all registered {@link PropertyChangeListener}s,
+ * specifying the {@code null} value for the property name.
+ * If the source property is set,
+ * it should be used as the source of the event.
+ * <p>
+ * The same listener object may be added more than once,
+ * and will be called as many times as it is added.
+ * If {@code listener} is {@code null},
+ * no exception is thrown and no action is taken.
+ *
+ * @param listener  the {@link PropertyChangeListener} to add
+ */
+public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
+    if (listeners == null) {
+        listeners = new java.util.Vector<>();
+    }
+    listeners.addElement(listener);
+}

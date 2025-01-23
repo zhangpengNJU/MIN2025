@@ -1,0 +1,30 @@
+/**
+ * Removes a previously added KeyEventPostProcessor from this
+ * KeyboardFocusManager's post-processor chain. This KeyboardFocusManager
+ * cannot itself be entirely removed from the chain. Only additional
+ * references added via <code>addKeyEventPostProcessor</code> can be
+ * removed.
+ * <p>
+ * If a null post-processor is specified, if the specified post-processor
+ * is not in the post-processor chain, or if this KeyboardFocusManager is
+ * specified without having been explicitly added, no action is taken and
+ * no exception is thrown.
+ * <p>
+ * In a multithreaded application, {@link KeyEventPostProcessor} behaves
+ * the same as other AWT listeners.  See
+ * <a href="doc-files/AWTThreadIssues.html#ListenersThreads"
+ * >AWT Threading Issues</a> for more details.
+ *
+ * @param processor the KeyEventPostProcessor to remove from the post-
+ *        processor chain
+ * @see #addKeyEventPostProcessor
+ */
+public void removeKeyEventPostProcessor(KeyEventPostProcessor processor) {
+    if (processor != null) {
+        synchronized (this) {
+            if (keyEventPostProcessors != null) {
+                keyEventPostProcessors.remove(processor);
+            }
+        }
+    }
+}

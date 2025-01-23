@@ -1,0 +1,6 @@
+private static BigDecimal add(long xs, long ys, int scale) {
+    long sum = add(xs, ys);
+    if (sum != INFLATED)
+        return BigDecimal.valueOf(sum, scale);
+    return new BigDecimal(BigInteger.valueOf(xs).add(ys), scale);
+}

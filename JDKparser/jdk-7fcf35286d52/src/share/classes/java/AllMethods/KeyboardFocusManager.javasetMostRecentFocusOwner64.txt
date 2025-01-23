@@ -1,0 +1,11 @@
+static synchronized void setMostRecentFocusOwner(Window window, Component component) {
+    // ATTN: component has a strong reference to window via chain
+    // of Component.parent fields.  Since WeakHasMap refers to its
+    // values strongly, we need to break the strong link from the
+    // value (component) back to its key (window).
+    WeakReference<Component> weakValue = null;
+    if (component != null) {
+        weakValue = new WeakReference<>(component);
+    }
+    mostRecentFocusOwners.put(window, weakValue);
+}

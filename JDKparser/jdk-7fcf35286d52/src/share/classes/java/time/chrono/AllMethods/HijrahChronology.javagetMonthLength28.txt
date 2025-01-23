@@ -1,0 +1,14 @@
+/**
+ * Returns month length for the year and month.
+ *
+ * @param prolepticYear a proleptic year
+ * @param monthOfYear a month, 1-origin.
+ * @return the length of the month
+ */
+int getMonthLength(int prolepticYear, int monthOfYear) {
+    int epochMonth = yearToEpochMonth(prolepticYear) + (monthOfYear - 1);
+    if (epochMonth < 0 || epochMonth >= hijrahEpochMonthStartDays.length) {
+        throw new DateTimeException("Invalid Hijrah date, year: " + prolepticYear + ", month: " + monthOfYear);
+    }
+    return epochMonthLength(epochMonth);
+}

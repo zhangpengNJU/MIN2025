@@ -1,0 +1,17 @@
+/**
+ * Returns the bounds of this <code>Polygon</code>.
+ * @return the bounds of this <code>Polygon</code>.
+ * @deprecated As of JDK version 1.1,
+ * replaced by <code>getBounds()</code>.
+ * @since 1.0
+ */
+@Deprecated
+public Rectangle getBoundingBox() {
+    if (npoints == 0) {
+        return new Rectangle();
+    }
+    if (bounds == null) {
+        calculateBounds(xpoints, ypoints, npoints);
+    }
+    return bounds.getBounds();
+}

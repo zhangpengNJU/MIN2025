@@ -1,0 +1,7 @@
+static <U> CompletableFuture<U> asyncSupplyStage(Executor e, Supplier<U> f) {
+    if (f == null)
+        throw new NullPointerException();
+    CompletableFuture<U> d = new CompletableFuture<U>();
+    e.execute(new AsyncSupply<U>(d, f));
+    return d;
+}

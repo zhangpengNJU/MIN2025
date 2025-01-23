@@ -1,0 +1,39 @@
+/**
+ * Returns raw result after waiting, or null if interrupted, or
+ * throws TimeoutException on timeout.
+ */
+private Object timedGet(long nanos) throws TimeoutException {
+    if (Thread.interrupted())
+        return null;
+    if (nanos <= 0L)
+        throw new TimeoutException();
+    long d = System.nanoTime() + nanos;
+    // avoid 0
+    Signaller q = new Signaller(true, nanos, d == 0L ? 1L : d);
+    boolean queued = false;
+    Object r;
+    // We intentionally don't spin here (as waitingGet does) because
+    // the call to nanoTime() above acts much like a spin.
+    while ((r = result) == null) {
+        if (!queued)
+            queued = tryPushStack(q);
+        else if (q.interruptControl < 0 || q.nanos <= 0L) {
+            q.thread = null;
+            cleanStack();
+            if (q.interruptControl < 0)
+                return null;
+            throw new TimeoutException();
+        } else if (q.thread != null && result == null) {
+            try {
+                ForkJoinPool.managedBlock(q);
+            } catch (InterruptedException ie) {
+                q.interruptControl = -1;
+            }
+        }
+    }
+    if (q.interruptControl < 0)
+        r = null;
+    q.thread = null;
+    postComplete();
+    return r;
+}

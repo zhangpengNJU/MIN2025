@@ -1,0 +1,20 @@
+/**
+ * Writes a <code>char</code> value, which
+ * is comprised of two bytes, to the
+ * output stream.
+ * The byte values to be written, in the  order
+ * shown, are:
+ * <pre>{@code
+ * (byte)(0xff & (v >> 8))
+ * (byte)(0xff & v)
+ * }</pre><p>
+ * The bytes written by this method may be
+ * read by the <code>readChar</code> method
+ * of interface <code>DataInput</code> , which
+ * will then return a <code>char</code> equal
+ * to <code>(char)v</code>.
+ *
+ * @param      v   the <code>char</code> value to be written.
+ * @throws     IOException  if an I/O error occurs.
+ */
+void writeChar(int v) throws IOException;

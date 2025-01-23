@@ -1,0 +1,9 @@
+/**
+ * @throws StringIndexOutOfBoundsException {@inheritDoc}
+ */
+@Override
+public synchronized StringBuffer insert(int offset, char[] str) {
+    toStringCache = null;
+    super.insert(offset, str);
+    return this;
+}

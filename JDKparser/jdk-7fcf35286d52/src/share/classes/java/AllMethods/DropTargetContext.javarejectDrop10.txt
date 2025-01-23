@@ -1,0 +1,10 @@
+/**
+ * called to signal that the drop is unacceptable.
+ * must be called during DropTargetListener.drop method invocation.
+ */
+protected void rejectDrop() {
+    DropTargetContextPeer peer = getDropTargetContextPeer();
+    if (peer != null) {
+        peer.rejectDrop();
+    }
+}

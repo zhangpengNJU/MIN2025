@@ -1,0 +1,9 @@
+private void checkCtorArgs() {
+    int checkCharCount = 0;
+    for (int i = 0; i < fComponents.length; i++) {
+        checkCharCount += fComponents[i].getNumCharacters();
+    }
+    if (checkCharCount != this.characterCount()) {
+        throw new IllegalArgumentException("Invalid TextLine!  " + "char count is different from " + "sum of char counts of components.");
+    }
+}

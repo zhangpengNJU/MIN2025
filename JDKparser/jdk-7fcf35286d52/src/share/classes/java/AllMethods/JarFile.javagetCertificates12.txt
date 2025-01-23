@@ -1,0 +1,11 @@
+public Certificate[] getCertificates() {
+    try {
+        maybeInstantiateVerifier();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    if (certs == null && jv != null) {
+        certs = jv.getCerts(JarFile.this, this);
+    }
+    return certs == null ? null : certs.clone();
+}

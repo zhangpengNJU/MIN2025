@@ -1,0 +1,14 @@
+/**
+ * Returns a {@link Spliterator.OfInt} covering all of the specified array.
+ *
+ * <p>The spliterator reports {@link Spliterator#SIZED},
+ * {@link Spliterator#SUBSIZED}, {@link Spliterator#ORDERED}, and
+ * {@link Spliterator#IMMUTABLE}.
+ *
+ * @param array the array, assumed to be unmodified during use
+ * @return a spliterator for the array elements
+ * @since 1.8
+ */
+public static Spliterator.OfInt spliterator(int[] array) {
+    return Spliterators.spliterator(array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
+}

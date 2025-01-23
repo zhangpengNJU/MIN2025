@@ -1,0 +1,16 @@
+/**
+ * This method returns the index of the first clear bit in the search
+ * array that occurs at or after start. It will not search past the
+ * specified limit. It returns -1 if there is no such clear bit.
+ */
+private int sieveSearch(int limit, int start) {
+    if (start >= limit)
+        return -1;
+    int index = start;
+    do {
+        if (!get(index))
+            return index;
+        index++;
+    } while (index < limit - 1);
+    return -1;
+}

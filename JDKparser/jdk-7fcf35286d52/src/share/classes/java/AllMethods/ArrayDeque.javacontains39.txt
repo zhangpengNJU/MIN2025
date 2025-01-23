@@ -1,0 +1,21 @@
+/**
+ * Returns {@code true} if this deque contains the specified element.
+ * More formally, returns {@code true} if and only if this deque contains
+ * at least one element {@code e} such that {@code o.equals(e)}.
+ *
+ * @param o object to be checked for containment in this deque
+ * @return {@code true} if this deque contains the specified element
+ */
+public boolean contains(Object o) {
+    if (o == null)
+        return false;
+    int mask = elements.length - 1;
+    int i = head;
+    Object x;
+    while ((x = elements[i]) != null) {
+        if (o.equals(x))
+            return true;
+        i = (i + 1) & mask;
+    }
+    return false;
+}

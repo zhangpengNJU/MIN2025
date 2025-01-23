@@ -1,0 +1,12 @@
+/* This method effectively returns whether or not a mouse button was down
+     * just BEFORE the event happened.  A better method name might be
+     * wasAMouseButtonDownBeforeThisEvent().
+     */
+private boolean isMouseGrab(MouseEvent e) {
+    int modifiers = e.getModifiersEx();
+    if (e.getID() == MouseEvent.MOUSE_PRESSED || e.getID() == MouseEvent.MOUSE_RELEASED) {
+        modifiers ^= InputEvent.getMaskForButton(e.getButton());
+    }
+    /* modifiers now as just before event */
+    return ((modifiers & BUTTONS_DOWN_MASK) != 0);
+}

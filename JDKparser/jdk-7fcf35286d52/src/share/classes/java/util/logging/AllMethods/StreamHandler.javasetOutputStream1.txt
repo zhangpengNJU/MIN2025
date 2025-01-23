@@ -1,0 +1,31 @@
+/**
+ * Change the output stream.
+ * <P>
+ * If there is a current output stream then the <tt>Formatter</tt>'s
+ * tail string is written and the stream is flushed and closed.
+ * Then the output stream is replaced with the new output stream.
+ *
+ * @param out   New output stream.  May not be null.
+ * @exception  SecurityException  if a security manager exists and if
+ *             the caller does not have <tt>LoggingPermission("control")</tt>.
+ */
+protected synchronized void setOutputStream(OutputStream out) throws SecurityException {
+    if (out == null) {
+        throw new NullPointerException();
+    }
+    flushAndClose();
+    output = out;
+    doneHeader = false;
+    String encoding = getEncoding();
+    if (encoding == null) {
+        writer = new OutputStreamWriter(output);
+    } else {
+        try {
+            writer = new OutputStreamWriter(output, encoding);
+        } catch (UnsupportedEncodingException ex) {
+            // This shouldn't happen.  The setEncoding method
+            // should have validated that the encoding is OK.
+            throw new Error("Unexpected exception " + ex);
+        }
+    }
+}

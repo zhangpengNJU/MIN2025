@@ -1,0 +1,39 @@
+/**
+ * Compares this <code>Font</code> object to the specified
+ * <code>Object</code>.
+ * @param obj the <code>Object</code> to compare
+ * @return <code>true</code> if the objects are the same
+ *          or if the argument is a <code>Font</code> object
+ *          describing the same font as this object;
+ *          <code>false</code> otherwise.
+ * @since JDK1.0
+ */
+public boolean equals(Object obj) {
+    if (obj == this) {
+        return true;
+    }
+    if (obj != null) {
+        try {
+            Font font = (Font) obj;
+            if (size == font.size && style == font.style && nonIdentityTx == font.nonIdentityTx && hasLayoutAttributes == font.hasLayoutAttributes && pointSize == font.pointSize && name.equals(font.name)) {
+                /* 'values' is usually initialized lazily, except when
+                     * the font is constructed from a Map, or derived using
+                     * a Map or other values. So if only one font has
+                     * the field initialized we need to initialize it in
+                     * the other instance and compare.
+                     */
+                if (values == null) {
+                    if (font.values == null) {
+                        return true;
+                    } else {
+                        return getAttributeValues().equals(font.values);
+                    }
+                } else {
+                    return values.equals(font.getAttributeValues());
+                }
+            }
+        } catch (ClassCastException e) {
+        }
+    }
+    return false;
+}

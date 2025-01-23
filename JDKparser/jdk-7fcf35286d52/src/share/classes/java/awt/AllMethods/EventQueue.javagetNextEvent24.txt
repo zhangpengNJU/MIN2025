@@ -1,0 +1,29 @@
+/**
+ * Removes an event from the <code>EventQueue</code> and
+ * returns it.  This method will block until an event has
+ * been posted by another thread.
+ * @return the next <code>AWTEvent</code>
+ * @exception InterruptedException
+ *            if any thread has interrupted this thread
+ */
+public AWTEvent getNextEvent() throws InterruptedException {
+    do {
+        /*
+             * SunToolkit.flushPendingEvents must be called outside
+             * of the synchronized block to avoid deadlock when
+             * event queues are nested with push()/pop().
+             */
+        SunToolkit.flushPendingEvents(appContext);
+        pushPopLock.lock();
+        try {
+            AWTEvent event = getNextEventPrivate();
+            if (event != null) {
+                return event;
+            }
+            AWTAutoShutdown.getInstance().notifyThreadFree(dispatchThread);
+            pushPopCond.await();
+        } finally {
+            pushPopLock.unlock();
+        }
+    } while (true);
+}

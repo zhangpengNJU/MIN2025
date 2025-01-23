@@ -1,0 +1,31 @@
+/**
+ * Read a single character.  <a href="#lt">Line terminators</a> are
+ * compressed into single newline ('\n') characters.  Whenever a line
+ * terminator is read the current line number is incremented.
+ *
+ * @return  The character read, or -1 if the end of the stream has been
+ *          reached
+ *
+ * @throws  IOException
+ *          If an I/O error occurs
+ */
+@SuppressWarnings("fallthrough")
+public int read() throws IOException {
+    synchronized (lock) {
+        int c = super.read();
+        if (skipLF) {
+            if (c == '\n')
+                c = super.read();
+            skipLF = false;
+        }
+        switch(c) {
+            case '\r':
+                skipLF = true;
+            case '\n':
+                /* Fall through */
+                lineNumber++;
+                return '\n';
+        }
+        return c;
+    }
+}

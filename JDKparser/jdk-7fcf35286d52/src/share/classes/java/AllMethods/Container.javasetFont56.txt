@@ -1,0 +1,20 @@
+/**
+ * Sets the font of this container.
+ * <p>
+ * This method changes layout-related information, and therefore,
+ * invalidates the component hierarchy.
+ *
+ * @param f The font to become this container's font.
+ * @see Component#getFont
+ * @see #invalidate
+ * @since JDK1.0
+ */
+public void setFont(Font f) {
+    boolean shouldinvalidate = false;
+    Font oldfont = getFont();
+    super.setFont(f);
+    Font newfont = getFont();
+    if (newfont != oldfont && (oldfont == null || !oldfont.equals(newfont))) {
+        invalidateTree();
+    }
+}

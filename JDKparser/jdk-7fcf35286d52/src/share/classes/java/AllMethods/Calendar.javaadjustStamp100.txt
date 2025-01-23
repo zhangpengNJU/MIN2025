@@ -1,0 +1,33 @@
+/**
+ * Adjusts the stamp[] values before nextStamp overflow. nextStamp
+ * is set to the next stamp value upon the return.
+ */
+private void adjustStamp() {
+    int max = MINIMUM_USER_STAMP;
+    int newStamp = MINIMUM_USER_STAMP;
+    for (; ; ) {
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < stamp.length; i++) {
+            int v = stamp[i];
+            if (v >= newStamp && min > v) {
+                min = v;
+            }
+            if (max < v) {
+                max = v;
+            }
+        }
+        if (max != min && min == Integer.MAX_VALUE) {
+            break;
+        }
+        for (int i = 0; i < stamp.length; i++) {
+            if (stamp[i] == min) {
+                stamp[i] = newStamp;
+            }
+        }
+        newStamp++;
+        if (min == max) {
+            break;
+        }
+    }
+    nextStamp = newStamp;
+}

@@ -1,0 +1,19 @@
+/**
+ * Returns a clone of this vector. The copy will contain a
+ * reference to a clone of the internal data array, not a reference
+ * to the original internal data array of this {@code Vector} object.
+ *
+ * @return  a clone of this vector
+ */
+public synchronized Object clone() {
+    try {
+        @SuppressWarnings("unchecked")
+        Vector<E> v = (Vector<E>) super.clone();
+        v.elementData = Arrays.copyOf(elementData, elementCount);
+        v.modCount = 0;
+        return v;
+    } catch (CloneNotSupportedException e) {
+        // this shouldn't happen, since we are Cloneable
+        throw new InternalError(e);
+    }
+}

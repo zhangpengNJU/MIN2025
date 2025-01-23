@@ -1,0 +1,6 @@
+private void setCallersClassLoaderRef(Class<?> caller) {
+    ClassLoader callersClassLoader = ((caller != null) ? caller.getClassLoader() : null);
+    if (callersClassLoader != null) {
+        this.callersClassLoaderRef = new WeakReference<>(callersClassLoader);
+    }
+}

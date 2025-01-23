@@ -1,0 +1,4 @@
+@Override
+public <S> Void evaluateSequential(PipelineHelper<T> helper, Spliterator<S> spliterator) {
+    return helper.wrapAndCopyInto(this, spliterator).get();
+}

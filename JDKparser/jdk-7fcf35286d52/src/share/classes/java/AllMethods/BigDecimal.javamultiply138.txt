@@ -1,0 +1,7 @@
+private static BigDecimal multiply(long x, long y, int scale) {
+    long product = multiply(x, y);
+    if (product != INFLATED) {
+        return valueOf(product, scale);
+    }
+    return new BigDecimal(BigInteger.valueOf(x).multiply(y), INFLATED, scale, 0);
+}

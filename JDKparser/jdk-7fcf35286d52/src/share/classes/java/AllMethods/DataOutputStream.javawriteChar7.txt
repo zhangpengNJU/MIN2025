@@ -1,0 +1,14 @@
+/**
+ * Writes a <code>char</code> to the underlying output stream as a
+ * 2-byte value, high byte first. If no exception is thrown, the
+ * counter <code>written</code> is incremented by <code>2</code>.
+ *
+ * @param      v   a <code>char</code> value to be written.
+ * @exception  IOException  if an I/O error occurs.
+ * @see        java.io.FilterOutputStream#out
+ */
+public final void writeChar(int v) throws IOException {
+    out.write((v >>> 8) & 0xFF);
+    out.write((v >>> 0) & 0xFF);
+    incCount(2);
+}

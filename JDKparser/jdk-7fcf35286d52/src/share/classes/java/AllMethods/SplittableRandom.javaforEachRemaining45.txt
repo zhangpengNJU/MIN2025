@@ -1,0 +1,13 @@
+public void forEachRemaining(DoubleConsumer consumer) {
+    if (consumer == null)
+        throw new NullPointerException();
+    long i = index, f = fence;
+    if (i < f) {
+        index = f;
+        SplittableRandom r = rng;
+        double o = origin, b = bound;
+        do {
+            consumer.accept(r.internalNextDouble(o, b));
+        } while (++i < f);
+    }
+}

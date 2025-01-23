@@ -1,0 +1,17 @@
+/*
+     * <b>NOTE:</b> The <code>Event</code> class is obsolete and is
+     * available only for backwards compatibility.  It has been replaced
+     * by the <code>AWTEvent</code> class and its subclasses.
+     * <p>
+     * Returns the integer key-code associated with the key in this event,
+     * as described in java.awt.Event.
+     */
+static int getOldEventKey(KeyEvent e) {
+    int keyCode = e.getKeyCode();
+    for (int i = 0; i < actionKeyCodes.length; i++) {
+        if (actionKeyCodes[i][0] == keyCode) {
+            return actionKeyCodes[i][1];
+        }
+    }
+    return (int) e.getKeyChar();
+}

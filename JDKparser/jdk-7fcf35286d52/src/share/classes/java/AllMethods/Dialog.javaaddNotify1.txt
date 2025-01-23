@@ -1,0 +1,20 @@
+/**
+ * Makes this Dialog displayable by connecting it to
+ * a native screen resource.  Making a dialog displayable will
+ * cause any of its children to be made displayable.
+ * This method is called internally by the toolkit and should
+ * not be called directly by programs.
+ * @see Component#isDisplayable
+ * @see #removeNotify
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (parent != null && parent.getPeer() == null) {
+            parent.addNotify();
+        }
+        if (peer == null) {
+            peer = getToolkit().createDialog(this);
+        }
+        super.addNotify();
+    }
+}

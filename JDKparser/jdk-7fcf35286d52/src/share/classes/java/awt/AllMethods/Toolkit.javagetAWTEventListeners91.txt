@@ -1,0 +1,49 @@
+/**
+ * Returns an array of all the <code>AWTEventListener</code>s
+ * registered on this toolkit which listen to all of the event
+ * types specified in the {@code eventMask} argument.
+ * If there is a security manager, its {@code checkPermission}
+ * method is called with an
+ * {@code AWTPermission("listenToAllAWTEvents")} permission.
+ * This may result in a SecurityException.
+ * Listeners can be returned
+ * within <code>AWTEventListenerProxy</code> objects, which also contain
+ * the event mask for the given listener.
+ * Note that listener objects
+ * added multiple times appear only once in the returned array.
+ *
+ * @param  eventMask the bitmask of event types to listen for
+ * @return all of the <code>AWTEventListener</code>s registered
+ *         on this toolkit for the specified
+ *         event types, or an empty array if no such listeners
+ *         are currently registered
+ * @throws SecurityException
+ *        if a security manager exists and its
+ *        <code>checkPermission</code> method doesn't allow the operation.
+ * @see      #addAWTEventListener
+ * @see      #removeAWTEventListener
+ * @see      SecurityManager#checkPermission
+ * @see      java.awt.AWTEvent
+ * @see      java.awt.AWTPermission
+ * @see      java.awt.event.AWTEventListener
+ * @see      java.awt.event.AWTEventListenerProxy
+ * @since 1.4
+ */
+public AWTEventListener[] getAWTEventListeners(long eventMask) {
+    SecurityManager security = System.getSecurityManager();
+    if (security != null) {
+        security.checkPermission(SecurityConstants.AWT.ALL_AWT_EVENTS_PERMISSION);
+    }
+    synchronized (this) {
+        EventListener[] la = ToolkitEventMulticaster.getListeners(eventListener, AWTEventListener.class);
+        java.util.List<AWTEventListenerProxy> list = new ArrayList<>(la.length);
+        for (int i = 0; i < la.length; i++) {
+            SelectiveAWTEventListener sael = (SelectiveAWTEventListener) la[i];
+            if ((sael.getEventMask() & eventMask) == eventMask) {
+                // AWTEventListener tempL = sael.getListener();
+                list.add(new AWTEventListenerProxy(sael.getEventMask(), sael.getListener()));
+            }
+        }
+        return list.toArray(new AWTEventListener[0]);
+    }
+}

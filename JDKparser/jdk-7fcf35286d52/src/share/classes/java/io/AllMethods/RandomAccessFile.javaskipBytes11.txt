@@ -1,0 +1,33 @@
+/**
+ * Attempts to skip over {@code n} bytes of input discarding the
+ * skipped bytes.
+ * <p>
+ *
+ * This method may skip over some smaller number of bytes, possibly zero.
+ * This may result from any of a number of conditions; reaching end of
+ * file before {@code n} bytes have been skipped is only one
+ * possibility. This method never throws an {@code EOFException}.
+ * The actual number of bytes skipped is returned.  If {@code n}
+ * is negative, no bytes are skipped.
+ *
+ * @param      n   the number of bytes to be skipped.
+ * @return     the actual number of bytes skipped.
+ * @exception  IOException  if an I/O error occurs.
+ */
+public int skipBytes(int n) throws IOException {
+    long pos;
+    long len;
+    long newpos;
+    if (n <= 0) {
+        return 0;
+    }
+    pos = getFilePointer();
+    len = length();
+    newpos = pos + n;
+    if (newpos > len) {
+        newpos = len;
+    }
+    seek(newpos);
+    /* return the actual number of bytes skipped */
+    return (int) (newpos - pos);
+}

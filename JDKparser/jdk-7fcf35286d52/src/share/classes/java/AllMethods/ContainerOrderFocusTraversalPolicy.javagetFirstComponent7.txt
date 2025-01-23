@@ -1,0 +1,47 @@
+/**
+ * Returns the first Component in the traversal cycle. This method is used
+ * to determine the next Component to focus when traversal wraps in the
+ * forward direction.
+ *
+ * @param aContainer the focus cycle root or focus traversal policy provider whose first
+ *        Component is to be returned
+ * @return the first Component in the traversal cycle of aContainer,
+ *         or null if no suitable Component can be found
+ * @throws IllegalArgumentException if aContainer is null
+ */
+public Component getFirstComponent(Container aContainer) {
+    List<Component> cycle;
+    if (log.isLoggable(PlatformLogger.Level.FINE)) {
+        log.fine("### Getting first component in " + aContainer);
+    }
+    if (aContainer == null) {
+        throw new IllegalArgumentException("aContainer cannot be null");
+    }
+    synchronized (aContainer.getTreeLock()) {
+        if (!(aContainer.isVisible() && aContainer.isDisplayable())) {
+            return null;
+        }
+        if (this.cachedRoot == aContainer) {
+            cycle = this.cachedCycle;
+        } else {
+            cycle = getFocusTraversalCycle(aContainer);
+        }
+        if (cycle.size() == 0) {
+            if (log.isLoggable(PlatformLogger.Level.FINE)) {
+                log.fine("### Cycle is empty");
+            }
+            return null;
+        }
+        if (log.isLoggable(PlatformLogger.Level.FINE)) {
+            log.fine("### Cycle is " + cycle);
+        }
+        for (Component comp : cycle) {
+            if (accept(comp)) {
+                return comp;
+            } else if (comp != aContainer && (comp = getComponentDownCycle(comp, FORWARD_TRAVERSAL)) != null) {
+                return comp;
+            }
+        }
+    }
+    return null;
+}

@@ -1,0 +1,19 @@
+private void ascend() {
+    Comparator<? super K> cmp = m.comparator;
+    for (; ; ) {
+        next = next.next;
+        if (next == null)
+            break;
+        Object x = next.value;
+        if (x != null && x != next) {
+            if (tooHigh(next.key, cmp))
+                next = null;
+            else {
+                @SuppressWarnings("unchecked")
+                V vv = (V) x;
+                nextValue = vv;
+            }
+            break;
+        }
+    }
+}

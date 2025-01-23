@@ -1,0 +1,13 @@
+/**
+ * Sets the method that should be used to write an indexed property value.
+ *
+ * @param writeMethod The new indexed write method.
+ * @throws IntrospectionException if an exception occurs during
+ * introspection.
+ */
+public synchronized void setIndexedWriteMethod(Method writeMethod) throws IntrospectionException {
+    // If the indexed property type has not been set, then set it.
+    Class<?> type = findIndexedPropertyType(getIndexedReadMethod(), writeMethod);
+    setIndexedPropertyType(type);
+    setIndexedWriteMethod0(writeMethod);
+}

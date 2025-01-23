@@ -1,0 +1,13 @@
+private synchronized Object getAttribute(Attribute attribute, int runIndex) {
+    Vector<Attribute> currentRunAttributes = runAttributes[runIndex];
+    Vector<Object> currentRunAttributeValues = runAttributeValues[runIndex];
+    if (currentRunAttributes == null) {
+        return null;
+    }
+    int attributeIndex = currentRunAttributes.indexOf(attribute);
+    if (attributeIndex != -1) {
+        return currentRunAttributeValues.elementAt(attributeIndex);
+    } else {
+        return null;
+    }
+}

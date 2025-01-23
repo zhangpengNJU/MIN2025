@@ -1,0 +1,69 @@
+/**
+ * Reads span of UTF-encoded characters out of internal buffer
+ * (starting at offset pos and ending at or before offset end),
+ * consuming no more than utflen bytes.  Appends read characters to
+ * sbuf.  Returns the number of bytes consumed.
+ */
+private long readUTFSpan(StringBuilder sbuf, long utflen) throws IOException {
+    int cpos = 0;
+    int start = pos;
+    int avail = Math.min(end - pos, CHAR_BUF_SIZE);
+    // stop short of last char unless all of utf bytes in buffer
+    int stop = pos + ((utflen > avail) ? avail - 2 : (int) utflen);
+    boolean outOfBounds = false;
+    try {
+        while (pos < stop) {
+            int b1, b2, b3;
+            b1 = buf[pos++] & 0xFF;
+            switch(b1 >> 4) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case // 1 byte format: 0xxxxxxx
+                7:
+                    cbuf[cpos++] = (char) b1;
+                    break;
+                case 12:
+                case // 2 byte format: 110xxxxx 10xxxxxx
+                13:
+                    b2 = buf[pos++];
+                    if ((b2 & 0xC0) != 0x80) {
+                        throw new UTFDataFormatException();
+                    }
+                    cbuf[cpos++] = (char) (((b1 & 0x1F) << 6) | ((b2 & 0x3F) << 0));
+                    break;
+                case // 3 byte format: 1110xxxx 10xxxxxx 10xxxxxx
+                14:
+                    b3 = buf[pos + 1];
+                    b2 = buf[pos + 0];
+                    pos += 2;
+                    if ((b2 & 0xC0) != 0x80 || (b3 & 0xC0) != 0x80) {
+                        throw new UTFDataFormatException();
+                    }
+                    cbuf[cpos++] = (char) (((b1 & 0x0F) << 12) | ((b2 & 0x3F) << 6) | ((b3 & 0x3F) << 0));
+                    break;
+                default:
+                    // 10xx xxxx, 1111 xxxx
+                    throw new UTFDataFormatException();
+            }
+        }
+    } catch (ArrayIndexOutOfBoundsException ex) {
+        outOfBounds = true;
+    } finally {
+        if (outOfBounds || (pos - start) > utflen) {
+            /*
+                     * Fix for 4450867: if a malformed utf char causes the
+                     * conversion loop to scan past the expected end of the utf
+                     * string, only consume the expected number of utf bytes.
+                     */
+            pos = start + (int) utflen;
+            throw new UTFDataFormatException();
+        }
+    }
+    sbuf.append(cbuf, 0, cpos);
+    return pos - start;
+}

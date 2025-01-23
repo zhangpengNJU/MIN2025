@@ -1,0 +1,30 @@
+/**
+ * Informs the system that the object with the corresponding activation
+ * <code>id</code> is currently inactive. If the object is currently
+ * active, the object is "unexported" from the RMI runtime (only if
+ * there are no pending or in-progress calls)
+ * so the that it can no longer receive incoming calls. This call
+ * informs this VM's ActivationGroup that the object is inactive,
+ * that, in turn, informs its ActivationMonitor. If this call
+ * completes successfully, a subsequent activate request to the activator
+ * will cause the object to reactivate. The operation may still
+ * succeed if the object is considered active but has already
+ * unexported itself.
+ *
+ * @param id the object's activation identifier
+ * @return true if the operation succeeds (the operation will
+ * succeed if the object in currently known to be active and is
+ * either already unexported or is currently exported and has no
+ * pending/executing calls); false is returned if the object has
+ * pending/executing calls in which case it cannot be deactivated
+ * @exception UnknownObjectException if object is not known (it may
+ * already be inactive)
+ * @exception ActivationException if group is not active
+ * @exception RemoteException if call informing monitor fails
+ * @exception UnsupportedOperationException if and only if activation is
+ * not supported by this implementation
+ * @since 1.2
+ */
+public static boolean inactive(ActivationID id) throws UnknownObjectException, ActivationException, RemoteException {
+    return ActivationGroup.currentGroup().inactiveObject(id);
+}

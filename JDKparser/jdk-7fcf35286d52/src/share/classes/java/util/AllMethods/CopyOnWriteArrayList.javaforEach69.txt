@@ -1,0 +1,16 @@
+public void forEach(Consumer<? super E> action) {
+    if (action == null)
+        throw new NullPointerException();
+    int lo = offset;
+    int hi = offset + size;
+    Object[] a = expectedArray;
+    if (l.getArray() != a)
+        throw new ConcurrentModificationException();
+    if (lo < 0 || hi > a.length)
+        throw new IndexOutOfBoundsException();
+    for (int i = lo; i < hi; ++i) {
+        @SuppressWarnings("unchecked")
+        E e = (E) a[i];
+        action.accept(e);
+    }
+}

@@ -1,0 +1,11 @@
+/*
+     * Writes a 32-bit int to the output stream in little-endian byte order.
+     */
+private void writeInt(long v) throws IOException {
+    OutputStream out = this.out;
+    out.write((int) ((v >>> 0) & 0xff));
+    out.write((int) ((v >>> 8) & 0xff));
+    out.write((int) ((v >>> 16) & 0xff));
+    out.write((int) ((v >>> 24) & 0xff));
+    written += 4;
+}

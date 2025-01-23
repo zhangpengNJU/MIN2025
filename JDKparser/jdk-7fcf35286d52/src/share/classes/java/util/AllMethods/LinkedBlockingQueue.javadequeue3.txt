@@ -1,0 +1,17 @@
+/**
+ * Removes a node from head of queue.
+ *
+ * @return the node
+ */
+private E dequeue() {
+    // assert takeLock.isHeldByCurrentThread();
+    // assert head.item == null;
+    Node<E> h = head;
+    Node<E> first = h.next;
+    // help GC
+    h.next = h;
+    head = first;
+    E x = first.item;
+    first.item = null;
+    return x;
+}

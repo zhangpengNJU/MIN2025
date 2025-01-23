@@ -1,0 +1,42 @@
+/**
+ * Sets this transform to a translated rotation transformation.
+ * This operation is equivalent to translating the coordinates so
+ * that the anchor point is at the origin (S1), then rotating them
+ * about the new origin (S2), and finally translating so that the
+ * intermediate origin is restored to the coordinates of the original
+ * anchor point (S3).
+ * <p>
+ * This operation is equivalent to the following sequence of calls:
+ * <pre>
+ *     setToTranslation(anchorx, anchory); // S3: final translation
+ *     rotate(theta);                      // S2: rotate around anchor
+ *     translate(-anchorx, -anchory);      // S1: translate anchor to origin
+ * </pre>
+ * The matrix representing this transform becomes:
+ * <pre>
+ *          [   cos(theta)    -sin(theta)    x-x*cos+y*sin  ]
+ *          [   sin(theta)     cos(theta)    y-x*sin-y*cos  ]
+ *          [       0              0               1        ]
+ * </pre>
+ * Rotating by a positive angle theta rotates points on the positive
+ * X axis toward the positive Y axis.
+ * Note also the discussion of
+ * <a href="#quadrantapproximation">Handling 90-Degree Rotations</a>
+ * above.
+ *
+ * @param theta the angle of rotation measured in radians
+ * @param anchorx the X coordinate of the rotation anchor point
+ * @param anchory the Y coordinate of the rotation anchor point
+ * @since 1.2
+ */
+public void setToRotation(double theta, double anchorx, double anchory) {
+    setToRotation(theta);
+    double sin = m10;
+    double oneMinusCos = 1.0 - m00;
+    m02 = anchorx * oneMinusCos + anchory * sin;
+    m12 = anchory * oneMinusCos - anchorx * sin;
+    if (m02 != 0.0 || m12 != 0.0) {
+        state |= APPLY_TRANSLATE;
+        type |= TYPE_TRANSLATION;
+    }
+}

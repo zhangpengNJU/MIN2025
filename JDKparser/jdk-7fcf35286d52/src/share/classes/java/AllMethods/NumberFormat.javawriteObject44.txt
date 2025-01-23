@@ -1,0 +1,16 @@
+/**
+ * Write out the default serializable data, after first setting
+ * the <code>byte</code> fields such as <code>maxIntegerDigits</code> to be
+ * equal to the <code>int</code> fields such as <code>maximumIntegerDigits</code>
+ * (or to <code>Byte.MAX_VALUE</code>, whichever is smaller), for compatibility
+ * with the JDK 1.1 version of the stream format.
+ *
+ * @since 1.2
+ */
+private void writeObject(ObjectOutputStream stream) throws IOException {
+    maxIntegerDigits = (maximumIntegerDigits > Byte.MAX_VALUE) ? Byte.MAX_VALUE : (byte) maximumIntegerDigits;
+    minIntegerDigits = (minimumIntegerDigits > Byte.MAX_VALUE) ? Byte.MAX_VALUE : (byte) minimumIntegerDigits;
+    maxFractionDigits = (maximumFractionDigits > Byte.MAX_VALUE) ? Byte.MAX_VALUE : (byte) maximumFractionDigits;
+    minFractionDigits = (minimumFractionDigits > Byte.MAX_VALUE) ? Byte.MAX_VALUE : (byte) minimumFractionDigits;
+    stream.defaultWriteObject();
+}

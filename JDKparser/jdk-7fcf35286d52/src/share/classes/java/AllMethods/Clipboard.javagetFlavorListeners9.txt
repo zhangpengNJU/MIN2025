@@ -1,0 +1,15 @@
+/**
+ * Returns an array of all the <code>FlavorListener</code>s currently
+ * registered on this <code>Clipboard</code>.
+ *
+ * @return all of this clipboard's <code>FlavorListener</code>s or an empty
+ *         array if no listeners are currently registered
+ * @see #addFlavorListener
+ * @see #removeFlavorListener
+ * @see FlavorListener
+ * @see FlavorEvent
+ * @since 1.5
+ */
+public synchronized FlavorListener[] getFlavorListeners() {
+    return flavorListeners == null ? new FlavorListener[0] : (FlavorListener[]) flavorListeners.getListenersCopy();
+}

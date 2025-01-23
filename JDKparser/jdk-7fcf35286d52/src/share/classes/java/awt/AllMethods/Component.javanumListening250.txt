@@ -1,0 +1,14 @@
+// Should only be called while holding the tree lock
+int numListening(long mask) {
+    // One mask or the other, but not neither or both.
+    if (eventLog.isLoggable(PlatformLogger.Level.FINE)) {
+        if ((mask != AWTEvent.HIERARCHY_EVENT_MASK) && (mask != AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK)) {
+            eventLog.fine("Assertion failed");
+        }
+    }
+    if ((mask == AWTEvent.HIERARCHY_EVENT_MASK && (hierarchyListener != null || (eventMask & AWTEvent.HIERARCHY_EVENT_MASK) != 0)) || (mask == AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK && (hierarchyBoundsListener != null || (eventMask & AWTEvent.HIERARCHY_BOUNDS_EVENT_MASK) != 0))) {
+        return 1;
+    } else {
+        return 0;
+    }
+}

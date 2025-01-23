@@ -1,0 +1,34 @@
+/**
+ * Inserts the string representation of the {@code char} array
+ * argument into this sequence.
+ * <p>
+ * The characters of the array argument are inserted into the
+ * contents of this sequence at the position indicated by
+ * {@code offset}. The length of this sequence increases by
+ * the length of the argument.
+ * <p>
+ * The overall effect is exactly as if the second argument were
+ * converted to a string by the method {@link String#valueOf(char[])},
+ * and the characters of that string were then
+ * {@link #insert(int,String) inserted} into this character
+ * sequence at the indicated offset.
+ * <p>
+ * The {@code offset} argument must be greater than or equal to
+ * {@code 0}, and less than or equal to the {@linkplain #length() length}
+ * of this sequence.
+ *
+ * @param      offset   the offset.
+ * @param      str      a character array.
+ * @return     a reference to this object.
+ * @throws     StringIndexOutOfBoundsException  if the offset is invalid.
+ */
+public AbstractStringBuilder insert(int offset, char[] str) {
+    if ((offset < 0) || (offset > length()))
+        throw new StringIndexOutOfBoundsException(offset);
+    int len = str.length;
+    ensureCapacityInternal(count + len);
+    System.arraycopy(value, offset, value, offset + len, count - offset);
+    System.arraycopy(str, 0, value, offset, len);
+    count += len;
+    return this;
+}

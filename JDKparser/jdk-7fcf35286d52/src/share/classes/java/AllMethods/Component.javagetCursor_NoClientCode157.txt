@@ -1,0 +1,12 @@
+final Cursor getCursor_NoClientCode() {
+    Cursor cursor = this.cursor;
+    if (cursor != null) {
+        return cursor;
+    }
+    Container parent = this.parent;
+    if (parent != null) {
+        return parent.getCursor_NoClientCode();
+    } else {
+        return Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+    }
+}

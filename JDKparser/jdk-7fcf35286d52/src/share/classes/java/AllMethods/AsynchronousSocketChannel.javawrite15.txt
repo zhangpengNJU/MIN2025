@@ -1,0 +1,11 @@
+/**
+ * @throws  WritePendingException          {@inheritDoc}
+ * @throws  NotYetConnectedException
+ *          If this channel is not yet connected
+ * @throws  ShutdownChannelGroupException
+ *          If the channel group has terminated
+ */
+@Override
+public final <A> void write(ByteBuffer src, A attachment, CompletionHandler<Integer, ? super A> handler) {
+    write(src, 0L, TimeUnit.MILLISECONDS, attachment, handler);
+}

@@ -1,0 +1,10 @@
+/**
+ * Eventually sets the element at position {@code i} to the given value.
+ *
+ * @param i the index
+ * @param newValue the new value
+ * @since 1.6
+ */
+public final void lazySet(int i, long newValue) {
+    unsafe.putOrderedLong(array, checkedByteOffset(i), newValue);
+}

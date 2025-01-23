@@ -1,0 +1,206 @@
+/**
+ * Returns a BigInteger whose value is x to the power of y mod z.
+ * Assumes: z is odd && x < z.
+ */
+private BigInteger oddModPow(BigInteger y, BigInteger z) {
+    /*
+     * The algorithm is adapted from Colin Plumb's C library.
+     *
+     * The window algorithm:
+     * The idea is to keep a running product of b1 = n^(high-order bits of exp)
+     * and then keep appending exponent bits to it.  The following patterns
+     * apply to a 3-bit window (k = 3):
+     * To append   0: square
+     * To append   1: square, multiply by n^1
+     * To append  10: square, multiply by n^1, square
+     * To append  11: square, square, multiply by n^3
+     * To append 100: square, multiply by n^1, square, square
+     * To append 101: square, square, square, multiply by n^5
+     * To append 110: square, square, multiply by n^3, square
+     * To append 111: square, square, square, multiply by n^7
+     *
+     * Since each pattern involves only one multiply, the longer the pattern
+     * the better, except that a 0 (no multiplies) can be appended directly.
+     * We precompute a table of odd powers of n, up to 2^k, and can then
+     * multiply k bits of exponent at a time.  Actually, assuming random
+     * exponents, there is on average one zero bit between needs to
+     * multiply (1/2 of the time there's none, 1/4 of the time there's 1,
+     * 1/8 of the time, there's 2, 1/32 of the time, there's 3, etc.), so
+     * you have to do one multiply per k+1 bits of exponent.
+     *
+     * The loop walks down the exponent, squaring the result buffer as
+     * it goes.  There is a wbits+1 bit lookahead buffer, buf, that is
+     * filled with the upcoming exponent bits.  (What is read after the
+     * end of the exponent is unimportant, but it is filled with zero here.)
+     * When the most-significant bit of this buffer becomes set, i.e.
+     * (buf & tblmask) != 0, we have to decide what pattern to multiply
+     * by, and when to do it.  We decide, remember to do it in future
+     * after a suitable number of squarings have passed (e.g. a pattern
+     * of "100" in the buffer requires that we multiply by n^1 immediately;
+     * a pattern of "110" calls for multiplying by n^3 after one more
+     * squaring), clear the buffer, and continue.
+     *
+     * When we start, there is one more optimization: the result buffer
+     * is implcitly one, so squaring it or multiplying by it can be
+     * optimized away.  Further, if we start with a pattern like "100"
+     * in the lookahead window, rather than placing n into the buffer
+     * and then starting to square it, we have already computed n^2
+     * to compute the odd-powers table, so we can place that into
+     * the buffer and save a squaring.
+     *
+     * This means that if you have a k-bit window, to compute n^z,
+     * where z is the high k bits of the exponent, 1/2 of the time
+     * it requires no squarings.  1/4 of the time, it requires 1
+     * squaring, ... 1/2^(k-1) of the time, it reqires k-2 squarings.
+     * And the remaining 1/2^(k-1) of the time, the top k bits are a
+     * 1 followed by k-1 0 bits, so it again only requires k-2
+     * squarings, not k-1.  The average of these is 1.  Add that
+     * to the one squaring we have to do to compute the table,
+     * and you'll see that a k-bit window saves k-2 squarings
+     * as well as reducing the multiplies.  (It actually doesn't
+     * hurt in the case k = 1, either.)
+     */
+    // Special case for exponent of one
+    if (y.equals(ONE))
+        return this;
+    // Special case for base of zero
+    if (signum == 0)
+        return ZERO;
+    int[] base = mag.clone();
+    int[] exp = y.mag;
+    int[] mod = z.mag;
+    int modLen = mod.length;
+    // Make modLen even. It is conventional to use a cryptographic
+    // modulus that is 512, 768, 1024, or 2048 bits, so this code
+    // will not normally be executed. However, it is necessary for
+    // the correct functioning of the HotSpot intrinsics.
+    if ((modLen & 1) != 0) {
+        int[] x = new int[modLen + 1];
+        System.arraycopy(mod, 0, x, 1, modLen);
+        mod = x;
+        modLen++;
+    }
+    // Select an appropriate window size
+    int wbits = 0;
+    int ebits = bitLength(exp, exp.length);
+    // if exponent is 65537 (0x10001), use minimum window size
+    if ((ebits != 17) || (exp[0] != 65537)) {
+        while (ebits > bnExpModThreshTable[wbits]) {
+            wbits++;
+        }
+    }
+    // Calculate appropriate table size
+    int tblmask = 1 << wbits;
+    // Allocate table for precomputed odd powers of base in Montgomery form
+    int[][] table = new int[tblmask][];
+    for (int i = 0; i < tblmask; i++) table[i] = new int[modLen];
+    // Compute the modular inverse of the least significant 64-bit
+    // digit of the modulus
+    long n0 = (mod[modLen - 1] & LONG_MASK) + ((mod[modLen - 2] & LONG_MASK) << 32);
+    long inv = -MutableBigInteger.inverseMod64(n0);
+    // Convert base to Montgomery form
+    int[] a = leftShift(base, base.length, modLen << 5);
+    MutableBigInteger q = new MutableBigInteger(), a2 = new MutableBigInteger(a), b2 = new MutableBigInteger(mod);
+    // MutableBigInteger.divide() assumes that its
+    b2.normalize();
+    // divisor is in normal form.
+    MutableBigInteger r = a2.divide(b2, q);
+    table[0] = r.toIntArray();
+    // Pad table[0] with leading zeros so its length is at least modLen
+    if (table[0].length < modLen) {
+        int offset = modLen - table[0].length;
+        int[] t2 = new int[modLen];
+        System.arraycopy(table[0], 0, t2, offset, table[0].length);
+        table[0] = t2;
+    }
+    // Set b to the square of the base
+    int[] b = montgomerySquare(table[0], mod, modLen, inv, null);
+    // Set t to high half of b
+    int[] t = Arrays.copyOf(b, modLen);
+    // Fill in the table with odd powers of the base
+    for (int i = 1; i < tblmask; i++) {
+        table[i] = montgomeryMultiply(t, table[i - 1], mod, modLen, inv, null);
+    }
+    // Pre load the window that slides over the exponent
+    int bitpos = 1 << ((ebits - 1) & (32 - 1));
+    int buf = 0;
+    int elen = exp.length;
+    int eIndex = 0;
+    for (int i = 0; i <= wbits; i++) {
+        buf = (buf << 1) | (((exp[eIndex] & bitpos) != 0) ? 1 : 0);
+        bitpos >>>= 1;
+        if (bitpos == 0) {
+            eIndex++;
+            bitpos = 1 << (32 - 1);
+            elen--;
+        }
+    }
+    int multpos = ebits;
+    // The first iteration, which is hoisted out of the main loop
+    ebits--;
+    boolean isone = true;
+    multpos = ebits - wbits;
+    while ((buf & 1) == 0) {
+        buf >>>= 1;
+        multpos++;
+    }
+    int[] mult = table[buf >>> 1];
+    buf = 0;
+    if (multpos == ebits)
+        isone = false;
+    // The main loop
+    while (true) {
+        ebits--;
+        // Advance the window
+        buf <<= 1;
+        if (elen != 0) {
+            buf |= ((exp[eIndex] & bitpos) != 0) ? 1 : 0;
+            bitpos >>>= 1;
+            if (bitpos == 0) {
+                eIndex++;
+                bitpos = 1 << (32 - 1);
+                elen--;
+            }
+        }
+        // Examine the window for pending multiplies
+        if ((buf & tblmask) != 0) {
+            multpos = ebits - wbits;
+            while ((buf & 1) == 0) {
+                buf >>>= 1;
+                multpos++;
+            }
+            mult = table[buf >>> 1];
+            buf = 0;
+        }
+        // Perform multiply
+        if (ebits == multpos) {
+            if (isone) {
+                b = mult.clone();
+                isone = false;
+            } else {
+                t = b;
+                a = montgomeryMultiply(t, mult, mod, modLen, inv, a);
+                t = a;
+                a = b;
+                b = t;
+            }
+        }
+        // Check if done
+        if (ebits == 0)
+            break;
+        // Square the input
+        if (!isone) {
+            t = b;
+            a = montgomerySquare(t, mod, modLen, inv, a);
+            t = a;
+            a = b;
+            b = t;
+        }
+    }
+    // Convert result out of Montgomery form and return
+    int[] t2 = new int[2 * modLen];
+    System.arraycopy(b, 0, t2, modLen, modLen);
+    b = montReduce(t2, mod, modLen, (int) inv);
+    t2 = Arrays.copyOf(b, modLen);
+    return new BigInteger(1, t2);
+}

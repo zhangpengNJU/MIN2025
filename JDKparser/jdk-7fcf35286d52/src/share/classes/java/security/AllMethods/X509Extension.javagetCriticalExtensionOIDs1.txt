@@ -1,0 +1,28 @@
+/**
+ * Gets a Set of the OID strings for the extension(s) marked
+ * CRITICAL in the certificate/CRL managed by the object
+ * implementing this interface.
+ *
+ * Here is sample code to get a Set of critical extensions from an
+ * X509Certificate and print the OIDs:
+ * <pre>{@code
+ * X509Certificate cert = null;
+ * try (InputStream inStrm = new FileInputStream("DER-encoded-Cert")) {
+ *     CertificateFactory cf = CertificateFactory.getInstance("X.509");
+ *     cert = (X509Certificate)cf.generateCertificate(inStrm);
+ * }
+ *
+ * Set<String> critSet = cert.getCriticalExtensionOIDs();
+ * if (critSet != null && !critSet.isEmpty()) {
+ *     System.out.println("Set of critical extensions:");
+ *     for (String oid : critSet) {
+ *         System.out.println(oid);
+ *     }
+ * }
+ * }</pre>
+ * @return a Set (or an empty Set if none are marked critical) of
+ * the extension OID strings for extensions that are marked critical.
+ * If there are no extensions present at all, then this method returns
+ * null.
+ */
+public Set<String> getCriticalExtensionOIDs();

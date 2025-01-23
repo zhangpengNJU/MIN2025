@@ -1,0 +1,9 @@
+// / Collection of multiple arguments.
+private static MethodHandle findCollector(String name, int nargs, Class<?> rtype, Class<?>... ptypes) {
+    MethodType type = MethodType.genericMethodType(nargs).changeReturnType(rtype).insertParameterTypes(0, ptypes);
+    try {
+        return IMPL_LOOKUP.findStatic(MethodHandleImpl.class, name, type);
+    } catch (ReflectiveOperationException ex) {
+        return null;
+    }
+}

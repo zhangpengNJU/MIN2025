@@ -1,0 +1,15 @@
+/**
+ * Factory method for creating Struct objects.
+ *
+ * @param typeName the SQL type name of the SQL structured type that this <code>Struct</code>
+ * object maps to. The typeName is the name of  a user-defined type that
+ * has been defined for this database. It is the value returned by
+ * <code>Struct.getSQLTypeName</code>.
+ *
+ * @param attributes the attributes that populate the returned object
+ *  @return a Struct object that maps to the given SQL type and is populated with the given attributes
+ * @throws SQLException if a database error occurs, the typeName is null or this method is called on a closed connection
+ * @throws SQLFeatureNotSupportedException  if the JDBC driver does not support this data type
+ * @since 1.6
+ */
+Struct createStruct(String typeName, Object[] attributes) throws SQLException;

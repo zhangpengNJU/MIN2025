@@ -1,0 +1,8 @@
+/**
+ * Throws an exception if e is not of the correct type for this enum set.
+ */
+final void typeCheck(E e) {
+    Class<?> eClass = e.getClass();
+    if (eClass != elementType && eClass.getSuperclass() != elementType)
+        throw new ClassCastException(eClass + " != " + elementType);
+}

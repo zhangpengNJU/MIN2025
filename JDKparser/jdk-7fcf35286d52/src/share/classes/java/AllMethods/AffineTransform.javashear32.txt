@@ -1,0 +1,64 @@
+/**
+ * Concatenates this transform with a shearing transformation.
+ * This is equivalent to calling concatenate(SH), where SH is an
+ * <code>AffineTransform</code> represented by the following matrix:
+ * <pre>
+ *          [   1   shx   0   ]
+ *          [  shy   1    0   ]
+ *          [   0    0    1   ]
+ * </pre>
+ * @param shx the multiplier by which coordinates are shifted in the
+ * direction of the positive X axis as a factor of their Y coordinate
+ * @param shy the multiplier by which coordinates are shifted in the
+ * direction of the positive Y axis as a factor of their X coordinate
+ * @since 1.2
+ */
+public void shear(double shx, double shy) {
+    int state = this.state;
+    switch(state) {
+        default:
+            stateError();
+            /* NOTREACHED */
+            return;
+        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SHEAR | APPLY_SCALE):
+            double M0, M1;
+            M0 = m00;
+            M1 = m01;
+            m00 = M0 + M1 * shy;
+            m01 = M0 * shx + M1;
+            M0 = m10;
+            M1 = m11;
+            m10 = M0 + M1 * shy;
+            m11 = M0 * shx + M1;
+            updateState();
+            return;
+        case (APPLY_SHEAR | APPLY_TRANSLATE):
+        case (APPLY_SHEAR):
+            m00 = m01 * shy;
+            m11 = m10 * shx;
+            if (m00 != 0.0 || m11 != 0.0) {
+                this.state = state | APPLY_SCALE;
+            }
+            this.type = TYPE_UNKNOWN;
+            return;
+        case (APPLY_SCALE | APPLY_TRANSLATE):
+        case (APPLY_SCALE):
+            m01 = m00 * shx;
+            m10 = m11 * shy;
+            if (m01 != 0.0 || m10 != 0.0) {
+                this.state = state | APPLY_SHEAR;
+            }
+            this.type = TYPE_UNKNOWN;
+            return;
+        case (APPLY_TRANSLATE):
+        case (APPLY_IDENTITY):
+            m01 = shx;
+            m10 = shy;
+            if (m01 != 0.0 || m10 != 0.0) {
+                this.state = state | APPLY_SCALE | APPLY_SHEAR;
+                this.type = TYPE_UNKNOWN;
+            }
+            return;
+    }
+}

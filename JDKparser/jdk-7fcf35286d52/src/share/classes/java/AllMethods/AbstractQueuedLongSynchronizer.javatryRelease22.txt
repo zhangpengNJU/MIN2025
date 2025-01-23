@@ -1,0 +1,25 @@
+/**
+ * Attempts to set the state to reflect a release in exclusive
+ * mode.
+ *
+ * <p>This method is always invoked by the thread performing release.
+ *
+ * <p>The default implementation throws
+ * {@link UnsupportedOperationException}.
+ *
+ * @param arg the release argument. This value is always the one
+ *        passed to a release method, or the current state value upon
+ *        entry to a condition wait.  The value is otherwise
+ *        uninterpreted and can represent anything you like.
+ * @return {@code true} if this object is now in a fully released
+ *         state, so that any waiting threads may attempt to acquire;
+ *         and {@code false} otherwise.
+ * @throws IllegalMonitorStateException if releasing would place this
+ *         synchronizer in an illegal state. This exception must be
+ *         thrown in a consistent fashion for synchronization to work
+ *         correctly.
+ * @throws UnsupportedOperationException if exclusive mode is not supported
+ */
+protected boolean tryRelease(long arg) {
+    throw new UnsupportedOperationException();
+}

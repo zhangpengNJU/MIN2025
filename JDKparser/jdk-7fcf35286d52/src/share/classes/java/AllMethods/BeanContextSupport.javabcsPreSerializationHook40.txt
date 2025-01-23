@@ -1,0 +1,15 @@
+/**
+ * called by writeObject after defaultWriteObject() but prior to
+ * serialization of currently serializable children.
+ *
+ * This method may be overridden by subclasses to perform custom
+ * serialization of their state prior to this superclass serializing
+ * the children.
+ *
+ * This method should not however be used by subclasses to replace their
+ * own implementation (if any) of writeObject().
+ * @param oos the {@code ObjectOutputStream} to use during serialization
+ * @throws IOException if serialization failed
+ */
+protected void bcsPreSerializationHook(ObjectOutputStream oos) throws IOException {
+}

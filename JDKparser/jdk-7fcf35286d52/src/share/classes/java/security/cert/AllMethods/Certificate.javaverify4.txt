@@ -1,0 +1,14 @@
+/**
+ * Verifies that this certificate was signed using the
+ * private key that corresponds to the specified public key.
+ *
+ * @param key the PublicKey used to carry out the verification.
+ *
+ * @exception NoSuchAlgorithmException on unsupported signature
+ * algorithms.
+ * @exception InvalidKeyException on incorrect key.
+ * @exception NoSuchProviderException if there's no default provider.
+ * @exception SignatureException on signature errors.
+ * @exception CertificateException on encoding errors.
+ */
+public abstract void verify(PublicKey key) throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException;

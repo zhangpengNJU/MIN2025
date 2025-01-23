@@ -1,0 +1,14 @@
+/**
+ * Commences performing this task, awaits its completion if
+ * necessary, and returns its result, or throws an (unchecked)
+ * {@code RuntimeException} or {@code Error} if the underlying
+ * computation did so.
+ *
+ * @return the computed result
+ */
+public final V invoke() {
+    int s;
+    if ((s = doInvoke() & DONE_MASK) != NORMAL)
+        reportException(s);
+    return getRawResult();
+}

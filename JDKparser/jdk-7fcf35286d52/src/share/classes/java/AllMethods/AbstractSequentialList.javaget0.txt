@@ -1,0 +1,16 @@
+/**
+ * Returns the element at the specified position in this list.
+ *
+ * <p>This implementation first gets a list iterator pointing to the
+ * indexed element (with <tt>listIterator(index)</tt>).  Then, it gets
+ * the element using <tt>ListIterator.next</tt> and returns it.
+ *
+ * @throws IndexOutOfBoundsException {@inheritDoc}
+ */
+public E get(int index) {
+    try {
+        return listIterator(index).next();
+    } catch (NoSuchElementException exc) {
+        throw new IndexOutOfBoundsException("Index: " + index);
+    }
+}

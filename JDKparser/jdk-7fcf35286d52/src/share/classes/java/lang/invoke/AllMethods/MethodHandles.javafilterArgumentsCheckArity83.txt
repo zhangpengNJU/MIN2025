@@ -1,0 +1,6 @@
+private static void filterArgumentsCheckArity(MethodHandle target, int pos, MethodHandle[] filters) {
+    MethodType targetType = target.type();
+    int maxPos = targetType.parameterCount();
+    if (pos + filters.length > maxPos)
+        throw newIllegalArgumentException("too many filters");
+}

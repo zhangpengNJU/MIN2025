@@ -1,0 +1,14 @@
+private static ResourceBundle findSystemResourceBundle(final Locale locale) {
+    // the resource bundle is in a restricted package
+    return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
+
+        @Override
+        public ResourceBundle run() {
+            try {
+                return ResourceBundle.getBundle(SYSTEM_LOGGER_RB_NAME, locale);
+            } catch (MissingResourceException e) {
+                throw new InternalError(e.toString());
+            }
+        }
+    });
+}

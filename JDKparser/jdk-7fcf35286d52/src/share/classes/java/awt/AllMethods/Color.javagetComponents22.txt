@@ -1,0 +1,32 @@
+/**
+ * Returns a <code>float</code> array containing the color and alpha
+ * components of the <code>Color</code>, in the
+ * <code>ColorSpace</code> of the <code>Color</code>.
+ * If <code>compArray</code> is <code>null</code>, an array with
+ * length equal to the number of components in the associated
+ * <code>ColorSpace</code> plus one is created for
+ * the return value.  Otherwise, <code>compArray</code> must have at
+ * least this length and it is filled in with the components and
+ * returned.
+ * @param compArray an array that this method fills with the color and
+ *          alpha components of this <code>Color</code> in its
+ *          <code>ColorSpace</code> and returns
+ * @return the color and alpha components in a <code>float</code>
+ *          array.
+ */
+public float[] getComponents(float[] compArray) {
+    if (fvalue == null)
+        return getRGBComponents(compArray);
+    float[] f;
+    int n = fvalue.length;
+    if (compArray == null) {
+        f = new float[n + 1];
+    } else {
+        f = compArray;
+    }
+    for (int i = 0; i < n; i++) {
+        f[i] = fvalue[i];
+    }
+    f[n] = falpha;
+    return f;
+}

@@ -1,0 +1,13 @@
+private static MethodHandle[] makeFillArrays() {
+    ArrayList<MethodHandle> mhs = new ArrayList<>();
+    // there is no empty fill; at least a0 is required
+    mhs.add(null);
+    for (; ; ) {
+        MethodHandle mh = findCollector("fillArray", mhs.size(), Object[].class, Integer.class, Object[].class);
+        if (mh == null)
+            break;
+        mhs.add(mh);
+    }
+    assert (mhs.size() == FILL_ARRAYS_COUNT);
+    return mhs.toArray(new MethodHandle[0]);
+}

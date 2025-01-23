@@ -1,0 +1,5 @@
+@Override
+final void forEachWithCancel(Spliterator<P_OUT> spliterator, Sink<P_OUT> sink) {
+    do {
+    } while (!sink.cancellationRequested() && spliterator.tryAdvance(sink));
+}

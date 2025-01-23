@@ -1,0 +1,58 @@
+/**
+ * Spins/blocks until node s is matched by a fulfill operation.
+ *
+ * @param s the waiting node
+ * @param timed true if timed wait
+ * @param nanos timeout value
+ * @return matched node, or s if cancelled
+ */
+SNode awaitFulfill(SNode s, boolean timed, long nanos) {
+    /*
+             * When a node/thread is about to block, it sets its waiter
+             * field and then rechecks state at least one more time
+             * before actually parking, thus covering race vs
+             * fulfiller noticing that waiter is non-null so should be
+             * woken.
+             *
+             * When invoked by nodes that appear at the point of call
+             * to be at the head of the stack, calls to park are
+             * preceded by spins to avoid blocking when producers and
+             * consumers are arriving very close in time.  This can
+             * happen enough to bother only on multiprocessors.
+             *
+             * The order of checks for returning out of main loop
+             * reflects fact that interrupts have precedence over
+             * normal returns, which have precedence over
+             * timeouts. (So, on timeout, one last check for match is
+             * done before giving up.) Except that calls from untimed
+             * SynchronousQueue.{poll/offer} don't check interrupts
+             * and don't wait at all, so are trapped in transfer
+             * method rather than calling awaitFulfill.
+             */
+    final long deadline = timed ? System.nanoTime() + nanos : 0L;
+    Thread w = Thread.currentThread();
+    int spins = (shouldSpin(s) ? (timed ? maxTimedSpins : maxUntimedSpins) : 0);
+    for (; ; ) {
+        if (w.isInterrupted())
+            s.tryCancel();
+        SNode m = s.match;
+        if (m != null)
+            return m;
+        if (timed) {
+            nanos = deadline - System.nanoTime();
+            if (nanos <= 0L) {
+                s.tryCancel();
+                continue;
+            }
+        }
+        if (spins > 0)
+            spins = shouldSpin(s) ? (spins - 1) : 0;
+        else if (s.waiter == null)
+            // establish waiter so can park next iter
+            s.waiter = w;
+        else if (!timed)
+            LockSupport.park(this);
+        else if (nanos > spinForTimeoutThreshold)
+            LockSupport.parkNanos(this, nanos);
+    }
+}

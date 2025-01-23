@@ -1,0 +1,6 @@
+@Override
+MethodHandle setVarargs(MemberName member) {
+    if (member.isVarargs())
+        return this;
+    return asFixedArity();
+}

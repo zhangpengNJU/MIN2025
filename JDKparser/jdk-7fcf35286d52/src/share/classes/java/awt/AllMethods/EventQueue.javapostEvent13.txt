@@ -1,0 +1,36 @@
+/**
+ * Posts the event to the internal Queue of specified priority,
+ * coalescing as appropriate.
+ *
+ * @param theEvent an instance of <code>java.awt.AWTEvent</code>,
+ *          or a subclass of it
+ * @param priority  the desired priority of the event
+ */
+private void postEvent(AWTEvent theEvent, int priority) {
+    if (coalesceEvent(theEvent, priority)) {
+        return;
+    }
+    EventQueueItem newItem = new EventQueueItem(theEvent);
+    cacheEQItem(newItem);
+    boolean notifyID = (theEvent.getID() == this.waitForID);
+    if (queues[priority].head == null) {
+        boolean shouldNotify = noEvents();
+        queues[priority].head = queues[priority].tail = newItem;
+        if (shouldNotify) {
+            if (theEvent.getSource() != AWTAutoShutdown.getInstance()) {
+                AWTAutoShutdown.getInstance().notifyThreadBusy(dispatchThread);
+            }
+            pushPopCond.signalAll();
+        } else if (notifyID) {
+            pushPopCond.signalAll();
+        }
+    } else {
+        // The event was not coalesced or has non-Component source.
+        // Insert it at the end of the appropriate Queue.
+        queues[priority].tail.next = newItem;
+        queues[priority].tail = newItem;
+        if (notifyID) {
+            pushPopCond.signalAll();
+        }
+    }
+}

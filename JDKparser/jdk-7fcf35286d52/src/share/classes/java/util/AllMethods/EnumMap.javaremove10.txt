@@ -1,0 +1,19 @@
+/**
+ * Removes the mapping for this key from this map if present.
+ *
+ * @param key the key whose mapping is to be removed from the map
+ * @return the previous value associated with specified key, or
+ *     <tt>null</tt> if there was no entry for key.  (A <tt>null</tt>
+ *     return can also indicate that the map previously associated
+ *     <tt>null</tt> with the specified key.)
+ */
+public V remove(Object key) {
+    if (!isValidKey(key))
+        return null;
+    int index = ((Enum<?>) key).ordinal();
+    Object oldValue = vals[index];
+    vals[index] = null;
+    if (oldValue != null)
+        size--;
+    return unmaskNull(oldValue);
+}

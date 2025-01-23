@@ -1,0 +1,16 @@
+// The main insertion and extraction methods are addFirst,
+// addLast, pollFirst, pollLast. The other methods are defined in
+// terms of these.
+/**
+ * Inserts the specified element at the front of this deque.
+ *
+ * @param e the element to add
+ * @throws NullPointerException if the specified element is null
+ */
+public void addFirst(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    elements[head = (head - 1) & (elements.length - 1)] = e;
+    if (head == tail)
+        doubleCapacity();
+}

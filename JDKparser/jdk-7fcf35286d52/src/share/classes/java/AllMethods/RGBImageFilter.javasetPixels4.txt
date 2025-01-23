@@ -1,0 +1,32 @@
+/**
+ * If the ColorModel object is the same one that has already
+ * been converted, then simply passes the pixels through with the
+ * converted ColorModel. Otherwise converts the buffer of byte
+ * pixels to the default RGB ColorModel and passes the converted
+ * buffer to the filterRGBPixels method to be converted one by one.
+ * <p>
+ * Note: This method is intended to be called by the
+ * <code>ImageProducer</code> of the <code>Image</code> whose pixels
+ * are being filtered. Developers using
+ * this class to filter pixels from an image should avoid calling
+ * this method directly since that operation could interfere
+ * with the filtering operation.
+ * @see ColorModel#getRGBdefault
+ * @see #filterRGBPixels
+ */
+public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] pixels, int off, int scansize) {
+    if (model == origmodel) {
+        consumer.setPixels(x, y, w, h, newmodel, pixels, off, scansize);
+    } else {
+        int[] filteredpixels = new int[w];
+        int index = off;
+        for (int cy = 0; cy < h; cy++) {
+            for (int cx = 0; cx < w; cx++) {
+                filteredpixels[cx] = model.getRGB((pixels[index] & 0xff));
+                index++;
+            }
+            index += scansize - w;
+            filterRGBPixels(x, y + cy, w, 1, filteredpixels, 0, w);
+        }
+    }
+}

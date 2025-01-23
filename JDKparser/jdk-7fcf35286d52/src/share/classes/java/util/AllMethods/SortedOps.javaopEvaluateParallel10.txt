@@ -1,0 +1,11 @@
+@Override
+public <P_IN> Node<Long> opEvaluateParallel(PipelineHelper<Long> helper, Spliterator<P_IN> spliterator, IntFunction<Long[]> generator) {
+    if (StreamOpFlag.SORTED.isKnown(helper.getStreamAndOpFlags())) {
+        return helper.evaluate(spliterator, false, generator);
+    } else {
+        Node.OfLong n = (Node.OfLong) helper.evaluate(spliterator, true, generator);
+        long[] content = n.asPrimitiveArray();
+        Arrays.parallelSort(content);
+        return Nodes.node(content);
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * Fires a <tt>BeanContextServiceEvent</tt> notifying of a service being revoked.
+ *
+ * @param bcsre the <tt>BeanContextServiceRevokedEvent</tt>
+ */
+protected final void fireServiceRevoked(BeanContextServiceRevokedEvent bcsre) {
+    Object[] copy;
+    synchronized (bcsListeners) {
+        copy = bcsListeners.toArray();
+    }
+    for (int i = 0; i < copy.length; i++) {
+        ((BeanContextServiceRevokedListener) copy[i]).serviceRevoked(bcsre);
+    }
+}

@@ -1,0 +1,22 @@
+final boolean biRun(CompletableFuture<?> a, CompletableFuture<?> b, Runnable f, BiRun<?, ?> c) {
+    Object r, s;
+    Throwable x;
+    if (a == null || (r = a.result) == null || b == null || (s = b.result) == null || f == null)
+        return false;
+    if (result == null) {
+        if (r instanceof AltResult && (x = ((AltResult) r).ex) != null)
+            completeThrowable(x, r);
+        else if (s instanceof AltResult && (x = ((AltResult) s).ex) != null)
+            completeThrowable(x, s);
+        else
+            try {
+                if (c != null && !c.claim())
+                    return false;
+                f.run();
+                completeNull();
+            } catch (Throwable ex) {
+                completeThrowable(ex);
+            }
+    }
+    return true;
+}

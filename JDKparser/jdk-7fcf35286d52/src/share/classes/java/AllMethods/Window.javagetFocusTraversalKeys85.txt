@@ -1,0 +1,41 @@
+/**
+ * Gets a focus traversal key for this Window. (See {@code
+ * setFocusTraversalKeys} for a full description of each key.)
+ * <p>
+ * If the traversal key has not been explicitly set for this Window,
+ * then this Window's parent's traversal key is returned. If the
+ * traversal key has not been explicitly set for any of this Window's
+ * ancestors, then the current KeyboardFocusManager's default traversal key
+ * is returned.
+ *
+ * @param id one of KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, or
+ *         KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS
+ * @return the AWTKeyStroke for the specified key
+ * @see Container#setFocusTraversalKeys
+ * @see KeyboardFocusManager#FORWARD_TRAVERSAL_KEYS
+ * @see KeyboardFocusManager#BACKWARD_TRAVERSAL_KEYS
+ * @see KeyboardFocusManager#UP_CYCLE_TRAVERSAL_KEYS
+ * @see KeyboardFocusManager#DOWN_CYCLE_TRAVERSAL_KEYS
+ * @throws IllegalArgumentException if id is not one of
+ *         KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+ *         KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS, or
+ *         KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS
+ * @since 1.4
+ */
+@SuppressWarnings("unchecked")
+public Set<AWTKeyStroke> getFocusTraversalKeys(int id) {
+    if (id < 0 || id >= KeyboardFocusManager.TRAVERSAL_KEY_LENGTH) {
+        throw new IllegalArgumentException("invalid focus traversal key identifier");
+    }
+    // Okay to return Set directly because it is an unmodifiable view
+    @SuppressWarnings("rawtypes")
+    Set keystrokes = (focusTraversalKeys != null) ? focusTraversalKeys[id] : null;
+    if (keystrokes != null) {
+        return keystrokes;
+    } else {
+        return KeyboardFocusManager.getCurrentKeyboardFocusManager().getDefaultFocusTraversalKeys(id);
+    }
+}

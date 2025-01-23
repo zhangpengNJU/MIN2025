@@ -1,0 +1,12 @@
+/**
+ * Retrieves whether a <code>SQLException</code> while autoCommit is <code>true</code> indicates
+ * that all open ResultSets are closed, even ones that are holdable.  When a <code>SQLException</code> occurs while
+ * autocommit is <code>true</code>, it is vendor specific whether the JDBC driver responds with a commit operation, a
+ * rollback operation, or by doing neither a commit nor a rollback.  A potential result of this difference
+ * is in whether or not holdable ResultSets are closed.
+ *
+ * @return <code>true</code> if so; <code>false</code> otherwise
+ * @exception SQLException if a database access error occurs
+ * @since 1.6
+ */
+boolean autoCommitFailureClosesAllResultSets() throws SQLException;

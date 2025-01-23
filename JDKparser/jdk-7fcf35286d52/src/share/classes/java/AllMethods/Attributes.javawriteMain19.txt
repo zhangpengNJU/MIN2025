@@ -1,0 +1,40 @@
+/*
+     * Writes the current attributes to the specified data output stream,
+     * make sure to write out the MANIFEST_VERSION or SIGNATURE_VERSION
+     * attributes first.
+     *
+     * XXX Need to handle UTF8 values and break up lines longer than 72 bytes
+     */
+void writeMain(DataOutputStream out) throws IOException {
+    // write out the *-Version header first, if it exists
+    String vername = Name.MANIFEST_VERSION.toString();
+    String version = getValue(vername);
+    if (version == null) {
+        vername = Name.SIGNATURE_VERSION.toString();
+        version = getValue(vername);
+    }
+    if (version != null) {
+        out.writeBytes(vername + ": " + version + "\r\n");
+    }
+    // write out all attributes except for the version
+    // we wrote out earlier
+    Iterator<Map.Entry<Object, Object>> it = entrySet().iterator();
+    while (it.hasNext()) {
+        Map.Entry<Object, Object> e = it.next();
+        String name = ((Name) e.getKey()).toString();
+        if ((version != null) && !(name.equalsIgnoreCase(vername))) {
+            StringBuffer buffer = new StringBuffer(name);
+            buffer.append(": ");
+            String value = (String) e.getValue();
+            if (value != null) {
+                byte[] vb = value.getBytes("UTF8");
+                value = new String(vb, 0, 0, vb.length);
+            }
+            buffer.append(value);
+            buffer.append("\r\n");
+            Manifest.make72Safe(buffer);
+            out.writeBytes(buffer.toString());
+        }
+    }
+    out.writeBytes("\r\n");
+}

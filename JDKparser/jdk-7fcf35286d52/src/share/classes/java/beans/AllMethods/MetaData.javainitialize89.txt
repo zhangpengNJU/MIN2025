@@ -1,0 +1,8 @@
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    super.initialize(type, oldInstance, newInstance, out);
+    javax.swing.tree.DefaultMutableTreeNode m = (javax.swing.tree.DefaultMutableTreeNode) oldInstance;
+    javax.swing.tree.DefaultMutableTreeNode n = (javax.swing.tree.DefaultMutableTreeNode) newInstance;
+    for (int i = n.getChildCount(); i < m.getChildCount(); i++) {
+        invokeStatement(oldInstance, "add", new Object[] { m.getChildAt(i) }, out);
+    }
+}

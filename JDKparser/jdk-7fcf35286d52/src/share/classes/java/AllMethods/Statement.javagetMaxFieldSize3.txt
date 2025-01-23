@@ -1,0 +1,18 @@
+// ----------------------------------------------------------------------
+/**
+ * Retrieves the maximum number of bytes that can be
+ * returned for character and binary column values in a <code>ResultSet</code>
+ * object produced by this <code>Statement</code> object.
+ * This limit applies only to  <code>BINARY</code>, <code>VARBINARY</code>,
+ * <code>LONGVARBINARY</code>, <code>CHAR</code>, <code>VARCHAR</code>,
+ * <code>NCHAR</code>, <code>NVARCHAR</code>, <code>LONGNVARCHAR</code>
+ * and <code>LONGVARCHAR</code> columns.  If the limit is exceeded, the
+ * excess data is silently discarded.
+ *
+ * @return the current column size limit for columns storing character and
+ *         binary values; zero means there is no limit
+ * @exception SQLException if a database access error occurs or
+ * this method is called on a closed <code>Statement</code>
+ * @see #setMaxFieldSize
+ */
+int getMaxFieldSize() throws SQLException;

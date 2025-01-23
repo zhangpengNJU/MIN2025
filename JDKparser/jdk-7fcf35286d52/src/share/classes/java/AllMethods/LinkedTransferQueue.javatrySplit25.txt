@@ -1,0 +1,24 @@
+public Spliterator<E> trySplit() {
+    Node p;
+    final LinkedTransferQueue<E> q = this.queue;
+    int b = batch;
+    int n = (b <= 0) ? 1 : (b >= MAX_BATCH) ? MAX_BATCH : b + 1;
+    if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null) && p.next != null) {
+        Object[] a = new Object[n];
+        int i = 0;
+        do {
+            Object e = p.item;
+            if (e != p && (a[i] = e) != null)
+                ++i;
+            if (p == (p = p.next))
+                p = q.firstDataNode();
+        } while (p != null && i < n && p.isData);
+        if ((current = p) == null)
+            exhausted = true;
+        if (i > 0) {
+            batch = i;
+            return Spliterators.spliterator(a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT);
+        }
+    }
+    return null;
+}

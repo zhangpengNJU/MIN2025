@@ -1,0 +1,21 @@
+/**
+ * Redispatches an AWTEvent in such a way that the AWT event dispatcher
+ * will not recursively request that the KeyboardFocusManager, or any
+ * installed KeyEventDispatchers, dispatch the event again. Client
+ * implementations of <code>dispatchEvent</code> and client-defined
+ * KeyEventDispatchers must call <code>redispatchEvent(target, e)</code>
+ * instead of <code>target.dispatchEvent(e)</code> to dispatch an event.
+ * <p>
+ * This method is intended to be used only by KeyboardFocusManagers and
+ * KeyEventDispatchers. It is not for general client use.
+ *
+ * @param target the Component to which the event should be dispatched
+ * @param e the event to dispatch
+ * @see #dispatchEvent
+ * @see KeyEventDispatcher
+ */
+public final void redispatchEvent(Component target, AWTEvent e) {
+    e.focusManagerIsDispatching = true;
+    target.dispatchEvent(e);
+    e.focusManagerIsDispatching = false;
+}

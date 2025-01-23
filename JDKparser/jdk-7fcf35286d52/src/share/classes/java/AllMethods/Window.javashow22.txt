@@ -1,0 +1,53 @@
+/**
+ * Makes the Window visible. If the Window and/or its owner
+ * are not yet displayable, both are made displayable.  The
+ * Window will be validated prior to being made visible.
+ * If the Window is already visible, this will bring the Window
+ * to the front.
+ * @see       Component#isDisplayable
+ * @see       #toFront
+ * @deprecated As of JDK version 1.5, replaced by
+ * {@link #setVisible(boolean)}.
+ */
+@Deprecated
+public void show() {
+    if (peer == null) {
+        addNotify();
+    }
+    validateUnconditionally();
+    isInShow = true;
+    if (visible) {
+        toFront();
+    } else {
+        beforeFirstShow = false;
+        closeSplashScreen();
+        Dialog.checkShouldBeBlocked(this);
+        super.show();
+        locationByPlatform = false;
+        for (int i = 0; i < ownedWindowList.size(); i++) {
+            Window child = ownedWindowList.elementAt(i).get();
+            if ((child != null) && child.showWithParent) {
+                child.show();
+                child.showWithParent = false;
+            }
+        // endif
+        }
+        // endfor
+        if (!isModalBlocked()) {
+            updateChildrenBlocking();
+        } else {
+            // fix for 6532736: after this window is shown, its blocker
+            // should be raised to front
+            modalBlocker.toFront_NoClientCode();
+        }
+        if (this instanceof Frame || this instanceof Dialog) {
+            updateChildFocusableWindowState(this);
+        }
+    }
+    isInShow = false;
+    // If first time shown, generate WindowOpened event
+    if ((state & OPENED) == 0) {
+        postWindowEvent(WindowEvent.WINDOW_OPENED);
+        state |= OPENED;
+    }
+}

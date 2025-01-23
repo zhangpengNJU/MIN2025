@@ -1,0 +1,8 @@
+public E nextElement() {
+    synchronized (Vector.this) {
+        if (count < elementCount) {
+            return elementData(count++);
+        }
+    }
+    throw new NoSuchElementException("Vector Enumeration");
+}

@@ -1,0 +1,37 @@
+/**
+ * Parse a two digit zero-prefixed number.
+ *
+ * @param array  the array of parsed data, 0=pos,1=hours,2=mins,3=secs, not null
+ * @param arrayIndex  the index to parse the value into
+ * @param parseText  the offset ID, not null
+ * @param required  whether this number is required
+ * @return true if an error occurred
+ */
+private boolean parseNumber(int[] array, int arrayIndex, CharSequence parseText, boolean required) {
+    if ((type + 3) / 2 < arrayIndex) {
+        // ignore seconds/minutes
+        return false;
+    }
+    int pos = array[0];
+    if ((type % 2) == 0 && arrayIndex > 1) {
+        if (pos + 1 > parseText.length() || parseText.charAt(pos) != ':') {
+            return required;
+        }
+        pos++;
+    }
+    if (pos + 2 > parseText.length()) {
+        return required;
+    }
+    char ch1 = parseText.charAt(pos++);
+    char ch2 = parseText.charAt(pos++);
+    if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
+        return required;
+    }
+    int value = (ch1 - 48) * 10 + (ch2 - 48);
+    if (value < 0 || value > 59) {
+        return required;
+    }
+    array[arrayIndex] = value;
+    array[0] = pos;
+    return false;
+}

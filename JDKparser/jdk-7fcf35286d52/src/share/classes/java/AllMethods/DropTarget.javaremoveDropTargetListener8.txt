@@ -1,0 +1,13 @@
+/**
+ * Removes the current <code>DropTargetListener</code> (UNICAST SOURCE).
+ * <P>
+ * @param dtl the DropTargetListener to deregister.
+ */
+public synchronized void removeDropTargetListener(DropTargetListener dtl) {
+    if (dtl != null && dtListener != null) {
+        if (dtListener.equals(dtl))
+            dtListener = null;
+        else
+            throw new IllegalArgumentException("listener mismatch");
+    }
+}

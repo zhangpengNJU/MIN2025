@@ -1,0 +1,21 @@
+/**
+ * Copy the elements, starting at the specified offset, into the specified
+ * array.
+ */
+public void copyInto(E[] array, int offset) {
+    long finalOffset = offset + count();
+    if (finalOffset > array.length || finalOffset < offset) {
+        throw new IndexOutOfBoundsException("does not fit");
+    }
+    if (spineIndex == 0)
+        System.arraycopy(curChunk, 0, array, offset, elementIndex);
+    else {
+        // full chunks
+        for (int i = 0; i < spineIndex; i++) {
+            System.arraycopy(spine[i], 0, array, offset, spine[i].length);
+            offset += spine[i].length;
+        }
+        if (elementIndex > 0)
+            System.arraycopy(curChunk, 0, array, offset, elementIndex);
+    }
+}

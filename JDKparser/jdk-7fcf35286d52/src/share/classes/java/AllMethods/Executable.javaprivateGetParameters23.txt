@@ -1,0 +1,23 @@
+private Parameter[] privateGetParameters() {
+    // Use tmp to avoid multiple writes to a volatile.
+    Parameter[] tmp = parameters;
+    if (tmp == null) {
+        // Otherwise, go to the JVM to get them
+        try {
+            tmp = getParameters0();
+        } catch (IllegalArgumentException e) {
+            // Rethrow ClassFormatErrors
+            throw new MalformedParametersException("Invalid constant pool index");
+        }
+        // If we get back nothing, then synthesize parameters
+        if (tmp == null) {
+            hasRealParameterData = false;
+            tmp = synthesizeAllParams();
+        } else {
+            hasRealParameterData = true;
+            verifyParameters(tmp);
+        }
+        parameters = tmp;
+    }
+    return tmp;
+}

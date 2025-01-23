@@ -1,0 +1,10 @@
+/**
+ * The 'natural bounds' encloses all the carets the layout can draw.
+ */
+private Rectangle2D getNaturalBounds() {
+    ensureCache();
+    if (naturalBounds == null) {
+        naturalBounds = textLine.getItalicBounds();
+    }
+    return naturalBounds;
+}

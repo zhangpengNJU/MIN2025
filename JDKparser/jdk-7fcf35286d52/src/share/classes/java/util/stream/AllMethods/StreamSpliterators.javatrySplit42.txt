@@ -1,0 +1,40 @@
+public T_SPLITR trySplit() {
+    if (sliceOrigin >= fence)
+        return null;
+    if (index >= fence)
+        return null;
+    // Keep splitting until the left and right splits intersect with the slice
+    // thereby ensuring the size estimate decreases.
+    // This also avoids creating empty spliterators which can result in
+    // existing and additionally created F/J tasks that perform
+    // redundant work on no elements.
+    while (true) {
+        @SuppressWarnings("unchecked")
+        T_SPLITR leftSplit = (T_SPLITR) s.trySplit();
+        if (leftSplit == null)
+            return null;
+        long leftSplitFenceUnbounded = index + leftSplit.estimateSize();
+        long leftSplitFence = Math.min(leftSplitFenceUnbounded, sliceFence);
+        if (sliceOrigin >= leftSplitFence) {
+            // The left split does not intersect with, and is to the left of, the slice
+            // The right split does intersect
+            // Discard the left split and split further with the right split
+            index = leftSplitFence;
+        } else if (leftSplitFence >= sliceFence) {
+            // The right split does not intersect with, and is to the right of, the slice
+            // The left split does intersect
+            // Discard the right split and split further with the left split
+            s = leftSplit;
+            fence = leftSplitFence;
+        } else if (index >= sliceOrigin && leftSplitFenceUnbounded <= sliceFence) {
+            // The left split is contained within the slice, return the underlying left split
+            // Right split is contained within or intersects with the slice
+            index = leftSplitFence;
+            return leftSplit;
+        } else {
+            // The left split intersects with the slice
+            // Right split is contained within or intersects with the slice
+            return makeSpliterator(leftSplit, sliceOrigin, sliceFence, index, index = leftSplitFence);
+        }
+    }
+}

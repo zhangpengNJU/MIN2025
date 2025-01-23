@@ -1,0 +1,12 @@
+private CompletableFuture<Void> biRunStage(Executor e, CompletionStage<?> o, Runnable f) {
+    CompletableFuture<?> b;
+    if (f == null || (b = o.toCompletableFuture()) == null)
+        throw new NullPointerException();
+    CompletableFuture<Void> d = new CompletableFuture<Void>();
+    if (e != null || !d.biRun(this, b, f, null)) {
+        BiRun<T, ?> c = new BiRun<>(e, d, this, b, f);
+        bipush(b, c);
+        c.tryFire(SYNC);
+    }
+    return d;
+}

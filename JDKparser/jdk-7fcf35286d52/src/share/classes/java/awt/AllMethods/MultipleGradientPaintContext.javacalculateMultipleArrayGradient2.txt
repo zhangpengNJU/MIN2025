@@ -1,0 +1,48 @@
+/**
+ * SLOW LOOKUP METHOD
+ *
+ * This method calculates the gradient color values for each interval and
+ * places each into its own 255 size array.  The arrays are stored in
+ * gradients[][].  (255 is used because this is the maximum number of
+ * unique colors between 2 arbitrary colors in a 24 bit color system.)
+ *
+ * This method uses the minimum amount of space (only 255 * number of
+ * intervals), but it aggravates the lookup procedure, because now we
+ * have to find out which interval to select, then calculate the index
+ * within that interval.  This causes a significant performance hit,
+ * because it requires this calculation be done for every point in
+ * the rendering loop.
+ *
+ * For those of you who are interested, this is a classic example of the
+ * time-space tradeoff.
+ */
+private void calculateMultipleArrayGradient(Color[] colors) {
+    // set the flag so we know later it is a non-simple lookup
+    isSimpleLookup = false;
+    // 2 colors to interpolate
+    int rgb1, rgb2;
+    // for every interval (transition between 2 colors)
+    for (int i = 0; i < gradients.length; i++) {
+        // create an array of the maximum theoretical size for
+        // each interval
+        gradients[i] = new int[GRADIENT_SIZE];
+        // get the the 2 colors
+        rgb1 = colors[i].getRGB();
+        rgb2 = colors[i + 1].getRGB();
+        // fill this array with the colors in between rgb1 and rgb2
+        interpolate(rgb1, rgb2, gradients[i]);
+        // if the colors are opaque, transparency should still
+        // be 0xff000000
+        transparencyTest &= rgb1;
+        transparencyTest &= rgb2;
+    }
+    // if interpolation occurred in Linear RGB space, convert the
+    // gradients back to SRGB using the lookup table
+    if (colorSpace == ColorSpaceType.LINEAR_RGB) {
+        for (int j = 0; j < gradients.length; j++) {
+            for (int i = 0; i < gradients[j].length; i++) {
+                gradients[j][i] = convertEntireColorLinearRGBtoSRGB(gradients[j][i]);
+            }
+        }
+    }
+}

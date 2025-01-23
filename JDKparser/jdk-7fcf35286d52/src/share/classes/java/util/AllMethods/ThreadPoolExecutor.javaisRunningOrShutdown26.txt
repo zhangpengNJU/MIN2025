@@ -1,0 +1,10 @@
+/**
+ * State check needed by ScheduledThreadPoolExecutor to
+ * enable running tasks during shutdown.
+ *
+ * @param shutdownOK true if should return true if SHUTDOWN
+ */
+final boolean isRunningOrShutdown(boolean shutdownOK) {
+    int rs = runStateOf(ctl.get());
+    return rs == RUNNING || (rs == SHUTDOWN && shutdownOK);
+}

@@ -1,0 +1,13 @@
+/**
+ * Compares the <code>mimeType</code> of two <code>DataFlavor</code>
+ * objects.  No parameters are considered.
+ *
+ * @return true if the <code>MimeType</code>s are equal,
+ *  otherwise false
+ */
+private boolean isMimeTypeEqual(MimeType mtype) {
+    if (this.mimeType == null) {
+        return (mtype == null);
+    }
+    return mimeType.match(mtype);
+}

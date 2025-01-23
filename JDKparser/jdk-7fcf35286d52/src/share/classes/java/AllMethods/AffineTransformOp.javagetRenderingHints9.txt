@@ -1,0 +1,26 @@
+/**
+ * Returns the rendering hints used by this transform operation.
+ *
+ * @return The <CODE>RenderingHints</CODE> object associated with this op.
+ */
+public final RenderingHints getRenderingHints() {
+    if (hints == null) {
+        Object val;
+        switch(interpolationType) {
+            case TYPE_NEAREST_NEIGHBOR:
+                val = RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
+                break;
+            case TYPE_BILINEAR:
+                val = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
+                break;
+            case TYPE_BICUBIC:
+                val = RenderingHints.VALUE_INTERPOLATION_BICUBIC;
+                break;
+            default:
+                // Should never get here
+                throw new InternalError("Unknown interpolation type " + interpolationType);
+        }
+        hints = new RenderingHints(RenderingHints.KEY_INTERPOLATION, val);
+    }
+    return hints;
+}

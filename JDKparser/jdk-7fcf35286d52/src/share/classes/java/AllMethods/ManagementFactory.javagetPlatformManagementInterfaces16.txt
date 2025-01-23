@@ -1,0 +1,20 @@
+/**
+ * Returns the set of {@code Class} objects, subinterface of
+ * {@link PlatformManagedObject}, representing
+ * all management interfaces for
+ * monitoring and managing the Java platform.
+ *
+ * @return the set of {@code Class} objects, subinterface of
+ * {@link PlatformManagedObject} representing
+ * the management interfaces for
+ * monitoring and managing the Java platform.
+ *
+ * @since 1.7
+ */
+public static Set<Class<? extends PlatformManagedObject>> getPlatformManagementInterfaces() {
+    Set<Class<? extends PlatformManagedObject>> result = new HashSet<>();
+    for (PlatformComponent component : PlatformComponent.values()) {
+        result.add(component.getMXBeanInterface());
+    }
+    return Collections.unmodifiableSet(result);
+}

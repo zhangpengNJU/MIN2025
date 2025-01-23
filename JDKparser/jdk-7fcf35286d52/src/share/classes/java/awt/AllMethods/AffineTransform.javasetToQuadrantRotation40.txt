@@ -1,0 +1,75 @@
+/**
+ * Sets this transform to a translated rotation transformation
+ * that rotates coordinates by the specified number of quadrants
+ * around the specified anchor point.
+ * This operation is equivalent to calling:
+ * <pre>
+ *     setToRotation(numquadrants * Math.PI / 2.0, anchorx, anchory);
+ * </pre>
+ * Rotating by a positive number of quadrants rotates points on
+ * the positive X axis toward the positive Y axis.
+ *
+ * @param numquadrants the number of 90 degree arcs to rotate by
+ * @param anchorx the X coordinate of the rotation anchor point
+ * @param anchory the Y coordinate of the rotation anchor point
+ * @since 1.6
+ */
+public void setToQuadrantRotation(int numquadrants, double anchorx, double anchory) {
+    switch(numquadrants & 3) {
+        case 0:
+            m00 = 1.0;
+            m10 = 0.0;
+            m01 = 0.0;
+            m11 = 1.0;
+            m02 = 0.0;
+            m12 = 0.0;
+            state = APPLY_IDENTITY;
+            type = TYPE_IDENTITY;
+            break;
+        case 1:
+            m00 = 0.0;
+            m10 = 1.0;
+            m01 = -1.0;
+            m11 = 0.0;
+            m02 = anchorx + anchory;
+            m12 = anchory - anchorx;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SHEAR;
+                type = TYPE_QUADRANT_ROTATION;
+            } else {
+                state = APPLY_SHEAR | APPLY_TRANSLATE;
+                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;
+            }
+            break;
+        case 2:
+            m00 = -1.0;
+            m10 = 0.0;
+            m01 = 0.0;
+            m11 = -1.0;
+            m02 = anchorx + anchorx;
+            m12 = anchory + anchory;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SCALE;
+                type = TYPE_QUADRANT_ROTATION;
+            } else {
+                state = APPLY_SCALE | APPLY_TRANSLATE;
+                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;
+            }
+            break;
+        case 3:
+            m00 = 0.0;
+            m10 = -1.0;
+            m01 = 1.0;
+            m11 = 0.0;
+            m02 = anchorx - anchory;
+            m12 = anchory + anchorx;
+            if (m02 == 0.0 && m12 == 0.0) {
+                state = APPLY_SHEAR;
+                type = TYPE_QUADRANT_ROTATION;
+            } else {
+                state = APPLY_SHEAR | APPLY_TRANSLATE;
+                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;
+            }
+            break;
+    }
+}

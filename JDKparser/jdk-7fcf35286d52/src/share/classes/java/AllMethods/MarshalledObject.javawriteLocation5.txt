@@ -1,0 +1,8 @@
+/**
+ * Overrides MarshalOutputStream.writeLocation implementation to write
+ * annotations to the location stream.
+ */
+protected void writeLocation(String loc) throws IOException {
+    hadAnnotations |= (loc != null);
+    locOut.writeObject(loc);
+}

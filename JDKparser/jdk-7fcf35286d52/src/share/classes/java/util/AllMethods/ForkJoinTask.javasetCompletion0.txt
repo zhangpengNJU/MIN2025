@@ -1,0 +1,20 @@
+/**
+ * Marks completion and wakes up threads waiting to join this
+ * task.
+ *
+ * @param completion one of NORMAL, CANCELLED, EXCEPTIONAL
+ * @return completion status on exit
+ */
+private int setCompletion(int completion) {
+    for (int s; ; ) {
+        if ((s = status) < 0)
+            return s;
+        if (U.compareAndSwapInt(this, STATUS, s, s | completion)) {
+            if ((s >>> 16) != 0)
+                synchronized (this) {
+                    notifyAll();
+                }
+            return completion;
+        }
+    }
+}

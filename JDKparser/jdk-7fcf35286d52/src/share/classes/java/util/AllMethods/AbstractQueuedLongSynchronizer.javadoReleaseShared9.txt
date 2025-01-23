@@ -1,0 +1,35 @@
+/**
+ * Release action for shared mode -- signals successor and ensures
+ * propagation. (Note: For exclusive mode, release just amounts
+ * to calling unparkSuccessor of head if it needs signal.)
+ */
+private void doReleaseShared() {
+    /*
+         * Ensure that a release propagates, even if there are other
+         * in-progress acquires/releases.  This proceeds in the usual
+         * way of trying to unparkSuccessor of head if it needs
+         * signal. But if it does not, status is set to PROPAGATE to
+         * ensure that upon release, propagation continues.
+         * Additionally, we must loop in case a new node is added
+         * while we are doing this. Also, unlike other uses of
+         * unparkSuccessor, we need to know if CAS to reset status
+         * fails, if so rechecking.
+         */
+    for (; ; ) {
+        Node h = head;
+        if (h != null && h != tail) {
+            int ws = h.waitStatus;
+            if (ws == Node.SIGNAL) {
+                if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                    // loop to recheck cases
+                    continue;
+                unparkSuccessor(h);
+            } else if (ws == 0 && !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                // loop on failed CAS
+                continue;
+        }
+        if (// loop if head changed
+        h == head)
+            break;
+    }
+}

@@ -1,0 +1,18 @@
+@Override
+public long getLong(TemporalField field) {
+    Objects.requireNonNull(field, "field");
+    Long value = fieldValues.get(field);
+    if (value != null) {
+        return value;
+    }
+    if (date != null && date.isSupported(field)) {
+        return date.getLong(field);
+    }
+    if (time != null && time.isSupported(field)) {
+        return time.getLong(field);
+    }
+    if (field instanceof ChronoField) {
+        throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
+    }
+    return field.getFrom(this);
+}

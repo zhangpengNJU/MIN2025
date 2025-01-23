@@ -1,0 +1,6 @@
+/**
+ * Tries to cancel a wait by matching node to itself.
+ */
+void tryCancel() {
+    UNSAFE.compareAndSwapObject(this, matchOffset, null, this);
+}

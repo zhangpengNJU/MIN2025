@@ -1,0 +1,42 @@
+/**
+ * Constructs a {@code TerminalOp} that implements a functional reduce on
+ * {@code int} values.
+ *
+ * @param identity the identity for the combining function
+ * @param operator the combining function
+ * @return a {@code TerminalOp} implementing the reduction
+ */
+public static TerminalOp<Integer, Integer> makeInt(int identity, IntBinaryOperator operator) {
+    Objects.requireNonNull(operator);
+    class ReducingSink implements AccumulatingSink<Integer, Integer, ReducingSink>, Sink.OfInt {
+
+        private int state;
+
+        @Override
+        public void begin(long size) {
+            state = identity;
+        }
+
+        @Override
+        public void accept(int t) {
+            state = operator.applyAsInt(state, t);
+        }
+
+        @Override
+        public Integer get() {
+            return state;
+        }
+
+        @Override
+        public void combine(ReducingSink other) {
+            accept(other.state);
+        }
+    }
+    return new ReduceOp<Integer, Integer, ReducingSink>(StreamShape.INT_VALUE) {
+
+        @Override
+        public ReducingSink makeSink() {
+            return new ReducingSink();
+        }
+    };
+}

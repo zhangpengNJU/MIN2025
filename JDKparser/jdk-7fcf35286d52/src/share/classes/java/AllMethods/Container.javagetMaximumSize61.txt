@@ -1,0 +1,44 @@
+/**
+ * Returns the maximum size of this container.  If the maximum size has
+ * not been set explicitly by {@link Component#setMaximumSize(Dimension)}
+ * and the {@link LayoutManager} installed on this {@code Container}
+ * is an instance of {@link LayoutManager2}, then
+ * {@link LayoutManager2#maximumLayoutSize(Container)}
+ * is used to calculate the maximum size.
+ *
+ * <p>Note: some implementations may cache the value returned from the
+ * {@code LayoutManager2}.  Implementations that cache need not invoke
+ * {@code maximumLayoutSize} on the {@code LayoutManager2} every time
+ * this method is invoked, rather the {@code LayoutManager2} will only
+ * be queried after the {@code Container} becomes invalid.
+ *
+ * @return    an instance of <code>Dimension</code> that represents
+ *                the maximum size of this container.
+ * @see       #getPreferredSize
+ * @see       #getMinimumSize
+ * @see       #getLayout
+ * @see       LayoutManager2#maximumLayoutSize(Container)
+ * @see       Component#getMaximumSize
+ */
+public Dimension getMaximumSize() {
+    /* Avoid grabbing the lock if a reasonable cached size value
+         * is available.
+         */
+    Dimension dim = maxSize;
+    if (dim == null || !(isMaximumSizeSet() || isValid())) {
+        synchronized (getTreeLock()) {
+            if (layoutMgr instanceof LayoutManager2) {
+                LayoutManager2 lm = (LayoutManager2) layoutMgr;
+                maxSize = lm.maximumLayoutSize(this);
+            } else {
+                maxSize = super.getMaximumSize();
+            }
+            dim = maxSize;
+        }
+    }
+    if (dim != null) {
+        return new Dimension(dim);
+    } else {
+        return dim;
+    }
+}

@@ -1,0 +1,30 @@
+/**
+ * Adds the specified {@code Point} to the bounds of this
+ * {@code Rectangle}.
+ * <p>
+ * If this {@code Rectangle} has any dimension less than zero,
+ * the rules for <a href=#NonExistant>non-existant</a>
+ * rectangles apply.
+ * In that case, the new bounds of this {@code Rectangle} will
+ * have a location equal to the coordinates of the specified
+ * {@code Point} and width and height equal to zero.
+ * <p>
+ * After adding a <code>Point</code>, a call to <code>contains</code>
+ * with the added <code>Point</code> as an argument does not
+ * necessarily return <code>true</code>. The <code>contains</code>
+ * method does not return <code>true</code> for points on the right
+ * or bottom edges of a <code>Rectangle</code>. Therefore if the added
+ * <code>Point</code> falls on the right or bottom edge of the
+ * enlarged <code>Rectangle</code>, <code>contains</code> returns
+ * <code>false</code> for that <code>Point</code>.
+ * If the specified point must be contained within the new
+ * {@code Rectangle}, a 1x1 rectangle should be added instead:
+ * <pre>
+ *     r.add(pt.x, pt.y, 1, 1);
+ * </pre>
+ * @param pt the new <code>Point</code> to add to this
+ *           <code>Rectangle</code>
+ */
+public void add(Point pt) {
+    add(pt.x, pt.y);
+}

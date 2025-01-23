@@ -1,0 +1,13 @@
+/*
+     * Reads keystroke class from AppContext and if null, puts there the
+     * AWTKeyStroke class.
+     * Must be called under locked AWTKeyStro
+     */
+private static Class<AWTKeyStroke> getAWTKeyStrokeClass() {
+    Class<AWTKeyStroke> clazz = (Class) AppContext.getAppContext().get(AWTKeyStroke.class);
+    if (clazz == null) {
+        clazz = AWTKeyStroke.class;
+        AppContext.getAppContext().put(AWTKeyStroke.class, AWTKeyStroke.class);
+    }
+    return clazz;
+}

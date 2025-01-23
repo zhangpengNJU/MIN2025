@@ -1,0 +1,25 @@
+@Override
+public void close() throws IOException {
+    if (!closed) {
+        closed = true;
+        if (leftover == 1) {
+            checkNewline();
+            out.write(base64[b0 >> 2]);
+            out.write(base64[(b0 << 4) & 0x3f]);
+            if (doPadding) {
+                out.write('=');
+                out.write('=');
+            }
+        } else if (leftover == 2) {
+            checkNewline();
+            out.write(base64[b0 >> 2]);
+            out.write(base64[(b0 << 4) & 0x3f | (b1 >> 4)]);
+            out.write(base64[(b1 << 2) & 0x3f]);
+            if (doPadding) {
+                out.write('=');
+            }
+        }
+        leftover = 0;
+        out.close();
+    }
+}

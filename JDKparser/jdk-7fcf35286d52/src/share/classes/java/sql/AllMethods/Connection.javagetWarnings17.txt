@@ -1,0 +1,22 @@
+/**
+ * Retrieves the first warning reported by calls on this
+ * <code>Connection</code> object.  If there is more than one
+ * warning, subsequent warnings will be chained to the first one
+ * and can be retrieved by calling the method
+ * <code>SQLWarning.getNextWarning</code> on the warning
+ * that was retrieved previously.
+ * <P>
+ * This method may not be
+ * called on a closed connection; doing so will cause an
+ * <code>SQLException</code> to be thrown.
+ *
+ * <P><B>Note:</B> Subsequent warnings will be chained to this
+ * SQLWarning.
+ *
+ * @return the first <code>SQLWarning</code> object or <code>null</code>
+ *         if there are none
+ * @exception SQLException if a database access error occurs or
+ *            this method is called on a closed connection
+ * @see SQLWarning
+ */
+SQLWarning getWarnings() throws SQLException;

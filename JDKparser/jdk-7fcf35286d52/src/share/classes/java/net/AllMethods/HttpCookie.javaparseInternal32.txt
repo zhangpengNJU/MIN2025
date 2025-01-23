@@ -1,0 +1,51 @@
+/*
+     * Parse header string to cookie object.
+     *
+     * @param  header
+     *         header string; should contain only one NAME=VALUE pair
+     *
+     * @return  an HttpCookie being extracted
+     *
+     * @throws  IllegalArgumentException
+     *          if header string violates the cookie specification
+     */
+private static HttpCookie parseInternal(String header, boolean retainHeader) {
+    HttpCookie cookie = null;
+    String namevaluePair = null;
+    StringTokenizer tokenizer = new StringTokenizer(header, ";");
+    // there should always have at least on name-value pair;
+    // it's cookie's name
+    try {
+        namevaluePair = tokenizer.nextToken();
+        int index = namevaluePair.indexOf('=');
+        if (index != -1) {
+            String name = namevaluePair.substring(0, index).trim();
+            String value = namevaluePair.substring(index + 1).trim();
+            if (retainHeader)
+                cookie = new HttpCookie(name, stripOffSurroundingQuote(value), header);
+            else
+                cookie = new HttpCookie(name, stripOffSurroundingQuote(value));
+        } else {
+            // no "=" in name-value pair; it's an error
+            throw new IllegalArgumentException("Invalid cookie name-value pair");
+        }
+    } catch (NoSuchElementException ignored) {
+        throw new IllegalArgumentException("Empty cookie header string");
+    }
+    // remaining name-value pairs are cookie's attributes
+    while (tokenizer.hasMoreTokens()) {
+        namevaluePair = tokenizer.nextToken();
+        int index = namevaluePair.indexOf('=');
+        String name, value;
+        if (index != -1) {
+            name = namevaluePair.substring(0, index).trim();
+            value = namevaluePair.substring(index + 1).trim();
+        } else {
+            name = namevaluePair.trim();
+            value = null;
+        }
+        // assign attribute to cookie
+        assignAttribute(cookie, name, value);
+    }
+    return cookie;
+}

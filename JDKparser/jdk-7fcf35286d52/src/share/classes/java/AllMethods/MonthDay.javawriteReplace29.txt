@@ -1,0 +1,16 @@
+// -----------------------------------------------------------------------
+/**
+ * Writes the object using a
+ * <a href="../../serialized-form.html#java.time.Ser">dedicated serialized form</a>.
+ * @serialData
+ * <pre>
+ *  out.writeByte(13);  // identifies a MonthDay
+ *  out.writeByte(month);
+ *  out.writeByte(day);
+ * </pre>
+ *
+ * @return the instance of {@code Ser}, not null
+ */
+private Object writeReplace() {
+    return new Ser(Ser.MONTH_DAY_TYPE, this);
+}

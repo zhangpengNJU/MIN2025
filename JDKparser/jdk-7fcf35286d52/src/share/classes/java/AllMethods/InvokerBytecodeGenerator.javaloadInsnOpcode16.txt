@@ -1,0 +1,16 @@
+private int loadInsnOpcode(BasicType type) throws InternalError {
+    switch(type) {
+        case I_TYPE:
+            return Opcodes.ILOAD;
+        case J_TYPE:
+            return Opcodes.LLOAD;
+        case F_TYPE:
+            return Opcodes.FLOAD;
+        case D_TYPE:
+            return Opcodes.DLOAD;
+        case L_TYPE:
+            return Opcodes.ALOAD;
+        default:
+            throw new InternalError("unknown type: " + type);
+    }
+}

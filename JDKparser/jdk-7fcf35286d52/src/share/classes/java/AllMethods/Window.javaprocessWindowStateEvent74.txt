@@ -1,0 +1,32 @@
+/**
+ * Processes window state event occurring on this window by
+ * dispatching them to any registered {@code WindowStateListener}
+ * objects.
+ * NOTE: this method will not be called unless window state events
+ * are enabled for this window.  This happens when one of the
+ * following occurs:
+ * <ul>
+ * <li>a {@code WindowStateListener} is registered via
+ *    {@code addWindowStateListener}
+ * <li>window state events are enabled via {@code enableEvents}
+ * </ul>
+ * <p>Note that if the event parameter is {@code null}
+ * the behavior is unspecified and may result in an
+ * exception.
+ *
+ * @param e the window state event
+ * @see java.awt.Component#enableEvents
+ * @since 1.4
+ */
+protected void processWindowStateEvent(WindowEvent e) {
+    WindowStateListener listener = windowStateListener;
+    if (listener != null) {
+        switch(e.getID()) {
+            case WindowEvent.WINDOW_STATE_CHANGED:
+                listener.windowStateChanged(e);
+                break;
+            default:
+                break;
+        }
+    }
+}

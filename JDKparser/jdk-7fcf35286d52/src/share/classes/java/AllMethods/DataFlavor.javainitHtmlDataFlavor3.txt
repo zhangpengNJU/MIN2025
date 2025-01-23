@@ -1,0 +1,10 @@
+/*
+     * private initializer
+     */
+static private DataFlavor initHtmlDataFlavor(String htmlFlavorType) {
+    try {
+        return new DataFlavor("text/html; class=java.lang.String;document=" + htmlFlavorType + ";charset=Unicode");
+    } catch (Exception e) {
+        return null;
+    }
+}

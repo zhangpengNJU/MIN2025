@@ -1,0 +1,19 @@
+/**
+ * If the number of arguments in the specified constructor is non-zero and
+ * the class of <code>oldInstance</code> explicitly declares an "equals" method
+ * this method returns the value of <code>oldInstance.equals(newInstance)</code>.
+ * Otherwise, this method uses the superclass's definition which returns true if the
+ * classes of the two instances are equal.
+ *
+ * @param oldInstance The instance to be copied.
+ * @param newInstance The instance that is to be modified.
+ * @return True if an equivalent copy of <code>newInstance</code> may be
+ *         created by applying a series of mutations to <code>oldInstance</code>.
+ *
+ * @see #DefaultPersistenceDelegate(String[])
+ */
+protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+    // Assume the instance is either mutable or a singleton
+    // if it has a nullary constructor.
+    return (constructor.length == 0) || !definesEquals(oldInstance) ? super.mutatesTo(oldInstance, newInstance) : oldInstance.equals(newInstance);
+}

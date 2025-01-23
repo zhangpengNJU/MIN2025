@@ -1,0 +1,12 @@
+@Override
+public IntStream build() {
+    int c = count;
+    if (c >= 0) {
+        // Switch count to negative value signalling the builder is built
+        count = -count - 1;
+        // Use this spliterator if 0 or 1 elements, otherwise use
+        // the spliterator of the spined buffer
+        return (c < 2) ? StreamSupport.intStream(this, false) : StreamSupport.intStream(buffer.spliterator(), false);
+    }
+    throw new IllegalStateException();
+}

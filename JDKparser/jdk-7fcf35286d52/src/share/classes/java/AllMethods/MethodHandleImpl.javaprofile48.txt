@@ -1,0 +1,7 @@
+static MethodHandle profile(MethodHandle target) {
+    if (DONT_INLINE_THRESHOLD >= 0) {
+        return makeBlockInlningWrapper(target);
+    } else {
+        return target;
+    }
+}

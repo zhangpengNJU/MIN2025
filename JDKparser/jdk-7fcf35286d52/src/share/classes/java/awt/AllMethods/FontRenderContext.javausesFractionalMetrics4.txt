@@ -1,0 +1,15 @@
+/**
+ * Returns a boolean which whether text fractional metrics mode
+ * is used in this <code>FontRenderContext</code>.
+ * Call {@link #getFractionalMetricsHint() getFractionalMetricsHint()}
+ * to obtain the corresponding rendering hint value.
+ *   @return    <code>true</code>, if layout should be performed with
+ *   fractional metrics; <code>false</code> otherwise.
+ *               in this <code>FontRenderContext</code>.
+ *   @see java.awt.RenderingHints#KEY_FRACTIONALMETRICS
+ *   @see #FontRenderContext(AffineTransform,boolean,boolean)
+ *   @see #FontRenderContext(AffineTransform,Object,Object)
+ */
+public boolean usesFractionalMetrics() {
+    return !(fmHintValue == VALUE_FRACTIONALMETRICS_OFF || fmHintValue == VALUE_FRACTIONALMETRICS_DEFAULT);
+}

@@ -1,0 +1,20 @@
+/**
+ * Returns a (transparent) specification of this parameters
+ * object.
+ * {@code paramSpec} identifies the specification class in which
+ * the parameters should be returned. It could, for example, be
+ * {@code DSAParameterSpec.class}, to indicate that the
+ * parameters should be returned in an instance of the
+ * {@code DSAParameterSpec} class.
+ *
+ * @param <T> the type of the parameter specification to be returned
+ *
+ * @param paramSpec the specification class in which
+ * the parameters should be returned.
+ *
+ * @return the parameter specification.
+ *
+ * @exception InvalidParameterSpecException if the requested parameter
+ * specification is inappropriate for this parameter object.
+ */
+protected abstract <T extends AlgorithmParameterSpec> T engineGetParameterSpec(Class<T> paramSpec) throws InvalidParameterSpecException;

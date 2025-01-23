@@ -1,0 +1,50 @@
+/**
+ * Returns the starting position of the first occurrence of the specified
+ * target list within the specified source list, or -1 if there is no
+ * such occurrence.  More formally, returns the lowest index <tt>i</tt>
+ * such that {@code source.subList(i, i+target.size()).equals(target)},
+ * or -1 if there is no such index.  (Returns -1 if
+ * {@code target.size() > source.size()})
+ *
+ * <p>This implementation uses the "brute force" technique of scanning
+ * over the source list, looking for a match with the target at each
+ * location in turn.
+ *
+ * @param source the list in which to search for the first occurrence
+ *        of <tt>target</tt>.
+ * @param target the list to search for as a subList of <tt>source</tt>.
+ * @return the starting position of the first occurrence of the specified
+ *         target list within the specified source list, or -1 if there
+ *         is no such occurrence.
+ * @since  1.4
+ */
+public static int indexOfSubList(List<?> source, List<?> target) {
+    int sourceSize = source.size();
+    int targetSize = target.size();
+    int maxCandidate = sourceSize - targetSize;
+    if (sourceSize < INDEXOFSUBLIST_THRESHOLD || (source instanceof RandomAccess && target instanceof RandomAccess)) {
+        nextCand: for (int candidate = 0; candidate <= maxCandidate; candidate++) {
+            for (int i = 0, j = candidate; i < targetSize; i++, j++) if (!eq(target.get(i), source.get(j)))
+                // Element mismatch, try next cand
+                continue nextCand;
+            // All elements of candidate matched target
+            return candidate;
+        }
+    } else {
+        // Iterator version of above algorithm
+        ListIterator<?> si = source.listIterator();
+        nextCand: for (int candidate = 0; candidate <= maxCandidate; candidate++) {
+            ListIterator<?> ti = target.listIterator();
+            for (int i = 0; i < targetSize; i++) {
+                if (!eq(ti.next(), si.next())) {
+                    // Back up source iterator to next candidate
+                    for (int j = 0; j < i; j++) si.previous();
+                    continue nextCand;
+                }
+            }
+            return candidate;
+        }
+    }
+    // No candidate matched the target
+    return -1;
+}

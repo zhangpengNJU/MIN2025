@@ -1,0 +1,15 @@
+private DateTimeParseContext parseUnresolved0(CharSequence text, ParsePosition position) {
+    Objects.requireNonNull(text, "text");
+    Objects.requireNonNull(position, "position");
+    DateTimeParseContext context = new DateTimeParseContext(this);
+    int pos = position.getIndex();
+    pos = printerParser.parse(context, text, pos);
+    if (pos < 0) {
+        // index not updated from input
+        position.setErrorIndex(~pos);
+        return null;
+    }
+    // errorIndex not updated from input
+    position.setIndex(pos);
+    return context;
+}

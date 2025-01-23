@@ -1,0 +1,60 @@
+/**
+ * Decode the start rule and validate the parameters.  The parameters are
+ * expected to be in encoded form, which represents the various rule modes
+ * by negating or zeroing certain values.  Representation formats are:
+ * <p>
+ * <pre>
+ *            DOW_IN_MONTH  DOM    DOW>=DOM  DOW<=DOM  no DST
+ *            ------------  -----  --------  --------  ----------
+ * month       0..11        same    same      same     don't care
+ * day        -5..5         1..31   1..31    -1..-31   0
+ * dayOfWeek   1..7         0      -1..-7    -1..-7    don't care
+ * time        0..ONEDAY    same    same      same     don't care
+ * </pre>
+ * The range for month does not include UNDECIMBER since this class is
+ * really specific to GregorianCalendar, which does not use that month.
+ * The range for time includes ONEDAY (vs. ending at ONEDAY-1) because the
+ * end rule is an exclusive limit point.  That is, the range of times that
+ * are in DST include those >= the start and < the end.  For this reason,
+ * it should be possible to specify an end of ONEDAY in order to include the
+ * entire day.  Although this is equivalent to time 0 of the following day,
+ * it's not always possible to specify that, for example, on December 31.
+ * While arguably the start range should still be 0..ONEDAY-1, we keep
+ * the start and end ranges the same for consistency.
+ */
+private void decodeStartRule() {
+    useDaylight = (startDay != 0) && (endDay != 0);
+    if (startDay != 0) {
+        if (startMonth < Calendar.JANUARY || startMonth > Calendar.DECEMBER) {
+            throw new IllegalArgumentException("Illegal start month " + startMonth);
+        }
+        if (startTime < 0 || startTime > millisPerDay) {
+            throw new IllegalArgumentException("Illegal start time " + startTime);
+        }
+        if (startDayOfWeek == 0) {
+            startMode = DOM_MODE;
+        } else {
+            if (startDayOfWeek > 0) {
+                startMode = DOW_IN_MONTH_MODE;
+            } else {
+                startDayOfWeek = -startDayOfWeek;
+                if (startDay > 0) {
+                    startMode = DOW_GE_DOM_MODE;
+                } else {
+                    startDay = -startDay;
+                    startMode = DOW_LE_DOM_MODE;
+                }
+            }
+            if (startDayOfWeek > Calendar.SATURDAY) {
+                throw new IllegalArgumentException("Illegal start day of week " + startDayOfWeek);
+            }
+        }
+        if (startMode == DOW_IN_MONTH_MODE) {
+            if (startDay < -5 || startDay > 5) {
+                throw new IllegalArgumentException("Illegal start day of week in month " + startDay);
+            }
+        } else if (startDay < 1 || startDay > staticMonthLength[startMonth]) {
+            throw new IllegalArgumentException("Illegal start day " + startDay);
+        }
+    }
+}

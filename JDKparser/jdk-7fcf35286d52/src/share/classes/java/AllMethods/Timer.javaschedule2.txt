@@ -1,0 +1,16 @@
+/**
+ * Schedules the specified task for execution after the specified delay.
+ *
+ * @param task  task to be scheduled.
+ * @param delay delay in milliseconds before task is to be executed.
+ * @throws IllegalArgumentException if <tt>delay</tt> is negative, or
+ *         <tt>delay + System.currentTimeMillis()</tt> is negative.
+ * @throws IllegalStateException if task was already scheduled or
+ *         cancelled, timer was cancelled, or timer thread terminated.
+ * @throws NullPointerException if {@code task} is null
+ */
+public void schedule(TimerTask task, long delay) {
+    if (delay < 0)
+        throw new IllegalArgumentException("Negative delay.");
+    sched(task, System.currentTimeMillis() + delay, 0);
+}

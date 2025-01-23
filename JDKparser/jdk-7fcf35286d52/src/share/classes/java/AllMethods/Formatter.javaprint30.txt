@@ -1,0 +1,40 @@
+public void print(Object arg, Locale l) throws IOException {
+    if (dt) {
+        printDateTime(arg, l);
+        return;
+    }
+    switch(c) {
+        case Conversion.DECIMAL_INTEGER:
+        case Conversion.OCTAL_INTEGER:
+        case Conversion.HEXADECIMAL_INTEGER:
+            printInteger(arg, l);
+            break;
+        case Conversion.SCIENTIFIC:
+        case Conversion.GENERAL:
+        case Conversion.DECIMAL_FLOAT:
+        case Conversion.HEXADECIMAL_FLOAT:
+            printFloat(arg, l);
+            break;
+        case Conversion.CHARACTER:
+        case Conversion.CHARACTER_UPPER:
+            printCharacter(arg);
+            break;
+        case Conversion.BOOLEAN:
+            printBoolean(arg);
+            break;
+        case Conversion.STRING:
+            printString(arg, l);
+            break;
+        case Conversion.HASHCODE:
+            printHashCode(arg);
+            break;
+        case Conversion.LINE_SEPARATOR:
+            a.append(System.lineSeparator());
+            break;
+        case Conversion.PERCENT_SIGN:
+            a.append('%');
+            break;
+        default:
+            assert false;
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Set the digit list to a representation of the given BigInteger value.
+ * @param isNegative Boolean value indicating whether the number is negative.
+ * @param source Value to be converted; must be >= 0.
+ * @param maximumDigits The most digits which should be converted.
+ * If maximumDigits is lower than the number of significant digits
+ * in source, the representation will be rounded.  Ignored if <= 0.
+ */
+final void set(boolean isNegative, BigInteger source, int maximumDigits) {
+    this.isNegative = isNegative;
+    String s = source.toString();
+    int len = s.length();
+    extendDigits(len);
+    s.getChars(0, len, digits, 0);
+    decimalAt = len;
+    int right;
+    for (right = len - 1; right >= 0 && digits[right] == '0'; --right) ;
+    count = right + 1;
+    if (maximumDigits > 0) {
+        round(maximumDigits, false, true);
+    }
+}

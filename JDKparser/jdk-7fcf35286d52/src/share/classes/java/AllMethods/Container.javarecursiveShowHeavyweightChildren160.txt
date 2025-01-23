@@ -1,0 +1,20 @@
+private void recursiveShowHeavyweightChildren() {
+    if (!hasHeavyweightDescendants() || !isVisible()) {
+        return;
+    }
+    for (int index = 0; index < getComponentCount(); index++) {
+        Component comp = getComponent(index);
+        if (comp.isLightweight()) {
+            if (comp instanceof Container) {
+                ((Container) comp).recursiveShowHeavyweightChildren();
+            }
+        } else {
+            if (comp.isVisible()) {
+                ComponentPeer peer = comp.getPeer();
+                if (peer != null) {
+                    peer.setVisible(true);
+                }
+            }
+        }
+    }
+}

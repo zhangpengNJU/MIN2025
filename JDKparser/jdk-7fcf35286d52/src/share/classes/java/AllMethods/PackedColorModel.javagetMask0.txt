@@ -1,0 +1,23 @@
+/**
+ * Returns the mask indicating which bits in a pixel
+ * contain the specified color/alpha sample.  For color
+ * samples, <code>index</code> corresponds to the placement of color
+ * sample names in the color space.  Thus, an <code>index</code>
+ * equal to 0 for a CMYK ColorSpace would correspond to
+ * Cyan and an <code>index</code> equal to 1 would correspond to
+ * Magenta.  If there is alpha, the alpha <code>index</code> would be:
+ * <pre>
+ *      alphaIndex = numComponents() - 1;
+ * </pre>
+ * @param index the specified color or alpha sample
+ * @return the mask, which indicates which bits of the <code>int</code>
+ *         pixel representation contain the color or alpha sample specified
+ *         by <code>index</code>.
+ * @throws ArrayIndexOutOfBoundsException if <code>index</code> is
+ *         greater than the number of components minus 1 in this
+ *         <code>PackedColorModel</code> or if <code>index</code> is
+ *         less than zero
+ */
+final public int getMask(int index) {
+    return maskArray[index];
+}

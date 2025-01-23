@@ -1,0 +1,62 @@
+public void setRaster(int x, int y, int xerr, int yerr, int w, int h, int bWidth, int bHeight, int colincx, int colincxerr, int colincy, int colincyerr, int rowincx, int rowincxerr, int rowincy, int rowincyerr) {
+    byte[] inData = this.inData;
+    int[] outData = this.outData;
+    int out = outOff;
+    int inSpan = this.inSpan;
+    int inOff = this.inOff;
+    int outSpan = this.outSpan;
+    int rowx = x;
+    int rowy = y;
+    int rowxerr = xerr;
+    int rowyerr = yerr;
+    int[] rgbs = new int[4];
+    for (int j = 0; j < h; j++) {
+        x = rowx;
+        y = rowy;
+        xerr = rowxerr;
+        yerr = rowyerr;
+        for (int i = 0; i < w; i++) {
+            int nextx, nexty;
+            if ((nextx = x + 1) >= bWidth) {
+                nextx = 0;
+            }
+            if ((nexty = y + 1) >= bHeight) {
+                nexty = 0;
+            }
+            rgbs[0] = inPalette[0xff & inData[inOff + x + inSpan * y]];
+            rgbs[1] = inPalette[0xff & inData[inOff + nextx + inSpan * y]];
+            rgbs[2] = inPalette[0xff & inData[inOff + x + inSpan * nexty]];
+            rgbs[3] = inPalette[0xff & inData[inOff + nextx + inSpan * nexty]];
+            outData[out + i] = TexturePaintContext.blend(rgbs, xerr, yerr);
+            if ((xerr += colincxerr) < 0) {
+                xerr &= Integer.MAX_VALUE;
+                x++;
+            }
+            if ((x += colincx) >= bWidth) {
+                x -= bWidth;
+            }
+            if ((yerr += colincyerr) < 0) {
+                yerr &= Integer.MAX_VALUE;
+                y++;
+            }
+            if ((y += colincy) >= bHeight) {
+                y -= bHeight;
+            }
+        }
+        if ((rowxerr += rowincxerr) < 0) {
+            rowxerr &= Integer.MAX_VALUE;
+            rowx++;
+        }
+        if ((rowx += rowincx) >= bWidth) {
+            rowx -= bWidth;
+        }
+        if ((rowyerr += rowincyerr) < 0) {
+            rowyerr &= Integer.MAX_VALUE;
+            rowy++;
+        }
+        if ((rowy += rowincy) >= bHeight) {
+            rowy -= bHeight;
+        }
+        out += outSpan;
+    }
+}

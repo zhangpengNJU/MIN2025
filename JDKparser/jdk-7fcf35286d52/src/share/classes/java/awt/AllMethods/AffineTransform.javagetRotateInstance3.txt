@@ -1,0 +1,25 @@
+/**
+ * Returns a transform that rotates coordinates according to
+ * a rotation vector.
+ * All coordinates rotate about the origin by the same amount.
+ * The amount of rotation is such that coordinates along the former
+ * positive X axis will subsequently align with the vector pointing
+ * from the origin to the specified vector coordinates.
+ * If both <code>vecx</code> and <code>vecy</code> are 0.0,
+ * an identity transform is returned.
+ * This operation is equivalent to calling:
+ * <pre>
+ *     AffineTransform.getRotateInstance(Math.atan2(vecy, vecx));
+ * </pre>
+ *
+ * @param vecx the X coordinate of the rotation vector
+ * @param vecy the Y coordinate of the rotation vector
+ * @return an <code>AffineTransform</code> object that rotates
+ *  coordinates according to the specified rotation vector.
+ * @since 1.6
+ */
+public static AffineTransform getRotateInstance(double vecx, double vecy) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToRotation(vecx, vecy);
+    return Tx;
+}

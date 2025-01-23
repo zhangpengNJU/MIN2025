@@ -1,0 +1,13 @@
+public boolean hasNext() {
+    if (acc == null) {
+        return hasNextService();
+    } else {
+        PrivilegedAction<Boolean> action = new PrivilegedAction<Boolean>() {
+
+            public Boolean run() {
+                return hasNextService();
+            }
+        };
+        return AccessController.doPrivileged(action, acc);
+    }
+}

@@ -1,0 +1,22 @@
+/**
+ * Reads two input bytes and returns
+ * an {@code int} value in the range {@code 0}
+ * through {@code 65535}. Let {@code a}
+ * be the first byte read and
+ * {@code b}
+ * be the second byte. The value returned is:
+ * <pre>{@code (((a & 0xff) << 8) | (b & 0xff))
+ * }</pre>
+ * This method is suitable for reading the bytes
+ * written by the {@code writeShort} method
+ * of interface {@code DataOutput}  if
+ * the argument to {@code writeShort}
+ * was intended to be a value in the range
+ * {@code 0} through {@code 65535}.
+ *
+ * @return     the unsigned 16-bit value read.
+ * @exception  EOFException  if this stream reaches the end before reading
+ *               all the bytes.
+ * @exception  IOException   if an I/O error occurs.
+ */
+int readUnsignedShort() throws IOException;

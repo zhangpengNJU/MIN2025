@@ -1,0 +1,10 @@
+/**
+ * Determines whether this component will be displayed on the screen.
+ * @return {@code true} if the component and all of its ancestors
+ *          until a toplevel window are visible, {@code false} otherwise
+ */
+boolean isRecursivelyVisible() {
+    // 5079694 fix: for a toplevel to be displayed, its parent doesn't have to be visible.
+    // We're overriding isRecursivelyVisible to implement this policy.
+    return visible;
+}

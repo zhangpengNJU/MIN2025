@@ -1,0 +1,13 @@
+/**
+ * Get the signer certificates (without any supporting chain)
+ * for the underlying permission that has not been resolved.
+ *
+ * @return the signer certificates for the underlying permission that
+ * has not been resolved, or null, if there are no signer certificates.
+ * Returns a new array each time this method is called.
+ *
+ * @since 1.5
+ */
+public java.security.cert.Certificate[] getUnresolvedCerts() {
+    return (certs == null) ? null : certs.clone();
+}

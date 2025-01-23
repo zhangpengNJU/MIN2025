@@ -1,0 +1,8 @@
+public Attributes getAttributes() throws IOException {
+    Manifest man = JarFile.this.getManifest();
+    if (man != null) {
+        return man.getAttributes(getName());
+    } else {
+        return null;
+    }
+}

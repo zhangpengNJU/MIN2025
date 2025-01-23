@@ -1,0 +1,28 @@
+/**
+ * Returns a new {@code Shape} representing a transformed version
+ * of this {@code Path2D}.
+ * Note that the exact type and coordinate precision of the return
+ * value is not specified for this method.
+ * The method will return a Shape that contains no less precision
+ * for the transformed geometry than this {@code Path2D} currently
+ * maintains, but it may contain no more precision either.
+ * If the tradeoff of precision vs. storage size in the result is
+ * important then the convenience constructors in the
+ * {@link Path2D.Float#Path2D.Float(Shape, AffineTransform) Path2D.Float}
+ * and
+ * {@link Path2D.Double#Path2D.Double(Shape, AffineTransform) Path2D.Double}
+ * subclasses should be used to make the choice explicit.
+ *
+ * @param at the {@code AffineTransform} used to transform a
+ *           new {@code Shape}.
+ * @return a new {@code Shape}, transformed with the specified
+ *         {@code AffineTransform}.
+ * @since 1.6
+ */
+public final synchronized Shape createTransformedShape(AffineTransform at) {
+    Path2D p2d = (Path2D) clone();
+    if (at != null) {
+        p2d.transform(at);
+    }
+    return p2d;
+}

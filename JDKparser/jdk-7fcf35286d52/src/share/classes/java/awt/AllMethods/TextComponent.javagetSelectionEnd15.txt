@@ -1,0 +1,14 @@
+/**
+ * Gets the end position of the selected text in
+ * this text component.
+ * @return      the end position of the selected text
+ * @see         java.awt.TextComponent#setSelectionEnd
+ * @see         java.awt.TextComponent#getSelectionStart
+ */
+public synchronized int getSelectionEnd() {
+    TextComponentPeer peer = (TextComponentPeer) this.peer;
+    if (peer != null) {
+        selectionEnd = peer.getSelectionEnd();
+    }
+    return selectionEnd;
+}

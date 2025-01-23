@@ -1,0 +1,19 @@
+public int hashCode() {
+    if (ipaddress != null) {
+        int hash = 0;
+        int i = 0;
+        while (i < INADDRSZ) {
+            int j = 0;
+            int component = 0;
+            while (j < 4 && i < INADDRSZ) {
+                component = (component << 8) + ipaddress[i];
+                j++;
+                i++;
+            }
+            hash += component;
+        }
+        return hash;
+    } else {
+        return 0;
+    }
+}

@@ -1,0 +1,10 @@
+private boolean equalPDs(ProtectionDomain[] a, ProtectionDomain[] b) {
+    if (a == null) {
+        return (b == null);
+    }
+    if (b == null)
+        return false;
+    if (!(containsAllPDs(a, b) && containsAllPDs(b, a)))
+        return false;
+    return true;
+}

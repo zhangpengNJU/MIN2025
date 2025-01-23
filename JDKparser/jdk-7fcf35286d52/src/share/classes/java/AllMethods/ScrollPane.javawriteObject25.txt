@@ -1,0 +1,9 @@
+/**
+ * Writes default serializable fields to stream.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    // 4352819: We only need this degenerate writeObject to make
+    // it safe for future versions of this class to write optional
+    // data to the stream.
+    s.defaultWriteObject();
+}

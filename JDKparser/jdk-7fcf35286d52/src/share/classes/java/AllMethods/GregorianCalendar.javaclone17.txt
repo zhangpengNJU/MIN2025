@@ -1,0 +1,15 @@
+@Override
+public Object clone() {
+    GregorianCalendar other = (GregorianCalendar) super.clone();
+    other.gdate = (BaseCalendar.Date) gdate.clone();
+    if (cdate != null) {
+        if (cdate != gdate) {
+            other.cdate = (BaseCalendar.Date) cdate.clone();
+        } else {
+            other.cdate = other.gdate;
+        }
+    }
+    other.originalFields = null;
+    other.zoneOffsets = null;
+    return other;
+}

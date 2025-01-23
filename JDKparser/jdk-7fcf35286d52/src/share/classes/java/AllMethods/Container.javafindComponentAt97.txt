@@ -1,0 +1,26 @@
+/**
+ * Locates the visible child component that contains the specified
+ * position.  The top-most child component is returned in the case
+ * where there is overlap in the components.  If the containing child
+ * component is a Container, this method will continue searching for
+ * the deepest nested child component.  Components which are not
+ * visible are ignored during the search.<p>
+ *
+ * The findComponentAt method is different from getComponentAt in
+ * that getComponentAt only searches the Container's immediate
+ * children; if the containing component is a Container,
+ * findComponentAt will search that child to find a nested component.
+ *
+ * @param x the <i>x</i> coordinate
+ * @param y the <i>y</i> coordinate
+ * @return null if the component does not contain the position.
+ * If there is no child component at the requested point and the
+ * point is within the bounds of the container the container itself
+ * is returned.
+ * @see Component#contains
+ * @see #getComponentAt
+ * @since 1.2
+ */
+public Component findComponentAt(int x, int y) {
+    return findComponentAt(x, y, true);
+}

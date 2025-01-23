@@ -1,0 +1,11 @@
+/**
+ * Completes with the given (non-null) exceptional result as a
+ * wrapped CompletionException unless it is one already, unless
+ * already completed.  May complete with the given Object r
+ * (which must have been the result of a source future) if it is
+ * equivalent, i.e. if this is a simple propagation of an
+ * existing CompletionException.
+ */
+final boolean completeThrowable(Throwable x, Object r) {
+    return UNSAFE.compareAndSwapObject(this, RESULT, null, encodeThrowable(x, r));
+}

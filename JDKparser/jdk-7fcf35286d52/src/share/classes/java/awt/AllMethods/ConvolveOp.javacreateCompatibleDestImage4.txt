@@ -1,0 +1,37 @@
+/**
+ * Creates a zeroed destination image with the correct size and number
+ * of bands.  If destCM is null, an appropriate ColorModel will be used.
+ * @param src       Source image for the filter operation.
+ * @param destCM    ColorModel of the destination.  Can be null.
+ * @return a destination <code>BufferedImage</code> with the correct
+ *         size and number of bands.
+ */
+public BufferedImage createCompatibleDestImage(BufferedImage src, ColorModel destCM) {
+    BufferedImage image;
+    int w = src.getWidth();
+    int h = src.getHeight();
+    WritableRaster wr = null;
+    if (destCM == null) {
+        destCM = src.getColorModel();
+        // Not much support for ICM
+        if (destCM instanceof IndexColorModel) {
+            destCM = ColorModel.getRGBdefault();
+        } else {
+            /* Create destination image as similar to the source
+                 *  as it possible...
+                 */
+            wr = src.getData().createCompatibleWritableRaster(w, h);
+        }
+    }
+    if (wr == null) {
+        /* This is the case when destination color model
+             * was explicitly specified (and it may be not compatible
+             * with source raster structure) or source is indexed image.
+             * We should use destination color model to create compatible
+             * destination raster here.
+             */
+        wr = destCM.createCompatibleWritableRaster(w, h);
+    }
+    image = new BufferedImage(destCM, wr, destCM.isAlphaPremultiplied(), null);
+    return image;
+}

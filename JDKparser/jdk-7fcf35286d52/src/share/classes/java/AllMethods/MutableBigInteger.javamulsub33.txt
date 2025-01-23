@@ -1,0 +1,17 @@
+/**
+ * This method is used for division. It multiplies an n word input a by one
+ * word input x, and subtracts the n word product from q. This is needed
+ * when subtracting qhat*divisor from dividend.
+ */
+private int mulsub(int[] q, int[] a, int x, int len, int offset) {
+    long xLong = x & LONG_MASK;
+    long carry = 0;
+    offset += len;
+    for (int j = len - 1; j >= 0; j--) {
+        long product = (a[j] & LONG_MASK) * xLong + carry;
+        long difference = q[offset] - product;
+        q[offset--] = (int) difference;
+        carry = (product >>> 32) + (((difference & LONG_MASK) > (((~(int) product) & LONG_MASK))) ? 1 : 0);
+    }
+    return (int) carry;
+}

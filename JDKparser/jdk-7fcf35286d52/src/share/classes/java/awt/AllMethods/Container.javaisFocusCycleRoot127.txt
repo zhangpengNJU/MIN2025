@@ -1,0 +1,20 @@
+/**
+ * Returns whether this Container is the root of a focus traversal cycle.
+ * Once focus enters a traversal cycle, typically it cannot leave it via
+ * focus traversal unless one of the up- or down-cycle keys is pressed.
+ * Normal traversal is limited to this Container, and all of this
+ * Container's descendants that are not descendants of inferior focus
+ * cycle roots. Note that a FocusTraversalPolicy may bend these
+ * restrictions, however. For example, ContainerOrderFocusTraversalPolicy
+ * supports implicit down-cycle traversal.
+ *
+ * @return whether this Container is the root of a focus traversal cycle
+ * @see #setFocusCycleRoot
+ * @see #setFocusTraversalPolicy
+ * @see #getFocusTraversalPolicy
+ * @see ContainerOrderFocusTraversalPolicy
+ * @since 1.4
+ */
+public boolean isFocusCycleRoot() {
+    return focusCycleRoot;
+}

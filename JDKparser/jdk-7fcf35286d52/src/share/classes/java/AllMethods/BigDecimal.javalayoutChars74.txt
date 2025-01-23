@@ -1,0 +1,119 @@
+/**
+ * Lay out this {@code BigDecimal} into a {@code char[]} array.
+ * The Java 1.2 equivalent to this was called {@code getValueString}.
+ *
+ * @param  sci {@code true} for Scientific exponential notation;
+ *          {@code false} for Engineering
+ * @return string with canonical string representation of this
+ *         {@code BigDecimal}
+ */
+private String layoutChars(boolean sci) {
+    if (// zero scale is trivial
+    scale == 0)
+        return (intCompact != INFLATED) ? Long.toString(intCompact) : intVal.toString();
+    if (scale == 2 && intCompact >= 0 && intCompact < Integer.MAX_VALUE) {
+        // currency fast path
+        int lowInt = (int) intCompact % 100;
+        int highInt = (int) intCompact / 100;
+        return (Integer.toString(highInt) + '.' + StringBuilderHelper.DIGIT_TENS[lowInt] + StringBuilderHelper.DIGIT_ONES[lowInt]);
+    }
+    StringBuilderHelper sbHelper = threadLocalStringBuilderHelper.get();
+    char[] coeff;
+    // offset is the starting index for coeff array
+    int offset;
+    // Get the significand as an absolute value
+    if (intCompact != INFLATED) {
+        offset = sbHelper.putIntCompact(Math.abs(intCompact));
+        coeff = sbHelper.getCompactCharArray();
+    } else {
+        offset = 0;
+        coeff = intVal.abs().toString().toCharArray();
+    }
+    // Construct a buffer, with sufficient capacity for all cases.
+    // If E-notation is needed, length will be: +1 if negative, +1
+    // if '.' needed, +2 for "E+", + up to 10 for adjusted exponent.
+    // Otherwise it could have +1 if negative, plus leading "0.00000"
+    StringBuilder buf = sbHelper.getStringBuilder();
+    if (// prefix '-' if negative
+    signum() < 0)
+        buf.append('-');
+    int coeffLen = coeff.length - offset;
+    long adjusted = -(long) scale + (coeffLen - 1);
+    if ((scale >= 0) && (adjusted >= -6)) {
+        // plain number
+        // count of padding zeros
+        int pad = scale - coeffLen;
+        if (pad >= 0) {
+            // 0.xxx form
+            buf.append('0');
+            buf.append('.');
+            for (; pad > 0; pad--) {
+                buf.append('0');
+            }
+            buf.append(coeff, offset, coeffLen);
+        } else {
+            // xx.xx form
+            buf.append(coeff, offset, -pad);
+            buf.append('.');
+            buf.append(coeff, -pad + offset, scale);
+        }
+    } else {
+        // E-notation is needed
+        if (sci) {
+            // Scientific notation
+            // first character
+            buf.append(coeff[offset]);
+            if (coeffLen > 1) {
+                // more to come
+                buf.append('.');
+                buf.append(coeff, offset + 1, coeffLen - 1);
+            }
+        } else {
+            // Engineering notation
+            int sig = (int) (adjusted % 3);
+            if (sig < 0)
+                // [adjusted was negative]
+                sig += 3;
+            // now a multiple of 3
+            adjusted -= sig;
+            sig++;
+            if (signum() == 0) {
+                switch(sig) {
+                    case 1:
+                        // exponent is a multiple of three
+                        buf.append('0');
+                        break;
+                    case 2:
+                        buf.append("0.00");
+                        adjusted += 3;
+                        break;
+                    case 3:
+                        buf.append("0.0");
+                        adjusted += 3;
+                        break;
+                    default:
+                        throw new AssertionError("Unexpected sig value " + sig);
+                }
+            } else if (sig >= coeffLen) {
+                // significand all in integer
+                buf.append(coeff, offset, coeffLen);
+                // may need some zeros, too
+                for (int i = sig - coeffLen; i > 0; i--) buf.append('0');
+            } else {
+                // xx.xxE form
+                buf.append(coeff, offset, sig);
+                buf.append('.');
+                buf.append(coeff, offset + sig, coeffLen - sig);
+            }
+        }
+        if (adjusted != 0) {
+            // [!sci could have made 0]
+            buf.append('E');
+            if (// force sign for positive
+            adjusted > 0)
+                buf.append('+');
+            buf.append(adjusted);
+        }
+    }
+    return buf.toString();
+}

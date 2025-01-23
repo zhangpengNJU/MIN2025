@@ -1,0 +1,9 @@
+/**
+ * Returns true if the <code>DataFlavor</code> specified represents
+ * a remote object.
+ * @return true if the <code>DataFlavor</code> specified represents
+ *  a Remote Object
+ */
+public boolean isFlavorRemoteObjectType() {
+    return isRepresentationClassRemote() && isRepresentationClassSerializable() && isMimeTypeEqual(javaRemoteObjectMimeType);
+}

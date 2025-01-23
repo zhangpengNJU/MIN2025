@@ -1,0 +1,5 @@
+private int makeLocalTemp(BasicType type) {
+    int frameLocal = localsMap[localsMap.length - 1];
+    localsMap[localsMap.length - 1] = frameLocal + type.basicTypeSlots();
+    return frameLocal;
+}

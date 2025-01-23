@@ -1,0 +1,12 @@
+/**
+ * Appends the contents of the CharacterIterator iterator into the
+ * StringBuffer buf.
+ */
+private final void appendContents(StringBuffer buf, CharacterIterator iterator) {
+    int index = iterator.getBeginIndex();
+    int end = iterator.getEndIndex();
+    while (index < end) {
+        iterator.setIndex(index++);
+        buf.append(iterator.current());
+    }
+}

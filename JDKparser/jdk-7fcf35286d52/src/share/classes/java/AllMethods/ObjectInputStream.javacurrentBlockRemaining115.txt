@@ -1,0 +1,12 @@
+/**
+ * If in block data mode, returns the number of unconsumed bytes
+ * remaining in the current data block.  If not in block data mode,
+ * throws an IllegalStateException.
+ */
+int currentBlockRemaining() {
+    if (blkmode) {
+        return (end >= 0) ? (end - pos) + unread : 0;
+    } else {
+        throw new IllegalStateException();
+    }
+}

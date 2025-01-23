@@ -1,0 +1,17 @@
+/**
+ * See if {@code asCollector} can be validly called with the given arguments.
+ * Return false if the last parameter is not an exact match to arrayType.
+ */
+/*non-public*/
+boolean asCollectorChecks(Class<?> arrayType, int arrayLength) {
+    spreadArrayChecks(arrayType, arrayLength);
+    int nargs = type().parameterCount();
+    if (nargs != 0) {
+        Class<?> lastParam = type().parameterType(nargs - 1);
+        if (lastParam == arrayType)
+            return true;
+        if (lastParam.isAssignableFrom(arrayType))
+            return false;
+    }
+    throw newIllegalArgumentException("array type not assignable to trailing argument", this, arrayType);
+}

@@ -1,0 +1,47 @@
+public T get(Object key) {
+    removeStaleEntries();
+    if (key == null) {
+        key = NULL;
+    }
+    int hash = key.hashCode();
+    Entry<T>[] table = this.table;
+    // unsynchronized search improves performance
+    // the null value does not mean that there are no needed entry
+    int index = getIndex(table, hash);
+    for (Entry<T> entry = table[index]; entry != null; entry = entry.next) {
+        if (entry.isMatched(key, hash)) {
+            return entry.value;
+        }
+    }
+    synchronized (NULL) {
+        // synchronized search improves stability
+        // we must create and add new value if there are no needed entry
+        index = getIndex(this.table, hash);
+        for (Entry<T> entry = this.table[index]; entry != null; entry = entry.next) {
+            if (entry.isMatched(key, hash)) {
+                return entry.value;
+            }
+        }
+        T value = create(key);
+        this.table[index] = new Entry<T>(key, hash, value, this.queue, this.table[index]);
+        if (++this.size >= this.threshold) {
+            if (this.table.length == MAXIMUM_CAPACITY) {
+                this.threshold = Integer.MAX_VALUE;
+            } else {
+                removeStaleEntries();
+                table = newTable(this.table.length * 2);
+                transfer(this.table, table);
+                // If ignoring null elements and processing ref queue caused massive
+                // shrinkage, then restore old table.  This should be rare, but avoids
+                // unbounded expansion of garbage-filled tables.
+                if (this.size >= this.threshold / 2) {
+                    this.table = table;
+                    this.threshold *= 2;
+                } else {
+                    transfer(table, this.table);
+                }
+            }
+        }
+        return value;
+    }
+}

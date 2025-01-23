@@ -1,0 +1,24 @@
+/**
+ * Returns the samples for the specified pixel in an array of float.
+ * ArrayIndexOutOfBoundsException may be thrown if the coordinates are
+ * not in bounds.
+ * @param x         The X coordinate of the pixel location.
+ * @param y         The Y coordinate of the pixel location.
+ * @param fArray    If non-null, returns the samples in this array.
+ * @param data      The DataBuffer containing the image data.
+ * @return the samples for the specified pixel.
+ * @see #setPixel(int, int, float[], DataBuffer)
+ *
+ * @throws NullPointerException if data is null.
+ * @throws ArrayIndexOutOfBoundsException if the coordinates are
+ * not in bounds, or if fArray is too small to hold the output.
+ */
+public float[] getPixel(int x, int y, float[] fArray, DataBuffer data) {
+    float[] pixels;
+    if (fArray != null)
+        pixels = fArray;
+    else
+        pixels = new float[numBands];
+    for (int i = 0; i < numBands; i++) pixels[i] = getSampleFloat(x, y, i, data);
+    return pixels;
+}

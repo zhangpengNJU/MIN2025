@@ -1,0 +1,11 @@
+Map.Entry<K, V> highestEntry() {
+    Comparator<? super K> cmp = m.comparator;
+    for (; ; ) {
+        ConcurrentSkipListMap.Node<K, V> n = hiNode(cmp);
+        if (n == null || !inBounds(n.key, cmp))
+            return null;
+        Map.Entry<K, V> e = n.createSnapshot();
+        if (e != null)
+            return e;
+    }
+}

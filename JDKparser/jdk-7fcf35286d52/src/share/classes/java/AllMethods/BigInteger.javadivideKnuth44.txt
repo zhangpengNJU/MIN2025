@@ -1,0 +1,13 @@
+/**
+ * Returns a BigInteger whose value is {@code (this / val)} using an O(n^2) algorithm from Knuth.
+ *
+ * @param  val value by which this BigInteger is to be divided.
+ * @return {@code this / val}
+ * @throws ArithmeticException if {@code val} is zero.
+ * @see MutableBigInteger#divideKnuth(MutableBigInteger, MutableBigInteger, boolean)
+ */
+private BigInteger divideKnuth(BigInteger val) {
+    MutableBigInteger q = new MutableBigInteger(), a = new MutableBigInteger(this.mag), b = new MutableBigInteger(val.mag);
+    a.divideKnuth(b, q, false);
+    return q.toBigInteger(this.signum * val.signum);
+}

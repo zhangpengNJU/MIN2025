@@ -1,0 +1,11 @@
+// This next one is called from LambdaForm.NamedFunction.<init>.
+/*non-public*/
+static MemberName invokeBasicMethod(MethodType basicType) {
+    assert (basicType == basicType.basicType());
+    try {
+        // Lookup.findVirtual(MethodHandle.class, name, type);
+        return IMPL_LOOKUP.resolveOrFail(REF_invokeVirtual, MethodHandle.class, "invokeBasic", basicType);
+    } catch (ReflectiveOperationException ex) {
+        throw newInternalError("JVM cannot find invoker for " + basicType, ex);
+    }
+}

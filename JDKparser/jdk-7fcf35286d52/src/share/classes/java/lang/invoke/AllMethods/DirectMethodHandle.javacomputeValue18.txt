@@ -1,0 +1,9 @@
+@Override
+protected WeakReference<Thread> computeValue(Class<?> type) {
+    UNSAFE.ensureClassInitialized(type);
+    if (UNSAFE.shouldBeInitialized(type))
+        // If the previous call didn't block, this can happen.
+        // We are executing inside <clinit>.
+        return new WeakReference<>(Thread.currentThread());
+    return null;
+}

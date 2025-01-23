@@ -1,0 +1,17 @@
+/**
+ * Called by the AWT to notify the KeyboardFocusManager that it should
+ * cancel delayed dispatching of KeyEvents. All KeyEvents which were
+ * enqueued because of a call to <code>enqueueKeyEvents</code> with the
+ * same timestamp and Component should be released for normal dispatching
+ * to the current focus owner. If the given timestamp is less than zero,
+ * the outstanding enqueue request for the given Component with the <b>
+ * oldest</b> timestamp (if any) should be cancelled.
+ *
+ * @param after the timestamp specified in the call to
+ *        <code>enqueueKeyEvents</code>, or any value &lt; 0
+ * @param untilFocused the Component specified in the call to
+ *        <code>enqueueKeyEvents</code>
+ * @see #enqueueKeyEvents
+ * @see #discardKeyEvents
+ */
+protected abstract void dequeueKeyEvents(long after, Component untilFocused);

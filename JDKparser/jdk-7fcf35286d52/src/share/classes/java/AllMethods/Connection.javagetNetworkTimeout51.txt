@@ -1,0 +1,16 @@
+/**
+ * Retrieves the number of milliseconds the driver will
+ * wait for a database request to complete.
+ * If the limit is exceeded, a
+ * <code>SQLException</code> is thrown.
+ *
+ * @return the current timeout limit in milliseconds; zero means there is
+ *         no limit
+ * @throws SQLException if a database access error occurs or
+ * this method is called on a closed <code>Connection</code>
+ * @exception SQLFeatureNotSupportedException if the JDBC driver does not support
+ * this method
+ * @see #setNetworkTimeout
+ * @since 1.7
+ */
+int getNetworkTimeout() throws SQLException;

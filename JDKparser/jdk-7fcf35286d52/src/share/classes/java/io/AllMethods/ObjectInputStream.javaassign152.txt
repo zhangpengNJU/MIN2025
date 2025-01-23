@@ -1,0 +1,14 @@
+/**
+ * Assigns next available handle to given object, and returns assigned
+ * handle.  Once object has been completely deserialized (and all
+ * dependencies on other objects identified), the handle should be
+ * "closed" by passing it to finish().
+ */
+int assign(Object obj) {
+    if (size >= entries.length) {
+        grow();
+    }
+    status[size] = STATUS_UNKNOWN;
+    entries[size] = obj;
+    return size++;
+}

@@ -1,0 +1,18 @@
+// hashCode()
+/**
+ * <code>MimeType</code>s are equal if their primary types,
+ * subtypes, and  parameters are all equal. No default values
+ * are taken into account.
+ * @param thatObject the object to be evaluated as a
+ *    <code>MimeType</code>
+ * @return <code>true</code> if <code>thatObject</code> is
+ *    a <code>MimeType</code>; otherwise returns <code>false</code>
+ */
+public boolean equals(Object thatObject) {
+    if (!(thatObject instanceof MimeType)) {
+        return false;
+    }
+    MimeType that = (MimeType) thatObject;
+    boolean isIt = ((this.primaryType.equals(that.primaryType)) && (this.subType.equals(that.subType)) && (this.parameters.equals(that.parameters)));
+    return isIt;
+}

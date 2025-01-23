@@ -1,0 +1,54 @@
+/**
+ * A fast-path shortcut of format(double) to be called by NumberFormat, or by
+ * format(double, ...) public methods.
+ *
+ * If instance can be applied fast-path and passed double is not NaN or
+ * Infinity, is in the integer range, we call {@code fastDoubleFormat}
+ * after changing {@code d} to its positive value if necessary.
+ *
+ * Otherwise returns null by convention since fast-path can't be exercized.
+ *
+ * @param d The double value to be formatted
+ *
+ * @return the formatted result for {@code d} as a string.
+ */
+String fastFormat(double d) {
+    boolean isDataSet = false;
+    // (Re-)Evaluates fast-path status if needed.
+    if (fastPathCheckNeeded) {
+        isDataSet = checkAndSetFastPathStatus();
+    }
+    if (!isFastPath)
+        // DecimalFormat instance is not in a fast-path state.
+        return null;
+    if (!Double.isFinite(d))
+        // Should not use fast-path for Infinity and NaN.
+        return null;
+    // Extracts and records sign of double value, possibly changing it
+    // to a positive one, before calling fastDoubleFormat().
+    boolean negative = false;
+    if (d < 0.0d) {
+        negative = true;
+        d = -d;
+    } else if (d == 0.0d) {
+        negative = (Math.copySign(1.0d, d) == -1.0d);
+        d = +0.0d;
+    }
+    if (d > MAX_INT_AS_DOUBLE)
+        // Filters out values that are outside expected fast-path range
+        return null;
+    else {
+        if (!isDataSet) {
+            /*
+                 * If the fast path data is not set through
+                 * checkAndSetFastPathStatus() and fulfil the
+                 * fast path conditions then reset the data
+                 * directly through resetFastPathData()
+                 */
+            resetFastPathData(isFastPath);
+        }
+        fastDoubleFormat(d, negative);
+    }
+    // Returns a new string from updated fastPathContainer.
+    return new String(fastPathData.fastPathContainer, fastPathData.firstUsedIndex, fastPathData.lastFreeIndex - fastPathData.firstUsedIndex);
+}

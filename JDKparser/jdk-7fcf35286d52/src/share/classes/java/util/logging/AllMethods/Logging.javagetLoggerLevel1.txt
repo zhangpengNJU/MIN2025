@@ -1,0 +1,12 @@
+public String getLoggerLevel(String loggerName) {
+    Logger l = logManager.getLogger(loggerName);
+    if (l == null) {
+        return null;
+    }
+    Level level = l.getLevel();
+    if (level == null) {
+        return EMPTY_STRING;
+    } else {
+        return level.getLevelName();
+    }
+}

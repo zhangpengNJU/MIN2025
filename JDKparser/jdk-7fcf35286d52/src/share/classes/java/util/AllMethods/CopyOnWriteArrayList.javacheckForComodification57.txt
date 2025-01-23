@@ -1,0 +1,5 @@
+// only call this holding l's lock
+private void checkForComodification() {
+    if (l.getArray() != expectedArray)
+        throw new ConcurrentModificationException();
+}

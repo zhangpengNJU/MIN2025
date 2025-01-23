@@ -1,0 +1,25 @@
+/**
+ * Sets the number of columns in this text field. A column is an
+ * approximate average character width that is platform-dependent.
+ * @param      columns   the number of columns.
+ * @see        java.awt.TextField#getColumns
+ * @exception  IllegalArgumentException   if the value
+ *                 supplied for <code>columns</code>
+ *                 is less than <code>0</code>.
+ * @since      JDK1.1
+ */
+public void setColumns(int columns) {
+    int oldVal;
+    synchronized (this) {
+        oldVal = this.columns;
+        if (columns < 0) {
+            throw new IllegalArgumentException("columns less than zero.");
+        }
+        if (columns != oldVal) {
+            this.columns = columns;
+        }
+    }
+    if (columns != oldVal) {
+        invalidate();
+    }
+}

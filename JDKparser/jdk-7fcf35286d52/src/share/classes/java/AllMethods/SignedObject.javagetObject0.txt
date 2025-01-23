@@ -1,0 +1,19 @@
+/**
+ * Retrieves the encapsulated object.
+ * The encapsulated object is de-serialized before it is returned.
+ *
+ * @return the encapsulated object.
+ *
+ * @exception IOException if an error occurs during de-serialization
+ * @exception ClassNotFoundException if an error occurs during
+ * de-serialization
+ */
+public Object getObject() throws IOException, ClassNotFoundException {
+    // creating a stream pipe-line, from b to a
+    ByteArrayInputStream b = new ByteArrayInputStream(this.content);
+    ObjectInput a = new ObjectInputStream(b);
+    Object obj = a.readObject();
+    b.close();
+    a.close();
+    return obj;
+}

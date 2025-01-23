@@ -1,0 +1,20 @@
+/**
+ * Generate optimizable bytecode for this form.
+ */
+MemberName compileToBytecode() {
+    if (vmentry != null && isCompiled) {
+        // already compiled somehow
+        return vmentry;
+    }
+    MethodType invokerType = methodType();
+    assert (vmentry == null || vmentry.getMethodType().basicType().equals(invokerType));
+    try {
+        vmentry = InvokerBytecodeGenerator.generateCustomizedCode(this, invokerType);
+        if (TRACE_INTERPRETER)
+            traceInterpreter("compileToBytecode", this);
+        isCompiled = true;
+        return vmentry;
+    } catch (Error | Exception ex) {
+        throw newInternalError(this.toString(), ex);
+    }
+}

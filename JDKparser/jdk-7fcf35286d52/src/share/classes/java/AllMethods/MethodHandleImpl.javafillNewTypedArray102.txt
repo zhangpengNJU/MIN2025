@@ -1,0 +1,6 @@
+private static Object[] fillNewTypedArray(Object[] example, Integer len, Object[] args) {
+    Object[] a = Arrays.copyOf(example, len);
+    assert (a.getClass() != Object[].class);
+    fillWithArguments(a, 0, args);
+    return a;
+}

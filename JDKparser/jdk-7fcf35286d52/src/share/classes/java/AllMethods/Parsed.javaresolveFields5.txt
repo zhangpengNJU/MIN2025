@@ -1,0 +1,65 @@
+// -----------------------------------------------------------------------
+private void resolveFields() {
+    // resolve ChronoField
+    resolveInstantFields();
+    resolveDateFields();
+    resolveTimeFields();
+    // if any other fields, handle them
+    // any lenient date resolution should return epoch-day
+    if (fieldValues.size() > 0) {
+        int changedCount = 0;
+        outer: while (changedCount < 50) {
+            for (Map.Entry<TemporalField, Long> entry : fieldValues.entrySet()) {
+                TemporalField targetField = entry.getKey();
+                TemporalAccessor resolvedObject = targetField.resolve(fieldValues, this, resolverStyle);
+                if (resolvedObject != null) {
+                    if (resolvedObject instanceof ChronoZonedDateTime) {
+                        ChronoZonedDateTime<?> czdt = (ChronoZonedDateTime<?>) resolvedObject;
+                        if (zone == null) {
+                            zone = czdt.getZone();
+                        } else if (zone.equals(czdt.getZone()) == false) {
+                            throw new DateTimeException("ChronoZonedDateTime must use the effective parsed zone: " + zone);
+                        }
+                        resolvedObject = czdt.toLocalDateTime();
+                    }
+                    if (resolvedObject instanceof ChronoLocalDateTime) {
+                        ChronoLocalDateTime<?> cldt = (ChronoLocalDateTime<?>) resolvedObject;
+                        updateCheckConflict(cldt.toLocalTime(), Period.ZERO);
+                        updateCheckConflict(cldt.toLocalDate());
+                        changedCount++;
+                        // have to restart to avoid concurrent modification
+                        continue outer;
+                    }
+                    if (resolvedObject instanceof ChronoLocalDate) {
+                        updateCheckConflict((ChronoLocalDate) resolvedObject);
+                        changedCount++;
+                        // have to restart to avoid concurrent modification
+                        continue outer;
+                    }
+                    if (resolvedObject instanceof LocalTime) {
+                        updateCheckConflict((LocalTime) resolvedObject, Period.ZERO);
+                        changedCount++;
+                        // have to restart to avoid concurrent modification
+                        continue outer;
+                    }
+                    throw new DateTimeException("Method resolve() can only return ChronoZonedDateTime, " + "ChronoLocalDateTime, ChronoLocalDate or LocalTime");
+                } else if (fieldValues.containsKey(targetField) == false) {
+                    changedCount++;
+                    // have to restart to avoid concurrent modification
+                    continue outer;
+                }
+            }
+            break;
+        }
+        if (changedCount == 50) {
+            // catch infinite loops
+            throw new DateTimeException("One of the parsed fields has an incorrectly implemented resolve method");
+        }
+        // if something changed then have to redo ChronoField resolve
+        if (changedCount > 0) {
+            resolveInstantFields();
+            resolveDateFields();
+            resolveTimeFields();
+        }
+    }
+}

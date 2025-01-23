@@ -1,0 +1,10 @@
+/*non-public*/
+@DontInline
+static void maybeCustomize(MethodHandle mh) {
+    byte count = mh.customizationCount;
+    if (count >= CUSTOMIZE_THRESHOLD) {
+        mh.customize();
+    } else {
+        mh.customizationCount = (byte) (count + 1);
+    }
+}

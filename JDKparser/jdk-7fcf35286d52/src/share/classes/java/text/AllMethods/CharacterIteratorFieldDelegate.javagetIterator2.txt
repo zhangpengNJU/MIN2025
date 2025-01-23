@@ -1,0 +1,20 @@
+/**
+ * Returns an <code>AttributedCharacterIterator</code> that can be used
+ * to iterate over the resulting formatted String.
+ *
+ * @pararm string Result of formatting.
+ */
+public AttributedCharacterIterator getIterator(String string) {
+    // Add the last AttributedCharacterIterator if necessary
+    // assert(size <= string.length());
+    if (string.length() > size) {
+        attributedStrings.add(new AttributedString(string.substring(size)));
+        size = string.length();
+    }
+    int iCount = attributedStrings.size();
+    AttributedCharacterIterator[] iterators = new AttributedCharacterIterator[iCount];
+    for (int counter = 0; counter < iCount; counter++) {
+        iterators[counter] = attributedStrings.get(counter).getIterator();
+    }
+    return new AttributedString(iterators).getIterator();
+}

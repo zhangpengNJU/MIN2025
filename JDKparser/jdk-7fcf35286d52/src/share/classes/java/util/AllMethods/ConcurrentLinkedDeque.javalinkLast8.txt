@@ -1,0 +1,32 @@
+/**
+ * Links e as last element.
+ */
+private void linkLast(E e) {
+    checkNotNull(e);
+    final Node<E> newNode = new Node<E>(e);
+    restartFromTail: for (; ; ) for (Node<E> t = tail, p = t, q; ; ) {
+        if ((q = p.next) != null && (q = (p = q).next) != null)
+            // Check for tail updates every other hop.
+            // If p == q, we are sure to follow tail instead.
+            p = (t != (t = tail)) ? t : q;
+        else if (// NEXT_TERMINATOR
+        p.prev == p)
+            continue restartFromTail;
+        else {
+            // p is last node
+            // CAS piggyback
+            newNode.lazySetPrev(p);
+            if (p.casNext(null, newNode)) {
+                // Successful CAS is the linearization point
+                // for e to become an element of this deque,
+                // and for newNode to become "live".
+                if (// hop two nodes at a time
+                p != t)
+                    // Failure is OK.
+                    casTail(t, newNode);
+                return;
+            }
+        // Lost CAS race to another thread; re-read next
+        }
+    }
+}

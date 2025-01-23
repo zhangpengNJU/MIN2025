@@ -1,0 +1,19 @@
+public boolean tryAdvance(Consumer<? super V> action) {
+    if (action == null)
+        throw new NullPointerException();
+    Object[] a = map.table;
+    int hi = getFence();
+    while (index < hi) {
+        Object key = a[index];
+        @SuppressWarnings("unchecked")
+        V v = (V) a[index + 1];
+        index += 2;
+        if (key != null) {
+            action.accept(v);
+            if (map.modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+            return true;
+        }
+    }
+    return false;
+}

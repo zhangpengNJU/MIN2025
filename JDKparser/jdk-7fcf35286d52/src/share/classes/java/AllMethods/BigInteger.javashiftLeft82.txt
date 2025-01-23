@@ -1,0 +1,33 @@
+/**
+ * Returns a magnitude array whose value is {@code (mag << n)}.
+ * The shift distance, {@code n}, is considered unnsigned.
+ * (Computes <tt>this * 2<sup>n</sup></tt>.)
+ *
+ * @param mag magnitude, the most-significant int ({@code mag[0]}) must be non-zero.
+ * @param  n unsigned shift distance, in bits.
+ * @return {@code mag << n}
+ */
+private static int[] shiftLeft(int[] mag, int n) {
+    int nInts = n >>> 5;
+    int nBits = n & 0x1f;
+    int magLen = mag.length;
+    int[] newMag = null;
+    if (nBits == 0) {
+        newMag = new int[magLen + nInts];
+        System.arraycopy(mag, 0, newMag, 0, magLen);
+    } else {
+        int i = 0;
+        int nBits2 = 32 - nBits;
+        int highBits = mag[0] >>> nBits2;
+        if (highBits != 0) {
+            newMag = new int[magLen + nInts + 1];
+            newMag[i++] = highBits;
+        } else {
+            newMag = new int[magLen + nInts];
+        }
+        int j = 0;
+        while (j < magLen - 1) newMag[i++] = mag[j++] << nBits | mag[j] >>> nBits2;
+        newMag[i] = mag[j] << nBits;
+    }
+    return newMag;
+}

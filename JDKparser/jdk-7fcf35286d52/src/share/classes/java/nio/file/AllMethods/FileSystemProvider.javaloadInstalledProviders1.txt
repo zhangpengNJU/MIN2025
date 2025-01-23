@@ -1,0 +1,23 @@
+// loads all installed providers
+private static List<FileSystemProvider> loadInstalledProviders() {
+    List<FileSystemProvider> list = new ArrayList<FileSystemProvider>();
+    ServiceLoader<FileSystemProvider> sl = ServiceLoader.load(FileSystemProvider.class, ClassLoader.getSystemClassLoader());
+    // ServiceConfigurationError may be throw here
+    for (FileSystemProvider provider : sl) {
+        String scheme = provider.getScheme();
+        // add to list if the provider is not "file" and isn't a duplicate
+        if (!scheme.equalsIgnoreCase("file")) {
+            boolean found = false;
+            for (FileSystemProvider p : list) {
+                if (p.getScheme().equalsIgnoreCase(scheme)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                list.add(provider);
+            }
+        }
+    }
+    return list;
+}

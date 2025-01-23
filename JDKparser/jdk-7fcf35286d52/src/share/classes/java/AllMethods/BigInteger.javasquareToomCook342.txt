@@ -1,0 +1,45 @@
+/**
+ * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm.  It
+ * should be used when both numbers are larger than a certain threshold
+ * (found experimentally).  It is a recursive divide-and-conquer algorithm
+ * that has better asymptotic performance than the algorithm used in
+ * squareToLen or squareKaratsuba.
+ */
+private BigInteger squareToomCook3() {
+    int len = mag.length;
+    // k is the size (in ints) of the lower-order slices.
+    // Equal to ceil(largest/3)
+    int k = (len + 2) / 3;
+    // r is the size (in ints) of the highest-order slice.
+    int r = len - 2 * k;
+    // Obtain slices of the numbers. a2 is the most significant
+    // bits of the number, and a0 the least significant.
+    BigInteger a0, a1, a2;
+    a2 = getToomSlice(k, r, 0, len);
+    a1 = getToomSlice(k, r, 1, len);
+    a0 = getToomSlice(k, r, 2, len);
+    BigInteger v0, v1, v2, vm1, vinf, t1, t2, tm1, da1;
+    v0 = a0.square(true);
+    da1 = a2.add(a0);
+    vm1 = da1.subtract(a1).square(true);
+    da1 = da1.add(a1);
+    v1 = da1.square(true);
+    vinf = a2.square(true);
+    v2 = da1.add(a2).shiftLeft(1).subtract(a0).square(true);
+    // The algorithm requires two divisions by 2 and one by 3.
+    // All divisions are known to be exact, that is, they do not produce
+    // remainders, and all results are positive.  The divisions by 2 are
+    // implemented as right shifts which are relatively efficient, leaving
+    // only a division by 3.
+    // The division by 3 is done by an optimized algorithm for this case.
+    t2 = v2.subtract(vm1).exactDivideBy3();
+    tm1 = v1.subtract(vm1).shiftRight(1);
+    t1 = v1.subtract(v0);
+    t2 = t2.subtract(t1).shiftRight(1);
+    t1 = t1.subtract(tm1).subtract(vinf);
+    t2 = t2.subtract(vinf.shiftLeft(1));
+    tm1 = tm1.subtract(t2);
+    // Number of bits to shift left.
+    int ss = k * 32;
+    return vinf.shiftLeft(ss).add(t2).shiftLeft(ss).add(t1).shiftLeft(ss).add(tm1).shiftLeft(ss).add(v0);
+}

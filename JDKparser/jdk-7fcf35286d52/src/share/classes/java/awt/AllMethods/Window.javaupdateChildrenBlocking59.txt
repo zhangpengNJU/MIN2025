@@ -1,0 +1,23 @@
+void updateChildrenBlocking() {
+    Vector<Window> childHierarchy = new Vector<Window>();
+    Window[] ownedWindows = getOwnedWindows();
+    for (int i = 0; i < ownedWindows.length; i++) {
+        childHierarchy.add(ownedWindows[i]);
+    }
+    int k = 0;
+    while (k < childHierarchy.size()) {
+        Window w = childHierarchy.get(k);
+        if (w.isVisible()) {
+            if (w.isModalBlocked()) {
+                Dialog blocker = w.getModalBlocker();
+                blocker.unblockWindow(w);
+            }
+            Dialog.checkShouldBeBlocked(w);
+            Window[] wOwned = w.getOwnedWindows();
+            for (int j = 0; j < wOwned.length; j++) {
+                childHierarchy.add(wOwned[j]);
+            }
+        }
+        k++;
+    }
+}

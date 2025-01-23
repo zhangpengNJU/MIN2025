@@ -1,0 +1,103 @@
+private void makeFormat(int position, int offsetNumber, StringBuilder[] textSegments) {
+    String[] segments = new String[textSegments.length];
+    for (int i = 0; i < textSegments.length; i++) {
+        StringBuilder oneseg = textSegments[i];
+        segments[i] = (oneseg != null) ? oneseg.toString() : "";
+    }
+    // get the argument number
+    int argumentNumber;
+    try {
+        // always unlocalized!
+        argumentNumber = Integer.parseInt(segments[SEG_INDEX]);
+    } catch (NumberFormatException e) {
+        throw new IllegalArgumentException("can't parse argument number: " + segments[SEG_INDEX], e);
+    }
+    if (argumentNumber < 0) {
+        throw new IllegalArgumentException("negative argument number: " + argumentNumber);
+    }
+    // resize format information arrays if necessary
+    if (offsetNumber >= formats.length) {
+        int newLength = formats.length * 2;
+        Format[] newFormats = new Format[newLength];
+        int[] newOffsets = new int[newLength];
+        int[] newArgumentNumbers = new int[newLength];
+        System.arraycopy(formats, 0, newFormats, 0, maxOffset + 1);
+        System.arraycopy(offsets, 0, newOffsets, 0, maxOffset + 1);
+        System.arraycopy(argumentNumbers, 0, newArgumentNumbers, 0, maxOffset + 1);
+        formats = newFormats;
+        offsets = newOffsets;
+        argumentNumbers = newArgumentNumbers;
+    }
+    int oldMaxOffset = maxOffset;
+    maxOffset = offsetNumber;
+    offsets[offsetNumber] = segments[SEG_RAW].length();
+    argumentNumbers[offsetNumber] = argumentNumber;
+    // now get the format
+    Format newFormat = null;
+    if (segments[SEG_TYPE].length() != 0) {
+        int type = findKeyword(segments[SEG_TYPE], TYPE_KEYWORDS);
+        switch(type) {
+            case TYPE_NULL:
+                // Type "" is allowed. e.g., "{0,}", "{0,,}", and "{0,,#}"
+                // are treated as "{0}".
+                break;
+            case TYPE_NUMBER:
+                switch(findKeyword(segments[SEG_MODIFIER], NUMBER_MODIFIER_KEYWORDS)) {
+                    case MODIFIER_DEFAULT:
+                        newFormat = NumberFormat.getInstance(locale);
+                        break;
+                    case MODIFIER_CURRENCY:
+                        newFormat = NumberFormat.getCurrencyInstance(locale);
+                        break;
+                    case MODIFIER_PERCENT:
+                        newFormat = NumberFormat.getPercentInstance(locale);
+                        break;
+                    case MODIFIER_INTEGER:
+                        newFormat = NumberFormat.getIntegerInstance(locale);
+                        break;
+                    default:
+                        // DecimalFormat pattern
+                        try {
+                            newFormat = new DecimalFormat(segments[SEG_MODIFIER], DecimalFormatSymbols.getInstance(locale));
+                        } catch (IllegalArgumentException e) {
+                            maxOffset = oldMaxOffset;
+                            throw e;
+                        }
+                        break;
+                }
+                break;
+            case TYPE_DATE:
+            case TYPE_TIME:
+                int mod = findKeyword(segments[SEG_MODIFIER], DATE_TIME_MODIFIER_KEYWORDS);
+                if (mod >= 0 && mod < DATE_TIME_MODIFIER_KEYWORDS.length) {
+                    if (type == TYPE_DATE) {
+                        newFormat = DateFormat.getDateInstance(DATE_TIME_MODIFIERS[mod], locale);
+                    } else {
+                        newFormat = DateFormat.getTimeInstance(DATE_TIME_MODIFIERS[mod], locale);
+                    }
+                } else {
+                    // SimpleDateFormat pattern
+                    try {
+                        newFormat = new SimpleDateFormat(segments[SEG_MODIFIER], locale);
+                    } catch (IllegalArgumentException e) {
+                        maxOffset = oldMaxOffset;
+                        throw e;
+                    }
+                }
+                break;
+            case TYPE_CHOICE:
+                try {
+                    // ChoiceFormat pattern
+                    newFormat = new ChoiceFormat(segments[SEG_MODIFIER]);
+                } catch (Exception e) {
+                    maxOffset = oldMaxOffset;
+                    throw new IllegalArgumentException("Choice Pattern incorrect: " + segments[SEG_MODIFIER], e);
+                }
+                break;
+            default:
+                maxOffset = oldMaxOffset;
+                throw new IllegalArgumentException("unknown format type: " + segments[SEG_TYPE]);
+        }
+    }
+    formats[offsetNumber] = newFormat;
+}

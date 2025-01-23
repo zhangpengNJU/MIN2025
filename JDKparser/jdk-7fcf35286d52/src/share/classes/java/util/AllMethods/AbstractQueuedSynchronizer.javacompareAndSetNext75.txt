@@ -1,0 +1,6 @@
+/**
+ * CAS next field of a node.
+ */
+private static final boolean compareAndSetNext(Node node, Node expect, Node update) {
+    return unsafe.compareAndSwapObject(node, nextOffset, expect, update);
+}

@@ -1,0 +1,9 @@
+/**
+ * Gets all JavaBean or <tt>BeanContext</tt>
+ * instances currently nested in this BeanContext.
+ */
+public Object[] toArray() {
+    synchronized (children) {
+        return children.keySet().toArray();
+    }
+}

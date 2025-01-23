@@ -1,0 +1,14 @@
+/**
+ * Returns the specified int of the little-endian two's complement
+ * representation (int 0 is the least significant).  The int number can
+ * be arbitrarily high (values are logically preceded by infinitely many
+ * sign ints).
+ */
+private int getInt(int n) {
+    if (n < 0)
+        return 0;
+    if (n >= mag.length)
+        return signInt();
+    int magInt = mag[mag.length - n - 1];
+    return (signum >= 0 ? magInt : (n <= firstNonzeroIntNum() ? -magInt : ~magInt));
+}

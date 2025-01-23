@@ -1,0 +1,16 @@
+private static String buildId(int totalSeconds) {
+    if (totalSeconds == 0) {
+        return "Z";
+    } else {
+        int absTotalSeconds = Math.abs(totalSeconds);
+        StringBuilder buf = new StringBuilder();
+        int absHours = absTotalSeconds / SECONDS_PER_HOUR;
+        int absMinutes = (absTotalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+        buf.append(totalSeconds < 0 ? "-" : "+").append(absHours < 10 ? "0" : "").append(absHours).append(absMinutes < 10 ? ":0" : ":").append(absMinutes);
+        int absSeconds = absTotalSeconds % SECONDS_PER_MINUTE;
+        if (absSeconds != 0) {
+            buf.append(absSeconds < 10 ? ":0" : ":").append(absSeconds);
+        }
+        return buf.toString();
+    }
+}

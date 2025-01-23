@@ -1,0 +1,19 @@
+/**
+ * Modifies the current user-to-device transform by prepending another
+ * transform.  In matrix notation the operation is:
+ * <pre>
+ * [this] = [modTransform] x [this]
+ * </pre>
+ * This method does the same thing as the preConcatenateTransform
+ * method.  It is here for backward compatibility with previous releases
+ * which misspelled the method name.
+ *
+ * @param modTransform the AffineTransform to prepend to the
+ *        current usr2dev transform.
+ * @deprecated     replaced by
+ *                 <code>preConcatenateTransform(AffineTransform)</code>.
+ */
+@Deprecated
+public void preConcetenateTransform(AffineTransform modTransform) {
+    usr2dev.preConcatenate(modTransform);
+}

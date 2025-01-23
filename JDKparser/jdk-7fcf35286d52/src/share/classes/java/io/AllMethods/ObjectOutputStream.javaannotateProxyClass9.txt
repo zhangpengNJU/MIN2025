@@ -1,0 +1,23 @@
+/**
+ * Subclasses may implement this method to store custom data in the stream
+ * along with descriptors for dynamic proxy classes.
+ *
+ * <p>This method is called exactly once for each unique proxy class
+ * descriptor in the stream.  The default implementation of this method in
+ * <code>ObjectOutputStream</code> does nothing.
+ *
+ * <p>The corresponding method in <code>ObjectInputStream</code> is
+ * <code>resolveProxyClass</code>.  For a given subclass of
+ * <code>ObjectOutputStream</code> that overrides this method, the
+ * <code>resolveProxyClass</code> method in the corresponding subclass of
+ * <code>ObjectInputStream</code> must read any data or objects written by
+ * <code>annotateProxyClass</code>.
+ *
+ * @param   cl the proxy class to annotate custom data for
+ * @throws  IOException any exception thrown by the underlying
+ *          <code>OutputStream</code>
+ * @see ObjectInputStream#resolveProxyClass(String[])
+ * @since   1.3
+ */
+protected void annotateProxyClass(Class<?> cl) throws IOException {
+}

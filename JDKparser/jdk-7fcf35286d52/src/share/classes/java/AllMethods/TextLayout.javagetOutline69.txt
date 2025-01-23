@@ -1,0 +1,17 @@
+/**
+ * Returns a <code>Shape</code> representing the outline of this
+ * <code>TextLayout</code>.
+ * @param tx an optional {@link AffineTransform} to apply to the
+ *     outline of this <code>TextLayout</code>.
+ * @return a <code>Shape</code> that is the outline of this
+ *     <code>TextLayout</code>.  This is in standard coordinates.
+ */
+public Shape getOutline(AffineTransform tx) {
+    ensureCache();
+    Shape result = textLine.getOutline(tx);
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    if (lp != null) {
+        result = lp.mapShape(result);
+    }
+    return result;
+}

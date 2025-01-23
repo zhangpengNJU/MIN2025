@@ -1,0 +1,36 @@
+/**
+ * Returns the String at a given index.
+ *
+ * @param part the AccessibleText.CHARACTER, AccessibleText.WORD,
+ * or AccessibleText.SENTENCE to retrieve
+ * @param index an index within the text &gt;= 0
+ * @return the letter, word, or sentence,
+ *   null for an invalid index or part
+ */
+public String getAtIndex(int part, int index) {
+    if (index < 0 || index >= TextComponent.this.getText().length()) {
+        return null;
+    }
+    switch(part) {
+        case AccessibleText.CHARACTER:
+            return TextComponent.this.getText().substring(index, index + 1);
+        case AccessibleText.WORD:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator words = BreakIterator.getWordInstance();
+                words.setText(s);
+                int end = words.following(index);
+                return s.substring(words.previous(), end);
+            }
+        case AccessibleText.SENTENCE:
+            {
+                String s = TextComponent.this.getText();
+                BreakIterator sentence = BreakIterator.getSentenceInstance();
+                sentence.setText(s);
+                int end = sentence.following(index);
+                return s.substring(sentence.previous(), end);
+            }
+        default:
+            return null;
+    }
+}

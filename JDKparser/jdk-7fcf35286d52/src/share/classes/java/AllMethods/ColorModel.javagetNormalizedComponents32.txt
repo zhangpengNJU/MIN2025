@@ -1,0 +1,57 @@
+/**
+ * Returns an array of all of the color/alpha components in normalized
+ * form, given a pixel in this <code>ColorModel</code>.  The pixel
+ * value is specified by an array of data elements of type transferType
+ * passed in as an object reference.  If pixel is not a primitive array
+ * of type transferType, a <code>ClassCastException</code> is thrown.
+ * An <code>ArrayIndexOutOfBoundsException</code> is thrown if
+ * <code>pixel</code> is not large enough to hold a pixel value for this
+ * <code>ColorModel</code>.
+ * Normalized components are float values between a per component minimum
+ * and maximum specified by the <code>ColorSpace</code> object for this
+ * <code>ColorModel</code>.  If the
+ * <code>normComponents</code> array is <code>null</code>, a new array
+ * will be allocated.  The <code>normComponents</code> array
+ * will be returned.  Color/alpha components are stored in the
+ * <code>normComponents</code> array starting at
+ * <code>normOffset</code> (even if the array is allocated by this
+ * method).  An <code>ArrayIndexOutOfBoundsException</code> is thrown
+ * if the <code>normComponents</code> array is not <code>null</code>
+ * and is not large enough to hold all the color and alpha components
+ * (starting at <code>normOffset</code>).
+ * Since <code>ColorModel</code> is an abstract class,
+ * any instance is an instance of a subclass.  The default implementation
+ * of this method in this abstract class first retrieves color and alpha
+ * components in the unnormalized form using
+ * <code>getComponents(Object, int[], int)</code> and then calls
+ * <code>getNormalizedComponents(int[], int, float[], int)</code>.
+ * Subclasses which may
+ * have instances which do not support the unnormalized form must
+ * override this method.
+ * @param pixel the specified pixel
+ * @param normComponents an array to receive the normalized components
+ * @param normOffset the offset into the <code>normComponents</code>
+ * array at which to start storing normalized components
+ * @return an array containing normalized color and alpha
+ * components.
+ * @throws ClassCastException if <code>pixel</code> is not a primitive
+ *          array of type transferType
+ * @throws ArrayIndexOutOfBoundsException if
+ *          <code>normComponents</code> is not large enough to hold all
+ *          color and alpha components starting at <code>normOffset</code>
+ * @throws ArrayIndexOutOfBoundsException if
+ *          <code>pixel</code> is not large enough to hold a pixel
+ *          value for this <code>ColorModel</code>.
+ * @throws UnsupportedOperationException if the
+ *          constructor of this <code>ColorModel</code> called the
+ *          <code>super(bits)</code> constructor, but did not
+ *          override this method.  See the constructor,
+ *          {@link #ColorModel(int)}.
+ * @throws UnsupportedOperationException if this method is unable
+ *          to determine the number of bits per component
+ * @since 1.4
+ */
+public float[] getNormalizedComponents(Object pixel, float[] normComponents, int normOffset) {
+    int[] components = getComponents(pixel, null, 0);
+    return getNormalizedComponents(components, 0, normComponents, normOffset);
+}

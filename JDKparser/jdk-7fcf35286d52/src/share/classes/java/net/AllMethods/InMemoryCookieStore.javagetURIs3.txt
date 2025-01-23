@@ -1,0 +1,24 @@
+/**
+ * Get all URIs, which are associated with at least one cookie
+ * of this cookie store.
+ */
+public List<URI> getURIs() {
+    List<URI> uris = new ArrayList<URI>();
+    lock.lock();
+    try {
+        Iterator<URI> it = uriIndex.keySet().iterator();
+        while (it.hasNext()) {
+            URI uri = it.next();
+            List<HttpCookie> cookies = uriIndex.get(uri);
+            if (cookies == null || cookies.size() == 0) {
+                // no cookies list or an empty list associated with
+                // this uri entry, delete it
+                it.remove();
+            }
+        }
+    } finally {
+        uris.addAll(uriIndex.keySet());
+        lock.unlock();
+    }
+    return uris;
+}

@@ -1,0 +1,8 @@
+// Also clears both the regular cache and the type cache
+private void useTypeCache() {
+    if (closed)
+        throw new IllegalStateException("Scanner closed");
+    position = hasNextPosition;
+    hasNextPattern = null;
+    typeCache = null;
+}

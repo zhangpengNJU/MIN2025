@@ -1,0 +1,157 @@
+/**
+ * This method is obsolete and supplied for backwards
+ * compatibility only; new code should call {@link
+ * #arrangeGrid(Container) arrangeGrid} instead.
+ * This method is the same as <code>arrangeGrid</code>;
+ * refer to <code>arrangeGrid</code> for details on the
+ * parameter.
+ */
+protected void ArrangeGrid(Container parent) {
+    Component comp;
+    int compindex;
+    GridBagConstraints constraints;
+    Insets insets = parent.getInsets();
+    Component[] components = parent.getComponents();
+    Dimension d;
+    Rectangle r = new Rectangle();
+    int i, diffw, diffh;
+    double weight;
+    GridBagLayoutInfo info;
+    rightToLeft = !parent.getComponentOrientation().isLeftToRight();
+    /*
+         * If the parent has no slaves anymore, then don't do anything
+         * at all:  just leave the parent's size as-is.
+         */
+    if (components.length == 0 && (columnWidths == null || columnWidths.length == 0) && (rowHeights == null || rowHeights.length == 0)) {
+        return;
+    }
+    /*
+         * Pass #1: scan all the slaves to figure out the total amount
+         * of space needed.
+         */
+    info = getLayoutInfo(parent, PREFERREDSIZE);
+    d = getMinSize(parent, info);
+    if (parent.width < d.width || parent.height < d.height) {
+        info = getLayoutInfo(parent, MINSIZE);
+        d = getMinSize(parent, info);
+    }
+    layoutInfo = info;
+    r.width = d.width;
+    r.height = d.height;
+    /*
+         * DEBUG
+         *
+         * DumpLayoutInfo(info);
+         * for (compindex = 0 ; compindex < components.length ; compindex++) {
+         * comp = components[compindex];
+         * if (!comp.isVisible())
+         *      continue;
+         * constraints = lookupConstraints(comp);
+         * DumpConstraints(constraints);
+         * }
+         * System.out.println("minSize " + r.width + " " + r.height);
+         */
+    /*
+         * If the current dimensions of the window don't match the desired
+         * dimensions, then adjust the minWidth and minHeight arrays
+         * according to the weights.
+         */
+    diffw = parent.width - r.width;
+    if (diffw != 0) {
+        weight = 0.0;
+        for (i = 0; i < info.width; i++) weight += info.weightX[i];
+        if (weight > 0.0) {
+            for (i = 0; i < info.width; i++) {
+                int dx = (int) ((((double) diffw) * info.weightX[i]) / weight);
+                info.minWidth[i] += dx;
+                r.width += dx;
+                if (info.minWidth[i] < 0) {
+                    r.width -= info.minWidth[i];
+                    info.minWidth[i] = 0;
+                }
+            }
+        }
+        diffw = parent.width - r.width;
+    } else {
+        diffw = 0;
+    }
+    diffh = parent.height - r.height;
+    if (diffh != 0) {
+        weight = 0.0;
+        for (i = 0; i < info.height; i++) weight += info.weightY[i];
+        if (weight > 0.0) {
+            for (i = 0; i < info.height; i++) {
+                int dy = (int) ((((double) diffh) * info.weightY[i]) / weight);
+                info.minHeight[i] += dy;
+                r.height += dy;
+                if (info.minHeight[i] < 0) {
+                    r.height -= info.minHeight[i];
+                    info.minHeight[i] = 0;
+                }
+            }
+        }
+        diffh = parent.height - r.height;
+    } else {
+        diffh = 0;
+    }
+    /*
+         * DEBUG
+         *
+         * System.out.println("Re-adjusted:");
+         * DumpLayoutInfo(info);
+         */
+    /*
+         * Now do the actual layout of the slaves using the layout information
+         * that has been collected.
+         */
+    info.startx = diffw / 2 + insets.left;
+    info.starty = diffh / 2 + insets.top;
+    for (compindex = 0; compindex < components.length; compindex++) {
+        comp = components[compindex];
+        if (!comp.isVisible()) {
+            continue;
+        }
+        constraints = lookupConstraints(comp);
+        if (!rightToLeft) {
+            r.x = info.startx;
+            for (i = 0; i < constraints.tempX; i++) r.x += info.minWidth[i];
+        } else {
+            r.x = parent.width - (diffw / 2 + insets.right);
+            for (i = 0; i < constraints.tempX; i++) r.x -= info.minWidth[i];
+        }
+        r.y = info.starty;
+        for (i = 0; i < constraints.tempY; i++) r.y += info.minHeight[i];
+        r.width = 0;
+        for (i = constraints.tempX; i < (constraints.tempX + constraints.tempWidth); i++) {
+            r.width += info.minWidth[i];
+        }
+        r.height = 0;
+        for (i = constraints.tempY; i < (constraints.tempY + constraints.tempHeight); i++) {
+            r.height += info.minHeight[i];
+        }
+        componentAdjusting = comp;
+        adjustForGravity(constraints, r);
+        /* fix for 4408108 - components were being created outside of the container */
+        /* fix for 4969409 "-" replaced by "+"  */
+        if (r.x < 0) {
+            r.width += r.x;
+            r.x = 0;
+        }
+        if (r.y < 0) {
+            r.height += r.y;
+            r.y = 0;
+        }
+        /*
+             * If the window is too small to be interesting then
+             * unmap it.  Otherwise configure it and then make sure
+             * it's mapped.
+             */
+        if ((r.width <= 0) || (r.height <= 0)) {
+            comp.setBounds(0, 0, 0, 0);
+        } else {
+            if (comp.x != r.x || comp.y != r.y || comp.width != r.width || comp.height != r.height) {
+                comp.setBounds(r.x, r.y, r.width, r.height);
+            }
+        }
+    }
+}

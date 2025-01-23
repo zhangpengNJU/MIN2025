@@ -1,0 +1,15 @@
+@Override
+public boolean tryAdvance(T_CONS consumer) {
+    Objects.requireNonNull(consumer);
+    if (splSpineIndex < lastSpineIndex || (splSpineIndex == lastSpineIndex && splElementIndex < lastSpineElementFence)) {
+        arrayForOne(splChunk, splElementIndex++, consumer);
+        if (splElementIndex == arrayLength(splChunk)) {
+            splElementIndex = 0;
+            ++splSpineIndex;
+            if (spine != null && splSpineIndex <= lastSpineIndex)
+                splChunk = spine[splSpineIndex];
+        }
+        return true;
+    }
+    return false;
+}

@@ -1,0 +1,15 @@
+/**
+ * Returns an internationalized description of the MenuShortcut.
+ * @return a string representation of this MenuShortcut.
+ * @since JDK1.1
+ */
+public String toString() {
+    int modifiers = 0;
+    if (!GraphicsEnvironment.isHeadless()) {
+        modifiers = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    }
+    if (usesShiftModifier()) {
+        modifiers |= Event.SHIFT_MASK;
+    }
+    return KeyEvent.getKeyModifiersText(modifiers) + "+" + KeyEvent.getKeyText(key);
+}

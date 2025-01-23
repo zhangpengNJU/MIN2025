@@ -1,0 +1,10 @@
+/**
+ * Updates internal state.
+ */
+private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    if (jdate == null) {
+        jdate = jcal.newCalendarDate(getZone());
+        cachedFixedDate = Long.MIN_VALUE;
+    }
+}

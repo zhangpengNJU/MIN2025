@@ -1,0 +1,32 @@
+/**
+ * Formats a double to produce a string.
+ * @param number    The double to format
+ * @param result    where the text is to be appended
+ * @param fieldPosition    On input: an alignment field, if desired.
+ * On output: the offsets of the alignment field.
+ * @exception ArithmeticException if rounding is needed with rounding
+ *            mode being set to RoundingMode.UNNECESSARY
+ * @return The formatted number string
+ * @see java.text.FieldPosition
+ */
+@Override
+public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
+    // If fieldPosition is a DontCareFieldPosition instance we can
+    // try to go to fast-path code.
+    boolean tryFastPath = false;
+    if (fieldPosition == DontCareFieldPosition.INSTANCE)
+        tryFastPath = true;
+    else {
+        fieldPosition.setBeginIndex(0);
+        fieldPosition.setEndIndex(0);
+    }
+    if (tryFastPath) {
+        String tempResult = fastFormat(number);
+        if (tempResult != null) {
+            result.append(tempResult);
+            return result;
+        }
+    }
+    // if fast-path could not work, we fallback to standard code.
+    return format(number, result, fieldPosition.getFieldDelegate());
+}

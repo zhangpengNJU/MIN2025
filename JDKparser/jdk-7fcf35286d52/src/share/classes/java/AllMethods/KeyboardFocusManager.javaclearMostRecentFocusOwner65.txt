@@ -1,0 +1,24 @@
+static void clearMostRecentFocusOwner(Component comp) {
+    Container window;
+    if (comp == null) {
+        return;
+    }
+    synchronized (comp.getTreeLock()) {
+        window = comp.getParent();
+        while (window != null && !(window instanceof Window)) {
+            window = window.getParent();
+        }
+    }
+    synchronized (KeyboardFocusManager.class) {
+        if ((window != null) && (getMostRecentFocusOwner((Window) window) == comp)) {
+            setMostRecentFocusOwner((Window) window, null);
+        }
+        // Also clear temporary lost component stored in Window
+        if (window != null) {
+            Window realWindow = (Window) window;
+            if (realWindow.getTemporaryLostComponent() == comp) {
+                realWindow.setTemporaryLostComponent(null);
+            }
+        }
+    }
+}

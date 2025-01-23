@@ -1,0 +1,26 @@
+/**
+ * Return true if rhs has the same transform, antialiasing,
+ * and fractional metrics values as this.
+ * @param rhs the <code>FontRenderContext</code> to test for equality
+ * @return <code>true</code> if <code>rhs</code> is equal to
+ *         this <code>FontRenderContext</code>; <code>false</code>
+ *         otherwise.
+ * @since 1.4
+ */
+public boolean equals(FontRenderContext rhs) {
+    if (this == rhs) {
+        return true;
+    }
+    if (rhs == null) {
+        return false;
+    }
+    /* if neither instance is a subclass, reference values directly. */
+    if (!rhs.defaulting && !defaulting) {
+        if (rhs.aaHintValue == aaHintValue && rhs.fmHintValue == fmHintValue) {
+            return tx == null ? rhs.tx == null : tx.equals(rhs.tx);
+        }
+        return false;
+    } else {
+        return rhs.getAntiAliasingHint() == getAntiAliasingHint() && rhs.getFractionalMetricsHint() == getFractionalMetricsHint() && rhs.getTransform().equals(getTransform());
+    }
+}

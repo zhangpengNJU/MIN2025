@@ -1,0 +1,14 @@
+/**
+ * Gets the input context for this window. A window always has an input context,
+ * which is shared by subcomponents unless they create and set their own.
+ * @see Component#getInputContext
+ * @since 1.2
+ */
+public InputContext getInputContext() {
+    synchronized (inputContextLock) {
+        if (inputContext == null) {
+            inputContext = InputContext.getInstance();
+        }
+    }
+    return inputContext;
+}

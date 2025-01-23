@@ -1,0 +1,16 @@
+/**
+ * Returns the compact value for given {@code BigInteger}, or
+ * INFLATED if too big. Relies on internal representation of
+ * {@code BigInteger}.
+ */
+private static long compactValFor(BigInteger b) {
+    int[] m = b.mag;
+    int len = m.length;
+    if (len == 0)
+        return 0;
+    int d = m[0];
+    if (len > 2 || (len == 2 && d < 0))
+        return INFLATED;
+    long u = (len == 2) ? (((long) m[1] & LONG_MASK) + (((long) d) << 32)) : (((long) d) & LONG_MASK);
+    return (b.signum < 0) ? -u : u;
+}

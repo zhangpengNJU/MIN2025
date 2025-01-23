@@ -1,0 +1,41 @@
+/**
+ * This method will allow trusted subclasses of ObjectOutputStream to
+ * substitute one object for another during serialization. Replacing
+ * objects is disabled until enableReplaceObject is called. The
+ * enableReplaceObject method checks that the stream requesting to do
+ * replacement can be trusted.  The first occurrence of each object written
+ * into the serialization stream is passed to replaceObject.  Subsequent
+ * references to the object are replaced by the object returned by the
+ * original call to replaceObject.  To ensure that the private state of
+ * objects is not unintentionally exposed, only trusted streams may use
+ * replaceObject.
+ *
+ * <p>The ObjectOutputStream.writeObject method takes a parameter of type
+ * Object (as opposed to type Serializable) to allow for cases where
+ * non-serializable objects are replaced by serializable ones.
+ *
+ * <p>When a subclass is replacing objects it must insure that either a
+ * complementary substitution must be made during deserialization or that
+ * the substituted object is compatible with every field where the
+ * reference will be stored.  Objects whose type is not a subclass of the
+ * type of the field or array element abort the serialization by raising an
+ * exception and the object is not be stored.
+ *
+ * <p>This method is called only once when each object is first
+ * encountered.  All subsequent references to the object will be redirected
+ * to the new object. This method should return the object to be
+ * substituted or the original object.
+ *
+ * <p>Null can be returned as the object to be substituted, but may cause
+ * NullReferenceException in classes that contain references to the
+ * original object since they may be expecting an object instead of
+ * null.
+ *
+ * @param   obj the object to be replaced
+ * @return  the alternate object that replaced the specified one
+ * @throws  IOException Any exception thrown by the underlying
+ *          OutputStream.
+ */
+protected Object replaceObject(Object obj) throws IOException {
+    return obj;
+}

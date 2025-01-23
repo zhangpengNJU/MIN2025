@@ -1,0 +1,113 @@
+/**
+ * Sets the location of the window relative to the specified
+ * component according to the following scenarios.
+ * <p>
+ * The target screen mentioned below is a screen to which
+ * the window should be placed after the setLocationRelativeTo
+ * method is called.
+ * <ul>
+ * <li>If the component is {@code null}, or the {@code
+ * GraphicsConfiguration} associated with this component is
+ * {@code null}, the window is placed in the center of the
+ * screen. The center point can be obtained with the {@link
+ * GraphicsEnvironment#getCenterPoint
+ * GraphicsEnvironment.getCenterPoint} method.
+ * <li>If the component is not {@code null}, but it is not
+ * currently showing, the window is placed in the center of
+ * the target screen defined by the {@code
+ * GraphicsConfiguration} associated with this component.
+ * <li>If the component is not {@code null} and is shown on
+ * the screen, then the window is located in such a way that
+ * the center of the window coincides with the center of the
+ * component.
+ * </ul>
+ * <p>
+ * If the screens configuration does not allow the window to
+ * be moved from one screen to another, then the window is
+ * only placed at the location determined according to the
+ * above conditions and its {@code GraphicsConfiguration} is
+ * not changed.
+ * <p>
+ * <b>Note</b>: If the lower edge of the window is out of the screen,
+ * then the window is placed to the side of the {@code Component}
+ * that is closest to the center of the screen. So if the
+ * component is on the right part of the screen, the window
+ * is placed to its left, and vice versa.
+ * <p>
+ * If after the window location has been calculated, the upper,
+ * left, or right edge of the window is out of the screen,
+ * then the window is located in such a way that the upper,
+ * left, or right edge of the window coincides with the
+ * corresponding edge of the screen. If both left and right
+ * edges of the window are out of the screen, the window is
+ * placed at the left side of the screen. The similar placement
+ * will occur if both top and bottom edges are out of the screen.
+ * In that case, the window is placed at the top side of the screen.
+ * <p>
+ * The method changes the geometry-related data. Therefore,
+ * the native windowing system may ignore such requests, or it may modify
+ * the requested data, so that the {@code Window} object is placed and sized
+ * in a way that corresponds closely to the desktop settings.
+ *
+ * @param c  the component in relation to which the window's location
+ *           is determined
+ * @see java.awt.GraphicsEnvironment#getCenterPoint
+ * @since 1.4
+ */
+public void setLocationRelativeTo(Component c) {
+    // target location
+    int dx = 0, dy = 0;
+    // target GC
+    GraphicsConfiguration gc = getGraphicsConfiguration_NoClientCode();
+    Rectangle gcBounds = gc.getBounds();
+    Dimension windowSize = getSize();
+    // search a top-level of c
+    Window componentWindow = SunToolkit.getContainingWindow(c);
+    if ((c == null) || (componentWindow == null)) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
+        gcBounds = gc.getBounds();
+        Point centerPoint = ge.getCenterPoint();
+        dx = centerPoint.x - windowSize.width / 2;
+        dy = centerPoint.y - windowSize.height / 2;
+    } else if (!c.isShowing()) {
+        gc = componentWindow.getGraphicsConfiguration();
+        gcBounds = gc.getBounds();
+        dx = gcBounds.x + (gcBounds.width - windowSize.width) / 2;
+        dy = gcBounds.y + (gcBounds.height - windowSize.height) / 2;
+    } else {
+        gc = componentWindow.getGraphicsConfiguration();
+        gcBounds = gc.getBounds();
+        Dimension compSize = c.getSize();
+        Point compLocation = c.getLocationOnScreen();
+        dx = compLocation.x + ((compSize.width - windowSize.width) / 2);
+        dy = compLocation.y + ((compSize.height - windowSize.height) / 2);
+        // Adjust for bottom edge being offscreen
+        if (dy + windowSize.height > gcBounds.y + gcBounds.height) {
+            dy = gcBounds.y + gcBounds.height - windowSize.height;
+            if (compLocation.x - gcBounds.x + compSize.width / 2 < gcBounds.width / 2) {
+                dx = compLocation.x + compSize.width;
+            } else {
+                dx = compLocation.x - windowSize.width;
+            }
+        }
+    }
+    // Avoid being placed off the edge of the screen:
+    // bottom
+    if (dy + windowSize.height > gcBounds.y + gcBounds.height) {
+        dy = gcBounds.y + gcBounds.height - windowSize.height;
+    }
+    // top
+    if (dy < gcBounds.y) {
+        dy = gcBounds.y;
+    }
+    // right
+    if (dx + windowSize.width > gcBounds.x + gcBounds.width) {
+        dx = gcBounds.x + gcBounds.width - windowSize.width;
+    }
+    // left
+    if (dx < gcBounds.x) {
+        dx = gcBounds.x;
+    }
+    setLocation(dx, dy);
+}

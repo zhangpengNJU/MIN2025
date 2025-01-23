@@ -1,0 +1,24 @@
+/**
+ * Return the "stronger" of the TextHitInfos.  The TextHitInfos
+ * should be logical or visual counterparts.  They are not
+ * checked for validity.
+ */
+private final TextHitInfo getStrongHit(TextHitInfo hit1, TextHitInfo hit2) {
+    // right now we're using the following rule for strong hits:
+    // A hit on a character with a lower level
+    // is stronger than one on a character with a higher level.
+    // If this rule ties, the hit on the leading edge of a character wins.
+    // If THIS rule ties, hit1 wins.  Both rules shouldn't tie, unless the
+    // infos aren't counterparts of some sort.
+    byte hit1Level = getCharacterLevel(hit1.getCharIndex());
+    byte hit2Level = getCharacterLevel(hit2.getCharIndex());
+    if (hit1Level == hit2Level) {
+        if (hit2.isLeadingEdge() && !hit1.isLeadingEdge()) {
+            return hit2;
+        } else {
+            return hit1;
+        }
+    } else {
+        return (hit1Level < hit2Level) ? hit1 : hit2;
+    }
+}

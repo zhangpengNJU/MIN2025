@@ -1,0 +1,21 @@
+public Spliterator<Map.Entry<K, V>> trySplit() {
+    Node<K, V> e;
+    K ek;
+    Comparator<? super K> cmp = comparator;
+    K f = fence;
+    if ((e = current) != null && (ek = e.key) != null) {
+        for (Index<K, V> q = row; q != null; q = row = q.down) {
+            Index<K, V> s;
+            Node<K, V> b, n;
+            K sk;
+            if ((s = q.right) != null && (b = s.node) != null && (n = b.next) != null && n.value != null && (sk = n.key) != null && cpr(cmp, sk, ek) > 0 && (f == null || cpr(cmp, sk, f) < 0)) {
+                current = n;
+                Index<K, V> r = q.down;
+                row = (s.right != null) ? s : s.down;
+                est -= est >>> 2;
+                return new EntrySpliterator<K, V>(cmp, r, e, sk, est);
+            }
+        }
+    }
+    return null;
+}

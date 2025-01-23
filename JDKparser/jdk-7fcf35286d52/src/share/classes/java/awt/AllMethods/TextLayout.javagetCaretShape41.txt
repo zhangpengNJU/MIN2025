@@ -1,0 +1,18 @@
+/**
+ * Returns a {@link Shape} representing the caret at the specified
+ * hit inside the specified bounds.
+ * @param hit the hit at which to generate the caret
+ * @param bounds the bounds of the <code>TextLayout</code> to use
+ *    in generating the caret.  The bounds is in baseline-relative
+ *    coordinates.
+ * @return a <code>Shape</code> representing the caret.  The returned
+ *    shape is in standard coordinates.
+ */
+public Shape getCaretShape(TextHitInfo hit, Rectangle2D bounds) {
+    ensureCache();
+    checkTextHit(hit);
+    if (bounds == null) {
+        throw new IllegalArgumentException("Null Rectangle2D passed to TextLayout.getCaret()");
+    }
+    return pathToShape(getCaretPath(hit, bounds), false, textLine.getLayoutPath());
+}

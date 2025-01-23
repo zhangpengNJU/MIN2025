@@ -1,0 +1,14 @@
+/**
+ * Returns the blue color component for the specified pixel, scaled
+ * from 0 to 255 in the default RGB ColorSpace, sRGB.  The pixel value
+ * is specified as an int.
+ * Only the lower <em>n</em> bits of the pixel value, as specified in the
+ * <a href="#index_values">class description</a> above, are used to
+ * calculate the returned value.
+ * The returned value is a non pre-multiplied value.
+ * @param pixel the specified pixel
+ * @return the value of the blue color component for the specified pixel
+ */
+final public int getBlue(int pixel) {
+    return rgb[pixel & pixel_mask] & 0xff;
+}

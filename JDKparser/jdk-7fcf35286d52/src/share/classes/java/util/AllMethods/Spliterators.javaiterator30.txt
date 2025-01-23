@@ -1,0 +1,45 @@
+/**
+ * Creates an {@code PrimitiveIterator.OfLong} from a
+ * {@code Spliterator.OfLong}.
+ *
+ * <p>Traversal of elements should be accomplished through the iterator.
+ * The behaviour of traversal is undefined if the spliterator is operated
+ * after the iterator is returned.
+ *
+ * @param spliterator The spliterator
+ * @return An iterator
+ * @throws NullPointerException if the given spliterator is {@code null}
+ */
+public static PrimitiveIterator.OfLong iterator(Spliterator.OfLong spliterator) {
+    Objects.requireNonNull(spliterator);
+    class Adapter implements PrimitiveIterator.OfLong, LongConsumer {
+
+        boolean valueReady = false;
+
+        long nextElement;
+
+        @Override
+        public void accept(long t) {
+            valueReady = true;
+            nextElement = t;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (!valueReady)
+                spliterator.tryAdvance(this);
+            return valueReady;
+        }
+
+        @Override
+        public long nextLong() {
+            if (!valueReady && !hasNext())
+                throw new NoSuchElementException();
+            else {
+                valueReady = false;
+                return nextElement;
+            }
+        }
+    }
+    return new Adapter();
+}

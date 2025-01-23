@@ -1,0 +1,27 @@
+// Called from Format after creating a FieldDelegate
+private StringBuffer format(Date date, StringBuffer toAppendTo, FieldDelegate delegate) {
+    // Convert input date to time field list
+    calendar.setTime(date);
+    boolean useDateFormatSymbols = useDateFormatSymbols();
+    for (int i = 0; i < compiledPattern.length; ) {
+        int tag = compiledPattern[i] >>> 8;
+        int count = compiledPattern[i++] & 0xff;
+        if (count == 255) {
+            count = compiledPattern[i++] << 16;
+            count |= compiledPattern[i++];
+        }
+        switch(tag) {
+            case TAG_QUOTE_ASCII_CHAR:
+                toAppendTo.append((char) count);
+                break;
+            case TAG_QUOTE_CHARS:
+                toAppendTo.append(compiledPattern, i, count);
+                i += count;
+                break;
+            default:
+                subFormat(tag, count, delegate, toAppendTo, useDateFormatSymbols);
+                break;
+        }
+    }
+    return toAppendTo;
+}

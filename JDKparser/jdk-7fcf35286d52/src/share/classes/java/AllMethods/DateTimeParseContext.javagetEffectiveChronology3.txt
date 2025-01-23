@@ -1,0 +1,15 @@
+/**
+ * Gets the effective chronology during parsing.
+ *
+ * @return the effective parsing chronology, not null
+ */
+Chronology getEffectiveChronology() {
+    Chronology chrono = currentParsed().chrono;
+    if (chrono == null) {
+        chrono = formatter.getChronology();
+        if (chrono == null) {
+            chrono = IsoChronology.INSTANCE;
+        }
+    }
+    return chrono;
+}

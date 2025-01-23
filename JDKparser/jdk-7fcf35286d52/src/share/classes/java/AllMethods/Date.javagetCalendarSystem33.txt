@@ -1,0 +1,13 @@
+/**
+ * Returns the Gregorian or Julian calendar system to use with the
+ * given date. Use Gregorian from October 15, 1582.
+ *
+ * @param year normalized calendar year (not -1900)
+ * @return the CalendarSystem to use for the specified date
+ */
+private static final BaseCalendar getCalendarSystem(int year) {
+    if (year >= 1582) {
+        return gcal;
+    }
+    return getJulianCalendar();
+}

@@ -1,0 +1,15 @@
+/**
+ * Resets this watch key.
+ *
+ * <p> If this watch key has been cancelled or this watch key is already in
+ * the ready state then invoking this method has no effect. Otherwise
+ * if there are pending events for the object then this watch key is
+ * immediately re-queued to the watch service. If there are no pending
+ * events then the watch key is put into the ready state and will remain in
+ * that state until an event is detected or the watch key is cancelled.
+ *
+ * @return  {@code true} if the watch key is valid and has been reset, and
+ *          {@code false} if the watch key could not be reset because it is
+ *          no longer {@link #isValid valid}
+ */
+boolean reset();

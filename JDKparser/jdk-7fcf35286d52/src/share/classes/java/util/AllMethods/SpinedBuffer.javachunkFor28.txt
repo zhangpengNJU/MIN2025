@@ -1,0 +1,13 @@
+protected int chunkFor(long index) {
+    if (spineIndex == 0) {
+        if (index < elementIndex)
+            return 0;
+        else
+            throw new IndexOutOfBoundsException(Long.toString(index));
+    }
+    if (index >= count())
+        throw new IndexOutOfBoundsException(Long.toString(index));
+    for (int j = 0; j <= spineIndex; j++) if (index < priorElementCount[j] + arrayLength(spine[j]))
+        return j;
+    throw new IndexOutOfBoundsException(Long.toString(index));
+}

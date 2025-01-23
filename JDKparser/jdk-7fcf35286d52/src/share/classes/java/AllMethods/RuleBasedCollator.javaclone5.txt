@@ -1,0 +1,19 @@
+/**
+ * Standard override; no change in semantics.
+ */
+public Object clone() {
+    // if we know we're not actually a subclass of RuleBasedCollator
+    // (this class really should have been made final), bypass
+    // Object.clone() and use our "copy constructor".  This is faster.
+    if (getClass() == RuleBasedCollator.class) {
+        return new RuleBasedCollator(this);
+    } else {
+        RuleBasedCollator result = (RuleBasedCollator) super.clone();
+        result.primResult = null;
+        result.secResult = null;
+        result.terResult = null;
+        result.sourceCursor = null;
+        result.targetCursor = null;
+        return result;
+    }
+}

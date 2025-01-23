@@ -1,0 +1,10 @@
+/**
+ * Returns the "local" class descriptor for the class associated with this
+ * class descriptor (i.e., the result of
+ * ObjectStreamClass.lookup(this.forClass())) or null if there is no class
+ * associated with this descriptor.
+ */
+ObjectStreamClass getLocalDesc() {
+    requireInitialized();
+    return localDesc;
+}

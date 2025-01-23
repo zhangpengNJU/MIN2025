@@ -1,0 +1,25 @@
+/**
+ * Returns a new byte array containing all the bits in this bit set.
+ *
+ * <p>More precisely, if
+ * <br>{@code byte[] bytes = s.toByteArray();}
+ * <br>then {@code bytes.length == (s.length()+7)/8} and
+ * <br>{@code s.get(n) == ((bytes[n/8] & (1<<(n%8))) != 0)}
+ * <br>for all {@code n < 8 * bytes.length}.
+ *
+ * @return a byte array containing a little-endian representation
+ *         of all the bits in this bit set
+ * @since 1.7
+ */
+public byte[] toByteArray() {
+    int n = wordsInUse;
+    if (n == 0)
+        return new byte[0];
+    int len = 8 * (n - 1);
+    for (long x = words[n - 1]; x != 0; x >>>= 8) len++;
+    byte[] bytes = new byte[len];
+    ByteBuffer bb = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
+    for (int i = 0; i < n - 1; i++) bb.putLong(words[i]);
+    for (long x = words[n - 1]; x != 0; x >>>= 8) bb.put((byte) (x & 0xff));
+    return bytes;
+}

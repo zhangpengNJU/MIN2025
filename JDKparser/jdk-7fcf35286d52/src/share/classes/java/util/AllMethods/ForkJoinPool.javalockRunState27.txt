@@ -1,0 +1,7 @@
+/**
+ * Acquires the runState lock; returns current (locked) runState.
+ */
+private int lockRunState() {
+    int rs;
+    return ((((rs = runState) & RSLOCK) != 0 || !U.compareAndSwapInt(this, RUNSTATE, rs, rs |= RSLOCK)) ? awaitRunStateLock() : rs);
+}

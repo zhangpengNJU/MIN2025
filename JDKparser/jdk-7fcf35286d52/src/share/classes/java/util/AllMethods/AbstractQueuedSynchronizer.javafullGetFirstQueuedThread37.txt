@@ -1,0 +1,33 @@
+/**
+ * Version of getFirstQueuedThread called when fastpath fails
+ */
+private Thread fullGetFirstQueuedThread() {
+    /*
+         * The first node is normally head.next. Try to get its
+         * thread field, ensuring consistent reads: If thread
+         * field is nulled out or s.prev is no longer head, then
+         * some other thread(s) concurrently performed setHead in
+         * between some of our reads. We try this twice before
+         * resorting to traversal.
+         */
+    Node h, s;
+    Thread st;
+    if (((h = head) != null && (s = h.next) != null && s.prev == head && (st = s.thread) != null) || ((h = head) != null && (s = h.next) != null && s.prev == head && (st = s.thread) != null))
+        return st;
+    /*
+         * Head's next field might not have been set yet, or may have
+         * been unset after setHead. So we must check to see if tail
+         * is actually first node. If not, we continue on, safely
+         * traversing from tail back to head to find first,
+         * guaranteeing termination.
+         */
+    Node t = tail;
+    Thread firstThread = null;
+    while (t != null && t != head) {
+        Thread tt = t.thread;
+        if (tt != null)
+            firstThread = tt;
+        t = t.prev;
+    }
+    return firstThread;
+}

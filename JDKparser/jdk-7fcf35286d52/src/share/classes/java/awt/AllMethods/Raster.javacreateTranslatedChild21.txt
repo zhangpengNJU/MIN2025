@@ -1,0 +1,21 @@
+/**
+ * Create a Raster with the same size, SampleModel and DataBuffer
+ * as this one, but with a different location.  The new Raster
+ * will possess a reference to the current Raster, accessible
+ * through its getParent() method.
+ *
+ * @param childMinX the X coordinate of the upper-left
+ *        corner of the new <code>Raster</code>
+ * @param childMinY the Y coordinate of the upper-left
+ *        corner of the new <code>Raster</code>
+ * @return a new <code>Raster</code> with the same size, SampleModel,
+ *         and DataBuffer as this <code>Raster</code>, but with the
+ *         specified location.
+ * @throws RasterFormatException if  computing either
+ *         <code>childMinX + this.getWidth()</code> or
+ *         <code>childMinY + this.getHeight()</code> results in integer
+ *         overflow
+ */
+public Raster createTranslatedChild(int childMinX, int childMinY) {
+    return createChild(minX, minY, width, height, childMinX, childMinY, null);
+}

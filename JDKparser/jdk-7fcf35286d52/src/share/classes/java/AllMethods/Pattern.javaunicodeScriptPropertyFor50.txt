@@ -1,0 +1,13 @@
+/**
+ * Returns a CharProperty matching all characters belong to
+ * a UnicodeScript.
+ */
+private CharProperty unicodeScriptPropertyFor(String name) {
+    final Character.UnicodeScript script;
+    try {
+        script = Character.UnicodeScript.forName(name);
+    } catch (IllegalArgumentException iae) {
+        throw error("Unknown character script name {" + name + "}");
+    }
+    return new Script(script);
+}

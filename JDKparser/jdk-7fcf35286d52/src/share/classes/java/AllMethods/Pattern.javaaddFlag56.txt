@@ -1,0 +1,42 @@
+@SuppressWarnings("fallthrough")
+private /**
+ * Parses inlined match flags and set them appropriately.
+ */
+void addFlag() {
+    int ch = peek();
+    for (; ; ) {
+        switch(ch) {
+            case 'i':
+                flags |= CASE_INSENSITIVE;
+                break;
+            case 'm':
+                flags |= MULTILINE;
+                break;
+            case 's':
+                flags |= DOTALL;
+                break;
+            case 'd':
+                flags |= UNIX_LINES;
+                break;
+            case 'u':
+                flags |= UNICODE_CASE;
+                break;
+            case 'c':
+                flags |= CANON_EQ;
+                break;
+            case 'x':
+                flags |= COMMENTS;
+                break;
+            case 'U':
+                flags |= (UNICODE_CHARACTER_CLASS | UNICODE_CASE);
+                break;
+            case // subFlag then fall through
+            '-':
+                ch = next();
+                subFlag();
+            default:
+                return;
+        }
+        ch = next();
+    }
+}

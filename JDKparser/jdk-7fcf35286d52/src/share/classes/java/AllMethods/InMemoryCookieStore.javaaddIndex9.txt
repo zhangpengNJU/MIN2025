@@ -1,0 +1,15 @@
+// add 'cookie' indexed by 'index' into 'indexStore'
+private <T> void addIndex(Map<T, List<HttpCookie>> indexStore, T index, HttpCookie cookie) {
+    if (index != null) {
+        List<HttpCookie> cookies = indexStore.get(index);
+        if (cookies != null) {
+            // there may already have the same cookie, so remove it first
+            cookies.remove(cookie);
+            cookies.add(cookie);
+        } else {
+            cookies = new ArrayList<HttpCookie>();
+            cookies.add(cookie);
+            indexStore.put(index, cookies);
+        }
+    }
+}

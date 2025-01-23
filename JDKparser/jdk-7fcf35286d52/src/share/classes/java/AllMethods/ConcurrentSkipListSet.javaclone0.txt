@@ -1,0 +1,16 @@
+/**
+ * Returns a shallow copy of this {@code ConcurrentSkipListSet}
+ * instance. (The elements themselves are not cloned.)
+ *
+ * @return a shallow copy of this set
+ */
+public ConcurrentSkipListSet<E> clone() {
+    try {
+        @SuppressWarnings("unchecked")
+        ConcurrentSkipListSet<E> clone = (ConcurrentSkipListSet<E>) super.clone();
+        clone.setMap(new ConcurrentSkipListMap<E, Object>(m));
+        return clone;
+    } catch (CloneNotSupportedException e) {
+        throw new InternalError();
+    }
+}

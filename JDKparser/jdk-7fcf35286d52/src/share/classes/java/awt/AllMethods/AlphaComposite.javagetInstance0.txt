@@ -1,0 +1,39 @@
+/**
+ * Creates an <code>AlphaComposite</code> object with the specified rule.
+ * @param rule the compositing rule
+ * @throws IllegalArgumentException if <code>rule</code> is not one of
+ *         the following:  {@link #CLEAR}, {@link #SRC}, {@link #DST},
+ *         {@link #SRC_OVER}, {@link #DST_OVER}, {@link #SRC_IN},
+ *         {@link #DST_IN}, {@link #SRC_OUT}, {@link #DST_OUT},
+ *         {@link #SRC_ATOP}, {@link #DST_ATOP}, or {@link #XOR}
+ */
+public static AlphaComposite getInstance(int rule) {
+    switch(rule) {
+        case CLEAR:
+            return Clear;
+        case SRC:
+            return Src;
+        case DST:
+            return Dst;
+        case SRC_OVER:
+            return SrcOver;
+        case DST_OVER:
+            return DstOver;
+        case SRC_IN:
+            return SrcIn;
+        case DST_IN:
+            return DstIn;
+        case SRC_OUT:
+            return SrcOut;
+        case DST_OUT:
+            return DstOut;
+        case SRC_ATOP:
+            return SrcAtop;
+        case DST_ATOP:
+            return DstAtop;
+        case XOR:
+            return Xor;
+        default:
+            throw new IllegalArgumentException("unknown composite rule");
+    }
+}

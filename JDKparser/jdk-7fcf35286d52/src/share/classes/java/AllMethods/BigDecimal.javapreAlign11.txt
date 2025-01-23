@@ -1,0 +1,62 @@
+/**
+ * Returns an array of length two, the sum of whose entries is
+ * equal to the rounded sum of the {@code BigDecimal} arguments.
+ *
+ * <p>If the digit positions of the arguments have a sufficient
+ * gap between them, the value smaller in magnitude can be
+ * condensed into a {@literal "sticky bit"} and the end result will
+ * round the same way <em>if</em> the precision of the final
+ * result does not include the high order digit of the small
+ * magnitude operand.
+ *
+ * <p>Note that while strictly speaking this is an optimization,
+ * it makes a much wider range of additions practical.
+ *
+ * <p>This corresponds to a pre-shift operation in a fixed
+ * precision floating-point adder; this method is complicated by
+ * variable precision of the result as determined by the
+ * MathContext.  A more nuanced operation could implement a
+ * {@literal "right shift"} on the smaller magnitude operand so
+ * that the number of digits of the smaller operand could be
+ * reduced even though the significands partially overlapped.
+ */
+private BigDecimal[] preAlign(BigDecimal lhs, BigDecimal augend, long padding, MathContext mc) {
+    assert padding != 0;
+    BigDecimal big;
+    BigDecimal small;
+    if (padding < 0) {
+        // lhs is big; augend is small
+        big = lhs;
+        small = augend;
+    } else {
+        // lhs is small; augend is big
+        big = augend;
+        small = lhs;
+    }
+    /*
+         * This is the estimated scale of an ulp of the result; it assumes that
+         * the result doesn't have a carry-out on a true add (e.g. 999 + 1 =>
+         * 1000) or any subtractive cancellation on borrowing (e.g. 100 - 1.2 =>
+         * 98.8)
+         */
+    long estResultUlpScale = (long) big.scale - big.precision() + mc.precision;
+    /*
+         * The low-order digit position of big is big.scale().  This
+         * is true regardless of whether big has a positive or
+         * negative scale.  The high-order digit position of small is
+         * small.scale - (small.precision() - 1).  To do the full
+         * condensation, the digit positions of big and small must be
+         * disjoint *and* the digit positions of small should not be
+         * directly visible in the result.
+         */
+    long smallHighDigitPos = (long) small.scale - small.precision() + 1;
+    if (// big and small disjoint
+    smallHighDigitPos > big.scale + 2 && smallHighDigitPos > estResultUlpScale + 2) {
+        // small digits not visible
+        small = BigDecimal.valueOf(small.signum(), this.checkScale(Math.max(big.scale, estResultUlpScale) + 3));
+    }
+    // Since addition is symmetric, preserving input order in
+    // returned operands doesn't matter
+    BigDecimal[] result = { big, small };
+    return result;
+}

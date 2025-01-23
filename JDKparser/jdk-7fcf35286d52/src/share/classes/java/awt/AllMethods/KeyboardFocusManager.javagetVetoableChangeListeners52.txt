@@ -1,0 +1,20 @@
+/**
+ * Returns an array of all the vetoable change listeners
+ * registered on this keyboard focus manager.
+ *
+ * @return all of this keyboard focus manager's
+ *         <code>VetoableChangeListener</code>s
+ *         or an empty array if no vetoable change
+ *         listeners are currently registered
+ *
+ * @see #addVetoableChangeListener
+ * @see #removeVetoableChangeListener
+ * @see #getVetoableChangeListeners(java.lang.String)
+ * @since 1.4
+ */
+public synchronized VetoableChangeListener[] getVetoableChangeListeners() {
+    if (vetoableSupport == null) {
+        vetoableSupport = new VetoableChangeSupport(this);
+    }
+    return vetoableSupport.getVetoableChangeListeners();
+}

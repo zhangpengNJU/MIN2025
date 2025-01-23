@@ -1,0 +1,12 @@
+/**
+ * Removes and returns the last element from this list.
+ *
+ * @return the last element from this list
+ * @throws NoSuchElementException if this list is empty
+ */
+public E removeLast() {
+    final Node<E> l = last;
+    if (l == null)
+        throw new NoSuchElementException();
+    return unlinkLast(l);
+}

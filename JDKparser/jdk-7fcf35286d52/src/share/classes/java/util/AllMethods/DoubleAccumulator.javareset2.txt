@@ -1,0 +1,19 @@
+/**
+ * Resets variables maintaining updates to the identity value.
+ * This method may be a useful alternative to creating a new
+ * updater, but is only effective if there are no concurrent
+ * updates.  Because this method is intrinsically racy, it should
+ * only be used when it is known that no threads are concurrently
+ * updating.
+ */
+public void reset() {
+    Cell[] as = cells;
+    Cell a;
+    base = identity;
+    if (as != null) {
+        for (int i = 0; i < as.length; ++i) {
+            if ((a = as[i]) != null)
+                a.value = identity;
+        }
+    }
+}

@@ -1,0 +1,14 @@
+/**
+ * Creates a datagram socket
+ */
+protected synchronized void create() throws SocketException {
+    ResourceManager.beforeUdpCreate();
+    fd = new FileDescriptor();
+    try {
+        datagramSocketCreate();
+    } catch (SocketException ioe) {
+        ResourceManager.afterUdpClose();
+        fd = null;
+        throw ioe;
+    }
+}

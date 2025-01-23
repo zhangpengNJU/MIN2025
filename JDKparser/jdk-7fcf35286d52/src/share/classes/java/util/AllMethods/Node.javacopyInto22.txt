@@ -1,0 +1,17 @@
+/**
+ * {@inheritDoc}
+ *
+ * @implSpec the default implementation invokes {@link #asPrimitiveArray()} to
+ * obtain an int[] array then and copies the elements from that int[]
+ * array into the boxed Integer[] array.  This is not efficient and it
+ * is recommended to invoke {@link #copyInto(Object, int)}.
+ */
+@Override
+default void copyInto(Integer[] boxed, int offset) {
+    if (Tripwire.ENABLED)
+        Tripwire.trip(getClass(), "{0} calling Node.OfInt.copyInto(Integer[], int)");
+    int[] array = asPrimitiveArray();
+    for (int i = 0; i < array.length; i++) {
+        boxed[offset + i] = array[i];
+    }
+}

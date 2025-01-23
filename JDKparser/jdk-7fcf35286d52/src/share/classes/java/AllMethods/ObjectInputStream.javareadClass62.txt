@@ -1,0 +1,20 @@
+/**
+ * Reads in and returns class object.  Sets passHandle to class object's
+ * assigned handle.  Returns null if class is unresolvable (in which case a
+ * ClassNotFoundException will be associated with the class' handle in the
+ * handle table).
+ */
+private Class<?> readClass(boolean unshared) throws IOException {
+    if (bin.readByte() != TC_CLASS) {
+        throw new InternalError();
+    }
+    ObjectStreamClass desc = readClassDesc(false);
+    Class<?> cl = desc.forClass();
+    passHandle = handles.assign(unshared ? unsharedMarker : cl);
+    ClassNotFoundException resolveEx = desc.getResolveException();
+    if (resolveEx != null) {
+        handles.markException(passHandle, resolveEx);
+    }
+    handles.finish(passHandle);
+    return cl;
+}

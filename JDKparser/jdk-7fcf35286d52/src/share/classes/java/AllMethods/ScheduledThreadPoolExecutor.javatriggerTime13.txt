@@ -1,0 +1,6 @@
+/**
+ * Returns the trigger time of a delayed action.
+ */
+private long triggerTime(long delay, TimeUnit unit) {
+    return triggerTime(unit.toNanos((delay < 0) ? 0 : delay));
+}

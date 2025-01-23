@@ -1,0 +1,9 @@
+final CompletableFuture<?> tryFire(int mode) {
+    BiCompletion<?, ?, ?> c;
+    CompletableFuture<?> d;
+    if ((c = base) == null || (d = c.tryFire(mode)) == null)
+        return null;
+    // detach
+    base = null;
+    return d;
+}

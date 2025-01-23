@@ -1,0 +1,9 @@
+private void insertName(int pos, Name expr, boolean isParameter) {
+    assert (inTrans());
+    assert (verifyArity());
+    assert (isParameter ? pos <= arity : pos >= arity);
+    growNames(pos, 1);
+    if (isParameter)
+        arity += 1;
+    changeName(pos, expr);
+}

@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+/**
+ * Implements the {@code Externalizable} interface to write the object.
+ * @serialData
+ * Each serializable class is mapped to a type that is the first byte
+ * in the stream.  Refer to each class {@code writeReplace}
+ * serialized form for the value of the type and sequence of values for the type.
+ *
+ * <ul>
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneRules">ZoneRules.writeReplace</a>
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransition">ZoneOffsetTransition.writeReplace</a>
+ * <li><a href="../../../serialized-form.html#java.time.zone.ZoneOffsetTransitionRule">ZoneOffsetTransitionRule.writeReplace</a>
+ * </ul>
+ *
+ * @param out  the data stream to write to, not null
+ */
+@Override
+public void writeExternal(ObjectOutput out) throws IOException {
+    writeInternal(type, object, out);
+}

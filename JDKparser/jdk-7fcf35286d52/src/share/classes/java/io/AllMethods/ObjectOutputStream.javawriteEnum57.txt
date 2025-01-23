@@ -1,0 +1,10 @@
+/**
+ * Writes given enum constant to stream.
+ */
+private void writeEnum(Enum<?> en, ObjectStreamClass desc, boolean unshared) throws IOException {
+    bout.writeByte(TC_ENUM);
+    ObjectStreamClass sdesc = desc.getSuperDesc();
+    writeClassDesc((sdesc.forClass() == Enum.class) ? desc : sdesc, false);
+    handles.assign(unshared ? null : en);
+    writeString(en.name(), false);
+}

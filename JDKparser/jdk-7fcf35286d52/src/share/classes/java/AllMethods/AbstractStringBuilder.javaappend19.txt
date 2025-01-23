@@ -1,0 +1,11 @@
+// Documentation in subclasses because of synchro difference
+@Override
+public AbstractStringBuilder append(CharSequence s) {
+    if (s == null)
+        return appendNull();
+    if (s instanceof String)
+        return this.append((String) s);
+    if (s instanceof AbstractStringBuilder)
+        return this.append((AbstractStringBuilder) s);
+    return this.append(s, 0, s.length());
+}

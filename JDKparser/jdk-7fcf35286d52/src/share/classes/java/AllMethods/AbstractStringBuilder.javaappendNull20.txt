@@ -1,0 +1,11 @@
+private AbstractStringBuilder appendNull() {
+    int c = count;
+    ensureCapacityInternal(c + 4);
+    final char[] value = this.value;
+    value[c++] = 'n';
+    value[c++] = 'u';
+    value[c++] = 'l';
+    value[c++] = 'l';
+    count = c;
+    return this;
+}

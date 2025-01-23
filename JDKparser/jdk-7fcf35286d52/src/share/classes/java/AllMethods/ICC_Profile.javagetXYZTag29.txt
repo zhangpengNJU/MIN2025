@@ -1,0 +1,21 @@
+/**
+ * Returns a float array of length 3 containing the X, Y, and Z
+ * components encoded in an XYZType tag.
+ */
+float[] getXYZTag(int theTagSignature) {
+    byte[] theData;
+    float[] theXYZNumber;
+    int i1, i2, theS15Fixed16;
+    theData = getData(theTagSignature);
+    /* get the tag data */
+    /* getData will activate deferred
+                                               profiles if necessary */
+    theXYZNumber = new float[3];
+    /* array to return */
+    /* convert s15Fixed16Number to float */
+    for (i1 = 0, i2 = icXYZNumberX; i1 < 3; i1++, i2 += 4) {
+        theS15Fixed16 = intFromBigEndian(theData, i2);
+        theXYZNumber[i1] = ((float) theS15Fixed16) / 65536.0f;
+    }
+    return theXYZNumber;
+}

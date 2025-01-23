@@ -1,0 +1,12 @@
+/**
+ * Returns an {@code Optional} describing the specified value, if non-null,
+ * otherwise returns an empty {@code Optional}.
+ *
+ * @param <T> the class of the value
+ * @param value the possibly-null value to describe
+ * @return an {@code Optional} with a present value if the specified value
+ * is non-null, otherwise an empty {@code Optional}
+ */
+public static <T> Optional<T> ofNullable(T value) {
+    return value == null ? empty() : of(value);
+}

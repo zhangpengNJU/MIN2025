@@ -1,0 +1,23 @@
+/**
+ * Returns the distance from a point to a line.
+ * The distance measured is the distance between the specified
+ * point and the closest point on the infinitely-extended line
+ * defined by the specified coordinates.  If the specified point
+ * intersects the line, this method returns 0.0.
+ *
+ * @param x1 the X coordinate of the start point of the specified line
+ * @param y1 the Y coordinate of the start point of the specified line
+ * @param x2 the X coordinate of the end point of the specified line
+ * @param y2 the Y coordinate of the end point of the specified line
+ * @param px the X coordinate of the specified point being
+ *           measured against the specified line
+ * @param py the Y coordinate of the specified point being
+ *           measured against the specified line
+ * @return a double value that is the distance from the specified
+ *                   point to the specified line.
+ * @see #ptSegDist(double, double, double, double, double, double)
+ * @since 1.2
+ */
+public static double ptLineDist(double x1, double y1, double x2, double y2, double px, double py) {
+    return Math.sqrt(ptLineDistSq(x1, y1, x2, y2, px, py));
+}

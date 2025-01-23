@@ -1,0 +1,42 @@
+/**
+ * Internally used for division operation for division {@code BigInteger}
+ * by {@code long}.
+ * The returned {@code BigDecimal} object is the quotient whose scale is set
+ * to the passed in scale. If the remainder is not zero, it will be rounded
+ * based on the passed in roundingMode. Also, if the remainder is zero and
+ * the last parameter, i.e. preferredScale is NOT equal to scale, the
+ * trailing zeros of the result is stripped to match the preferredScale.
+ */
+private static BigDecimal divideAndRound(BigInteger bdividend, long ldivisor, int scale, int roundingMode, int preferredScale) {
+    // record remainder is zero or not
+    boolean isRemainderZero;
+    // quotient sign
+    int qsign;
+    // store quotient & remainder in long
+    long r = 0;
+    // store quotient
+    MutableBigInteger mq = null;
+    // Descend into mutables for faster remainder checks
+    MutableBigInteger mdividend = new MutableBigInteger(bdividend.mag);
+    mq = new MutableBigInteger();
+    r = mdividend.divide(ldivisor, mq);
+    isRemainderZero = (r == 0);
+    qsign = (ldivisor < 0) ? -bdividend.signum : bdividend.signum;
+    if (!isRemainderZero) {
+        if (needIncrement(ldivisor, roundingMode, qsign, mq, r)) {
+            mq.add(MutableBigInteger.ONE);
+        }
+        return mq.toBigDecimal(qsign, scale);
+    } else {
+        if (preferredScale != scale) {
+            long compactVal = mq.toCompactValue(qsign);
+            if (compactVal != INFLATED) {
+                return createAndStripZerosToMatchScale(compactVal, scale, preferredScale);
+            }
+            BigInteger intVal = mq.toBigInteger(qsign);
+            return createAndStripZerosToMatchScale(intVal, scale, preferredScale);
+        } else {
+            return mq.toBigDecimal(qsign, scale);
+        }
+    }
+}

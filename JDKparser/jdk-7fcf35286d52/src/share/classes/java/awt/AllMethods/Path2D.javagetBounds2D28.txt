@@ -1,0 +1,27 @@
+/**
+ * {@inheritDoc}
+ * @since 1.6
+ */
+public final synchronized Rectangle2D getBounds2D() {
+    float x1, y1, x2, y2;
+    int i = numCoords;
+    if (i > 0) {
+        y1 = y2 = floatCoords[--i];
+        x1 = x2 = floatCoords[--i];
+        while (i > 0) {
+            float y = floatCoords[--i];
+            float x = floatCoords[--i];
+            if (x < x1)
+                x1 = x;
+            if (y < y1)
+                y1 = y;
+            if (x > x2)
+                x2 = x;
+            if (y > y2)
+                y2 = y;
+        }
+    } else {
+        x1 = y1 = x2 = y2 = 0.0f;
+    }
+    return new Rectangle2D.Float(x1, y1, x2 - x1, y2 - y1);
+}

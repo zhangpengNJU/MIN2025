@@ -1,0 +1,24 @@
+/**
+ * Fetches the serializable object field values of object obj and
+ * stores them in array vals starting at offset 0.  The caller is
+ * responsible for ensuring that obj is of the proper type.
+ */
+void getObjFieldValues(Object obj, Object[] vals) {
+    if (obj == null) {
+        throw new NullPointerException();
+    }
+    /* assuming checkDefaultSerialize() has been called on the class
+             * descriptor this FieldReflector was obtained from, no field keys
+             * in array should be equal to Unsafe.INVALID_FIELD_OFFSET.
+             */
+    for (int i = numPrimFields; i < fields.length; i++) {
+        switch(typeCodes[i]) {
+            case 'L':
+            case '[':
+                vals[offsets[i]] = unsafe.getObject(obj, readKeys[i]);
+                break;
+            default:
+                throw new InternalError();
+        }
+    }
+}

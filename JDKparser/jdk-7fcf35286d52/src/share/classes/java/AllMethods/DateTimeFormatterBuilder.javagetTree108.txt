@@ -1,0 +1,47 @@
+@Override
+protected PrefixTree getTree(DateTimeParseContext context) {
+    if (textStyle == TextStyle.NARROW) {
+        return super.getTree(context);
+    }
+    Locale locale = context.getLocale();
+    boolean isCaseSensitive = context.isCaseSensitive();
+    Set<String> regionIds = ZoneRulesProvider.getAvailableZoneIds();
+    int regionIdsSize = regionIds.size();
+    Map<Locale, Entry<Integer, SoftReference<PrefixTree>>> cached = isCaseSensitive ? cachedTree : cachedTreeCI;
+    Entry<Integer, SoftReference<PrefixTree>> entry = null;
+    PrefixTree tree = null;
+    String[][] zoneStrings = null;
+    if ((entry = cached.get(locale)) == null || (entry.getKey() != regionIdsSize || (tree = entry.getValue().get()) == null)) {
+        tree = PrefixTree.newTree(context);
+        zoneStrings = TimeZoneNameUtility.getZoneStrings(locale);
+        for (String[] names : zoneStrings) {
+            String zid = names[0];
+            if (!regionIds.contains(zid)) {
+                continue;
+            }
+            // don't convert zid -> metazone
+            tree.add(zid, zid);
+            zid = ZoneName.toZid(zid, locale);
+            int i = textStyle == TextStyle.FULL ? 1 : 2;
+            for (; i < names.length; i += 2) {
+                tree.add(names[i], zid);
+            }
+        }
+        // if we have a set of preferred zones, need a copy and
+        // add the preferred zones again to overwrite
+        if (preferredZones != null) {
+            for (String[] names : zoneStrings) {
+                String zid = names[0];
+                if (!preferredZones.contains(zid) || !regionIds.contains(zid)) {
+                    continue;
+                }
+                int i = textStyle == TextStyle.FULL ? 1 : 2;
+                for (; i < names.length; i += 2) {
+                    tree.add(names[i], zid);
+                }
+            }
+        }
+        cached.put(locale, new SimpleImmutableEntry<>(regionIdsSize, new SoftReference<>(tree)));
+    }
+    return tree;
+}

@@ -1,0 +1,28 @@
+/**
+ * Adds the specified component to the layout, using the specified
+ * constraint object.  For border layouts, the constraint must be
+ * one of the following constants:  <code>NORTH</code>,
+ * <code>SOUTH</code>, <code>EAST</code>,
+ * <code>WEST</code>, or <code>CENTER</code>.
+ * <p>
+ * Most applications do not call this method directly. This method
+ * is called when a component is added to a container using the
+ * <code>Container.add</code> method with the same argument types.
+ * @param   comp         the component to be added.
+ * @param   constraints  an object that specifies how and where
+ *                       the component is added to the layout.
+ * @see     java.awt.Container#add(java.awt.Component, java.lang.Object)
+ * @exception   IllegalArgumentException  if the constraint object is not
+ *                 a string, or if it not one of the five specified
+ *              constants.
+ * @since   JDK1.1
+ */
+public void addLayoutComponent(Component comp, Object constraints) {
+    synchronized (comp.getTreeLock()) {
+        if ((constraints == null) || (constraints instanceof String)) {
+            addLayoutComponent((String) constraints, comp);
+        } else {
+            throw new IllegalArgumentException("cannot add to layout: constraint must be a string (or null)");
+        }
+    }
+}

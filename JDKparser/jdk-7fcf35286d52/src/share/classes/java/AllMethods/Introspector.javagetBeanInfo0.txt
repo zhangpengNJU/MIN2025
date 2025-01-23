@@ -1,0 +1,34 @@
+// ======================================================================
+// Public methods
+// ======================================================================
+/**
+ * Introspect on a Java Bean and learn about all its properties, exposed
+ * methods, and events.
+ * <p>
+ * If the BeanInfo class for a Java Bean has been previously Introspected
+ * then the BeanInfo class is retrieved from the BeanInfo cache.
+ *
+ * @param beanClass  The bean class to be analyzed.
+ * @return  A BeanInfo object describing the target bean.
+ * @exception IntrospectionException if an exception occurs during
+ *              introspection.
+ * @see #flushCaches
+ * @see #flushFromCaches
+ */
+public static BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
+    if (!ReflectUtil.isPackageAccessible(beanClass)) {
+        return (new Introspector(beanClass, null, USE_ALL_BEANINFO)).getBeanInfo();
+    }
+    ThreadGroupContext context = ThreadGroupContext.getContext();
+    BeanInfo beanInfo;
+    synchronized (declaredMethodCache) {
+        beanInfo = context.getBeanInfo(beanClass);
+    }
+    if (beanInfo == null) {
+        beanInfo = new Introspector(beanClass, null, USE_ALL_BEANINFO).getBeanInfo();
+        synchronized (declaredMethodCache) {
+            context.putBeanInfo(beanClass, beanInfo);
+        }
+    }
+    return beanInfo;
+}

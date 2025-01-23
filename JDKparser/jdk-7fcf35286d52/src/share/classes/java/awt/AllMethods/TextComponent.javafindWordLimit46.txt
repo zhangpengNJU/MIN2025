@@ -1,0 +1,23 @@
+/**
+ * Needed to unify forward and backward searching.
+ * The method assumes that s is the text assigned to words.
+ */
+private int findWordLimit(int index, BreakIterator words, boolean direction, String s) {
+    // Fix for 4256660 and 4256661.
+    // Words iterator is different from character and sentence iterators
+    // in that end of one word is not necessarily start of another word.
+    // Please see java.text.BreakIterator JavaDoc. The code below is
+    // based on nextWordStartAfter example from BreakIterator.java.
+    int last = (direction == NEXT) ? words.following(index) : words.preceding(index);
+    int current = (direction == NEXT) ? words.next() : words.previous();
+    while (current != BreakIterator.DONE) {
+        for (int p = Math.min(last, current); p < Math.max(last, current); p++) {
+            if (Character.isLetter(s.charAt(p))) {
+                return last;
+            }
+        }
+        last = current;
+        current = (direction == NEXT) ? words.next() : words.previous();
+    }
+    return BreakIterator.DONE;
+}

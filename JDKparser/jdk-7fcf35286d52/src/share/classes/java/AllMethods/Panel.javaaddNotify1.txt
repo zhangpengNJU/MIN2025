@@ -1,0 +1,11 @@
+/**
+ * Creates the Panel's peer.  The peer allows you to modify the
+ * appearance of the panel without changing its functionality.
+ */
+public void addNotify() {
+    synchronized (getTreeLock()) {
+        if (peer == null)
+            peer = getToolkit().createPanel(this);
+        super.addNotify();
+    }
+}

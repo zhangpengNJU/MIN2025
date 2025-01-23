@@ -1,0 +1,18 @@
+@Override
+public void forEachRemaining(Consumer<? super T> consumer) {
+    if (curNode == null)
+        return;
+    if (tryAdvanceSpliterator == null) {
+        if (lastNodeSpliterator == null) {
+            Deque<Node<T>> stack = initStack();
+            Node<T> leaf;
+            while ((leaf = findNextLeafNode(stack)) != null) {
+                leaf.forEach(consumer);
+            }
+            curNode = null;
+        } else
+            lastNodeSpliterator.forEachRemaining(consumer);
+    } else
+        while (tryAdvance(consumer)) {
+        }
+}

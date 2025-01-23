@@ -1,0 +1,23 @@
+/**
+ * The design of the {@code SystemColor} class assumes that
+ * the {@code SystemColor} object instances stored in the
+ * static final fields above are the only instances that can
+ * be used by developers.
+ * This method helps maintain those limits on instantiation
+ * by using the index stored in the value field of the
+ * serialized form of the object to replace the serialized
+ * object with the equivalent static object constant field
+ * of {@code SystemColor}.
+ * See the {@link #writeReplace} method for more information
+ * on the serialized form of these objects.
+ * @return one of the {@code SystemColor} static object
+ *         fields that refers to the same system color.
+ */
+private Object readResolve() {
+    // The instances of SystemColor are tightly controlled and
+    // only the canonical instances appearing above as static
+    // constants are allowed.  The serial form of SystemColor
+    // objects stores the color index as the value.  Here we
+    // map that index back into the canonical instance.
+    return systemColorObjects[value];
+}

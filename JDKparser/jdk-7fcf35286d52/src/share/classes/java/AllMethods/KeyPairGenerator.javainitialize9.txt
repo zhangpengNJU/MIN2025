@@ -1,0 +1,31 @@
+/**
+ * Initializes the key pair generator using the specified parameter
+ * set and the {@code SecureRandom}
+ * implementation of the highest-priority installed provider as the source
+ * of randomness.
+ * (If none of the installed providers supply an implementation of
+ * {@code SecureRandom}, a system-provided source of randomness is
+ * used.).
+ *
+ * <p>This concrete method has been added to this previously-defined
+ * abstract class.
+ * This method calls the KeyPairGeneratorSpi
+ * {@link KeyPairGeneratorSpi#initialize(
+ * java.security.spec.AlgorithmParameterSpec,
+ * java.security.SecureRandom) initialize} method,
+ * passing it {@code params} and a source of randomness (obtained
+ * from the highest-priority installed provider or system-provided if none
+ * of the installed providers supply one).
+ * That {@code initialize} method always throws an
+ * UnsupportedOperationException if it is not overridden by the provider.
+ *
+ * @param params the parameter set used to generate the keys.
+ *
+ * @exception InvalidAlgorithmParameterException if the given parameters
+ * are inappropriate for this key pair generator.
+ *
+ * @since 1.2
+ */
+public void initialize(AlgorithmParameterSpec params) throws InvalidAlgorithmParameterException {
+    initialize(params, JCAUtil.getSecureRandom());
+}

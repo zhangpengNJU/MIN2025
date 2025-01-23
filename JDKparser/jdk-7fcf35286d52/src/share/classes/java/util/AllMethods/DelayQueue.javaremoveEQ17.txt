@@ -1,0 +1,17 @@
+/**
+ * Identity-based version for use in Itr.remove
+ */
+void removeEQ(Object o) {
+    final ReentrantLock lock = this.lock;
+    lock.lock();
+    try {
+        for (Iterator<E> it = q.iterator(); it.hasNext(); ) {
+            if (o == it.next()) {
+                it.remove();
+                break;
+            }
+        }
+    } finally {
+        lock.unlock();
+    }
+}

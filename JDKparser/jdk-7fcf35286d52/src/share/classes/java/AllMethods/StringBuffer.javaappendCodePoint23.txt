@@ -1,0 +1,9 @@
+/**
+ * @since 1.5
+ */
+@Override
+public synchronized StringBuffer appendCodePoint(int codePoint) {
+    toStringCache = null;
+    super.appendCodePoint(codePoint);
+    return this;
+}

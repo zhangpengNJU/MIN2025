@@ -1,0 +1,13 @@
+/**
+ * Returns the last component of the vector.
+ *
+ * @return  the last component of the vector, i.e., the component at index
+ *          <code>size()&nbsp;-&nbsp;1</code>.
+ * @throws NoSuchElementException if this vector is empty
+ */
+public synchronized E lastElement() {
+    if (elementCount == 0) {
+        throw new NoSuchElementException();
+    }
+    return elementData(elementCount - 1);
+}

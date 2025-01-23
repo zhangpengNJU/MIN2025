@@ -1,0 +1,18 @@
+/**
+ * Retrieves whether this <code>Connection</code> object has been
+ * closed.  A connection is closed if the method <code>close</code>
+ * has been called on it or if certain fatal errors have occurred.
+ * This method is guaranteed to return <code>true</code> only when
+ * it is called after the method <code>Connection.close</code> has
+ * been called.
+ * <P>
+ * This method generally cannot be called to determine whether a
+ * connection to a database is valid or invalid.  A typical client
+ * can determine that a connection is invalid by catching any
+ * exceptions that might be thrown when an operation is attempted.
+ *
+ * @return <code>true</code> if this <code>Connection</code> object
+ *         is closed; <code>false</code> if it is still open
+ * @exception SQLException if a database access error occurs
+ */
+boolean isClosed() throws SQLException;

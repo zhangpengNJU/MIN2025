@@ -1,0 +1,17 @@
+/**
+ * subclasses may envelope to monitor child property changes.
+ */
+public void propertyChange(PropertyChangeEvent pce) {
+    String propertyName = pce.getPropertyName();
+    Object source = pce.getSource();
+    synchronized (children) {
+        if ("beanContext".equals(propertyName) && containsKey(source) && ((BCSChild) children.get(source)).isRemovePending()) {
+            BeanContext bc = getBeanContextPeer();
+            if (bc.equals(pce.getOldValue()) && !bc.equals(pce.getNewValue())) {
+                remove(source, false);
+            } else {
+                ((BCSChild) children.get(source)).setRemovePending(false);
+            }
+        }
+    }
+}

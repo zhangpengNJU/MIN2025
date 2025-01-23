@@ -1,0 +1,19 @@
+/**
+ * Skips specified number of bytes of input.
+ * @param n the number of bytes to skip
+ * @return the actual number of bytes skipped
+ * @exception IOException if an I/O error has occurred
+ */
+public long skip(long n) throws IOException {
+    byte[] buf = new byte[512];
+    long total = 0;
+    while (total < n) {
+        long len = n - total;
+        len = read(buf, 0, len < buf.length ? (int) len : buf.length);
+        if (len == -1) {
+            return total;
+        }
+        total += len;
+    }
+    return total;
+}

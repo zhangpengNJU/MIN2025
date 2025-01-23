@@ -1,0 +1,10 @@
+/**
+ * Save the state of this object to a stream (i.e., serialize it).
+ *
+ * @serialData The value returned by <code>getTime()</code>
+ *             is emitted (long).  This represents the offset from
+ *             January 1, 1970, 00:00:00 GMT in milliseconds.
+ */
+private void writeObject(ObjectOutputStream s) throws IOException {
+    s.writeLong(getTimeImpl());
+}

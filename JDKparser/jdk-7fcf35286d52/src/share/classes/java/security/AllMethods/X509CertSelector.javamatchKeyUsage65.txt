@@ -1,0 +1,18 @@
+/* match on key usage extension value */
+private boolean matchKeyUsage(X509Certificate xcert) {
+    if (keyUsage == null) {
+        return true;
+    }
+    boolean[] certKeyUsage = xcert.getKeyUsage();
+    if (certKeyUsage != null) {
+        for (int keyBit = 0; keyBit < keyUsage.length; keyBit++) {
+            if (keyUsage[keyBit] && ((keyBit >= certKeyUsage.length) || !certKeyUsage[keyBit])) {
+                if (debug != null) {
+                    debug.println("X509CertSelector.match: " + "key usage bits don't match");
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}

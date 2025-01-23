@@ -1,0 +1,9 @@
+/**
+ * Special-case code for containsValue with null argument
+ */
+private boolean containsNullValue() {
+    Entry<K, V>[] tab = getTable();
+    for (int i = tab.length; i-- > 0; ) for (Entry<K, V> e = tab[i]; e != null; e = e.next) if (e.value == null)
+        return true;
+    return false;
+}

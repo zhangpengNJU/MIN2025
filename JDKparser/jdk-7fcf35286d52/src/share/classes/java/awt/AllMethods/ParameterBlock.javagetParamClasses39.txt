@@ -1,0 +1,31 @@
+/**
+ * Returns an array of Class objects describing the types
+ * of the parameters.
+ * @return an array of <code>Class</code> objects.
+ */
+public Class[] getParamClasses() {
+    int numParams = getNumParameters();
+    Class[] classes = new Class[numParams];
+    int i;
+    for (i = 0; i < numParams; i++) {
+        Object obj = getObjectParameter(i);
+        if (obj instanceof Byte) {
+            classes[i] = byte.class;
+        } else if (obj instanceof Character) {
+            classes[i] = char.class;
+        } else if (obj instanceof Short) {
+            classes[i] = short.class;
+        } else if (obj instanceof Integer) {
+            classes[i] = int.class;
+        } else if (obj instanceof Long) {
+            classes[i] = long.class;
+        } else if (obj instanceof Float) {
+            classes[i] = float.class;
+        } else if (obj instanceof Double) {
+            classes[i] = double.class;
+        } else {
+            classes[i] = obj.getClass();
+        }
+    }
+    return classes;
+}

@@ -1,0 +1,24 @@
+/**
+ * Pushes a task. Call only by owner in unshared queues.  (The
+ * shared-queue version is embedded in method externalPush.)
+ *
+ * @param task the task. Caller must ensure non-null.
+ * @throws RejectedExecutionException if array cannot be resized
+ */
+final void push(ForkJoinTask<?> task) {
+    ForkJoinTask<?>[] a;
+    ForkJoinPool p;
+    int b = base, s = top, n;
+    if ((a = array) != null) {
+        // ignore if queue removed
+        // fenced write for task visibility
+        int m = a.length - 1;
+        U.putOrderedObject(a, ((m & s) << ASHIFT) + ABASE, task);
+        U.putOrderedInt(this, QTOP, s + 1);
+        if ((n = s - b) <= 1) {
+            if ((p = pool) != null)
+                p.signalWork(p.workQueues, this);
+        } else if (n >= m)
+            growArray();
+    }
+}

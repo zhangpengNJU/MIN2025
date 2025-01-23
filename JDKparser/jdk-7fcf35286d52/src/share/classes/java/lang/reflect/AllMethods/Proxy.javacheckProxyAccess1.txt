@@ -1,0 +1,28 @@
+/*
+     * Check permissions required to create a Proxy class.
+     *
+     * To define a proxy class, it performs the access checks as in
+     * Class.forName (VM will invoke ClassLoader.checkPackageAccess):
+     * 1. "getClassLoader" permission check if loader == null
+     * 2. checkPackageAccess on the interfaces it implements
+     *
+     * To get a constructor and new instance of a proxy class, it performs
+     * the package access check on the interfaces it implements
+     * as in Class.getConstructor.
+     *
+     * If an interface is non-public, the proxy class must be defined by
+     * the defining loader of the interface.  If the caller's class loader
+     * is not the same as the defining loader of the interface, the VM
+     * will throw IllegalAccessError when the generated proxy class is
+     * being defined via the defineClass0 method.
+     */
+private static void checkProxyAccess(Class<?> caller, ClassLoader loader, Class<?>... interfaces) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+        ClassLoader ccl = caller.getClassLoader();
+        if (VM.isSystemDomainLoader(loader) && !VM.isSystemDomainLoader(ccl)) {
+            sm.checkPermission(SecurityConstants.GET_CLASSLOADER_PERMISSION);
+        }
+        ReflectUtil.checkProxyPackageAccess(ccl, interfaces);
+    }
+}

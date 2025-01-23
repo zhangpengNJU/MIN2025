@@ -1,0 +1,12 @@
+@Override
+public LongStream unordered() {
+    if (!isOrdered())
+        return this;
+    return new StatelessOp<Long>(this, StreamShape.LONG_VALUE, StreamOpFlag.NOT_ORDERED) {
+
+        @Override
+        Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
+            return sink;
+        }
+    };
+}

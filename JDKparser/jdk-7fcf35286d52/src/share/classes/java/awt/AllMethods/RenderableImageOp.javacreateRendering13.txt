@@ -1,0 +1,71 @@
+/**
+ * Creates a RenderedImage which represents this
+ * RenderableImageOp (including its Renderable sources) rendered
+ * according to the given RenderContext.
+ *
+ * <p> This method supports chaining of either Renderable or
+ * RenderedImage operations.  If sources in
+ * the ParameterBlock used to construct the RenderableImageOp are
+ * RenderableImages, then a three step process is followed:
+ *
+ * <ol>
+ * <li> mapRenderContext() is called on the associated CRIF for
+ * each RenderableImage source;
+ * <li> createRendering() is called on each of the RenderableImage sources
+ * using the backwards-mapped RenderContexts obtained in step 1,
+ * resulting in a rendering of each source;
+ * <li> ContextualRenderedImageFactory.create() is called
+ * with a new ParameterBlock containing the parameters of
+ * the RenderableImageOp and the RenderedImages that were created by the
+ * createRendering() calls.
+ * </ol>
+ *
+ * <p> If the elements of the source Vector of
+ * the ParameterBlock used to construct the RenderableImageOp are
+ * instances of RenderedImage, then the CRIF.create() method is
+ * called immediately using the original ParameterBlock.
+ * This provides a basis case for the recursion.
+ *
+ * <p> The created RenderedImage may have a property identified
+ * by the String HINTS_OBSERVED to indicate which RenderingHints
+ * (from the RenderContext) were used to create the image.
+ * In addition any RenderedImages
+ * that are obtained via the getSources() method on the created
+ * RenderedImage may have such a property.
+ *
+ * @param renderContext The RenderContext to use to perform the rendering.
+ * @return a RenderedImage containing the desired output image.
+ */
+public RenderedImage createRendering(RenderContext renderContext) {
+    RenderedImage image = null;
+    RenderContext rcOut = null;
+    // Clone the original ParameterBlock; if the ParameterBlock
+    // contains RenderableImage sources, they will be replaced by
+    // RenderedImages.
+    ParameterBlock renderedParamBlock = (ParameterBlock) paramBlock.clone();
+    Vector sources = getRenderableSources();
+    try {
+        // This assumes that if there is no renderable source, that there
+        // is a rendered source in paramBlock
+        if (sources != null) {
+            Vector renderedSources = new Vector();
+            for (int i = 0; i < sources.size(); i++) {
+                rcOut = myCRIF.mapRenderContext(i, renderContext, paramBlock, this);
+                RenderedImage rdrdImage = ((RenderableImage) sources.elementAt(i)).createRendering(rcOut);
+                if (rdrdImage == null) {
+                    return null;
+                }
+                // Add this rendered image to the ParameterBlock's
+                // list of RenderedImages.
+                renderedSources.addElement(rdrdImage);
+            }
+            if (renderedSources.size() > 0) {
+                renderedParamBlock.setSources(renderedSources);
+            }
+        }
+        return myCRIF.create(renderContext, renderedParamBlock);
+    } catch (ArrayIndexOutOfBoundsException e) {
+        // This should never happen
+        return null;
+    }
+}

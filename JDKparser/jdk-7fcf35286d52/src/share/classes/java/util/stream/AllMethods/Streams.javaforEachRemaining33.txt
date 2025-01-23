@@ -1,0 +1,8 @@
+@Override
+public void forEachRemaining(DoubleConsumer action) {
+    Objects.requireNonNull(action);
+    if (count == -2) {
+        action.accept(first);
+        count = -1;
+    }
+}

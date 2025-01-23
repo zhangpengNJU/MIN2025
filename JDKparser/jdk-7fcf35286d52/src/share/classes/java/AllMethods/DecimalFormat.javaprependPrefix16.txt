@@ -1,0 +1,31 @@
+/**
+ * Prepends the passed {@code prefix} chars to given result
+ * {@code container}.  Updates {@code fastPathData.firstUsedIndex}
+ * accordingly.
+ *
+ * @param prefix The prefix characters to prepend to result.
+ * @param len The number of chars to prepend.
+ * @param container Char array container which to prepend the prefix
+ */
+private void prependPrefix(char[] prefix, int len, char[] container) {
+    fastPathData.firstUsedIndex -= len;
+    int startIndex = fastPathData.firstUsedIndex;
+    // If prefix to prepend is only 1 char long, just assigns this char.
+    // If prefix is less or equal 4, we use a dedicated algorithm that
+    // has shown to run faster than System.arraycopy.
+    // If more than 4, we use System.arraycopy.
+    if (len == 1)
+        container[startIndex] = prefix[0];
+    else if (len <= 4) {
+        int dstLower = startIndex;
+        int dstUpper = dstLower + len - 1;
+        int srcUpper = len - 1;
+        container[dstLower] = prefix[0];
+        container[dstUpper] = prefix[srcUpper];
+        if (len > 2)
+            container[++dstLower] = prefix[1];
+        if (len == 4)
+            container[--dstUpper] = prefix[2];
+    } else
+        System.arraycopy(prefix, 0, container, startIndex, len);
+}

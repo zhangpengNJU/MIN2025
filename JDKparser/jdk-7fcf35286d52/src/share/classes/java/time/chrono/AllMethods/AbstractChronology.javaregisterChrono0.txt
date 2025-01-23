@@ -1,0 +1,11 @@
+/**
+ * Register a Chronology by its ID and type for lookup by {@link #of(String)}.
+ * Chronologies must not be registered until they are completely constructed.
+ * Specifically, not in the constructor of Chronology.
+ *
+ * @param chrono the chronology to register; not null
+ * @return the already registered Chronology if any, may be null
+ */
+static Chronology registerChrono(Chronology chrono) {
+    return registerChrono(chrono, chrono.getId());
+}

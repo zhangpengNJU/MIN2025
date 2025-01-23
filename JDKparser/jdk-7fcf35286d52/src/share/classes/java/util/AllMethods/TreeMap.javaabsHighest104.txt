@@ -1,0 +1,4 @@
+final TreeMap.Entry<K, V> absHighest() {
+    TreeMap.Entry<K, V> e = (toEnd ? m.getLastEntry() : (hiInclusive ? m.getFloorEntry(hi) : m.getLowerEntry(hi)));
+    return (e == null || tooLow(e.key)) ? null : e;
+}

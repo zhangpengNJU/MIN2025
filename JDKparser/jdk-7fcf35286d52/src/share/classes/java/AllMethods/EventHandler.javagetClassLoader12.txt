@@ -1,0 +1,12 @@
+private static ClassLoader getClassLoader(Class<?> type) {
+    ReflectUtil.checkPackageAccess(type);
+    ClassLoader loader = type.getClassLoader();
+    if (loader == null) {
+        // avoid use of BCP
+        loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = ClassLoader.getSystemClassLoader();
+        }
+    }
+    return loader;
+}

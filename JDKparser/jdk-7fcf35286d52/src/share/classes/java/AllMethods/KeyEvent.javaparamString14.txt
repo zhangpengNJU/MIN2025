@@ -1,0 +1,89 @@
+/**
+ * Returns a parameter string identifying this event.
+ * This method is useful for event logging and for debugging.
+ *
+ * @return a string identifying the event and its attributes
+ */
+public String paramString() {
+    StringBuilder str = new StringBuilder(100);
+    switch(id) {
+        case KEY_PRESSED:
+            str.append("KEY_PRESSED");
+            break;
+        case KEY_RELEASED:
+            str.append("KEY_RELEASED");
+            break;
+        case KEY_TYPED:
+            str.append("KEY_TYPED");
+            break;
+        default:
+            str.append("unknown type");
+            break;
+    }
+    str.append(",keyCode=").append(keyCode);
+    str.append(",keyText=").append(getKeyText(keyCode));
+    /* Some keychars don't print well, e.g. escape, backspace,
+         * tab, return, delete, cancel.  Get keyText for the keyCode
+         * instead of the keyChar.
+         */
+    str.append(",keyChar=");
+    switch(keyChar) {
+        case '\b':
+            str.append(getKeyText(VK_BACK_SPACE));
+            break;
+        case '\t':
+            str.append(getKeyText(VK_TAB));
+            break;
+        case '\n':
+            str.append(getKeyText(VK_ENTER));
+            break;
+        case '\u0018':
+            str.append(getKeyText(VK_CANCEL));
+            break;
+        case '\u001b':
+            str.append(getKeyText(VK_ESCAPE));
+            break;
+        case '\u007f':
+            str.append(getKeyText(VK_DELETE));
+            break;
+        case CHAR_UNDEFINED:
+            str.append(Toolkit.getProperty("AWT.undefined", "Undefined"));
+            str.append(" keyChar");
+            break;
+        default:
+            str.append("'").append(keyChar).append("'");
+            break;
+    }
+    if (getModifiers() != 0) {
+        str.append(",modifiers=").append(getKeyModifiersText(modifiers));
+    }
+    if (getModifiersEx() != 0) {
+        str.append(",extModifiers=").append(getModifiersExText(modifiers));
+    }
+    str.append(",keyLocation=");
+    switch(keyLocation) {
+        case KEY_LOCATION_UNKNOWN:
+            str.append("KEY_LOCATION_UNKNOWN");
+            break;
+        case KEY_LOCATION_STANDARD:
+            str.append("KEY_LOCATION_STANDARD");
+            break;
+        case KEY_LOCATION_LEFT:
+            str.append("KEY_LOCATION_LEFT");
+            break;
+        case KEY_LOCATION_RIGHT:
+            str.append("KEY_LOCATION_RIGHT");
+            break;
+        case KEY_LOCATION_NUMPAD:
+            str.append("KEY_LOCATION_NUMPAD");
+            break;
+        default:
+            str.append("KEY_LOCATION_UNKNOWN");
+            break;
+    }
+    str.append(",rawCode=").append(rawCode);
+    str.append(",primaryLevelUnicode=").append(primaryLevelUnicode);
+    str.append(",scancode=").append(scancode);
+    str.append(",extendedKeyCode=0x").append(Long.toHexString(extendedKeyCode));
+    return str.toString();
+}

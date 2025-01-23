@@ -1,0 +1,19 @@
+/**
+ * Returns <code>true</code> if this <code>TextLayout</code> has
+ * a left-to-right base direction or <code>false</code> if it has
+ * a right-to-left base direction.  The <code>TextLayout</code>
+ * has a base direction of either left-to-right (LTR) or
+ * right-to-left (RTL).  The base direction is independent of the
+ * actual direction of text on the line, which may be either LTR,
+ * RTL, or mixed. Left-to-right layouts by default should position
+ * flush left.  If the layout is on a tabbed line, the
+ * tabs run left to right, so that logically successive layouts position
+ * left to right.  The opposite is true for RTL layouts. By default they
+ * should position flush left, and tabs run right-to-left.
+ * @return <code>true</code> if the base direction of this
+ *         <code>TextLayout</code> is left-to-right; <code>false</code>
+ *         otherwise.
+ */
+public boolean isLeftToRight() {
+    return textLine.isDirectionLTR();
+}

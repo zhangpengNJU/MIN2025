@@ -1,0 +1,31 @@
+/**
+ * Attempts to read len bytes into byte array b at offset off.  Returns
+ * the number of bytes read, or -1 if the end of stream/block data has
+ * been reached.  If copy is true, reads values into an intermediate
+ * buffer before copying them to b (to avoid exposing a reference to
+ * b).
+ */
+int read(byte[] b, int off, int len, boolean copy) throws IOException {
+    if (len == 0) {
+        return 0;
+    } else if (blkmode) {
+        if (pos == end) {
+            refill();
+        }
+        if (end < 0) {
+            return -1;
+        }
+        int nread = Math.min(len, end - pos);
+        System.arraycopy(buf, pos, b, off, nread);
+        pos += nread;
+        return nread;
+    } else if (copy) {
+        int nread = in.read(buf, 0, Math.min(len, MAX_BLOCK_SIZE));
+        if (nread > 0) {
+            System.arraycopy(buf, 0, b, off, nread);
+        }
+        return nread;
+    } else {
+        return in.read(b, off, len);
+    }
+}

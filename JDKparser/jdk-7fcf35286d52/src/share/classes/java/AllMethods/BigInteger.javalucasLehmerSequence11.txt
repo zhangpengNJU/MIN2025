@@ -1,0 +1,29 @@
+private static BigInteger lucasLehmerSequence(int z, BigInteger k, BigInteger n) {
+    BigInteger d = BigInteger.valueOf(z);
+    BigInteger u = ONE;
+    BigInteger u2;
+    BigInteger v = ONE;
+    BigInteger v2;
+    for (int i = k.bitLength() - 2; i >= 0; i--) {
+        u2 = u.multiply(v).mod(n);
+        v2 = v.square().add(d.multiply(u.square())).mod(n);
+        if (v2.testBit(0))
+            v2 = v2.subtract(n);
+        v2 = v2.shiftRight(1);
+        u = u2;
+        v = v2;
+        if (k.testBit(i)) {
+            u2 = u.add(v).mod(n);
+            if (u2.testBit(0))
+                u2 = u2.subtract(n);
+            u2 = u2.shiftRight(1);
+            v2 = v.add(d.multiply(u)).mod(n);
+            if (v2.testBit(0))
+                v2 = v2.subtract(n);
+            v2 = v2.shiftRight(1);
+            u = u2;
+            v = v2;
+        }
+    }
+    return u;
+}

@@ -1,0 +1,18 @@
+/**
+ * Replaces the {@code CertPath} to be serialized with a
+ * {@code CertPathRep} object.
+ *
+ * @return the {@code CertPathRep} to be serialized
+ *
+ * @throws ObjectStreamException if a {@code CertPathRep} object
+ * representing this certification path could not be created
+ */
+protected Object writeReplace() throws ObjectStreamException {
+    try {
+        return new CertPathRep(type, getEncoded());
+    } catch (CertificateException ce) {
+        NotSerializableException nse = new NotSerializableException("java.security.cert.CertPath: " + type);
+        nse.initCause(ce);
+        throw nse;
+    }
+}

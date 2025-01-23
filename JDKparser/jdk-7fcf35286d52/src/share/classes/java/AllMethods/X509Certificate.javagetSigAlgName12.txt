@@ -1,0 +1,21 @@
+/**
+ * Gets the signature algorithm name for the certificate
+ * signature algorithm. An example is the string "SHA256withRSA".
+ * The ASN.1 definition for this is:
+ * <pre>
+ * signatureAlgorithm   AlgorithmIdentifier
+ *
+ * AlgorithmIdentifier  ::=  SEQUENCE  {
+ *     algorithm               OBJECT IDENTIFIER,
+ *     parameters              ANY DEFINED BY algorithm OPTIONAL  }
+ *                             -- contains a value of the type
+ *                             -- registered for use with the
+ *                             -- algorithm object identifier value
+ * </pre>
+ *
+ * <p>The algorithm name is determined from the {@code algorithm}
+ * OID string.
+ *
+ * @return the signature algorithm name.
+ */
+public abstract String getSigAlgName();

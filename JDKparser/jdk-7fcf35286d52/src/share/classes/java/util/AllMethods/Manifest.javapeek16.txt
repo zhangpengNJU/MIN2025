@@ -1,0 +1,8 @@
+public byte peek() throws IOException {
+    if (pos == count)
+        fill();
+    if (pos == count)
+        // nothing left in buffer
+        return -1;
+    return buf[pos];
+}

@@ -1,0 +1,22 @@
+/**
+ * Returns the index of the first character which will not fit on
+ * on a line beginning at <code>start</code> and possible
+ * measuring up to <code>maxAdvance</code> in graphical width.
+ *
+ * @param start the character index at which to start measuring.
+ *  <code>start</code> is an absolute index, not relative to the
+ *  start of the paragraph
+ * @param maxAdvance the graphical width in which the line must fit
+ * @return the index after the last character that will fit
+ *  on a line beginning at <code>start</code>, which is not longer
+ *  than <code>maxAdvance</code> in graphical width
+ * @throws IllegalArgumentException if <code>start</code> is
+ *          less than the beginning of the paragraph.
+ */
+public int getLineBreakIndex(int start, float maxAdvance) {
+    int localStart = start - fStart;
+    if (!haveLayoutWindow || localStart < fComponentStart || localStart >= fComponentLimit) {
+        makeLayoutWindow(localStart);
+    }
+    return calcLineBreak(localStart, maxAdvance) + fStart;
+}

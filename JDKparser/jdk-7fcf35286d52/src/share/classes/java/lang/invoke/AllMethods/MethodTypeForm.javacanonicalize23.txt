@@ -1,0 +1,21 @@
+/**
+ * Canonicalize the types in the given method type.
+ * If any types change, intern the new type, and return it.
+ * Otherwise return null.
+ */
+public static MethodType canonicalize(MethodType mt, int howRet, int howArgs) {
+    Class<?>[] ptypes = mt.ptypes();
+    Class<?>[] ptc = MethodTypeForm.canonicalizeAll(ptypes, howArgs);
+    Class<?> rtype = mt.returnType();
+    Class<?> rtc = MethodTypeForm.canonicalize(rtype, howRet);
+    if (ptc == null && rtc == null) {
+        // It is already canonical.
+        return null;
+    }
+    // Find the erased version of the method type:
+    if (rtc == null)
+        rtc = rtype;
+    if (ptc == null)
+        ptc = ptypes;
+    return MethodType.makeImpl(rtc, ptc, true);
+}

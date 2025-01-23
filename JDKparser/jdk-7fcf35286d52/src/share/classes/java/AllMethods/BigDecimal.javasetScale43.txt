@@ -1,0 +1,39 @@
+/**
+ * Returns a {@code BigDecimal} whose scale is the specified
+ * value, and whose value is numerically equal to this
+ * {@code BigDecimal}'s.  Throws an {@code ArithmeticException}
+ * if this is not possible.
+ *
+ * <p>This call is typically used to increase the scale, in which
+ * case it is guaranteed that there exists a {@code BigDecimal}
+ * of the specified scale and the correct value.  The call can
+ * also be used to reduce the scale if the caller knows that the
+ * {@code BigDecimal} has sufficiently many zeros at the end of
+ * its fractional part (i.e., factors of ten in its integer value)
+ * to allow for the rescaling without changing its value.
+ *
+ * <p>This method returns the same result as the two-argument
+ * versions of {@code setScale}, but saves the caller the trouble
+ * of specifying a rounding mode in cases where it is irrelevant.
+ *
+ * <p>Note that since {@code BigDecimal} objects are immutable,
+ * calls of this method do <i>not</i> result in the original
+ * object being modified, contrary to the usual convention of
+ * having methods named <tt>set<i>X</i></tt> mutate field
+ * <i>{@code X}</i>.  Instead, {@code setScale} returns an
+ * object with the proper scale; the returned object may or may
+ * not be newly allocated.
+ *
+ * @param  newScale scale of the {@code BigDecimal} value to be returned.
+ * @return a {@code BigDecimal} whose scale is the specified value, and
+ *         whose unscaled value is determined by multiplying or dividing
+ *         this {@code BigDecimal}'s unscaled value by the appropriate
+ *         power of ten to maintain its overall value.
+ * @throws ArithmeticException if the specified scaling operation would
+ *         require rounding.
+ * @see    #setScale(int, int)
+ * @see    #setScale(int, RoundingMode)
+ */
+public BigDecimal setScale(int newScale) {
+    return setScale(newScale, ROUND_UNNECESSARY);
+}

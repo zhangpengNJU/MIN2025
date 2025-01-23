@@ -1,0 +1,18 @@
+/**
+ * Obtains the current date-time from the specified clock.
+ * <p>
+ * This will query the specified clock to obtain the current date-time.
+ * The offset will be calculated from the time-zone in the clock.
+ * <p>
+ * Using this method allows the use of an alternate clock for testing.
+ * The alternate clock may be introduced using {@link Clock dependency injection}.
+ *
+ * @param clock  the clock to use, not null
+ * @return the current date-time, not null
+ */
+public static OffsetDateTime now(Clock clock) {
+    Objects.requireNonNull(clock, "clock");
+    // called once
+    final Instant now = clock.instant();
+    return ofInstant(now, clock.getZone().getRules().getOffset(now));
+}

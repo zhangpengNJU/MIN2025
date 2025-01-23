@@ -1,0 +1,35 @@
+/**
+ * Returns an array of unnormalized color/alpha components given a pixel
+ * in this <code>ColorModel</code>.  The pixel value is specified as
+ * an <code>int</code>.  An <code>IllegalArgumentException</code>
+ * will be thrown if pixel values for this <code>ColorModel</code> are
+ * not conveniently representable as a single <code>int</code> or if
+ * color component values for this <code>ColorModel</code> are not
+ * conveniently representable in the unnormalized form.
+ * For example, this method can be used to retrieve the
+ * components for a specific pixel value in a
+ * <code>DirectColorModel</code>.  If the components array is
+ * <code>null</code>, a new array will be allocated.  The
+ * components array will be returned.  Color/alpha components are
+ * stored in the components array starting at <code>offset</code>
+ * (even if the array is allocated by this method).  An
+ * <code>ArrayIndexOutOfBoundsException</code> is thrown if  the
+ * components array is not <code>null</code> and is not large
+ * enough to hold all the color and alpha components (starting at offset).
+ * Since <code>ColorModel</code> is an abstract class,
+ * any instance is an instance of a subclass.  Subclasses must
+ * override this method since the implementation in this abstract
+ * class throws an <code>UnsupportedOperationException</code>.
+ * @param pixel the specified pixel
+ * @param components the array to receive the color and alpha
+ * components of the specified pixel
+ * @param offset the offset into the <code>components</code> array at
+ * which to start storing the color and alpha components
+ * @return an array containing the color and alpha components of the
+ * specified pixel starting at the specified offset.
+ * @throws UnsupportedOperationException if this
+ *          method is not supported by this <code>ColorModel</code>
+ */
+public int[] getComponents(int pixel, int[] components, int offset) {
+    throw new UnsupportedOperationException("This method is not supported by this color model.");
+}

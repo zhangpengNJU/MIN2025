@@ -1,0 +1,17 @@
+/**
+ * Sets the ColorModel object used for the majority of
+ * the pixels reported using the setPixels method
+ * calls.  Note that each set of pixels delivered using setPixels
+ * contains its own ColorModel object, so no assumption should
+ * be made that this model will be the only one used in delivering
+ * pixel values.  A notable case where multiple ColorModel objects
+ * may be seen is a filtered image when for each set of pixels
+ * that it filters, the filter
+ * determines  whether the
+ * pixels can be sent on untouched, using the original ColorModel,
+ * or whether the pixels should be modified (filtered) and passed
+ * on using a ColorModel more convenient for the filtering process.
+ * @param model the specified <code>ColorModel</code>
+ * @see ColorModel
+ */
+void setColorModel(ColorModel model);

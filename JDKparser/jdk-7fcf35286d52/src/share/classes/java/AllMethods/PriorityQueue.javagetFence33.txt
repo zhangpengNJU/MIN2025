@@ -1,0 +1,9 @@
+private int getFence() {
+    // initialize fence to size on first use
+    int hi;
+    if ((hi = fence) < 0) {
+        expectedModCount = pq.modCount;
+        hi = fence = pq.size;
+    }
+    return hi;
+}

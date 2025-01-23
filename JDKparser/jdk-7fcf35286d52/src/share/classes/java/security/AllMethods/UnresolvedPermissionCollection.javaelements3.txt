@@ -1,0 +1,19 @@
+/**
+ * Returns an enumeration of all the UnresolvedPermission lists in the
+ * container.
+ *
+ * @return an enumeration of all the UnresolvedPermission objects.
+ */
+public Enumeration<Permission> elements() {
+    List<Permission> results = // where results are stored
+    new ArrayList<>();
+    // Get iterator of Map values (which are lists of permissions)
+    synchronized (this) {
+        for (List<UnresolvedPermission> l : perms.values()) {
+            synchronized (l) {
+                results.addAll(l);
+            }
+        }
+    }
+    return Collections.enumeration(results);
+}

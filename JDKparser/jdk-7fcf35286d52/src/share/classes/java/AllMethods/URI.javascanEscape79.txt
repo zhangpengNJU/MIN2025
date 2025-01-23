@@ -1,0 +1,21 @@
+// Scan a potential escape sequence, starting at the given position,
+// with the given first char (i.e., charAt(start) == c).
+// 
+// This method assumes that if escapes are allowed then visible
+// non-US-ASCII chars are also allowed.
+// 
+private int scanEscape(int start, int n, char first) throws URISyntaxException {
+    int p = start;
+    char c = first;
+    if (c == '%') {
+        // Process escape pair
+        if ((p + 3 <= n) && match(charAt(p + 1), L_HEX, H_HEX) && match(charAt(p + 2), L_HEX, H_HEX)) {
+            return p + 3;
+        }
+        fail("Malformed escape pair", p);
+    } else if ((c > 128) && !Character.isSpaceChar(c) && !Character.isISOControl(c)) {
+        // Allow unescaped but visible non-US-ASCII chars
+        return p + 1;
+    }
+    return p;
+}

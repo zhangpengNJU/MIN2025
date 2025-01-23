@@ -1,0 +1,7 @@
+private static Duration create(boolean negate, long daysAsSecs, long hoursAsSecs, long minsAsSecs, long secs, int nanos) {
+    long seconds = Math.addExact(daysAsSecs, Math.addExact(hoursAsSecs, Math.addExact(minsAsSecs, secs)));
+    if (negate) {
+        return ofSeconds(seconds, nanos).negated();
+    }
+    return ofSeconds(seconds, nanos);
+}

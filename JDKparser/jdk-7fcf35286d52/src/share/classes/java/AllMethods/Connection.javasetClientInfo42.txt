@@ -1,0 +1,30 @@
+/**
+ * Sets the value of the connection's client info properties.  The
+ * <code>Properties</code> object contains the names and values of the client info
+ * properties to be set.  The set of client info properties contained in
+ * the properties list replaces the current set of client info properties
+ * on the connection.  If a property that is currently set on the
+ * connection is not present in the properties list, that property is
+ * cleared.  Specifying an empty properties list will clear all of the
+ * properties on the connection.  See <code>setClientInfo (String, String)</code> for
+ * more information.
+ * <p>
+ * If an error occurs in setting any of the client info properties, a
+ * <code>SQLClientInfoException</code> is thrown. The <code>SQLClientInfoException</code>
+ * contains information indicating which client info properties were not set.
+ * The state of the client information is unknown because
+ * some databases do not allow multiple client info properties to be set
+ * atomically.  For those databases, one or more properties may have been
+ * set before the error occurred.
+ * <p>
+ *
+ * @param properties                the list of client info properties to set
+ * <p>
+ * @see java.sql.Connection#setClientInfo(String, String) setClientInfo(String, String)
+ * @since 1.6
+ * <p>
+ * @throws SQLClientInfoException if the database server returns an error while
+ *                  setting the clientInfo values on the database server or this method
+ * is called on a closed connection
+ */
+void setClientInfo(Properties properties) throws SQLClientInfoException;

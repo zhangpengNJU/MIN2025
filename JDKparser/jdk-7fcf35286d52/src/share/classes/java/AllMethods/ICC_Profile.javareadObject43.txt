@@ -1,0 +1,61 @@
+/**
+ * Reads default serializable fields from the stream.  Reads from
+ * the stream a string and an array of bytes as additional data.
+ *
+ * @param s stream used for deserialization.
+ * @throws IOException
+ *     thrown by <code>ObjectInputStream</code>.
+ * @throws ClassNotFoundException
+ *     thrown by <code>ObjectInputStream</code>.
+ * @serialData
+ *     The <code>String</code> is the name of one of
+ *     <code>CS_<var>*</var></code> constants defined in the
+ *     {@link ColorSpace} class if the profile object is a profile
+ *     for a predefined color space (for example
+ *     <code>"CS_sRGB"</code>).  The string is <code>null</code>
+ *     otherwise.
+ *     <p>
+ *     The <code>byte[]</code> array is the profile data for the
+ *     profile.  It will usually be <code>null</code> for the
+ *     predefined profiles.
+ *     <p>
+ *     If the string is recognized as a constant name for
+ *     predefined color space the object will be resolved into
+ *     profile obtained with
+ *     <code>getInstance(int&nbsp;cspace)</code> and the profile
+ *     data are ignored.  Otherwise the object will be resolved
+ *     into profile obtained with
+ *     <code>getInstance(byte[]&nbsp;data)</code>.
+ * @see #readResolve()
+ * @see #getInstance(int)
+ * @see #getInstance(byte[])
+ */
+private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+    s.defaultReadObject();
+    String csName = (String) s.readObject();
+    byte[] data = (byte[]) s.readObject();
+    // ColorSpace.CS_* constant if known
+    int cspace = 0;
+    boolean isKnownPredefinedCS = false;
+    if (csName != null) {
+        isKnownPredefinedCS = true;
+        if (csName.equals("CS_sRGB")) {
+            cspace = ColorSpace.CS_sRGB;
+        } else if (csName.equals("CS_CIEXYZ")) {
+            cspace = ColorSpace.CS_CIEXYZ;
+        } else if (csName.equals("CS_PYCC")) {
+            cspace = ColorSpace.CS_PYCC;
+        } else if (csName.equals("CS_GRAY")) {
+            cspace = ColorSpace.CS_GRAY;
+        } else if (csName.equals("CS_LINEAR_RGB")) {
+            cspace = ColorSpace.CS_LINEAR_RGB;
+        } else {
+            isKnownPredefinedCS = false;
+        }
+    }
+    if (isKnownPredefinedCS) {
+        resolvedDeserializedProfile = getInstance(cspace);
+    } else {
+        resolvedDeserializedProfile = getInstance(data);
+    }
+}

@@ -1,0 +1,12 @@
+public E previous() {
+    checkForComodification();
+    try {
+        int i = cursor - 1;
+        E previous = get(i);
+        lastRet = cursor = i;
+        return previous;
+    } catch (IndexOutOfBoundsException e) {
+        checkForComodification();
+        throw new NoSuchElementException();
+    }
+}

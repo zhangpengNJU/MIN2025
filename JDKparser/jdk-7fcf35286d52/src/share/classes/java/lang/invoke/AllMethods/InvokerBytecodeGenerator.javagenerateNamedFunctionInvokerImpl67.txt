@@ -1,0 +1,50 @@
+private byte[] generateNamedFunctionInvokerImpl(MethodTypeForm typeForm) {
+    MethodType dstType = typeForm.erasedType();
+    classFilePrologue();
+    // Suppress this method in backtraces displayed to the user.
+    mv.visitAnnotation("Ljava/lang/invoke/LambdaForm$Hidden;", true);
+    // Force inlining of this invoker method.
+    mv.visitAnnotation("Ljava/lang/invoke/ForceInline;", true);
+    // Load receiver
+    emitAloadInsn(0);
+    // Load arguments from array
+    for (int i = 0; i < dstType.parameterCount(); i++) {
+        emitAloadInsn(1);
+        emitIconstInsn(i);
+        mv.visitInsn(Opcodes.AALOAD);
+        // Maybe unbox
+        Class<?> dptype = dstType.parameterType(i);
+        if (dptype.isPrimitive()) {
+            Class<?> sptype = dstType.basicType().wrap().parameterType(i);
+            Wrapper dstWrapper = Wrapper.forBasicType(dptype);
+            // narrow subword from int
+            Wrapper srcWrapper = dstWrapper.isSubwordOrInt() ? Wrapper.INT : dstWrapper;
+            emitUnboxing(srcWrapper);
+            emitPrimCast(srcWrapper, dstWrapper);
+        }
+    }
+    // Invoke
+    String targetDesc = dstType.basicType().toMethodDescriptorString();
+    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, MH, "invokeBasic", targetDesc, false);
+    // Box primitive types
+    Class<?> rtype = dstType.returnType();
+    if (rtype != void.class && rtype.isPrimitive()) {
+        Wrapper srcWrapper = Wrapper.forBasicType(rtype);
+        // widen subword to int
+        Wrapper dstWrapper = srcWrapper.isSubwordOrInt() ? Wrapper.INT : srcWrapper;
+        // boolean casts not allowed
+        emitPrimCast(srcWrapper, dstWrapper);
+        emitBoxing(dstWrapper);
+    }
+    // If the return type is void we return a null reference.
+    if (rtype == void.class) {
+        mv.visitInsn(Opcodes.ACONST_NULL);
+    }
+    // NOTE: NamedFunction invokers always return a reference value.
+    emitReturnInsn(L_TYPE);
+    classFileEpilogue();
+    bogusMethod(dstType);
+    final byte[] classFile = cw.toByteArray();
+    maybeDump(className, classFile);
+    return classFile;
+}

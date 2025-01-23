@@ -1,0 +1,45 @@
+/**
+ * Returns the black box bounds of the characters in the specified range.
+ * The black box bounds is an area consisting of the union of the bounding
+ * boxes of all the glyphs corresponding to the characters between start
+ * and limit.  This area can be disjoint.
+ * @param firstEndpoint one end of the character range
+ * @param secondEndpoint the other end of the character range.  Can be
+ * less than <code>firstEndpoint</code>.
+ * @return a <code>Shape</code> enclosing the black box bounds.  This is
+ *     in standard coordinates.
+ */
+public Shape getBlackBoxBounds(int firstEndpoint, int secondEndpoint) {
+    ensureCache();
+    if (firstEndpoint > secondEndpoint) {
+        int t = firstEndpoint;
+        firstEndpoint = secondEndpoint;
+        secondEndpoint = t;
+    }
+    if (firstEndpoint < 0 || secondEndpoint > characterCount) {
+        throw new IllegalArgumentException("Invalid range passed to TextLayout.getBlackBoxBounds()");
+    }
+    /*
+         * return an area that consists of the bounding boxes of all the
+         * characters from firstEndpoint to limit
+         */
+    GeneralPath result = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+    if (firstEndpoint < characterCount) {
+        for (int logIndex = firstEndpoint; logIndex < secondEndpoint; logIndex++) {
+            Rectangle2D r = textLine.getCharBounds(logIndex);
+            if (!r.isEmpty()) {
+                result.append(r, false);
+            }
+        }
+    }
+    if (dx != 0 || dy != 0) {
+        AffineTransform tx = AffineTransform.getTranslateInstance(dx, dy);
+        result = (GeneralPath) tx.createTransformedShape(result);
+    }
+    LayoutPathImpl lp = textLine.getLayoutPath();
+    if (lp != null) {
+        result = (GeneralPath) lp.mapShape(result);
+    }
+    // return new Highlight(result, false);
+    return result;
+}

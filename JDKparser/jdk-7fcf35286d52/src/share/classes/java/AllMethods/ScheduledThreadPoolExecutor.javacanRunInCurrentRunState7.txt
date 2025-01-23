@@ -1,0 +1,9 @@
+/**
+ * Returns true if can run a task given current run state
+ * and run-after-shutdown parameters.
+ *
+ * @param periodic true if this task periodic, false if delayed
+ */
+boolean canRunInCurrentRunState(boolean periodic) {
+    return isRunningOrShutdown(periodic ? continueExistingPeriodicTasksAfterShutdown : executeExistingDelayedTasksAfterShutdown);
+}

@@ -1,0 +1,20 @@
+/**
+ * Disconnects this channel's socket.
+ *
+ * <p> The channel's socket is configured so that it can receive datagrams
+ * from, and sends datagrams to, any remote address so long as the security
+ * manager, if installed, permits it.
+ *
+ * <p> This method may be invoked at any time.  It will not have any effect
+ * on read or write operations that are already in progress at the moment
+ * that it is invoked.
+ *
+ * <p> If this channel's socket is not connected, or if the channel is
+ * closed, then invoking this method has no effect.  </p>
+ *
+ * @return  This datagram channel
+ *
+ * @throws  IOException
+ *          If some other I/O error occurs
+ */
+public abstract DatagramChannel disconnect() throws IOException;

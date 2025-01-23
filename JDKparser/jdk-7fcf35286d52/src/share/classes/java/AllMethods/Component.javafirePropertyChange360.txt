@@ -1,0 +1,18 @@
+/**
+ * Support for reporting bound property changes for boolean properties.
+ * This method can be called when a bound property has changed and it will
+ * send the appropriate PropertyChangeEvent to any registered
+ * PropertyChangeListeners.
+ *
+ * @param propertyName the property whose value has changed
+ * @param oldValue the property's previous value
+ * @param newValue the property's new value
+ * @since 1.4
+ */
+protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+    PropertyChangeSupport changeSupport = this.changeSupport;
+    if (changeSupport == null || oldValue == newValue) {
+        return;
+    }
+    changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+}

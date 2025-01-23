@@ -1,0 +1,132 @@
+/**
+ * Parses text from a string to produce a <code>Date</code>.
+ * <p>
+ * The method attempts to parse text starting at the index given by
+ * <code>pos</code>.
+ * If parsing succeeds, then the index of <code>pos</code> is updated
+ * to the index after the last character used (parsing does not necessarily
+ * use all characters up to the end of the string), and the parsed
+ * date is returned. The updated <code>pos</code> can be used to
+ * indicate the starting point for the next call to this method.
+ * If an error occurs, then the index of <code>pos</code> is not
+ * changed, the error index of <code>pos</code> is set to the index of
+ * the character where the error occurred, and null is returned.
+ *
+ * <p>This parsing operation uses the {@link DateFormat#calendar
+ * calendar} to produce a {@code Date}. All of the {@code
+ * calendar}'s date-time fields are {@linkplain Calendar#clear()
+ * cleared} before parsing, and the {@code calendar}'s default
+ * values of the date-time fields are used for any missing
+ * date-time information. For example, the year value of the
+ * parsed {@code Date} is 1970 with {@link GregorianCalendar} if
+ * no year value is given from the parsing operation.  The {@code
+ * TimeZone} value may be overwritten, depending on the given
+ * pattern and the time zone value in {@code text}. Any {@code
+ * TimeZone} value that has previously been set by a call to
+ * {@link #setTimeZone(java.util.TimeZone) setTimeZone} may need
+ * to be restored for further operations.
+ *
+ * @param text  A <code>String</code>, part of which should be parsed.
+ * @param pos   A <code>ParsePosition</code> object with index and error
+ *              index information as described above.
+ * @return A <code>Date</code> parsed from the string. In case of
+ *         error, returns null.
+ * @exception NullPointerException if <code>text</code> or <code>pos</code> is null.
+ */
+@Override
+public Date parse(String text, ParsePosition pos) {
+    checkNegativeNumberExpression();
+    int start = pos.index;
+    int oldStart = start;
+    int textLength = text.length();
+    boolean[] ambiguousYear = { false };
+    CalendarBuilder calb = new CalendarBuilder();
+    for (int i = 0; i < compiledPattern.length; ) {
+        int tag = compiledPattern[i] >>> 8;
+        int count = compiledPattern[i++] & 0xff;
+        if (count == 255) {
+            count = compiledPattern[i++] << 16;
+            count |= compiledPattern[i++];
+        }
+        switch(tag) {
+            case TAG_QUOTE_ASCII_CHAR:
+                if (start >= textLength || text.charAt(start) != (char) count) {
+                    pos.index = oldStart;
+                    pos.errorIndex = start;
+                    return null;
+                }
+                start++;
+                break;
+            case TAG_QUOTE_CHARS:
+                while (count-- > 0) {
+                    if (start >= textLength || text.charAt(start) != compiledPattern[i++]) {
+                        pos.index = oldStart;
+                        pos.errorIndex = start;
+                        return null;
+                    }
+                    start++;
+                }
+                break;
+            default:
+                // Peek the next pattern to determine if we need to
+                // obey the number of pattern letters for
+                // parsing. It's required when parsing contiguous
+                // digit text (e.g., "20010704") with a pattern which
+                // has no delimiters between fields, like "yyyyMMdd".
+                boolean obeyCount = false;
+                // In Arabic, a minus sign for a negative number is put after
+                // the number. Even in another locale, a minus sign can be
+                // put after a number using DateFormat.setNumberFormat().
+                // If both the minus sign and the field-delimiter are '-',
+                // subParse() needs to determine whether a '-' after a number
+                // in the given text is a delimiter or is a minus sign for the
+                // preceding number. We give subParse() a clue based on the
+                // information in compiledPattern.
+                boolean useFollowingMinusSignAsDelimiter = false;
+                if (i < compiledPattern.length) {
+                    int nextTag = compiledPattern[i] >>> 8;
+                    if (!(nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) {
+                        obeyCount = true;
+                    }
+                    if (hasFollowingMinusSign && (nextTag == TAG_QUOTE_ASCII_CHAR || nextTag == TAG_QUOTE_CHARS)) {
+                        int c;
+                        if (nextTag == TAG_QUOTE_ASCII_CHAR) {
+                            c = compiledPattern[i] & 0xff;
+                        } else {
+                            c = compiledPattern[i + 1];
+                        }
+                        if (c == minusSign) {
+                            useFollowingMinusSignAsDelimiter = true;
+                        }
+                    }
+                }
+                start = subParse(text, start, tag, count, obeyCount, ambiguousYear, pos, useFollowingMinusSignAsDelimiter, calb);
+                if (start < 0) {
+                    pos.index = oldStart;
+                    return null;
+                }
+        }
+    }
+    // At this point the fields of Calendar have been set.  Calendar
+    // will fill in default values for missing fields when the time
+    // is computed.
+    pos.index = start;
+    Date parsedDate;
+    try {
+        parsedDate = calb.establish(calendar).getTime();
+        // If the year value is ambiguous,
+        // then the two-digit year == the default start year
+        if (ambiguousYear[0]) {
+            if (parsedDate.before(defaultCenturyStart)) {
+                parsedDate = calb.addYear(100).establish(calendar).getTime();
+            }
+        }
+    }// An IllegalArgumentException will be thrown by Calendar.getTime()
+    // if any fields are out of range, e.g., MONTH == 17.
+     catch (IllegalArgumentException e) {
+        pos.errorIndex = start;
+        pos.index = oldStart;
+        return null;
+    }
+    return parsedDate;
+}

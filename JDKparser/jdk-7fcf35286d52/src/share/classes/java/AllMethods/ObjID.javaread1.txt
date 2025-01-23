@@ -1,0 +1,26 @@
+/**
+ * Constructs and returns a new <code>ObjID</code> instance by
+ * unmarshalling a binary representation from an
+ * <code>ObjectInput</code> instance.
+ *
+ * <p>Specifically, this method first invokes the given stream's
+ * {@link ObjectInput#readLong()} method to read an object number,
+ * then it invokes {@link UID#read(DataInput)} with the
+ * stream to read an address space identifier, and then it
+ * creates and returns a new <code>ObjID</code> instance that
+ * contains the object number and address space identifier that
+ * were read from the stream.
+ *
+ * @param   in the <code>ObjectInput</code> instance to read
+ * <code>ObjID</code> from
+ *
+ * @return  unmarshalled <code>ObjID</code> instance
+ *
+ * @throws  IOException if an I/O error occurs while performing
+ * this operation
+ */
+public static ObjID read(ObjectInput in) throws IOException {
+    long num = in.readLong();
+    UID space = UID.read(in);
+    return new ObjID(num, space);
+}

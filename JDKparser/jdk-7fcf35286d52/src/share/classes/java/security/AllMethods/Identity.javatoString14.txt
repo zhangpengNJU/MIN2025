@@ -1,0 +1,36 @@
+/**
+ * Returns a string representation of this identity, with
+ * optionally more details than that provided by the
+ * {@code toString} method without any arguments.
+ *
+ * <p>First, if there is a security manager, its {@code checkSecurityAccess}
+ * method is called with {@code "printIdentity"}
+ * as its argument to see if it's ok to return the string.
+ *
+ * @param detailed whether or not to provide detailed information.
+ *
+ * @return information about this identity. If {@code detailed}
+ * is true, then this method returns more information than that
+ * provided by the {@code toString} method without any arguments.
+ *
+ * @exception  SecurityException  if a security manager exists and its
+ * {@code checkSecurityAccess} method doesn't allow
+ * returning a string describing this identity.
+ *
+ * @see #toString
+ * @see SecurityManager#checkSecurityAccess
+ */
+public String toString(boolean detailed) {
+    String out = toString();
+    if (detailed) {
+        out += "\n";
+        out += printKeys();
+        out += "\n" + printCertificates();
+        if (info != null) {
+            out += "\n\t" + info;
+        } else {
+            out += "\n\tno additional information available.";
+        }
+    }
+    return out;
+}

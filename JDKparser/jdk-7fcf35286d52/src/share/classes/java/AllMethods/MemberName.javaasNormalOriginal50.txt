@@ -1,0 +1,27 @@
+/**
+ * If this MN is a REF_invokeSpecial, return a clone with the "normal" kind
+ *  REF_invokeVirtual; also switch either to REF_invokeInterface if clazz.isInterface.
+ *  The end result is to get a fully virtualized version of the MN.
+ *  (Note that resolving in the JVM will sometimes devirtualize, changing
+ *  REF_invokeVirtual of a final to REF_invokeSpecial, and REF_invokeInterface
+ *  in some corner cases to either of the previous two; this transform
+ *  undoes that change under the assumption that it occurred.)
+ */
+public MemberName asNormalOriginal() {
+    byte normalVirtual = clazz.isInterface() ? REF_invokeInterface : REF_invokeVirtual;
+    byte refKind = getReferenceKind();
+    byte newRefKind = refKind;
+    MemberName result = this;
+    switch(refKind) {
+        case REF_invokeInterface:
+        case REF_invokeVirtual:
+        case REF_invokeSpecial:
+            newRefKind = normalVirtual;
+            break;
+    }
+    if (newRefKind == refKind)
+        return this;
+    result = clone().changeReferenceKind(newRefKind, refKind);
+    assert (this.referenceKindIsConsistentWith(result.getReferenceKind()));
+    return result;
+}

@@ -1,0 +1,9 @@
+private static void validateDumpDir(Path path) {
+    if (!Files.exists(path)) {
+        throw new IllegalArgumentException("Directory " + path + " does not exist");
+    } else if (!Files.isDirectory(path)) {
+        throw new IllegalArgumentException("Path " + path + " is not a directory");
+    } else if (!Files.isWritable(path)) {
+        throw new IllegalArgumentException("Directory " + path + " is not writable");
+    }
+}

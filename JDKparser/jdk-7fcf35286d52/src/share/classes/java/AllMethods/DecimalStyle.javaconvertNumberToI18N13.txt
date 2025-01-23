@@ -1,0 +1,17 @@
+/**
+ * Converts the input numeric text to the internationalized form using the zero character.
+ *
+ * @param numericText  the text, consisting of digits 0 to 9, to convert, not null
+ * @return the internationalized text, not null
+ */
+String convertNumberToI18N(String numericText) {
+    if (zeroDigit == '0') {
+        return numericText;
+    }
+    int diff = zeroDigit - '0';
+    char[] array = numericText.toCharArray();
+    for (int i = 0; i < array.length; i++) {
+        array[i] = (char) (array[i] + diff);
+    }
+    return new String(array);
+}

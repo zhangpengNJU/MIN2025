@@ -1,0 +1,26 @@
+/**
+ * Returns the total advance width for showing the specified array
+ * of characters in this <code>Font</code>.  The advance is the
+ * distance from the leftmost point to the rightmost point on the
+ * string's baseline.  The advance of a <code>String</code>
+ * is not necessarily the sum of the advances of its characters.
+ * This is equivalent to measuring a <code>String</code> of the
+ * characters in the specified range.
+ * @param data the array of characters to be measured
+ * @param off the start offset of the characters in the array
+ * @param len the number of characters to be measured from the array
+ * @return    the advance width of the subarray of the specified
+ *               <code>char</code> array in the font described by
+ *               this <code>FontMetrics</code> object.
+ * @throws    NullPointerException if <code>data</code> is null.
+ * @throws    IndexOutOfBoundsException if the <code>off</code>
+ *            and <code>len</code> arguments index characters outside
+ *            the bounds of the <code>data</code> array.
+ * @see       #charWidth(int)
+ * @see       #charWidth(char)
+ * @see       #bytesWidth(byte[], int, int)
+ * @see       #stringWidth(String)
+ */
+public int charsWidth(char[] data, int off, int len) {
+    return stringWidth(new String(data, off, len));
+}

@@ -1,0 +1,24 @@
+/**
+ * Returns a transform that rotates coordinates by the specified
+ * number of quadrants around the specified anchor point.
+ * This operation is equivalent to calling:
+ * <pre>
+ *     AffineTransform.getRotateInstance(numquadrants * Math.PI / 2.0,
+ *                                       anchorx, anchory);
+ * </pre>
+ * Rotating by a positive number of quadrants rotates points on
+ * the positive X axis toward the positive Y axis.
+ *
+ * @param numquadrants the number of 90 degree arcs to rotate by
+ * @param anchorx the X coordinate of the rotation anchor point
+ * @param anchory the Y coordinate of the rotation anchor point
+ * @return an <code>AffineTransform</code> object that rotates
+ *  coordinates by the specified number of quadrants around the
+ *  specified anchor point.
+ * @since 1.6
+ */
+public static AffineTransform getQuadrantRotateInstance(int numquadrants, double anchorx, double anchory) {
+    AffineTransform Tx = new AffineTransform();
+    Tx.setToQuadrantRotation(numquadrants, anchorx, anchory);
+    return Tx;
+}

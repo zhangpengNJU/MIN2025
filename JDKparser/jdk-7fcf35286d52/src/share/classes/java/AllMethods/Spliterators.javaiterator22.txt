@@ -1,0 +1,46 @@
+// Iterators from Spliterators
+/**
+ * Creates an {@code Iterator} from a {@code Spliterator}.
+ *
+ * <p>Traversal of elements should be accomplished through the iterator.
+ * The behaviour of traversal is undefined if the spliterator is operated
+ * after the iterator is returned.
+ *
+ * @param <T> Type of elements
+ * @param spliterator The spliterator
+ * @return An iterator
+ * @throws NullPointerException if the given spliterator is {@code null}
+ */
+public static <T> Iterator<T> iterator(Spliterator<? extends T> spliterator) {
+    Objects.requireNonNull(spliterator);
+    class Adapter implements Iterator<T>, Consumer<T> {
+
+        boolean valueReady = false;
+
+        T nextElement;
+
+        @Override
+        public void accept(T t) {
+            valueReady = true;
+            nextElement = t;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (!valueReady)
+                spliterator.tryAdvance(this);
+            return valueReady;
+        }
+
+        @Override
+        public T next() {
+            if (!valueReady && !hasNext())
+                throw new NoSuchElementException();
+            else {
+                valueReady = false;
+                return nextElement;
+            }
+        }
+    }
+    return new Adapter();
+}

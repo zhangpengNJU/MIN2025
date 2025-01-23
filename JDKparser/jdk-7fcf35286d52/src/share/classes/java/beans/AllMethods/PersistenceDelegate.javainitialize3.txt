@@ -1,0 +1,44 @@
+/**
+ * Produce a series of statements with side effects on <code>newInstance</code>
+ * so that the new instance becomes <em>equivalent</em> to <code>oldInstance</code>.
+ * In the specification of this method, we mean by equivalent that, after the method
+ * returns, the modified instance is indistinguishable from
+ * <code>newInstance</code> in the behavior of all methods in its
+ * public API.
+ * <p>
+ * The implementation typically achieves this goal by producing a series of
+ * "what happened" statements involving the <code>oldInstance</code>
+ * and its publicly available state. These statements are sent
+ * to the output stream using its <code>writeExpression</code>
+ * method which returns an expression involving elements in
+ * a cloned environment simulating the state of an input stream during
+ * reading. Each statement returned will have had all instances
+ * the old environment replaced with objects which exist in the new
+ * one. In particular, references to the target of these statements,
+ * which start out as references to <code>oldInstance</code> are returned
+ * as references to the <code>newInstance</code> instead.
+ * Executing these statements effects an incremental
+ * alignment of the state of the two objects as a series of
+ * modifications to the objects in the new environment.
+ * By the time the initialize method returns it should be impossible
+ * to tell the two instances apart by using their public APIs.
+ * Most importantly, the sequence of steps that were used to make
+ * these objects appear equivalent will have been recorded
+ * by the output stream and will form the actual output when
+ * the stream is flushed.
+ * <p>
+ * The default implementation, calls the <code>initialize</code>
+ * method of the type's superclass.
+ *
+ * @param type the type of the instances
+ * @param oldInstance The instance to be copied.
+ * @param newInstance The instance that is to be modified.
+ * @param out The stream to which any initialization statements should be written.
+ *
+ * @throws NullPointerException if {@code out} is {@code null}
+ */
+protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    Class<?> superType = type.getSuperclass();
+    PersistenceDelegate info = out.getPersistenceDelegate(superType);
+    info.initialize(superType, oldInstance, newInstance, out);
+}

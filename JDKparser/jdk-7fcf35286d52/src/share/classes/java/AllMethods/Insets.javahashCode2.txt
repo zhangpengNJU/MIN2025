@@ -1,0 +1,13 @@
+/**
+ * Returns the hash code for this Insets.
+ *
+ * @return    a hash code for this Insets.
+ */
+public int hashCode() {
+    int sum1 = left + bottom;
+    int sum2 = right + top;
+    int val1 = sum1 * (sum1 + 1) / 2 + left;
+    int val2 = sum2 * (sum2 + 1) / 2 + top;
+    int sum3 = val1 + val2;
+    return sum3 * (sum3 + 1) / 2 + val2;
+}

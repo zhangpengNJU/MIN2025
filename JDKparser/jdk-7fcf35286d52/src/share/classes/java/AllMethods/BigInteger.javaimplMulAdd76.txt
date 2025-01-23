@@ -1,0 +1,14 @@
+/**
+ * Java Runtime may use intrinsic for this method.
+ */
+private static int implMulAdd(int[] out, int[] in, int offset, int len, int k) {
+    long kLong = k & LONG_MASK;
+    long carry = 0;
+    offset = out.length - offset - 1;
+    for (int j = len - 1; j >= 0; j--) {
+        long product = (in[j] & LONG_MASK) * kLong + (out[offset] & LONG_MASK) + carry;
+        out[offset--] = (int) product;
+        carry = product >>> 32;
+    }
+    return (int) carry;
+}

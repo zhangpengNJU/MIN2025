@@ -1,0 +1,57 @@
+/**
+ * Solves the quadratic whose coefficients are in the <code>eqn</code>
+ * array and places the non-complex roots into the <code>res</code>
+ * array, returning the number of roots.
+ * The quadratic solved is represented by the equation:
+ * <pre>
+ *     eqn = {C, B, A};
+ *     ax^2 + bx + c = 0
+ * </pre>
+ * A return value of <code>-1</code> is used to distinguish a constant
+ * equation, which might be always 0 or never 0, from an equation that
+ * has no zeroes.
+ * @param eqn the specified array of coefficients to use to solve
+ *        the quadratic equation
+ * @param res the array that contains the non-complex roots
+ *        resulting from the solution of the quadratic equation
+ * @return the number of roots, or <code>-1</code> if the equation is
+ *  a constant.
+ * @since 1.3
+ */
+public static int solveQuadratic(double[] eqn, double[] res) {
+    double a = eqn[2];
+    double b = eqn[1];
+    double c = eqn[0];
+    int roots = 0;
+    if (a == 0.0) {
+        // The quadratic parabola has degenerated to a line.
+        if (b == 0.0) {
+            // The line has degenerated to a constant.
+            return -1;
+        }
+        res[roots++] = -c / b;
+    } else {
+        // From Numerical Recipes, 5.6, Quadratic and Cubic Equations
+        double d = b * b - 4.0 * a * c;
+        if (d < 0.0) {
+            // If d < 0.0, then there are no roots
+            return 0;
+        }
+        d = Math.sqrt(d);
+        // For accuracy, calculate one root using:
+        // (-b +/- d) / 2a
+        // and the other using:
+        // 2c / (-b +/- d)
+        // Choose the sign of the +/- so that b+d gets larger in magnitude
+        if (b < 0.0) {
+            d = -d;
+        }
+        double q = (b + d) / -2.0;
+        // We already tested a for being 0 above
+        res[roots++] = q / a;
+        if (q != 0.0) {
+            res[roots++] = c / q;
+        }
+    }
+    return roots;
+}

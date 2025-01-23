@@ -1,0 +1,39 @@
+/**
+ * Indicates the construction status of a specified image that is
+ * being prepared for display.
+ * <p>
+ * If the values of the width and height arguments are both
+ * <code>-1</code>, this method returns the construction status of
+ * a screen representation of the specified image in this toolkit.
+ * Otherwise, this method returns the construction status of a
+ * scaled representation of the image at the specified width
+ * and height.
+ * <p>
+ * This method does not cause the image to begin loading.
+ * An application must call <code>prepareImage</code> to force
+ * the loading of an image.
+ * <p>
+ * This method is called by the component's <code>checkImage</code>
+ * methods.
+ * <p>
+ * Information on the flags returned by this method can be found
+ * with the definition of the <code>ImageObserver</code> interface.
+ * @param     image   the image whose status is being checked.
+ * @param     width   the width of the scaled version whose status is
+ *                 being checked, or <code>-1</code>.
+ * @param     height  the height of the scaled version whose status
+ *                 is being checked, or <code>-1</code>.
+ * @param     observer   the <code>ImageObserver</code> object to be
+ *                 notified as the image is being prepared.
+ * @return    the bitwise inclusive <strong>OR</strong> of the
+ *                 <code>ImageObserver</code> flags for the
+ *                 image data that is currently available.
+ * @see       java.awt.Toolkit#prepareImage(java.awt.Image,
+ *                 int, int, java.awt.image.ImageObserver)
+ * @see       java.awt.Component#checkImage(java.awt.Image,
+ *                 java.awt.image.ImageObserver)
+ * @see       java.awt.Component#checkImage(java.awt.Image,
+ *                 int, int, java.awt.image.ImageObserver)
+ * @see       java.awt.image.ImageObserver
+ */
+public abstract int checkImage(Image image, int width, int height, ImageObserver observer);

@@ -1,0 +1,12 @@
+private boolean coalesceMouseEvent(MouseEvent e) {
+    EventQueueItem[] cache = ((Component) e.getSource()).eventCache;
+    if (cache == null) {
+        return false;
+    }
+    int index = eventToCacheIndex(e);
+    if (index != -1 && cache[index] != null) {
+        cache[index].event = e;
+        return true;
+    }
+    return false;
+}

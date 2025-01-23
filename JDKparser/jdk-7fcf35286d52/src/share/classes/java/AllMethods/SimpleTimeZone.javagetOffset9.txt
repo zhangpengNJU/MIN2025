@@ -1,0 +1,81 @@
+/**
+ * Returns the difference in milliseconds between local time and
+ * UTC, taking into account both the raw offset and the effect of
+ * daylight saving, for the specified date and time.  This method
+ * assumes that the start and end month are distinct.  It also
+ * uses a default {@link GregorianCalendar} object as its
+ * underlying calendar, such as for determining leap years.  Do
+ * not use the result of this method with a calendar other than a
+ * default <code>GregorianCalendar</code>.
+ *
+ * <p><em>Note:  In general, clients should use
+ * <code>Calendar.get(ZONE_OFFSET) + Calendar.get(DST_OFFSET)</code>
+ * instead of calling this method.</em>
+ *
+ * @param era       The era of the given date.
+ * @param year      The year in the given date.
+ * @param month     The month in the given date. Month is 0-based. e.g.,
+ *                  0 for January.
+ * @param day       The day-in-month of the given date.
+ * @param dayOfWeek The day-of-week of the given date.
+ * @param millis    The milliseconds in day in <em>standard</em> local time.
+ * @return          The milliseconds to add to UTC to get local time.
+ * @exception       IllegalArgumentException the <code>era</code>,
+ *                  <code>month</code>, <code>day</code>, <code>dayOfWeek</code>,
+ *                  or <code>millis</code> parameters are out of range
+ */
+public int getOffset(int era, int year, int month, int day, int dayOfWeek, int millis) {
+    if (era != GregorianCalendar.AD && era != GregorianCalendar.BC) {
+        throw new IllegalArgumentException("Illegal era " + era);
+    }
+    int y = year;
+    if (era == GregorianCalendar.BC) {
+        // adjust y with the GregorianCalendar-style year numbering.
+        y = 1 - y;
+    }
+    // If the year isn't representable with the 64-bit long
+    // integer in milliseconds, convert the year to an
+    // equivalent year. This is required to pass some JCK test cases
+    // which are actually useless though because the specified years
+    // can't be supported by the Java time system.
+    if (y >= 292278994) {
+        y = 2800 + y % 2800;
+    } else if (y <= -292269054) {
+        // y %= 28 also produces an equivalent year, but positive
+        // year numbers would be convenient to use the UNIX cal
+        // command.
+        y = (int) CalendarUtils.mod((long) y, 28);
+    }
+    // convert year to its 1-based month value
+    int m = month + 1;
+    // First, calculate time as a Gregorian date.
+    BaseCalendar cal = gcal;
+    BaseCalendar.Date cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
+    cdate.setDate(y, m, day);
+    // normalize cdate
+    long time = cal.getTime(cdate);
+    // UTC time
+    time += millis - rawOffset;
+    // If the time value represents a time before the default
+    // Gregorian cutover, recalculate time using the Julian
+    // calendar system. For the Julian calendar system, the
+    // normalized year numbering is ..., -2 (BCE 2), -1 (BCE 1),
+    // 1, 2 ... which is different from the GregorianCalendar
+    // style year numbering (..., -1, 0 (BCE 1), 1, 2, ...).
+    if (time < GregorianCalendar.DEFAULT_GREGORIAN_CUTOVER) {
+        cal = (BaseCalendar) CalendarSystem.forName("julian");
+        cdate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.NO_TIMEZONE);
+        cdate.setNormalizedDate(y, m, day);
+        time = cal.getTime(cdate) + millis - rawOffset;
+    }
+    if ((cdate.getNormalizedYear() != y) || (cdate.getMonth() != m) || (cdate.getDayOfMonth() != day) || // The validation should be cdate.getDayOfWeek() ==
+    // dayOfWeek. However, we don't check dayOfWeek for
+    // compatibility.
+    (dayOfWeek < Calendar.SUNDAY || dayOfWeek > Calendar.SATURDAY) || (millis < 0 || millis >= (24 * 60 * 60 * 1000))) {
+        throw new IllegalArgumentException();
+    }
+    if (!useDaylight || year < startYear || era != GregorianCalendar.CE) {
+        return rawOffset;
+    }
+    return getOffset(cal, cdate, y, time);
+}

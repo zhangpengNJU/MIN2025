@@ -1,0 +1,28 @@
+private int parseIPv6Reference(int start, int n) throws URISyntaxException {
+    int p = start;
+    int q;
+    boolean compressedZeros = false;
+    q = scanHexSeq(p, n);
+    if (q > p) {
+        p = q;
+        if (at(p, n, "::")) {
+            compressedZeros = true;
+            p = scanHexPost(p + 2, n);
+        } else if (at(p, n, ':')) {
+            p = takeIPv4Address(p + 1, n, "IPv4 address");
+            ipv6byteCount += 4;
+        }
+    } else if (at(p, n, "::")) {
+        compressedZeros = true;
+        p = scanHexPost(p + 2, n);
+    }
+    if (p < n)
+        fail("Malformed IPv6 address", start);
+    if (ipv6byteCount > 16)
+        fail("IPv6 address too long", start);
+    if (!compressedZeros && ipv6byteCount < 16)
+        fail("IPv6 address too short", start);
+    if (compressedZeros && ipv6byteCount == 16)
+        fail("Malformed IPv6 address", start);
+    return p;
+}

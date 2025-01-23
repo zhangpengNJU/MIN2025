@@ -1,0 +1,11 @@
+private static <T> void siftUpUsingComparator(int k, T x, Object[] array, Comparator<? super T> cmp) {
+    while (k > 0) {
+        int parent = (k - 1) >>> 1;
+        Object e = array[parent];
+        if (cmp.compare(x, (T) e) >= 0)
+            break;
+        array[k] = e;
+        k = parent;
+    }
+    array[k] = x;
+}

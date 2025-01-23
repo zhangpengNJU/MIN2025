@@ -1,0 +1,18 @@
+/**
+ * Performs a parallel evaluation of the operation using the specified
+ * {@code PipelineHelper} which describes the upstream intermediate
+ * operations.  Only called on stateful operations.  If {@link
+ * #opIsStateful()} returns true then implementations must override the
+ * default implementation.
+ *
+ * @implSpec The default implementation always throw
+ * {@code UnsupportedOperationException}.
+ *
+ * @param helper the pipeline helper describing the pipeline stages
+ * @param spliterator the source {@code Spliterator}
+ * @param generator the array generator
+ * @return a {@code Node} describing the result of the evaluation
+ */
+<P_IN> Node<E_OUT> opEvaluateParallel(PipelineHelper<E_OUT> helper, Spliterator<P_IN> spliterator, IntFunction<E_OUT[]> generator) {
+    throw new UnsupportedOperationException("Parallel evaluation is not supported");
+}

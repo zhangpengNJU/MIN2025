@@ -1,0 +1,17 @@
+/**
+ * Returns an array of all locales for which the
+ * <code>getInstance</code> methods of this class can return
+ * localized instances.
+ * The returned array represents the union of locales supported
+ * by the Java runtime and by installed
+ * {@link java.text.spi.CollatorProvider CollatorProvider} implementations.
+ * It must contain at least a Locale instance equal to
+ * {@link java.util.Locale#US Locale.US}.
+ *
+ * @return An array of locales for which localized
+ *         <code>Collator</code> instances are available.
+ */
+public static synchronized Locale[] getAvailableLocales() {
+    LocaleServiceProviderPool pool = LocaleServiceProviderPool.getPool(CollatorProvider.class);
+    return pool.getAvailableLocales();
+}

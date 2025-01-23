@@ -1,0 +1,27 @@
+/*
+     * Post an ACTION_EVENT to the target of the MenuPeer
+     * associated with the specified keyboard event (on
+     * keydown).  Returns true if there is an associated
+     * keyboard event.
+     */
+boolean handleShortcut(KeyEvent e) {
+    // Is it a key event?
+    int id = e.getID();
+    if (id != KeyEvent.KEY_PRESSED && id != KeyEvent.KEY_RELEASED) {
+        return false;
+    }
+    // Is the accelerator modifier key pressed?
+    int accelKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    if ((e.getModifiers() & accelKey) == 0) {
+        return false;
+    }
+    // Pass MenuShortcut on to child menus.
+    int nmenus = getMenuCount();
+    for (int i = 0; i < nmenus; i++) {
+        Menu m = getMenu(i);
+        if (m.handleShortcut(e)) {
+            return true;
+        }
+    }
+    return false;
+}

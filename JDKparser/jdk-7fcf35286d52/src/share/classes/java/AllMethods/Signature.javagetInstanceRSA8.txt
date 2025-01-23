@@ -1,0 +1,19 @@
+// return an implementation for NONEwithRSA, which is a special case
+// because of the Cipher.RSA/ECB/PKCS1Padding compatibility wrapper
+private static Signature getInstanceRSA(Provider p) throws NoSuchAlgorithmException {
+    // try Signature first
+    Service s = p.getService("Signature", RSA_SIGNATURE);
+    if (s != null) {
+        Instance instance = GetInstance.getInstance(s, SignatureSpi.class);
+        return getInstance(instance, RSA_SIGNATURE);
+    }
+    // check Cipher
+    try {
+        Cipher c = Cipher.getInstance(RSA_CIPHER, p);
+        return new Delegate(new CipherAdapter(c), RSA_SIGNATURE);
+    } catch (GeneralSecurityException e) {
+        // throw Signature style exception message to avoid confusion,
+        // but append Cipher exception as cause
+        throw new NoSuchAlgorithmException("no such algorithm: " + RSA_SIGNATURE + " for provider " + p.getName(), e);
+    }
+}

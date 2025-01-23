@@ -1,0 +1,99 @@
+/**
+ * Returns the <a href="#week_year">week year</a> represented by this
+ * {@code GregorianCalendar}. The dates in the weeks between 1 and the
+ * maximum week number of the week year have the same week year value
+ * that may be one year before or after the {@link Calendar#YEAR YEAR}
+ * (calendar year) value.
+ *
+ * <p>This method calls {@link Calendar#complete()} before
+ * calculating the week year.
+ *
+ * @return the week year represented by this {@code GregorianCalendar}.
+ *         If the {@link Calendar#ERA ERA} value is {@link #BC}, the year is
+ *         represented by 0 or a negative number: BC 1 is 0, BC 2
+ *         is -1, BC 3 is -2, and so on.
+ * @throws IllegalArgumentException
+ *         if any of the calendar fields is invalid in non-lenient mode.
+ * @see #isWeekDateSupported()
+ * @see #getWeeksInWeekYear()
+ * @see Calendar#getFirstDayOfWeek()
+ * @see Calendar#getMinimalDaysInFirstWeek()
+ * @since 1.7
+ */
+@Override
+public int getWeekYear() {
+    // implicitly calls complete()
+    int year = get(YEAR);
+    if (internalGetEra() == BCE) {
+        year = 1 - year;
+    }
+    // Fast path for the Gregorian calendar years that are never
+    // affected by the Julian-Gregorian transition
+    if (year > gregorianCutoverYear + 1) {
+        int weekOfYear = internalGet(WEEK_OF_YEAR);
+        if (internalGet(MONTH) == JANUARY) {
+            if (weekOfYear >= 52) {
+                --year;
+            }
+        } else {
+            if (weekOfYear == 1) {
+                ++year;
+            }
+        }
+        return year;
+    }
+    // General (slow) path
+    int dayOfYear = internalGet(DAY_OF_YEAR);
+    int maxDayOfYear = getActualMaximum(DAY_OF_YEAR);
+    int minimalDays = getMinimalDaysInFirstWeek();
+    // Quickly check the possibility of year adjustments before
+    // cloning this GregorianCalendar.
+    if (dayOfYear > minimalDays && dayOfYear < (maxDayOfYear - 6)) {
+        return year;
+    }
+    // Create a clone to work on the calculation
+    GregorianCalendar cal = (GregorianCalendar) clone();
+    cal.setLenient(true);
+    // Use GMT so that intermediate date calculations won't
+    // affect the time of day fields.
+    cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+    // Go to the first day of the year, which is usually January 1.
+    cal.set(DAY_OF_YEAR, 1);
+    cal.complete();
+    // Get the first day of the first day-of-week in the year.
+    int delta = getFirstDayOfWeek() - cal.get(DAY_OF_WEEK);
+    if (delta != 0) {
+        if (delta < 0) {
+            delta += 7;
+        }
+        cal.add(DAY_OF_YEAR, delta);
+    }
+    int minDayOfYear = cal.get(DAY_OF_YEAR);
+    if (dayOfYear < minDayOfYear) {
+        if (minDayOfYear <= minimalDays) {
+            --year;
+        }
+    } else {
+        cal.set(YEAR, year + 1);
+        cal.set(DAY_OF_YEAR, 1);
+        cal.complete();
+        int del = getFirstDayOfWeek() - cal.get(DAY_OF_WEEK);
+        if (del != 0) {
+            if (del < 0) {
+                del += 7;
+            }
+            cal.add(DAY_OF_YEAR, del);
+        }
+        minDayOfYear = cal.get(DAY_OF_YEAR) - 1;
+        if (minDayOfYear == 0) {
+            minDayOfYear = 7;
+        }
+        if (minDayOfYear >= minimalDays) {
+            int days = maxDayOfYear - dayOfYear + 1;
+            if (days <= (7 - minDayOfYear)) {
+                ++year;
+            }
+        }
+    }
+    return year;
+}

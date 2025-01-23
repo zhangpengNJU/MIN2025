@@ -1,0 +1,7 @@
+static Set<AWTKeyStroke> initFocusTraversalKeysSet(String value, Set<AWTKeyStroke> targetSet) {
+    StringTokenizer tokens = new StringTokenizer(value, ",");
+    while (tokens.hasMoreTokens()) {
+        targetSet.add(AWTKeyStroke.getAWTKeyStroke(tokens.nextToken()));
+    }
+    return (targetSet.isEmpty()) ? Collections.EMPTY_SET : Collections.unmodifiableSet(targetSet);
+}

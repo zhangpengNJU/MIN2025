@@ -1,0 +1,15 @@
+/**
+ * Gets the name of the menu component.
+ * @return        the name of the menu component
+ * @see           java.awt.MenuComponent#setName(java.lang.String)
+ * @since         JDK1.1
+ */
+public String getName() {
+    if (name == null && !nameExplicitlySet) {
+        synchronized (this) {
+            if (name == null && !nameExplicitlySet)
+                name = constructComponentName();
+        }
+    }
+    return name;
+}

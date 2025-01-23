@@ -1,0 +1,17 @@
+private void emitPushArgument(Class<?> ptype, Object arg) {
+    BasicType bptype = basicType(ptype);
+    if (arg instanceof Name) {
+        Name n = (Name) arg;
+        emitLoadInsn(n.type, n.index());
+        emitImplicitConversion(n.type, ptype, n);
+    } else if ((arg == null || arg instanceof String) && bptype == L_TYPE) {
+        emitConst(arg);
+    } else {
+        if (Wrapper.isWrapperType(arg.getClass()) && bptype != L_TYPE) {
+            emitConst(arg);
+        } else {
+            mv.visitLdcInsn(constantPlaceholder(arg));
+            emitImplicitConversion(L_TYPE, ptype, arg);
+        }
+    }
+}

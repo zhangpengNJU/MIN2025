@@ -1,0 +1,7 @@
+@Override
+public boolean equals(Object obj) {
+    V value;
+    return obj == this || obj instanceof Value && // cleared CacheValue is only equal to itself
+    (value = get()) != null && // compare by identity
+    value == ((Value<?>) obj).get();
+}

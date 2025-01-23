@@ -1,0 +1,16 @@
+/**
+ * Returns an array of all the property change listeners
+ * registered on this toolkit. The returned array
+ * contains {@link java.beans.PropertyChangeListenerProxy} objects
+ * that associate listeners with the names of desktop properties.
+ *
+ * @return all of this toolkit's {@link PropertyChangeListener}
+ *         objects wrapped in {@code java.beans.PropertyChangeListenerProxy} objects
+ *         or an empty array  if no listeners are added
+ *
+ * @see PropertyChangeSupport#getPropertyChangeListeners()
+ * @since 1.4
+ */
+public PropertyChangeListener[] getPropertyChangeListeners() {
+    return desktopPropsSupport.getPropertyChangeListeners();
+}

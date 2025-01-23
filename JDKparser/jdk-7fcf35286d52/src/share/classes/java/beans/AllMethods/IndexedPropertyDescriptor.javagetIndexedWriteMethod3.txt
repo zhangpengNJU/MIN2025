@@ -1,0 +1,45 @@
+/**
+ * Gets the method that should be used to write an indexed property value.
+ *
+ * @return The method that should be used to write an indexed
+ * property value.
+ * May return null if the property isn't indexed or is read-only.
+ */
+public synchronized Method getIndexedWriteMethod() {
+    Method indexedWriteMethod = this.indexedWriteMethodRef.get();
+    if (indexedWriteMethod == null) {
+        Class<?> cls = getClass0();
+        if (cls == null || (indexedWriteMethodName == null && !this.indexedWriteMethodRef.isSet())) {
+            // the Indexed writeMethod was explicitly set to null.
+            return null;
+        }
+        // We need the indexed type to ensure that we get the correct method.
+        // Cannot use the getIndexedPropertyType method since that could
+        // result in an infinite loop.
+        Class<?> type = getIndexedPropertyType0();
+        if (type == null) {
+            try {
+                type = findIndexedPropertyType(getIndexedReadMethod(), null);
+                setIndexedPropertyType(type);
+            } catch (IntrospectionException ex) {
+                // Set iprop type to be the classic type
+                Class<?> propType = getPropertyType();
+                if (propType.isArray()) {
+                    type = propType.getComponentType();
+                }
+            }
+        }
+        if (indexedWriteMethodName == null) {
+            indexedWriteMethodName = Introspector.SET_PREFIX + getBaseName();
+        }
+        Class<?>[] args = (type == null) ? null : new Class<?>[] { int.class, type };
+        indexedWriteMethod = Introspector.findMethod(cls, indexedWriteMethodName, 2, args);
+        if (indexedWriteMethod != null) {
+            if (!indexedWriteMethod.getReturnType().equals(void.class)) {
+                indexedWriteMethod = null;
+            }
+        }
+        setIndexedWriteMethod0(indexedWriteMethod);
+    }
+    return indexedWriteMethod;
+}

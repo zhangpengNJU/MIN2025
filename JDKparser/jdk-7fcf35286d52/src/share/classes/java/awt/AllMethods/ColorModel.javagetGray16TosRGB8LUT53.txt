@@ -1,0 +1,44 @@
+/*
+     * Return a byte LUT that converts 16-bit gray values in the grayCS
+     * ColorSpace to the appropriate 8-bit sRGB value.  I.e., if lut
+     * is the byte array returned by this method and sval = lut[gval],
+     * then the sRGB triple (sval,sval,sval) is the best match to gval.
+     * Cache references to any computed LUT in a Map.
+     */
+static byte[] getGray16TosRGB8LUT(ICC_ColorSpace grayCS) {
+    if (isLinearGRAYspace(grayCS)) {
+        return getLinearRGB16TosRGB8LUT();
+    }
+    if (g16Tos8Map != null) {
+        byte[] g16Tos8LUT = g16Tos8Map.get(grayCS);
+        if (g16Tos8LUT != null) {
+            return g16Tos8LUT;
+        }
+    }
+    short[] tmp = new short[65536];
+    for (int i = 0; i <= 65535; i++) {
+        tmp[i] = (short) i;
+    }
+    ColorTransform[] transformList = new ColorTransform[2];
+    PCMM mdl = CMSManager.getModule();
+    ICC_ColorSpace srgbCS = (ICC_ColorSpace) ColorSpace.getInstance(ColorSpace.CS_sRGB);
+    transformList[0] = mdl.createTransform(grayCS.getProfile(), ColorTransform.Any, ColorTransform.In);
+    transformList[1] = mdl.createTransform(srgbCS.getProfile(), ColorTransform.Any, ColorTransform.Out);
+    ColorTransform t = mdl.createTransform(transformList);
+    tmp = t.colorConvert(tmp, null);
+    byte[] g16Tos8LUT = new byte[65536];
+    for (int i = 0, j = 2; i <= 65535; i++, j += 3) {
+        // All three components of tmp should be equal, since
+        // the input color space to colorConvert is a gray scale
+        // space.  However, there are slight anomalies in the results.
+        // Copy tmp starting at index 2, since colorConvert seems
+        // to be slightly more accurate for the third component!
+        // scale unsigned short (0 - 65535) to unsigned byte (0 - 255)
+        g16Tos8LUT[i] = (byte) (((float) (tmp[j] & 0xffff)) * (1.0f / 257.0f) + 0.5f);
+    }
+    if (g16Tos8Map == null) {
+        g16Tos8Map = Collections.synchronizedMap(new WeakHashMap<ICC_ColorSpace, byte[]>(2));
+    }
+    g16Tos8Map.put(grayCS, g16Tos8LUT);
+    return g16Tos8LUT;
+}

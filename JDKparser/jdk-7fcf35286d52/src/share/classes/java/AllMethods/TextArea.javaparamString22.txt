@@ -1,0 +1,29 @@
+/**
+ * Returns a string representing the state of this <code>TextArea</code>.
+ * This method is intended to be used only for debugging purposes, and the
+ * content and format of the returned string may vary between
+ * implementations. The returned string may be empty but may not be
+ * <code>null</code>.
+ *
+ * @return      the parameter string of this text area
+ */
+protected String paramString() {
+    String sbVisStr;
+    switch(scrollbarVisibility) {
+        case SCROLLBARS_BOTH:
+            sbVisStr = "both";
+            break;
+        case SCROLLBARS_VERTICAL_ONLY:
+            sbVisStr = "vertical-only";
+            break;
+        case SCROLLBARS_HORIZONTAL_ONLY:
+            sbVisStr = "horizontal-only";
+            break;
+        case SCROLLBARS_NONE:
+            sbVisStr = "none";
+            break;
+        default:
+            sbVisStr = "invalid display policy";
+    }
+    return super.paramString() + ",rows=" + rows + ",columns=" + columns + ",scrollbarVisibility=" + sbVisStr;
+}

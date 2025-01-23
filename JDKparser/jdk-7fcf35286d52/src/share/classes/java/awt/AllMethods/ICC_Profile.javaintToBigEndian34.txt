@@ -1,0 +1,6 @@
+static void intToBigEndian(int value, byte[] array, int index) {
+    array[index] = (byte) (value >> 24);
+    array[index + 1] = (byte) (value >> 16);
+    array[index + 2] = (byte) (value >> 8);
+    array[index + 3] = (byte) (value);
+}

@@ -1,0 +1,13 @@
+// set the current index, update information about the current run if necessary,
+// return the character at the current index
+private char internalSetIndex(int position) {
+    currentIndex = position;
+    if (position < currentRunStart || position >= currentRunLimit) {
+        updateRunInfo();
+    }
+    if (currentIndex == endIndex) {
+        return DONE;
+    } else {
+        return charAt(position);
+    }
+}

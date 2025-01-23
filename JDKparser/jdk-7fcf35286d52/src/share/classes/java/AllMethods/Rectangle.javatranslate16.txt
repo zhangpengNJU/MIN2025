@@ -1,0 +1,78 @@
+/**
+ * Translates this <code>Rectangle</code> the indicated distance,
+ * to the right along the X coordinate axis, and
+ * downward along the Y coordinate axis.
+ * @param dx the distance to move this <code>Rectangle</code>
+ *                 along the X axis
+ * @param dy the distance to move this <code>Rectangle</code>
+ *                 along the Y axis
+ * @see       java.awt.Rectangle#setLocation(int, int)
+ * @see       java.awt.Rectangle#setLocation(java.awt.Point)
+ */
+public void translate(int dx, int dy) {
+    int oldv = this.x;
+    int newv = oldv + dx;
+    if (dx < 0) {
+        // moving leftward
+        if (newv > oldv) {
+            // negative overflow
+            // Only adjust width if it was valid (>= 0).
+            if (width >= 0) {
+                // The right edge is now conceptually at
+                // newv+width, but we may move newv to prevent
+                // overflow.  But we want the right edge to
+                // remain at its new location in spite of the
+                // clipping.  Think of the following adjustment
+                // conceptually the same as:
+                // width += newv; newv = MIN_VALUE; width -= newv;
+                width += newv - Integer.MIN_VALUE;
+            // width may go negative if the right edge went past
+            // MIN_VALUE, but it cannot overflow since it cannot
+            // have moved more than MIN_VALUE and any non-negative
+            // number + MIN_VALUE does not overflow.
+            }
+            newv = Integer.MIN_VALUE;
+        }
+    } else {
+        // moving rightward (or staying still)
+        if (newv < oldv) {
+            // positive overflow
+            if (width >= 0) {
+                // Conceptually the same as:
+                // width += newv; newv = MAX_VALUE; width -= newv;
+                width += newv - Integer.MAX_VALUE;
+                // With large widths and large displacements
+                // we may overflow so we need to check it.
+                if (width < 0)
+                    width = Integer.MAX_VALUE;
+            }
+            newv = Integer.MAX_VALUE;
+        }
+    }
+    this.x = newv;
+    oldv = this.y;
+    newv = oldv + dy;
+    if (dy < 0) {
+        // moving upward
+        if (newv > oldv) {
+            // negative overflow
+            if (height >= 0) {
+                height += newv - Integer.MIN_VALUE;
+            // See above comment about no overflow in this case
+            }
+            newv = Integer.MIN_VALUE;
+        }
+    } else {
+        // moving downward (or staying still)
+        if (newv < oldv) {
+            // positive overflow
+            if (height >= 0) {
+                height += newv - Integer.MAX_VALUE;
+                if (height < 0)
+                    height = Integer.MAX_VALUE;
+            }
+            newv = Integer.MAX_VALUE;
+        }
+    }
+    this.y = newv;
+}

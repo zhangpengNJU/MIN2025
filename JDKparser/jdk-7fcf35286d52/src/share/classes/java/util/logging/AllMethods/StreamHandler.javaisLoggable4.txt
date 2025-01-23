@@ -1,0 +1,17 @@
+/**
+ * Check if this <tt>Handler</tt> would actually log a given <tt>LogRecord</tt>.
+ * <p>
+ * This method checks if the <tt>LogRecord</tt> has an appropriate level and
+ * whether it satisfies any <tt>Filter</tt>.  It will also return false if
+ * no output stream has been assigned yet or the LogRecord is null.
+ * <p>
+ * @param record  a <tt>LogRecord</tt>
+ * @return true if the <tt>LogRecord</tt> would be logged.
+ */
+@Override
+public boolean isLoggable(LogRecord record) {
+    if (writer == null || record == null) {
+        return false;
+    }
+    return super.isLoggable(record);
+}

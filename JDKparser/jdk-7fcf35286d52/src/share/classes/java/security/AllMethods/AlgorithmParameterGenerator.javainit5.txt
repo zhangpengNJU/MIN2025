@@ -1,0 +1,14 @@
+/**
+ * Initializes this parameter generator for a certain size.
+ * To create the parameters, the {@code SecureRandom}
+ * implementation of the highest-priority installed provider is used as
+ * the source of randomness.
+ * (If none of the installed providers supply an implementation of
+ * {@code SecureRandom}, a system-provided source of randomness is
+ * used.)
+ *
+ * @param size the size (number of bits).
+ */
+public final void init(int size) {
+    paramGenSpi.engineInit(size, new SecureRandom());
+}

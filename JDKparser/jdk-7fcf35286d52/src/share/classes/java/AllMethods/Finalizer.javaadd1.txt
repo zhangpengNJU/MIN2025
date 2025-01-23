@@ -1,0 +1,9 @@
+private void add() {
+    synchronized (lock) {
+        if (unfinalized != null) {
+            this.next = unfinalized;
+            unfinalized.prev = this;
+        }
+        unfinalized = this;
+    }
+}

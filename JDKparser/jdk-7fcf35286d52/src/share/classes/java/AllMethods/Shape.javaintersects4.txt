@@ -1,0 +1,39 @@
+/**
+ * Tests if the interior of the <code>Shape</code> intersects the
+ * interior of a specified rectangular area.
+ * The rectangular area is considered to intersect the <code>Shape</code>
+ * if any point is contained in both the interior of the
+ * <code>Shape</code> and the specified rectangular area.
+ * <p>
+ * The {@code Shape.intersects()} method allows a {@code Shape}
+ * implementation to conservatively return {@code true} when:
+ * <ul>
+ * <li>
+ * there is a high probability that the rectangular area and the
+ * <code>Shape</code> intersect, but
+ * <li>
+ * the calculations to accurately determine this intersection
+ * are prohibitively expensive.
+ * </ul>
+ * This means that for some {@code Shapes} this method might
+ * return {@code true} even though the rectangular area does not
+ * intersect the {@code Shape}.
+ * The {@link java.awt.geom.Area Area} class performs
+ * more accurate computations of geometric intersection than most
+ * {@code Shape} objects and therefore can be used if a more precise
+ * answer is required.
+ *
+ * @param x the X coordinate of the upper-left corner
+ *          of the specified rectangular area
+ * @param y the Y coordinate of the upper-left corner
+ *          of the specified rectangular area
+ * @param w the width of the specified rectangular area
+ * @param h the height of the specified rectangular area
+ * @return <code>true</code> if the interior of the <code>Shape</code> and
+ *          the interior of the rectangular area intersect, or are
+ *          both highly likely to intersect and intersection calculations
+ *          would be too expensive to perform; <code>false</code> otherwise.
+ * @see java.awt.geom.Area
+ * @since 1.2
+ */
+public boolean intersects(double x, double y, double w, double h);

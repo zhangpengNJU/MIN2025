@@ -1,0 +1,7 @@
+public void add(int index, E e) {
+    rangeCheckForAdd(index);
+    checkForComodification();
+    parent.add(parentOffset + index, e);
+    this.modCount = parent.modCount;
+    this.size++;
+}

@@ -1,0 +1,25 @@
+/**
+ * Creates an object that encapsulates the current execution
+ * environment. The result of this method is used, for example, by the
+ * three-argument <code>checkConnect</code> method and by the
+ * two-argument <code>checkRead</code> method.
+ * These methods are needed because a trusted method may be called
+ * on to read a file or open a socket on behalf of another method.
+ * The trusted method needs to determine if the other (possibly
+ * untrusted) method would be allowed to perform the operation on its
+ * own.
+ * <p> The default implementation of this method is to return
+ * an <code>AccessControlContext</code> object.
+ *
+ * @return  an implementation-dependent object that encapsulates
+ *          sufficient information about the current execution environment
+ *          to perform some security checks later.
+ * @see     java.lang.SecurityManager#checkConnect(java.lang.String, int,
+ *   java.lang.Object) checkConnect
+ * @see     java.lang.SecurityManager#checkRead(java.lang.String,
+ *   java.lang.Object) checkRead
+ * @see     java.security.AccessControlContext AccessControlContext
+ */
+public Object getSecurityContext() {
+    return AccessController.getContext();
+}

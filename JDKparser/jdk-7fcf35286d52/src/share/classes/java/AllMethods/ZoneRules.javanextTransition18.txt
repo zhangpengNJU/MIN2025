@@ -1,0 +1,47 @@
+/**
+ * Gets the next transition after the specified instant.
+ * <p>
+ * This returns details of the next transition after the specified instant.
+ * For example, if the instant represents a point where "Summer" daylight savings time
+ * applies, then the method will return the transition to the next "Winter" time.
+ *
+ * @param instant  the instant to get the next transition after, not null, but null
+ *  may be ignored if the rules have a single offset for all instants
+ * @return the next transition after the specified instant, null if this is after the last transition
+ */
+public ZoneOffsetTransition nextTransition(Instant instant) {
+    if (savingsInstantTransitions.length == 0) {
+        return null;
+    }
+    long epochSec = instant.getEpochSecond();
+    // check if using last rules
+    if (epochSec >= savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
+        if (lastRules.length == 0) {
+            return null;
+        }
+        // search year the instant is in
+        int year = findYear(epochSec, wallOffsets[wallOffsets.length - 1]);
+        ZoneOffsetTransition[] transArray = findTransitionArray(year);
+        for (ZoneOffsetTransition trans : transArray) {
+            if (epochSec < trans.toEpochSecond()) {
+                return trans;
+            }
+        }
+        // use first from following year
+        if (year < Year.MAX_VALUE) {
+            transArray = findTransitionArray(year + 1);
+            return transArray[0];
+        }
+        return null;
+    }
+    // using historic rules
+    int index = Arrays.binarySearch(savingsInstantTransitions, epochSec);
+    if (index < 0) {
+        // switched value is the next transition
+        index = -index - 1;
+    } else {
+        // exact match, so need to add one to get the next
+        index += 1;
+    }
+    return new ZoneOffsetTransition(savingsInstantTransitions[index], wallOffsets[index], wallOffsets[index + 1]);
+}

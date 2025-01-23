@@ -1,0 +1,26 @@
+/**
+ * Internally used  to calculate the quotient of this div v and places the
+ * quotient in the provided MutableBigInteger object and the remainder is
+ * returned.
+ *
+ * @return the remainder of the division will be returned.
+ */
+long divide(long v, MutableBigInteger quotient) {
+    if (v == 0)
+        throw new ArithmeticException("BigInteger divide by zero");
+    // Dividend is zero
+    if (intLen == 0) {
+        quotient.intLen = quotient.offset = 0;
+        return 0;
+    }
+    if (v < 0)
+        v = -v;
+    int d = (int) (v >>> 32);
+    quotient.clear();
+    // Special case on word divisor
+    if (d == 0)
+        return divideOneWord((int) v, quotient) & LONG_MASK;
+    else {
+        return divideLongMagnitude(v, quotient).toLong();
+    }
+}

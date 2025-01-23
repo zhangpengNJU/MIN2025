@@ -1,0 +1,21 @@
+/**
+ * This method will be called by <code>dispatchKeyEvent</code>. It will
+ * handle any unconsumed KeyEvents that map to an AWT
+ * <code>MenuShortcut</code> by consuming the event and activating the
+ * shortcut.
+ *
+ * @param e the KeyEvent to post-process
+ * @return <code>true</code>
+ * @see #dispatchKeyEvent
+ * @see MenuShortcut
+ */
+public boolean postProcessKeyEvent(KeyEvent e) {
+    if (!e.isConsumed()) {
+        Component target = e.getComponent();
+        Container p = (Container) (target instanceof Container ? target : target.getParent());
+        if (p != null) {
+            p.postProcessKeyEvent(e);
+        }
+    }
+    return true;
+}

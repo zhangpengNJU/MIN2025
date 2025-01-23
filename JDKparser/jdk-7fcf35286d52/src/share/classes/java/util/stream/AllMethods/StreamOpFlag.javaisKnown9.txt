@@ -1,0 +1,11 @@
+/**
+ * Checks if this flag is set on stream flags, injected on operation flags,
+ * and injected on combined stream and operation flags.
+ *
+ * @param flags the stream flags, operation flags, or combined stream and
+ *        operation flags
+ * @return true if this flag is known, otherwise false.
+ */
+boolean isKnown(int flags) {
+    return (flags & preserve) == set;
+}

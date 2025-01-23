@@ -1,0 +1,28 @@
+/**
+ * Returns the orientation appropriate for the given ResourceBundle's
+ * localization.  Three approaches are tried, in the following order:
+ * <ol>
+ * <li>Retrieve a ComponentOrientation object from the ResourceBundle
+ *      using the string "Orientation" as the key.
+ * <li>Use the ResourceBundle.getLocale to determine the bundle's
+ *      locale, then return the orientation for that locale.
+ * <li>Return the default locale's orientation.
+ * </ol>
+ *
+ * @deprecated As of J2SE 1.4, use {@link #getOrientation(java.util.Locale)}.
+ */
+@Deprecated
+public static ComponentOrientation getOrientation(ResourceBundle bdl) {
+    ComponentOrientation result = null;
+    try {
+        result = (ComponentOrientation) bdl.getObject("Orientation");
+    } catch (Exception e) {
+    }
+    if (result == null) {
+        result = getOrientation(bdl.getLocale());
+    }
+    if (result == null) {
+        result = getOrientation(Locale.getDefault());
+    }
+    return result;
+}

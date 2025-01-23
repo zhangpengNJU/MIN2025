@@ -1,0 +1,20 @@
+/**
+ * Returns a {@code BigDecimal} whose value is {@code (this - subtrahend)},
+ * with rounding according to the context settings.
+ *
+ * If {@code subtrahend} is zero then this, rounded if necessary, is used as the
+ * result.  If this is zero then the result is {@code subtrahend.negate(mc)}.
+ *
+ * @param  subtrahend value to be subtracted from this {@code BigDecimal}.
+ * @param  mc the context to use.
+ * @return {@code this - subtrahend}, rounded as necessary.
+ * @throws ArithmeticException if the result is inexact but the
+ *         rounding mode is {@code UNNECESSARY}.
+ * @since  1.5
+ */
+public BigDecimal subtract(BigDecimal subtrahend, MathContext mc) {
+    if (mc.precision == 0)
+        return subtract(subtrahend);
+    // share the special rounding code in add()
+    return add(subtrahend.negate(), mc);
+}

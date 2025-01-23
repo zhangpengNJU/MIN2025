@@ -1,0 +1,3 @@
+static final <K, V> void setTabAt(Node<K, V>[] tab, int i, Node<K, V> v) {
+    U.putObjectVolatile(tab, ((long) i << ASHIFT) + ABASE, v);
+}

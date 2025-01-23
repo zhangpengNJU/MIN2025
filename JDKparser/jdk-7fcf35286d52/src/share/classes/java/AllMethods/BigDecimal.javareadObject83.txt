@@ -1,0 +1,17 @@
+/**
+ * Reconstitute the {@code BigDecimal} instance from a stream (that is,
+ * deserialize it).
+ *
+ * @param s the stream being read.
+ */
+private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    // Read in all fields
+    s.defaultReadObject();
+    // validate possibly bad fields
+    if (intVal == null) {
+        String message = "BigDecimal: null intVal in stream";
+        throw new java.io.StreamCorruptedException(message);
+    // [all values of scale are now allowed]
+    }
+    UnsafeHolder.setIntCompactVolatile(this, compactValFor(intVal));
+}

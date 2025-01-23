@@ -1,0 +1,22 @@
+/**
+ * Compare this VMID to another, and return true if they are the
+ * same identifier.
+ */
+public boolean equals(Object obj) {
+    if (obj instanceof VMID) {
+        VMID vmid = (VMID) obj;
+        if (!uid.equals(vmid.uid))
+            return false;
+        if ((addr == null) ^ (vmid.addr == null))
+            return false;
+        if (addr != null) {
+            if (addr.length != vmid.addr.length)
+                return false;
+            for (int i = 0; i < addr.length; ++i) if (addr[i] != vmid.addr[i])
+                return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -1,0 +1,17 @@
+private static SignatureSpi newInstance(Service s) throws NoSuchAlgorithmException {
+    if (s.getType().equals("Cipher")) {
+        // must be NONEwithRSA
+        try {
+            Cipher c = Cipher.getInstance(RSA_CIPHER, s.getProvider());
+            return new CipherAdapter(c);
+        } catch (NoSuchPaddingException e) {
+            throw new NoSuchAlgorithmException(e);
+        }
+    } else {
+        Object o = s.newInstance(null);
+        if (o instanceof SignatureSpi == false) {
+            throw new NoSuchAlgorithmException("Not a SignatureSpi: " + o.getClass().getName());
+        }
+        return (SignatureSpi) o;
+    }
+}

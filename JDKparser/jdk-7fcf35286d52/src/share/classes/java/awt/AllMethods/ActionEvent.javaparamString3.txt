@@ -1,0 +1,17 @@
+/**
+ * Returns a parameter string identifying this action event.
+ * This method is useful for event-logging and for debugging.
+ *
+ * @return a string identifying the event and its associated command
+ */
+public String paramString() {
+    String typeStr;
+    switch(id) {
+        case ACTION_PERFORMED:
+            typeStr = "ACTION_PERFORMED";
+            break;
+        default:
+            typeStr = "unknown type";
+    }
+    return typeStr + ",cmd=" + actionCommand + ",when=" + when + ",modifiers=" + KeyEvent.getKeyModifiersText(modifiers);
+}

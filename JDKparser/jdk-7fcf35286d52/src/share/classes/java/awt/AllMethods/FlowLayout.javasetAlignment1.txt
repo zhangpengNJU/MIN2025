@@ -1,0 +1,31 @@
+/**
+ * Sets the alignment for this layout.
+ * Possible values are
+ * <ul>
+ * <li><code>FlowLayout.LEFT</code>
+ * <li><code>FlowLayout.RIGHT</code>
+ * <li><code>FlowLayout.CENTER</code>
+ * <li><code>FlowLayout.LEADING</code>
+ * <li><code>FlowLayout.TRAILING</code>
+ * </ul>
+ * @param      align one of the alignment values shown above
+ * @see        #getAlignment()
+ * @since      JDK1.1
+ */
+public void setAlignment(int align) {
+    this.newAlign = align;
+    // this.align is used only for serialization compatibility,
+    // so set it to a value compatible with the 1.1 version
+    // of the class
+    switch(align) {
+        case LEADING:
+            this.align = LEFT;
+            break;
+        case TRAILING:
+            this.align = RIGHT;
+            break;
+        default:
+            this.align = align;
+            break;
+    }
+}

@@ -1,0 +1,13 @@
+/**
+ * Constructs a @{link Node.Builder} compatible with the output shape of
+ * this {@code PipelineHelper}.
+ *
+ * @param exactSizeIfKnown if >=0 then a builder will be created that has a
+ *        fixed capacity of exactly sizeIfKnown elements; if < 0 then the
+ *        builder has variable capacity.  A fixed capacity builder will fail
+ *        if an element is added after the builder has reached capacity.
+ * @param generator a factory function for array instances
+ * @return a {@code Node.Builder} compatible with the output shape of this
+ *         {@code PipelineHelper}
+ */
+abstract Node.Builder<P_OUT> makeNodeBuilder(long exactSizeIfKnown, IntFunction<P_OUT[]> generator);

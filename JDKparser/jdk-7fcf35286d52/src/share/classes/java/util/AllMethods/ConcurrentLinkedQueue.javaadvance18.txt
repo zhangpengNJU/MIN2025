@@ -1,0 +1,35 @@
+/**
+ * Moves to next valid node and returns item to return for
+ * next(), or null if no such.
+ */
+private E advance() {
+    lastRet = nextNode;
+    E x = nextItem;
+    Node<E> pred, p;
+    if (nextNode == null) {
+        p = first();
+        pred = null;
+    } else {
+        pred = nextNode;
+        p = succ(nextNode);
+    }
+    for (; ; ) {
+        if (p == null) {
+            nextNode = null;
+            nextItem = null;
+            return x;
+        }
+        E item = p.item;
+        if (item != null) {
+            nextNode = p;
+            nextItem = item;
+            return x;
+        } else {
+            // skip over nulls
+            Node<E> next = succ(p);
+            if (pred != null && next != null)
+                pred.casNext(p, next);
+            p = next;
+        }
+    }
+}

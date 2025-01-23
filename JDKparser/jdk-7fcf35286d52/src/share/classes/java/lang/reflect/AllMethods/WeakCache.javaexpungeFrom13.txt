@@ -1,0 +1,12 @@
+void expungeFrom(ConcurrentMap<?, ? extends ConcurrentMap<?, ?>> map, ConcurrentMap<?, Boolean> reverseMap) {
+    // removing just by key is always safe here because after a CacheKey
+    // is cleared and enqueue-ed it is only equal to itself
+    // (see equals method)...
+    ConcurrentMap<?, ?> valuesMap = map.remove(this);
+    // remove also from reverseMap if needed
+    if (valuesMap != null) {
+        for (Object cacheValue : valuesMap.values()) {
+            reverseMap.remove(cacheValue);
+        }
+    }
+}

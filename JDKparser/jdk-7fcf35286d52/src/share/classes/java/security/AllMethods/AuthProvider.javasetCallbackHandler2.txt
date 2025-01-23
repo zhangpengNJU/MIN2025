@@ -1,0 +1,24 @@
+/**
+ * Set a {@code CallbackHandler}.
+ *
+ * <p> The provider uses this handler if one is not passed to the
+ * {@code login} method.  The provider also uses this handler
+ * if it invokes {@code login} on behalf of callers.
+ * In either case if a handler is not set via this method,
+ * the provider queries the
+ * <i>auth.login.defaultCallbackHandler</i> security property
+ * for the fully qualified class name of a default handler implementation.
+ * If the security property is not set,
+ * the provider is assumed to have alternative means
+ * for obtaining authentication information.
+ *
+ * @param handler a {@code CallbackHandler} for obtaining
+ *          authentication information, which may be {@code null}
+ *
+ * @exception SecurityException if the caller does not pass a
+ *  security check for
+ *  {@code SecurityPermission("authProvider.name")},
+ *  where {@code name} is the value returned by
+ *  this provider's {@code getName} method
+ */
+public abstract void setCallbackHandler(CallbackHandler handler);

@@ -1,0 +1,19 @@
+public double nextGaussian() {
+    // Use nextLocalGaussian instead of nextGaussian field
+    Double d = nextLocalGaussian.get();
+    if (d != null) {
+        nextLocalGaussian.set(null);
+        return d.doubleValue();
+    }
+    double v1, v2, s;
+    do {
+        // between -1 and 1
+        v1 = 2 * nextDouble() - 1;
+        // between -1 and 1
+        v2 = 2 * nextDouble() - 1;
+        s = v1 * v1 + v2 * v2;
+    } while (s >= 1 || s == 0);
+    double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
+    nextLocalGaussian.set(new Double(v2 * multiplier));
+    return v1 * multiplier;
+}

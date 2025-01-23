@@ -1,0 +1,19 @@
+String accessFailedMessage(Class<?> refc, MemberName m) {
+    Class<?> defc = m.getDeclaringClass();
+    int mods = m.getModifiers();
+    // check the class first:
+    boolean classOK = (Modifier.isPublic(defc.getModifiers()) && (defc == refc || Modifier.isPublic(refc.getModifiers())));
+    if (!classOK && (allowedModes & PACKAGE) != 0) {
+        classOK = (VerifyAccess.isClassAccessible(defc, lookupClass(), ALL_MODES) && (defc == refc || VerifyAccess.isClassAccessible(refc, lookupClass(), ALL_MODES)));
+    }
+    if (!classOK)
+        return "class is not public";
+    if (Modifier.isPublic(mods))
+        // (how?)
+        return "access to public member failed";
+    if (Modifier.isPrivate(mods))
+        return "member is private";
+    if (Modifier.isProtected(mods))
+        return "member is protected";
+    return "member is private to package";
+}

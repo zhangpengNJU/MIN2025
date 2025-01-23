@@ -1,0 +1,52 @@
+/**
+ * Initialize state, including fChars array, direction, and
+ * fBidi.
+ */
+private void initAll(AttributedCharacterIterator text) {
+    fStart = text.getBeginIndex();
+    // extract chars
+    fChars = new char[text.getEndIndex() - fStart];
+    int n = 0;
+    for (char c = text.first(); c != CharacterIterator.DONE; c = text.next()) {
+        fChars[n++] = c;
+    }
+    text.first();
+    fBidi = new Bidi(text);
+    if (fBidi.isLeftToRight()) {
+        fBidi = null;
+    }
+    text.first();
+    Map<? extends Attribute, ?> paragraphAttrs = text.getAttributes();
+    NumericShaper shaper = AttributeValues.getNumericShaping(paragraphAttrs);
+    if (shaper != null) {
+        shaper.shape(fChars, 0, fChars.length);
+    }
+    fParagraph = new StyledParagraph(text, fChars);
+    // set paragraph attributes
+    {
+        // If there's an embedded graphic at the start of the
+        // paragraph, look for the first non-graphic character
+        // and use it and its font to initialize the paragraph.
+        // If not, use the first graphic to initialize.
+        fJustifyRatio = AttributeValues.getJustification(paragraphAttrs);
+        boolean haveFont = TextLine.advanceToFirstFont(text);
+        if (haveFont) {
+            Font defaultFont = TextLine.getFontAtCurrentPos(text);
+            int charsStart = text.getIndex() - text.getBeginIndex();
+            LineMetrics lm = defaultFont.getLineMetrics(fChars, charsStart, charsStart + 1, fFrc);
+            fBaseline = (byte) lm.getBaselineIndex();
+            fBaselineOffsets = lm.getBaselineOffsets();
+        } else {
+            // hmmm what to do here?  Just try to supply reasonable
+            // values I guess.
+            GraphicAttribute graphic = (GraphicAttribute) paragraphAttrs.get(TextAttribute.CHAR_REPLACEMENT);
+            fBaseline = TextLayout.getBaselineFromGraphic(graphic);
+            Hashtable<Attribute, ?> fmap = new Hashtable<>(5, (float) 0.9);
+            Font dummyFont = new Font(fmap);
+            LineMetrics lm = dummyFont.getLineMetrics(" ", 0, 1, fFrc);
+            fBaselineOffsets = lm.getBaselineOffsets();
+        }
+        fBaselineOffsets = TextLine.getNormalizedOffsets(fBaselineOffsets, fBaseline);
+    }
+    invalidateComponents();
+}

@@ -1,0 +1,7 @@
+static AWTEventListener add(AWTEventListener a, AWTEventListener b) {
+    if (a == null)
+        return b;
+    if (b == null)
+        return a;
+    return new ToolkitEventMulticaster(a, b);
+}

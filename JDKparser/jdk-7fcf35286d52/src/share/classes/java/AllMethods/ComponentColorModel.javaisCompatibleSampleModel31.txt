@@ -1,0 +1,25 @@
+/**
+ * Checks whether or not the specified <CODE>SampleModel</CODE>
+ * is compatible with this <CODE>ColorModel</CODE>.
+ *
+ * @param sm The <CODE>SampleModel</CODE> to test for compatibility.
+ *
+ * @return <CODE>true</CODE> if the <CODE>SampleModel</CODE> is
+ * compatible with this <CODE>ColorModel</CODE>, <CODE>false</CODE>
+ * if it is not.
+ *
+ * @see SampleModel
+ */
+public boolean isCompatibleSampleModel(SampleModel sm) {
+    if (!(sm instanceof ComponentSampleModel)) {
+        return false;
+    }
+    // Must have the same number of components
+    if (numComponents != sm.getNumBands()) {
+        return false;
+    }
+    if (sm.getTransferType() != transferType) {
+        return false;
+    }
+    return true;
+}

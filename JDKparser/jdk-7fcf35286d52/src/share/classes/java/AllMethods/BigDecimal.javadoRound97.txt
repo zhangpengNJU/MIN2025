@@ -1,0 +1,20 @@
+/*
+     * Returns a {@code BigDecimal} created from {@code long} value with
+     * given scale rounded according to the MathContext settings
+     */
+private static BigDecimal doRound(long compactVal, int scale, MathContext mc) {
+    int mcp = mc.precision;
+    if (mcp > 0 && mcp < 19) {
+        int prec = longDigitLength(compactVal);
+        // drop can't be more than 18
+        int drop = prec - mcp;
+        while (drop > 0) {
+            scale = checkScaleNonZero((long) scale - drop);
+            compactVal = divideAndRound(compactVal, LONG_TEN_POWERS_TABLE[drop], mc.roundingMode.oldMode);
+            prec = longDigitLength(compactVal);
+            drop = prec - mcp;
+        }
+        return valueOf(compactVal, scale, prec);
+    }
+    return valueOf(compactVal, scale);
+}

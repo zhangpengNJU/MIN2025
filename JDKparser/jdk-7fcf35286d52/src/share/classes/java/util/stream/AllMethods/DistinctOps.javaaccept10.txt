@@ -1,0 +1,7 @@
+@Override
+public void accept(T t) {
+    if (!seen.contains(t)) {
+        seen.add(t);
+        downstream.accept(t);
+    }
+}

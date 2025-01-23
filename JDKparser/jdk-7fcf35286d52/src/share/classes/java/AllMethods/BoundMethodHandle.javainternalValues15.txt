@@ -1,0 +1,8 @@
+@Override
+final Object internalValues() {
+    Object[] boundValues = new Object[speciesData().fieldCount()];
+    for (int i = 0; i < boundValues.length; ++i) {
+        boundValues[i] = arg(i);
+    }
+    return Arrays.asList(boundValues);
+}

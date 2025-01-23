@@ -1,0 +1,19 @@
+private static char[] lookUpTable(String src, int index, Locale locale, boolean bLowerCasing) {
+    HashSet<Entry> set = entryTable.get(new Integer(src.codePointAt(index)));
+    char[] ret = null;
+    if (set != null) {
+        Iterator<Entry> iter = set.iterator();
+        String currentLang = locale.getLanguage();
+        while (iter.hasNext()) {
+            Entry entry = iter.next();
+            String conditionLang = entry.getLanguage();
+            if (((conditionLang == null) || (conditionLang.equals(currentLang))) && isConditionMet(src, index, locale, entry.getCondition())) {
+                ret = bLowerCasing ? entry.getLowerCase() : entry.getUpperCase();
+                if (conditionLang != null) {
+                    break;
+                }
+            }
+        }
+    }
+    return ret;
+}

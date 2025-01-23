@@ -1,0 +1,15 @@
+private static AsynchronousChannelProvider load() {
+    return AccessController.doPrivileged(new PrivilegedAction<AsynchronousChannelProvider>() {
+
+        public AsynchronousChannelProvider run() {
+            AsynchronousChannelProvider p;
+            p = loadProviderFromProperty();
+            if (p != null)
+                return p;
+            p = loadProviderAsService();
+            if (p != null)
+                return p;
+            return sun.nio.ch.DefaultAsynchronousChannelProvider.create();
+        }
+    });
+}

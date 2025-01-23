@@ -1,0 +1,12 @@
+/**
+ * Gets the era applicable at this date.
+ * <p>
+ * The Thai Buddhist calendar system has two eras, 'BE' and 'BEFORE_BE',
+ * defined by {@link ThaiBuddhistEra}.
+ *
+ * @return the era applicable at this date, not null
+ */
+@Override
+public ThaiBuddhistEra getEra() {
+    return (getProlepticYear() >= 1 ? ThaiBuddhistEra.BE : ThaiBuddhistEra.BEFORE_BE);
+}

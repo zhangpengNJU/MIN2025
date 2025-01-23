@@ -1,0 +1,9 @@
+private static byte[] fullBytes(int... byteValues) {
+    byte[] bytes = new byte[byteValues.length];
+    int i = 0;
+    for (int bv : byteValues) {
+        bytes[i++] = bval(bv);
+    }
+    assert (packedBytes(bytes) == 0);
+    return bytes;
+}

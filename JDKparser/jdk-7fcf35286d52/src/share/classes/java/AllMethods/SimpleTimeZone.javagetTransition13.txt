@@ -1,0 +1,25 @@
+private long getTransition(BaseCalendar cal, BaseCalendar.Date cdate, int mode, int year, int month, int dayOfMonth, int dayOfWeek, int timeOfDay) {
+    cdate.setNormalizedYear(year);
+    cdate.setMonth(month + 1);
+    switch(mode) {
+        case DOM_MODE:
+            cdate.setDayOfMonth(dayOfMonth);
+            break;
+        case DOW_IN_MONTH_MODE:
+            cdate.setDayOfMonth(1);
+            if (dayOfMonth < 0) {
+                cdate.setDayOfMonth(cal.getMonthLength(cdate));
+            }
+            cdate = (BaseCalendar.Date) cal.getNthDayOfWeek(dayOfMonth, dayOfWeek, cdate);
+            break;
+        case DOW_GE_DOM_MODE:
+            cdate.setDayOfMonth(dayOfMonth);
+            cdate = (BaseCalendar.Date) cal.getNthDayOfWeek(1, dayOfWeek, cdate);
+            break;
+        case DOW_LE_DOM_MODE:
+            cdate.setDayOfMonth(dayOfMonth);
+            cdate = (BaseCalendar.Date) cal.getNthDayOfWeek(-1, dayOfWeek, cdate);
+            break;
+    }
+    return cal.getTime(cdate) + timeOfDay;
+}

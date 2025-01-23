@@ -1,0 +1,19 @@
+@Override
+void mixOnShowing() {
+    synchronized (getTreeLock()) {
+        if (mixingLog.isLoggable(PlatformLogger.Level.FINE)) {
+            mixingLog.fine("this = " + this);
+        }
+        boolean isLightweight = isLightweight();
+        if (isLightweight && isRecursivelyVisibleUpToHeavyweightContainer()) {
+            recursiveShowHeavyweightChildren();
+        }
+        if (!isMixingNeeded()) {
+            return;
+        }
+        if (!isLightweight || (isLightweight && hasHeavyweightDescendants())) {
+            recursiveApplyCurrentShape();
+        }
+        super.mixOnShowing();
+    }
+}
